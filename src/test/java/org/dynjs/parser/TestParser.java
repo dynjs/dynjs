@@ -9,14 +9,16 @@
  */
 package org.dynjs.parser;
 
-import com.toolazydogs.aunit.*;
+import com.toolazydogs.aunit.AntlrTestRunner;
+import com.toolazydogs.aunit.AppliesTo;
+import com.toolazydogs.aunit.Configuration;
+import com.toolazydogs.aunit.Option;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.toolazydogs.aunit.CoreOptions.*;
 import static com.toolazydogs.aunit.Work.parse;
 import static com.toolazydogs.aunit.Work.rule;
-import static org.junit.Assert.fail;
 
 @RunWith(AntlrTestRunner.class)
 public class TestParser {
@@ -33,6 +35,16 @@ public class TestParser {
     @Test
     public void testVarStatement() throws Exception {
         parse("var x;", rule("variableStatement"));
+    }
+
+    @Test
+    public void testVarAsPrintStatement() throws Exception {
+        parse("var print;", rule("variableStatement"));
+    }
+
+    @Test
+    public void testPrintStatement() throws Exception {
+        parse("print (x);", rule("statement"));
     }
 
 }

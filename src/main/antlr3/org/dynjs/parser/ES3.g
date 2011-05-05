@@ -212,6 +212,10 @@ tokens
 	PDEC ;
 	PINC ;
 	POS ;
+
+// Soft Keywords
+
+	SK_PRINT;
 }
 
 @lexer::header {
@@ -305,6 +309,27 @@ public Token nextToken()
 
 @parser::members
 {
+
+private String retrieveLT(int LTNumber) {
+    if (null == input)
+        return null;
+    if (null == input.LT(LTNumber))
+        return null;
+    if (null == input.LT(LTNumber).getText())
+        return null;
+
+    return input.LT(LTNumber).getText();
+}
+
+private boolean validateLT(int LTNumber, String text) {
+    String text2Validate = retrieveLT( LTNumber );
+    return text2Validate == null ? false : text2Validate.equals(text);
+}
+
+private boolean validateIdentifierKey(String text) {
+	return validateLT(1, text);
+}
+
 private final boolean isLeftHandSideAssign(RuleReturnScope lhs, Object[] cached)
 {
 	if (cached[0] != null)
@@ -1200,6 +1225,7 @@ options
 	k = 1 ;
 }
 	: { input.LA(1) == LBRACE }? block
+	| printStatement
 	| statementTail
 	;
 	
@@ -1227,7 +1253,21 @@ block
 	;
 
 // $>
-	
+
+// $<Print statement !CUSTOM!)
+
+printStatement
+	: print_key^ LPAREN! expression RPAREN!
+	;
+
+print_key
+	:	{(validateIdentifierKey(DynJSSoftKeywords.PRINT))}?=>  id=Identifier
+		->	SK_PRINT[$id]
+	;
+
+// $>
+
+
 // $<Variable statement 12.2)
 
 variableStatement

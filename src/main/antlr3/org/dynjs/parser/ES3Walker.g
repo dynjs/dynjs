@@ -58,6 +58,7 @@ statement
 	: block
 	| variableDeclaration
 	| expression
+	| printStatement
 	| ifStatement
 	| doStatement
 	| whileStatement
@@ -74,6 +75,10 @@ statement
 
 block
 	: ^( BLOCK statement* )
+	;
+
+printStatement
+	: ^( SK_PRINT expression )
 	;
 
 variableDeclaration
