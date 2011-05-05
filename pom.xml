@@ -10,47 +10,47 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<developers>		
+	<developers>
 		<developer>
-            <id>qmx</id>
-            <name>Douglas Campos</name>
-            <url>http://github.com/qmx</url>
+			<id>qmx</id>
+			<name>Douglas Campos</name>
+			<url>http://github.com/qmx</url>
 			<email>qmx@qmx.me</email>
-            <roles>
-                <role>Project Leader and Dictator</role>
-                <role>Software Developer</role>
-            </roles>
-        </developer>
+			<roles>
+				<role>Project Leader and Dictator</role>
+				<role>Software Developer</role>
+			</roles>
+		</developer>
 		<developer>
-            <id>porcelli</id>
+			<id>porcelli</id>
 			<name>Alexandre Porcelli</name>
-            <url>http://github.com/porcelli</url>
+			<url>http://github.com/porcelli</url>
 			<email>alexandre.porcelli@gmail.com</email>
-            <roles>
-                <role>Parser Developer</role>
-            </roles>
+			<roles>
+				<role>Parser Developer</role>
+			</roles>
 		</developer>
 	</developers>
-    <licenses>
-        <license>
-            <name>The BSD License</name>
-            <url>http://www.opensource.org/licenses/bsd-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>The BSD License</name>
+			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<dependencies>
 		<!-- code generation dependency -->
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>stringtemplate</artifactId>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>stringtemplate</artifactId>
 			<version>3.2</version>
-        </dependency>
+		</dependency>
 		<!-- antlr parser dependency -->
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr-runtime</artifactId>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr-runtime</artifactId>
 			<version>3.3</version>
-        </dependency>
+		</dependency>
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -58,35 +58,33 @@
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
-	  <dependency>
-	      <groupId>com.toolazydogs.aunit</groupId>
-	      <artifactId>aunit-junit</artifactId>
-	      <version>1.0.2</version>
-	      <scope>test</scope>
-	  </dependency>
+		<dependency>
+			<groupId>com.toolazydogs.aunit</groupId>
+			<artifactId>aunit-junit</artifactId>
+			<version>1.0.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
-	        <plugins>
-	            <plugin>
-	                <groupId>org.apache.maven.plugins</groupId>
-	                <artifactId>maven-compiler-plugin</artifactId>
-	                <version>2.3.2</version>
-	                <configuration>
-	                    <source>1.7</source>
-	                    <target>1.7</target>
-	                    <encoding>${project.build.sourceEncoding}</encoding>
-	                </configuration>
-	            </plugin>
-	        </plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.2</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.2</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
