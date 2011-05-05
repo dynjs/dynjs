@@ -47,4 +47,8 @@ public class TestParser {
         parse("print (x);", rule("statement"));
     }
 
+    @Test
+    public void testFunctionDeclaration() throws Exception {
+        parse("function x(){}", rule("functionDeclaration"));
+    }
 }
