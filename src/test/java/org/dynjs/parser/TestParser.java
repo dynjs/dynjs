@@ -35,4 +35,8 @@ public class TestParser {
         parse("var x;", rule("variableStatement"));
     }
 
+    @Test
+    public void testFunctionDeclaration() throws Exception {
+        parse("function x(){}", rule("functionDeclaration"));
+    }
 }
