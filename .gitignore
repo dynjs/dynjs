@@ -1,2 +1,43 @@
+# .gitignore for OpenSpotLight
+jrat.output
+jrat.xml
+
+# IDE support files
 .classpath
 .project
+.metadata
+.settings
+.wtpmodules
+.pmd
+.idea
+atlassian-ide-plugin.xml
+
+#ANTLR temp files
+*.tokens
+
+#emacs bkp
+*~
+
+# Maven generated folders
+temp-testng-customsuite.xml
+test-output
+target
+bin
+META-INF
+out.slql
+profiles.xml
+
+# General folders
+local
+nbproject
+
+# logs 
+*.log
+
+# mac files
+.DS_Store
+
+# general files
+*.ipr
+*.iws
+*.iml
