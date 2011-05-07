@@ -47,6 +47,16 @@ options
 package org.dynjs.parser;
 }
 
+@members {
+
+    Executor executor = null;
+
+    public void setExecutor(Executor executor){
+        this.executor = executor;
+    }
+}
+
+
 /*
 Note: functionDeclaration is reachable via statement->expression as functionExpression and functionDeclaration are combined.
 */
@@ -77,8 +87,9 @@ block
 	: ^( BLOCK statement* )
 	;
 
-printStatement
+printStatement returns [Statement value]
 	: ^( SK_PRINT expression )
+	{  $value = executor.printStatement($expression.value);  }
 	;
 
 variableDeclaration
@@ -163,13 +174,15 @@ finallyClause
 	: ^( FINALLY block )
 	;
 
-expression
+expression returns [Statement value]
 	: expr 
+	{ $value = $expr.value; }
 	| ^( CEXPR expr+ )
 	;
 
-expr
+expr returns [Statement value]
 	: leftHandSideExpression
+	{ $value = $leftHandSideExpression.value; }
 	
 	// Assignment operators
 	| ^( ASSIGN expr expr )
@@ -241,8 +254,9 @@ expr
 	| ^( PDEC expr )
 	;
 
-leftHandSideExpression
+leftHandSideExpression returns [Statement value]
 	: primaryExpression
+	{ $value = $primaryExpression.value;  }
 	| newExpression
 	| functionDeclaration
 	| callExpression
@@ -266,17 +280,19 @@ memberExpression
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	;
 
-primaryExpression
+primaryExpression returns [Statement value]
 	: Identifier
 	| literal
+	{ $value = $literal.value;  }
 	;
 
-literal
+literal returns [Statement value]
 	: THIS
 	| NULL
 	| booleanLiteral
 	| numericLiteral
 	| StringLiteral
+	{ $value = executor.createLDC($StringLiteral);  }
 	| RegularExpressionLiteral
 	| arrayLiteral
 	| objectLiteral
