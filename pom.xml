@@ -45,6 +45,12 @@
 			<artifactId>stringtemplate</artifactId>
 			<version>3.2</version>
 		</dependency>
+                <dependency>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-all</artifactId>
+                    <version>4.0_RC1</version>
+                </dependency>
+
 		<!-- antlr parser dependency -->
 		<dependency>
 			<groupId>org.antlr</groupId>
