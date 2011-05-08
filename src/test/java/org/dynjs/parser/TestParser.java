@@ -9,10 +9,7 @@
  */
 package org.dynjs.parser;
 
-import com.toolazydogs.aunit.AntlrTestRunner;
-import com.toolazydogs.aunit.AppliesTo;
-import com.toolazydogs.aunit.Configuration;
-import com.toolazydogs.aunit.Option;
+import com.toolazydogs.aunit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,7 +26,12 @@ public class TestParser {
         return options(
                 lexer(ES3Lexer.class),
                 parser(ES3Parser.class),
-                walker(ES3Walker.class)
+                walker(ES3Walker.class, new TreeParserSetup<ES3Walker>() {
+                    @Override
+                    public void config(ES3Walker es3Walker) {
+                        es3Walker.setExecutor(new Executor());
+                    }
+                })
         );
     }
 
