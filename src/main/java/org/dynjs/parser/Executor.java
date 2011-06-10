@@ -39,7 +39,7 @@ public class Executor implements Opcodes {
         }
 
         classNode.methods.add(methodNode);
-        ClassWriter cw = new ClassWriter(0);
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         classNode.accept(cw);
         return cw.toByteArray();
     }
