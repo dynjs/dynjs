@@ -9,6 +9,7 @@
  */
 package org.dynjs.parser;
 
+import java.io.PrintWriter;
 import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.objectweb.asm.*;
@@ -19,8 +20,11 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 public class Executor implements Opcodes {
+
+    private boolean DEBUG = true;
 
     public byte[] program(List<Statement> blockContent) {
         ClassNode classNode = new ClassNode();
@@ -40,7 +44,12 @@ public class Executor implements Opcodes {
 
         classNode.methods.add(methodNode);
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        classNode.accept(cw);
+        if (DEBUG) {
+            TraceClassVisitor traceClassVisitor = new TraceClassVisitor(cw, new PrintWriter(System.err));
+            classNode.accept(traceClassVisitor);
+        } else {
+            classNode.accept(cw);
+        }
         return cw.toByteArray();
     }
 
