@@ -38,6 +38,11 @@
             <distribution>repo</distribution>
             <comments>parser license</comments>
         </license>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
     <dependencies>
 		<!-- code generation dependency -->
@@ -103,6 +108,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <configuration>
+                    <header>src/etc/header.txt</header>
+                    <includes>
+                        <include>src/**</include>
+                    </includes>
+                    <strictCheck>true</strictCheck>
+                </configuration>
             </plugin>
         </plugins>
     </build>
