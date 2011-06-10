@@ -60,15 +60,19 @@ package org.dynjs.parser;
 /*
 Note: functionDeclaration is reachable via statement->expression as functionExpression and functionDeclaration are combined.
 */
-program
-	: statement*
+program 
+@init { List<Statement> blockContent = new ArrayList<Statement>(); }
+        : (st=statement {blockContent.add($st.value);})*
+        {   executor.program(blockContent);   }
 	;
 
-statement
+statement returns [Statement value] 
 	: block
+        {  $value = $block.value;   }
 	| variableDeclaration
 	| expression
 	| printStatement
+        { $value = $printStatement.value; }
 	| ifStatement
 	| doStatement
 	| whileStatement
@@ -83,8 +87,10 @@ statement
 	| tryStatement
 	;
 
-block
-	: ^( BLOCK statement* )
+block returns [Statement value]
+@init { List<Statement> blockContent = new ArrayList<Statement>(); }
+	: ^( BLOCK (st=statement {blockContent.add($st.value);})* )
+	{  $value = executor.block(blockContent);  }
 	;
 
 printStatement returns [Statement value]
