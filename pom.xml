@@ -115,6 +115,9 @@
                 <version>1.9.0</version>
                 <configuration>
                     <header>src/etc/header.txt</header>
+                    <excludes>
+                        <exclude>src/main/antlr3/**</exclude>
+                    </excludes>
                     <includes>
                         <include>src/**</include>
                     </includes>
