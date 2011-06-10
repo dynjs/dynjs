@@ -12,16 +12,36 @@ package org.dynjs.parser;
 import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.objectweb.asm.*;
+import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class Executor implements Opcodes {
 
-    public void program(List<Statement> blockContent) {
-        
+    public byte[] program(List<Statement> blockContent) {
+        ClassNode classNode = new ClassNode();
+        classNode.version = V1_7;
+        classNode.access = ACC_PUBLIC + ACC_ABSTRACT;
+        classNode.superName = "java/lang/Object";
+        classNode.name = "WTF";
+        final MethodNode methodNode = new MethodNode(ACC_PUBLIC + ACC_STATIC,
+                "main", "([Ljava/lang/String;)V", null, null);
+        for (Statement statement : blockContent) {
+            if (statement.isList()) {
+                methodNode.instructions.add(statement.getStatementList());
+            } else {
+                methodNode.instructions.add(statement.getStatement());
+            }
+        }
+
+        classNode.methods.add(methodNode);
+        ClassWriter cw = new ClassWriter(0);
+        classNode.accept(cw);
+        return cw.toByteArray();
     }
 
     public Statement printStatement(final Statement expression) {
