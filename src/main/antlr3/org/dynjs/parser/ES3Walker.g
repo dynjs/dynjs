@@ -49,10 +49,15 @@ package org.dynjs.parser;
 
 @members {
 
+    byte[] result = null;
     Executor executor = null;
 
     public void setExecutor(Executor executor){
         this.executor = executor;
+    }
+
+    public byte[] getResult(){
+        return result;
     }
 }
 
@@ -60,10 +65,10 @@ package org.dynjs.parser;
 /*
 Note: functionDeclaration is reachable via statement->expression as functionExpression and functionDeclaration are combined.
 */
-program 
+program
 @init { List<Statement> blockContent = new ArrayList<Statement>(); }
         : (st=statement {blockContent.add($st.value);})*
-        {   executor.program(blockContent);   }
+        {   result = executor.program(blockContent);   }
 	;
 
 statement returns [Statement value] 

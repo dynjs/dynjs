@@ -4,6 +4,8 @@
  */
 package org.dynjs;
 
+import java.lang.reflect.Method;
+import org.dynjs.Compiler.DynamicClassLoader;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.BufferedTokenStream;
@@ -31,8 +33,8 @@ import static org.junit.Assert.*;
 public class DynJsBootstrapTest {
 
     @Test
-    public void testBytecodeGeneration() throws RecognitionException {
-        ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream("function x() { print('hello world'); };"));
+    public void testBytecodeGeneration() throws Exception {
+        ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream("print('hello world');"));
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
         program_return program = parser.program();
@@ -41,6 +43,14 @@ public class DynJsBootstrapTest {
         ES3Walker walker = new ES3Walker(treeNodeStream);
         walker.setExecutor(new Executor());
         walker.program();
-        
+
+        DynamicClassLoader classloader = new Compiler.DynamicClassLoader();
+
+        Class<?> helloWorldClass = classloader.define("WTF", walker.getResult());
+
+        Method method = helloWorldClass.getMethod("main", String[].class);
+
+        method.invoke(null, (Object) new String[]{});
+
     }
 }

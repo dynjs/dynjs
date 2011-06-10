@@ -54,7 +54,7 @@ public class Executor implements Opcodes {
             print.add(expression.getStatement());
         }
 
-        print.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "java/io/PrintStream"));
+        print.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
         print.add(new InsnNode(SWAP));
         print.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V"));
         print.add(new InsnNode(RETURN));
