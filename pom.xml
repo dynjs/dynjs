@@ -36,6 +36,7 @@
             <name>The BSD License</name>
             <url>http://www.opensource.org/licenses/bsd-license.php</url>
             <distribution>repo</distribution>
+            <comments>parser license</comments>
         </license>
     </licenses>
     <dependencies>
