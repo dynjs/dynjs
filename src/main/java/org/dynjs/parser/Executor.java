@@ -18,6 +18,9 @@ package org.dynjs.parser;
 
 import java.io.PrintWriter;
 import java.util.List;
+
+import me.qmx.jitescript.CodeBlock;
+import me.qmx.jitescript.MethodBody;
 import org.antlr.runtime.tree.CommonTree;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.ClassNode;
@@ -70,10 +73,14 @@ public class Executor implements Opcodes {
             print.add(expression.getStatement());
         }
 
-        print.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-        print.add(new InsnNode(SWAP));
-        print.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V"));
-        print.add(new InsnNode(RETURN));
+        CodeBlock codeBlock = new CodeBlock() {{
+            getstatic("java/lang/System", "out", "Ljava/io/PrintStream;");
+            swap();
+            invokevirtual("java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
+            voidreturn();
+        }};
+
+        print.add(codeBlock.getInstructionList());
 
         return new PrintStatementImpl(print);
     }
