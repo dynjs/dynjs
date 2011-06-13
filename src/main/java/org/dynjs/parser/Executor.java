@@ -19,15 +19,10 @@ package org.dynjs.parser;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 import org.antlr.runtime.tree.CommonTree;
-import org.objectweb.asm.ClassWriter;
+import org.dynjs.parser.statement.LdcStatement;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.List;
 
 import static me.qmx.jitescript.util.CodegenUtils.ci;
@@ -66,14 +61,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement createLDC(final CommonTree stringLiteral) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    ldc(stringLiteral.getText());
-                }};
-            }
-        };
+        return new LdcStatement(stringLiteral.getText());
     }
 
     public Statement block(final List<Statement> blockContent) {
