@@ -26,9 +26,7 @@ import org.objectweb.asm.Opcodes;
 import java.io.PrintStream;
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class Executor implements Opcodes {
 
@@ -50,7 +48,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return new CodeBlock(){{
+                return new CodeBlock() {{
                     append(expression.getCodeBlock());
                     getstatic(p(System.class), "out", ci(PrintStream.class));
                     swap();
