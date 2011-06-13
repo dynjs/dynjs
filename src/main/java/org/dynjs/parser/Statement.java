@@ -16,14 +16,12 @@
  */
 package org.dynjs.parser;
 
+import me.qmx.jitescript.CodeBlock;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 
 public interface Statement {
 
-    boolean isList();
+    CodeBlock getCodeBlock();
 
-    AbstractInsnNode getStatement();
-
-    InsnList getStatementList();
 }

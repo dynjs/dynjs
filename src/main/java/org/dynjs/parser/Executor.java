@@ -16,93 +16,73 @@
  */
 package org.dynjs.parser;
 
+import me.qmx.jitescript.CodeBlock;
+import me.qmx.jitescript.JiteClass;
+import org.antlr.runtime.tree.CommonTree;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.util.TraceClassVisitor;
+
 import java.io.PrintWriter;
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-import me.qmx.jitescript.MethodBody;
-import org.antlr.runtime.tree.CommonTree;
-import org.objectweb.asm.*;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.util.TraceClassVisitor;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
     private boolean DEBUG = true;
 
-    public byte[] program(List<Statement> blockContent) {
-        ClassNode classNode = new ClassNode();
-        classNode.version = V1_7;
-        classNode.access = ACC_PUBLIC + ACC_ABSTRACT;
-        classNode.superName = "java/lang/Object";
-        classNode.name = "WTF";
-        final MethodNode methodNode = new MethodNode(ACC_PUBLIC + ACC_STATIC,
-                "main", "([Ljava/lang/String;)V", null, null);
-        for (Statement statement : blockContent) {
-            if (statement.isList()) {
-                methodNode.instructions.add(statement.getStatementList());
-            } else {
-                methodNode.instructions.add(statement.getStatement());
-            }
-        }
-
-        classNode.methods.add(methodNode);
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        if (DEBUG) {
-            TraceClassVisitor traceClassVisitor = new TraceClassVisitor(cw, new PrintWriter(System.err));
-            classNode.accept(traceClassVisitor);
-        } else {
-            classNode.accept(cw);
-        }
-        return cw.toByteArray();
+    public byte[] program(final List<Statement> blockContent) {
+        final String className = "WTF";
+        JiteClass bootstrapClass = new JiteClass(className) {{
+            defineMethod("main", ACC_PUBLIC | ACC_SUPER | ACC_STATIC, sig(void.class, String[].class), new CodeBlock() {{
+                for (Statement statement : blockContent) {
+                    append(statement.getCodeBlock());
+                }
+            }});
+        }};
+        return bootstrapClass.toBytes();
     }
 
     public Statement printStatement(final Statement expression) {
-
-        InsnList print = new InsnList();
-
-        if (expression.isList()) {
-            print.add(expression.getStatementList());
-        } else {
-            print.add(expression.getStatement());
-        }
-
-        CodeBlock codeBlock = new CodeBlock() {{
-            getstatic("java/lang/System", "out", "Ljava/io/PrintStream;");
-            swap();
-            invokevirtual("java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
-            voidreturn();
-        }};
-
-        print.add(codeBlock.getInstructionList());
-
-        return new PrintStatementImpl(print);
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock(){{
+                    append(expression.getCodeBlock());
+                    getstatic("java/lang/System", "out", "Ljava/io/PrintStream;");
+                    swap();
+                    invokevirtual("java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
+                    voidreturn();
+                }};
+            }
+        };
     }
 
     public Statement createLDC(final CommonTree stringLiteral) {
-
-        LdcInsnNode node = new LdcInsnNode(stringLiteral.getText());
-
-        return new LDCStatementImpl(node, stringLiteral);
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock() {{
+                    ldc(stringLiteral.getText());
+                }};
+            }
+        };
     }
 
-    public Statement block(List<Statement> blockContent) {
-
-        InsnList block = new InsnList();
-        for (Statement statement : blockContent) {
-            if (statement.isList()) {
-                block.add(statement.getStatementList());
-            } else {
-                block.add(statement.getStatement());
+    public Statement block(final List<Statement> blockContent) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock() {{
+                    for (Statement statement: blockContent){
+                        append(statement.getCodeBlock());
+                    }
+                }};
             }
-        }
-
-        return new BlockStatementImpl(block);
+        };
     }
 }
