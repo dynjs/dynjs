@@ -24,14 +24,11 @@ import org.dynjs.parser.statement.LdcStatement;
 import org.dynjs.parser.statement.PrintStatement;
 import org.objectweb.asm.Opcodes;
 
-import java.io.PrintStream;
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
-
-    private boolean DEBUG = true;
 
     public byte[] program(final List<Statement> blockContent) {
         final String className = "WTF";
