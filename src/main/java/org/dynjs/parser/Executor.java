@@ -26,9 +26,12 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
@@ -53,9 +56,9 @@ public class Executor implements Opcodes {
             public CodeBlock getCodeBlock() {
                 return new CodeBlock(){{
                     append(expression.getCodeBlock());
-                    getstatic("java/lang/System", "out", "Ljava/io/PrintStream;");
+                    getstatic(p(System.class), "out", ci(PrintStream.class));
                     swap();
-                    invokevirtual("java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
+                    invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class));
                     voidreturn();
                 }};
             }
