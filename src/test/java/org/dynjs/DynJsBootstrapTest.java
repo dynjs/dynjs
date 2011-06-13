@@ -16,12 +16,11 @@
  */
 package org.dynjs;
 
-import java.lang.reflect.Method;
-import org.dynjs.Compiler.DynamicClassLoader;
-import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.dynjs.Compiler.DynamicClassLoader;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Parser.program_return;
@@ -29,8 +28,9 @@ import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+
 /**
- *
  * @author qmx
  */
 public class DynJsBootstrapTest {
