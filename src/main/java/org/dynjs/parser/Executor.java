@@ -21,6 +21,7 @@ import me.qmx.jitescript.JiteClass;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.LdcStatement;
+import org.dynjs.parser.statement.PrintStatement;
 import org.objectweb.asm.Opcodes;
 
 import java.io.PrintStream;
@@ -45,18 +46,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement printStatement(final Statement expression) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    append(expression.getCodeBlock());
-                    getstatic(p(System.class), "out", ci(PrintStream.class));
-                    swap();
-                    invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class));
-                    voidreturn();
-                }};
-            }
-        };
+        return new PrintStatement(expression);
     }
 
     public Statement createLDC(final CommonTree stringLiteral) {
