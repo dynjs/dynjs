@@ -19,6 +19,7 @@ package org.dynjs.parser;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.LdcStatement;
 import org.objectweb.asm.Opcodes;
 
@@ -65,15 +66,6 @@ public class Executor implements Opcodes {
     }
 
     public Statement block(final List<Statement> blockContent) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    for (Statement statement: blockContent){
-                        append(statement.getCodeBlock());
-                    }
-                }};
-            }
-        };
+        return new BlockStatement(blockContent);
     }
 }
