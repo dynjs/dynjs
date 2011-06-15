@@ -19,14 +19,14 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.newCodeBlock;
+
 public class LdcStatement implements Statement {
 
     private final CodeBlock codeBlock;
 
     public LdcStatement(final Object arg0){
-        this.codeBlock = new CodeBlock(){{
-            ldc(arg0);
-        }};
+        this.codeBlock = newCodeBlock().ldc(arg0);
     }
 
     @Override
