@@ -19,7 +19,7 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.newCodeBlock;
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 
 public class LdcStatement implements Statement {
 

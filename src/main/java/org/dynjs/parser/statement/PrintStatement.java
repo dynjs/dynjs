@@ -21,6 +21,7 @@ import org.dynjs.parser.Statement;
 
 import java.io.PrintStream;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class PrintStatement implements Statement {
