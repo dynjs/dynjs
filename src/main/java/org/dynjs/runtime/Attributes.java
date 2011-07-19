@@ -5,12 +5,12 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
-public class Attributes extends ForwardingMap<String, Attribute<? extends DynObject>> {
+public class Attributes extends ForwardingMap<String, Attribute<? extends DynAtom>> {
 
-    private Map<String, Attribute<? extends DynObject>> attributes = Maps.newHashMap();
+    private Map<String, Attribute<? extends DynAtom>> attributes = Maps.newHashMap();
 
     @Override
-    protected Map<String, Attribute<? extends DynObject>> delegate() {
+    protected Map<String, Attribute<? extends DynAtom>> delegate() {
         return this.attributes;
     }
 

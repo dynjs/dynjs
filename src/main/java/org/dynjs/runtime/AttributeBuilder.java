@@ -1,6 +1,6 @@
 package org.dynjs.runtime;
 
-public class AttributeBuilder {
+public class AttributeBuilder<T extends DynAtom> {
     private final DynObject dynObject;
     private final String attributeName;
 
@@ -9,8 +9,8 @@ public class AttributeBuilder {
         this.attributeName = attributeName;
     }
 
-    public DynObject to(DynObject object) {
-        final Attribute attribute = new Attribute(object);
+    public DynObject to(T object) {
+        final Attribute attribute = new Attribute<T>(object);
         dynObject.setAttribute(attributeName, attribute);
         return dynObject;
     }

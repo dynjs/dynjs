@@ -1,17 +1,11 @@
 package org.dynjs.runtime;
 
-public class Attribute<T> {
+public class Attribute<T extends DynAtom> {
 
     private T value;
-    private boolean undefined = false;
 
     public Attribute(T value) {
         this.value = value;
-    }
-
-    public Attribute() {
-        this((T) new Undefined());
-        this.undefined = true;
     }
 
     public T value() {
@@ -19,6 +13,6 @@ public class Attribute<T> {
     }
 
     public boolean isUndefined() {
-        return this.undefined;
+        return this.value.isUndefined();
     }
 }
