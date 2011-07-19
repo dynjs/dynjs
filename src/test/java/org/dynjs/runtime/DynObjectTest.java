@@ -28,4 +28,13 @@ public class DynObjectTest {
         object.set("person").to(person);
         assertThat(object.get("person"), is(not(undefined())));
     }
+
+    @Test
+    public void searchesThePrototypeChain() {
+        final DynObject car = new DynObject();
+        final DynString blue = new DynString("blue");
+        car.set("color").to(blue);
+        object.set("prototype").to(car);
+        assertThat(object.get("color"), is(not(undefined())));
+    }
 }

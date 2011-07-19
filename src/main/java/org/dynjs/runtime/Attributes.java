@@ -17,8 +17,15 @@ public class Attributes extends ForwardingMap<String, Attribute<? extends DynAto
     public Attribute get(String attribute) {
         if (attributes.containsKey(attribute)) {
             return attributes.get(attribute);
-        } else {
-            return new Attribute<Undefined>(new Undefined());
+        } else if (attributes.containsKey("prototype")) {
+            final Attribute<? extends DynAtom> prototype = attributes.get("prototype");
+            if (!prototype.isUndefined()) {
+                if (prototype.value() instanceof DynObject) {
+                    final DynObject value = (DynObject) prototype.value();
+                    return value.get(attribute);
+                }
+            }
         }
+        return new Attribute<Undefined>(Undefined.UNDEFINED);
     }
 }

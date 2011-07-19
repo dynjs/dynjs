@@ -7,11 +7,8 @@ public class DynObject implements DynAtom {
 
     private Map<String, Attribute<? extends DynAtom>> attributes = new HashMap<>();
 
-    public Attribute<? extends DynObject> get(String attribute) {
-        if (attributes.containsKey(attribute)) {
-            return attributes.get(attribute);
-        }
-        return new Attribute<Undefined>();
+    public Attribute<? extends DynAtom> get(String attribute) {
+        return attributes.get(attribute);
     }
 
     public AttributeBuilder set(String person) {
