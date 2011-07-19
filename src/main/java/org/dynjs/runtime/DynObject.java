@@ -14,4 +14,11 @@ public class DynObject {
         return new Attribute<Undefined>();
     }
 
+    public AttributeBuilder set(String person) {
+        return new AttributeBuilder(this, person);
+    }
+
+    public void setAttribute(String attributeName, Attribute attribute) {
+        attributes.put(attributeName, attribute);
+    }
 }
