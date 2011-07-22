@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.dynjs.runtime.Argument.arg;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class DynFunctionTest {
@@ -42,5 +43,13 @@ public class DynFunctionTest {
     public void testDefaultReturnType() {
         DynFunction function = new DynFunction();
         assertThat(function.call()).isInstanceOf(Undefined.class);
+    }
+
+    @Test
+    public void testArguments() {
+        new DynFunction(arg("arg0", object)) {{
+            addArgument("arg0", object);
+            addArgument("arg1", object);
+        }};
     }
 }

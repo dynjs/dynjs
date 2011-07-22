@@ -15,9 +15,22 @@
  */
 package org.dynjs.runtime;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DynFunction<ReturnType extends DynAtom> {
 
     private ReturnType result;
+    private List<Argument> arguments;
+
+    public DynFunction(Argument... arguments) {
+        this.arguments = Arrays.asList(arguments);
+    }
+
+    public DynFunction addArgument(String argName, DynAtom value) {
+        arguments.add(new Argument(argName, value));
+        return this;
+    }
 
     public DynFunction willReturn(ReturnType result) {
         this.result = result;
