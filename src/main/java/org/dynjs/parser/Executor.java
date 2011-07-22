@@ -1,6 +1,5 @@
 /**
- *  Copyright 2011 Douglas Campos <qmx@qmx.me>
- *  Copyright 2011 Alexandre Porcelli <alexandre.porcelli@gmail.com>
+ *  Copyright 2011 dynjs contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
