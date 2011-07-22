@@ -1,5 +1,6 @@
-package org.dynjs.runtime;
+package org.dynjs.runtime.helpers.hamcrest;
 
+import org.dynjs.runtime.Attribute;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;

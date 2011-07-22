@@ -3,10 +3,11 @@ package org.dynjs.runtime;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.dynjs.runtime.IsUndefined.undefined;
+import static org.dynjs.runtime.helpers.hamcrest.IsUndefined.undefined;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+
 
 public class DynObjectTest {
 
@@ -26,7 +27,7 @@ public class DynObjectTest {
     public void allowsSettingAttributes() {
         final DynObject person = new DynObject();
         object.set("person").to(person);
-        assertThat(object.get("person"), is(not(undefined())));
+        assertThat(object.get("person"), is(undefined()));
     }
 
     @Test
