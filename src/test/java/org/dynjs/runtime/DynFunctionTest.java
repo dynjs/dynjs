@@ -37,4 +37,10 @@ public class DynFunctionTest {
         DynString result = function.call();
         assertThat(result).isNotNull();
     }
+
+    @Test
+    public void testDefaultReturnType() {
+        DynFunction function = new DynFunction();
+        assertThat(function.call()).isInstanceOf(Undefined.class);
+    }
 }

@@ -25,6 +25,10 @@ public class DynFunction<ReturnType extends DynAtom> {
     }
 
     public ReturnType call() {
-        return result;
+        if (result != null) {
+            return result;
+        } else {
+            return (ReturnType) Undefined.UNDEFINED;
+        }
     }
 }
