@@ -29,7 +29,8 @@ public class Attributes extends ForwardingMap<String, Attribute<? extends DynAto
         return this.attributes;
     }
 
-    public Attribute get(String attribute) {
+
+    public Attribute get(Object attribute) {
         if (attributes.containsKey(attribute)) {
             return attributes.get(attribute);
         } else if (attributes.containsKey("prototype")) {

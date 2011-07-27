@@ -22,7 +22,7 @@ public class DynObject implements DynAtom {
 
     private Map<String, Attribute<? extends DynAtom>> attributes = new Attributes();
 
-    public Attribute<? extends DynAtom> get(String attribute) {
+    public Attribute<? extends DynAtom> get(Object attribute) {
         return attributes.get(attribute);
     }
 

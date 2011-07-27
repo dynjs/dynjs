@@ -19,6 +19,7 @@ public class AttributesTest {
     @Test
     public void neverReturnsNullValues() throws Exception {
         assertThat(attributes.get("whatever")).is(undefined());
+        assertThat(attributes.get("prototype")).is(undefined());
     }
 
     @Test
