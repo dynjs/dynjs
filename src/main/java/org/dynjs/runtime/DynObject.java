@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class DynObject implements DynAtom {
 
-    private Map<String, Attribute<? extends DynAtom>> attributes = new HashMap<>();
+    private Map<String, Attribute<? extends DynAtom>> attributes = new Attributes();
 
     public Attribute<? extends DynAtom> get(String attribute) {
         return attributes.get(attribute);
