@@ -23,7 +23,10 @@ public class UndefinedCondition<T> extends Condition<Attribute<DynAtom>> {
 
     @Override
     public boolean matches(Attribute<DynAtom> attribute) {
-        return attribute.isUndefined();
+        if (attribute != null) {
+            return attribute.isUndefined();
+        }
+        return false;
     }
 
     public static UndefinedCondition undefined() {
