@@ -43,4 +43,9 @@ public class Attributes extends ForwardingMap<String, Attribute<? extends DynAto
         }
         return new Attribute<Undefined>(Undefined.UNDEFINED);
     }
+
+    @Override
+    public Attribute<? extends DynAtom> put(String key, Attribute<? extends DynAtom> value) {
+        return super.put(key, value);
+    }
 }
