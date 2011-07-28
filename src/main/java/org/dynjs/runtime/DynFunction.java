@@ -15,21 +15,24 @@
  */
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.collect.Maps;
+import com.sun.org.apache.xpath.internal.functions.Function;
+
+import java.util.Map;
 
 public class DynFunction<ReturnType extends DynAtom> {
 
     private ReturnType result;
-    private List<Argument> arguments;
+    private final Map<String, DynAtom> arguments = Maps.newLinkedHashMap();
 
     public DynFunction(Argument... arguments) {
-        this.arguments = new ArrayList<Argument>(Arrays.asList(arguments));
+        for (Argument argument : arguments) {
+            addArgument(argument.getKey(), argument.getValue());
+        }
     }
 
     public DynFunction addArgument(String argName, DynAtom value) {
-        arguments.add(new Argument(argName, value));
+        arguments.put(argName, value);
         return this;
     }
 
@@ -45,4 +48,9 @@ public class DynFunction<ReturnType extends DynAtom> {
             return (ReturnType) Undefined.UNDEFINED;
         }
     }
+
+    protected DynAtom getArgument(Object string) {
+        return arguments.get(string);
+    }
+
 }
