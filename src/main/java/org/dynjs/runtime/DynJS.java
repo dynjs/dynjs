@@ -28,6 +28,16 @@ import java.lang.reflect.Method;
 
 public class DynJS {
 
+    private final DynJSConfig config;
+
+    public DynJS(DynJSConfig config) {
+        this.config = config;
+    }
+
+    public DynJS() {
+        this.config = new DynJSConfig();
+    }
+
     public void eval(String s) {
         byte[] result;
         try {
