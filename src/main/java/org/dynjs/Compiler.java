@@ -16,6 +16,8 @@
 package org.dynjs;
 
 import java.lang.reflect.Method;
+
+import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -79,12 +81,7 @@ public class Compiler implements Opcodes {
         return cw.toByteArray();
     }
 
-    public static class DynamicClassLoader extends ClassLoader {
-
-        public Class<?> define(String className, byte[] bytecode) {
-            return super.defineClass(className, bytecode, 0, bytecode.length);
-        }
-    };
+    ;
 
     public static void main(String[] args) throws Exception {
 

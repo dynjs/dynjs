@@ -19,7 +19,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.dynjs.Compiler.DynamicClassLoader;
+import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Parser.program_return;
@@ -46,7 +46,7 @@ public class DynJsBootstrapTest {
         walker.setExecutor(new Executor());
         walker.program();
 
-        DynamicClassLoader classloader = new Compiler.DynamicClassLoader();
+        DynamicClassLoader classloader = new DynamicClassLoader();
 
         Class<?> helloWorldClass = classloader.define("WTF", walker.getResult());
 
