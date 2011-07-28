@@ -17,6 +17,7 @@ package org.dynjs.runtime;
 
 import com.google.common.collect.Maps;
 import com.sun.org.apache.xpath.internal.functions.Function;
+import me.qmx.jitescript.CodeBlock;
 
 import java.util.Map;
 
@@ -53,4 +54,7 @@ public class DynFunction<ReturnType extends DynAtom> {
         return arguments.get(string);
     }
 
+    public CodeBlock getCodeBlock() {
+        return CodeBlock.newCodeBlock();
+    }
 }
