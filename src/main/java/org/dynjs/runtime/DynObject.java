@@ -13,23 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser.statement;
+package org.dynjs.runtime;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+public class DynObject implements DynAtom {
 
-public class LdcStatement implements Statement {
+    private Map<String, Attribute<? extends DynAtom>> attributes = new Attributes();
 
-    private final CodeBlock codeBlock;
+    public Attribute<? extends DynAtom> get(Object attribute) {
+        return attributes.get(attribute);
+    }
 
-    public LdcStatement(final Object arg0){
-        this.codeBlock = newCodeBlock().ldc(arg0);
+    public AttributeBuilder set(String person) {
+        return new AttributeBuilder<DynObject>(this, person);
+    }
+
+    public void setAttribute(String attributeName, Attribute attribute) {
+        attributes.put(attributeName, attribute);
     }
 
     @Override
-    public CodeBlock getCodeBlock() {
-        return codeBlock;
+    public boolean isUndefined() {
+        return false;
     }
 }

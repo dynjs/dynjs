@@ -13,23 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser.statement;
+package org.dynjs.runtime;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
+public class Attribute<T extends DynAtom> {
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+    private T value;
 
-public class LdcStatement implements Statement {
-
-    private final CodeBlock codeBlock;
-
-    public LdcStatement(final Object arg0){
-        this.codeBlock = newCodeBlock().ldc(arg0);
+    public Attribute(T value) {
+        this.value = value;
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        return codeBlock;
+    public T value() {
+        return this.value;
+    }
+
+    public boolean isUndefined() {
+        return this.value.isUndefined();
     }
 }

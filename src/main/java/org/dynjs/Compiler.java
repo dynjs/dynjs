@@ -1,6 +1,5 @@
 /**
- *  Copyright 2011 Douglas Campos <qmx@qmx.me>
- *  Copyright 2011 Alexandre Porcelli <alexandre.porcelli@gmail.com>
+ *  Copyright 2011 dynjs contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +16,8 @@
 package org.dynjs;
 
 import java.lang.reflect.Method;
+
+import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -80,12 +81,7 @@ public class Compiler implements Opcodes {
         return cw.toByteArray();
     }
 
-    public static class DynamicClassLoader extends ClassLoader {
-
-        public Class<?> define(String className, byte[] bytecode) {
-            return super.defineClass(className, bytecode, 0, bytecode.length);
-        }
-    };
+    ;
 
     public static void main(String[] args) throws Exception {
 

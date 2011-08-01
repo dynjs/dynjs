@@ -13,23 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser.statement;
+package org.dynjs.runtime.helpers.fest;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
+import org.dynjs.runtime.Attribute;
+import org.dynjs.runtime.DynAtom;
+import org.fest.assertions.Condition;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-
-public class LdcStatement implements Statement {
-
-    private final CodeBlock codeBlock;
-
-    public LdcStatement(final Object arg0){
-        this.codeBlock = newCodeBlock().ldc(arg0);
-    }
+public class UndefinedCondition<T> extends Condition<Attribute<DynAtom>> {
 
     @Override
-    public CodeBlock getCodeBlock() {
-        return codeBlock;
+    public boolean matches(Attribute<DynAtom> attribute) {
+        if (attribute != null) {
+            return attribute.isUndefined();
+        }
+        return false;
+    }
+
+    public static UndefinedCondition undefined() {
+        return new UndefinedCondition();
     }
 }

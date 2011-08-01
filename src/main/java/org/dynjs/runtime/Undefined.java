@@ -13,23 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser.statement;
+package org.dynjs.runtime;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
+public class Undefined implements DynAtom {
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+    public static final Undefined UNDEFINED = new Undefined();
 
-public class LdcStatement implements Statement {
-
-    private final CodeBlock codeBlock;
-
-    public LdcStatement(final Object arg0){
-        this.codeBlock = newCodeBlock().ldc(arg0);
+    private Undefined() {
     }
 
     @Override
-    public CodeBlock getCodeBlock() {
-        return codeBlock;
+    public boolean isUndefined() {
+        return true;
     }
 }

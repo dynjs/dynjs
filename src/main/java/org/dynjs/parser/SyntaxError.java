@@ -13,23 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser.statement;
+package org.dynjs.parser;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
+import org.antlr.runtime.RecognitionException;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+public class SyntaxError extends RuntimeException {
 
-public class LdcStatement implements Statement {
-
-    private final CodeBlock codeBlock;
-
-    public LdcStatement(final Object arg0){
-        this.codeBlock = newCodeBlock().ldc(arg0);
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return codeBlock;
+    public SyntaxError(RecognitionException e) {
+        super(e);
     }
 }
