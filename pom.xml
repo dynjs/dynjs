@@ -72,6 +72,11 @@
             <artifactId>guava</artifactId>
             <version>r07</version>
         </dependency>
+        <dependency>
+            <groupId>org.dynalang</groupId>
+            <artifactId>dynalink</artifactId>
+            <version>0.2</version>
+        </dependency>
 
         <!-- antlr parser dependency -->
         <dependency>
