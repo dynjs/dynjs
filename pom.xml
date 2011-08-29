@@ -59,7 +59,7 @@
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
