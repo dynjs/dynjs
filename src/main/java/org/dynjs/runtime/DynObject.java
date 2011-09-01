@@ -15,27 +15,10 @@
  */
 package org.dynjs.runtime;
 
-import java.util.Map;
-
 public class DynObject implements DynAtom {
 
-    private Map<String, Attribute<? extends DynAtom>> attributes = new Attributes();
-
-    public Attribute<? extends DynAtom> get(Object attribute) {
-        return attributes.get(attribute);
-    }
-
-    public AttributeBuilder set(String person) {
-        return new AttributeBuilder<DynObject>(this, person);
-    }
-
-    public void setAttribute(String attributeName, Attribute attribute) {
-        attributes.put(attributeName, attribute);
-    }
-
     @Override
-    public boolean isUndefined() {
+    public boolean isPrimitive() {
         return false;
     }
-
 }

@@ -22,8 +22,9 @@ public class Undefined implements DynAtom {
     private Undefined() {
     }
 
+
     @Override
-    public boolean isUndefined() {
+    public boolean isPrimitive() {
         return true;
     }
 }

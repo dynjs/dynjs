@@ -22,8 +22,9 @@ public class DynString implements DynAtom {
         this.value = value;
     }
 
+
     @Override
-    public boolean isUndefined() {
-        return false;
+    public boolean isPrimitive() {
+        return true;
     }
 }
