@@ -25,6 +25,6 @@ public class DynString implements DynAtom {
 
     @Override
     public boolean isPrimitive() {
-        return true;
+        return false;
     }
 }

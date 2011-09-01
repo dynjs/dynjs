@@ -11,4 +11,9 @@ public class DynJSPrimitiveTest {
         assertThat(new DynObject().isPrimitive()).isFalse();
     }
 
+    @Test
+    public void newStringsShouldBePrimitive(){
+        assertThat(new DynPrimitiveString().isPrimitive()).isTrue();
+    }
+
 }
