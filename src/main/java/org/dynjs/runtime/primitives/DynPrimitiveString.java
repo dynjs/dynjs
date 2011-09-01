@@ -1,4 +1,6 @@
-package org.dynjs.runtime;
+package org.dynjs.runtime.primitives;
+
+import org.dynjs.runtime.DynAtom;
 
 public class DynPrimitiveString implements DynAtom {
     @Override

@@ -17,6 +17,7 @@ package org.dynjs.runtime;
 
 import com.google.common.collect.Maps;
 import me.qmx.jitescript.CodeBlock;
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class DynFunction<ReturnType extends DynAtom> {
         if (result != null) {
             return result;
         } else {
-            return (ReturnType) Undefined.UNDEFINED;
+            return (ReturnType) DynPrimitiveUndefined.UNDEFINED;
         }
     }
 

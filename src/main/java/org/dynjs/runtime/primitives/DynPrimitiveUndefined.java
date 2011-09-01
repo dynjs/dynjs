@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.runtime;
+package org.dynjs.runtime.primitives;
 
-public class Undefined implements DynAtom {
+import org.dynjs.runtime.DynAtom;
 
-    public static final Undefined UNDEFINED = new Undefined();
+public class DynPrimitiveUndefined implements DynAtom {
 
-    private Undefined() {
+    public static final DynPrimitiveUndefined UNDEFINED = new DynPrimitiveUndefined();
+
+    private DynPrimitiveUndefined() {
     }
-
 
     @Override
     public boolean isPrimitive() {
