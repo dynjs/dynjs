@@ -15,7 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DynObject implements DynAtom {
@@ -38,4 +37,5 @@ public class DynObject implements DynAtom {
     public boolean isUndefined() {
         return false;
     }
+
 }

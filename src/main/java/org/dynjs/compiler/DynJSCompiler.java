@@ -1,6 +1,7 @@
 package org.dynjs.compiler;
 
 
+import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.runtime.DynAtom;
@@ -28,7 +29,7 @@ public class DynJSCompiler {
             defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynAtom[].class), arg.getCodeBlock());
         }};
         final DynamicClassLoader classLoader = new DynamicClassLoader();
-        byte[] bytecode = jiteClass.toBytes();
+        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
         if (DEBUG) {
             ClassReader reader = new ClassReader(bytecode);
             reader.accept(new TraceClassVisitor(new PrintWriter(System.out)), ClassReader.EXPAND_FRAMES);

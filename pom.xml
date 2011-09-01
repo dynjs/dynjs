@@ -59,7 +59,7 @@
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.1.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -71,6 +71,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r07</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dynalang</groupId>
+            <artifactId>dynalink</artifactId>
+            <version>0.2</version>
         </dependency>
 
         <!-- antlr parser dependency -->
