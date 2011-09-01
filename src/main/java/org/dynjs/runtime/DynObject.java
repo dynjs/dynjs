@@ -15,27 +15,34 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class DynObject implements DynAtom {
 
-    private Map<String, Attribute<? extends DynAtom>> attributes = new Attributes();
+    private final Map<String, DynProperty> properties = new HashMap<>();
 
-    public Attribute<? extends DynAtom> get(Object attribute) {
-        return attributes.get(attribute);
+    public DynObject() {
+        setProperty("prototype", DynPrimitiveUndefined.UNDEFINED);
     }
 
-    public AttributeBuilder set(String person) {
-        return new AttributeBuilder<DynObject>(this, person);
-    }
-
-    public void setAttribute(String attributeName, Attribute attribute) {
-        attributes.put(attributeName, attribute);
+    private void setProperty(String key, DynAtom atom) {
+        DynProperty property = new DynProperty(key).setAttribute("value", atom);
+        this.properties.put(key, property);
     }
 
     @Override
-    public boolean isUndefined() {
+    public boolean isPrimitive() {
         return false;
     }
 
+    public DynProperty getProperty(String key) {
+        if (this.properties.containsKey(key)) {
+            return this.properties.get(key);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
 }

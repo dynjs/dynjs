@@ -13,20 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.runtime;
+package org.dynjs.runtime.primitives;
 
-public class AttributeBuilder<T extends DynAtom> {
-    private final DynObject dynObject;
-    private final String attributeName;
+import org.dynjs.runtime.DynAtom;
 
-    public AttributeBuilder(DynObject dynObject, String attributeName) {
-        this.dynObject = dynObject;
-        this.attributeName = attributeName;
+public class DynPrimitiveUndefined implements DynAtom {
+
+    public static final DynPrimitiveUndefined UNDEFINED = new DynPrimitiveUndefined();
+
+    private DynPrimitiveUndefined() {
     }
 
-    public DynObject to(T object) {
-        final Attribute attribute = new Attribute<T>(object);
-        dynObject.setAttribute(attributeName, attribute);
-        return dynObject;
+    @Override
+    public boolean isPrimitive() {
+        return true;
     }
 }

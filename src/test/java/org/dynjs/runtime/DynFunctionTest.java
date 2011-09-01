@@ -15,6 +15,7 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class DynFunctionTest {
     @Test
     public void testDefaultReturnType() {
         DynFunction function = new DynFunction();
-        assertThat(function.call()).isInstanceOf(Undefined.class);
+        assertThat(function.call()).isInstanceOf(DynPrimitiveUndefined.class);
     }
 
     @Test
