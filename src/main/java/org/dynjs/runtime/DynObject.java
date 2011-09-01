@@ -15,10 +15,34 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class DynObject implements DynAtom {
+
+    private final Map<String, DynProperty> properties = new HashMap<>();
+
+    public DynObject() {
+        setProperty("prototype", DynPrimitiveUndefined.UNDEFINED);
+    }
+
+    private void setProperty(String key, DynAtom atom) {
+        DynProperty property = new DynProperty(key).setAttribute("value", atom);
+        this.properties.put(key, property);
+    }
 
     @Override
     public boolean isPrimitive() {
         return false;
+    }
+
+    public DynProperty getProperty(String key) {
+        if (this.properties.containsKey(key)) {
+            return this.properties.get(key);
+        } else {
+            throw new IllegalStateException();
+        }
     }
 }
