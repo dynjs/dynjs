@@ -15,14 +15,26 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.exception.ReferenceError;
+import org.junit.Before;
 import org.junit.Test;
-import sun.font.Script;
 
 public class DynJSTest {
 
+    private DynJS dynJS;
+
+    @Before
+    public void setUp(){
+        dynJS = new DynJS();
+    }
+
     @Test
     public void testRuntimeBootstrap(){
-        final DynJS dynJS = new DynJS();
         dynJS.eval("print('hello world');");
+    }
+
+    @Test(expected = ReferenceError.class)
+    public void throwsReferenceErrorWhenCallAnInexistentToken() {
+        dynJS.eval("var x = 0;", null);
     }
 }
