@@ -37,6 +37,11 @@ public class DynJS {
         this.config = new DynJSConfig();
     }
 
+    public void eval(DynObject scope, String expression, DynThreadContext context){
+
+    }
+
+    @Deprecated
     public void eval(String s) {
         byte[] result;
         try {
