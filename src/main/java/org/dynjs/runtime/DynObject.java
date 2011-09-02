@@ -28,7 +28,7 @@ public class DynObject implements DynAtom {
         setProperty("prototype", DynPrimitiveUndefined.UNDEFINED);
     }
 
-    private void setProperty(String key, DynAtom atom) {
+    public void setProperty(String key, DynAtom atom) {
         DynProperty property = new DynProperty(key).setAttribute("value", atom);
         this.properties.put(key, property);
     }
