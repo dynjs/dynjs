@@ -8,20 +8,29 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class DynObjectTest {
 
+    private DynObject object;
+
     @Before
     public void setUp() throws Exception {
-
+        object = new DynObject();
     }
 
     @Test
     public void hasDefaultAttributes() {
-        DynObject object = new DynObject();
         assertThat(object.getProperty("prototype")).isNotNull();
     }
 
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorOnMissingReference() {
-        DynObject object = new DynObject();
         object.resolve("inexistentAttribute");
+    }
+
+    @Test
+    public void aDefinedObjectExists() {
+        object.define("meh", new DynObject());
+
+        System.out.println(object.resolve("meh"));
+        assertThat(object.resolve("meh")).isNotNull();
+
     }
 }
