@@ -16,6 +16,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class DynObject implements DynAtom, Scope {
         if(this.properties.containsKey(name)){
             return this.properties.get(name).getAttribute("value");
         }
-        return null;
+        throw new ReferenceError();
     }
 
     @Override
