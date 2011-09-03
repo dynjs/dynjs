@@ -40,6 +40,6 @@ public class DynJSTest {
 
     @Ignore("pb - 2011-09-02") @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnInexistentToken() {
-        dynJS.eval(scope, "print(x);", context);
+        dynJS.eval(context, scope, "print(x);");
     }
 }
