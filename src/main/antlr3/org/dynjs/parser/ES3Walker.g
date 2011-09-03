@@ -45,15 +45,23 @@ options
 
 @header {
 package org.dynjs.parser;
+
+import org.dynjs.runtime.DynObject;
+import org.dynjs.api.Scope;
 }
 
 @members {
 
     byte[] result = null;
     Executor executor = null;
+    Scope globalScope = null; 
 
     public void setExecutor(Executor executor){
         this.executor = executor;
+    }
+    
+    public void setGlobalScope(Scope scope) {
+    	this.globalScope = scope;
     }
 
     public byte[] getResult(){
