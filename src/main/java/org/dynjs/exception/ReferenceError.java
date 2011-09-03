@@ -1,4 +1,4 @@
 package org.dynjs.exception;
 
-public class ReferenceError extends JsDynException {
+public class ReferenceError extends DynJSException {
 }

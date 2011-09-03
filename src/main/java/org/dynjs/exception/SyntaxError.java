@@ -17,7 +17,7 @@ package org.dynjs.exception;
 
 import org.antlr.runtime.RecognitionException;
 
-public class SyntaxError extends JsDynException {
+public class SyntaxError extends DynJSException {
 
     public SyntaxError(RecognitionException e) {
         super(e);
