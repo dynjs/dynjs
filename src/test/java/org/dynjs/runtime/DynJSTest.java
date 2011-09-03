@@ -39,6 +39,6 @@ public class DynJSTest {
 
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnInexistentToken() {
-        dynJS.eval(scope, "print(x);", context);
+        dynJS.eval(context, scope, "print(x);");
     }
 }

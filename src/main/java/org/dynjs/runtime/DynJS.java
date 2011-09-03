@@ -42,7 +42,7 @@ public class DynJS {
         this.config = new DynJSConfig();
     }
 
-    public void eval(Scope scope, String expression, DynThreadContext context) {
+    public void eval(DynThreadContext context, Scope scope, String expression) {
         byte[] result;
 
         try {
