@@ -4,8 +4,10 @@ package org.dynjs.compiler;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -26,7 +28,7 @@ public class DynJSCompiler {
         String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, new String[]{p(Function.class)}) {{
             defineDefaultConstructor();
-            defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynAtom[].class), arg.getCodeBlock());
+            defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), arg.getCodeBlock());
         }};
         final DynamicClassLoader classLoader = new DynamicClassLoader();
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
