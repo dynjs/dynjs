@@ -22,19 +22,23 @@ import org.junit.Test;
 public class DynJSTest {
 
     private DynJS dynJS;
+    private DynThreadContext context;
+    private DynObject scope;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         dynJS = new DynJS();
+        context = new DynThreadContext();
+        scope = new DynObject();
     }
 
     @Test
-    public void testRuntimeBootstrap(){
+    public void testRuntimeBootstrap() {
         dynJS.eval("print('hello world');");
     }
 
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnInexistentToken() {
-        dynJS.eval("var x = 0;", null);
+        dynJS.eval(scope, "print(x);", context);
     }
 }

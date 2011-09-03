@@ -15,39 +15,38 @@
  */
 package org.dynjs.runtime;
 
-import com.sun.istack.internal.Nullable;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.dynjs.api.Scope;
 import org.dynjs.exception.SyntaxError;
-import org.dynjs.parser.*;
+import org.dynjs.parser.ES3Lexer;
+import org.dynjs.parser.ES3Parser;
+import org.dynjs.parser.ES3Walker;
+import org.dynjs.parser.Executor;
 
-import java.io.Console;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class DynJS {
 
     private final DynJSConfig config;
-    private final DynJsScope scope;
 
-    public DynJS(DynJSConfig config, DynJsScope scope) {
+    public DynJS(DynJSConfig config) {
         this.config = config;
-        this.scope = scope;
     }
 
     public DynJS() {
         this.config = new DynJSConfig();
-        this.scope = new DynJsScope();
     }
 
-    public void eval(String expression, @Nullable DynThreadContext context) {
+    public void eval(Scope scope, String expression, DynThreadContext context) {
         byte[] result;
 
         try {
-            result = parseSourceCode(expression);
+            result = parseSourceCode(scope, expression);
             System.out.println(result);
         } catch (RecognitionException e) {
             throw new SyntaxError(e);
@@ -58,7 +57,7 @@ public class DynJS {
     public void eval(String s) {
         byte[] result;
         try {
-            result = parseSourceCode(s);
+            result = parseSourceCode(new DynObject(), s);
 
             DynamicClassLoader classloader = new DynamicClassLoader();
             Class<?> helloWorldClass = classloader.define("WTF", result);
@@ -73,7 +72,7 @@ public class DynJS {
         }
     }
 
-    private byte[] parseSourceCode(String code) throws RecognitionException {
+    private byte[] parseSourceCode(Scope scope, String code) throws RecognitionException {
         System.out.println("Code: " + code);
         ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
         CommonTokenStream stream = new CommonTokenStream(lexer);
@@ -83,6 +82,7 @@ public class DynJS {
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         ES3Walker walker = new ES3Walker(treeNodeStream);
         walker.setExecutor(new Executor());
+        walker.setGlobalScope(scope);
         walker.program();
 
         return walker.getResult();
