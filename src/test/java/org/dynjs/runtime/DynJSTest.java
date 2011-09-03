@@ -15,14 +15,30 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.exception.ReferenceError;
+import org.junit.Before;
 import org.junit.Test;
-import sun.font.Script;
 
 public class DynJSTest {
 
+    private DynJS dynJS;
+    private DynThreadContext context;
+    private DynObject scope;
+
+    @Before
+    public void setUp() {
+        dynJS = new DynJS();
+        context = new DynThreadContext();
+        scope = new DynObject();
+    }
+
     @Test
-    public void testRuntimeBootstrap(){
-        final DynJS dynJS = new DynJS();
+    public void testRuntimeBootstrap() {
         dynJS.eval("print('hello world');");
+    }
+
+    @Test(expected = ReferenceError.class)
+    public void throwsReferenceErrorWhenCallAnInexistentToken() {
+        dynJS.eval(scope, "print(x);", context);
     }
 }

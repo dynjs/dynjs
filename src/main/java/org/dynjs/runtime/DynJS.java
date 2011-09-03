@@ -20,7 +20,12 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.dynjs.parser.*;
+import org.dynjs.api.Scope;
+import org.dynjs.exception.SyntaxError;
+import org.dynjs.parser.ES3Lexer;
+import org.dynjs.parser.ES3Parser;
+import org.dynjs.parser.ES3Walker;
+import org.dynjs.parser.Executor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,20 +42,23 @@ public class DynJS {
         this.config = new DynJSConfig();
     }
 
+    public void eval(Scope scope, String expression, DynThreadContext context) {
+        byte[] result;
+
+        try {
+            result = parseSourceCode(scope, expression);
+            System.out.println(result);
+        } catch (RecognitionException e) {
+            throw new SyntaxError(e);
+        }
+    }
+
+    @Deprecated
     public void eval(String s) {
         byte[] result;
         try {
-            ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(s));
-            CommonTokenStream stream = new CommonTokenStream(lexer);
-            ES3Parser parser = new ES3Parser(stream);
-            ES3Parser.program_return program = parser.program();
-            CommonTree tree = (CommonTree) program.getTree();
-            CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
-            ES3Walker walker = new ES3Walker(treeNodeStream);
-            walker.setExecutor(new Executor());
-            walker.program();
+            result = parseSourceCode(new DynObject(), s);
 
-            result = walker.getResult();
             DynamicClassLoader classloader = new DynamicClassLoader();
             Class<?> helloWorldClass = classloader.define("WTF", result);
 
@@ -62,5 +70,21 @@ public class DynJS {
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private byte[] parseSourceCode(Scope scope, String code) throws RecognitionException {
+        System.out.println("Code: " + code);
+        ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
+        CommonTokenStream stream = new CommonTokenStream(lexer);
+        ES3Parser parser = new ES3Parser(stream);
+        ES3Parser.program_return program = parser.program();
+        CommonTree tree = (CommonTree) program.getTree();
+        CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
+        ES3Walker walker = new ES3Walker(treeNodeStream);
+        walker.setExecutor(new Executor());
+        walker.setGlobalScope(scope);
+        walker.program();
+
+        return walker.getResult();
     }
 }

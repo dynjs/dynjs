@@ -15,12 +15,14 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.api.Scope;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DynObject implements DynAtom {
+public class DynObject implements DynAtom, Scope {
 
     private final Map<String, DynProperty> properties = new HashMap<>();
 
@@ -28,7 +30,7 @@ public class DynObject implements DynAtom {
         setProperty("prototype", DynPrimitiveUndefined.UNDEFINED);
     }
 
-    private void setProperty(String key, DynAtom atom) {
+    public void setProperty(String key, DynAtom atom) {
         DynProperty property = new DynProperty(key).setAttribute("value", atom);
         this.properties.put(key, property);
     }
@@ -45,4 +47,27 @@ public class DynObject implements DynAtom {
             throw new IllegalStateException();
         }
     }
+
+    @Override
+    public Scope getEnclosingScope() {
+        if (getProperty("prototype").getClass().isAssignableFrom(DynPrimitiveUndefined.class)) {
+            return null;
+        } else {
+            return (DynObject) getProperty("prototype").getAttribute("value");
+        }
+    }
+
+    @Override
+    public DynAtom resolve(String name) {
+        if(this.properties.containsKey(name)){
+            return this.properties.get(name).getAttribute("value");
+        }
+        throw new ReferenceError();
+    }
+
+    @Override
+    public void define(String property, DynAtom value) {
+        setProperty(property, value);
+    }
+
 }
