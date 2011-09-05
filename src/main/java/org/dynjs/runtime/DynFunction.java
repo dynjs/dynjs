@@ -15,46 +15,43 @@
  */
 package org.dynjs.runtime;
 
-import com.google.common.collect.Maps;
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
+import org.dynjs.api.Scope;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
-public class DynFunction<ReturnType extends DynAtom> {
+public class DynFunction extends DynObject implements Scope {
 
-    private ReturnType result;
-    private final Map<String, DynAtom> arguments = Maps.newLinkedHashMap();
+    private DynAtom result;
+    private final List<String> arguments;
 
-    public DynFunction(Argument... arguments) {
-        for (Argument argument : arguments) {
-            addArgument(argument.getKey(), argument.getValue());
-        }
-    }
-
-    public DynFunction addArgument(String argName, DynAtom value) {
-        arguments.put(argName, value);
-        return this;
-    }
-
-    public DynFunction willReturn(ReturnType result) {
-        this.result = result;
-        return this;
-    }
-
-    public ReturnType call() {
-        if (result != null) {
-            return result;
-        } else {
-            return (ReturnType) DynPrimitiveUndefined.UNDEFINED;
-        }
-    }
-
-    protected DynAtom getArgument(Object string) {
-        return arguments.get(string);
+    public DynFunction(String... arguments) {
+        this.arguments = Arrays.asList(arguments);
     }
 
     public CodeBlock getCodeBlock() {
         return CodeBlock.newCodeBlock();
     }
+
+    protected int getArgumentOffset(String key){
+        // list is zero based + context + scope
+        return this.arguments.indexOf(key) + 1 + 2;
+    }
+
+    @Override
+    public Scope getEnclosingScope() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public DynAtom resolve(String name) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void define(String property, DynAtom value) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 }
