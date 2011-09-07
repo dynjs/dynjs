@@ -302,7 +302,8 @@ memberExpression
 	;
 
 primaryExpression returns [DynAtom value]
-	: Identifier
+	: id=Identifier
+	{ $value = globalScope.resolve($id.text); }
 	| literal
 	{ $value = $literal.value;  }
 	;
