@@ -17,6 +17,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynAtom;
 
 import java.io.PrintStream;
 
@@ -27,8 +28,9 @@ public class PrintStatement implements Statement {
 
     private final CodeBlock codeBlock;
 
-    public PrintStatement(final Statement expression) {
-        this.codeBlock = newCodeBlock(expression.getCodeBlock())
+    public PrintStatement(final DynAtom expression) {
+        this.codeBlock = newCodeBlock()
+                .ldc(expression)
                 .getstatic(p(System.class), "out", ci(PrintStream.class))
                 .swap()
                 .invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class))

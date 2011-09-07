@@ -47,6 +47,7 @@ options
 package org.dynjs.parser;
 
 import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.DynAtom;
 import org.dynjs.api.Scope;
 }
 
@@ -193,13 +194,13 @@ finallyClause
 	: ^( FINALLY block )
 	;
 
-expression returns [Statement value]
+expression returns [DynAtom value]
 	: expr 
 	{ $value = $expr.value; }
 	| ^( CEXPR expr+ )
 	;
 
-expr returns [Statement value]
+expr returns [DynAtom value]
 	: leftHandSideExpression
 	{ $value = $leftHandSideExpression.value; }
 	
@@ -273,7 +274,7 @@ expr returns [Statement value]
 	| ^( PDEC expr )
 	;
 
-leftHandSideExpression returns [Statement value]
+leftHandSideExpression returns [DynAtom value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
@@ -286,7 +287,7 @@ newExpression
 	: ^( NEW leftHandSideExpression )
 	;
 
-functionDeclaration
+functionDeclaration 
 	: ^( FUNCTION Identifier? ^( ARGS Identifier* ) block )
 	;
 
@@ -299,19 +300,19 @@ memberExpression
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	;
 
-primaryExpression returns [Statement value]
+primaryExpression returns [DynAtom value]
 	: Identifier
 	| literal
 	{ $value = $literal.value;  }
 	;
 
-literal returns [Statement value]
+literal returns [DynAtom value]
 	: THIS
 	| NULL
 	| booleanLiteral
 	| numericLiteral
 	| StringLiteral
-	{ $value = executor.createLDC($StringLiteral);  }
+	{ $value = executor.createDynString($StringLiteral);  }
 	| RegularExpressionLiteral
 	| arrayLiteral
 	| objectLiteral

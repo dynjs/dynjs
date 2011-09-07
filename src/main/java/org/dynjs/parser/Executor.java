@@ -21,6 +21,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.LdcStatement;
 import org.dynjs.parser.statement.PrintStatement;
+import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynString;
 import org.objectweb.asm.Opcodes;
 
 import java.util.List;
@@ -41,12 +43,12 @@ public class Executor implements Opcodes {
         return bootstrapClass.toBytes();
     }
 
-    public Statement printStatement(final Statement expression) {
+    public Statement printStatement(final DynAtom expression) {
         return new PrintStatement(expression);
     }
 
-    public Statement createLDC(final CommonTree stringLiteral) {
-        return new LdcStatement(stringLiteral.getText());
+    public DynString createDynString(final CommonTree stringLiteral) {
+        return new DynString(stringLiteral.getText());
     }
 
     public Statement block(final List<Statement> blockContent) {
