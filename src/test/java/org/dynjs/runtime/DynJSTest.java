@@ -19,6 +19,8 @@ import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class DynJSTest {
 
     private DynJS dynJS;
@@ -35,6 +37,14 @@ public class DynJSTest {
     @Test
     public void testRuntimeBootstrap() {
         dynJS.eval("print('hello world');");
+    }
+
+    @Test
+    public void assignsGlobalVariables(){
+        dynJS.eval(context, scope, "var x = 'test';");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(DynString.class);
     }
 
     @Test(expected = ReferenceError.class)

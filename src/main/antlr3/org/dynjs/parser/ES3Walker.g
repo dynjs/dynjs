@@ -113,7 +113,8 @@ printStatement returns [Statement value]
 	;
 
 variableDeclaration
-	: ^( VAR ( Identifier | ^( ASSIGN Identifier expr ) )+ )
+	: ^( VAR ( Identifier | ^( ASSIGN id=Identifier expr ) )+ )
+	{ globalScope.define($id.text, $expr.value); }
 	;
 
 ifStatement
