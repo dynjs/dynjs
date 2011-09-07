@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 /**
  * @author qmx
  */
-public class DynJsBootstrapTest {
+public class DynJSBootstrapTest {
 
     @Test
     public void testBytecodeGeneration() throws Exception {
