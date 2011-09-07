@@ -39,9 +39,7 @@ public class DynJSCompiler {
         Class<?> functionClass = classLoader.define(className.replace('/', '.'), bytecode);
         try {
             return (Function) functionClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
