@@ -38,6 +38,24 @@
                 <role>Parser Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>pbalduino</id>
+            <name>Plinio Balduino</name>
+            <url>http://github.com/pbalduino</url>
+            <email>pbalduino@gmail.com</email>
+            <roles>
+                <role>The Ninth Stooge</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>abstractj</id>
+            <name>Bruno Oliveira</name>
+            <url>http://github.com/abstractj</url>
+            <email>bruno@abstractj.com</email>
+            <roles>
+                <role>Wall Painter</role>
+            </roles>
+        </developer>
     </developers>
 
     <licenses>
@@ -55,7 +73,7 @@
     </licenses>
 
     <dependencies>
-        <!-- code generation dependency -->
+        <!-- code generation dependencies -->
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
@@ -78,7 +96,14 @@
             <version>0.2</version>
         </dependency>
 
-        <!-- antlr parser dependency -->
+        <!-- standalone dependency -->
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+
+        <!-- antlr parser dependencies -->
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>stringtemplate</artifactId>
@@ -89,6 +114,7 @@
             <artifactId>antlr-runtime</artifactId>
             <version>3.3</version>
         </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
