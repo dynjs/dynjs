@@ -41,7 +41,7 @@ public class Main {
 
     private static void showUsage() {
         StringBuilder usageText = new StringBuilder("Usage: dynjs [--help | --version | --console | --repl | FILENAME]\n");
-        usageText.append("Starts the dynjs console or executes FILE depending the parameters\n")
+        usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n")
                 .append("\n")
                 .append("The parameters are:\n")
                 .append("   --console   opens a REPL console to test small expressions.\n")
