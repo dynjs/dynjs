@@ -16,6 +16,7 @@
 package org.dynjs.parser;
 
 import com.toolazydogs.aunit.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,9 +63,9 @@ public class TestParser {
         assertTree(ES3Parser.SK_PRINT, "(print x)", parse("print (x);", rule("statement")));
     }
 
-    @Test
+    @Ignore @Test
     public void testTreePrintWalkerStatement() throws Exception {
-        //walk(withRule("statement"), resultOf(parse("print ('x');", rule("statement"))));
+        walk(withRule("statement"), resultOf(parse("print ('x');", rule("statement"))));
     }
 
     @Test
@@ -77,5 +78,10 @@ public class TestParser {
     @Test
     public void testFunctionDeclaration() throws Exception {
         parse("function x(){}", rule("functionDeclaration"));
+    }
+
+    @Test
+    public void testFunctionDeclarationAsVariable() throws Exception {
+        parse("var x = function (){};", rule("variableStatement"));
     }
 }
