@@ -15,6 +15,7 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,22 @@ public class DynJSTest {
         assertThat(scope.resolve("x"))
                 .isNotNull()
                 .isInstanceOf(DynString.class);
+    }
+
+    @Test
+    public void assignsNamedEmptyFunction(){
+        dynJS.eval(context, scope, "function x(){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+    }
+
+    @Test
+    public void assignsAnonymousEmptyFunction(){
+        dynJS.eval(context, scope, "var x = function(){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
     }
 
     @Test(expected = ReferenceError.class)

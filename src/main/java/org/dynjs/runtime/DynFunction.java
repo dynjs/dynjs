@@ -16,12 +16,11 @@
 package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class DynFunction extends DynObject implements Scope {
+public class DynFunction extends DynObject {
 
     private DynAtom result;
     private final List<String> arguments;
@@ -34,24 +33,9 @@ public class DynFunction extends DynObject implements Scope {
         return CodeBlock.newCodeBlock();
     }
 
-    protected int getArgumentOffset(String key){
+    protected int getArgumentOffset(String key) {
         // list is zero based + context + scope
         return this.arguments.indexOf(key) + 1 + 2;
-    }
-
-    @Override
-    public Scope getEnclosingScope() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public DynAtom resolve(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void define(String property, DynAtom value) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

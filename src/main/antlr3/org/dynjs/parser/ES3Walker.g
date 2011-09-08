@@ -49,6 +49,7 @@ package org.dynjs.parser;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.api.Scope;
+import org.dynjs.api.Function;
 }
 
 @members {
@@ -280,6 +281,7 @@ leftHandSideExpression returns [DynAtom value]
 	{ $value = $primaryExpression.value;  }
 	| newExpression
 	| functionDeclaration
+	{ $value = $functionDeclaration.value; }
 	| callExpression
 	| memberExpression
 	;
@@ -288,8 +290,14 @@ newExpression
 	: ^( NEW leftHandSideExpression )
 	;
 
-functionDeclaration 
-	: ^( FUNCTION Identifier? ^( ARGS Identifier* ) block )
+functionDeclaration returns [Function value]
+	@init { List<String> args = new ArrayList<String>(); }
+	: ^( FUNCTION id=Identifier? ^( ARGS (arg=Identifier {args.add($arg.text);})* ) block )
+	{	$value = executor.createFunction(args, $block.value);
+		if($id != null) { 
+			globalScope.define($id.text, $value);
+		}
+	} 
 	;
 
 callExpression
