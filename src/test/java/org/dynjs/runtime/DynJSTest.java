@@ -37,8 +37,7 @@ public class DynJSTest {
     }
 
     @Test
-    @Test
-    public void assignsGlobalVariables(){
+    public void assignsGlobalVariables() {
         dynJS.eval(context, scope, "var x = 'test';");
         assertThat(scope.resolve("x"))
                 .isNotNull()
@@ -46,7 +45,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void assignsNamedEmptyFunction(){
+    public void assignsNamedEmptyFunction() {
         dynJS.eval(context, scope, "function x(){};");
         assertThat(scope.resolve("x"))
                 .isNotNull()
@@ -54,7 +53,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void assignsAnonymousEmptyFunction(){
+    public void assignsAnonymousEmptyFunction() {
         dynJS.eval(context, scope, "var x = function(){};");
         assertThat(scope.resolve("x"))
                 .isNotNull()
