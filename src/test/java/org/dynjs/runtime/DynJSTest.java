@@ -66,7 +66,6 @@ public class DynJSTest {
     }
 
     @Test
-    @Ignore("check with porcelli how to fix it")
     public void assignsObjectLiterals() {
         dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
         assertThat(scope.resolve("x"))

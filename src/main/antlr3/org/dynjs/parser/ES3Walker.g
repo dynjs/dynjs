@@ -328,6 +328,7 @@ literal returns [DynAtom value]
 	| RegularExpressionLiteral
 	| arrayLiteral
 	| objectLiteral
+	{ $value = $objectLiteral.value; }
 	;
 
 booleanLiteral
@@ -345,9 +346,9 @@ arrayLiteral
 	: ^( ARRAY ( ^( ITEM expr? ) )* )
 	;
 
-objectLiteral returns [DynObject object]
-@init { object = new DynObject(); }
-	: ^( OBJECT ( ^( NAMEDVALUE pname=propertyName ex=expr {$object.define($pname.text, $ex.value);}) )* )
+objectLiteral returns [DynObject value]
+@init { value = new DynObject(); }
+	: ^( OBJECT ( ^( NAMEDVALUE pname=propertyName ex=expr {$value.define($pname.text, $ex.value);}) )* )
 	;
 
 propertyName returns [String value]
