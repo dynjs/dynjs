@@ -10,6 +10,7 @@ import org.dynjs.runtime.DynString;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
