@@ -16,7 +16,6 @@
 package org.dynjs.parser;
 
 import me.qmx.jitescript.CodeBlock;
-import me.qmx.jitescript.JiteClass;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Function;
 import org.dynjs.compiler.DynJSCompiler;
@@ -29,22 +28,12 @@ import org.objectweb.asm.Opcodes;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 public class Executor implements Opcodes {
 
     private DynJSCompiler compiler = new DynJSCompiler();
 
     public byte[] program(final List<Statement> blockContent) {
-        final String className = "WTF";
-        JiteClass bootstrapClass = new JiteClass(className) {{
-            defineMethod("main", ACC_PUBLIC | ACC_SUPER | ACC_STATIC, sig(void.class, String[].class), new CodeBlock() {{
-                for (Statement statement : blockContent) {
-                    append(statement.getCodeBlock());
-                }
-            }});
-        }};
-        return bootstrapClass.toBytes();
+        return new byte[]{};
     }
 
     public Statement printStatement(final DynAtom expression) {
