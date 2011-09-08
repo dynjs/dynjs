@@ -36,10 +36,6 @@ public class DynJSTest {
     }
 
     @Test
-    public void testRuntimeBootstrap() {
-        dynJS.eval("print('hello world');");
-    }
-
     @Test
     public void assignsGlobalVariables(){
         dynJS.eval(context, scope, "var x = 'test';");

@@ -3,7 +3,6 @@ package org.dynjs.compiler;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.Argument;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynObject;
@@ -75,4 +74,5 @@ public class DynJSCompilerTest {
         Function function = dynJSCompiler.compile(shout);
         function.call(context, scope, new DynString("test"));
     }
+
 }
