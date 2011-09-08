@@ -1,5 +1,10 @@
 package org.dynjs;
 
+import org.dynjs.api.Scope;
+import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.DynThreadContext;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +41,12 @@ public class Main {
     }
 
     private static void startRepl() {
-        System.out.println("Not so fast Chuck");
+        DynThreadContext threadContext = new DynThreadContext();
+        Scope scope = new DynObject();
+        DynJS environment = new DynJS();
+
+        DynJSRepl repl = new DynJSRepl(environment, threadContext, scope);
+        repl.run();
     }
 
     private static void showUsage() {
