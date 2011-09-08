@@ -73,7 +73,6 @@ public class DynJS {
     }
 
     private byte[] parseSourceCode(Scope scope, String code) throws RecognitionException {
-        System.out.println("Code: " + code);
         ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);

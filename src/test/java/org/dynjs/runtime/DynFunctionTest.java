@@ -15,12 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
-import org.junit.Test;
-
-import static org.dynjs.runtime.Argument.arg;
-import static org.fest.assertions.Assertions.assertThat;
 
 public class DynFunctionTest {
 
@@ -31,26 +26,4 @@ public class DynFunctionTest {
         object = new DynObject();
     }
 
-    @Test
-    public void testFunctionCall() {
-        DynFunction<DynString> function = new DynFunction<DynString>() {{
-            willReturn(new DynString("hello"));
-        }};
-        DynString result = function.call();
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void testDefaultReturnType() {
-        DynFunction function = new DynFunction();
-        assertThat(function.call()).isInstanceOf(DynPrimitiveUndefined.class);
-    }
-
-    @Test
-    public void testArguments() {
-        new DynFunction(arg("arg0", object)) {{
-            addArgument("arg0", object);
-            addArgument("arg1", object);
-        }};
-    }
 }

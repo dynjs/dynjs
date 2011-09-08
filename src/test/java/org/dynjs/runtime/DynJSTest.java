@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class DynJSTest {
 
     private DynJS dynJS;
@@ -38,8 +40,16 @@ public class DynJSTest {
         dynJS.eval("print('hello world');");
     }
 
-    @Ignore("pb - 2011-09-02") @Test(expected = ReferenceError.class)
-    public void throwsReferenceErrorWhenCallAnInexistentToken() {
+    @Test
+    public void assignsGlobalVariables(){
+        dynJS.eval(context, scope, "var x = 'test';");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(DynString.class);
+    }
+
+    @Test(expected = ReferenceError.class)
+    public void throwsReferenceErrorWhenCallAnonExistingReference() {
         dynJS.eval(context, scope, "print(x);");
     }
 }

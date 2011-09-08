@@ -3,14 +3,20 @@ package org.dynjs.compiler;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.*;
+import org.dynjs.runtime.Argument;
+import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.DynString;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 import static org.fest.assertions.Assertions.assertThat;
-
 
 public class DynJSCompilerTest {
 
@@ -28,17 +34,16 @@ public class DynJSCompilerTest {
     @Ignore("ask qmx about compilation error") @Test
     public void testCompile() throws Exception {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction dynFunction = new DynFunction(new Argument("a", dynString)) {
+        DynFunction dynFunction = new DynFunction("a") {
 
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
-                        .aload(1)
+                        .aload(getArgumentOffset("a"))
                         .iconst_0()
                         .aaload()
                         .areturn();
             }
-
 
         };
         Function function = dynJSCompiler.compile(dynFunction);
@@ -50,17 +55,20 @@ public class DynJSCompilerTest {
     }
 
     @Test
-    public void testInvokeDynamicCompilation(){
+    public void testInvokeDynamicCompilation() {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction shout = new DynFunction(new Argument("a", dynString)){
+        DynFunction shout = new DynFunction("a") {
+
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .aload(3)
+                int a = getArgumentOffset("a");
+                System.out.println(a);
+                return newCodeBlock()
+                        .aload(a)
                         .iconst_0()
                         .aaload()
                         .visitInvokeDynamicInsn("print", sig(void.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                        .aload(3)
+                        .aload(a)
                         .iconst_0()
                         .aaload()
                         .areturn();
