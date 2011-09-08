@@ -44,7 +44,7 @@
             <url>http://github.com/pbalduino</url>
             <email>pbalduino@gmail.com</email>
             <roles>
-                <role>The Ninth Stooge</role>
+                <role>Software Developer</role>
             </roles>
         </developer>
         <developer>
@@ -53,7 +53,7 @@
             <url>http://github.com/abstractj</url>
             <email>bruno@abstractj.com</email>
             <roles>
-                <role>Wall Painter</role>
+                <role>Software Developer</role>
             </roles>
         </developer>
     </developers>
