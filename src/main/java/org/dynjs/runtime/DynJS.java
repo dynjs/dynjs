@@ -57,6 +57,7 @@ public class DynJS {
         ES3Parser.program_return program = parser.program();
         CommonTree tree = (CommonTree) program.getTree();
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
+        treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
         walker.setExecutor(new Executor());
         walker.setGlobalScope(scope);
