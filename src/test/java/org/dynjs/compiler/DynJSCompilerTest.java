@@ -31,7 +31,7 @@ public class DynJSCompilerTest {
         scope = new DynObject();
     }
 
-    @Ignore("ask qmx about compilation error") @Test
+    @Test
     public void testCompile() throws Exception {
         DynString dynString = new DynString("hello dynjs");
         DynFunction dynFunction = new DynFunction("a") {
