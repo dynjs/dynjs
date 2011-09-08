@@ -280,14 +280,16 @@ leftHandSideExpression returns [DynAtom value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
+	{ $value = $newExpression.value; }
 	| functionDeclaration
 	{ $value = $functionDeclaration.value; }
 	| callExpression
 	| memberExpression
 	;
 
-newExpression
+newExpression returns [DynAtom value]
 	: ^( NEW leftHandSideExpression )
+	{ $value = $leftHandSideExpression.value; }
 	;
 
 functionDeclaration returns [Function value]
@@ -343,12 +345,13 @@ arrayLiteral
 	: ^( ARRAY ( ^( ITEM expr? ) )* )
 	;
 
-objectLiteral
-	: ^( OBJECT ( ^( NAMEDVALUE propertyName expr ) )* )
+objectLiteral returns [DynObject object]
+@init { object = new DynObject(); }
+	: ^( OBJECT ( ^( NAMEDVALUE pname=propertyName ex=expr {$object.define($pname.text, $ex.value);}) )* )
 	;
 
-propertyName
-	: Identifier
+propertyName returns [String value]
+	: id=Identifier
 	| StringLiteral
 	| numericLiteral
 	;

@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -63,5 +64,22 @@ public class DynJSTest {
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
         dynJS.eval(context, scope, "print(x);");
+    }
+
+    @Test
+    @Ignore("check with porcelli how to fix it")
+    public void assignsObjectLiterals() {
+        dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+        DynObject x = (DynObject) scope.resolve("x");
+        assertThat(x.resolve("lol"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+        assertThat(x.resolve("name"))
+                .isNotNull()
+                .isInstanceOf(DynString.class);
+
     }
 }
