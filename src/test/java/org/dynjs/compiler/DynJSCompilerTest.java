@@ -61,7 +61,6 @@ public class DynJSCompilerTest {
             @Override
             public CodeBlock getCodeBlock() {
                 int a = getArgumentOffset("a");
-                System.out.println(a);
                 return newCodeBlock()
                         .aload(a)
                         .iconst_0()
