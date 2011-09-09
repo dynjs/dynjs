@@ -4,30 +4,49 @@ import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
-        run(encapsulateArguments(args));
+    private DynJSArguments dynJsArguments;
+    private CmdLineParser parser;
+    private String[] arguments;
+
+    public Main(String[] args) {
+        dynJsArguments = new DynJSArguments();
+        parser = new CmdLineParser(dynJsArguments);
+        parser.setUsageWidth(80);
+        arguments = args;
     }
 
-    private static void run(List<String> arguments) {
-        if (arguments.isEmpty() || arguments.contains("--help")) {
+    public static void main(String[] args) {
+        new Main(args).run();
+    }
+
+    void run() {
+        try{
+            parser.parseArgument(arguments);
+
+            if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
+                showUsage();
+            } else if (dynJsArguments.isConsole()) {
+                startRepl();
+            } else if (dynJsArguments.isVersion()) {
+                showVersion();
+            } else if (!dynJsArguments.getFilename().isEmpty()){
+                executeFile(dynJsArguments.getFilename());
+            }
+
+        } catch (CmdLineException e) {
+            System.out.println(e.getMessage());
+            System.out.println();
             showUsage();
-        } else if (arguments.contains("--repl") || arguments.contains("--console")) {
-            startRepl();
-        } else if (arguments.contains("--version")) {
-            showVersion();
-        } else {
-            executeFile(arguments.get(0));
         }
     }
 
-    private static void executeFile(String filename) {
+    private void executeFile(String filename) {
         File file = new File(filename);
         if (!file.exists()) {
             System.out.println("File " + filename + " not found");
@@ -36,11 +55,11 @@ public class Main {
         }
     }
 
-    private static void showVersion() {
+    private void showVersion() {
         System.out.println("Dyn.JS version " + DynJSVersion.FULL);
     }
 
-    private static void startRepl() {
+    private void startRepl() {
         DynThreadContext threadContext = new DynThreadContext();
         Scope scope = new DynObject();
         DynJS environment = new DynJS();
@@ -49,24 +68,12 @@ public class Main {
         repl.run();
     }
 
-    private static void showUsage() {
-        StringBuilder usageText = new StringBuilder("Usage: dynjs [--help | --version | --console | --repl | FILENAME]\n");
-        usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n")
-                .append("\n")
-                .append("The parameters are:\n")
-                .append("   --console   opens a REPL console to test small expressions.\n")
-                .append("   --help      shows current screen with. Running without parameters also shows this.\n")
-                .append("   --repl      opens a REPL console to test small expressions.\n")
-                .append("   --version   shows current version.\n")
-                .append("   FILENAME    is the file to execute. Duh.\n")
-                .append("\n");
+    private void showUsage() {
+        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console | --help | --version | FILE]\n");
+        usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
 
         System.out.println(usageText.toString());
-    }
 
-    private static List<String> encapsulateArguments(String[] arguments) {
-        List<String> argumentList = new ArrayList<>();
-        Collections.addAll(argumentList, arguments);
-        return argumentList;
+        parser.printUsage(System.out);
     }
 }
