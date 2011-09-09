@@ -1,4 +1,4 @@
-package org.dynjs;
+package org.dynjs.cli;
 
 import org.dynjs.api.Scope;
 import org.dynjs.exception.DynJSException;
@@ -9,12 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class DynJSRepl {
+public class Repl {
     private final DynJS environment;
     private final DynThreadContext context;
     private final Scope scope;
 
-    public DynJSRepl(DynJS environment, DynThreadContext context, Scope scope) {
+    public Repl(DynJS environment, DynThreadContext context, Scope scope) {
         this.environment = environment;
         this.context = context;
         this.scope = scope;
