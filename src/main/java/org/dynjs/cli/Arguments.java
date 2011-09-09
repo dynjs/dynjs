@@ -1,4 +1,4 @@
-package org.dynjs;
+package org.dynjs.cli;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
@@ -6,7 +6,7 @@ import org.kohsuke.args4j.Option;
 import java.util.ArrayList;
 import java.util.List;
 
-class DynJSArguments {
+public class Arguments {
     static final String CONSOLE = "--console";
     static final String HELP    = "--help";
     static final String VERSION = "--version";

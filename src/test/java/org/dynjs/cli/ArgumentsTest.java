@@ -1,4 +1,4 @@
-package org.dynjs;
+package org.dynjs.cli;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,20 +6,20 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ExampleMode;
 
-import static org.dynjs.DynJSArguments.CONSOLE;
-import static org.dynjs.DynJSArguments.HELP;
-import static org.dynjs.DynJSArguments.VERSION;
+import static org.dynjs.cli.Arguments.CONSOLE;
+import static org.dynjs.cli.Arguments.HELP;
+import static org.dynjs.cli.Arguments.VERSION;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class DynJSArgumentsTest {
+public class ArgumentsTest {
     private CmdLineParser parser;
-    private DynJSArguments dynJsArguments;
+    private Arguments arguments;
 
     @Before
     public void setUp() throws Exception {
-        dynJsArguments = new DynJSArguments();
-        parser = new CmdLineParser(dynJsArguments);
+        arguments = new Arguments();
+        parser = new CmdLineParser(arguments);
         parser.setUsageWidth(80);
     }
 
@@ -32,31 +32,31 @@ public class DynJSArgumentsTest {
     public void callWithNoArgument() throws CmdLineException {
         parser.parseArgument(new String[]{});
 
-        assertThat(dynJsArguments.isEmpty()).isTrue();
+        assertThat(arguments.isEmpty()).isTrue();
     }
 
     @Test
     public void callWithConsoleArgument() throws CmdLineException {
         parser.parseArgument(new String[]{CONSOLE});
 
-        assertThat(dynJsArguments.isEmpty()).isFalse();
-        assertThat(dynJsArguments.isConsole()).isTrue();
+        assertThat(arguments.isEmpty()).isFalse();
+        assertThat(arguments.isConsole()).isTrue();
     }
 
     @Test
     public void callWithHelpArgument() throws CmdLineException {
         parser.parseArgument(new String[]{HELP});
 
-        assertThat(dynJsArguments.isEmpty()).isFalse();
-        assertThat(dynJsArguments.isHelp()).isTrue();
+        assertThat(arguments.isEmpty()).isFalse();
+        assertThat(arguments.isHelp()).isTrue();
     }
 
     @Test
     public void callWithVersionArgument() throws CmdLineException {
         parser.parseArgument(new String[]{VERSION});
 
-        assertThat(dynJsArguments.isEmpty()).isFalse();
-        assertThat(dynJsArguments.isVersion()).isTrue();
+        assertThat(arguments.isEmpty()).isFalse();
+        assertThat(arguments.isVersion()).isTrue();
     }
 
     @Test
@@ -64,9 +64,9 @@ public class DynJSArgumentsTest {
         final String filename = "meh.js";
         parser.parseArgument(new String[]{filename});
 
-        assertThat(dynJsArguments.isEmpty()).isFalse();
-        assertThat(dynJsArguments.getFilename()).isNotEmpty();
-        assertThat(dynJsArguments.getFilename()).isEqualTo(filename);
+        assertThat(arguments.isEmpty()).isFalse();
+        assertThat(arguments.getFilename()).isNotEmpty();
+        assertThat(arguments.getFilename()).isEqualTo(filename);
     }
 
     @Test(expected = CmdLineException.class)
@@ -78,6 +78,4 @@ public class DynJSArgumentsTest {
     public void callWithUnexpectedArgumentOrder() throws CmdLineException {
         parser.parseArgument(new String[]{"meh.js", HELP});
     }
-
-
 }

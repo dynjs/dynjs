@@ -1,6 +1,8 @@
 package org.dynjs;
 
 import org.dynjs.api.Scope;
+import org.dynjs.cli.Arguments;
+import org.dynjs.cli.Repl;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
@@ -10,12 +12,12 @@ import org.kohsuke.args4j.CmdLineParser;
 import java.io.File;
 
 public class Main {
-    private DynJSArguments dynJsArguments;
+    private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
 
     public Main(String[] args) {
-        dynJsArguments = new DynJSArguments();
+        dynJsArguments = new Arguments();
         parser = new CmdLineParser(dynJsArguments);
         parser.setUsageWidth(80);
         arguments = args;
@@ -64,7 +66,7 @@ public class Main {
         Scope scope = new DynObject();
         DynJS environment = new DynJS();
 
-        DynJSRepl repl = new DynJSRepl(environment, threadContext, scope);
+        Repl repl = new Repl(environment, threadContext, scope);
         repl.run();
     }
 
