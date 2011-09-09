@@ -15,9 +15,13 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class DynJSTest {
 
@@ -33,12 +37,47 @@ public class DynJSTest {
     }
 
     @Test
-    public void testRuntimeBootstrap() {
-        dynJS.eval("print('hello world');");
+    public void assignsGlobalVariables() {
+        dynJS.eval(context, scope, "var x = 'test';");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(DynString.class);
+    }
+
+    @Test
+    public void assignsNamedEmptyFunction() {
+        dynJS.eval(context, scope, "function x(){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+    }
+
+    @Test
+    public void assignsAnonymousEmptyFunction() {
+        dynJS.eval(context, scope, "var x = function(){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
     }
 
     @Test(expected = ReferenceError.class)
-    public void throwsReferenceErrorWhenCallAnInexistentToken() {
+    public void throwsReferenceErrorWhenCallAnonExistingReference() {
         dynJS.eval(context, scope, "print(x);");
+    }
+
+    @Test
+    public void assignsObjectLiterals() {
+        dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+        DynObject x = (DynObject) scope.resolve("x");
+        assertThat(x.resolve("lol"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+        assertThat(x.resolve("name"))
+                .isNotNull()
+                .isInstanceOf(DynString.class);
+
     }
 }

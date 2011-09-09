@@ -27,9 +27,6 @@ import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 public class DynJS {
 
     private final DynJSConfig config;
@@ -53,33 +50,14 @@ public class DynJS {
         }
     }
 
-    @Deprecated
-    public void eval(String s) {
-        byte[] result;
-        try {
-            result = parseSourceCode(new DynObject(), s);
-
-            DynamicClassLoader classloader = new DynamicClassLoader();
-            Class<?> helloWorldClass = classloader.define("WTF", result);
-
-            Method method = helloWorldClass.getMethod("main", String[].class);
-
-            method.invoke(null, (Object) new String[]{});
-        } catch (RecognitionException e) {
-            throw new SyntaxError(e);
-        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     private byte[] parseSourceCode(Scope scope, String code) throws RecognitionException {
-        System.out.println("Code: " + code);
         ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
         ES3Parser.program_return program = parser.program();
         CommonTree tree = (CommonTree) program.getTree();
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
+        treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
         walker.setExecutor(new Executor());
         walker.setGlobalScope(scope);

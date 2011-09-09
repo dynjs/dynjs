@@ -16,8 +16,9 @@ public class DynJSLinker implements GuardingDynamicLinker {
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
         if ("print".equals(linkRequest.getCallSiteDescriptor().getName())) {
-            MethodType methodType = MethodType.methodType(void.class, DynAtom.class);
+            MethodType methodType = linkRequest.getCallSiteDescriptor().getMethodType();
             MethodHandle print = MethodHandles.lookup().findStatic(RT.class, "print", methodType);
+
             return new GuardedInvocation(print, null);
         }
         return null;

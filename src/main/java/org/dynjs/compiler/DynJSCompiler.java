@@ -1,6 +1,5 @@
 package org.dynjs.compiler;
 
-
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
@@ -26,7 +25,7 @@ public class DynJSCompiler {
 
     public Function compile(final DynFunction arg) {
         String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
-        JiteClass jiteClass = new JiteClass(className, new String[]{p(Function.class)}) {{
+        JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineDefaultConstructor();
             defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), arg.getCodeBlock());
         }};
@@ -39,9 +38,7 @@ public class DynJSCompiler {
         Class<?> functionClass = classLoader.define(className.replace('/', '.'), bytecode);
         try {
             return (Function) functionClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }

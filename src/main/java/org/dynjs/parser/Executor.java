@@ -16,40 +16,47 @@
 package org.dynjs.parser;
 
 import me.qmx.jitescript.CodeBlock;
-import me.qmx.jitescript.JiteClass;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.api.Function;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
-import org.dynjs.parser.statement.LdcStatement;
 import org.dynjs.parser.statement.PrintStatement;
+import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynString;
 import org.objectweb.asm.Opcodes;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 public class Executor implements Opcodes {
 
+    private DynJSCompiler compiler = new DynJSCompiler();
+
     public byte[] program(final List<Statement> blockContent) {
-        final String className = "WTF";
-        JiteClass bootstrapClass = new JiteClass(className) {{
-            defineMethod("main", ACC_PUBLIC | ACC_SUPER | ACC_STATIC, sig(void.class, String[].class), new CodeBlock() {{
-                for (Statement statement : blockContent) {
-                    append(statement.getCodeBlock());
-                }
-            }});
-        }};
-        return bootstrapClass.toBytes();
+        return new byte[]{};
     }
 
-    public Statement printStatement(final Statement expression) {
+    public Statement printStatement(final DynAtom expression) {
         return new PrintStatement(expression);
     }
 
-    public Statement createLDC(final CommonTree stringLiteral) {
-        return new LdcStatement(stringLiteral.getText());
+    public DynString createDynString(final CommonTree stringLiteral) {
+        return new DynString(stringLiteral.getText());
     }
 
     public Statement block(final List<Statement> blockContent) {
         return new BlockStatement(blockContent);
+    }
+
+    public Function createFunction(List<String> args, final Statement statement) {
+        DynFunction function = new DynFunction(args.toArray(new String[]{})) {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock(statement.getCodeBlock())
+                        .aconst_null()
+                        .areturn();
+            }
+        };
+        return compiler.compile(function);
     }
 }
