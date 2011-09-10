@@ -10,7 +10,6 @@ import org.dynjs.runtime.DynString;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
@@ -38,8 +37,8 @@ public class DynJSCompilerTest {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
-                        .aload(getArgumentOffset("a"))
-                        .iconst_0()
+                        .aload(getArgumentsOffset())
+                        .pushInt(getArgumentOffset("a"))
                         .aaload()
                         .areturn();
             }
@@ -56,19 +55,16 @@ public class DynJSCompilerTest {
     @Test
     public void testInvokeDynamicCompilation() {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction shout = new DynFunction("a") {
+        DynFunction shout = new DynFunction(new String[]{"a"}) {
 
             @Override
             public CodeBlock getCodeBlock() {
-                int a = getArgumentOffset("a");
                 return newCodeBlock()
-                        .aload(a)
-                        .iconst_0()
+                        .aload(getArgumentsOffset())
+                        .bipush(getArgumentOffset("a"))
                         .aaload()
                         .visitInvokeDynamicInsn("print", sig(void.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                        .aload(a)
-                        .iconst_0()
-                        .aaload()
+                        .aconst_null()
                         .areturn();
             }
         };
