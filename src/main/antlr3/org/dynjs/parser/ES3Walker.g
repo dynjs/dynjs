@@ -280,7 +280,7 @@ leftHandSideExpression returns [DynAtom value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
-	{ $value = $newExpression.value; }
+	{ $value = executor.createNewObject((Function) $newExpression.value); }
 	| functionDeclaration
 	{ $value = $functionDeclaration.value; }
 	| callExpression
@@ -302,8 +302,10 @@ functionDeclaration returns [Function value]
 	} 
 	;
 
-callExpression
-	: ^( CALL leftHandSideExpression ^( ARGS expr* ) )
+callExpression returns [DynAtom value]
+	@init { List<DynAtom> args = new ArrayList<DynAtom>(); }
+	: ^( CALL lhs=leftHandSideExpression ^( ARGS (e=expr {args.add($e.value);})* ) )
+	{ $value = executor.callExpression((Function) $lhs.value, args); }
 	;
 	
 memberExpression

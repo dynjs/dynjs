@@ -16,9 +16,9 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -80,4 +80,16 @@ public class DynJSTest {
                 .isInstanceOf(DynString.class);
 
     }
+
+    @Test
+    public void constructsNewObjectFromFunction() {
+        dynJS.eval(context, scope, "function MyObject(){}; var o = new MyObject();");
+        assertThat(scope.resolve("MyObject"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+        assertThat(scope.resolve("o"))
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+    }
+
 }

@@ -19,14 +19,20 @@ import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynString;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
 
 import java.util.List;
+
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -58,5 +64,35 @@ public class Executor implements Opcodes {
             }
         };
         return compiler.compile(function);
+    }
+
+    public Function createNewObject(Function function) {
+        Function constructor = compiler.compile(new DynFunction(new String[]{"function", "name"}) {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(1)
+                        .aload(2)
+
+                        .aload(getArgumentsOffset())
+                        .pushInt(getArgumentOffset("function"))
+                        .aaload()
+
+                        .aload(getArgumentsOffset())
+                        .pushInt(getArgumentOffset("name"))
+                        .aaload()
+
+                        .invokedynamic("dyn:getProp", sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                        .areturn();
+            }
+        });
+
+        return constructor;
+    }
+
+    public DynAtom callExpression(Function lhs, List<DynAtom> args) {
+        args.add(0, lhs);
+        args.add(1, new DynString("construct"));
+        return lhs.call(new DynThreadContext(), new DynObject(), args.toArray(new DynAtom[]{}));
     }
 }
