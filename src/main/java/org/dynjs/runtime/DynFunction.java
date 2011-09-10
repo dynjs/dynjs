@@ -16,6 +16,9 @@
 package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
 import java.util.Arrays;
 
@@ -25,6 +28,24 @@ public class DynFunction extends DynObject {
 
     public DynFunction(String... arguments) {
         this.arguments = arguments;
+        initBuiltins();
+    }
+
+    private void initBuiltins() {
+        setProperty("construct", new Function() {
+            @Override
+            public DynAtom call(DynThreadContext context, Scope scope, DynAtom... arguments) {
+                DynObject object = new DynObject();
+                object.setProperty("Class", new DynString("Object"));
+                object.setProperty("Extensible", DynPrimitiveBoolean.TRUE);
+                return object;
+            }
+
+            @Override
+            public boolean isPrimitive() {
+                return false;
+            }
+        });
     }
 
     public CodeBlock getCodeBlock() {
