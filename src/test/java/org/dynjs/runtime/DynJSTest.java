@@ -19,6 +19,7 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -66,6 +67,7 @@ public class DynJSTest {
     }
 
     @Test
+    @Ignore("wip - qmx")
     public void assignsObjectLiterals() {
         dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
         assertThat(scope.resolve("x"))
