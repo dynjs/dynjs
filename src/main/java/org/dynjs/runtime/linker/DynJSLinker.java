@@ -1,5 +1,6 @@
 package org.dynjs.runtime.linker;
 
+import org.dynalang.dynalink.linker.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
 import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.LinkRequest;
@@ -15,9 +16,10 @@ import java.lang.invoke.MethodType;
 public class DynJSLinker implements GuardingDynamicLinker {
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
-        if ("print".equals(linkRequest.getCallSiteDescriptor().getName())) {
-            MethodType methodType = linkRequest.getCallSiteDescriptor().getMethodType();
-            MethodHandle print = MethodHandles.lookup().findStatic(RT.class, "print", methodType);
+        CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
+        if ("print".equals(callSiteDescriptor.getName())) {
+            MethodType methodType = callSiteDescriptor.getMethodType();
+            MethodHandle print = lookup().findStatic(RT.class, "print", methodType);
 
             return new GuardedInvocation(print, null);
         }
