@@ -21,8 +21,3 @@ Configure and add projects dependencies:
 		The 1.1.0-SNAPSHOT of aunit can be found at https://github.com/porcelli/aunit
 			Clone it (https://github.com/porcelli/aunit.git) and run mvn install to build and add to your repository
 
-    You must download asm-jar from http://forge.ow2.org/projects/asm/ version
-    4.0_RC1 and manually install with maven
-
-    mvn install:install-file -Dfile=asm-all-4.0_RC1.jar -DgroupId=asm
-    -DartifactId=asm-all -Dversion=4.0_RC1 -Dpackaging=jar
