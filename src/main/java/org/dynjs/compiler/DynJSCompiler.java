@@ -8,10 +8,7 @@ import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.util.TraceClassVisitor;
 
-import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
@@ -31,10 +28,6 @@ public class DynJSCompiler {
         }};
         final DynamicClassLoader classLoader = new DynamicClassLoader();
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-        if (DEBUG) {
-            ClassReader reader = new ClassReader(bytecode);
-            reader.accept(new TraceClassVisitor(new PrintWriter(System.out)), ClassReader.EXPAND_FRAMES);
-        }
         Class<?> functionClass = classLoader.define(className.replace('/', '.'), bytecode);
         try {
             return (Function) functionClass.newInstance();

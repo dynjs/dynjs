@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser;
 
+import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Function;
@@ -24,7 +25,6 @@ import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynString;
-import org.objectweb.asm.Opcodes;
 
 import java.util.List;
 

@@ -1,17 +1,17 @@
 package org.dynjs.runtime;
 
+import me.qmx.internal.org.objectweb.asm.Handle;
+import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.objectweb.asm.MethodHandle;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
-import static org.objectweb.asm.Opcodes.MH_INVOKESTATIC;
 
 public class RT {
-    public static final MethodHandle BOOTSTRAP = new MethodHandle(MH_INVOKESTATIC,
+    public static final Handle BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
             p(DynJSBootstrapper.class), "bootstrap", MethodType.methodType(CallSite.class,
             MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
