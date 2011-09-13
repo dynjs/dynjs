@@ -1,5 +1,6 @@
-package org.dynjs;
+package org.dynjs.cli;
 
+import org.dynjs.cli.Main;
 import org.junit.Test;
 
 public class MainTest {
