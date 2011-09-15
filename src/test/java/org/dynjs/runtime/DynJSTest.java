@@ -16,7 +16,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -67,7 +66,6 @@ public class DynJSTest {
     }
 
     @Test
-    @Ignore("wip - qmx")
     public void assignsObjectLiterals() {
         dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
         assertThat(scope.resolve("x"))
@@ -84,6 +82,7 @@ public class DynJSTest {
     }
 
     @Test
+//    @Ignore("wip - qmx")
     public void constructsNewObjectFromFunction() {
         dynJS.eval(context, scope, "function MyObject(){}; var o = new MyObject();");
         assertThat(scope.resolve("MyObject"))

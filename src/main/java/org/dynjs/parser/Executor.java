@@ -32,6 +32,7 @@ import org.dynjs.runtime.RT;
 
 import java.util.List;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
@@ -67,12 +68,12 @@ public class Executor implements Opcodes {
     }
 
     public Function createNewObject(Function function) {
-        Function constructor = compiler.compile(new DynFunction(new String[]{"function", "name"}) {
+        Function constructor = compiler.compile(new DynFunction("function", "name") {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
-                        .aload(1)
-                        .aload(2)
+//                        .aload(1)
+//                        .aload(2)
 
                         .aload(getArgumentsOffset())
                         .pushInt(getArgumentOffset("function"))
@@ -81,8 +82,9 @@ public class Executor implements Opcodes {
                         .aload(getArgumentsOffset())
                         .pushInt(getArgumentOffset("name"))
                         .aaload()
+                        .invokevirtual(p(Object.class), "toString", sig(String.class))
 
-                        .invokedynamic("dyn:getProp", sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                        .invokedynamic("dyn:getProp", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                         .areturn();
             }
         });
@@ -90,9 +92,12 @@ public class Executor implements Opcodes {
         return constructor;
     }
 
+    public DynAtom constructNewObject(Function lhs){
+        Function ctor = (Function) lhs.call(null, null, new DynAtom[]{lhs, new DynString("construct")});
+        return ctor.call(null, null);
+    }
+
     public DynAtom callExpression(Function lhs, List<DynAtom> args) {
-        args.add(0, lhs);
-        args.add(1, new DynString("construct"));
         return lhs.call(new DynThreadContext(), new DynObject(), args.toArray(new DynAtom[]{}));
     }
 }

@@ -6,20 +6,15 @@ import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
 import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
-import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynString;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
-import static java.lang.invoke.MethodHandles.insertArguments;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 
@@ -28,13 +23,20 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
         CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
+        MethodType methodType = callSiteDescriptor.getMethodType();
         if ("print".equals(callSiteDescriptor.getName())) {
-            MethodType methodType = callSiteDescriptor.getMethodType();
             MethodHandle print = lookup().findStatic(RT.class, "print", methodType);
-
             return new GuardedInvocation(print, null);
         } else if (callSiteDescriptor.getName().startsWith("dyn:getProp")) {
-            MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", methodType(DynAtom.class, String.class));
+            MethodType targetType = methodType(DynAtom.class, String.class);
+            MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
+
+//            MethodType fromType = methodType(DynAtom.class, Scope.class, DynString.class);
+//            MethodHandle methodHandle = linkerServices.asType(getProperty, fromType);
+//                getProperty.invoke(linkRequest.getArguments()[3]);
+//            Object target = linkRequest.getArguments()[1];
+//            System.out.println(target);
+//                MethodHandle functionMH = RT.FUNCTION_CALL.bindTo(target);
             return new GuardedInvocation(getProperty, null);
         }
         return null;
@@ -42,7 +44,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
 
     @Override
     public GuardedInvocation convertToType(Class<?> sourceType, Class<?> targetType) {
-        if(DynString.class.isAssignableFrom(sourceType) && String.class == targetType){
+        if (DynString.class.isAssignableFrom(sourceType) && String.class == targetType) {
             return Converters.Guarded_DynString2String;
         }
         return null;

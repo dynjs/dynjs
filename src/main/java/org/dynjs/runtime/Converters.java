@@ -11,9 +11,13 @@ import static java.lang.invoke.MethodType.methodType;
 
 public class Converters {
 
-    public static final MethodHandle DynString2String = findStatic(Converters.class, "convertDynString2String", methodType(String.class, DynString.class));
+    public static final MethodHandle DynString2String = findStatic(Converters.class, "convertDynString2String", methodType(String.class, Object.class));
     public static final GuardedInvocation Guarded_DynString2String = new GuardedInvocation(DynString2String,
-            Guards.isInstance(DynString.class, DynString2String.type()));
+            null);
+
+    public static String convertDynString2String(Object dynString) {
+        return dynString.toString();
+    }
 
     public static MethodHandle findStatic(Class cls, String name, MethodType type) {
         try {
