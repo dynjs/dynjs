@@ -9,5 +9,4 @@ public interface Scope {
     DynAtom resolve(String name);
 
     void define(String property, DynAtom value);
-
 }

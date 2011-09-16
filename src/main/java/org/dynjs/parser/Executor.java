@@ -19,17 +19,18 @@ import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.PrintStatement;
-import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynFunction;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynString;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.Functions;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
+
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -37,6 +38,45 @@ public class Executor implements Opcodes {
 
     public List<Statement> program(final List<Statement> blockContent) {
         return blockContent;
+    }
+
+    public Statement declareVar(final CommonTree id) {
+        return declareVar(id, new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .getstatic(p(DynPrimitiveUndefined.class), "UNDEFINED", ci(DynPrimitiveUndefined.class));
+            }
+        });
+    }
+
+    public Statement declareVar(final CommonTree id, final Statement expr) {
+
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .getstatic(p(DynPrimitiveUndefined.class), "UNDEFINED", ci(DynPrimitiveUndefined.class))
+                        .aload(2)
+                        .swap()
+                        .ldc(id.getText())
+                        .swap()
+                        .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, DynAtom.class));
+            }
+        };
+    }
+
+    public Statement defineStringLiteral(final String literal) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(1)
+                        .ldc(literal)
+                        .invokevirtual(p(DynThreadContext.class), "defineStringLiteral", sig(DynAtom.class, String.class));
+            }
+        };
+
     }
 
     public Statement printStatement(final DynAtom expression) {

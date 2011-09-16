@@ -17,6 +17,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,6 +43,14 @@ public class DynJSTest {
         assertThat(scope.resolve("x"))
                 .isNotNull()
                 .isInstanceOf(DynString.class);
+    }
+
+    @Test
+    public void defineUnInitializedGlobalVariables() {
+        dynJS.eval(context, scope, "var x;");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isEqualTo(DynPrimitiveUndefined.UNDEFINED);
     }
 
     @Test

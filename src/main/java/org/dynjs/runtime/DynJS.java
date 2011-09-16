@@ -66,7 +66,6 @@ public class DynJS {
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
         walker.setExecutor(new Executor());
-        walker.setGlobalScope(scope);
         walker.program();
         return walker.getResult();
     }

@@ -46,26 +46,17 @@ options
 @header {
 package org.dynjs.parser;
 
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynAtom;
-import org.dynjs.api.Scope;
-import org.dynjs.api.Function;
 }
 
 @members {
 
     List<Statement> result = null;
     Executor executor = null;
-    Scope globalScope = null; 
 
     public void setExecutor(Executor executor){
         this.executor = executor;
     }
     
-    public void setGlobalScope(Scope scope) {
-    	this.globalScope = scope;
-    }
-
     public List<Statement> getResult(){
         return result;
     }
@@ -85,6 +76,7 @@ statement returns [Statement value]
 	: block
         {  $value = $block.value;   }
 	| variableDeclaration
+	    {  $value = $variableDeclaration.value;   }
 	| expression
 	| printStatement
         { $value = $printStatement.value; }
@@ -110,12 +102,17 @@ block returns [Statement value]
 
 printStatement returns [Statement value]
 	: ^( SK_PRINT expression )
-	{  $value = executor.printStatement($expression.value);  }
+	{  $value = null;  }
 	;
 
 variableDeclaration returns [Statement value]
-	: ^( VAR ( Identifier | ^( ASSIGN id=Identifier expr ) )+ )
-	{ globalScope.define($id.text, $expr.value); }
+	: ^( VAR
+	      ( Identifier
+	{   $value = executor.declareVar($id);   }
+	      | ^( ASSIGN id=Identifier expr )
+	{   $value = executor.declareVar($id, $expr.value);   }
+	      )+
+	   )
 	;
 
 ifStatement
@@ -196,13 +193,12 @@ finallyClause
 	: ^( FINALLY block )
 	;
 
-expression returns [DynAtom value]
+expression
 	: expr 
-	{ $value = $expr.value; }
 	| ^( CEXPR expr+ )
 	;
 
-expr returns [DynAtom value]
+expr returns [Statement value]
 	: leftHandSideExpression
 	{ $value = $leftHandSideExpression.value; }
 	
@@ -276,36 +272,25 @@ expr returns [DynAtom value]
 	| ^( PDEC expr )
 	;
 
-leftHandSideExpression returns [DynAtom value]
+leftHandSideExpression returns [Statement value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
-	{ $value = executor.createNewObject((Function) $newExpression.value); }
 	| functionDeclaration
-	{ $value = $functionDeclaration.value; }
 	| callExpression
 	| memberExpression
 	;
 
-newExpression returns [DynAtom value]
+newExpression
 	: ^( NEW leftHandSideExpression )
-	{ $value = executor.constructNewObject((Function) $leftHandSideExpression.value); }
 	;
 
-functionDeclaration returns [Function value]
-	@init { List<String> args = new ArrayList<String>(); }
-	: ^( FUNCTION id=Identifier? ^( ARGS (arg=Identifier {args.add($arg.text);})* ) block )
-	{	$value = executor.createFunction(args, $block.value);
-		if($id != null) { 
-			globalScope.define($id.text, $value);
-		}
-	} 
+functionDeclaration
+	: ^( FUNCTION Identifier? ^( ARGS Identifier* ) block )
 	;
 
-callExpression returns [DynAtom value]
-	@init { List<DynAtom> args = new ArrayList<DynAtom>(); }
-	: ^( CALL lhs=leftHandSideExpression ^( ARGS (e=expr {args.add($e.value);})* ) )
-	{ $value = executor.callExpression((Function) $lhs.value, args); }
+callExpression
+	: ^( CALL leftHandSideExpression ^( ARGS expr* ) )
 	;
 	
 memberExpression
@@ -313,24 +298,22 @@ memberExpression
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	;
 
-primaryExpression returns [DynAtom value]
-	: id=Identifier
-	{ $value = globalScope.resolve($id.text); }
+primaryExpression returns [Statement value]
+	: Identifier
 	| literal
 	{ $value = $literal.value;  }
 	;
 
-literal returns [DynAtom value]
+literal returns [Statement value]
 	: THIS
 	| NULL
 	| booleanLiteral
 	| numericLiteral
 	| StringLiteral
-	{ $value = executor.createDynString($StringLiteral);  }
+	{ $value = executor.defineStringLiteral($StringLiteral.text);  }
 	| RegularExpressionLiteral
 	| arrayLiteral
 	| objectLiteral
-	{ $value = $objectLiteral.value; }
 	;
 
 booleanLiteral
@@ -348,13 +331,12 @@ arrayLiteral
 	: ^( ARRAY ( ^( ITEM expr? ) )* )
 	;
 
-objectLiteral returns [DynObject value]
-@init { value = new DynObject(); }
-	: ^( OBJECT ( ^( NAMEDVALUE pname=propertyName ex=expr {$value.define($pname.text, $ex.value);}) )* )
+objectLiteral
+	: ^( OBJECT ( ^( NAMEDVALUE propertyName expr) )* )
 	;
 
-propertyName returns [String value]
-	: id=Identifier
+propertyName
+	: Identifier
 	| StringLiteral
 	| numericLiteral
 	;

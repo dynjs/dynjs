@@ -68,7 +68,7 @@ public class DynJSCompiler {
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
                 }
-                return block;
+                return block.voidreturn();
             }
         };
         final DynamicClassLoader classLoader = new DynamicClassLoader();
