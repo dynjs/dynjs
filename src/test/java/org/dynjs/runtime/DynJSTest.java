@@ -82,7 +82,7 @@ public class DynJSTest {
     }
 
     @Test
-//    @Ignore("wip - qmx")
+    @Ignore("wip - qmx")
     public void constructsNewObjectFromFunction() {
         dynJS.eval(context, scope, "function MyObject(){}; var o = new MyObject();");
         assertThat(scope.resolve("MyObject"))
