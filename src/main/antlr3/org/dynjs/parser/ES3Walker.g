@@ -289,7 +289,7 @@ leftHandSideExpression returns [DynAtom value]
 
 newExpression returns [DynAtom value]
 	: ^( NEW leftHandSideExpression )
-	{ $value = executor.constructNewObject($leftHandSideExpression.value); }
+	{ $value = executor.constructNewObject((Function) $leftHandSideExpression.value); }
 	;
 
 functionDeclaration returns [Function value]
