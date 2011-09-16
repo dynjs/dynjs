@@ -8,8 +8,8 @@ public class DynThreadContext {
         return new DynString(value);
     }
 
-    public DynAtom defineNumberLiteral(final String value) {
-        return new DynPrimitiveNumber(value);
+    public DynAtom defineNumberLiteral(final String value, Integer radix) {
+        return new DynPrimitiveNumber(value, radix);
     }
 
 }
