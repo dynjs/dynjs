@@ -63,7 +63,7 @@ public class DynJSCompilerTest {
                         .aload(getArgumentsOffset())
                         .bipush(getArgumentOffset("a"))
                         .aaload()
-                        .visitInvokeDynamicInsn("print", sig(void.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                        .invokedynamic("print", sig(void.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                         .aconst_null()
                         .areturn();
             }
