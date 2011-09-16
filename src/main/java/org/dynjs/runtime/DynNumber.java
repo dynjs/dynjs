@@ -17,4 +17,12 @@ public class DynNumber extends DynObject {
     public DynNumber add(final DynNumber other) {
         return new DynNumber(this.value + other.value);
     }
+
+    public DynNumber sub(final DynNumber other) {
+        return new DynNumber(this.value - other.value);
+    }
+
+    public DynNumber mul(final DynNumber other) {
+        return new DynNumber(this.value * other.value);
+    }
 }
