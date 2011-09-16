@@ -22,7 +22,6 @@ import org.dynjs.api.Function;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.PrintStatement;
-import org.dynjs.runtime.BaseFunction;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynObject;
@@ -36,8 +35,8 @@ public class Executor implements Opcodes {
 
     private DynJSCompiler compiler = new DynJSCompiler();
 
-    public byte[] program(final List<Statement> blockContent) {
-        return new byte[]{};
+    public List<Statement> program(final List<Statement> blockContent) {
+        return blockContent;
     }
 
     public Statement printStatement(final DynAtom expression) {
