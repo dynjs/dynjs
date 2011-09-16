@@ -73,15 +73,35 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineAddOp(final Statement l, final Statement r) {
+        return defineNumOp("add", l, r);
+    }
+
+    public Statement defineSubOp(final Statement l, final Statement r) {
+        return defineNumOp("sub", l, r);
+    }
+
+    public Statement defineMulOp(final Statement l, final Statement r) {
+        return defineNumOp("mul", l, r);
+    }
+
+    public Statement defineNumOp(final String op, final Statement l, final Statement r) {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
                         .append(l.getCodeBlock())
+                        .astore(3)
+                        .newobj(p(DynNumber.class))
+                        .dup()
+                        .aload(3)
                         .invokespecial(p(DynNumber.class), "<init>", sig(void.class, DynPrimitiveNumber.class))
                         .append(r.getCodeBlock())
+                        .astore(3)
+                        .newobj(p(DynNumber.class))
+                        .dup()
+                        .aload(3)
                         .invokespecial(p(DynNumber.class), "<init>", sig(void.class, DynPrimitiveNumber.class))
-                        .invokevirtual(p(DynNumber.class), "add", sig(DynNumber.class, DynNumber.class));
+                        .invokevirtual(p(DynNumber.class), op, sig(DynNumber.class, DynNumber.class));
             }
         };
     }
@@ -105,7 +125,7 @@ public class Executor implements Opcodes {
                 return CodeBlock.newCodeBlock()
                         .aload(1)
                         .ldc(value)
-                        .invokevirtual(p(DynThreadContext.class), "defineOctalLiteral", sig(DynAtom.class, String.class));
+                        .invokevirtual(p(DynThreadContext.class), "defineOctalLiteral", sig(DynPrimitiveNumber.class, String.class));
             }
         };
     }
@@ -117,7 +137,7 @@ public class Executor implements Opcodes {
                 return CodeBlock.newCodeBlock()
                         .aload(1)
                         .ldc(value)
-                        .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynAtom.class, String.class));
+                        .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynPrimitiveNumber.class, String.class));
             }
         };
     }

@@ -250,10 +250,12 @@ expr returns [Statement value]
 	// Additive operators
 	| ^( ADD l=expr r=expr )
     { $value = executor.defineAddOp($l.value, $r.value); }
-	| ^( SUB expr expr )
-	
+	| ^( SUB l=expr r=expr )
+    { $value = executor.defineSubOp($l.value, $r.value); }
+
 	// Multipiclative operators
-	| ^( MUL expr expr )
+	| ^( MUL l=expr r=expr )
+    { $value = executor.defineMulOp($l.value, $r.value); }
 	| ^( DIV expr expr )
 	| ^( MOD expr expr )
 	
