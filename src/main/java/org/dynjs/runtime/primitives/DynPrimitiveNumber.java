@@ -16,4 +16,8 @@ public class DynPrimitiveNumber implements DynAtom {
     public boolean isPrimitive() {
         return true;
     }
+
+    public Double getDoubleValue() {
+        return Double.parseDouble(this.value);
+    }
 }
