@@ -55,8 +55,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .getstatic(p(DynPrimitiveUndefined.class), "UNDEFINED", ci(DynPrimitiveUndefined.class))
+                return CodeBlock.newCodeBlock(expr.getCodeBlock())
                         .aload(2)
                         .swap()
                         .ldc(id.getText())

@@ -107,7 +107,7 @@ printStatement returns [Statement value]
 
 variableDeclaration returns [Statement value]
 	: ^( VAR
-	      ( Identifier
+	      ( id=Identifier
 	{   $value = executor.declareVar($id);   }
 	      | ^( ASSIGN id=Identifier expr )
 	{   $value = executor.declareVar($id, $expr.value);   }
