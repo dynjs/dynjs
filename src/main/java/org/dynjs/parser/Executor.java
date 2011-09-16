@@ -22,6 +22,7 @@ import org.dynjs.api.Function;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.PrintStatement;
+import org.dynjs.runtime.BaseFunction;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynObject;
@@ -53,7 +54,6 @@ public class Executor implements Opcodes {
 
     public Function createFunction(List<String> args, final Statement statement) {
         DynFunction function = new DynFunction(args.toArray(new String[]{})) {
-            @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock(statement.getCodeBlock())
                         .aconst_null()
