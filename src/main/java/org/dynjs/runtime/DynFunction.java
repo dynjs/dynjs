@@ -16,13 +16,10 @@
 package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
 import java.util.Arrays;
 
-public class DynFunction extends DynObject {
+public abstract class DynFunction extends BaseFunction {
 
     private final String[] arguments;
 
@@ -32,20 +29,7 @@ public class DynFunction extends DynObject {
     }
 
     private void initBuiltins() {
-        setProperty("construct", new Function() {
-            @Override
-            public DynAtom call(DynThreadContext context, Scope scope, DynAtom... arguments) {
-                DynObject object = new DynObject();
-                object.setProperty("Class", new DynString("Object"));
-                object.setProperty("Extensible", DynPrimitiveBoolean.TRUE);
-                return object;
-            }
-
-            @Override
-            public boolean isPrimitive() {
-                return false;
-            }
-        });
+        setProperty("construct", Functions.CONSTRUCTOR);
     }
 
     public CodeBlock getCodeBlock() {
