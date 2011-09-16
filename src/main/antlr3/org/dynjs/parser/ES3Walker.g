@@ -54,7 +54,7 @@ import org.dynjs.api.Function;
 
 @members {
 
-    byte[] result = null;
+    List<Statement> result = null;
     Executor executor = null;
     Scope globalScope = null; 
 
@@ -66,7 +66,7 @@ import org.dynjs.api.Function;
     	this.globalScope = scope;
     }
 
-    public byte[] getResult(){
+    public List<Statement> getResult(){
         return result;
     }
 }
@@ -113,7 +113,7 @@ printStatement returns [Statement value]
 	{  $value = executor.printStatement($expression.value);  }
 	;
 
-variableDeclaration
+variableDeclaration returns [Statement value]
 	: ^( VAR ( Identifier | ^( ASSIGN id=Identifier expr ) )+ )
 	{ globalScope.define($id.text, $expr.value); }
 	;
