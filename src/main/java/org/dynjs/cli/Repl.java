@@ -22,7 +22,14 @@ public class Repl {
 
     public void run() {
         try {
-            System.out.println("\ndyn.js console.\nType exit and press ENTER to leave.\n");
+            String NEW_LINE = System.getProperty("line.separator");
+            StringBuilder consoleHello = new StringBuilder();
+            consoleHello.append(NEW_LINE)
+                    .append("dyn.js console.")
+                    .append(NEW_LINE)
+                    .append("Type exit and press ENTER to leave.")
+                    .append(NEW_LINE);
+            System.out.println(consoleHello.toString());
             while (true) {
                 System.out.print("> ");
                 String statement = input();
@@ -32,7 +39,7 @@ public class Repl {
                     try {
                         environment.eval(context, scope, statement);
                     } catch (DynJSException e) {
-                        System.out.println("Error: " + e.getClass().getSimpleName());
+                        System.out.println(e.getClass().getSimpleName());
                     } catch (Exception e){
                         e.printStackTrace();
                     }
