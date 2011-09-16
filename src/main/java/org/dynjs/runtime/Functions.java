@@ -41,9 +41,8 @@ public class Functions {
                         .aload(getArgumentsOffset())
                         .pushInt(getArgumentOffset("propertyName"))
                         .aaload()
-//                        .invokevirtual(p(Object.class), "toString", sig(String.class))
+                        .invokevirtual(p(Object.class), "toString", sig(String.class))
 
-                        .checkcast(p(Scope.class))
                         .invokedynamic("dyn:getProp", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                         .areturn();
             }

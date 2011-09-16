@@ -20,16 +20,12 @@ public class RTTest {
 
     @Test
     public void testFunctionCall() throws Throwable {
-        Function f = new Function() {
+        Function f = new BaseFunction() {
             @Override
             public DynAtom call(DynThreadContext context, Scope scope, DynAtom... arguments) {
                 return new DynString("");
             }
 
-            @Override
-            public boolean isPrimitive() {
-                return false;
-            }
         };
 
         Object result = RT.FUNCTION_CALL.bindTo(f).invoke(context, scope, new DynAtom[]{});
