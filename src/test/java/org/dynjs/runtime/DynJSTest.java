@@ -54,6 +54,14 @@ public class DynJSTest {
     }
 
     @Test
+    public void assignsExprGlobalVariables() {
+        dynJS.eval(context, scope, "var x = 1 + 1;");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(DynNumber.class);
+    }
+
+    @Test
     public void assignsNamedEmptyFunction() {
         dynJS.eval(context, scope, "function x(){};");
         assertThat(scope.resolve("x"))

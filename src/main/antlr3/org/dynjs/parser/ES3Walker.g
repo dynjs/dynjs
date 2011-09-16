@@ -248,7 +248,8 @@ expr returns [Statement value]
 	| ^( SHU expr expr )
 	
 	// Additive operators
-	| ^( ADD expr expr )
+	| ^( ADD l=expr r=expr )
+    { $value = executor.defineAddOp($l.value, $r.value); }
 	| ^( SUB expr expr )
 	
 	// Multipiclative operators
@@ -309,6 +310,7 @@ literal returns [Statement value]
 	| NULL
 	| booleanLiteral
 	| numericLiteral
+	{ $value = $numericLiteral.value;  }
 	| StringLiteral
 	{ $value = executor.defineStringLiteral($StringLiteral.text);  }
 	| RegularExpressionLiteral
@@ -321,9 +323,11 @@ booleanLiteral
 	| FALSE
 	;
 
-numericLiteral
+numericLiteral returns [Statement value]
 	: DecimalLiteral
+	{ $value = executor.defineNumberLiteral($DecimalLiteral.text);  }
 	| OctalIntegerLiteral
+	{ $value = executor.defineOctalLiteral($OctalIntegerLiteral.text);  }
 	| HexIntegerLiteral
 	;
 

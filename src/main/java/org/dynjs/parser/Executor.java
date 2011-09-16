@@ -18,19 +18,19 @@ package org.dynjs.parser;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
-import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.PrintStatement;
-import org.dynjs.runtime.*;
+import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynNumber;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class Executor implements Opcodes {
 
@@ -38,6 +38,14 @@ public class Executor implements Opcodes {
 
     public List<Statement> program(final List<Statement> blockContent) {
         return blockContent;
+    }
+
+    public Statement block(final List<Statement> blockContent) {
+        return new BlockStatement(blockContent);
+    }
+
+    public Statement printStatement(final DynAtom expression) {
+        return new PrintStatement(expression);
     }
 
     public Statement declareVar(final CommonTree id) {
@@ -51,7 +59,6 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final CommonTree id, final Statement expr) {
-
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
@@ -61,6 +68,20 @@ public class Executor implements Opcodes {
                         .ldc(id.getText())
                         .swap()
                         .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, DynAtom.class));
+            }
+        };
+    }
+
+    public Statement defineAddOp(final Statement l, final Statement r) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .append(l.getCodeBlock())
+                        .invokespecial(p(DynNumber.class), "<init>", sig(void.class, DynPrimitiveNumber.class))
+                        .append(r.getCodeBlock())
+                        .invokespecial(p(DynNumber.class), "<init>", sig(void.class, DynPrimitiveNumber.class))
+                        .invokevirtual(p(DynNumber.class), "add", sig(DynNumber.class, DynNumber.class));
             }
         };
     }
@@ -75,43 +96,30 @@ public class Executor implements Opcodes {
                         .invokevirtual(p(DynThreadContext.class), "defineStringLiteral", sig(DynAtom.class, String.class));
             }
         };
-
     }
 
-    public Statement printStatement(final DynAtom expression) {
-        return new PrintStatement(expression);
-    }
-
-    public DynString createDynString(final CommonTree stringLiteral) {
-        return new DynString(stringLiteral.getText());
-    }
-
-    public Statement block(final List<Statement> blockContent) {
-        return new BlockStatement(blockContent);
-    }
-
-    public Function createFunction(List<String> args, final Statement statement) {
-        DynFunction function = new DynFunction(args.toArray(new String[]{})) {
+    public Statement defineOctalLiteral(final String value) {
+        return new Statement() {
+            @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock(statement.getCodeBlock())
-                        .aconst_null()
-                        .areturn();
+                return CodeBlock.newCodeBlock()
+                        .aload(1)
+                        .ldc(value)
+                        .invokevirtual(p(DynThreadContext.class), "defineOctalLiteral", sig(DynAtom.class, String.class));
             }
         };
-        return compiler.compile(function);
     }
 
-    public Function createNewObject(Function function) {
-        Function constructor = (Function) Functions.GET_PROPERTY.call(null, null, function, new DynString("construct"));
-        return constructor;
+    public Statement defineNumberLiteral(final String value) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(1)
+                        .ldc(value)
+                        .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynAtom.class, String.class));
+            }
+        };
     }
 
-    public DynAtom constructNewObject(Function lhs) {
-        Function ctor = (Function) lhs.call(null, null, new DynAtom[]{lhs, new DynString("construct")});
-        return ctor.call(null, null);
-    }
-
-    public DynAtom callExpression(Function lhs, List<DynAtom> args) {
-        return lhs.call(new DynThreadContext(), new DynObject(), args.toArray(new DynAtom[]{}));
-    }
 }

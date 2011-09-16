@@ -14,7 +14,7 @@ public class DynNumber extends DynObject {
         this.value = value;
     }
 
-    public DynNumber add(DynNumber other) {
+    public DynNumber add(final DynNumber other) {
         return new DynNumber(this.value + other.value);
     }
 }
