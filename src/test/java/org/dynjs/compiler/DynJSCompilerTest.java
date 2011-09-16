@@ -3,6 +3,7 @@ package org.dynjs.compiler;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynObject;
@@ -70,6 +71,18 @@ public class DynJSCompilerTest {
         };
         Function function = dynJSCompiler.compile(shout);
         function.call(context, scope, new DynString("test"));
+    }
+
+    @Test
+    public void testScriptCompiler() {
+        dynJSCompiler.compile(new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return newCodeBlock()
+                        .aconst_null()
+                        .areturn();
+            }
+        }).execute(null, null);
     }
 
 }

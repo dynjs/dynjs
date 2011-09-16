@@ -1,13 +1,16 @@
 package org.dynjs.compiler;
 
+import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.Script;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +44,39 @@ public class DynJSCompiler {
         try {
             Constructor<?> ctor = functionClass.getDeclaredConstructor(String[].class);
             return (Function) ctor.newInstance(new Object[]{arg.getArguments()});
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public Script compile(final Statement... statements) {
+        String className = PACKAGE + "AnonymousDynScript" + counter.incrementAndGet();
+        JiteClass jiteClass = new JiteClass(className, p(BaseScript.class), new String[]{p(Script.class)}) {
+            {
+                defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Statement[].class),
+                        newCodeBlock()
+                                .aload(0)
+                                .aload(1)
+                                .invokespecial(p(BaseScript.class), "<init>", sig(void.class, Statement[].class))
+                                .voidreturn()
+                );
+                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, DynThreadContext.class, Scope.class), getCodeBlock());
+            }
+
+            private CodeBlock getCodeBlock() {
+                final CodeBlock block = newCodeBlock();
+                for (Statement statement : statements) {
+                    block.append(statement.getCodeBlock());
+                }
+                return block;
+            }
+        };
+        final DynamicClassLoader classLoader = new DynamicClassLoader();
+        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
+        Class<?> functionClass = classLoader.define(className.replace('/', '.'), bytecode);
+        try {
+            Constructor<?> ctor = functionClass.getDeclaredConstructor(Statement[].class);
+            return (Script) ctor.newInstance(new Object[]{statements});
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }

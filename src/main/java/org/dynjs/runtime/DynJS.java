@@ -21,15 +21,20 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.SyntaxError;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
+import org.dynjs.parser.Statement;
+
+import java.util.List;
 
 public class DynJS {
 
     private final DynJSConfig config;
+    private final DynJSCompiler compiler = new DynJSCompiler();
 
     public DynJS(DynJSConfig config) {
         this.config = config;
@@ -40,17 +45,18 @@ public class DynJS {
     }
 
     public void eval(DynThreadContext context, Scope scope, String expression) {
-        byte[] result;
+        List<Statement> result;
 
         try {
             result = parseSourceCode(scope, expression);
-            System.out.println(result);
+            Script script = compiler.compile(result.toArray(new Statement[]{}));
+            script.execute(context, scope);
         } catch (RecognitionException e) {
             throw new SyntaxError(e);
         }
     }
 
-    private byte[] parseSourceCode(Scope scope, String code) throws RecognitionException {
+    private List<Statement> parseSourceCode(Scope scope, String code) throws RecognitionException {
         ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
@@ -62,7 +68,6 @@ public class DynJS {
         walker.setExecutor(new Executor());
         walker.setGlobalScope(scope);
         walker.program();
-
         return walker.getResult();
     }
 }
