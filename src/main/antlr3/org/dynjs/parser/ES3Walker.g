@@ -201,7 +201,9 @@ expression
 expr returns [Statement value]
 	: leftHandSideExpression
 	{ $value = $leftHandSideExpression.value; }
-	
+	| ^( PAREXPR e=expr )
+	{ $value = $e.value; }
+
 	// Assignment operators
 	| ^( ASSIGN expr expr )
 	| ^( MULASS expr expr )
