@@ -43,7 +43,7 @@ public class DynJSCompiler {
             defineMethod("call", ACC_PUBLIC | ACC_VARARGS, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), arg.getCodeBlock());
         }};
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-        Class<?> functionClass = classLoader.define(className.replace('/', '.'), bytecode);
+        Class<?> functionClass = defineClass(className, bytecode);
         try {
             Constructor<?> ctor = functionClass.getDeclaredConstructor(String[].class);
             return (Function) ctor.newInstance(new Object[]{arg.getArguments()});
@@ -75,17 +75,21 @@ public class DynJSCompiler {
             }
         };
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-        if (DEBUG) {
-            ClassReader reader = new ClassReader(bytecode);
-            reader.accept(new TraceClassVisitor(new PrintWriter(System.out)), ClassReader.EXPAND_FRAMES);
-        }
-        Class<?> functionClass = classLoader.define(className.replace('/', '.'), bytecode);
+        Class<?> functionClass = defineClass(className, bytecode);
         try {
             Constructor<?> ctor = functionClass.getDeclaredConstructor(Statement[].class);
             return (Script) ctor.newInstance(new Object[]{statements});
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Class<?> defineClass(String className, byte[] bytecode) {
+        if (DEBUG) {
+            ClassReader reader = new ClassReader(bytecode);
+            reader.accept(new TraceClassVisitor(new PrintWriter(System.out)), ClassReader.EXPAND_FRAMES);
+        }
+        return classLoader.define(className.replace('/', '.'), bytecode);
     }
 
 }
