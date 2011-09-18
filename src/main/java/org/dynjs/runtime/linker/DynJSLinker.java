@@ -9,8 +9,10 @@ import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynString;
 import org.dynjs.runtime.RT;
+import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -30,14 +32,15 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         } else if (callSiteDescriptor.getName().startsWith("dyn:getProp")) {
             MethodType targetType = methodType(DynAtom.class, String.class);
             MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
-
-//            MethodType fromType = methodType(DynAtom.class, Scope.class, DynString.class);
-//            MethodHandle methodHandle = linkerServices.asType(getProperty, fromType);
-//                getProperty.invoke(linkRequest.getArguments()[3]);
-//            Object target = linkRequest.getArguments()[1];
-//            System.out.println(target);
-//                MethodHandle functionMH = RT.FUNCTION_CALL.bindTo(target);
             return new GuardedInvocation(getProperty, null);
+        } else if (callSiteDescriptor.getName().startsWith("dynjs:bop")) {
+            if (linkRequest.getArguments().length == 2) {
+                MethodType targetType = methodType(DynNumber.class, DynNumber.class);
+                String op = linkRequest.getCallSiteDescriptor().getNameToken(2);
+                MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
+                MethodHandle targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
+                return new GuardedInvocation(targetHandle, null);
+            }
         }
         return null;
     }
