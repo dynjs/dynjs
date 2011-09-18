@@ -25,12 +25,15 @@ import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -88,20 +91,11 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
+                String instruction = "dynjs:bop:" + op;
                 return CodeBlock.newCodeBlock()
                         .append(l.getCodeBlock())
-                        .astore(3)
-                        .newobj(p(DynNumber.class))
-                        .dup()
-                        .aload(3)
-                        .invokespecial(p(DynNumber.class), "<init>", sig(void.class, DynPrimitiveNumber.class))
                         .append(r.getCodeBlock())
-                        .astore(3)
-                        .newobj(p(DynNumber.class))
-                        .dup()
-                        .aload(3)
-                        .invokespecial(p(DynNumber.class), "<init>", sig(void.class, DynPrimitiveNumber.class))
-                        .invokevirtual(p(DynNumber.class), op, sig(DynNumber.class, DynNumber.class));
+                        .invokedynamic(instruction, sig(DynNumber.class, DynPrimitiveNumber.class, DynPrimitiveNumber.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }
