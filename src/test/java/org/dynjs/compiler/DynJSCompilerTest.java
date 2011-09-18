@@ -79,8 +79,7 @@ public class DynJSCompilerTest {
             @Override
             public CodeBlock getCodeBlock() {
                 return newCodeBlock()
-                        .aconst_null()
-                        .areturn();
+                        .aconst_null();
             }
         }).execute(null, null);
     }
