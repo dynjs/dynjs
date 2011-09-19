@@ -51,6 +51,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             return Converters.Guarded_DynString2String;
         } else if (DynPrimitiveNumber.class.isAssignableFrom(sourceType) && DynNumber.class == targetType) {
             return Converters.Guarded_DynPrimitiveNumber2DynNumber;
+        } else if (DynNumber.class.isAssignableFrom(sourceType) && DynPrimitiveNumber.class == targetType) {
+            return Converters.Guarded_DynNumber2DynPrimitiveNumber;
         }
         return null;
     }
