@@ -85,7 +85,6 @@ public class DynJSTest {
     }
 
     @Test
-    @Ignore("aqui o qmx vai corrigir \\o/")
     public void assignsComplexExprSubGlobalVariables() {
         dynJS.eval(context, scope, "var x = 3 * 2 - 1;");
         DynAtom atom = scope.resolve("x");
@@ -97,7 +96,6 @@ public class DynJSTest {
     }
 
     @Test
-    @Ignore("aqui o qmx vai corrigir tbm :P")
     public void assignsComplexparExprSubGlobalVariables() {
         dynJS.eval(context, scope, "var x = (3 * 2) - 1;");
         DynAtom atom = scope.resolve("x");
