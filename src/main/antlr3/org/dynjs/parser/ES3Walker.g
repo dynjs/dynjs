@@ -305,7 +305,8 @@ memberExpression
 	;
 
 primaryExpression returns [Statement value]
-	: Identifier
+	: id=Identifier
+	{ $value = executor.resolveIdentifier($id); }
 	| literal
 	{ $value = $literal.value;  }
 	;
