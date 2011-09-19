@@ -25,7 +25,7 @@ public class Converters {
     public static final GuardedInvocation Guarded_DynPrimitiveNumber2DynNumber = new GuardedInvocation(DynPrimitiveNumber2DynNumber,
             Guards.isInstance(DynPrimitiveNumber.class, methodType(DynNumber.class, DynPrimitiveNumber.class)));
     public static final GuardedInvocation Guarded_DynNumber2DynPrimitiveNumber = new GuardedInvocation(DynNumber2DynPrimitiveNumber,
-            Guards.isInstance(DynPrimitiveNumber.class, methodType(DynPrimitiveNumber.class, DynNumber.class)));
+            Guards.isInstance(DynNumber.class, methodType(DynPrimitiveNumber.class, DynNumber.class)));
 
     public static String convertDynString2String(Object dynString) {
         return dynString.toString();
