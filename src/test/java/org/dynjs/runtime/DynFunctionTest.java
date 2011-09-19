@@ -15,15 +15,60 @@
  */
 package org.dynjs.runtime;
 
+import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.junit.Before;
+import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class DynFunctionTest {
 
-    private DynObject object;
+    private DynJSCompiler compiler;
+    private Scope scope;
+    private DynThreadContext context;
 
     @Before
     public void setup() {
-        object = new DynObject();
+        compiler = new DynJSCompiler();
+    }
+
+    @Test
+    public void shouldReturnCorrectOffsets() {
+        DynString d = new DynString("d");
+        DynString a = new DynString("a");
+        DynAtom result1 = compiler.compile(new DynFunction(new String[]{"a", "c", "d"}) {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(getArgumentsOffset())
+                        .bipush(getArgumentOffset("d"))
+                        .aaload()
+                        .areturn();
+
+            }
+        }).call(context, scope, a, DynPrimitiveBoolean.TRUE, d);
+        assertThat(result1)
+                .isNotNull()
+                .isInstanceOf(DynString.class)
+                .isEqualTo(d);
+        DynAtom result2 = compiler.compile(new DynFunction(new String[]{"a", "c", "d"}) {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(getArgumentsOffset())
+                        .pushInt(getArgumentOffset("c"))
+                        .aaload()
+                        .areturn();
+
+            }
+        }).call(context, scope, a, DynPrimitiveBoolean.TRUE, d);
+        assertThat(result2)
+                .isNotNull()
+                .isInstanceOf(DynPrimitiveBoolean.class)
+                .isEqualTo(DynPrimitiveBoolean.TRUE);
     }
 
 }

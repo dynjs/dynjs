@@ -15,8 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.api.Function;
-import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,39 +44,116 @@ public class DynJSTest {
     }
 
     @Test
-    public void assignsNamedEmptyFunction() {
-        dynJS.eval(context, scope, "function x(){};");
+    public void defineUnInitializedGlobalVariables() {
+        dynJS.eval(context, scope, "var x;");
         assertThat(scope.resolve("x"))
                 .isNotNull()
-                .isInstanceOf(Function.class);
+                .isEqualTo(DynPrimitiveUndefined.UNDEFINED);
     }
 
     @Test
-    public void assignsAnonymousEmptyFunction() {
-        dynJS.eval(context, scope, "var x = function(){};");
-        assertThat(scope.resolve("x"))
+    public void assignsExprGlobalVariables() {
+        dynJS.eval(context, scope, "var x = 2 + 1;");
+        DynAtom atom = scope.resolve("x");
+        assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(Function.class);
-    }
+                .isInstanceOf(DynNumber.class);
 
-    @Test(expected = ReferenceError.class)
-    public void throwsReferenceErrorWhenCallAnonExistingReference() {
-        dynJS.eval(context, scope, "print(x);");
+        assertThat(((DynNumber) atom).getValue()).isEqualTo(3.0);
     }
 
     @Test
-    public void assignsObjectLiterals() {
-        dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
-        assertThat(scope.resolve("x"))
+    public void assignsExprMulGlobalVariables() {
+        dynJS.eval(context, scope, "var x = 2 * 3;");
+        DynAtom atom = scope.resolve("x");
+        assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(DynObject.class);
-        DynObject x = (DynObject) scope.resolve("x");
-        assertThat(x.resolve("lol"))
-                .isNotNull()
-                .isInstanceOf(Function.class);
-        assertThat(x.resolve("name"))
-                .isNotNull()
-                .isInstanceOf(DynString.class);
+                .isInstanceOf(DynNumber.class);
 
+        assertThat(((DynNumber) atom).getValue()).isEqualTo(6.0);
     }
+
+    @Test
+    public void assignsExprSubGlobalVariables() {
+        dynJS.eval(context, scope, "var x = 3 - 1;");
+        DynAtom atom = scope.resolve("x");
+        assertThat(atom)
+                .isNotNull()
+                .isInstanceOf(DynNumber.class);
+
+        assertThat(((DynNumber) atom).getValue()).isEqualTo(2.0);
+    }
+
+    @Test
+    public void assignsComplexExprSubGlobalVariables() {
+        dynJS.eval(context, scope, "var x = 3 * 2 - 1;");
+        DynAtom atom = scope.resolve("x");
+        assertThat(atom)
+                .isNotNull()
+                .isInstanceOf(DynNumber.class);
+
+        assertThat(((DynNumber) atom).getValue()).isEqualTo(5.0);
+    }
+
+    @Test
+    public void assignsComplexparExprSubGlobalVariables() {
+        dynJS.eval(context, scope, "var x = (3 * 2) - 1;");
+        DynAtom atom = scope.resolve("x");
+        assertThat(atom)
+                .isNotNull()
+                .isInstanceOf(DynNumber.class);
+
+        assertThat(((DynNumber) atom).getValue()).isEqualTo(5.0);
+    }
+
+//    @Test
+//    public void assignsNamedEmptyFunction() {
+//        dynJS.eval(context, scope, "function x(){};");
+//        assertThat(scope.resolve("x"))
+//                .isNotNull()
+//                .isInstanceOf(Function.class);
+//    }
+//
+//    @Test
+//    public void assignsAnonymousEmptyFunction() {
+//        dynJS.eval(context, scope, "var x = function(){};");
+//        assertThat(scope.resolve("x"))
+//                .isNotNull()
+//                .isInstanceOf(Function.class);
+//    }
+//
+//    @Test(expected = ReferenceError.class)
+//    public void throwsReferenceErrorWhenCallAnonExistingReference() {
+//        dynJS.eval(context, scope, "print(x);");
+//    }
+//
+//    @Test
+//    public void assignsObjectLiterals() {
+//        dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
+//        assertThat(scope.resolve("x"))
+//                .isNotNull()
+//                .isInstanceOf(DynObject.class);
+//        DynObject x = (DynObject) scope.resolve("x");
+//        assertThat(x.resolve("lol"))
+//                .isNotNull()
+//                .isInstanceOf(Function.class);
+//        assertThat(x.resolve("name"))
+//                .isNotNull()
+//                .isInstanceOf(DynString.class);
+//
+//    }
+//
+//    @Test
+//    @Ignore("wip - qmx")
+//    public void constructsNewObjectFromFunction() {
+//        dynJS.eval(context, scope, "function MyObject(){}; var o = new MyObject();");
+//        assertThat(scope.resolve("MyObject"))
+//                .isNotNull()
+//                .isInstanceOf(Function.class);
+//        assertThat(scope.resolve("o"))
+//                .isNotNull()
+//                .isInstanceOf(DynObject.class);
+//    }
+//
+
 }

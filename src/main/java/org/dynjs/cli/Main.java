@@ -1,8 +1,7 @@
-package org.dynjs;
+package org.dynjs.cli;
 
+import org.dynjs.DynJSVersion;
 import org.dynjs.api.Scope;
-import org.dynjs.cli.Arguments;
-import org.dynjs.cli.Repl;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;

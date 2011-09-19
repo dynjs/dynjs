@@ -46,27 +46,18 @@ options
 @header {
 package org.dynjs.parser;
 
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynAtom;
-import org.dynjs.api.Scope;
-import org.dynjs.api.Function;
 }
 
 @members {
 
-    byte[] result = null;
+    List<Statement> result = null;
     Executor executor = null;
-    Scope globalScope = null; 
 
     public void setExecutor(Executor executor){
         this.executor = executor;
     }
     
-    public void setGlobalScope(Scope scope) {
-    	this.globalScope = scope;
-    }
-
-    public byte[] getResult(){
+    public List<Statement> getResult(){
         return result;
     }
 }
@@ -85,6 +76,7 @@ statement returns [Statement value]
 	: block
         {  $value = $block.value;   }
 	| variableDeclaration
+	    {  $value = $variableDeclaration.value;   }
 	| expression
 	| printStatement
         { $value = $printStatement.value; }
@@ -110,12 +102,17 @@ block returns [Statement value]
 
 printStatement returns [Statement value]
 	: ^( SK_PRINT expression )
-	{  $value = executor.printStatement($expression.value);  }
+	{  $value = null;  }
 	;
 
-variableDeclaration
-	: ^( VAR ( Identifier | ^( ASSIGN id=Identifier expr ) )+ )
-	{ globalScope.define($id.text, $expr.value); }
+variableDeclaration returns [Statement value]
+	: ^( VAR
+	      ( id=Identifier
+	{   $value = executor.declareVar($id);   }
+	      | ^( ASSIGN id=Identifier expr )
+	{   $value = executor.declareVar($id, $expr.value);   }
+	      )+
+	   )
 	;
 
 ifStatement
@@ -196,16 +193,17 @@ finallyClause
 	: ^( FINALLY block )
 	;
 
-expression returns [DynAtom value]
+expression
 	: expr 
-	{ $value = $expr.value; }
 	| ^( CEXPR expr+ )
 	;
 
-expr returns [DynAtom value]
+expr returns [Statement value]
 	: leftHandSideExpression
 	{ $value = $leftHandSideExpression.value; }
-	
+	| ^( PAREXPR e=expr )
+	{ $value = $e.value; }
+
 	// Assignment operators
 	| ^( ASSIGN expr expr )
 	| ^( MULASS expr expr )
@@ -252,11 +250,14 @@ expr returns [DynAtom value]
 	| ^( SHU expr expr )
 	
 	// Additive operators
-	| ^( ADD expr expr )
-	| ^( SUB expr expr )
-	
+	| ^( ADD l=expr r=expr )
+    { $value = executor.defineAddOp($l.value, $r.value); }
+	| ^( SUB l=expr r=expr )
+    { $value = executor.defineSubOp($l.value, $r.value); }
+
 	// Multipiclative operators
-	| ^( MUL expr expr )
+	| ^( MUL l=expr r=expr )
+    { $value = executor.defineMulOp($l.value, $r.value); }
 	| ^( DIV expr expr )
 	| ^( MOD expr expr )
 	
@@ -276,30 +277,21 @@ expr returns [DynAtom value]
 	| ^( PDEC expr )
 	;
 
-leftHandSideExpression returns [DynAtom value]
+leftHandSideExpression returns [Statement value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
-	{ $value = $newExpression.value; }
 	| functionDeclaration
-	{ $value = $functionDeclaration.value; }
 	| callExpression
 	| memberExpression
 	;
 
-newExpression returns [DynAtom value]
+newExpression
 	: ^( NEW leftHandSideExpression )
-	{ $value = $leftHandSideExpression.value; }
 	;
 
-functionDeclaration returns [Function value]
-	@init { List<String> args = new ArrayList<String>(); }
-	: ^( FUNCTION id=Identifier? ^( ARGS (arg=Identifier {args.add($arg.text);})* ) block )
-	{	$value = executor.createFunction(args, $block.value);
-		if($id != null) { 
-			globalScope.define($id.text, $value);
-		}
-	} 
+functionDeclaration
+	: ^( FUNCTION Identifier? ^( ARGS Identifier* ) block )
 	;
 
 callExpression
@@ -311,24 +303,23 @@ memberExpression
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	;
 
-primaryExpression returns [DynAtom value]
-	: id=Identifier
-	{ $value = globalScope.resolve($id.text); }
+primaryExpression returns [Statement value]
+	: Identifier
 	| literal
 	{ $value = $literal.value;  }
 	;
 
-literal returns [DynAtom value]
+literal returns [Statement value]
 	: THIS
 	| NULL
 	| booleanLiteral
 	| numericLiteral
+	{ $value = $numericLiteral.value;  }
 	| StringLiteral
-	{ $value = executor.createDynString($StringLiteral);  }
+	{ $value = executor.defineStringLiteral($StringLiteral.text);  }
 	| RegularExpressionLiteral
 	| arrayLiteral
 	| objectLiteral
-	{ $value = $objectLiteral.value; }
 	;
 
 booleanLiteral
@@ -336,9 +327,11 @@ booleanLiteral
 	| FALSE
 	;
 
-numericLiteral
+numericLiteral returns [Statement value]
 	: DecimalLiteral
+	{ $value = executor.defineNumberLiteral($DecimalLiteral.text);  }
 	| OctalIntegerLiteral
+	{ $value = executor.defineOctalLiteral($OctalIntegerLiteral.text);  }
 	| HexIntegerLiteral
 	;
 
@@ -346,13 +339,12 @@ arrayLiteral
 	: ^( ARRAY ( ^( ITEM expr? ) )* )
 	;
 
-objectLiteral returns [DynObject value]
-@init { value = new DynObject(); }
-	: ^( OBJECT ( ^( NAMEDVALUE pname=propertyName ex=expr {$value.define($pname.text, $ex.value);}) )* )
+objectLiteral
+	: ^( OBJECT ( ^( NAMEDVALUE propertyName expr) )* )
 	;
 
-propertyName returns [String value]
-	: id=Identifier
+propertyName
+	: Identifier
 	| StringLiteral
 	| numericLiteral
 	;

@@ -18,24 +18,35 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 
 import java.util.Arrays;
-import java.util.List;
 
-public class DynFunction extends DynObject {
+public abstract class DynFunction extends DynObject {
 
-    private DynAtom result;
-    private final List<String> arguments;
+    private final String[] arguments;
 
     public DynFunction(String... arguments) {
-        this.arguments = Arrays.asList(arguments);
+        this.arguments = arguments;
+        initBuiltins();
+    }
+
+    private void initBuiltins() {
+        setProperty("construct", Functions.CONSTRUCTOR);
     }
 
     public CodeBlock getCodeBlock() {
         return CodeBlock.newCodeBlock();
     }
 
-    protected int getArgumentOffset(String key) {
-        // list is zero based + context + scope
-        return this.arguments.indexOf(key) + 1 + 2;
+    protected int getArgumentsOffset() {
+        // context + scope + one-based index
+        return 3;
     }
 
+    protected int getArgumentOffset(String key) {
+        // list is zero based
+        return Arrays.asList(this.arguments).indexOf(key);
+    }
+
+    public String[] getArguments() {
+        return this.arguments;
+    }
 }

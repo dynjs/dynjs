@@ -27,4 +27,9 @@ public class DynString implements DynAtom {
     public boolean isPrimitive() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
 }
