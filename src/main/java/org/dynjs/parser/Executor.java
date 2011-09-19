@@ -66,10 +66,10 @@ public class Executor implements Opcodes {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock(expr.getCodeBlock())
+                        .astore(3)
                         .aload(2)
-                        .swap()
                         .ldc(id.getText())
-                        .swap()
+                        .aload(3)
                         .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, DynAtom.class));
             }
         };
