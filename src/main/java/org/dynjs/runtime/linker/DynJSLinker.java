@@ -34,13 +34,11 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
             return new GuardedInvocation(getProperty, null);
         } else if (callSiteDescriptor.getName().startsWith("dynjs:bop")) {
-            if (linkRequest.getArguments().length == 2) {
-                MethodType targetType = methodType(DynNumber.class, DynNumber.class);
-                String op = linkRequest.getCallSiteDescriptor().getNameToken(2);
-                MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
-                MethodHandle targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
-                return new GuardedInvocation(targetHandle, null);
-            }
+            MethodType targetType = methodType(DynNumber.class, DynNumber.class);
+            String op = linkRequest.getCallSiteDescriptor().getNameToken(2);
+            MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
+            MethodHandle targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
+            return new GuardedInvocation(targetHandle, null);
         }
         return null;
     }
