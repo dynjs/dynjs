@@ -95,7 +95,7 @@ public class Executor implements Opcodes {
                 return CodeBlock.newCodeBlock()
                         .append(l.getCodeBlock())
                         .append(r.getCodeBlock())
-                        .invokedynamic(instruction, sig(DynNumber.class, DynPrimitiveNumber.class, DynPrimitiveNumber.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic(instruction, sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }

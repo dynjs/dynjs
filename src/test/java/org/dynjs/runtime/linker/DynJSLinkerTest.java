@@ -3,6 +3,7 @@ package org.dynjs.runtime.linker;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
@@ -45,7 +46,7 @@ public class DynJSLinkerTest {
                         .astore(4)
                         .aload(3)
                         .aload(4)
-                        .invokedynamic("dynjs:bop:add", sig(DynNumber.class, DynPrimitiveNumber.class, DynPrimitiveNumber.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("dynjs:bop:add", sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         }).execute(context, scope);
 
