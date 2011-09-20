@@ -102,7 +102,7 @@ block returns [Statement value]
 
 printStatement returns [Statement value]
 	: ^( SK_PRINT expression )
-	{  $value = null;  }
+	{  $value = executor.printStatement($expression.value);  }
 	;
 
 variableDeclaration returns [Statement value]
@@ -193,8 +193,9 @@ finallyClause
 	: ^( FINALLY block )
 	;
 
-expression
-	: expr 
+expression returns [Statement value]
+	: expr
+	{ $value = $expr.value; }
 	| ^( CEXPR expr+ )
 	;
 

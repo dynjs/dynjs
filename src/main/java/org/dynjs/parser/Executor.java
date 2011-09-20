@@ -47,8 +47,8 @@ public class Executor implements Opcodes {
         return new BlockStatement(blockContent);
     }
 
-    public Statement printStatement(final DynAtom expression) {
-        return new PrintStatement(expression);
+    public Statement printStatement(final Statement expr) {
+        return null;
     }
 
     public Statement declareVar(final CommonTree id) {
