@@ -4,7 +4,6 @@ import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 public class DynNumber extends DynObject {
 
-
     private final double value;
 
     public DynNumber(DynPrimitiveNumber primitiveNumber) {
@@ -25,6 +24,14 @@ public class DynNumber extends DynObject {
 
     public DynNumber mul(final DynNumber other) {
         return new DynNumber(this.value * other.value);
+    }
+
+    public static DynNumber parseInt(final DynString string) {
+        return parseInt(string, new DynNumber(10));
+    }
+
+    public static DynNumber parseInt(final DynString string, final DynNumber radix) {
+        return new DynNumber(0);
     }
 
     public double getValue() {
