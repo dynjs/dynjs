@@ -48,7 +48,13 @@ public class Executor implements Opcodes {
     }
 
     public Statement printStatement(final Statement expr) {
-        return null;
+        return new Statement(){
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock(expr.getCodeBlock())
+                        .aprintln();
+            }
+        };
     }
 
     public Statement declareVar(final CommonTree id) {
