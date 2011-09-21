@@ -21,7 +21,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
-import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
@@ -48,7 +47,13 @@ public class Executor implements Opcodes {
     }
 
     public Statement printStatement(final Statement expr) {
-        return null;
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock(expr.getCodeBlock())
+                        .aprintln();
+            }
+        };
     }
 
     public Statement declareVar(final CommonTree id) {
@@ -70,7 +75,7 @@ public class Executor implements Opcodes {
                         .aload(2)
                         .ldc(id.getText())
                         .aload(3)
-                        .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, DynAtom.class));
+                        .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }
@@ -120,6 +125,18 @@ public class Executor implements Opcodes {
                         .aload(1)
                         .ldc(value)
                         .invokevirtual(p(DynThreadContext.class), "defineOctalLiteral", sig(DynPrimitiveNumber.class, String.class));
+            }
+        };
+    }
+
+    public Statement resolveIdentifier(final CommonTree id) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(2)
+                        .ldc(id.getText())
+                        .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }

@@ -15,6 +15,7 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -122,10 +123,10 @@ public class DynJSTest {
 //                .isInstanceOf(Function.class);
 //    }
 //
-//    @Test(expected = ReferenceError.class)
-//    public void throwsReferenceErrorWhenCallAnonExistingReference() {
-//        dynJS.eval(context, scope, "print(x);");
-//    }
+    @Test(expected = ReferenceError.class)
+    public void throwsReferenceErrorWhenCallAnonExistingReference() {
+        dynJS.eval(context, scope, "print(x);");
+    }
 //
 //    @Test
 //    public void assignsObjectLiterals() {
