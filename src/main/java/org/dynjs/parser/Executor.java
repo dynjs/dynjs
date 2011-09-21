@@ -130,6 +130,18 @@ public class Executor implements Opcodes {
         };
     }
 
+    public Statement resolveIdentifier(final CommonTree id) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(2)
+                        .ldc(id.getText())
+                        .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            }
+        };
+    }
+
     public Statement defineNumberLiteral(final String value) {
         return new Statement() {
             @Override

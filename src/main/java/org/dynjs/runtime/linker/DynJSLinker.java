@@ -39,6 +39,12 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
             MethodHandle targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
             return new GuardedInvocation(targetHandle, null);
+        } else if (callSiteDescriptor.getName().startsWith("dynjs:scope")) {
+            if (callSiteDescriptor.getNameTokenCount() == 3 && "resolve".equals(callSiteDescriptor.getNameToken(2))) {
+                MethodType targetType = methodType(DynAtom.class, String.class);
+                MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
+                return new GuardedInvocation(getProperty, null);
+            }
         }
         return null;
     }
