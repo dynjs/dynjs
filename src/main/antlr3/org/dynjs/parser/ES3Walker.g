@@ -291,8 +291,10 @@ newExpression
 	: ^( NEW leftHandSideExpression )
 	;
 
-functionDeclaration
-	: ^( FUNCTION Identifier? ^( ARGS Identifier* ) block )
+functionDeclaration returns [Statement value]
+@init { List<String> args = new ArrayList<String>(); }
+	: ^( FUNCTION id=Identifier? ^( ARGS (ai=Identifier {args.add($ai.text);})* ) block )
+	{ $value = executor.defineFunction($id.text, args, $block.value); }
 	;
 
 callExpression

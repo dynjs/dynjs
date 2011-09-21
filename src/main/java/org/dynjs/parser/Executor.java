@@ -153,4 +153,7 @@ public class Executor implements Opcodes {
         };
     }
 
+    public Statement defineFunction(String identifier, List<String> args, Statement block) {
+        return null;
+    }
 }
