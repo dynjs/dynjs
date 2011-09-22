@@ -19,7 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import java.util.Arrays;
 
-public abstract class DynFunction extends DynObject {
+public class DynFunction extends DynObject {
 
     private final CodeBlock codeBlock;
     private final String[] arguments;
