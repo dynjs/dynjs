@@ -65,13 +65,17 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final CommonTree id, final Statement expr) {
+        return declareVar(id.getText(), expr);
+    }
+
+    public Statement declareVar(final String id, final Statement expr) {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock(expr.getCodeBlock())
                         .astore(3)
                         .aload(2)
-                        .ldc(id.getText())
+                        .ldc(id)
                         .aload(3)
                         .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
