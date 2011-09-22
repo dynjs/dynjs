@@ -21,9 +21,15 @@ import java.util.Arrays;
 
 public abstract class DynFunction extends DynObject {
 
+    private final CodeBlock codeBlock;
     private final String[] arguments;
 
     public DynFunction(String... arguments) {
+        this(CodeBlock.newCodeBlock(), arguments);
+    }
+
+    public DynFunction(CodeBlock codeBlock, String... arguments) {
+        this.codeBlock = codeBlock;
         this.arguments = arguments;
         initBuiltins();
     }
@@ -33,7 +39,7 @@ public abstract class DynFunction extends DynObject {
     }
 
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock();
+        return this.codeBlock;
     }
 
     protected int getArgumentsOffset() {
