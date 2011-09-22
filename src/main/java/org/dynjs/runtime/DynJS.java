@@ -45,6 +45,7 @@ public class DynJS {
     }
 
     public void eval(DynThreadContext context, Scope scope, String expression) {
+        context.setRuntime(this);
         List<Statement> result;
 
         try {
