@@ -18,6 +18,7 @@ package org.dynjs.parser;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
@@ -30,7 +31,9 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -151,6 +154,44 @@ public class Executor implements Opcodes {
                         .aload(1)
                         .ldc(value)
                         .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynPrimitiveNumber.class, String.class));
+            }
+        };
+    }
+
+    public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
+        // put arguments on stack
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                CodeBlock codeBlock = CodeBlock.newCodeBlock()
+                        .prepend(block.getCodeBlock())
+                        .newobj(p(CodeBlock.class))
+                        .dup()
+                        .invokespecial(p(CodeBlock.class), "<init>", "()V")
+                        .astore(3);
+                if (identifier != null) {
+                    codeBlock = codeBlock.ldc(identifier);
+                } else {
+                    codeBlock = codeBlock.aconst_null();
+                }
+                codeBlock = codeBlock
+                        .bipush(args.size())
+                        .anewarray(p(String.class))
+                        .astore(4);
+
+                for (String arg : args) {
+                    codeBlock = codeBlock
+                            .ldc(arg)
+                            .aastore();
+                }
+
+                codeBlock = codeBlock
+                        .aload(4)
+                        .aload(3)
+                        .invokedynamic("dynjs:compile:function", sig(Function.class, String[].class, CodeBlock.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                        .aconst_null();
+
+                return codeBlock;
             }
         };
     }
