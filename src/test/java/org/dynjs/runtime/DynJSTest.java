@@ -19,7 +19,6 @@ import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -115,15 +114,16 @@ public class DynJSTest {
                 .isNotNull()
                 .isInstanceOf(Function.class);
     }
-//
-//    @Test
-//    public void assignsAnonymousEmptyFunction() {
-//        dynJS.eval(context, scope, "var x = function(){};");
-//        assertThat(scope.resolve("x"))
-//                .isNotNull()
-//                .isInstanceOf(Function.class);
-//    }
-//
+
+    @Test
+    public void assignsAnonymousEmptyFunction() {
+        dynJS.eval(context, scope, "var x = function(){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+    }
+
+    //
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
         dynJS.eval(context, scope, "print(x);");
