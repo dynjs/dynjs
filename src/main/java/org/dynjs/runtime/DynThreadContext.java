@@ -4,6 +4,16 @@ import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 public class DynThreadContext {
 
+    private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
+
+    public DynJS getRuntime() {
+        return this.runtime.get();
+    }
+
+    public void setRuntime(DynJS runtime) {
+        this.runtime.set(runtime);
+    }
+
     public DynAtom defineStringLiteral(final String value) {
         return new DynString(value);
     }
