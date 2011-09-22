@@ -23,6 +23,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
@@ -178,18 +179,17 @@ public class Executor implements Opcodes {
                         .bipush(args.size())
                         .anewarray(p(String.class))
                         .astore(4);
-
                 for (String arg : args) {
                     codeBlock = codeBlock
                             .ldc(arg)
                             .aastore();
                 }
-
                 codeBlock = codeBlock
-                        .aload(4)
+                        .aload(1)
+                        .invokevirtual(p(DynThreadContext.class), "getRuntime", sig(DynJS.class))
                         .aload(3)
-                        .invokedynamic("dynjs:compile:function", sig(Function.class, String[].class, CodeBlock.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                        .aconst_null();
+                        .aload(4)
+                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
                 return codeBlock;
             }
