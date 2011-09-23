@@ -30,9 +30,7 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class Executor implements Opcodes {
 
@@ -154,6 +152,182 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineFunction(String identifier, List<String> args, Statement block) {
+        return null;
+    }
+
+    public Statement defineShlOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineShrOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineShuOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineDivOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineModOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineDeleteOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineVoidOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineTypeOfOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineIncOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineDecOp(Statement expression) {
+        return null;
+    }
+
+    public Statement definePosOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineNegOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineInvOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineNotOp(Statement expression) {
+        return null;
+    }
+
+    public Statement definePIncOp(Statement expression) {
+        return null;
+    }
+
+    public Statement definePDecOp(Statement expression) {
+        return null;
+    }
+
+    public Statement defineLtRelOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineGtRelOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineLteRelOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineGteRelOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineInstanceOfRelOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineInRelOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineLorOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineLandOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineAndBitOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineOrBitOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineXorBitOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineEqOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineNEqOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineSameOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineNSameOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineMulAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineDivAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineModAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineAddAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineSubAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineShlAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineShrAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineShuAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineAndAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineXorAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineOrAssOp(Statement l, Statement r) {
+        return null;
+    }
+
+    public Statement defineQueOp(Statement ex1, Statement ex2, Statement ex3) {
         return null;
     }
 }
