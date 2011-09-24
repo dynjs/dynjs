@@ -187,9 +187,8 @@ public class Executor implements Opcodes {
                 codeBlock = codeBlock
                         .aload(1)
                         .bipush(slot)
-                        .aload(3)
                         .aload(4)
-                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynThreadContext.class, Integer.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynThreadContext.class, int.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
                 return codeBlock;
             }
         };
