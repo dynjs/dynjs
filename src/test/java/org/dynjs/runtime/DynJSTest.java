@@ -135,6 +135,18 @@ public class DynJSTest {
                 .isNull();
     }
 
+    @Test
+    public void buildFunctionWithMultipleStatementBody(){
+        dynJS.eval(context, scope, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        assertThat(((Function)actual).call(context, scope, new DynAtom[]{}))
+                .isNull();
+    }
+
     //
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
