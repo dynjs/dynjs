@@ -2,7 +2,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
-import static java.lang.Double.*;
+import static java.lang.Double.NaN;
 
 public class DynNumber extends DynObject {
 
@@ -34,9 +34,18 @@ public class DynNumber extends DynObject {
     }
 
     public static DynNumber parseInt(final DynString string, final DynNumber radix) {
-        if(string.equals("")){
+        String given = string.toString().trim();
+
+        if (given.equals("")) {
             return NAN;
         }
+
+        char firstChar = given.charAt(0);
+
+        if (((firstChar < '0') || (firstChar > '9')) && ((firstChar != '+') && (firstChar != '-'))) {
+            return NAN;
+        }
+
         return new DynNumber(0);
     }
 
@@ -44,11 +53,7 @@ public class DynNumber extends DynObject {
         return value;
     }
 
-    public String toString(){
-        return isNaN() ? "NaN" : "" + getValue();
-    }
-
-    private boolean isNaN() {
-        return Double.isNaN(getValue());
+    public static boolean isNaN(final DynNumber number) {
+        return Double.isNaN(number.getValue());
     }
 }
