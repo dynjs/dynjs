@@ -66,6 +66,10 @@ public class Executor implements Opcodes {
         };
     }
 
+    public Statement returnStatement(Statement expr) {
+        return null;
+    }
+
     public Statement declareVar(final CommonTree id) {
         return declareVar(id, new Statement() {
             @Override
@@ -348,39 +352,39 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineThisLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineNullLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineRegExLiteral(String s) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineTrueLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineFalseLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineHexaLiteral(String s) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement executeNew(Statement leftHandSideExpression10) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement resolveByField(String s, Statement leftHandSideExpression13) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineByIndex(Statement leftHandSideExpression11) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public CodeBlock newCodeBlock(Statement stmt) {
