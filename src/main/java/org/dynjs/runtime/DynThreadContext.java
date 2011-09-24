@@ -1,10 +1,18 @@
 package org.dynjs.runtime;
 
+import me.qmx.jitescript.CodeBlock;
+import org.dynjs.parser.Statement;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DynThreadContext {
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
+    private AtomicInteger storageCounter = new AtomicInteger();
+    private Map<Integer, CodeBlock> storage = new HashMap<>();
 
     public DynJS getRuntime() {
         return this.runtime.get();
@@ -26,4 +34,23 @@ public class DynThreadContext {
         return new DynPrimitiveNumber(value, 8);
     }
 
+    /**
+     * stores codeblock on internal storage
+     *
+     * @param block
+     */
+    public Integer store(CodeBlock block) {
+        Integer slot = storageCounter.getAndIncrement();
+        storage.put(slot, block);
+        return slot;
+    }
+
+    /**
+     * retrieves codeblock from internal storage
+     * @param id
+     * @return
+     */
+    public CodeBlock retrieve(Integer id){
+        return storage.get(id);
+    }
 }
