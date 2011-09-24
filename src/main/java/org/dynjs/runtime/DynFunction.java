@@ -24,11 +24,11 @@ public class DynFunction extends DynObject {
     private final CodeBlock codeBlock;
     private final String[] arguments;
 
-    public DynFunction(String... arguments) {
+    public DynFunction(String[] arguments) {
         this(CodeBlock.newCodeBlock(), arguments);
     }
 
-    public DynFunction(CodeBlock codeBlock, String... arguments) {
+    public DynFunction(CodeBlock codeBlock, String[] arguments) {
         this.codeBlock = codeBlock;
         this.arguments = arguments;
         initBuiltins();

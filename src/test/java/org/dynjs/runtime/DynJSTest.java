@@ -117,7 +117,7 @@ public class DynJSTest {
 
     @Test
     public void assignsAnonymousEmptyFunction() {
-        dynJS.eval(context, scope, "var x = function(){};");
+        dynJS.eval(context, scope, "var x = function(a,b,c){};");
         assertThat(scope.resolve("x"))
                 .isNotNull()
                 .isInstanceOf(Function.class);

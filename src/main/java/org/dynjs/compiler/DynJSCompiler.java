@@ -33,14 +33,14 @@ public class DynJSCompiler {
     public Function compile(final DynFunction arg) {
         String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
-            defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, String[].class),
+            defineMethod("<init>", ACC_PUBLIC, sig(void.class, String[].class),
                     newCodeBlock()
                             .aload(0)
                             .aload(1)
                             .invokespecial(p(DynFunction.class), "<init>", sig(void.class, String[].class))
                             .voidreturn()
             );
-            defineMethod("call", ACC_PUBLIC | ACC_VARARGS, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), arg.getCodeBlock());
+            defineMethod("call", ACC_PUBLIC | ACC_ABSTRACT, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), arg.getCodeBlock());
         }};
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
         Class<?> functionClass = defineClass(className, bytecode);

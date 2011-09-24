@@ -73,7 +73,7 @@ public class DynJS {
         return walker.getResult();
     }
 
-    public Function compile(CodeBlock codeBlock, String... args) {
+    public Function compile(CodeBlock codeBlock, String[] args) {
         return this.compiler.compile(new DynFunction(codeBlock, args));
     }
 }

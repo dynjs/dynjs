@@ -49,7 +49,7 @@ public class DynFunctionTest {
                         .areturn();
 
             }
-        }).call(context, scope, a, DynPrimitiveBoolean.TRUE, d);
+        }).call(context, scope, new DynAtom[]{a, DynPrimitiveBoolean.TRUE, d});
         assertThat(result1)
                 .isNotNull()
                 .isInstanceOf(DynString.class)
@@ -64,7 +64,7 @@ public class DynFunctionTest {
                         .areturn();
 
             }
-        }).call(context, scope, a, DynPrimitiveBoolean.TRUE, d);
+        }).call(context, scope, new DynAtom[]{a, DynPrimitiveBoolean.TRUE, d});
         assertThat(result2)
                 .isNotNull()
                 .isInstanceOf(DynPrimitiveBoolean.class)
