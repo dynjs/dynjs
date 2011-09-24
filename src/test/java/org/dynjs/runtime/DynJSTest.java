@@ -125,7 +125,7 @@ public class DynJSTest {
 
     @Test
     public void buildFunctionWithBody(){
-        dynJS.eval(context, scope, "var x = function(a,b){var w = (2+3) / 2}");
+        dynJS.eval(context, scope, "var x = function(a,b){var w = (1 + 2) * 3;}");
         DynAtom actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()

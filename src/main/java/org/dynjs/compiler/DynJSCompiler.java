@@ -54,8 +54,7 @@ public class DynJSCompiler {
     }
 
     private CodeBlock alwaysReturnWrapper(DynFunction arg) {
-        AbstractInsnNode last = arg.getCodeBlock().getInstructionList().getLast();
-        if(last == null){
+        if(!arg.getCodeBlock().returns()){
             return arg.getCodeBlock().aconst_null().areturn();
         }
         return arg.getCodeBlock();
