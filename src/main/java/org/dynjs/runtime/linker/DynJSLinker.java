@@ -14,6 +14,7 @@ import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynString;
+import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
@@ -56,13 +57,18 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             }
         } else if (callSiteDescriptor.getName().startsWith("dynjs:compile")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
-                if ("function".equals(callSiteDescriptor.getNameToken(2))) {
+                if ("lookup".equals(callSiteDescriptor.getNameToken(2))) {
+                    MethodType type = methodType(CodeBlock.class, int.class);
+                    MethodHandle retrieveMH = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
+                    return new GuardedInvocation(retrieveMH, null);
+                } else if ("function".equals(callSiteDescriptor.getNameToken(2))) {
                     MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
                     MethodHandle compile = lookup().findVirtual(DynJS.class, "compile", targetType);
                     return new GuardedInvocation(compile, null);
                 }
             }
         }
+
         return null;
     }
 
