@@ -151,7 +151,7 @@ public class Executor implements Opcodes {
         };
     }
 
-    public Statement defineFunction(String identifier, List<String> args, Statement block) {
+    public Statement defineFunction(String identifier, List<String> args) {
         return null;
     }
 
@@ -329,5 +329,41 @@ public class Executor implements Opcodes {
 
     public Statement defineQueOp(Statement ex1, Statement ex2, Statement ex3) {
         return null;
+    }
+
+    public Statement defineThisLiteral() {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement defineNullLiteral() {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement defineRegExLiteral(String s) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement defineTrueLiteral() {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement defineFalseLiteral() {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement defineHexaLiteral(String s) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement executeNew(Statement leftHandSideExpression10) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement resolveByField(String s, Statement leftHandSideExpression13) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Statement defineByIndex(Statement leftHandSideExpression11) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 }

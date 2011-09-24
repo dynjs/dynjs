@@ -330,23 +330,28 @@ leftHandSideExpression returns [Statement value]
 	| memberExpression
 	;
 
-newExpression
+newExpression returns [Statement value]
 	: ^( NEW leftHandSideExpression )
+	{ $value = executor.executeNew($leftHandSideExpression.value); }
 	;
 
 functionDeclaration returns [Statement value]
 @init { List<String> args = new ArrayList<String>(); }
-	: ^( FUNCTION id=Identifier? ^( ARGS (ai=Identifier {args.add($ai.text);})* ) block )
-	{ $value = executor.defineFunction($id.text, args, $block.value); }
+	:    ^(FUNCTION id=Identifier? ^( ARGS (ai=Identifier {args.add($ai.text);})* )
+	{ $value = executor.defineFunction($id.text, args); }
+            block)
 	;
 
 callExpression
 	: ^( CALL leftHandSideExpression ^( ARGS expr* ) )
 	;
 	
-memberExpression
-	: ^( BYINDEX leftHandSideExpression expression )
+memberExpression returns [Statement value]
+	: ^( BYINDEX leftHandSideExpression
+	{ $value = executor.defineByIndex($leftHandSideExpression.value); }
+	        expression )
 	| ^( BYFIELD leftHandSideExpression Identifier )
+	{ $value = executor.resolveByField($Identifier.text, $leftHandSideExpression.value); }
 	;
 
 primaryExpression returns [Statement value]
@@ -358,20 +363,26 @@ primaryExpression returns [Statement value]
 
 literal returns [Statement value]
 	: THIS
+	{ $value = executor.defineThisLiteral();  }
 	| NULL
+	{ $value = executor.defineNullLiteral();  }
 	| booleanLiteral
+	{ $value = $booleanLiteral.value;  }
 	| numericLiteral
 	{ $value = $numericLiteral.value;  }
 	| StringLiteral
 	{ $value = executor.defineStringLiteral($StringLiteral.text);  }
 	| RegularExpressionLiteral
+	{ $value = executor.defineRegExLiteral($RegularExpressionLiteral.text);  }
 	| arrayLiteral
 	| objectLiteral
 	;
 
-booleanLiteral
+booleanLiteral returns [Statement value]
 	: TRUE
+	{ $value = executor.defineTrueLiteral();  }
 	| FALSE
+	{ $value = executor.defineFalseLiteral();  }
 	;
 
 numericLiteral returns [Statement value]
@@ -380,6 +391,7 @@ numericLiteral returns [Statement value]
 	| OctalIntegerLiteral
 	{ $value = executor.defineOctalLiteral($OctalIntegerLiteral.text);  }
 	| HexIntegerLiteral
+	{ $value = executor.defineHexaLiteral($HexIntegerLiteral.text);  }
 	;
 
 arrayLiteral
