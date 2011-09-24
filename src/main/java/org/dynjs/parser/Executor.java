@@ -180,11 +180,15 @@ public class Executor implements Opcodes {
                         .bipush(args.size())
                         .anewarray(p(String.class))
                         .astore(4);
-                for (String arg : args) {
+
+                for (int i = 0; i < args.size(); i++) {
                     codeBlock = codeBlock
-                            .ldc(arg)
+                            .aload(4)
+                            .bipush(i)
+                            .ldc(args.get(i))
                             .aastore();
                 }
+
                 codeBlock = codeBlock
                         .aload(1)
                         .bipush(slot)
