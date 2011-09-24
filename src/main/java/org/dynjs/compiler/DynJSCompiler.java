@@ -28,7 +28,7 @@ public class DynJSCompiler {
 
     private static final AtomicInteger counter = new AtomicInteger(0);
     private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private final DynamicClassLoader classLoader = new DynamicClassLoader();
 
     public Function compile(final DynFunction arg) {
