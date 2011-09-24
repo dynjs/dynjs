@@ -32,6 +32,7 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -61,7 +62,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock(expr.getCodeBlock())
+                return newCodeBlock(expr.getCodeBlock())
                         .aprintln();
             }
         };
@@ -71,7 +72,7 @@ public class Executor implements Opcodes {
         return declareVar(id, new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
+                return newCodeBlock()
                         .getstatic(p(DynPrimitiveUndefined.class), "UNDEFINED", ci(DynPrimitiveUndefined.class));
             }
         });
@@ -85,7 +86,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock(expr.getCodeBlock())
+                return newCodeBlock(expr.getCodeBlock())
                         .astore(3)
                         .aload(2)
                         .ldc(id)
@@ -112,7 +113,7 @@ public class Executor implements Opcodes {
             @Override
             public CodeBlock getCodeBlock() {
                 String instruction = "dynjs:bop:" + op;
-                return CodeBlock.newCodeBlock()
+                return newCodeBlock()
                         .append(l.getCodeBlock())
                         .append(r.getCodeBlock())
                         .invokedynamic(instruction, sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
@@ -124,7 +125,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
+                return newCodeBlock()
                         .aload(1)
                         .ldc(literal)
                         .invokevirtual(p(DynThreadContext.class), "defineStringLiteral", sig(DynAtom.class, String.class));
@@ -136,7 +137,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
+                return newCodeBlock()
                         .aload(1)
                         .ldc(value)
                         .invokevirtual(p(DynThreadContext.class), "defineOctalLiteral", sig(DynPrimitiveNumber.class, String.class));
@@ -148,7 +149,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
+                return newCodeBlock()
                         .aload(2)
                         .ldc(id.getText())
                         .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
@@ -160,7 +161,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
+                return newCodeBlock()
                         .aload(1)
                         .ldc(value)
                         .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynPrimitiveNumber.class, String.class));
