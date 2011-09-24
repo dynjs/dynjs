@@ -39,6 +39,15 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 public class Executor implements Opcodes {
 
     private DynJSCompiler compiler = new DynJSCompiler();
+    private final DynThreadContext context;
+
+    public Executor(DynThreadContext context) {
+        this.context = context;
+    }
+
+    public DynThreadContext getContext() {
+        return context;
+    }
 
     public List<Statement> program(final List<Statement> blockContent) {
         return blockContent;
