@@ -48,6 +48,11 @@ public class ParseIntTest {
         assertThat(parseInt(new DynString("- 3"))).isNotEqualTo(NAN);
     }
 
+    @Test
+    public void numbersStartingWith0xIsHexadecimal(){
+        assertThatValueOf(parseInt(new DynString("0xff"))).isEqualTo(0xff);
+    }
+
     private DoubleAssert assertThatValueOf(DynNumber number) {
         return assertThat(number.getValue());
     }
