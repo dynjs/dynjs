@@ -39,7 +39,7 @@ public class DynThreadContext {
      *
      * @param block
      */
-    public Integer store(CodeBlock block) {
+    public int store(CodeBlock block) {
         Integer slot = storageCounter.getAndIncrement();
         storage.put(slot, block);
         return slot;
@@ -50,7 +50,7 @@ public class DynThreadContext {
      * @param id
      * @return
      */
-    public CodeBlock retrieve(Integer id){
+    public CodeBlock retrieve(int id){
         return storage.get(id);
     }
 }
