@@ -133,7 +133,6 @@ public class DynJSTest {
 
         assertThat(((Function)actual).call(context, scope, new DynAtom[]{}))
                 .isNull();
-
     }
 
     //
