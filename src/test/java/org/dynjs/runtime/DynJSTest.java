@@ -147,6 +147,19 @@ public class DynJSTest {
                 .isNull();
     }
 
+    @Test
+    public void buildFunctionWithReturn() {
+        dynJS.eval(context, scope, "var x = function(){return 1+1;};");
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+                .isNotNull()
+                .isInstanceOf(DynNumber.class);
+    }
+
     //
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {

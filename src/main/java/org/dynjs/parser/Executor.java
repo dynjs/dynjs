@@ -22,6 +22,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
@@ -66,8 +67,8 @@ public class Executor implements Opcodes {
         };
     }
 
-    public Statement returnStatement(Statement expr) {
-        return null;
+    public Statement returnStatement(final Statement expr) {
+        return new ReturnStatement(expr);
     }
 
     public Statement declareVar(final CommonTree id) {
@@ -398,4 +399,5 @@ public class Executor implements Opcodes {
     private CodeBlock newCodeBlock() {
         return CodeBlock.newCodeBlock();
     }
+
 }
