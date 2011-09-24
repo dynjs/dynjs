@@ -1,7 +1,7 @@
 package org.dynjs.compiler;
 
 import me.qmx.internal.org.objectweb.asm.ClassReader;
-import me.qmx.internal.org.objectweb.asm.util.TraceClassVisitor;
+import me.qmx.internal.org.objectweb.asm.util.CheckClassAdapter;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
@@ -87,7 +87,7 @@ public class DynJSCompiler {
     private Class<?> defineClass(String className, byte[] bytecode) {
         if (DEBUG) {
             ClassReader reader = new ClassReader(bytecode);
-            reader.accept(new TraceClassVisitor(new PrintWriter(System.out)), ClassReader.EXPAND_FRAMES);
+            CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
         return classLoader.define(className.replace('/', '.'), bytecode);
     }
