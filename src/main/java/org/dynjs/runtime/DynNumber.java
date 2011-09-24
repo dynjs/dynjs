@@ -2,8 +2,11 @@ package org.dynjs.runtime;
 
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
+import static java.lang.Double.*;
+
 public class DynNumber extends DynObject {
 
+    public static final DynNumber NAN = new DynNumber(NaN);
     private final double value;
 
     public DynNumber(DynPrimitiveNumber primitiveNumber) {
@@ -31,10 +34,21 @@ public class DynNumber extends DynObject {
     }
 
     public static DynNumber parseInt(final DynString string, final DynNumber radix) {
+        if(string.equals("")){
+            return NAN;
+        }
         return new DynNumber(0);
     }
 
     public double getValue() {
         return value;
+    }
+
+    public String toString(){
+        return isNaN() ? "NaN" : "" + getValue();
+    }
+
+    private boolean isNaN() {
+        return Double.isNaN(getValue());
     }
 }
