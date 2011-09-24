@@ -171,7 +171,7 @@ public class Executor implements Opcodes {
     public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
         // put arguments on stack
         final Integer slot = getContext().store(block.getCodeBlock());
-        Statement statement = new Statement() {
+        final Statement statement = new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
                 CodeBlock codeBlock = newCodeBlock();
@@ -200,9 +200,19 @@ public class Executor implements Opcodes {
                         .aload(4)
                         .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
+                if (identifier != null) {
+                    codeBlock = codeBlock
+                            .astore(3)
+                            .aload(2)
+                            .ldc(identifier)
+                            .aload(3)
+                            .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                }
+
                 return codeBlock;
             }
         };
+
         return statement;
     }
 
