@@ -32,7 +32,6 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -62,7 +61,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr.getCodeBlock())
+                return newCodeBlock(expr)
                         .aprintln();
             }
         };
@@ -86,7 +85,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr.getCodeBlock())
+                return newCodeBlock(expr)
                         .astore(3)
                         .aload(2)
                         .ldc(id)
@@ -420,5 +419,17 @@ public class Executor implements Opcodes {
 
     public Statement defineByIndex(Statement leftHandSideExpression11) {
         return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public CodeBlock newCodeBlock(Statement stmt) {
+        if (stmt != null) {
+            return stmt.getCodeBlock();
+        } else {
+            return newCodeBlock();
+        }
+    }
+
+    private CodeBlock newCodeBlock() {
+        return CodeBlock.newCodeBlock();
     }
 }
