@@ -18,10 +18,12 @@ package org.dynjs.parser;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.DynAtom;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
@@ -30,7 +32,9 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -65,13 +69,17 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final CommonTree id, final Statement expr) {
+        return declareVar(id.getText(), expr);
+    }
+
+    public Statement declareVar(final String id, final Statement expr) {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock(expr.getCodeBlock())
                         .astore(3)
                         .aload(2)
-                        .ldc(id.getText())
+                        .ldc(id)
                         .aload(3)
                         .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
@@ -147,6 +155,43 @@ public class Executor implements Opcodes {
                         .aload(1)
                         .ldc(value)
                         .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynPrimitiveNumber.class, String.class));
+            }
+        };
+    }
+
+    public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
+        // put arguments on stack
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                CodeBlock codeBlock = CodeBlock.newCodeBlock()
+                        .prepend(block.getCodeBlock())
+                        .newobj(p(CodeBlock.class))
+                        .dup()
+                        .invokespecial(p(CodeBlock.class), "<init>", "()V")
+                        .astore(3);
+                if (identifier != null) {
+                    codeBlock = codeBlock.ldc(identifier);
+                } else {
+                    codeBlock = codeBlock.aconst_null();
+                }
+                codeBlock = codeBlock
+                        .bipush(args.size())
+                        .anewarray(p(String.class))
+                        .astore(4);
+                for (String arg : args) {
+                    codeBlock = codeBlock
+                            .ldc(arg)
+                            .aastore();
+                }
+                codeBlock = codeBlock
+                        .aload(1)
+                        .invokevirtual(p(DynThreadContext.class), "getRuntime", sig(DynJS.class))
+                        .aload(3)
+                        .aload(4)
+                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+
+                return codeBlock;
             }
         };
     }

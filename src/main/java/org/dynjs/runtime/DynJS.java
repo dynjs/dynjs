@@ -15,11 +15,13 @@
  */
 package org.dynjs.runtime;
 
+import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.SyntaxError;
@@ -45,6 +47,7 @@ public class DynJS {
     }
 
     public void eval(DynThreadContext context, Scope scope, String expression) {
+        context.setRuntime(this);
         List<Statement> result;
 
         try {
@@ -68,5 +71,9 @@ public class DynJS {
         walker.setExecutor(new Executor());
         walker.program();
         return walker.getResult();
+    }
+
+    public Function compile(CodeBlock codeBlock, String... args) {
+        return this.compiler.compile(new DynFunction(codeBlock, args));
     }
 }
