@@ -78,6 +78,7 @@ statement returns [Statement value]
 	| variableDeclaration
 	    {  $value = $variableDeclaration.value;   }
 	| expression
+	    {  $value = $expression.value;   }
 	| printStatement
         { $value = $printStatement.value; }
 	| ifStatement
