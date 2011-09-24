@@ -34,7 +34,7 @@ public class DynNumber extends DynObject {
     }
 
     public static DynNumber parseInt(final DynString string, final DynNumber radix) {
-        String given = string.toString().trim();
+        String given = string.toString().trim().toLowerCase();
 
         if (given.equals("")) {
             return NAN;
@@ -46,7 +46,23 @@ public class DynNumber extends DynObject {
             return NAN;
         }
 
+        if (firstChar == '0') {
+            if (given.startsWith("0x")) {
+                return fromHex(removeRightInvalidCharacter
+                        (given.substring(2), 16));
+            }
+        }
+
         return new DynNumber(0);
+    }
+
+    private static DynNumber fromHex(String value) {
+        return new DynNumber(1);
+    }
+
+    private static String removeRightInvalidCharacter(String given, int radix) {
+        System.out.println("-->" + given);
+        return "";
     }
 
     public double getValue() {
