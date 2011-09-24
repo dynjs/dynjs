@@ -124,26 +124,26 @@ public class DynJSTest {
     }
 
     @Test
-    public void buildFunctionWithBody(){
+    public void buildFunctionWithBody() {
         dynJS.eval(context, scope, "var x = function(a,b){var w = (1 + 2) * 3;}");
         DynAtom actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function)actual).call(context, scope, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
                 .isNull();
     }
 
     @Test
-    public void buildFunctionWithMultipleStatementBody(){
+    public void buildFunctionWithMultipleStatementBody() {
         dynJS.eval(context, scope, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
         DynAtom actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function)actual).call(context, scope, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
                 .isNull();
     }
 
