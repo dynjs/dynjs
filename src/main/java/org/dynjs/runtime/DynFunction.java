@@ -35,7 +35,7 @@ public class DynFunction extends DynObject {
     }
 
     private void initBuiltins() {
-        setProperty("construct", Functions.CONSTRUCTOR);
+//        setProperty("construct", Functions.CONSTRUCTOR);
     }
 
     public CodeBlock getCodeBlock() {
