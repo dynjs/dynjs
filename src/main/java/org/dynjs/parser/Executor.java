@@ -23,7 +23,6 @@ import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
@@ -170,20 +169,12 @@ public class Executor implements Opcodes {
 
     public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
         // put arguments on stack
-        return new Statement() {
+        final Integer slot = getContext().store(block.getCodeBlock());
+        Statement statement = new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                        .prepend(block.getCodeBlock())
-                        .newobj(p(CodeBlock.class))
-                        .dup()
-                        .invokespecial(p(CodeBlock.class), "<init>", "()V")
-                        .astore(3);
-                if (identifier != null) {
-                    codeBlock = codeBlock.ldc(identifier);
-                } else {
-                    codeBlock = codeBlock.aconst_null();
-                }
+                CodeBlock codeBlock = newCodeBlock();
+
                 codeBlock = codeBlock
                         .bipush(args.size())
                         .anewarray(p(String.class))
@@ -195,18 +186,14 @@ public class Executor implements Opcodes {
                 }
                 codeBlock = codeBlock
                         .aload(1)
-                        .invokevirtual(p(DynThreadContext.class), "getRuntime", sig(DynJS.class))
+                        .bipush(slot)
                         .aload(3)
                         .aload(4)
-                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
+                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynThreadContext.class, Integer.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
                 return codeBlock;
             }
         };
-    }
-
-    public Statement defineFunction(String identifier, List<String> args) {
-        return null;
+        return statement;
     }
 
     public Statement defineShlOp(Statement l, Statement r) {

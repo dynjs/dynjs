@@ -338,8 +338,8 @@ newExpression returns [Statement value]
 functionDeclaration returns [Statement value]
 @init { List<String> args = new ArrayList<String>(); }
 	:    ^(FUNCTION id=Identifier? ^( ARGS (ai=Identifier {args.add($ai.text);})* )
-	{ $value = executor.defineFunction($id.text, args); }
             block)
+	{ $value = executor.defineFunction($id.text, args, $block.value); }
 	;
 
 callExpression
