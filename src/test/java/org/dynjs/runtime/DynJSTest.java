@@ -123,6 +123,19 @@ public class DynJSTest {
                 .isInstanceOf(Function.class);
     }
 
+    @Test
+    public void buildFunctionWithBody(){
+        dynJS.eval(context, scope, "var x = function(a,b){var w = (2+3) / 2}");
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        assertThat(((Function)actual).call(context, scope, new DynAtom[]{}))
+                .isNull();
+
+    }
+
     //
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
