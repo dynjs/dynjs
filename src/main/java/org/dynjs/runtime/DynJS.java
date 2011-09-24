@@ -51,7 +51,7 @@ public class DynJS {
         List<Statement> result;
 
         try {
-            result = parseSourceCode(scope, expression);
+            result = parseSourceCode(context, expression);
             Script script = compiler.compile(result.toArray(new Statement[]{}));
             script.execute(context, scope);
         } catch (RecognitionException e) {
@@ -59,7 +59,7 @@ public class DynJS {
         }
     }
 
-    private List<Statement> parseSourceCode(Scope scope, String code) throws RecognitionException {
+    private List<Statement> parseSourceCode(DynThreadContext context, String code) throws RecognitionException {
         ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
@@ -68,7 +68,7 @@ public class DynJS {
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
-        walker.setExecutor(new Executor());
+        walker.setExecutor(new Executor(context));
         walker.program();
         return walker.getResult();
     }
