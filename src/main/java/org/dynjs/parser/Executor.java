@@ -18,12 +18,11 @@ package org.dynjs.parser;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
-import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
@@ -169,51 +168,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
-        // put arguments on stack
-        final Integer slot = getContext().store(block.getCodeBlock());
-        final Statement statement = new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                CodeBlock codeBlock = newCodeBlock();
-
-                codeBlock = codeBlock
-                        .bipush(args.size())
-                        .anewarray(p(String.class))
-                        .astore(4);
-
-                for (int i = 0; i < args.size(); i++) {
-                    codeBlock = codeBlock
-                            .aload(4)
-                            .bipush(i)
-                            .ldc(args.get(i))
-                            .aastore();
-                }
-
-                codeBlock = codeBlock
-                        .aload(1)
-                        .bipush(slot)
-                        .invokedynamic("dynjs:compile:lookup", sig(CodeBlock.class, DynThreadContext.class, int.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                        .astore(5)
-                        .aload(1)
-                        .invokevirtual(p(DynThreadContext.class), "getRuntime", sig(DynJS.class))
-                        .aload(5)
-                        .aload(4)
-                        .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
-                if (identifier != null) {
-                    codeBlock = codeBlock
-                            .astore(3)
-                            .aload(2)
-                            .ldc(identifier)
-                            .aload(3)
-                            .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-                }
-
-                return codeBlock;
-            }
-        };
-
-        return statement;
+        return new FunctionStatement(getContext(), identifier, args, block);
     }
 
     public Statement defineShlOp(Statement l, Statement r) {
