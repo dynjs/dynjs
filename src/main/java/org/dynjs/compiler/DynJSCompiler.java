@@ -1,6 +1,7 @@
 package org.dynjs.compiler;
 
 import me.qmx.internal.org.objectweb.asm.ClassReader;
+import me.qmx.internal.org.objectweb.asm.tree.AbstractInsnNode;
 import me.qmx.internal.org.objectweb.asm.util.CheckClassAdapter;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
@@ -40,7 +41,7 @@ public class DynJSCompiler {
                             .invokespecial(p(DynFunction.class), "<init>", sig(void.class, String[].class))
                             .voidreturn()
             );
-            defineMethod("call", ACC_PUBLIC | ACC_ABSTRACT, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), arg.getCodeBlock());
+            defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), alwaysReturnWrapper(arg));
         }};
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
         Class<?> functionClass = defineClass(className, bytecode);
@@ -50,6 +51,14 @@ public class DynJSCompiler {
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private CodeBlock alwaysReturnWrapper(DynFunction arg) {
+        AbstractInsnNode last = arg.getCodeBlock().getInstructionList().getLast();
+        if(last == null){
+            return arg.getCodeBlock().aconst_null().areturn();
+        }
+        return arg.getCodeBlock();
     }
 
     public Script compile(final Statement... statements) {
