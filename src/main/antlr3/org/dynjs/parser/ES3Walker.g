@@ -156,8 +156,8 @@ breakStatement
 	;
 
 returnStatement returns [Statement value]
-	: ^( RETURN expression? )
-    { $value = executor.returnStatement($expression.value); }
+	: ^( RETURN ex=expression? )
+    { $value = executor.returnStatement($ex.value); }
 	;
 
 withStatement
@@ -327,6 +327,7 @@ leftHandSideExpression returns [Statement value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
+	{ $value = $newExpression.value;  }
 	| functionDeclaration
 	{ $value = $functionDeclaration.value;  }
 	| callExpression
@@ -349,11 +350,11 @@ callExpression
 	;
 	
 memberExpression returns [Statement value]
-	: ^( BYINDEX leftHandSideExpression
-	{ $value = executor.defineByIndex($leftHandSideExpression.value); }
-	        expression )
+	: ^( BYINDEX leftHandSideExpression expression)
+	{ $value = executor.defineByIndex($leftHandSideExpression.value, $expression.value); }
+
 	| ^( BYFIELD leftHandSideExpression Identifier )
-	{ $value = executor.resolveByField($Identifier.text, $leftHandSideExpression.value); }
+	{ $value = executor.resolveByField($leftHandSideExpression.value, $Identifier.text); }
 	;
 
 primaryExpression returns [Statement value]

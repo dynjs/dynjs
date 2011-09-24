@@ -31,9 +31,7 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class Executor implements Opcodes {
 
@@ -379,11 +377,11 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement resolveByField(String s, Statement leftHandSideExpression13) {
+    public Statement resolveByField(Statement lhs, String field) {
         return null;
     }
 
-    public Statement defineByIndex(Statement leftHandSideExpression11) {
+    public Statement defineByIndex(Statement lhs, Statement index) {
         return null;
     }
 
