@@ -98,8 +98,11 @@ statement returns [Statement value]
 	| withStatement
 	| labelledStatement
 	| switchStatement
+        { $value = $switchStatement.value; }
 	| throwStatement
+        { $value = $throwStatement.value; }
 	| tryStatement
+        { $value = $tryStatement.value; }
 	;
 
 block returns [Statement value]
@@ -193,32 +196,42 @@ labelledStatement
 	: ^( LABELLED Identifier statement )
 	;
 
-switchStatement
-	: ^( SWITCH expression defaultClause? caseClause* )
+switchStatement returns [Statement value]
+@init { List<Statement> cases = new ArrayList<Statement>(); }
+	: ^( SWITCH expression defaultClause? (caseClause { cases.add($caseClause.value); } )* )
+    { $value = executor.switchStatement($expression.value, $defaultClause.value, cases); }
 	;
 
-defaultClause
-	: ^( DEFAULT statement* )
+defaultClause returns [Statement value]
+@init { List<Statement> statements = new ArrayList<Statement>(); }
+	: ^( DEFAULT (statement { statements.add($statement.value); } )* )
+    { $value = executor.switchDefaultClause(statements); }
 	;
 
-caseClause
-	: ^( CASE expression statement* )
+caseClause returns [Statement value]
+@init { List<Statement> statements = new ArrayList<Statement>(); }
+	: ^( CASE expression (statement { statements.add($statement.value); } )* )
+    { $value = executor.switchCaseClause($expression.value, statements); }
 	;
 
-throwStatement
+throwStatement returns [Statement value]
 	: ^( THROW expression )
+    { $value = executor.throwStatement($expression.value); }
 	;
 
-tryStatement
+tryStatement returns [Statement value]
 	: ^( TRY block catchClause? finallyClause? )
+    { $value = executor.tryStatement($block.value, $catchClause.value, $finallyClause.value); }
 	;
 	
-catchClause
+catchClause returns [Statement value]
 	: ^( CATCH Identifier block )
+    { $value = executor.tryCatchClause($Identifier.text, $block.value); }
 	;
 	
-finallyClause
+finallyClause returns [Statement value]
 	: ^( FINALLY block )
+    { $value = executor.tryFinallyClause($block.value); }
 	;
 
 expression returns [Statement value]
@@ -358,7 +371,9 @@ leftHandSideExpression returns [Statement value]
 	| functionDeclaration
 	{ $value = $functionDeclaration.value;  }
 	| callExpression
+	{ $value = $callExpression.value;  }
 	| memberExpression
+	{ $value = $memberExpression.value;  }
 	;
 
 newExpression returns [Statement value]
@@ -372,8 +387,10 @@ functionDeclaration returns [Statement value]
 	{ $value = executor.defineFunction($id.text, args, $block.value); }
 	;
 
-callExpression
-	: ^( CALL leftHandSideExpression ^( ARGS expr* ) )
+callExpression returns [Statement value]
+@init { List<Statement> args = new ArrayList<Statement>(); }
+	: ^( CALL leftHandSideExpression ^( ARGS (expr { args.add($expr.value); } )* ) )
+	{ $value = executor.resolveCallExpr($leftHandSideExpression.value, args);  }
 	;
 	
 memberExpression returns [Statement value]

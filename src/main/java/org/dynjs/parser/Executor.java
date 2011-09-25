@@ -415,4 +415,36 @@ public class Executor implements Opcodes {
     public Statement exprListStatement(List<Statement> exprList) {
         return null;
     }
+
+    public Statement resolveCallExpr(Statement lhs, List<Statement> args) {
+        return null;
+    }
+
+    public Statement switchStatement(Statement expr, Statement _default, List<Statement> cases) {
+        return null;
+    }
+
+    public Statement switchCaseClause(Statement expr, List<Statement> statements) {
+        return null;
+    }
+
+    public Statement switchDefaultClause(List<Statement> statements) {
+        return null;
+    }
+
+    public Statement throwStatement(Statement expression) {
+        return null;
+    }
+
+    public Statement tryStatement(Statement block, Statement _catch, Statement _finally) {
+        return null;
+    }
+
+    public Statement tryCatchClause(String id, Statement block) {
+        return null;
+    }
+
+    public Statement tryFinallyClause(Statement block) {
+        return null;
+    }
 }
