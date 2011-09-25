@@ -117,27 +117,28 @@ variableDeclaration returns [Statement value]
 	   )
 	;
 
-ifStatement
-	: ^( IF expression statement statement? )
+ifStatement returns [Statement value]
+	: ^( IF vbool=expression vthen=statement velse=statement? )
+    { $value = executor.ifStatement($vbool.value, $vthen.value, $velse.value); }
 	;
 
-doStatement
-	: ^( DO statement expression )
+doStatement returns [Statement value]
+	: ^( DO vloop=statement vbool=expression )
+    { $value = executor.doStatement($vbool.value, $vloop.value); }
 	;
 
-whileStatement
-	: ^( WHILE expression statement )
+whileStatement returns [Statement value]
+	: ^( WHILE vbool=expression vloop=statement )
+    { $value = executor.whileStatement($vbool.value, $vloop.value); }
 	;
 
 forStatement
-	: ^(
-	FOR 
-	(
-		^( FORSTEP ( exprOptClause | variableDeclaration ) exprOptClause exprOptClause )
-		| ^( FORITER ( exprClause | variableDeclaration ) exprClause )
-	)
-	statement
-	);
+	: ^( FOR
+         (   ^( FORSTEP ( exprOptClause | variableDeclaration ) exprOptClause exprOptClause )
+         |   ^( FORITER ( exprClause | variableDeclaration ) exprClause )
+         )
+         statement )
+    ;
 
 exprOptClause
 	: ^( EXPR expression? )

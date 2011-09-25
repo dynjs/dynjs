@@ -398,4 +398,15 @@ public class Executor implements Opcodes {
         return CodeBlock.newCodeBlock();
     }
 
+    public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
+        return null;
+    }
+
+    public Statement doStatement(Statement vbool, Statement vloop) {
+        return null;
+    }
+
+    public Statement whileStatement(Statement vbool, Statement vloop) {
+        return null;
+    }
 }
