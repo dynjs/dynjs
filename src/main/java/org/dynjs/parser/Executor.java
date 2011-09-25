@@ -101,15 +101,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineStringLiteral(final String literal) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock()
-                        .aload(1)
-                        .ldc(literal)
-                        .invokevirtual(p(DynThreadContext.class), "defineStringLiteral", sig(DynAtom.class, String.class));
-            }
-        };
+        return new StringLiteralStatement(literal);
     }
 
     public Statement defineOctalLiteral(final String value) {
