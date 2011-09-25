@@ -20,11 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.statement.BlockStatement;
-import org.dynjs.parser.statement.DeclareVarStatement;
-import org.dynjs.parser.statement.DefineNumOpStatement;
-import org.dynjs.parser.statement.FunctionStatement;
-import org.dynjs.parser.statement.ReturnStatement;
+import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
@@ -405,6 +401,18 @@ public class Executor implements Opcodes {
     }
 
     public Statement forIterExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+        return null;
+    }
+
+    public Statement continueStatement(String id) {
+        return null;
+    }
+
+    public Statement breakStatement(String id) {
+        return null;
+    }
+
+    public Statement exprListStatement(List<Statement> exprList) {
         return null;
     }
 }

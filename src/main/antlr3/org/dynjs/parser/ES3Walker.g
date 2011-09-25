@@ -90,7 +90,9 @@ statement returns [Statement value]
 	| forStatement
         { $value = $forStatement.value; }
 	| continueStatement
+        { $value = $continueStatement.value; }
 	| breakStatement
+        { $value = $breakStatement.value; }
 	| returnStatement
         { $value = $returnStatement.value; }
 	| withStatement
@@ -168,17 +170,19 @@ exprClause returns [Statement value]
 	{ $value = $expression.value; }
 	;
 
-continueStatement
+continueStatement returns [Statement value]
 	: ^( CONTINUE Identifier? )
+    { $value = executor.continueStatement($Identifier.text); }
 	;
 
-breakStatement
+breakStatement returns [Statement value]
 	: ^( BREAK Identifier? )
+    { $value = executor.breakStatement($Identifier.text); }
 	;
 
 returnStatement returns [Statement value]
-	: ^( RETURN ex=expression? )
-    { $value = executor.returnStatement($ex.value); }
+	: ^( RETURN expression? )
+    { $value = executor.returnStatement($expression.value); }
 	;
 
 withStatement
@@ -218,9 +222,11 @@ finallyClause
 	;
 
 expression returns [Statement value]
+@init { List<Statement> exprList = new ArrayList<Statement>(); }
 	: expr
 	{ $value = $expr.value; }
-	| ^( CEXPR expr+ )
+	| ^( CEXPR (expr {exprList.add($expr.value);})+ )
+    { $value = executor.exprListStatement(exprList);   }
 	;
 
 expr returns [Statement value]
