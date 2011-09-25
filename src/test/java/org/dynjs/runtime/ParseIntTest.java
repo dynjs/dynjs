@@ -1,7 +1,6 @@
 package org.dynjs.runtime;
 
 import org.fest.assertions.DoubleAssert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.dynjs.runtime.DynNumber.NAN;
@@ -22,19 +21,19 @@ public class ParseIntTest {
     // 8.
 
     @Test
-    public void spacesWillBeTrimmed(){
+    public void spacesWillBeTrimmed() {
         assertThat(parseInt(new DynString("  "))).as("blank spaces").isEqualTo(NAN);
         assertThatValueOf(parseInt(new DynString("  0 "))).as("integer number").isEqualTo(0);
         assertThatValueOf(parseInt(new DynString("  0.0 "))).as("float number").isEqualTo(0);
     }
 
     @Test
-    public void emptyStringReturnsNaN(){
+    public void emptyStringReturnsNaN() {
         assertThat(parseInt(new DynString(""))).isEqualTo(NAN);
     }
 
     @Test
-    public void validNumbersStartWithPlusMinusOrDigits(){
+    public void validNumbersStartWithPlusMinusOrDigits() {
         assertThat(parseInt(new DynString("a"))).isEqualTo(NAN);
         assertThat(parseInt(new DynString("x"))).isEqualTo(NAN);
         assertThat(parseInt(new DynString("FE"))).isEqualTo(NAN);
@@ -49,9 +48,8 @@ public class ParseIntTest {
         assertThat(parseInt(new DynString("- 3"))).isNotEqualTo(NAN);
     }
 
-    @Ignore
     @Test
-    public void numbersStartingWith0xIsHexadecimal(){
+    public void numbersStartingWith0xIsHexadecimal() {
         assertThatValueOf(parseInt(new DynString("0xff"))).isEqualTo(0xff);
     }
 

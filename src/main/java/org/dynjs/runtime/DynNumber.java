@@ -74,12 +74,12 @@ public class DynNumber extends DynObject {
     }
 
     private static DynNumber fromHex(String value) {
-        return new DynNumber(1);
+        return new DynNumber(Integer.parseInt(value, 16));
     }
 
     private static String removeRightInvalidCharacter(String given, int radix) {
         System.out.println("-->" + given);
-        return "";
+        return given;
     }
 
     public double getValue() {
