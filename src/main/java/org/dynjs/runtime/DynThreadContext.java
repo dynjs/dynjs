@@ -56,10 +56,11 @@ public class DynThreadContext {
 
     /**
      * retrieves codeblock from internal storage
+     *
      * @param id
      * @return
      */
-    public CodeBlock retrieve(int id){
+    public CodeBlock retrieve(int id) {
         return storage.get(id);
     }
 }

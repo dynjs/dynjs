@@ -34,7 +34,6 @@ public class IfStatement implements Statement {
                 .prepend(thenFn.getCodeBlock())
                 .prepend(elseFn.getCodeBlock())
                 .invokedynamic("dynjs:compile:if", sig(void.class, DynAtom.class, Function.class, Function.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
         return codeBlock;
     }
 }
