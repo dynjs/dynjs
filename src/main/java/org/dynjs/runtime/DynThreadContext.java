@@ -1,7 +1,7 @@
 package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
+import org.dynjs.api.Scope;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import java.util.HashMap;
@@ -13,6 +13,7 @@ public class DynThreadContext {
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();
+    private Scope scope;
 
     public DynJS getRuntime() {
         return this.runtime.get();
@@ -32,6 +33,14 @@ public class DynThreadContext {
 
     public DynPrimitiveNumber defineOctalLiteral(final String value) {
         return new DynPrimitiveNumber(value, 8);
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     /**
