@@ -96,7 +96,9 @@ statement returns [Statement value]
 	| returnStatement
         { $value = $returnStatement.value; }
 	| withStatement
+        { $value = $withStatement.value; }
 	| labelledStatement
+        { $value = $labelledStatement.value; }
 	| switchStatement
         { $value = $switchStatement.value; }
 	| throwStatement
@@ -188,12 +190,14 @@ returnStatement returns [Statement value]
     { $value = executor.returnStatement($expression.value); }
 	;
 
-withStatement
+withStatement returns [Statement value]
 	: ^( WITH expression statement )
+    { $value = executor.withStatement($expression.value, $statement.value); }
 	;
 
-labelledStatement
+labelledStatement returns [Statement value]
 	: ^( LABELLED Identifier statement )
+    { $value = executor.labelledStatement($Identifier.text, $statement.value); }
 	;
 
 switchStatement returns [Statement value]
@@ -396,7 +400,6 @@ callExpression returns [Statement value]
 memberExpression returns [Statement value]
 	: ^( BYINDEX leftHandSideExpression expression)
 	{ $value = executor.defineByIndex($leftHandSideExpression.value, $expression.value); }
-
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	{ $value = executor.resolveByField($leftHandSideExpression.value, $Identifier.text); }
 	;
@@ -422,7 +425,9 @@ literal returns [Statement value]
 	| RegularExpressionLiteral
 	{ $value = executor.defineRegExLiteral($RegularExpressionLiteral.text);  }
 	| arrayLiteral
+	{ $value = $arrayLiteral.value;  }
 	| objectLiteral
+	{ $value = $objectLiteral.value;  }
 	;
 
 booleanLiteral returns [Statement value]
@@ -441,16 +446,26 @@ numericLiteral returns [Statement value]
 	{ $value = executor.defineHexaLiteral($HexIntegerLiteral.text);  }
 	;
 
-arrayLiteral
-	: ^( ARRAY ( ^( ITEM expr? ) )* )
+arrayLiteral returns [Statement value]
+@init { List<Statement> exprs = new ArrayList<Statement>(); }
+	: ^( ARRAY ( ^( ITEM expr? { exprs.add($expr.value); } ) )* )
+	{ $value = executor.arrayLiteral(exprs);  }
 	;
 
-objectLiteral
-	: ^( OBJECT ( ^( NAMEDVALUE propertyName expr) )* )
+objectLiteral returns [Statement value]
+@init { List<Statement> namedValues = new ArrayList<Statement>(); }
+	: ^( OBJECT
+	    ( ^( NAMEDVALUE propertyName expr
+	       { final Statement st = executor.namedValue($propertyName.value, $expr.value); namedValues.add(st); }
+	       ) )* )
+	{ $value = executor.objectValue(namedValues);  }
 	;
 
-propertyName
+propertyName returns [Statement value]
 	: Identifier
+	{ $value = executor.propertyNameId($Identifier.text);  }
 	| StringLiteral
+	{ $value = executor.propertyNameString($StringLiteral.text);  }
 	| numericLiteral
+	{ $value = executor.propertyNameNumeric($numericLiteral.value);  }
 	;

@@ -447,4 +447,36 @@ public class Executor implements Opcodes {
     public Statement tryFinallyClause(Statement block) {
         return null;
     }
+
+    public Statement withStatement(Statement expression, Statement statement) {
+        return null;
+    }
+
+    public Statement labelledStatement(String label, Statement statement) {
+        return null;
+    }
+
+    public Statement objectValue(List<Statement> namedValues) {
+        return null;
+    }
+
+    public Statement propertyNameId(String id) {
+        return null;
+    }
+
+    public Statement propertyNameString(String string) {
+        return null;
+    }
+
+    public Statement propertyNameNumeric(Statement numericLiteral) {
+        return null;
+    }
+
+    public Statement namedValue(Statement propertyName, Statement expr) {
+        return null;
+    }
+
+    public Statement arrayLiteral(List<Statement> exprs) {
+        return null;
+    }
 }
