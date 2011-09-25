@@ -4,4 +4,4 @@ var x = function(a) {
     } else {
         return 2;
     }
-}
+};
