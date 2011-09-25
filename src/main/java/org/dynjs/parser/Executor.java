@@ -137,15 +137,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineNumberLiteral(final String value) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock()
-                        .aload(1)
-                        .ldc(value)
-                        .invokevirtual(p(DynThreadContext.class), "defineDecimalLiteral", sig(DynPrimitiveNumber.class, String.class));
-            }
-        };
+        return new NumberLiteralStatement(value);
     }
 
     public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
