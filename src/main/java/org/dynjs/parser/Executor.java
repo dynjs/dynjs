@@ -361,7 +361,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
-        return null;
+        return new IfStatement(getContext(), vbool, vthen, velse);
     }
 
     public Statement doStatement(Statement vbool, Statement vloop) {
