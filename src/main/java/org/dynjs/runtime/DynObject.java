@@ -59,7 +59,7 @@ public class DynObject implements DynAtom, Scope {
 
     @Override
     public DynAtom resolve(String name) {
-        if(this.properties.containsKey(name)){
+        if (this.properties.containsKey(name)) {
             return this.properties.get(name).getAttribute("value");
         }
         throw new ReferenceError();
@@ -68,6 +68,16 @@ public class DynObject implements DynAtom, Scope {
     @Override
     public void define(String property, DynAtom value) {
         setProperty(property, value);
+    }
+
+    public boolean toBoolean(final DynAtom value) {
+        if (value instanceof DynObject){
+            return true;
+        } else if(value instanceof DynNumber) {
+            DynNumber number = (DynNumber)value;
+            return !(number.isNaN())
+        }
+        return false;
     }
 
 }
