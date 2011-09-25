@@ -24,11 +24,13 @@ public class RT {
 
     public static final MethodHandle FUNCTION_CALL;
 
-    static {
-        MethodType type = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
-        MethodHandle handle = Lookup.PUBLIC.findVirtual(Function.class, "call", type);
+    public static final MethodHandle IF_STATEMENT;
 
-        FUNCTION_CALL = handle;
+    static {
+        MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
+        FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
+        MethodType ifStatementMethodType = methodType(Function.class, boolean.class, Function.class, Function.class);
+        IF_STATEMENT = Lookup.PUBLIC.findStatic(RT.class, "ifStatement", ifStatementMethodType);
     }
 
     /**
@@ -38,6 +40,14 @@ public class RT {
      */
     public static void print(DynAtom atom) {
         System.out.println(atom);
+    }
+
+    public static Function ifStatement(boolean condition, Function target, Function fallback) {
+        if (condition) {
+            return target;
+        } else {
+            return fallback;
+        }
     }
 
 }

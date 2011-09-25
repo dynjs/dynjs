@@ -21,6 +21,7 @@ import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
+import static java.lang.invoke.MethodHandles.guardWithTest;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 
@@ -65,6 +66,9 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
                     MethodHandle compile = lookup().findVirtual(DynJS.class, "compile", targetType);
                     return new GuardedInvocation(compile, null);
+                } else if ("if".equals(callSiteDescriptor.getNameToken(2))) {
+                    MethodHandle targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
+                    return new GuardedInvocation(targetHandle, null);
                 }
             }
         }

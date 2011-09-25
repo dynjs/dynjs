@@ -17,6 +17,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Test;
@@ -169,10 +170,14 @@ public class DynJSTest {
     @Test
     public void testIfStatement() {
         dynJS.eval(context, scope, DynJSTest.class.getResourceAsStream("01_if_statement.js"));
-        assertThat(scope.resolve("x"))
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
+        DynAtom result = ((Function) actual).call(context, scope, new DynAtom[]{DynPrimitiveBoolean.TRUE});
+        assertThat(result)
+                .isNotNull();
     }
 //
 //    @Test
