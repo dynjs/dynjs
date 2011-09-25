@@ -86,7 +86,7 @@ public class DynNumber extends DynObject {
         return value;
     }
 
-    public static boolean isNaN(final DynNumber number) {
-        return Double.isNaN(number.getValue());
+    public boolean isNaN() {
+        return Double.isNaN(getValue());
     }
 }

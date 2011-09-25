@@ -17,10 +17,14 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.dynjs.runtime.primitives.DynPrimitiveBoolean.FALSE;
+import static org.dynjs.runtime.primitives.DynPrimitiveBoolean.TRUE;
 
 public class DynObject implements DynAtom, Scope {
 
@@ -70,14 +74,18 @@ public class DynObject implements DynAtom, Scope {
         setProperty(property, value);
     }
 
-    public boolean toBoolean(final DynAtom value) {
-        if (value instanceof DynObject){
-            return true;
-        } else if(value instanceof DynNumber) {
+    public static DynAtom toBoolean(final DynAtom value) {
+        if(value instanceof DynNumber) {
             DynNumber number = (DynNumber)value;
-            return !(number.isNaN())
+            return (number.isNaN() || number.getValue() == 0) ? FALSE : TRUE;
+        } else if(value instanceof DynPrimitiveBoolean) {
+            return value;
+        } else if(value instanceof DynString) {
+            System.out.println("Is string");
+            DynString string = (DynString)value;
+            return string.toString().equals("") ? FALSE : TRUE;
         }
-        return false;
+        return (value instanceof DynObject) ? TRUE : FALSE;
     }
 
 }
