@@ -409,4 +409,20 @@ public class Executor implements Opcodes {
     public Statement whileStatement(Statement vbool, Statement vloop) {
         return null;
     }
+
+    public Statement forStepVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
+        return null;
+    }
+
+    public Statement forStepExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+        return null;
+    }
+
+    public Statement forIterVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
+        return null;
+    }
+
+    public Statement forIterExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+        return null;
+    }
 }

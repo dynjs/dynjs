@@ -82,9 +82,13 @@ statement returns [Statement value]
 	| printStatement
         { $value = $printStatement.value; }
 	| ifStatement
+        { $value = $ifStatement.value; }
 	| doStatement
+        { $value = $doStatement.value; }
 	| whileStatement
+        { $value = $whileStatement.value; }
 	| forStatement
+        { $value = $forStatement.value; }
 	| continueStatement
 	| breakStatement
 	| returnStatement
@@ -132,20 +136,36 @@ whileStatement returns [Statement value]
     { $value = executor.whileStatement($vbool.value, $vloop.value); }
 	;
 
-forStatement
+forStatement returns [Statement value]
+@init { boolean isStep = false; boolean isIter = false; boolean isVar = false; }
 	: ^( FOR
-         (   ^( FORSTEP ( exprOptClause | variableDeclaration ) exprOptClause exprOptClause )
-         |   ^( FORITER ( exprClause | variableDeclaration ) exprClause )
+         (   ^( FORSTEP ( stepOpt1=exprOptClause | stepVar=variableDeclaration  {isVar = true;} ) stepOpt2=exprOptClause stepOpt3=exprOptClause )
+         {  isStep = true;   }
+         |   ^( FORITER ( iterExpr1=exprClause | iterVar=variableDeclaration  {isVar = true;} ) iterExpr2=exprClause )
+         {  isIter = true;   }
          )
          statement )
+    {
+        if (isStep && isVar) {
+            $value = executor.forStepVar($stepVar.value, $stepOpt2.value, $stepOpt3.value, $statement.value);
+        } else if (isStep && !isVar) {
+            $value = executor.forStepExpr($stepOpt1.value, $stepOpt2.value, $stepOpt3.value, $statement.value);
+        } else if (isIter && isVar) {
+            $value = executor.forIterVar($iterVar.value, $iterExpr2.value, $stepOpt3.value, $statement.value);
+        } else if (isStep && !isVar) {
+            $value = executor.forIterExpr($iterExpr1.value, $iterExpr2.value, $stepOpt3.value, $statement.value);
+        }
+    }
     ;
 
-exprOptClause
+exprOptClause returns [Statement value]
 	: ^( EXPR expression? )
+	{ $value = $expression.value; }
 	;
 
-exprClause
+exprClause returns [Statement value]
 	: ^( EXPR expression )
+	{ $value = $expression.value; }
 	;
 
 continueStatement
