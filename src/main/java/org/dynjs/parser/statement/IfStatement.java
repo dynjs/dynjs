@@ -1,8 +1,15 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Function;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
+
+import java.util.Collections;
+
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IfStatement implements Statement {
 
@@ -20,10 +27,14 @@ public class IfStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        int vboolSlot = context.store(vbool.getCodeBlock());
-        int vthenSlot = context.store(vthen.getCodeBlock());
-        int velseSlot = context.store(velse.getCodeBlock());
-        return CodeBlock.newCodeBlock()
-                ;
+        final FunctionStatement thenFn = new FunctionStatement(context, Collections.<String>emptyList(), this.vthen);
+        final FunctionStatement elseFn = new FunctionStatement(context, Collections.<String>emptyList(), this.velse);
+        CodeBlock codeBlock = CodeBlock.newCodeBlock()
+                .prepend(vbool.getCodeBlock())
+                .prepend(thenFn.getCodeBlock())
+                .prepend(elseFn.getCodeBlock())
+                .invokedynamic("dynjs:compiler:if", sig(void.class, DynAtom.class, Function.class, Function.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+
+        return codeBlock;
     }
 }

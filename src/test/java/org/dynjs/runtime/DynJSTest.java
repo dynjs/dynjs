@@ -165,6 +165,15 @@ public class DynJSTest {
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
         dynJS.eval(context, scope, "print(x);");
     }
+
+    @Test
+    public void testIfStatement() {
+        dynJS.eval(context, scope, DynJSTest.class.getResourceAsStream("01_if_statement.js"));
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+    }
 //
 //    @Test
 //    public void assignsObjectLiterals() {

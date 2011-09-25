@@ -22,6 +22,10 @@ public class FunctionStatement implements Statement {
     private final List<String> args;
     private final Statement block;
 
+    public FunctionStatement(final DynThreadContext context, final List<String> args, final Statement block) {
+        this(context, null, args, block);
+    }
+
     public FunctionStatement(final DynThreadContext context, final String identifier, final List<String> args, final Statement block) {
         this.context = context;
         this.identifier = identifier;
