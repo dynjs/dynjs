@@ -33,10 +33,17 @@ public class DynNumber extends DynObject {
     }
 
     public DynNumber div(final DynNumber other) {
-        if(other.getValue() == 0){
+        if (other.getValue() == 0) {
             return getValue() == 0 ? NAN : (getValue() < 0 ? NEGATIVE_INFINITY : POSITIVE_INFINITY);
         }
         return new DynNumber(getValue() / other.getValue());
+    }
+
+    public DynNumber mod(final DynNumber other) {
+        if (other.getValue() == 0) {
+            return NAN;
+        }
+        return new DynNumber(getValue() % other.getValue());
     }
 
     public static DynNumber parseInt(final DynString string) {
