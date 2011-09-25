@@ -21,6 +21,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.runtime.DynAtom;
@@ -84,17 +85,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final String id, final Statement expr) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr)
-                        .astore(3)
-                        .aload(2)
-                        .ldc(id)
-                        .aload(3)
-                        .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+        return new DeclareVarStatement(expr, id);
     }
 
     public Statement defineAddOp(final Statement l, final Statement r) {
@@ -409,4 +400,5 @@ public class Executor implements Opcodes {
     public Statement whileStatement(Statement vbool, Statement vloop) {
         return null;
     }
+
 }
