@@ -20,10 +20,8 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.statement.BlockStatement;
-import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
@@ -31,9 +29,7 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class Executor implements Opcodes {
 
@@ -66,6 +62,10 @@ public class Executor implements Opcodes {
         };
     }
 
+    public Statement returnStatement(final Statement expr) {
+        return new ReturnStatement(expr);
+    }
+
     public Statement declareVar(final CommonTree id) {
         return declareVar(id, new Statement() {
             @Override
@@ -81,17 +81,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final String id, final Statement expr) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr)
-                        .astore(3)
-                        .aload(2)
-                        .ldc(id)
-                        .aload(3)
-                        .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+        return new DeclareVarStatement(expr, id);
     }
 
     public Statement defineAddOp(final Statement l, final Statement r) {
@@ -107,16 +97,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineNumOp(final String op, final Statement l, final Statement r) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                String instruction = "dynjs:bop:" + op;
-                return newCodeBlock()
-                        .append(l.getCodeBlock())
-                        .append(r.getCodeBlock())
-                        .invokedynamic(instruction, sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+        return new DefineNumOpStatement(op, l, r);
     }
 
     public Statement defineStringLiteral(final String literal) {
@@ -348,39 +329,39 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineThisLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineNullLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineRegExLiteral(String s) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineTrueLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineFalseLiteral() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement defineHexaLiteral(String s) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
     public Statement executeNew(Statement leftHandSideExpression10) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 
-    public Statement resolveByField(String s, Statement leftHandSideExpression13) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+    public Statement resolveByField(Statement lhs, String field) {
+        return null;
     }
 
-    public Statement defineByIndex(Statement leftHandSideExpression11) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+    public Statement defineByIndex(Statement lhs, Statement index) {
+        return null;
     }
 
     public CodeBlock newCodeBlock(Statement stmt) {
@@ -393,5 +374,109 @@ public class Executor implements Opcodes {
 
     private CodeBlock newCodeBlock() {
         return CodeBlock.newCodeBlock();
+    }
+
+    public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
+        return null;
+    }
+
+    public Statement doStatement(Statement vbool, Statement vloop) {
+        return null;
+    }
+
+    public Statement whileStatement(Statement vbool, Statement vloop) {
+        return null;
+    }
+
+    public Statement forStepVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
+        return null;
+    }
+
+    public Statement forStepExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+        return null;
+    }
+
+    public Statement forIterVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
+        return null;
+    }
+
+    public Statement forIterExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+        return null;
+    }
+
+    public Statement continueStatement(String id) {
+        return null;
+    }
+
+    public Statement breakStatement(String id) {
+        return null;
+    }
+
+    public Statement exprListStatement(List<Statement> exprList) {
+        return null;
+    }
+
+    public Statement resolveCallExpr(Statement lhs, List<Statement> args) {
+        return null;
+    }
+
+    public Statement switchStatement(Statement expr, Statement _default, List<Statement> cases) {
+        return null;
+    }
+
+    public Statement switchCaseClause(Statement expr, List<Statement> statements) {
+        return null;
+    }
+
+    public Statement switchDefaultClause(List<Statement> statements) {
+        return null;
+    }
+
+    public Statement throwStatement(Statement expression) {
+        return null;
+    }
+
+    public Statement tryStatement(Statement block, Statement _catch, Statement _finally) {
+        return null;
+    }
+
+    public Statement tryCatchClause(String id, Statement block) {
+        return null;
+    }
+
+    public Statement tryFinallyClause(Statement block) {
+        return null;
+    }
+
+    public Statement withStatement(Statement expression, Statement statement) {
+        return null;
+    }
+
+    public Statement labelledStatement(String label, Statement statement) {
+        return null;
+    }
+
+    public Statement objectValue(List<Statement> namedValues) {
+        return null;
+    }
+
+    public Statement propertyNameId(String id) {
+        return null;
+    }
+
+    public Statement propertyNameString(String string) {
+        return null;
+    }
+
+    public Statement propertyNameNumeric(Statement numericLiteral) {
+        return null;
+    }
+
+    public Statement namedValue(Statement propertyName, Statement expr) {
+        return null;
+    }
+
+    public Statement arrayLiteral(List<Statement> exprs) {
+        return null;
     }
 }
