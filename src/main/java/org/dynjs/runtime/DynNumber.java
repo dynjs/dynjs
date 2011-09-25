@@ -3,11 +3,13 @@ package org.dynjs.runtime;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import static java.lang.Double.NaN;
+import static java.lang.Double.POSITIVE_INFINITY;
 
 public class DynNumber extends DynObject {
 
     public static final DynNumber NAN = new DynNumber(NaN);
     private final double value;
+    private static final DynNumber INFINITY = new DynNumber(POSITIVE_INFINITY);
 
     public DynNumber(DynPrimitiveNumber primitiveNumber) {
         this.value = primitiveNumber.getDoubleValue();
@@ -27,6 +29,13 @@ public class DynNumber extends DynObject {
 
     public DynNumber mul(final DynNumber other) {
         return new DynNumber(this.value * other.value);
+    }
+
+    public DynNumber div(final DynNumber other) {
+        if(other.getValue() == 0){
+            return getValue() == 0 ? NAN : INFINITY;
+        }
+        return new DynNumber(getValue() / other.getValue());
     }
 
     public static DynNumber parseInt(final DynString string) {
