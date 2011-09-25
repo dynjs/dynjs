@@ -165,11 +165,11 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineDivOp(Statement l, Statement r) {
-        return null;
+        return defineNumOp("div", l, r);
     }
 
     public Statement defineModOp(Statement l, Statement r) {
-        return null;
+        return defineNumOp("mod", l, r);
     }
 
     public Statement defineDeleteOp(Statement expression) {
