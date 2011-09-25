@@ -21,10 +21,11 @@ import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.DeclareVarStatement;
+import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
@@ -84,17 +85,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final String id, final Statement expr) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr)
-                        .astore(3)
-                        .aload(2)
-                        .ldc(id)
-                        .aload(3)
-                        .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+        return new DeclareVarStatement(expr, id);
     }
 
     public Statement defineAddOp(final Statement l, final Statement r) {
@@ -110,16 +101,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineNumOp(final String op, final Statement l, final Statement r) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                String instruction = "dynjs:bop:" + op;
-                return newCodeBlock()
-                        .append(l.getCodeBlock())
-                        .append(r.getCodeBlock())
-                        .invokedynamic(instruction, sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+        return new DefineNumOpStatement(op, l, r);
     }
 
     public Statement defineStringLiteral(final String literal) {
