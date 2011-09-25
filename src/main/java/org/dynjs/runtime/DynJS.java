@@ -16,6 +16,7 @@
 package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -25,12 +26,10 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.SyntaxError;
-import org.dynjs.parser.ES3Lexer;
-import org.dynjs.parser.ES3Parser;
-import org.dynjs.parser.ES3Walker;
-import org.dynjs.parser.Executor;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class DynJS {
@@ -59,8 +58,17 @@ public class DynJS {
         }
     }
 
+    public List<Statement> eval(DynThreadContext context, Scope scope, InputStream is) throws IOException, RecognitionException {
+        ES3Lexer lexer = new ES3Lexer(new ANTLRInputStream(is));
+        return parseSourceCode(context, lexer);
+    }
+
     private List<Statement> parseSourceCode(DynThreadContext context, String code) throws RecognitionException {
         ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
+        return parseSourceCode(context, lexer);
+    }
+
+    private List<Statement> parseSourceCode(DynThreadContext context, ES3Lexer lexer) throws RecognitionException {
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
         ES3Parser.program_return program = parser.program();
