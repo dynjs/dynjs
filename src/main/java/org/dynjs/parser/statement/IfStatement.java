@@ -30,10 +30,10 @@ public class IfStatement implements Statement {
         final FunctionStatement thenFn = new FunctionStatement(context, Collections.<String>emptyList(), this.vthen);
         final FunctionStatement elseFn = new FunctionStatement(context, Collections.<String>emptyList(), this.velse);
         CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                .prepend(vbool.getCodeBlock())
-                .prepend(thenFn.getCodeBlock())
-                .prepend(elseFn.getCodeBlock())
                 .invokedynamic("dynjs:compile:if", sig(void.class, DynAtom.class, Function.class, Function.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .append(vbool.getCodeBlock())
+                .append(thenFn.getCodeBlock())
+                .append(elseFn.getCodeBlock())
         return codeBlock;
     }
 }
