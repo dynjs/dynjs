@@ -27,6 +27,7 @@ import org.dynjs.runtime.RT;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
+import java.sql.CallableStatement;
 import java.util.List;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
@@ -401,7 +402,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement resolveCallExpr(Statement lhs, List<Statement> args) {
-        return null;
+        return new CallStatement(getContext(), lhs, args);
     }
 
     public Statement switchStatement(Statement expr, Statement _default, List<Statement> cases) {

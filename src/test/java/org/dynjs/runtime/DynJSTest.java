@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
+import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Test;
@@ -168,7 +169,6 @@ public class DynJSTest {
     }
 
     @Test
-//    @Ignore
     public void testIfStatement() {
         dynJS.eval(context, scope, DynJSTest.class.getResourceAsStream("01_if_statement.js"));
         DynAtom actual = scope.resolve("x");
@@ -180,6 +180,21 @@ public class DynJSTest {
         DynAtom result = function.call(context, scope, new DynAtom[]{DynPrimitiveBoolean.TRUE});
         assertThat(result)
                 .isNotNull();
+    }
+
+    @Test
+    public void testFunctionCall() {
+        DynAtom result = evalScript("02_function_call.js");
+        assertThat(result)
+                .isNotNull()
+                .isInstanceOf(DynPrimitiveNumber.class);
+        assertThat(((DynPrimitiveNumber) result).getDoubleValue()).isEqualTo(1.0);
+
+    }
+
+    private DynAtom evalScript(String scriptName) {
+        dynJS.eval(context, scope, DynJSTest.class.getResourceAsStream(scriptName));
+        return scope.resolve("result");
     }
 //
 //    @Test
