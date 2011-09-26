@@ -81,7 +81,6 @@ public class DynObject implements DynAtom, Scope {
         } else if (value instanceof DynPrimitiveBoolean) {
             return (DynPrimitiveBoolean) value;
         } else if (value instanceof DynString) {
-            System.out.println("Is string");
             DynString string = (DynString) value;
             return string.toString().equals("") ? FALSE : TRUE;
         }

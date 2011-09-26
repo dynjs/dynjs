@@ -28,9 +28,7 @@ public class DynObjectTest {
     @Test
     public void aDefinedObjectExists() {
         object.define("meh", new DynObject());
-
-        System.out.println(object.resolve("meh"));
         assertThat(object.resolve("meh")).isNotNull();
-
     }
+
 }
