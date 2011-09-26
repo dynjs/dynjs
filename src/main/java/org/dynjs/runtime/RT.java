@@ -63,7 +63,6 @@ public class RT {
             }
         }
         // function.define("arguments", args); TODO
-        System.out.println("passou populator");
         return function;
     }
 
