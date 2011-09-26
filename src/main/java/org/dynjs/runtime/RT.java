@@ -6,6 +6,7 @@ import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
@@ -25,12 +26,12 @@ public class RT {
     public static final MethodHandle FUNCTION_CALL;
 
     public static final MethodHandle IF_STATEMENT;
-
     public static final MethodHandle PARAM_POPULATOR;
+
     static {
         MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-        MethodType ifStatementMethodType = methodType(Function.class, boolean.class, Function.class, Function.class);
+        MethodType ifStatementMethodType = methodType(Function.class, DynPrimitiveBoolean.class, Function.class, Function.class);
         IF_STATEMENT = Lookup.PUBLIC.findStatic(RT.class, "ifStatement", ifStatementMethodType);
         MethodType paramPouplatorMethodType = methodType(DynFunction.class, DynFunction.class, DynAtom[].class);
         PARAM_POPULATOR = Lookup.PUBLIC.findStatic(RT.class, "paramPopulator", paramPouplatorMethodType);
@@ -45,8 +46,8 @@ public class RT {
         System.out.println(atom);
     }
 
-    public static Function ifStatement(boolean condition, Function target, Function fallback) {
-        if (condition) {
+    public static Function ifStatement(DynPrimitiveBoolean condition, Function target, Function fallback) {
+        if (condition.getValue()) {
             return target;
         } else {
             return fallback;

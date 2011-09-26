@@ -21,7 +21,6 @@ import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
-import static java.lang.invoke.MethodHandles.guardWithTest;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 
@@ -68,6 +67,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     return new GuardedInvocation(compile, null);
                 } else if ("if".equals(callSiteDescriptor.getNameToken(2))) {
                     MethodHandle targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
+                    return new GuardedInvocation(targetHandle, null);
                 } else if ("params".equals(callSiteDescriptor.getNameToken(2))) {
                     MethodHandle targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
                     return new GuardedInvocation(targetHandle, null);
@@ -86,6 +86,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             return Converters.Guarded_DynPrimitiveNumber2DynNumber;
         } else if (DynAtom.class.isAssignableFrom(sourceType) && DynPrimitiveNumber.class == targetType) {
             return Converters.Guarded_DynNumber2DynPrimitiveNumber;
+        } else if (DynAtom.class.isAssignableFrom(sourceType) && boolean.class == targetType){
+            return Converters.Guarded_DynAtom2boolean;
         }
         return null;
     }

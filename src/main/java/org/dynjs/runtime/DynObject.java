@@ -74,15 +74,15 @@ public class DynObject implements DynAtom, Scope {
         setProperty(property, value);
     }
 
-    public static DynAtom toBoolean(final DynAtom value) {
-        if(value instanceof DynNumber) {
-            DynNumber number = (DynNumber)value;
+    public static DynPrimitiveBoolean toBoolean(final DynAtom value) {
+        if (value instanceof DynNumber) {
+            DynNumber number = (DynNumber) value;
             return (number.isNaN() || number.getValue() == 0) ? FALSE : TRUE;
-        } else if(value instanceof DynPrimitiveBoolean) {
-            return value;
-        } else if(value instanceof DynString) {
+        } else if (value instanceof DynPrimitiveBoolean) {
+            return (DynPrimitiveBoolean) value;
+        } else if (value instanceof DynString) {
             System.out.println("Is string");
-            DynString string = (DynString)value;
+            DynString string = (DynString) value;
             return string.toString().equals("") ? FALSE : TRUE;
         }
         return (value instanceof DynObject) ? TRUE : FALSE;

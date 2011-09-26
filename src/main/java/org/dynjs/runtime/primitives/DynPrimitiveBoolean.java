@@ -17,4 +17,8 @@ public class DynPrimitiveBoolean implements DynAtom {
     public boolean isPrimitive() {
         return true;
     }
+
+    public boolean getValue() {
+        return value;
+    }
 }
