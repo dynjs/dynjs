@@ -20,17 +20,27 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.statement.*;
+import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.CallStatement;
+import org.dynjs.parser.statement.DeclareVarStatement;
+import org.dynjs.parser.statement.DefineNumOpStatement;
+import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.IfStatement;
+import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.ReturnStatement;
+import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
-import java.sql.CallableStatement;
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -245,8 +255,17 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement defineEqOp(Statement l, Statement r) {
-        return null;
+    public Statement defineEqOp(final Statement l, final Statement r) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return newCodeBlock()
+                        .append(l.getCodeBlock())
+                        .append(r.getCodeBlock())
+                        .invokedynamic("dynjs:runtime:eq", sig(DynPrimitiveBoolean.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+
+            }
+        };
     }
 
     public Statement defineNEqOp(Statement l, Statement r) {

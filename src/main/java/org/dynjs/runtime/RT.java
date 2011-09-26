@@ -24,9 +24,9 @@ public class RT {
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
     public static final MethodHandle FUNCTION_CALL;
-
     public static final MethodHandle IF_STATEMENT;
     public static final MethodHandle PARAM_POPULATOR;
+    public static final MethodHandle EQ;
 
     static {
         MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
@@ -35,6 +35,8 @@ public class RT {
         IF_STATEMENT = Lookup.PUBLIC.findStatic(RT.class, "ifStatement", ifStatementMethodType);
         MethodType paramPouplatorMethodType = methodType(DynFunction.class, DynFunction.class, DynAtom[].class);
         PARAM_POPULATOR = Lookup.PUBLIC.findStatic(RT.class, "paramPopulator", paramPouplatorMethodType);
+        MethodType eqMethodType = methodType(DynPrimitiveBoolean.class, DynAtom.class, DynAtom.class);
+        EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
     }
 
     /**
