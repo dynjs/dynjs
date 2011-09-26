@@ -30,7 +30,7 @@ public class Converters {
     public static final GuardedInvocation Guarded_DynNumber2DynPrimitiveNumber = new GuardedInvocation(DynNumber2DynPrimitiveNumber,
             Guards.isInstance(DynNumber.class, methodType(DynPrimitiveNumber.class, DynAtom.class)));
     public static final GuardedInvocation Guarded_DynAtom2boolean = new GuardedInvocation(DynAtom2boolean,
-            Guards.isInstance(DynAtom.class, methodType(boolean.class, DynAtom.class)));
+            Guards.isInstance(DynAtom.class, methodType(DynPrimitiveBoolean.class, DynAtom.class)));
 
     public static String convertDynString2String(Object dynString) {
         return dynString.toString();
@@ -44,7 +44,7 @@ public class Converters {
         return new DynPrimitiveNumber(Double.valueOf(((DynNumber) number).getValue()).toString(), 10);
     }
 
-    public static DynAtom convertDynAtom2boolean(DynAtom value) {
+    public static DynPrimitiveBoolean convertDynAtom2boolean(DynAtom value) {
         return DynObject.toBoolean(value);
     }
 
