@@ -158,9 +158,9 @@ forStatement returns [Statement value]
         } else if (isStep && !isVar) {
             $value = executor.forStepExpr($stepOpt1.value, $stepOpt2.value, $stepOpt3.value, $statement.value);
         } else if (isIter && isVar) {
-            $value = executor.forIterVar($iterVar.value, $iterExpr2.value, $stepOpt3.value, $statement.value);
+            $value = executor.forIterVar($iterVar.value, $iterExpr2.value, $statement.value);
         } else if (isStep && !isVar) {
-            $value = executor.forIterExpr($iterExpr1.value, $iterExpr2.value, $stepOpt3.value, $statement.value);
+            $value = executor.forIterExpr($iterExpr1.value, $iterExpr2.value, $statement.value);
         }
     }
     ;
