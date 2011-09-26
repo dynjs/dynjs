@@ -26,11 +26,14 @@ public class RT {
 
     public static final MethodHandle IF_STATEMENT;
 
+    public static final MethodHandle PARAM_POPULATOR;
     static {
         MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
         MethodType ifStatementMethodType = methodType(Function.class, boolean.class, Function.class, Function.class);
         IF_STATEMENT = Lookup.PUBLIC.findStatic(RT.class, "ifStatement", ifStatementMethodType);
+        MethodType paramPouplatorMethodType = methodType(DynFunction.class, DynFunction.class, DynAtom[].class);
+        PARAM_POPULATOR = Lookup.PUBLIC.findStatic(RT.class, "paramPopulator", paramPouplatorMethodType);
     }
 
     /**
@@ -48,6 +51,19 @@ public class RT {
         } else {
             return fallback;
         }
+    }
+
+    public static DynFunction paramPopulator(DynFunction function, DynAtom[] args) {
+        String[] parameters = function.getArguments();
+        for (int i = 0; i < parameters.length; i++) {
+            String parameter = parameters[i];
+            if (i < args.length) {
+                function.define(parameter, args[i]);
+            }
+        }
+        // function.define("arguments", args); TODO
+        System.out.println("passou populator");
+        return function;
     }
 
 }

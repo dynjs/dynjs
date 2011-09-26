@@ -1,7 +1,6 @@
 package org.dynjs.compiler;
 
 import me.qmx.internal.org.objectweb.asm.ClassReader;
-import me.qmx.internal.org.objectweb.asm.tree.AbstractInsnNode;
 import me.qmx.internal.org.objectweb.asm.util.CheckClassAdapter;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
@@ -13,6 +12,7 @@ import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.RT;
 import org.dynjs.runtime.Script;
 
 import java.io.PrintWriter;
@@ -54,10 +54,18 @@ public class DynJSCompiler {
     }
 
     private CodeBlock alwaysReturnWrapper(DynFunction arg) {
-        if(!arg.getCodeBlock().returns()){
-            return arg.getCodeBlock().aconst_null().areturn();
+        CodeBlock codeBlock = arg.getCodeBlock();
+        CodeBlock paramPopulator = newCodeBlock()
+                .aload(0)
+                .aload(3)
+                .invokedynamic("dynjs:compile:params", sig(DynFunction.class, DynFunction.class, DynAtom[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .astore(2);
+        codeBlock = codeBlock.prepend(paramPopulator);
+
+        if (!codeBlock.returns()) {
+            codeBlock = codeBlock.aconst_null().areturn();
         }
-        return arg.getCodeBlock();
+        return codeBlock;
     }
 
     public Script compile(final Statement... statements) {
