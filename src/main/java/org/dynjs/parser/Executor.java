@@ -381,11 +381,11 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement forIterVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
+    public Statement forIterVar(Statement varDef, Statement expr1, Statement statement) {
         return null;
     }
 
-    public Statement forIterExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+    public Statement forIterExpr(Statement expr1, Statement expr2, Statement statement) {
         return null;
     }
 
