@@ -30,7 +30,7 @@ public class FunctionStatement implements Statement {
         this.context = context;
         this.identifier = identifier;
         this.args = args;
-        this.block = block;
+        this.block = block != null ? block : new EmptyStatement();
     }
 
     @Override
@@ -74,4 +74,5 @@ public class FunctionStatement implements Statement {
 
         return codeBlock;
     }
+
 }
