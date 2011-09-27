@@ -33,7 +33,7 @@ public class DynJSCompilerTest {
     @Test
     public void testCompile() throws Exception {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction dynFunction = new DynFunction("a") {
+        DynFunction dynFunction = new DynFunction(new String[]{"a"}) {
 
             @Override
             public CodeBlock getCodeBlock() {
@@ -46,7 +46,7 @@ public class DynJSCompilerTest {
 
         };
         Function function = dynJSCompiler.compile(dynFunction);
-        DynAtom result = function.call(context, scope, dynString);
+        DynAtom result = function.call(context, scope, new DynAtom[]{dynString});
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynString.class);
@@ -70,7 +70,7 @@ public class DynJSCompilerTest {
             }
         };
         Function function = dynJSCompiler.compile(shout);
-        function.call(context, scope, new DynString("test"));
+        function.call(context, scope, new DynAtom[]{new DynString("test")});
     }
 
     @Test

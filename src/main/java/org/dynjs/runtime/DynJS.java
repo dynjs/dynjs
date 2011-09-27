@@ -15,11 +15,14 @@
  */
 package org.dynjs.runtime;
 
+import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.SyntaxError;
@@ -29,6 +32,8 @@ import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 import org.dynjs.parser.Statement;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class DynJS {
@@ -45,19 +50,34 @@ public class DynJS {
     }
 
     public void eval(DynThreadContext context, Scope scope, String expression) {
-        List<Statement> result;
+        execute(context, scope, parseSourceCode(context, expression));
+    }
 
+    public void eval(DynThreadContext context, Scope scope, InputStream is) {
+        execute(context, scope, parseSourceCode(context, is));
+    }
+
+    private List<Statement> parseSourceCode(DynThreadContext context, String code) {
         try {
-            result = parseSourceCode(scope, expression);
-            Script script = compiler.compile(result.toArray(new Statement[]{}));
-            script.execute(context, scope);
+            ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
+            return parseSourceCode(context, lexer);
         } catch (RecognitionException e) {
             throw new SyntaxError(e);
         }
     }
 
-    private List<Statement> parseSourceCode(Scope scope, String code) throws RecognitionException {
-        ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
+    private List<Statement> parseSourceCode(DynThreadContext context, InputStream inputStream) {
+        try {
+            ES3Lexer lexer = new ES3Lexer(new ANTLRInputStream(inputStream));
+            return parseSourceCode(context, lexer);
+        } catch (RecognitionException e) {
+            throw new SyntaxError(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<Statement> parseSourceCode(DynThreadContext context, ES3Lexer lexer) throws RecognitionException {
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
         ES3Parser.program_return program = parser.program();
@@ -65,8 +85,20 @@ public class DynJS {
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
-        walker.setExecutor(new Executor());
+
+        context.setRuntime(this);
+        Executor executor = new Executor(context);
+        walker.setExecutor(executor);
         walker.program();
         return walker.getResult();
+    }
+
+    private void execute(DynThreadContext context, Scope scope, List<Statement> result) {
+        Script script = compiler.compile(result.toArray(new Statement[]{}));
+        script.execute(context, scope);
+    }
+
+    public Function compile(CodeBlock codeBlock, String[] args) {
+        return this.compiler.compile(new DynFunction(codeBlock, args));
     }
 }

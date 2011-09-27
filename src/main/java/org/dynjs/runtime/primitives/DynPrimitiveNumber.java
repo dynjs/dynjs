@@ -20,4 +20,12 @@ public class DynPrimitiveNumber implements DynAtom {
     public Double getDoubleValue() {
         return Double.parseDouble(this.value);
     }
+
+    @Override
+    public String toString() {
+        return "DynPrimitiveNumber{" +
+                "value='" + value + '\'' +
+                ", radix=" + radix +
+                '}';
+    }
 }

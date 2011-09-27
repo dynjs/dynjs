@@ -15,6 +15,10 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.api.Function;
+import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
+import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -106,26 +110,103 @@ public class DynJSTest {
         assertThat(((DynNumber) atom).getValue()).isEqualTo(5.0);
     }
 
-//    @Test
-//    public void assignsNamedEmptyFunction() {
-//        dynJS.eval(context, scope, "function x(){};");
-//        assertThat(scope.resolve("x"))
-//                .isNotNull()
-//                .isInstanceOf(Function.class);
-//    }
-//
-//    @Test
-//    public void assignsAnonymousEmptyFunction() {
-//        dynJS.eval(context, scope, "var x = function(){};");
-//        assertThat(scope.resolve("x"))
-//                .isNotNull()
-//                .isInstanceOf(Function.class);
-//    }
-//
-//    @Test(expected = ReferenceError.class)
-//    public void throwsReferenceErrorWhenCallAnonExistingReference() {
-//        dynJS.eval(context, scope, "print(x);");
-//    }
+    @Test
+    public void assignsNamedEmptyFunction() {
+        dynJS.eval(context, scope, "function x(){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+    }
+
+    @Test
+    public void assignsAnonymousEmptyFunction() {
+        dynJS.eval(context, scope, "var x = function(a,b,c){};");
+        assertThat(scope.resolve("x"))
+                .isNotNull()
+                .isInstanceOf(Function.class);
+    }
+
+    @Test
+    public void buildFunctionWithBody() {
+        dynJS.eval(context, scope, "var x = function(a,b){var w = (1 + 2) * 3;}");
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+                .isNull();
+    }
+
+    @Test
+    public void buildFunctionWithMultipleStatementBody() {
+        dynJS.eval(context, scope, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+                .isNull();
+    }
+
+    @Test
+    public void buildFunctionWithReturn() {
+        dynJS.eval(context, scope, "var x = function(){return 1+1;};");
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+                .isNotNull()
+                .isInstanceOf(DynNumber.class);
+    }
+
+    //
+    @Test(expected = ReferenceError.class)
+    public void throwsReferenceErrorWhenCallAnonExistingReference() {
+        dynJS.eval(context, scope, "print(x);");
+    }
+
+    @Test
+    public void testIfStatement() {
+        dynJS.eval(context, scope, DynJSTest.class.getResourceAsStream("01_if_statement.js"));
+        DynAtom actual = scope.resolve("x");
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+
+        Function function = (Function) actual;
+        DynAtom result = function.call(context, scope, new DynAtom[]{DynPrimitiveBoolean.TRUE});
+        assertThat(result)
+                .isNotNull();
+    }
+
+    @Test
+    public void testFunctionCall() {
+        DynAtom result = evalScript("02_function_call.js");
+        assertThat(result)
+                .isNotNull()
+                .isInstanceOf(DynPrimitiveNumber.class);
+        assertThat(((DynPrimitiveNumber) result).getDoubleValue()).isEqualTo(1.0);
+
+    }
+
+    @Test
+    @Ignore
+    public void testFatorial(){
+        DynAtom result = evalScript("03_factorial.js");
+        assertThat(result)
+                .isNotNull()
+                .isInstanceOf(DynPrimitiveNumber.class);
+        assertThat(((DynPrimitiveNumber) result).getDoubleValue()).isEqualTo(1.0);
+    }
+
+    private DynAtom evalScript(String scriptName) {
+        dynJS.eval(context, scope, DynJSTest.class.getResourceAsStream(scriptName));
+        return scope.resolve("result");
+    }
 //
 //    @Test
 //    public void assignsObjectLiterals() {

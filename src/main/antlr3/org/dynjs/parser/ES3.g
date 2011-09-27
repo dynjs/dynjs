@@ -208,7 +208,6 @@ tokens
 	NAMEDVALUE ;
 	NEG ;
 	OBJECT ;
-	PAREXPR ;
 	PDEC ;
 	PINC ;
 	POS ;
@@ -393,7 +392,6 @@ private final static boolean isLeftHandSideExpression(RuleReturnScope lhs)
 			case RegularExpressionLiteral:
 			case ARRAY:
 			case OBJECT:
-			case PAREXPR:
 		// functionExpression
 			case FUNCTION:
 		// newExpression
@@ -900,7 +898,7 @@ primaryExpression
 	| literal
 	| arrayLiteral
 	| objectLiteral
-	| lpar=LPAREN expression RPAREN -> ^( PAREXPR[$lpar, "PAREXPR"] expression )
+	| LPAREN! expression RPAREN!
 	;
 
 arrayLiteral

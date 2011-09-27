@@ -12,7 +12,7 @@ public class CodeBlocksTest {
     private DynThreadContext context = new DynThreadContext();
 
     public void testDynPropGet() {
-        Function function = compiler.compile(new DynFunction("target", "name") {
+        Function function = compiler.compile(new DynFunction(new String[]{"target", "name"}) {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlocks.GETPROP;
@@ -20,7 +20,7 @@ public class CodeBlocksTest {
         });
         DynAtom propertyName = new DynString("constructor");
         DynObject object = new DynObject();
-        DynAtom result = function.call(context, scope, object, propertyName);
+        DynAtom result = function.call(context, scope, new DynAtom[]{object, propertyName});
     }
 
 }

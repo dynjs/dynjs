@@ -19,21 +19,27 @@ import me.qmx.jitescript.CodeBlock;
 
 import java.util.Arrays;
 
-public abstract class DynFunction extends DynObject {
+public class DynFunction extends DynObject {
 
+    private final CodeBlock codeBlock;
     private final String[] arguments;
 
-    public DynFunction(String... arguments) {
+    public DynFunction(String[] arguments) {
+        this(CodeBlock.newCodeBlock(), arguments);
+    }
+
+    public DynFunction(CodeBlock codeBlock, String[] arguments) {
+        this.codeBlock = codeBlock;
         this.arguments = arguments;
         initBuiltins();
     }
 
     private void initBuiltins() {
-        setProperty("construct", Functions.CONSTRUCTOR);
+//        setProperty("construct", Functions.CONSTRUCTOR);
     }
 
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock();
+        return this.codeBlock;
     }
 
     protected int getArgumentsOffset() {

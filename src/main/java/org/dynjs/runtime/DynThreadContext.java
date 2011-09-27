@@ -1,8 +1,27 @@
 package org.dynjs.runtime;
 
+import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Scope;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class DynThreadContext {
+
+    private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
+    private AtomicInteger storageCounter = new AtomicInteger();
+    private Map<Integer, CodeBlock> storage = new HashMap<>();
+    private Scope scope;
+
+    public DynJS getRuntime() {
+        return this.runtime.get();
+    }
+
+    public void setRuntime(DynJS runtime) {
+        this.runtime.set(runtime);
+    }
 
     public DynAtom defineStringLiteral(final String value) {
         return new DynString(value);
@@ -16,4 +35,32 @@ public class DynThreadContext {
         return new DynPrimitiveNumber(value, 8);
     }
 
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
+    }
+
+    /**
+     * stores codeblock on internal storage
+     *
+     * @param block
+     */
+    public int store(CodeBlock block) {
+        Integer slot = storageCounter.getAndIncrement();
+        storage.put(slot, block);
+        return slot;
+    }
+
+    /**
+     * retrieves codeblock from internal storage
+     *
+     * @param id
+     * @return
+     */
+    public CodeBlock retrieve(int id) {
+        return storage.get(id);
+    }
 }

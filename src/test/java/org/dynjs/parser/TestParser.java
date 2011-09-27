@@ -36,7 +36,7 @@ public class TestParser {
                 walker(ES3Walker.class, new TreeParserSetup<ES3Walker>() {
                     @Override
                     public void config(ES3Walker es3Walker) {
-                        es3Walker.setExecutor(new Executor());
+                        es3Walker.setExecutor(new Executor(null));
                     }
                 })
         );

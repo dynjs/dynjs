@@ -78,20 +78,33 @@ statement returns [Statement value]
 	| variableDeclaration
 	    {  $value = $variableDeclaration.value;   }
 	| expression
+	    {  $value = $expression.value;   }
 	| printStatement
         { $value = $printStatement.value; }
 	| ifStatement
+        { $value = $ifStatement.value; }
 	| doStatement
+        { $value = $doStatement.value; }
 	| whileStatement
+        { $value = $whileStatement.value; }
 	| forStatement
+        { $value = $forStatement.value; }
 	| continueStatement
+        { $value = $continueStatement.value; }
 	| breakStatement
+        { $value = $breakStatement.value; }
 	| returnStatement
+        { $value = $returnStatement.value; }
 	| withStatement
+        { $value = $withStatement.value; }
 	| labelledStatement
+        { $value = $labelledStatement.value; }
 	| switchStatement
+        { $value = $switchStatement.value; }
 	| throwStatement
+        { $value = $throwStatement.value; }
 	| tryStatement
+        { $value = $tryStatement.value; }
 	;
 
 block returns [Statement value]
@@ -102,7 +115,7 @@ block returns [Statement value]
 
 printStatement returns [Statement value]
 	: ^( SK_PRINT expression )
-	{  $value = null;  }
+	{  $value = executor.printStatement($expression.value);  }
 	;
 
 variableDeclaration returns [Statement value]
@@ -115,140 +128,204 @@ variableDeclaration returns [Statement value]
 	   )
 	;
 
-ifStatement
-	: ^( IF expression statement+ )
+ifStatement returns [Statement value]
+	: ^( IF vbool=expression vthen=statement velse=statement? )
+    { $value = executor.ifStatement($vbool.value, $vthen.value, $velse.value); }
 	;
 
-doStatement
-	: ^( DO statement expression )
+doStatement returns [Statement value]
+	: ^( DO vloop=statement vbool=expression )
+    { $value = executor.doStatement($vbool.value, $vloop.value); }
 	;
 
-whileStatement
-	: ^( WHILE expression statement )
+whileStatement returns [Statement value]
+	: ^( WHILE vbool=expression vloop=statement )
+    { $value = executor.whileStatement($vbool.value, $vloop.value); }
 	;
 
-forStatement
-	: ^(
-	FOR 
-	(
-		^( FORSTEP ( exprOptClause | variableDeclaration ) exprOptClause exprOptClause )
-		| ^( FORITER ( exprClause | variableDeclaration ) exprClause )
-	)
-	statement
-	);
+forStatement returns [Statement value]
+@init { boolean isStep = false; boolean isIter = false; boolean isVar = false; }
+	: ^( FOR
+         (   ^( FORSTEP ( stepOpt1=exprOptClause | stepVar=variableDeclaration  {isVar = true;} ) stepOpt2=exprOptClause stepOpt3=exprOptClause )
+         {  isStep = true;   }
+         |   ^( FORITER ( iterExpr1=exprClause | iterVar=variableDeclaration  {isVar = true;} ) iterExpr2=exprClause )
+         {  isIter = true;   }
+         )
+         statement )
+    {
+        if (isStep && isVar) {
+            $value = executor.forStepVar($stepVar.value, $stepOpt2.value, $stepOpt3.value, $statement.value);
+        } else if (isStep && !isVar) {
+            $value = executor.forStepExpr($stepOpt1.value, $stepOpt2.value, $stepOpt3.value, $statement.value);
+        } else if (isIter && isVar) {
+            $value = executor.forIterVar($iterVar.value, $iterExpr2.value, $statement.value);
+        } else if (isStep && !isVar) {
+            $value = executor.forIterExpr($iterExpr1.value, $iterExpr2.value, $statement.value);
+        }
+    }
+    ;
 
-exprOptClause
+exprOptClause returns [Statement value]
 	: ^( EXPR expression? )
+	{ $value = $expression.value; }
 	;
 
-exprClause
+exprClause returns [Statement value]
 	: ^( EXPR expression )
+	{ $value = $expression.value; }
 	;
 
-continueStatement
+continueStatement returns [Statement value]
 	: ^( CONTINUE Identifier? )
+    { $value = executor.continueStatement($Identifier.text); }
 	;
 
-breakStatement
+breakStatement returns [Statement value]
 	: ^( BREAK Identifier? )
+    { $value = executor.breakStatement($Identifier.text); }
 	;
 
-returnStatement
+returnStatement returns [Statement value]
 	: ^( RETURN expression? )
+    { $value = executor.returnStatement($expression.value); }
 	;
 
-withStatement
+withStatement returns [Statement value]
 	: ^( WITH expression statement )
+    { $value = executor.withStatement($expression.value, $statement.value); }
 	;
 
-labelledStatement
+labelledStatement returns [Statement value]
 	: ^( LABELLED Identifier statement )
+    { $value = executor.labelledStatement($Identifier.text, $statement.value); }
 	;
 
-switchStatement
-	: ^( SWITCH expression defaultClause? caseClause* )
+switchStatement returns [Statement value]
+@init { List<Statement> cases = new ArrayList<Statement>(); }
+	: ^( SWITCH expression defaultClause? (caseClause { cases.add($caseClause.value); } )* )
+    { $value = executor.switchStatement($expression.value, $defaultClause.value, cases); }
 	;
 
-defaultClause
-	: ^( DEFAULT statement* )
+defaultClause returns [Statement value]
+@init { List<Statement> statements = new ArrayList<Statement>(); }
+	: ^( DEFAULT (statement { statements.add($statement.value); } )* )
+    { $value = executor.switchDefaultClause(statements); }
 	;
 
-caseClause
-	: ^( CASE expression statement* )
+caseClause returns [Statement value]
+@init { List<Statement> statements = new ArrayList<Statement>(); }
+	: ^( CASE expression (statement { statements.add($statement.value); } )* )
+    { $value = executor.switchCaseClause($expression.value, statements); }
 	;
 
-throwStatement
+throwStatement returns [Statement value]
 	: ^( THROW expression )
+    { $value = executor.throwStatement($expression.value); }
 	;
 
-tryStatement
+tryStatement returns [Statement value]
 	: ^( TRY block catchClause? finallyClause? )
+    { $value = executor.tryStatement($block.value, $catchClause.value, $finallyClause.value); }
 	;
 	
-catchClause
+catchClause returns [Statement value]
 	: ^( CATCH Identifier block )
+    { $value = executor.tryCatchClause($Identifier.text, $block.value); }
 	;
 	
-finallyClause
+finallyClause returns [Statement value]
 	: ^( FINALLY block )
+    { $value = executor.tryFinallyClause($block.value); }
 	;
 
-expression
-	: expr 
-	| ^( CEXPR expr+ )
+expression returns [Statement value]
+@init { List<Statement> exprList = new ArrayList<Statement>(); }
+	: expr
+	{ $value = $expr.value; }
+	| ^( CEXPR (expr {exprList.add($expr.value);})+ )
+    { $value = executor.exprListStatement(exprList);   }
 	;
 
 expr returns [Statement value]
 	: leftHandSideExpression
 	{ $value = $leftHandSideExpression.value; }
-	| ^( PAREXPR e=expr )
-	{ $value = $e.value; }
 
 	// Assignment operators
-	| ^( ASSIGN expr expr )
-	| ^( MULASS expr expr )
-	| ^( DIVASS expr expr )
-	| ^( MODASS expr expr )
-	| ^( ADDASS expr expr )
-	| ^( SUBASS expr expr )
-	| ^( SHLASS expr expr )
-	| ^( SHRASS expr expr )
-	| ^( SHUASS expr expr )
-	| ^( ANDASS expr expr )
-	| ^( XORASS expr expr )
-	| ^( ORASS expr expr )
-	
+	| ^( ASSIGN l=expr r=expr )
+    { $value = executor.defineAssOp($l.value, $r.value); }
+	| ^( MULASS l=expr r=expr )
+    { $value = executor.defineMulAssOp($l.value, $r.value); }
+	| ^( DIVASS l=expr r=expr )
+    { $value = executor.defineDivAssOp($l.value, $r.value); }
+	| ^( MODASS l=expr r=expr )
+    { $value = executor.defineModAssOp($l.value, $r.value); }
+	| ^( ADDASS l=expr r=expr )
+    { $value = executor.defineAddAssOp($l.value, $r.value); }
+	| ^( SUBASS l=expr r=expr )
+    { $value = executor.defineSubAssOp($l.value, $r.value); }
+	| ^( SHLASS l=expr r=expr )
+    { $value = executor.defineShlAssOp($l.value, $r.value); }
+	| ^( SHRASS l=expr r=expr )
+    { $value = executor.defineShrAssOp($l.value, $r.value); }
+	| ^( SHUASS l=expr r=expr )
+    { $value = executor.defineShuAssOp($l.value, $r.value); }
+	| ^( ANDASS l=expr r=expr )
+    { $value = executor.defineAndAssOp($l.value, $r.value); }
+	| ^( XORASS l=expr r=expr )
+    { $value = executor.defineXorAssOp($l.value, $r.value); }
+	| ^( ORASS l=expr r=expr )
+    { $value = executor.defineOrAssOp($l.value, $r.value); }
+
 	// Conditional operator
-	| ^( QUE expr expr expr )
-	
+	| ^( QUE ex1=expr ex2=expr ex3=expr )
+    { $value = executor.defineQueOp($ex1.value, $ex2.value, $ex3.value); }
+
 	// Logical operators
-	| ^( LOR expr expr )
-	| ^( LAND expr expr )
-	
+	| ^( LOR l=expr r=expr )
+    { $value = executor.defineLorOp($l.value, $r.value); }
+	| ^( LAND l=expr r=expr )
+    { $value = executor.defineLandOp($l.value, $r.value); }
+
 	// Binary bitwise operators
-	| ^( AND expr expr )
-	| ^( OR expr expr )
-	| ^( XOR expr expr )
-	
+	| ^( AND l=expr r=expr )
+    { $value = executor.defineAndBitOp($l.value, $r.value); }
+	| ^( OR l=expr r=expr )
+    { $value = executor.defineOrBitOp($l.value, $r.value); }
+	| ^( XOR l=expr r=expr )
+    { $value = executor.defineXorBitOp($l.value, $r.value); }
+
 	// Equality operators
-	| ^( EQ expr expr )
-	| ^( NEQ expr expr )
-	| ^( SAME expr expr )
-	| ^( NSAME expr expr )
-	
+	| ^( EQ l=expr r=expr )
+    { $value = executor.defineEqOp($l.value, $r.value); }
+	| ^( NEQ l=expr r=expr )
+    { $value = executor.defineNEqOp($l.value, $r.value); }
+	| ^( SAME l=expr r=expr )
+    { $value = executor.defineSameOp($l.value, $r.value); }
+	| ^( NSAME l=expr r=expr )
+    { $value = executor.defineNSameOp($l.value, $r.value); }
+
 	// Relational operator
-	| ^( LT expr expr )
-	| ^( GT expr expr )
-	| ^( LTE expr expr )
-	| ^( GTE expr expr )
-	| ^( INSTANCEOF expr expr )
-	| ^( IN expr expr )
-	
+	| ^( LT l=expr r=expr )
+    { $value = executor.defineLtRelOp($l.value, $r.value); }
+	| ^( GT l=expr r=expr )
+    { $value = executor.defineGtRelOp($l.value, $r.value); }
+	| ^( LTE l=expr r=expr )
+    { $value = executor.defineLteRelOp($l.value, $r.value); }
+	| ^( GTE l=expr r=expr )
+    { $value = executor.defineGteRelOp($l.value, $r.value); }
+	| ^( INSTANCEOF l=expr r=expr )
+    { $value = executor.defineInstanceOfRelOp($l.value, $r.value); }
+	| ^( IN l=expr r=expr )
+    { $value = executor.defineInRelOp($l.value, $r.value); }
+
 	// Bitwise shift operator
-	| ^( SHL expr expr )
-	| ^( SHR expr expr )
-	| ^( SHU expr expr )
-	
+	| ^( SHL l=expr r=expr )
+    { $value = executor.defineShlOp($l.value, $r.value); }
+	| ^( SHR l=expr r=expr )
+    { $value = executor.defineShrOp($l.value, $r.value); }
+	| ^( SHU l=expr r=expr )
+    { $value = executor.defineShuOp($l.value, $r.value); }
+
 	// Additive operators
 	| ^( ADD l=expr r=expr )
     { $value = executor.defineAddOp($l.value, $r.value); }
@@ -258,73 +335,106 @@ expr returns [Statement value]
 	// Multipiclative operators
 	| ^( MUL l=expr r=expr )
     { $value = executor.defineMulOp($l.value, $r.value); }
-	| ^( DIV expr expr )
-	| ^( MOD expr expr )
-	
+	| ^( DIV l=expr r=expr )
+    { $value = executor.defineDivOp($l.value, $r.value); }
+	| ^( MOD l=expr r=expr )
+    { $value = executor.defineModOp($l.value, $r.value); }
+
 	// Unary operator
-	| ^( DELETE expr )
-	| ^( VOID expr )
-	| ^( TYPEOF expr )
-	| ^( INC expr )
-	| ^( DEC expr )
-	| ^( POS expr )
-	| ^( NEG expr )
-	| ^( INV expr )
-	| ^( NOT expr )
-	
+	| ^( DELETE ex=expr )
+    { $value = executor.defineDeleteOp($ex.value); }
+	| ^( VOID ex=expr )
+    { $value = executor.defineVoidOp($ex.value); }
+	| ^( TYPEOF ex=expr )
+    { $value = executor.defineTypeOfOp($ex.value); }
+	| ^( INC ex=expr )
+    { $value = executor.defineIncOp($ex.value); }
+	| ^( DEC ex=expr )
+    { $value = executor.defineDecOp($ex.value); }
+	| ^( POS ex=expr )
+    { $value = executor.definePosOp($ex.value); }
+	| ^( NEG ex=expr )
+    { $value = executor.defineNegOp($ex.value); }
+	| ^( INV ex=expr )
+    { $value = executor.defineInvOp($ex.value); }
+	| ^( NOT ex=expr )
+    { $value = executor.defineNotOp($ex.value); }
+
 	// Postfix operators
-	| ^( PINC expr )
-	| ^( PDEC expr )
+	| ^( PINC ex=expr )
+    { $value = executor.definePIncOp($ex.value); }
+	| ^( PDEC ex=expr )
+    { $value = executor.definePDecOp($ex.value); }
 	;
 
 leftHandSideExpression returns [Statement value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
+	{ $value = $newExpression.value;  }
 	| functionDeclaration
+	{ $value = $functionDeclaration.value;  }
 	| callExpression
+	{ $value = $callExpression.value;  }
 	| memberExpression
+	{ $value = $memberExpression.value;  }
 	;
 
-newExpression
+newExpression returns [Statement value]
 	: ^( NEW leftHandSideExpression )
+	{ $value = executor.executeNew($leftHandSideExpression.value); }
 	;
 
-functionDeclaration
-	: ^( FUNCTION Identifier? ^( ARGS Identifier* ) block )
+functionDeclaration returns [Statement value]
+@init { List<String> args = new ArrayList<String>(); }
+	: ^( FUNCTION id=Identifier? ^( ARGS (ai=Identifier {args.add($ai.text);})* ) block)
+	{ $value = executor.defineFunction($id.text, args, $block.value); }
 	;
 
-callExpression
-	: ^( CALL leftHandSideExpression ^( ARGS expr* ) )
+callExpression returns [Statement value]
+@init { List<Statement> args = new ArrayList<Statement>(); }
+	: ^( CALL leftHandSideExpression ^( ARGS (expr { args.add($expr.value); } )* ) )
+	{ $value = executor.resolveCallExpr($leftHandSideExpression.value, args);  }
 	;
 	
-memberExpression
-	: ^( BYINDEX leftHandSideExpression expression )
+memberExpression returns [Statement value]
+	: ^( BYINDEX leftHandSideExpression expression)
+	{ $value = executor.defineByIndex($leftHandSideExpression.value, $expression.value); }
 	| ^( BYFIELD leftHandSideExpression Identifier )
+	{ $value = executor.resolveByField($leftHandSideExpression.value, $Identifier.text); }
 	;
 
 primaryExpression returns [Statement value]
-	: Identifier
+	: id=Identifier
+	{ $value = executor.resolveIdentifier($id); }
 	| literal
 	{ $value = $literal.value;  }
 	;
 
 literal returns [Statement value]
 	: THIS
+	{ $value = executor.defineThisLiteral();  }
 	| NULL
+	{ $value = executor.defineNullLiteral();  }
 	| booleanLiteral
+	{ $value = $booleanLiteral.value;  }
 	| numericLiteral
 	{ $value = $numericLiteral.value;  }
 	| StringLiteral
 	{ $value = executor.defineStringLiteral($StringLiteral.text);  }
 	| RegularExpressionLiteral
+	{ $value = executor.defineRegExLiteral($RegularExpressionLiteral.text);  }
 	| arrayLiteral
+	{ $value = $arrayLiteral.value;  }
 	| objectLiteral
+	{ $value = $objectLiteral.value;  }
 	;
 
-booleanLiteral
+booleanLiteral returns [Statement value]
 	: TRUE
+	{ $value = executor.defineTrueLiteral();  }
 	| FALSE
+	{ $value = executor.defineFalseLiteral();  }
 	;
 
 numericLiteral returns [Statement value]
@@ -333,18 +443,29 @@ numericLiteral returns [Statement value]
 	| OctalIntegerLiteral
 	{ $value = executor.defineOctalLiteral($OctalIntegerLiteral.text);  }
 	| HexIntegerLiteral
+	{ $value = executor.defineHexaLiteral($HexIntegerLiteral.text);  }
 	;
 
-arrayLiteral
-	: ^( ARRAY ( ^( ITEM expr? ) )* )
+arrayLiteral returns [Statement value]
+@init { List<Statement> exprs = new ArrayList<Statement>(); }
+	: ^( ARRAY ( ^( ITEM expr? { exprs.add($expr.value); } ) )* )
+	{ $value = executor.arrayLiteral(exprs);  }
 	;
 
-objectLiteral
-	: ^( OBJECT ( ^( NAMEDVALUE propertyName expr) )* )
+objectLiteral returns [Statement value]
+@init { List<Statement> namedValues = new ArrayList<Statement>(); }
+	: ^( OBJECT
+	    ( ^( NAMEDVALUE propertyName expr
+	       { final Statement st = executor.namedValue($propertyName.value, $expr.value); namedValues.add(st); }
+	       ) )* )
+	{ $value = executor.objectValue(namedValues);  }
 	;
 
-propertyName
+propertyName returns [Statement value]
 	: Identifier
+	{ $value = executor.propertyNameId($Identifier.text);  }
 	| StringLiteral
+	{ $value = executor.propertyNameString($StringLiteral.text);  }
 	| numericLiteral
+	{ $value = executor.propertyNameNumeric($numericLiteral.value);  }
 	;
