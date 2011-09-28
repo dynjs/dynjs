@@ -13,6 +13,7 @@ import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.FunctionFactory;
 import org.dynjs.runtime.RT;
 import org.dynjs.runtime.Script;
 
@@ -58,12 +59,8 @@ public class DynJSCompiler {
             }});
         }};
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-        Class<?> functionClass = defineClass(className, bytecode);
-        try {
-            return (Function) functionClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
+        Class<Function> functionClass = (Class<Function>) defineClass(className, bytecode);
+        return FunctionFactory.create(functionClass);
     }
 
     private CodeBlock alwaysReturnWrapper(DynFunction arg) {
