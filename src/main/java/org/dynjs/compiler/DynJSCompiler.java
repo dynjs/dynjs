@@ -2,6 +2,7 @@ package org.dynjs.compiler;
 
 import me.qmx.internal.org.objectweb.asm.ClassReader;
 import me.qmx.internal.org.objectweb.asm.util.CheckClassAdapter;
+import me.qmx.internal.org.objectweb.asm.util.TraceClassVisitor;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
@@ -32,23 +33,35 @@ public class DynJSCompiler {
     private final DynamicClassLoader classLoader = new DynamicClassLoader();
 
     public Function compile(final DynFunction arg) {
-        String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
+        final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
-            defineMethod("<init>", ACC_PUBLIC, sig(void.class, String[].class),
+            defineMethod("<init>", ACC_PUBLIC, sig(void.class),
                     newCodeBlock()
                             .aload(0)
-                            .aload(1)
-                            .invokespecial(p(DynFunction.class), "<init>", sig(void.class, String[].class))
+                            .invokespecial(p(DynFunction.class), "<init>", sig(void.class))
                             .voidreturn()
             );
             defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), alwaysReturnWrapper(arg));
+
+            defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
+                String[] arguments = arg.getArguments();
+                bipush(arguments.length);
+                anewarray(p(String.class));
+                for (int i = 0; i < arguments.length; i++) {
+                    String argument = arguments[i];
+                    dup();
+                    bipush(i);
+                    ldc(argument);
+                    aastore();
+                }
+                areturn();
+            }});
         }};
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
         Class<?> functionClass = defineClass(className, bytecode);
         try {
-            Constructor<?> ctor = functionClass.getDeclaredConstructor(String[].class);
-            return (Function) ctor.newInstance(new Object[]{arg.getArguments()});
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            return (Function) functionClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }

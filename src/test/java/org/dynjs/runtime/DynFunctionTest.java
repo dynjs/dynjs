@@ -39,7 +39,7 @@ public class DynFunctionTest {
     public void shouldReturnCorrectOffsets() {
         DynString d = new DynString("d");
         DynString a = new DynString("a");
-        DynAtom result1 = compiler.compile(new DynFunction(new String[]{"a", "c", "d"}) {
+        DynAtom result1 = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
@@ -49,12 +49,17 @@ public class DynFunctionTest {
                         .areturn();
 
             }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"a", "c", "d"};
+            }
         }).call(context, scope, new DynAtom[]{a, DynPrimitiveBoolean.TRUE, d});
         assertThat(result1)
                 .isNotNull()
                 .isInstanceOf(DynString.class)
                 .isEqualTo(d);
-        DynAtom result2 = compiler.compile(new DynFunction(new String[]{"a", "c", "d"}) {
+        DynAtom result2 = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
@@ -63,6 +68,11 @@ public class DynFunctionTest {
                         .aaload()
                         .areturn();
 
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"a", "c", "d"};
             }
         }).call(context, scope, new DynAtom[]{a, DynPrimitiveBoolean.TRUE, d});
         assertThat(result2)

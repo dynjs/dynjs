@@ -27,11 +27,16 @@ public class Functions {
     public static final Function GET_PROPERTY;
 
     static {
-        Function fn = compiler.compile(new DynFunction(new String[]{"scope", "propertyName"}) {
+        Function fn = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
                         .areturn();
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"scope", "propertyName"};
             }
         });
         GET_PROPERTY = fn;

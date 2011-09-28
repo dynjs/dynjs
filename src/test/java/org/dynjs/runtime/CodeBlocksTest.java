@@ -12,10 +12,15 @@ public class CodeBlocksTest {
     private DynThreadContext context = new DynThreadContext();
 
     public void testDynPropGet() {
-        Function function = compiler.compile(new DynFunction(new String[]{"target", "name"}) {
+        Function function = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlocks.GETPROP;
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"target", "name"};
             }
         });
         DynAtom propertyName = new DynString("constructor");

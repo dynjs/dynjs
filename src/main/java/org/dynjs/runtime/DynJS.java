@@ -98,7 +98,11 @@ public class DynJS {
         script.execute(context, scope);
     }
 
-    public Function compile(CodeBlock codeBlock, String[] args) {
-        return this.compiler.compile(new DynFunction(codeBlock, args));
+    public Function compile(CodeBlock codeBlock, final String[] args) {
+        return this.compiler.compile(new DynFunction(codeBlock) {
+            public String[] getArguments() {
+                return args;
+            }
+        });
     }
 }
