@@ -37,12 +37,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             MethodType targetType = methodType(DynAtom.class, String.class);
             MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
             return new GuardedInvocation(getProperty, null);
-        } else if (callSiteDescriptor.getName().startsWith("dynjs:bop")) {
-            MethodType targetType = methodType(DynNumber.class, DynNumber.class);
-            String op = linkRequest.getCallSiteDescriptor().getNameToken(2);
-            MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
-            MethodHandle targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
-            return new GuardedInvocation(targetHandle, null);
+
         } else if (callSiteDescriptor.getName().startsWith("dynjs:scope")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
                 return handleScope(callSiteDescriptor);
@@ -73,6 +68,11 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
                 } else if ("eq".equals(action)) {
                     targetHandle = linkerServices.asType(RT.EQ, callSiteDescriptor.getMethodType());
+                } else if ("bop".equals(action)) {
+                    MethodType targetType = methodType(DynNumber.class, DynNumber.class);
+                    String op = linkRequest.getCallSiteDescriptor().getNameToken(3);
+                    MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
+                    targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
                 } else {
                     throw new IllegalArgumentException("should not reach here");
                 }
