@@ -68,13 +68,15 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     return new GuardedInvocation(targetHandle, null);
                 }
             } else if (callSiteDescriptor.getName().startsWith("dynjs:runtime")) {
+                MethodHandle targetHandle;
                 if ("call".equals(action)) {
-                    MethodHandle methodHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
-                    return new GuardedInvocation(methodHandle, null);
+                    targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
                 } else if ("eq".equals(action)) {
-                    MethodHandle methodHandle = linkerServices.asType(RT.EQ, callSiteDescriptor.getMethodType());
-                    return new GuardedInvocation(methodHandle, null);
+                    targetHandle = linkerServices.asType(RT.EQ, callSiteDescriptor.getMethodType());
+                } else {
+                    throw new IllegalArgumentException("should not reach here");
                 }
+                return new GuardedInvocation(targetHandle, null);
             }
         }
         return null;
