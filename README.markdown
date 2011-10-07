@@ -1,5 +1,7 @@
 # dyn.js - invokedynamic-based javascript impl
 
+![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
+
 Requirements
 ------------
 
