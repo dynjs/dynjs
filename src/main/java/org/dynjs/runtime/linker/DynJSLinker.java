@@ -42,14 +42,19 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             if (callSiteDescriptor.getNameTokenCount() == 3) {
                 MethodHandle targetHandle;
                 String action = callSiteDescriptor.getNameToken(2);
-                if ("resolve".equals(action)) {
-                    MethodType targetType = methodType(DynAtom.class, String.class);
-                    targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
-                } else if ("define".equals(action)) {
-                    MethodType targetType = methodType(void.class, String.class, DynAtom.class);
-                    targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
-                } else {
-                    throw new IllegalArgumentException("should not reach here");
+                switch (action) {
+                    case "resolve": {
+                        MethodType targetType = methodType(DynAtom.class, String.class);
+                        targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
+                        break;
+                    }
+                    case "define": {
+                        MethodType targetType = methodType(void.class, String.class, DynAtom.class);
+                        targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
+                        break;
+                    }
+                    default:
+                        throw new IllegalArgumentException("should not reach here");
                 }
                 return new GuardedInvocation(targetHandle, null);
             }
@@ -58,34 +63,43 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             if (callSiteDescriptor.getName().startsWith("dynjs:compile")) {
                 if (callSiteDescriptor.getNameTokenCount() == 3) {
                     MethodHandle targetHandle;
-                    if ("lookup".equals(action)) {
-                        MethodType type = methodType(CodeBlock.class, int.class);
-                        targetHandle = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
-                    } else if ("function".equals(action)) {
-                        MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
-                        targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);
-                    } else if ("if".equals(action)) {
-                        targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
-                    } else if ("params".equals(action)) {
-                        targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
-                    } else {
-                        throw new IllegalArgumentException("should not reach here");
+                    switch (action) {
+                        case "lookup":
+                            MethodType type = methodType(CodeBlock.class, int.class);
+                            targetHandle = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
+                            break;
+                        case "function":
+                            MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
+                            targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);
+                            break;
+                        case "if":
+                            targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
+                            break;
+                        case "params":
+                            targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
+                            break;
+                        default:
+                            throw new IllegalArgumentException("should not reach here");
                     }
                     return new GuardedInvocation(targetHandle, null);
                 }
             } else if (callSiteDescriptor.getName().startsWith("dynjs:runtime")) {
                 MethodHandle targetHandle;
-                if ("call".equals(action)) {
-                    targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
-                } else if ("eq".equals(action)) {
-                    targetHandle = linkerServices.asType(RT.EQ, callSiteDescriptor.getMethodType());
-                } else if ("bop".equals(action)) {
-                    MethodType targetType = methodType(DynNumber.class, DynNumber.class);
-                    String op = linkRequest.getCallSiteDescriptor().getNameToken(3);
-                    MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
-                    targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
-                } else {
-                    throw new IllegalArgumentException("should not reach here");
+                switch (action) {
+                    case "call":
+                        targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
+                        break;
+                    case "eq":
+                        targetHandle = linkerServices.asType(RT.EQ, callSiteDescriptor.getMethodType());
+                        break;
+                    case "bop":
+                        MethodType targetType = methodType(DynNumber.class, DynNumber.class);
+                        String op = linkRequest.getCallSiteDescriptor().getNameToken(3);
+                        MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
+                        targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
+                        break;
+                    default:
+                        throw new IllegalArgumentException("should not reach here");
                 }
                 return new GuardedInvocation(targetHandle, null);
             }
