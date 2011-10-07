@@ -40,7 +40,18 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
 
         } else if (callSiteDescriptor.getName().startsWith("dynjs:scope")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
-                return handleScope(callSiteDescriptor);
+                MethodHandle targetHandle;
+                String action = callSiteDescriptor.getNameToken(2);
+                if ("resolve".equals(action)) {
+                    MethodType targetType = methodType(DynAtom.class, String.class);
+                    targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
+                } else if ("define".equals(action)) {
+                    MethodType targetType = methodType(void.class, String.class, DynAtom.class);
+                    targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
+                } else {
+                    throw new IllegalArgumentException("should not reach here");
+                }
+                return new GuardedInvocation(targetHandle, null);
             }
         } else {
             String action = callSiteDescriptor.getNameToken(2);
@@ -80,21 +91,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             }
         }
         return null;
-    }
-
-    private GuardedInvocation handleScope(CallSiteDescriptor callSiteDescriptor) throws NoSuchMethodException, IllegalAccessException {
-        MethodHandle targetHandle;
-        String action = callSiteDescriptor.getNameToken(2);
-        if ("resolve".equals(action)) {
-            MethodType targetType = methodType(DynAtom.class, String.class);
-            targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
-        } else if ("define".equals(action)) {
-            MethodType targetType = methodType(void.class, String.class, DynAtom.class);
-            targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
-        } else {
-            throw new IllegalArgumentException("should not reach here");
-        }
-        return new GuardedInvocation(targetHandle, null);
     }
 
     @Override
