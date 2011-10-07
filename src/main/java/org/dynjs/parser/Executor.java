@@ -33,7 +33,6 @@ import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
@@ -116,15 +115,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineOctalLiteral(final String value) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock()
-                        .aload(1)
-                        .ldc(value)
-                        .invokevirtual(p(DynThreadContext.class), "defineOctalLiteral", sig(DynPrimitiveNumber.class, String.class));
-            }
-        };
+        return new NumberLiteralStatement(value, 8);
     }
 
     public Statement resolveIdentifier(final CommonTree id) {
@@ -140,7 +131,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineNumberLiteral(final String value) {
-        return new NumberLiteralStatement(value);
+        return new NumberLiteralStatement(value, 10);
     }
 
     public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
@@ -353,7 +344,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineHexaLiteral(String s) {
-        return null;
+        return new NumberLiteralStatement(s, 16);
     }
 
     public Statement executeNew(Statement leftHandSideExpression10) {
@@ -483,4 +474,5 @@ public class Executor implements Opcodes {
     public Statement arrayLiteral(List<Statement> exprs) {
         return null;
     }
+
 }
