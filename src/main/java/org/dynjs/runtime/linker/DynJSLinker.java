@@ -30,17 +30,14 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
         CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
         MethodType methodType = callSiteDescriptor.getMethodType();
+        MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
-            MethodHandle print = lookup().findStatic(RT.class, "print", methodType);
-            return new GuardedInvocation(print, null);
+            targetHandle = lookup().findStatic(RT.class, "print", methodType);
         } else if (callSiteDescriptor.getName().startsWith("dyn:getProp")) {
             MethodType targetType = methodType(DynAtom.class, String.class);
-            MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
-            return new GuardedInvocation(getProperty, null);
-
+            targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
         } else if (callSiteDescriptor.getName().startsWith("dynjs:scope")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
-                MethodHandle targetHandle;
                 String action = callSiteDescriptor.getNameToken(2);
                 switch (action) {
                     case "resolve": {
@@ -56,13 +53,11 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }
-                return new GuardedInvocation(targetHandle, null);
             }
         } else {
             String action = callSiteDescriptor.getNameToken(2);
             if (callSiteDescriptor.getName().startsWith("dynjs:compile")) {
                 if (callSiteDescriptor.getNameTokenCount() == 3) {
-                    MethodHandle targetHandle;
                     switch (action) {
                         case "lookup":
                             MethodType type = methodType(CodeBlock.class, int.class);
@@ -81,10 +76,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         default:
                             throw new IllegalArgumentException("should not reach here");
                     }
-                    return new GuardedInvocation(targetHandle, null);
                 }
             } else if (callSiteDescriptor.getName().startsWith("dynjs:runtime")) {
-                MethodHandle targetHandle;
                 switch (action) {
                     case "call":
                         targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
@@ -101,8 +94,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }
-                return new GuardedInvocation(targetHandle, null);
             }
+        }
+        if (targetHandle != null) {
+            return new GuardedInvocation(targetHandle, null);
         }
         return null;
     }
