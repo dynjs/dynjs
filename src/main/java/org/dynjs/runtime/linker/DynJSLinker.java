@@ -49,21 +49,21 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             }
         } else if (callSiteDescriptor.getName().startsWith("dynjs:compile")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
+                MethodHandle targetHandle;
                 if ("lookup".equals(callSiteDescriptor.getNameToken(2))) {
                     MethodType type = methodType(CodeBlock.class, int.class);
-                    MethodHandle retrieveMH = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
-                    return new GuardedInvocation(retrieveMH, null);
+                    targetHandle = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
                 } else if ("function".equals(callSiteDescriptor.getNameToken(2))) {
                     MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
-                    MethodHandle compile = lookup().findVirtual(DynJS.class, "compile", targetType);
-                    return new GuardedInvocation(compile, null);
+                    targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);
                 } else if ("if".equals(callSiteDescriptor.getNameToken(2))) {
-                    MethodHandle targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
-                    return new GuardedInvocation(targetHandle, null);
+                    targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
                 } else if ("params".equals(callSiteDescriptor.getNameToken(2))) {
-                    MethodHandle targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
-                    return new GuardedInvocation(targetHandle, null);
+                    targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
+                } else {
+                    throw new IllegalArgumentException("should not reach here");
                 }
+                return new GuardedInvocation(targetHandle, null);
             }
         } else if (callSiteDescriptor.getName().startsWith("dynjs:runtime")) {
             if ("call".equals(callSiteDescriptor.getNameToken(2))) {
