@@ -45,15 +45,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             return new GuardedInvocation(targetHandle, null);
         } else if (callSiteDescriptor.getName().startsWith("dynjs:scope")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
-                if ("resolve".equals(callSiteDescriptor.getNameToken(2))) {
-                    MethodType targetType = methodType(DynAtom.class, String.class);
-                    MethodHandle getProperty = lookup().findVirtual(Scope.class, "resolve", targetType);
-                    return new GuardedInvocation(getProperty, null);
-                } else if ("define".equals(callSiteDescriptor.getNameToken(2))) {
-                    MethodType targetType = methodType(void.class, String.class, DynAtom.class);
-                    MethodHandle setProperty = lookup().findVirtual(Scope.class, "define", targetType);
-                    return new GuardedInvocation(setProperty, null);
-                }
+                return handleScope(callSiteDescriptor);
             }
         } else if (callSiteDescriptor.getName().startsWith("dynjs:compile")) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
@@ -83,6 +75,20 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             }
         }
         return null;
+    }
+
+    private GuardedInvocation handleScope(CallSiteDescriptor callSiteDescriptor) throws NoSuchMethodException, IllegalAccessException {
+        MethodHandle targetHandle;
+        if ("resolve".equals(callSiteDescriptor.getNameToken(2))) {
+            MethodType targetType = methodType(DynAtom.class, String.class);
+            targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
+        } else if ("define".equals(callSiteDescriptor.getNameToken(2))) {
+            MethodType targetType = methodType(void.class, String.class, DynAtom.class);
+            targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
+        } else {
+            throw new IllegalArgumentException("should not reach here");
+        }
+        return new GuardedInvocation(targetHandle, null);
     }
 
     @Override
