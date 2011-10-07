@@ -79,10 +79,11 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
 
     private GuardedInvocation handleScope(CallSiteDescriptor callSiteDescriptor) throws NoSuchMethodException, IllegalAccessException {
         MethodHandle targetHandle;
-        if ("resolve".equals(callSiteDescriptor.getNameToken(2))) {
+        String action = callSiteDescriptor.getNameToken(2);
+        if ("resolve".equals(action)) {
             MethodType targetType = methodType(DynAtom.class, String.class);
             targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
-        } else if ("define".equals(callSiteDescriptor.getNameToken(2))) {
+        } else if ("define".equals(action)) {
             MethodType targetType = methodType(void.class, String.class, DynAtom.class);
             targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
         } else {
