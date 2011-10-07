@@ -114,10 +114,6 @@ public class Executor implements Opcodes {
         return new StringLiteralStatement(literal);
     }
 
-    public Statement defineOctalLiteral(final String value) {
-        return new NumberLiteralStatement(value, 8);
-    }
-
     public Statement resolveIdentifier(final CommonTree id) {
         return new Statement() {
             @Override
@@ -130,8 +126,8 @@ public class Executor implements Opcodes {
         };
     }
 
-    public Statement defineNumberLiteral(final String value) {
-        return new NumberLiteralStatement(value, 10);
+    public Statement defineNumberLiteral(final String value, final int radix) {
+        return new NumberLiteralStatement(value, radix);
     }
 
     public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
@@ -341,10 +337,6 @@ public class Executor implements Opcodes {
 
     public Statement defineFalseLiteral() {
         return null;
-    }
-
-    public Statement defineHexaLiteral(String s) {
-        return new NumberLiteralStatement(s, 16);
     }
 
     public Statement executeNew(Statement leftHandSideExpression10) {
