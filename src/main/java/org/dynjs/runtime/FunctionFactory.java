@@ -17,7 +17,9 @@ public class FunctionFactory implements Function {
 
     @Override
     public DynAtom call(DynThreadContext context, Scope scope, DynAtom[] arguments) {
-        return instantiate().call(context, scope, arguments);
+        Function function = instantiate();
+        RT.paramPopulator((DynFunction) function, arguments);
+        return function.call(context, function, arguments);
     }
 
     private Function instantiate() {

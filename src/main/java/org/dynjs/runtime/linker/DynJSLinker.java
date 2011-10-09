@@ -66,9 +66,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     case "if":
                         targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
                         break;
-                    case "params":
-                        targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
-                        break;
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }

@@ -65,13 +65,6 @@ public class DynJSCompiler {
 
     private CodeBlock alwaysReturnWrapper(DynFunction arg) {
         CodeBlock codeBlock = arg.getCodeBlock();
-        CodeBlock paramPopulator = newCodeBlock()
-                .aload(0)
-                .aload(3)
-                .invokedynamic("dynjs:compile:params", sig(DynFunction.class, DynFunction.class, DynAtom[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .astore(2);
-        codeBlock = codeBlock.prepend(paramPopulator);
-
         if (!codeBlock.returns()) {
             codeBlock = codeBlock.aconst_null().areturn();
         }

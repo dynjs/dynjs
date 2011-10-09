@@ -26,7 +26,6 @@ public class RT {
 
     public static final MethodHandle FUNCTION_CALL;
     public static final MethodHandle IF_STATEMENT;
-    public static final MethodHandle PARAM_POPULATOR;
     public static final MethodHandle EQ;
     public static final MethodHandle SCOPE_RESOLVE;
 
@@ -35,8 +34,6 @@ public class RT {
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
         MethodType ifStatementMethodType = methodType(Function.class, DynPrimitiveBoolean.class, Function.class, Function.class);
         IF_STATEMENT = Lookup.PUBLIC.findStatic(RT.class, "ifStatement", ifStatementMethodType);
-        MethodType paramPouplatorMethodType = methodType(DynFunction.class, DynFunction.class, DynAtom[].class);
-        PARAM_POPULATOR = Lookup.PUBLIC.findStatic(RT.class, "paramPopulator", paramPouplatorMethodType);
         MethodType eqMethodType = methodType(DynPrimitiveBoolean.class, DynAtom.class, DynAtom.class);
         EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
         MethodType scopeResolveMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, String.class);
