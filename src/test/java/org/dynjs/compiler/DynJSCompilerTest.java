@@ -33,7 +33,7 @@ public class DynJSCompilerTest {
     @Test
     public void testCompile() throws Exception {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction dynFunction = new DynFunction(new String[]{"a"}) {
+        DynFunction dynFunction = new DynFunction() {
 
             @Override
             public CodeBlock getCodeBlock() {
@@ -42,6 +42,11 @@ public class DynJSCompilerTest {
                         .pushInt(getArgumentOffset("a"))
                         .aaload()
                         .areturn();
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"a"};
             }
 
         };
@@ -56,7 +61,7 @@ public class DynJSCompilerTest {
     @Test
     public void testInvokeDynamicCompilation() {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction shout = new DynFunction(new String[]{"a"}) {
+        DynFunction shout = new DynFunction() {
 
             @Override
             public CodeBlock getCodeBlock() {
@@ -67,6 +72,11 @@ public class DynJSCompilerTest {
                         .invokedynamic("print", sig(void.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                         .aconst_null()
                         .areturn();
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"a"};
             }
         };
         Function function = dynJSCompiler.compile(shout);
@@ -81,7 +91,7 @@ public class DynJSCompilerTest {
                 return newCodeBlock()
                         .aconst_null();
             }
-        }).execute(null, null);
+        }).execute(new DynThreadContext());
     }
 
 }

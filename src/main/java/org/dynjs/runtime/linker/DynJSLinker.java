@@ -42,8 +42,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             if (subsystem.equals("scope")) {
                 switch (action) {
                     case "resolve": {
-                        MethodType targetType = methodType(DynAtom.class, String.class);
-                        targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
+                        targetHandle = RT.SCOPE_RESOLVE;
                         break;
                     }
                     case "define": {
@@ -66,9 +65,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         break;
                     case "if":
                         targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
-                        break;
-                    case "params":
-                        targetHandle = linkerServices.asType(RT.PARAM_POPULATOR, callSiteDescriptor.getMethodType());
                         break;
                     default:
                         throw new IllegalArgumentException("should not reach here");

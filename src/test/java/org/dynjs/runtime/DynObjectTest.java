@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.junit.Before;
@@ -22,11 +21,6 @@ public class DynObjectTest {
         assertThat(object.getProperty("prototype")).isNotNull();
     }
 
-    @Test(expected = ReferenceError.class)
-    public void throwsReferenceErrorOnMissingReference() {
-        object.resolve("inexistentAttribute");
-    }
-
     @Test
     public void aDefinedObjectExists() {
         object.define("meh", new DynObject());
@@ -34,7 +28,7 @@ public class DynObjectTest {
     }
 
     @Test
-    public void testEquality(){
+    public void testEquality() {
         DynPrimitiveNumber n1 = new DynPrimitiveNumber("8", 10);
         DynPrimitiveNumber n2 = new DynPrimitiveNumber("8", 10);
         assertThat(DynObject.eq(n1, n2)).isEqualTo(DynPrimitiveBoolean.TRUE);

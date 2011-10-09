@@ -18,7 +18,6 @@ package org.dynjs.parser;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
-import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.CallStatement;
@@ -27,6 +26,7 @@ import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.runtime.DynAtom;
@@ -115,15 +115,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement resolveIdentifier(final CommonTree id) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock()
-                        .aload(2)
-                        .ldc(id.getText())
-                        .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+        return new ResolveIdentifierStatement(id.getText());
     }
 
     public Statement defineNumberLiteral(final String value, final int radix) {
