@@ -48,7 +48,7 @@ public class DynJSLinkerTest {
                         .aload(4)
                         .invokedynamic("dynjs:runtime:bop:add", sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
-        }).execute(context, scope);
+        }).execute(context);
 
     }
 

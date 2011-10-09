@@ -2,7 +2,6 @@ package org.dynjs.compiler;
 
 import me.qmx.internal.org.objectweb.asm.ClassReader;
 import me.qmx.internal.org.objectweb.asm.util.CheckClassAdapter;
-import me.qmx.internal.org.objectweb.asm.util.TraceClassVisitor;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
@@ -23,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -89,11 +89,14 @@ public class DynJSCompiler {
                                 .invokespecial(p(BaseScript.class), "<init>", sig(void.class, Statement[].class))
                                 .voidreturn()
                 );
-                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, DynThreadContext.class, Scope.class), getCodeBlock());
+                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, DynThreadContext.class), getCodeBlock());
             }
 
             private CodeBlock getCodeBlock() {
-                final CodeBlock block = newCodeBlock();
+                final CodeBlock block = newCodeBlock()
+                        .aload(1)
+                        .invokevirtual(p(DynThreadContext.class), "getScope", sig(Scope.class))
+                        .astore(2);
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
                 }

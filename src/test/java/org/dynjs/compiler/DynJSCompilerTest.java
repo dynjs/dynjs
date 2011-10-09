@@ -91,7 +91,7 @@ public class DynJSCompilerTest {
                 return newCodeBlock()
                         .aconst_null();
             }
-        }).execute(null, null);
+        }).execute(new DynThreadContext());
     }
 
 }

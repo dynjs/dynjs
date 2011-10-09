@@ -49,12 +49,12 @@ public class DynJS {
         this.config = new DynJSConfig();
     }
 
-    public void eval(DynThreadContext context, Scope scope, String expression) {
-        execute(context, scope, parseSourceCode(context, expression));
+    public void eval(DynThreadContext context, String expression) {
+        execute(context, parseSourceCode(context, expression));
     }
 
-    public void eval(DynThreadContext context, Scope scope, InputStream is) {
-        execute(context, scope, parseSourceCode(context, is));
+    public void eval(DynThreadContext context, InputStream is) {
+        execute(context, parseSourceCode(context, is));
     }
 
     private List<Statement> parseSourceCode(DynThreadContext context, String code) {
@@ -93,9 +93,9 @@ public class DynJS {
         return walker.getResult();
     }
 
-    private void execute(DynThreadContext context, Scope scope, List<Statement> result) {
+    private void execute(DynThreadContext context, List<Statement> result) {
         Script script = compiler.compile(result.toArray(new Statement[]{}));
-        script.execute(context, scope);
+        script.execute(context);
     }
 
     public Function compile(CodeBlock codeBlock, final String[] args) {
