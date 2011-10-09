@@ -21,7 +21,6 @@ import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -195,13 +194,12 @@ public class DynJSTest {
     }
 
     @Test
-    @Ignore
-    public void testFatorial(){
+    public void testFactorial() {
         DynAtom result = evalScript("03_factorial.js");
         assertThat(result)
                 .isNotNull()
-                .isInstanceOf(DynPrimitiveNumber.class);
-        assertThat(((DynPrimitiveNumber) result).getDoubleValue()).isEqualTo(1.0);
+                .isInstanceOf(DynNumber.class);
+        assertThat(((DynNumber) result).getValue()).isEqualTo(120.0);
     }
 
     private DynAtom evalScript(String scriptName) {
