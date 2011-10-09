@@ -3,6 +3,8 @@ package org.dynjs.runtime;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 
+import java.util.Deque;
+
 public class FunctionFactory implements Function {
 
     private final Class<Function> clazz;
@@ -11,7 +13,7 @@ public class FunctionFactory implements Function {
         this.clazz = clazz;
     }
 
-    public static FunctionFactory create(Class<Function> clazz){
+    public static FunctionFactory create(Class<Function> clazz) {
         return new FunctionFactory(clazz);
     }
 
@@ -19,7 +21,11 @@ public class FunctionFactory implements Function {
     public DynAtom call(DynThreadContext context, Scope scope, DynAtom[] arguments) {
         Function function = instantiate();
         RT.paramPopulator((DynFunction) function, arguments);
-        return function.call(context, function, arguments);
+        Deque<Function> callStack = context.getCallStack();
+        callStack.push(function);
+        DynAtom result = function.call(context, scope, arguments);
+        callStack.pop();
+        return result;
     }
 
     private Function instantiate() {
@@ -49,4 +55,5 @@ public class FunctionFactory implements Function {
     @Override
     public void define(String property, DynAtom value) {
     }
+
 }
