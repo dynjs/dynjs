@@ -72,6 +72,14 @@ public class RT {
     public static DynAtom scopeResolve(DynThreadContext context, Scope scope, String id) {
         DynAtom atom = scope.resolve(id);
         if (atom == null) {
+            for (Function callee : context.getCallStack()) {
+                atom = callee.resolve(id);
+                if (atom != null) {
+                    break;
+                }
+            }
+        }
+        if (atom == null) {
             atom = context.getScope().resolve(id);
         }
         if (atom == null) {
