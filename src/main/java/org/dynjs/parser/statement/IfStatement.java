@@ -1,15 +1,14 @@
 package org.dynjs.parser.statement;
 
+import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
+import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
-import java.util.Collections;
-
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IfStatement implements Statement {
@@ -28,18 +27,18 @@ public class IfStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        final FunctionStatement thenFn = new FunctionStatement(context, Collections.<String>emptyList(), this.vthen);
-        final FunctionStatement elseFn = new FunctionStatement(context, Collections.<String>emptyList(), this.velse);
+        LabelNode elseBlock = new LabelNode();
+        LabelNode outBlock = new LabelNode();
         CodeBlock codeBlock = CodeBlock.newCodeBlock()
                 .append(vbool.getCodeBlock())
-                .append(thenFn.getCodeBlock())
-                .append(elseFn.getCodeBlock())
-                .invokedynamic("dynjs:compile:if", sig(Function.class, DynAtom.class, Function.class, Function.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aload(1)
-                .aload(2)
-                .aload(3)
-                .invokedynamic("dynjs:runtime:call", sig(DynAtom.class, Function.class, DynThreadContext.class, Scope.class, DynAtom[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .areturn();
+                .invokedynamic("dynjs:convert:to_boolean", sig(DynPrimitiveBoolean.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .invokevirtual(p(DynPrimitiveBoolean.class), "getValue", sig(boolean.class))
+                .iffalse(elseBlock)
+                .append(vthen.getCodeBlock())
+                .go_to(outBlock)
+                .label(elseBlock)
+                .append(velse.getCodeBlock())
+                .label(outBlock);
         return codeBlock;
     }
 }

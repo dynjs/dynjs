@@ -90,9 +90,10 @@ public class DynObject implements DynAtom, Scope {
     }
 
     public static DynPrimitiveBoolean eq(final DynAtom lhs, final DynAtom rhs) {
-        if (lhs instanceof DynPrimitiveNumber && rhs instanceof DynPrimitiveNumber) {
-            DynNumber n1 = new DynNumber((DynPrimitiveNumber) lhs);
-            DynNumber n2 = new DynNumber((DynPrimitiveNumber) rhs);
+        if ((lhs instanceof DynPrimitiveNumber || lhs instanceof DynNumber)
+                && (rhs instanceof DynPrimitiveNumber || rhs instanceof DynNumber)) {
+            DynNumber n1 = lhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) lhs) : (DynNumber) lhs;
+            DynNumber n2 = rhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) rhs) : (DynNumber) rhs;
             if (n1.isNaN() || n2.isNaN()) {
                 return DynPrimitiveBoolean.FALSE;
             }

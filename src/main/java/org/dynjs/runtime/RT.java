@@ -25,15 +25,12 @@ public class RT {
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
     public static final MethodHandle FUNCTION_CALL;
-    public static final MethodHandle IF_STATEMENT;
     public static final MethodHandle EQ;
     public static final MethodHandle SCOPE_RESOLVE;
 
     static {
         MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-        MethodType ifStatementMethodType = methodType(Function.class, DynPrimitiveBoolean.class, Function.class, Function.class);
-        IF_STATEMENT = Lookup.PUBLIC.findStatic(RT.class, "ifStatement", ifStatementMethodType);
         MethodType eqMethodType = methodType(DynPrimitiveBoolean.class, DynAtom.class, DynAtom.class);
         EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
         MethodType scopeResolveMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, String.class);
@@ -47,14 +44,6 @@ public class RT {
      */
     public static void print(DynAtom atom) {
         System.out.println(atom);
-    }
-
-    public static Function ifStatement(DynPrimitiveBoolean condition, Function target, Function fallback) {
-        if (condition.getValue()) {
-            return target;
-        } else {
-            return fallback;
-        }
     }
 
     public static DynFunction paramPopulator(DynFunction function, DynAtom[] args) {

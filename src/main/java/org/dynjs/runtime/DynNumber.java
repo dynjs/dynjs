@@ -89,4 +89,11 @@ public class DynNumber extends DynObject {
     public boolean isNaN() {
         return Double.isNaN(getValue());
     }
+
+    @Override
+    public String toString() {
+        return "DynNumber{" +
+                "value=" + value +
+                '}';
+    }
 }

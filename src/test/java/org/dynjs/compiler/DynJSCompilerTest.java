@@ -1,5 +1,6 @@
 package org.dynjs.compiler;
 
+import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
@@ -88,7 +89,18 @@ public class DynJSCompilerTest {
         dynJSCompiler.compile(new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
+                LabelNode velse = new LabelNode();
+                LabelNode vout = new LabelNode();
                 return newCodeBlock()
+                        .pushBoolean(true)
+                        .pushBoolean(true)
+                        .ifeq(velse)
+                        .ldc("then reached")
+                        .aprintln()
+                        .go_to(vout)
+                        .label(velse)
+                        .ldc("else reached")
+                        .label(vout)
                         .aconst_null();
             }
         }).execute(new DynThreadContext());
