@@ -119,9 +119,10 @@ public class Executor implements Opcodes {
             @Override
             public CodeBlock getCodeBlock() {
                 return newCodeBlock()
+                        .aload(1)
                         .aload(2)
                         .ldc(id.getText())
-                        .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }

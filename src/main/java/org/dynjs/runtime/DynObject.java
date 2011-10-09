@@ -16,7 +16,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
-import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
@@ -55,7 +54,7 @@ public class DynObject implements DynAtom, Scope {
 
     @Override
     public Scope getEnclosingScope() {
-        if (getProperty("prototype").getClass().isAssignableFrom(DynPrimitiveUndefined.class)) {
+        if (getProperty("prototype").getAttribute("value") instanceof DynPrimitiveUndefined) {
             return null;
         } else {
             return (DynObject) getProperty("prototype").getAttribute("value");
@@ -66,8 +65,10 @@ public class DynObject implements DynAtom, Scope {
     public DynAtom resolve(String name) {
         if (this.properties.containsKey(name)) {
             return this.properties.get(name).getAttribute("value");
+        } else if (getEnclosingScope() != null) {
+            return getEnclosingScope().resolve(name);
         }
-        throw new ReferenceError();
+        return null;
     }
 
     @Override
@@ -95,7 +96,7 @@ public class DynObject implements DynAtom, Scope {
             if (n1.isNaN() || n2.isNaN()) {
                 return DynPrimitiveBoolean.FALSE;
             }
-            if (n1.getValue() == n2.getValue()){
+            if (n1.getValue() == n2.getValue()) {
                 return DynPrimitiveBoolean.TRUE;
             }
         }

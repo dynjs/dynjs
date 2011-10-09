@@ -5,6 +5,7 @@ import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
@@ -27,6 +28,7 @@ public class RT {
     public static final MethodHandle IF_STATEMENT;
     public static final MethodHandle PARAM_POPULATOR;
     public static final MethodHandle EQ;
+    public static final MethodHandle SCOPE_RESOLVE;
 
     static {
         MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
@@ -37,6 +39,8 @@ public class RT {
         PARAM_POPULATOR = Lookup.PUBLIC.findStatic(RT.class, "paramPopulator", paramPouplatorMethodType);
         MethodType eqMethodType = methodType(DynPrimitiveBoolean.class, DynAtom.class, DynAtom.class);
         EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
+        MethodType scopeResolveMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, String.class);
+        SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
     }
 
     /**
@@ -66,6 +70,17 @@ public class RT {
         }
         // function.define("arguments", args); TODO
         return function;
+    }
+
+    public static DynAtom scopeResolve(DynThreadContext context, Scope scope, String id) {
+        DynAtom atom = scope.resolve(id);
+        if (atom == null) {
+            atom = context.getScope().resolve(id);
+        }
+        if (atom == null) {
+            throw new ReferenceError();
+        }
+        return atom;
     }
 
 }
