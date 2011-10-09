@@ -63,9 +63,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
                         targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);
                         break;
-                    case "if":
-                        targetHandle = linkerServices.asType(RT.IF_STATEMENT, callSiteDescriptor.getMethodType());
-                        break;
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }
@@ -85,6 +82,12 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         break;
                     default:
                         throw new IllegalArgumentException("should not reach here");
+                }
+            } else if (subsystem.equals("convert")) {
+                switch (action) {
+                    case "to_boolean":
+                        targetHandle = Converters.DynAtom2boolean;
+                        break;
                 }
             }
         }
