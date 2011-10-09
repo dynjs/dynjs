@@ -33,6 +33,8 @@ public class DynFunctionTest {
     @Before
     public void setup() {
         compiler = new DynJSCompiler();
+        scope = new DynObject();
+        context = new DynThreadContext();
     }
 
     @Test
