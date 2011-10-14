@@ -4,6 +4,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
+import org.junit.Test;
 
 public class CodeBlocksTest {
 
@@ -11,6 +12,7 @@ public class CodeBlocksTest {
     private Scope scope = new DynObject();
     private DynThreadContext context = new DynThreadContext();
 
+    @Test
     public void testDynPropGet() {
         Function function = compiler.compile(new DynFunction() {
             @Override
