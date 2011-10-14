@@ -37,7 +37,7 @@ public class Repl {
                     return;
                 } else {
                     try {
-                        environment.eval(context, scope, statement);
+                        environment.eval(context, statement);
                     } catch (DynJSException e) {
                         System.out.println(e.getClass().getSimpleName());
                     } catch (Exception e){

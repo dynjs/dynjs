@@ -1,5 +1,7 @@
 # dyn.js - invokedynamic-based javascript impl
 
+![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
+
 Requirements
 ------------
 
@@ -17,7 +19,4 @@ Configure and add projects dependencies:
 
 		Jitescript can be found at https://github.com/qmx/jitescript
 			Clone it (https://github.com/qmx/jitescript.git) and run mvn install to build and add to your repository
-
-		The 1.1.0-SNAPSHOT of aunit can be found at https://github.com/porcelli/aunit
-			Clone it (https://github.com/porcelli/aunit.git) and run mvn install to build and add to your repository
 

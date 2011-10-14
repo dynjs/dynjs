@@ -1,5 +1,6 @@
 package org.dynjs.compiler;
 
+import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
@@ -33,7 +34,7 @@ public class DynJSCompilerTest {
     @Test
     public void testCompile() throws Exception {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction dynFunction = new DynFunction(new String[]{"a"}) {
+        DynFunction dynFunction = new DynFunction() {
 
             @Override
             public CodeBlock getCodeBlock() {
@@ -42,6 +43,11 @@ public class DynJSCompilerTest {
                         .pushInt(getArgumentOffset("a"))
                         .aaload()
                         .areturn();
+            }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"a"};
             }
 
         };
@@ -56,7 +62,7 @@ public class DynJSCompilerTest {
     @Test
     public void testInvokeDynamicCompilation() {
         DynString dynString = new DynString("hello dynjs");
-        DynFunction shout = new DynFunction(new String[]{"a"}) {
+        DynFunction shout = new DynFunction() {
 
             @Override
             public CodeBlock getCodeBlock() {
@@ -68,6 +74,11 @@ public class DynJSCompilerTest {
                         .aconst_null()
                         .areturn();
             }
+
+            @Override
+            public String[] getArguments() {
+                return new String[]{"a"};
+            }
         };
         Function function = dynJSCompiler.compile(shout);
         function.call(context, scope, new DynAtom[]{new DynString("test")});
@@ -78,10 +89,21 @@ public class DynJSCompilerTest {
         dynJSCompiler.compile(new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
+                LabelNode velse = new LabelNode();
+                LabelNode vout = new LabelNode();
                 return newCodeBlock()
+                        .pushBoolean(true)
+                        .pushBoolean(true)
+                        .ifeq(velse)
+                        .ldc("then reached")
+                        .aprintln()
+                        .go_to(vout)
+                        .label(velse)
+                        .ldc("else reached")
+                        .label(vout)
                         .aconst_null();
             }
-        }).execute(null, null);
+        }).execute(new DynThreadContext());
     }
 
 }

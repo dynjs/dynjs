@@ -19,18 +19,16 @@ import me.qmx.jitescript.CodeBlock;
 
 import java.util.Arrays;
 
-public class DynFunction extends DynObject {
+public abstract class DynFunction extends DynObject {
 
     private final CodeBlock codeBlock;
-    private final String[] arguments;
 
-    public DynFunction(String[] arguments) {
-        this(CodeBlock.newCodeBlock(), arguments);
+    public DynFunction() {
+        this(CodeBlock.newCodeBlock());
     }
 
-    public DynFunction(CodeBlock codeBlock, String[] arguments) {
+    public DynFunction(CodeBlock codeBlock) {
         this.codeBlock = codeBlock;
-        this.arguments = arguments;
         initBuiltins();
     }
 
@@ -49,10 +47,8 @@ public class DynFunction extends DynObject {
 
     protected int getArgumentOffset(String key) {
         // list is zero based
-        return Arrays.asList(this.arguments).indexOf(key);
+        return Arrays.asList(getArguments()).indexOf(key);
     }
 
-    public String[] getArguments() {
-        return this.arguments;
-    }
+    public abstract String[] getArguments();
 }

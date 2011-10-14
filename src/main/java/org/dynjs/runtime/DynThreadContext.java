@@ -1,10 +1,13 @@
 package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,6 +17,7 @@ public class DynThreadContext {
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();
     private Scope scope;
+    private Deque<Function> callStack = new LinkedList<>();
 
     public DynJS getRuntime() {
         return this.runtime.get();
@@ -62,5 +66,9 @@ public class DynThreadContext {
      */
     public CodeBlock retrieve(int id) {
         return storage.get(id);
+    }
+
+    public Deque<Function> getCallStack() {
+        return callStack;
     }
 }

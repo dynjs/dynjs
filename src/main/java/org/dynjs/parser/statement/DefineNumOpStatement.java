@@ -23,7 +23,7 @@ public class DefineNumOpStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        String instruction = "dynjs:bop:" + operation;
+        String instruction = "dynjs:runtime:bop:" + operation;
         return newCodeBlock()
                 .append(leftHandStatement.getCodeBlock())
                 .append(rightHandStatement.getCodeBlock())

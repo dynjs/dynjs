@@ -4,6 +4,6 @@ import org.dynjs.api.Scope;
 
 public interface Script {
 
-   public void execute(DynThreadContext context, Scope scope);
+   public void execute(DynThreadContext context);
 
 }

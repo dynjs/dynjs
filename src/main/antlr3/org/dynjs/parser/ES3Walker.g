@@ -439,11 +439,11 @@ booleanLiteral returns [Statement value]
 
 numericLiteral returns [Statement value]
 	: DecimalLiteral
-	{ $value = executor.defineNumberLiteral($DecimalLiteral.text);  }
+	{ $value = executor.defineNumberLiteral($DecimalLiteral.text, 10);  }
 	| OctalIntegerLiteral
-	{ $value = executor.defineOctalLiteral($OctalIntegerLiteral.text);  }
+	{ $value = executor.defineNumberLiteral($OctalIntegerLiteral.text, 8);  }
 	| HexIntegerLiteral
-	{ $value = executor.defineHexaLiteral($HexIntegerLiteral.text);  }
+	{ $value = executor.defineNumberLiteral($HexIntegerLiteral.text, 16);  }
 	;
 
 arrayLiteral returns [Statement value]
