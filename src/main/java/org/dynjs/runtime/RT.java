@@ -76,4 +76,10 @@ public class RT {
         return atom;
     }
 
+    public static class NumberOperations {
+
+        public static Double add(Double a, Double b) {
+            return a + b;
+        }
+    }
 }
