@@ -48,7 +48,7 @@ public class FunctionFactory implements Function {
     }
 
     @Override
-    public DynAtom resolve(String name) {
+    public Object resolve(String name) {
         return null;
     }
 

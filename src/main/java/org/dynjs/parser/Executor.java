@@ -32,7 +32,6 @@ import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;

@@ -18,7 +18,6 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,7 +55,7 @@ public class DynFunctionTest {
             public String[] getArguments() {
                 return new String[]{"a", "c", "d"};
             }
-        }).call(context, scope, new DynAtom[]{a, DynPrimitiveBoolean.TRUE, d});
+        }).call(context, scope, new DynAtom[]{a, new DynObject(), d});
         assertThat(result1)
                 .isNotNull()
                 .isInstanceOf(DynString.class)
@@ -76,11 +75,10 @@ public class DynFunctionTest {
             public String[] getArguments() {
                 return new String[]{"a", "c", "d"};
             }
-        }).call(context, scope, new DynAtom[]{a, DynPrimitiveBoolean.TRUE, d});
+        }).call(context, scope, new DynAtom[]{a, new DynObject(), d});
         assertThat(result2)
                 .isNotNull()
-                .isInstanceOf(DynPrimitiveBoolean.class)
-                .isEqualTo(DynPrimitiveBoolean.TRUE);
+                .isInstanceOf(DynObject.class);
     }
 
 }

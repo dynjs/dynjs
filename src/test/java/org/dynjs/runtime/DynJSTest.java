@@ -17,7 +17,6 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
@@ -58,7 +57,7 @@ public class DynJSTest {
     @Test
     public void assignsExprGlobalVariables() {
         dynJS.eval(context, "var x = 2 + 1;");
-        DynAtom atom = scope.resolve("x");
+        Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
                 .isInstanceOf(DynNumber.class);
@@ -69,7 +68,7 @@ public class DynJSTest {
     @Test
     public void assignsExprMulGlobalVariables() {
         dynJS.eval(context, "var x = 2 * 3;");
-        DynAtom atom = scope.resolve("x");
+        Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
                 .isInstanceOf(DynNumber.class);
@@ -80,7 +79,7 @@ public class DynJSTest {
     @Test
     public void assignsExprSubGlobalVariables() {
         dynJS.eval(context, "var x = 3 - 1;");
-        DynAtom atom = scope.resolve("x");
+        Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
                 .isInstanceOf(DynNumber.class);
@@ -91,7 +90,7 @@ public class DynJSTest {
     @Test
     public void assignsComplexExprSubGlobalVariables() {
         dynJS.eval(context, "var x = 3 * 2 - 1;");
-        DynAtom atom = scope.resolve("x");
+        Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
                 .isInstanceOf(DynNumber.class);
@@ -102,7 +101,7 @@ public class DynJSTest {
     @Test
     public void assignsComplexparExprSubGlobalVariables() {
         dynJS.eval(context, "var x = (3 * 2) - 1;");
-        DynAtom atom = scope.resolve("x");
+        Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
                 .isInstanceOf(DynNumber.class);
@@ -129,7 +128,7 @@ public class DynJSTest {
     @Test
     public void buildFunctionWithBody() {
         dynJS.eval(context, "var x = function(a,b){var w = (1 + 2) * 3;}");
-        DynAtom actual = scope.resolve("x");
+        Object actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
@@ -141,7 +140,7 @@ public class DynJSTest {
     @Test
     public void buildFunctionWithMultipleStatementBody() {
         dynJS.eval(context, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
-        DynAtom actual = scope.resolve("x");
+        Object actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
@@ -153,7 +152,7 @@ public class DynJSTest {
     @Test
     public void buildFunctionWithReturn() {
         dynJS.eval(context, "var x = function(){return 1+1;};");
-        DynAtom actual = scope.resolve("x");
+        Object actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
@@ -172,20 +171,20 @@ public class DynJSTest {
     @Test
     public void testIfStatement() {
         dynJS.eval(context, DynJSTest.class.getResourceAsStream("01_if_statement.js"));
-        DynAtom actual = scope.resolve("x");
+        Object actual = scope.resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
         Function function = (Function) actual;
-        DynAtom result = function.call(context, scope, new DynAtom[]{DynPrimitiveBoolean.TRUE});
+        DynAtom result = function.call(context, scope, new DynAtom[]{new DynObject()});
         assertThat(result)
                 .isNotNull();
     }
 
     @Test
     public void testFunctionCall() {
-        DynAtom result = evalScript("02_function_call.js");
+        Object result = evalScript("02_function_call.js");
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynPrimitiveNumber.class);
@@ -195,14 +194,14 @@ public class DynJSTest {
 
     @Test
     public void testFactorial() {
-        DynAtom result = evalScript("03_factorial.js");
+        Object result = evalScript("03_factorial.js");
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynNumber.class);
         assertThat(((DynNumber) result).getValue()).isEqualTo(120.0);
     }
 
-    private DynAtom evalScript(String scriptName) {
+    private Object evalScript(String scriptName) {
         dynJS.eval(context, DynJSTest.class.getResourceAsStream(scriptName));
         return scope.resolve("result");
     }

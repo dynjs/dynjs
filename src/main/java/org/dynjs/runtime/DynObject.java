@@ -16,7 +16,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
@@ -31,7 +30,7 @@ public class DynObject implements DynAtom, Scope {
         setProperty("prototype", DynPrimitiveUndefined.UNDEFINED);
     }
 
-    public void setProperty(String key, DynAtom atom) {
+    public void setProperty(String key, Object atom) {
         DynProperty property = new DynProperty(key).setAttribute("value", atom);
         this.properties.put(key, property);
     }
@@ -59,7 +58,7 @@ public class DynObject implements DynAtom, Scope {
     }
 
     @Override
-    public DynAtom resolve(String name) {
+    public Object resolve(String name) {
         if (this.properties.containsKey(name)) {
             return this.properties.get(name).getAttribute("value");
         } else if (getEnclosingScope() != null) {

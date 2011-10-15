@@ -3,8 +3,6 @@ package org.dynjs.runtime;
 import org.junit.Test;
 
 import static org.dynjs.runtime.DynObject.toBoolean;
-import static org.dynjs.runtime.primitives.DynPrimitiveBoolean.FALSE;
-import static org.dynjs.runtime.primitives.DynPrimitiveBoolean.TRUE;
 import static org.dynjs.runtime.primitives.DynPrimitiveNull.NULL;
 import static org.dynjs.runtime.primitives.DynPrimitiveUndefined.UNDEFINED;
 import static org.fest.assertions.Assertions.assertThat;
@@ -56,12 +54,12 @@ public class BooleanTest {
     }
 
     @Test
-    public void nonEmptyStringBecomesTrue(){
+    public void nonEmptyStringBecomesTrue() {
         assertThat(toBoolean(new DynString("zzz..."))).isTrue();
     }
 
     @Test
-    public void objectBecomesTrue(){
+    public void objectBecomesTrue() {
         assertThat(toBoolean(new DynObject())).isTrue();
     }
 }

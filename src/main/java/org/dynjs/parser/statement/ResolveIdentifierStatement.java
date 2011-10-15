@@ -24,6 +24,6 @@ public class ResolveIdentifierStatement implements Statement {
                 .aload(1)
                 .aload(2)
                 .ldc(name)
-                .invokedynamic("dynjs:scope:resolve", sig(DynAtom.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dynjs:scope:resolve", sig(Object.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 }

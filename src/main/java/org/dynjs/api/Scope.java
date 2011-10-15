@@ -6,7 +6,7 @@ public interface Scope {
 
     Scope getEnclosingScope();
 
-    DynAtom resolve(String name);
+    Object resolve(String name);
 
     void define(String property, DynAtom value);
 }

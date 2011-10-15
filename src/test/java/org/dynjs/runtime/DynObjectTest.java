@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.junit.Before;
 import org.junit.Test;

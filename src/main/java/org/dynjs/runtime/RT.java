@@ -7,7 +7,6 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
@@ -33,7 +32,7 @@ public class RT {
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
         MethodType eqMethodType = methodType(Boolean.class, DynAtom.class, DynAtom.class);
         EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
-        MethodType scopeResolveMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, String.class);
+        MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
     }
 
@@ -58,8 +57,8 @@ public class RT {
         return function;
     }
 
-    public static DynAtom scopeResolve(DynThreadContext context, Scope scope, String id) {
-        DynAtom atom = scope.resolve(id);
+    public static Object scopeResolve(DynThreadContext context, Scope scope, String id) {
+        Object atom = scope.resolve(id);
         if (atom == null) {
             for (Function callee : context.getCallStack()) {
                 atom = callee.resolve(id);

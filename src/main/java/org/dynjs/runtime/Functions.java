@@ -4,7 +4,6 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
 public class Functions {
 
@@ -17,7 +16,7 @@ public class Functions {
             public DynAtom call(DynThreadContext context, Scope scope, DynAtom[] arguments) {
                 DynObject object = new DynObject();
                 object.setProperty("Class", new DynString("Object"));
-                object.setProperty("Extensible", DynPrimitiveBoolean.TRUE);
+                object.setProperty("Extensible", true);
                 return object;
             }
         };
