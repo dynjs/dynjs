@@ -8,5 +8,5 @@ public interface Scope {
 
     Object resolve(String name);
 
-    void define(String property, DynAtom value);
+    void define(String property, Object value);
 }

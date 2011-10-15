@@ -18,7 +18,6 @@ package org.dynjs.runtime;
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
-import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +50,7 @@ public class DynJSTest {
         dynJS.eval(context, "var x;");
         assertThat(scope.resolve("x"))
                 .isNotNull()
-                .isEqualTo(DynPrimitiveUndefined.UNDEFINED);
+                .isEqualTo(DynThreadContext.UNDEFINED);
     }
 
     @Test

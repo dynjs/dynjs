@@ -32,7 +32,6 @@ import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
-import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class Executor implements Opcodes {
             @Override
             public CodeBlock getCodeBlock() {
                 return newCodeBlock()
-                        .getstatic(p(DynPrimitiveUndefined.class), "UNDEFINED", ci(DynPrimitiveUndefined.class));
+                        .getstatic(p(DynThreadContext.class), "UNDEFINED", ci(Object.class));
             }
         });
     }

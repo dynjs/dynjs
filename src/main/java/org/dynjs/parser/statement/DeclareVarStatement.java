@@ -26,6 +26,6 @@ public class DeclareVarStatement implements Statement {
                 .aload(2)
                 .ldc(id)
                 .aload(3)
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 }

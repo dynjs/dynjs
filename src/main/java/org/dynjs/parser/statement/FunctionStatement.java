@@ -64,12 +64,13 @@ public class FunctionStatement implements Statement {
                 .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
         if (identifier != null) {
+            // TODO DRY
             codeBlock = codeBlock
                     .astore(3)
                     .aload(2)
                     .ldc(identifier)
                     .aload(3)
-                    .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                    .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }
 
         return codeBlock;

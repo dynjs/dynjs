@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.dynjs.runtime.DynObject.toBoolean;
 import static org.dynjs.runtime.primitives.DynPrimitiveNull.NULL;
-import static org.dynjs.runtime.primitives.DynPrimitiveUndefined.UNDEFINED;
+import static org.dynjs.runtime.DynThreadContext.UNDEFINED;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class BooleanTest {

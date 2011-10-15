@@ -17,7 +17,6 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.primitives.DynPrimitiveNumber;
-import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class DynObject implements DynAtom, Scope {
     private final Map<String, DynProperty> properties = new HashMap<>();
 
     public DynObject() {
-        setProperty("prototype", DynPrimitiveUndefined.UNDEFINED);
+        setProperty("prototype", DynThreadContext.UNDEFINED);
     }
 
     public void setProperty(String key, Object atom) {
@@ -50,11 +49,11 @@ public class DynObject implements DynAtom, Scope {
 
     @Override
     public Scope getEnclosingScope() {
-        if (getProperty("prototype").getAttribute("value") instanceof DynPrimitiveUndefined) {
-            return null;
-        } else {
-            return (DynObject) getProperty("prototype").getAttribute("value");
+        Object prototype = getProperty("prototype").getAttribute("value");
+        if (prototype instanceof DynObject) {
+            return (DynObject) prototype;
         }
+        return null;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class DynObject implements DynAtom, Scope {
     }
 
     @Override
-    public void define(String property, DynAtom value) {
+    public void define(String property, Object value) {
         setProperty(property, value);
     }
 

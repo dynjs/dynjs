@@ -53,7 +53,7 @@ public class FunctionFactory implements Function {
     }
 
     @Override
-    public void define(String property, DynAtom value) {
+    public void define(String property, Object value) {
     }
 
 }

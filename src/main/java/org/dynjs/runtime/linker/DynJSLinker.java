@@ -46,7 +46,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         break;
                     }
                     case "define": {
-                        MethodType targetType = methodType(void.class, String.class, DynAtom.class);
+                        MethodType targetType = methodType(void.class, String.class, Object.class);
                         targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
                         break;
                     }

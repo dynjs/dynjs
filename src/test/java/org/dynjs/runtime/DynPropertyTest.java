@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,11 +15,11 @@ public class DynPropertyTest {
     @Test
     public void allowsAttributeChaining() {
         DynProperty property = new DynProperty("x")
-                .setAttribute("value", DynPrimitiveUndefined.UNDEFINED)
+                .setAttribute("value", DynThreadContext.UNDEFINED)
                 .setAttribute("writable", true)
                 .setAttribute("enumerable", true)
                 .setAttribute("configurable", true);
-        assertThat(property.getAttribute("value")).isEqualTo(DynPrimitiveUndefined.UNDEFINED);
+        assertThat(property.getAttribute("value")).isEqualTo(DynThreadContext.UNDEFINED);
         assertThat(property.getAttribute("writable")).isEqualTo(true);
         assertThat(property.getAttribute("enumerable")).isEqualTo(true);
         assertThat(property.getAttribute("configurable")).isEqualTo(true);
