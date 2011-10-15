@@ -32,10 +32,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
     private void initVtables() {
         Map<String, MethodHandle> map = entryPointClassValue.get(Double.class);
-        MethodType methodType = MethodType.methodType(Double.class, Double.class, Double.class);
-        String op = "add";
-        MethodHandle handle = Lookup.PUBLIC.findStatic(RT.NumberOperations.class, op, methodType);
-        map.put(op + methodType.toMethodDescriptorString(), handle);
+        map.putAll(VTablePopulator.vtableFrom(RT.NumberOperations.class));
     }
 
     @Override
