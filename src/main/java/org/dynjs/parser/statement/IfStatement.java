@@ -3,10 +3,8 @@ package org.dynjs.parser.statement;
 import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
-import org.dynjs.runtime.primitives.DynPrimitiveBoolean;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -31,8 +29,8 @@ public class IfStatement implements Statement {
         LabelNode outBlock = new LabelNode();
         CodeBlock codeBlock = CodeBlock.newCodeBlock()
                 .append(vbool.getCodeBlock())
-                .invokedynamic("dynjs:convert:to_boolean", sig(DynPrimitiveBoolean.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .invokevirtual(p(DynPrimitiveBoolean.class), "getValue", sig(boolean.class))
+                .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
                 .iffalse(elseBlock)
                 .append(vthen.getCodeBlock())
                 .go_to(outBlock)

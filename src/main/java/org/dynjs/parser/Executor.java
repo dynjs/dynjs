@@ -241,7 +241,7 @@ public class Executor implements Opcodes {
                 return newCodeBlock()
                         .append(l.getCodeBlock())
                         .append(r.getCodeBlock())
-                        .invokedynamic("dynjs:runtime:eq", sig(DynPrimitiveBoolean.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("dynjs:runtime:eq", sig(Boolean.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
             }
         };

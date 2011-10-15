@@ -23,9 +23,6 @@ import org.dynjs.runtime.primitives.DynPrimitiveUndefined;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.dynjs.runtime.primitives.DynPrimitiveBoolean.FALSE;
-import static org.dynjs.runtime.primitives.DynPrimitiveBoolean.TRUE;
-
 public class DynObject implements DynAtom, Scope {
 
     private final Map<String, DynProperty> properties = new HashMap<>();
@@ -76,32 +73,32 @@ public class DynObject implements DynAtom, Scope {
         setProperty(property, value);
     }
 
-    public static DynPrimitiveBoolean toBoolean(final DynAtom value) {
+    public static Boolean toBoolean(final Object value) {
         if (value instanceof DynNumber) {
             DynNumber number = (DynNumber) value;
-            return (number.isNaN() || number.getValue() == 0) ? FALSE : TRUE;
-        } else if (value instanceof DynPrimitiveBoolean) {
-            return (DynPrimitiveBoolean) value;
+            return !(number.isNaN() || number.getValue() == 0);
+        } else if (value instanceof Boolean) {
+            return (Boolean) value;
         } else if (value instanceof DynString) {
             DynString string = (DynString) value;
-            return string.toString().equals("") ? FALSE : TRUE;
+            return !"".equals(string.toString());
         }
-        return (value instanceof DynObject) ? TRUE : FALSE;
+        return (value instanceof DynObject);
     }
 
-    public static DynPrimitiveBoolean eq(final DynAtom lhs, final DynAtom rhs) {
+    public static Boolean eq(final DynAtom lhs, final DynAtom rhs) {
         if ((lhs instanceof DynPrimitiveNumber || lhs instanceof DynNumber)
                 && (rhs instanceof DynPrimitiveNumber || rhs instanceof DynNumber)) {
             DynNumber n1 = lhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) lhs) : (DynNumber) lhs;
             DynNumber n2 = rhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) rhs) : (DynNumber) rhs;
             if (n1.isNaN() || n2.isNaN()) {
-                return DynPrimitiveBoolean.FALSE;
+                return false;
             }
             if (n1.getValue() == n2.getValue()) {
-                return DynPrimitiveBoolean.TRUE;
+                return true;
             }
         }
-        return DynPrimitiveBoolean.FALSE;
+        return false;
     }
 
 }
