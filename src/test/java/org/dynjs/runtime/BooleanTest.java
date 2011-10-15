@@ -20,48 +20,48 @@ public class BooleanTest {
 
     @Test
     public void undefinedBecomesFalse() {
-        assertThat(toBoolean(UNDEFINED)).isEqualTo(FALSE);
+        assertThat(toBoolean(UNDEFINED)).isFalse();
     }
 
     @Test
     public void nullBecomesFalse() {
-        assertThat(toBoolean(NULL)).isEqualTo(FALSE);
+        assertThat(toBoolean(NULL)).isFalse();
     }
 
     @Test
     public void booleanIsNotConverted() {
-        assertThat(toBoolean(TRUE)).as("true").isEqualTo(TRUE);
+        assertThat(toBoolean(true)).as("true").isTrue();
 
-        assertThat(toBoolean(FALSE)).as("false").isEqualTo(FALSE);
+        assertThat(toBoolean(false)).as("false").isFalse();
     }
 
     @Test
     public void nanBecomesFalse() {
-        assertThat(toBoolean(DynNumber.NAN)).isEqualTo(FALSE);
+        assertThat(toBoolean(DynNumber.NAN)).isFalse();
     }
 
     @Test
     public void zeroBecomesFalse() {
-        assertThat(toBoolean(new DynNumber(0))).isEqualTo(FALSE);
+        assertThat(toBoolean(new DynNumber(0))).isFalse();
     }
 
     @Test
     public void anotherValidNumberBecomesTrue() {
-        assertThat(toBoolean(new DynNumber(42))).isEqualTo(TRUE);
+        assertThat(toBoolean(new DynNumber(42))).isTrue();
     }
 
     @Test
     public void emptyStringBecomesFalse() {
-        assertThat(toBoolean(new DynString(""))).isEqualTo(FALSE);
+        assertThat(toBoolean(new DynString(""))).isFalse();
     }
 
     @Test
     public void nonEmptyStringBecomesTrue(){
-        assertThat(toBoolean(new DynString("zzz..."))).isEqualTo(TRUE);
+        assertThat(toBoolean(new DynString("zzz..."))).isTrue();
     }
 
     @Test
     public void objectBecomesTrue(){
-        assertThat(toBoolean(new DynObject())).isEqualTo(TRUE);
+        assertThat(toBoolean(new DynObject())).isTrue();
     }
 }

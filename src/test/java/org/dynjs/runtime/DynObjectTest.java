@@ -31,7 +31,7 @@ public class DynObjectTest {
     public void testEquality() {
         DynPrimitiveNumber n1 = new DynPrimitiveNumber("8", 10);
         DynPrimitiveNumber n2 = new DynPrimitiveNumber("8", 10);
-        assertThat(DynObject.eq(n1, n2)).isEqualTo(DynPrimitiveBoolean.TRUE);
+        assertThat(DynObject.eq(n1, n2)).isEqualTo(true);
     }
 
 }
