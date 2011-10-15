@@ -52,7 +52,7 @@ public class DynJSCompilerTest {
 
         };
         Function function = dynJSCompiler.compile(dynFunction);
-        DynAtom result = function.call(context, scope, new DynAtom[]{dynString});
+        Object result = function.call(context, scope, new DynAtom[]{dynString});
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynString.class);

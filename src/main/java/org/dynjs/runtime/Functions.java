@@ -13,7 +13,7 @@ public class Functions {
 
     static {
         Function fn = new BaseFunction() {
-            public DynAtom call(DynThreadContext context, Scope scope, DynAtom[] arguments) {
+            public Object call(DynThreadContext context, Scope scope, Object[] arguments) {
                 DynObject object = new DynObject();
                 object.setProperty("Class", new DynString("Object"));
                 object.setProperty("Extensible", true);

@@ -22,7 +22,7 @@ public class RTTest {
     public void testFunctionCall() throws Throwable {
         Function f = new BaseFunction() {
             @Override
-            public DynAtom call(DynThreadContext context, Scope scope, DynAtom... arguments) {
+            public Object call(DynThreadContext context, Scope scope, Object[] arguments) {
                 return new DynString("");
             }
 

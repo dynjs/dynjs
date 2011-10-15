@@ -28,7 +28,7 @@ public class RT {
     public static final MethodHandle SCOPE_RESOLVE;
 
     static {
-        MethodType functionMethodType = methodType(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class);
+        MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
         MethodType eqMethodType = methodType(Boolean.class, DynAtom.class, DynAtom.class);
         EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
@@ -45,7 +45,7 @@ public class RT {
         System.out.println(atom);
     }
 
-    public static DynFunction paramPopulator(DynFunction function, DynAtom[] args) {
+    public static DynFunction paramPopulator(DynFunction function, Object[] args) {
         String[] parameters = function.getArguments();
         for (int i = 0; i < parameters.length; i++) {
             String parameter = parameters[i];

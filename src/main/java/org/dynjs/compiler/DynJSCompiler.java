@@ -42,7 +42,7 @@ public class DynJSCompiler {
                             .invokespecial(p(DynFunction.class), "<init>", sig(void.class))
                             .voidreturn()
             );
-            defineMethod("call", ACC_PUBLIC, sig(DynAtom.class, DynThreadContext.class, Scope.class, DynAtom[].class), alwaysReturnWrapper(arg));
+            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Scope.class, Object[].class), alwaysReturnWrapper(arg));
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 String[] arguments = arg.getArguments();

@@ -40,7 +40,7 @@ public class DynFunctionTest {
     public void shouldReturnCorrectOffsets() {
         DynString d = new DynString("d");
         DynString a = new DynString("a");
-        DynAtom result1 = compiler.compile(new DynFunction() {
+        Object result1 = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
@@ -60,7 +60,7 @@ public class DynFunctionTest {
                 .isNotNull()
                 .isInstanceOf(DynString.class)
                 .isEqualTo(d);
-        DynAtom result2 = compiler.compile(new DynFunction() {
+        Object result2 = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()

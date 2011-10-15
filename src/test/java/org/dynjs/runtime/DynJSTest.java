@@ -176,7 +176,7 @@ public class DynJSTest {
                 .isInstanceOf(Function.class);
 
         Function function = (Function) actual;
-        DynAtom result = function.call(context, scope, new DynAtom[]{new DynObject()});
+        Object result = function.call(context, scope, new DynAtom[]{new DynObject()});
         assertThat(result)
                 .isNotNull();
     }
