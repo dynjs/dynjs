@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
-    private static final List<Class> TYPES = Arrays.asList(new Class[]{Boolean.class});
+    private static final List<Class> TYPES = Arrays.asList(new Class[]{Double.class});
     private static final ClassValue<Map<String, MethodHandle>> entryPointClassValue = new ClassValue<Map<String, MethodHandle>>() {
         @Override
         protected Map<String, MethodHandle> computeValue(Class<?> type) {
@@ -37,10 +37,8 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
     @Override
     public boolean canLinkType(Class<?> type) {
-        for (Class clazz : TYPES) {
-            if (type.isAssignableFrom(clazz)) {
-                return true;
-            }
+        if (TYPES.contains(type)) {
+            return true;
         }
         return false;
     }
