@@ -74,29 +74,4 @@ public class RT {
         return atom;
     }
 
-    @CompanionFor(Double.class)
-    public static class NumberOperations {
-
-        public static Double add(Double a, Double b) {
-            return a + b;
-        }
-
-        public static Double sub(Double a, Double b) {
-            return a - b;
-        }
-
-        public static Double mul(Double a, Double b) {
-            return a * b;
-        }
-
-        public static Boolean eq(Double a, Double b) {
-            if (a.isNaN() || b.isNaN()) {
-                return false;
-            }
-            if (a.equals(b)) {
-                return true;
-            }
-            return false;
-        }
-    }
 }
