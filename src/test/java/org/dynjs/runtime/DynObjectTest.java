@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +23,6 @@ public class DynObjectTest {
     public void aDefinedObjectExists() {
         object.define("meh", new DynObject());
         assertThat(object.resolve("meh")).isNotNull();
-    }
-
-    @Test
-    public void testEquality() {
-        DynPrimitiveNumber n1 = new DynPrimitiveNumber("8", 10);
-        DynPrimitiveNumber n2 = new DynPrimitiveNumber("8", 10);
-        assertThat(DynObject.eq(n1, n2)).isEqualTo(true);
     }
 
 }

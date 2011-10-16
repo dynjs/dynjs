@@ -16,7 +16,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,21 +81,6 @@ public class DynObject implements DynAtom, Scope {
             return !"".equals(string.toString());
         }
         return (value instanceof DynObject);
-    }
-
-    public static Boolean eq(final Object lhs, final Object rhs) {
-        if ((lhs instanceof DynPrimitiveNumber || lhs instanceof DynNumber)
-                && (rhs instanceof DynPrimitiveNumber || rhs instanceof DynNumber)) {
-            DynNumber n1 = lhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) lhs) : (DynNumber) lhs;
-            DynNumber n2 = rhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) rhs) : (DynNumber) rhs;
-            if (n1.isNaN() || n2.isNaN()) {
-                return false;
-            }
-            if (n1.getValue() == n2.getValue()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

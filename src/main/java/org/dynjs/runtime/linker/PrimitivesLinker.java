@@ -6,7 +6,6 @@ import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
 import org.dynalang.dynalink.support.Guards;
-import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.runtime.RT;
 
 import java.lang.invoke.MethodHandle;

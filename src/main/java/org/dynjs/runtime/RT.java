@@ -25,14 +25,11 @@ public class RT {
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
     public static final MethodHandle FUNCTION_CALL;
-    public static final MethodHandle EQ;
     public static final MethodHandle SCOPE_RESOLVE;
 
     static {
         MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-        MethodType eqMethodType = methodType(Boolean.class, Object.class, Object.class);
-        EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
         MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
     }

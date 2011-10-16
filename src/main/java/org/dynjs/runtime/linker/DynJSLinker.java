@@ -71,15 +71,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     case "call":
                         targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
                         break;
-                    case "eq":
-                        targetHandle = linkerServices.asType(RT.EQ, callSiteDescriptor.getMethodType());
-                        break;
-                    case "bop":
-                        MethodType targetType = methodType(DynNumber.class, DynNumber.class);
-                        String op = linkRequest.getCallSiteDescriptor().getNameToken(3);
-                        MethodHandle opMH = lookup().findVirtual(DynNumber.class, op, targetType);
-                        targetHandle = linkerServices.asType(opMH, callSiteDescriptor.getMethodType());
-                        break;
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }
