@@ -3,7 +3,6 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import java.util.Deque;
 import java.util.HashMap;
