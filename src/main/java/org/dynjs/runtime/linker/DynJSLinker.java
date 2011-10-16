@@ -12,11 +12,8 @@ import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynNumber;
-import org.dynjs.runtime.DynString;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -77,7 +74,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             } else if (subsystem.equals("convert")) {
                 switch (action) {
                     case "to_boolean":
-                        targetHandle = Converters.DynAtom2boolean;
+                        targetHandle = Converters.toBoolean;
                         break;
                 }
             }
@@ -92,15 +89,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
 
     @Override
     public GuardedInvocation convertToType(Class<?> sourceType, Class<?> targetType) {
-        if (DynString.class.isAssignableFrom(sourceType) && String.class == targetType) {
-            return Converters.Guarded_DynString2String;
-        } else if (DynAtom.class.isAssignableFrom(sourceType) && DynNumber.class == targetType) {
-            return Converters.Guarded_DynPrimitiveNumber2DynNumber;
-        } else if (DynAtom.class.isAssignableFrom(sourceType) && DynPrimitiveNumber.class == targetType) {
-            return Converters.Guarded_DynNumber2DynPrimitiveNumber;
-        } else if (DynAtom.class.isAssignableFrom(sourceType) && boolean.class == targetType) {
-            return Converters.Guarded_DynAtom2boolean;
-        }
+
         return null;
     }
 }

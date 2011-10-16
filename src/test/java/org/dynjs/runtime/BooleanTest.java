@@ -50,12 +50,12 @@ public class BooleanTest {
 
     @Test
     public void emptyStringBecomesFalse() {
-        assertThat(toBoolean(new DynString(""))).isFalse();
+        assertThat(toBoolean("")).isFalse();
     }
 
     @Test
     public void nonEmptyStringBecomesTrue() {
-        assertThat(toBoolean(new DynString("zzz..."))).isTrue();
+        assertThat(toBoolean("zzz...")).isTrue();
     }
 
     @Test

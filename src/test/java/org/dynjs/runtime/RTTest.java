@@ -23,7 +23,7 @@ public class RTTest {
         Function f = new BaseFunction() {
             @Override
             public Object call(DynThreadContext context, Scope scope, Object[] arguments) {
-                return new DynString("");
+                return "";
             }
 
         };
@@ -31,7 +31,7 @@ public class RTTest {
         Object result = RT.FUNCTION_CALL.bindTo(f).invoke(context, scope, new DynAtom[]{});
         assertThat(result)
                 .isNotNull()
-                .isInstanceOf(DynString.class);
+                .isInstanceOf(String.class);
 
     }
 

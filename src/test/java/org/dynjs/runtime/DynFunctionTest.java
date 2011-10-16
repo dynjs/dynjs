@@ -38,8 +38,8 @@ public class DynFunctionTest {
 
     @Test
     public void shouldReturnCorrectOffsets() {
-        DynString d = new DynString("d");
-        DynString a = new DynString("a");
+        String d = "d";
+        String a = "a";
         Object result1 = compiler.compile(new DynFunction() {
             @Override
             public CodeBlock getCodeBlock() {
@@ -55,10 +55,10 @@ public class DynFunctionTest {
             public String[] getArguments() {
                 return new String[]{"a", "c", "d"};
             }
-        }).call(context, scope, new DynAtom[]{a, new DynObject(), d});
+        }).call(context, scope, new Object[]{a, new DynObject(), d});
         assertThat(result1)
                 .isNotNull()
-                .isInstanceOf(DynString.class)
+                .isInstanceOf(String.class)
                 .isEqualTo(d);
         Object result2 = compiler.compile(new DynFunction() {
             @Override
@@ -75,7 +75,7 @@ public class DynFunctionTest {
             public String[] getArguments() {
                 return new String[]{"a", "c", "d"};
             }
-        }).call(context, scope, new DynAtom[]{a, new DynObject(), d});
+        }).call(context, scope, new Object[]{a, new DynObject(), d});
         assertThat(result2)
                 .isNotNull()
                 .isInstanceOf(DynObject.class);

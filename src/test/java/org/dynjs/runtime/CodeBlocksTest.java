@@ -25,9 +25,9 @@ public class CodeBlocksTest {
                 return new String[]{"target", "name"};
             }
         });
-        DynAtom propertyName = new DynString("constructor");
+        String propertyName = "constructor";
         DynObject object = new DynObject();
-        Object result = function.call(context, scope, new DynAtom[]{object, propertyName});
+        Object result = function.call(context, scope, new Object[]{object, propertyName});
     }
 
 }

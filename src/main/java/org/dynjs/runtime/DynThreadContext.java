@@ -3,7 +3,6 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -28,8 +27,8 @@ public class DynThreadContext {
         this.runtime.set(runtime);
     }
 
-    public DynAtom defineStringLiteral(final String value) {
-        return new DynString(value);
+    public String defineStringLiteral(final String value) {
+        return value;
     }
 
     public Number defineDecimalLiteral(final String value) {

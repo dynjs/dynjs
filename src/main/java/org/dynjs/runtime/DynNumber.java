@@ -1,7 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
-
 import static java.lang.Double.NaN;
 
 public class DynNumber extends DynObject {
@@ -12,11 +10,11 @@ public class DynNumber extends DynObject {
 
     private final double value;
 
-    public DynNumber(DynPrimitiveNumber primitiveNumber) {
-        value = primitiveNumber.getDoubleValue();
+    public DynNumber(Double value) {
+        this.value = value;
     }
 
-    public DynNumber(double value) {
+    public DynNumber(Integer value) {
         this.value = value;
     }
 
@@ -46,12 +44,12 @@ public class DynNumber extends DynObject {
         return new DynNumber(getValue() % other.getValue());
     }
 
-    public static DynNumber parseInt(final DynString string) {
-        return parseInt(string, new DynNumber(10));
+    public static DynNumber parseInt(final String string) {
+        return parseInt(string, new DynNumber(10.0));
     }
 
-    public static DynNumber parseInt(final DynString string, final DynNumber radix) {
-        String given = string.toString().trim().toLowerCase();
+    public static DynNumber parseInt(final String string, final DynNumber radix) {
+        String given = string.trim().toLowerCase();
 
         if (given.equals("")) {
             return NAN;

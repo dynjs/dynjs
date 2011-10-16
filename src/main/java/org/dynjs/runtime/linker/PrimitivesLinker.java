@@ -6,7 +6,7 @@ import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
 import org.dynalang.dynalink.support.Guards;
-import org.dynjs.runtime.RT;
+import org.dynjs.runtime.extensions.NumberOperations;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -31,7 +31,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
     private void initVtables() {
         Map<String, MethodHandle> map = entryPointClassValue.get(Double.class);
-        map.putAll(VTablePopulator.vtableFrom(RT.NumberOperations.class));
+        map.putAll(VTablePopulator.vtableFrom(NumberOperations.class));
     }
 
     @Override

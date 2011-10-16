@@ -22,35 +22,35 @@ public class ParseIntTest {
 
     @Test
     public void spacesWillBeTrimmed() {
-        assertThat(parseInt(new DynString("  "))).as("blank spaces").isEqualTo(NAN);
-        assertThatValueOf(parseInt(new DynString("  0 "))).as("integer number").isEqualTo(0);
-        assertThatValueOf(parseInt(new DynString("  0.0 "))).as("float number").isEqualTo(0);
+        assertThat(parseInt("  ")).as("blank spaces").isEqualTo(NAN);
+        assertThatValueOf(parseInt("  0 ")).as("integer number").isEqualTo(0);
+        assertThatValueOf(parseInt("  0.0 ")).as("float number").isEqualTo(0);
     }
 
     @Test
     public void emptyStringReturnsNaN() {
-        assertThat(parseInt(new DynString(""))).isEqualTo(NAN);
+        assertThat(parseInt("")).isEqualTo(NAN);
     }
 
     @Test
     public void validNumbersStartWithPlusMinusOrDigits() {
-        assertThat(parseInt(new DynString("a"))).isEqualTo(NAN);
-        assertThat(parseInt(new DynString("x"))).isEqualTo(NAN);
-        assertThat(parseInt(new DynString("FE"))).isEqualTo(NAN);
-        assertThat(parseInt(new DynString("*3"))).isEqualTo(NAN);
-        assertThat(parseInt(new DynString(".1"))).isEqualTo(NAN);
+        assertThat(parseInt("a")).isEqualTo(NAN);
+        assertThat(parseInt("x")).isEqualTo(NAN);
+        assertThat(parseInt("FE")).isEqualTo(NAN);
+        assertThat(parseInt("*3")).isEqualTo(NAN);
+        assertThat(parseInt(".1")).isEqualTo(NAN);
 
-        assertThat(parseInt(new DynString("0.1"))).isNotEqualTo(NAN);
-        assertThat(parseInt(new DynString("9999999"))).isNotEqualTo(NAN);
-        assertThat(parseInt(new DynString("+2"))).isNotEqualTo(NAN);
-        assertThat(parseInt(new DynString("+ 2"))).isNotEqualTo(NAN);
-        assertThat(parseInt(new DynString("-3"))).isNotEqualTo(NAN);
-        assertThat(parseInt(new DynString("- 3"))).isNotEqualTo(NAN);
+        assertThat(parseInt("0.1")).isNotEqualTo(NAN);
+        assertThat(parseInt("9999999")).isNotEqualTo(NAN);
+        assertThat(parseInt("+2")).isNotEqualTo(NAN);
+        assertThat(parseInt("+ 2")).isNotEqualTo(NAN);
+        assertThat(parseInt("-3")).isNotEqualTo(NAN);
+        assertThat(parseInt("- 3")).isNotEqualTo(NAN);
     }
 
     @Test
     public void numbersStartingWith0xIsHexadecimal() {
-        assertThatValueOf(parseInt(new DynString("0xff"))).isEqualTo(0xff);
+        assertThatValueOf(parseInt("0xff")).isEqualTo(0xff);
     }
 
     private DoubleAssert assertThatValueOf(DynNumber number) {
