@@ -31,7 +31,7 @@ public class CallStatement implements Statement {
         CodeBlock codeBlock = newCodeBlock();
         codeBlock = codeBlock
                 .bipush(args.size())
-                .anewarray(p(DynAtom.class))
+                .anewarray(p(Object.class))
                 .astore(4);
 
         for (int i = 0; i < args.size(); i++) {
@@ -47,7 +47,7 @@ public class CallStatement implements Statement {
                 .aload(1)
                 .aload(2)
                 .aload(4)
-                .invokedynamic("dynjs:runtime:call", sig(DynAtom.class, Function.class, DynThreadContext.class, Scope.class, DynAtom[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dynjs:runtime:call", sig(Object.class, Function.class, DynThreadContext.class, Scope.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
         return codeBlock;
     }

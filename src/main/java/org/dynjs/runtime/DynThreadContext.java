@@ -32,12 +32,12 @@ public class DynThreadContext {
         return new DynString(value);
     }
 
-    public DynPrimitiveNumber defineDecimalLiteral(final String value) {
-        return new DynPrimitiveNumber(value, 10);
+    public Number defineDecimalLiteral(final String value) {
+        return Double.parseDouble(value);
     }
 
-    public DynPrimitiveNumber defineOctalLiteral(final String value) {
-        return new DynPrimitiveNumber(value, 8);
+    public Number defineOctalLiteral(final String value) {
+        return Integer.parseInt(value, 8);
     }
 
     public Scope getScope() {

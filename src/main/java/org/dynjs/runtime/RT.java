@@ -7,6 +7,7 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
+import org.dynjs.runtime.linker.anno.CompanionFor;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
@@ -24,14 +25,11 @@ public class RT {
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
     public static final MethodHandle FUNCTION_CALL;
-    public static final MethodHandle EQ;
     public static final MethodHandle SCOPE_RESOLVE;
 
     static {
         MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-        MethodType eqMethodType = methodType(Boolean.class, DynAtom.class, DynAtom.class);
-        EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
         MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
     }
@@ -76,4 +74,29 @@ public class RT {
         return atom;
     }
 
+    @CompanionFor(Double.class)
+    public static class NumberOperations {
+
+        public static Double add(Double a, Double b) {
+            return a + b;
+        }
+
+        public static Double sub(Double a, Double b) {
+            return a - b;
+        }
+
+        public static Double mul(Double a, Double b) {
+            return a * b;
+        }
+
+        public static Boolean eq(Double a, Double b) {
+            if (a.isNaN() || b.isNaN()) {
+                return false;
+            }
+            if (a.equals(b)) {
+                return true;
+            }
+            return false;
+        }
+    }
 }

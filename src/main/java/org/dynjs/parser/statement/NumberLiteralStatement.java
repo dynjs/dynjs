@@ -3,7 +3,6 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -23,7 +22,7 @@ public class NumberLiteralStatement implements Statement {
         return CodeBlock.newCodeBlock()
                 .aload(1)
                 .ldc(value)
-                .invokevirtual(p(DynThreadContext.class), getFactoryMethod(), sig(DynPrimitiveNumber.class, String.class));
+                .invokevirtual(p(DynThreadContext.class), getFactoryMethod(), sig(Number.class, String.class));
     }
 
     private String getFactoryMethod() {

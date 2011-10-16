@@ -29,7 +29,6 @@ import org.dynjs.parser.statement.NumberLiteralStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
@@ -239,7 +238,7 @@ public class Executor implements Opcodes {
                 return newCodeBlock()
                         .append(l.getCodeBlock())
                         .append(r.getCodeBlock())
-                        .invokedynamic("dynjs:runtime:eq", sig(Boolean.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("eq", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
             }
         };

@@ -17,7 +17,6 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
-import org.dynjs.runtime.primitives.DynPrimitiveNumber;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,9 +58,9 @@ public class DynJSTest {
         Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
+                .isInstanceOf(Double.class);
 
-        assertThat(((DynNumber) atom).getValue()).isEqualTo(3.0);
+        assertThat(atom).isEqualTo(3.0);
     }
 
     @Test
@@ -70,9 +69,9 @@ public class DynJSTest {
         Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
+                .isInstanceOf(Double.class);
 
-        assertThat(((DynNumber) atom).getValue()).isEqualTo(6.0);
+        assertThat(atom).isEqualTo(6.0);
     }
 
     @Test
@@ -81,9 +80,9 @@ public class DynJSTest {
         Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
+                .isInstanceOf(Double.class);
 
-        assertThat(((DynNumber) atom).getValue()).isEqualTo(2.0);
+        assertThat(atom).isEqualTo(2.0);
     }
 
     @Test
@@ -92,9 +91,9 @@ public class DynJSTest {
         Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
+                .isInstanceOf(Double.class);
 
-        assertThat(((DynNumber) atom).getValue()).isEqualTo(5.0);
+        assertThat(atom).isEqualTo(5.0);
     }
 
     @Test
@@ -103,9 +102,9 @@ public class DynJSTest {
         Object atom = scope.resolve("x");
         assertThat(atom)
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
+                .isInstanceOf(Double.class);
 
-        assertThat(((DynNumber) atom).getValue()).isEqualTo(5.0);
+        assertThat(atom).isEqualTo(5.0);
     }
 
     @Test
@@ -158,7 +157,8 @@ public class DynJSTest {
 
         assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
+                .isInstanceOf(Double.class)
+                .isEqualTo(2.0);
     }
 
     //
@@ -186,8 +186,8 @@ public class DynJSTest {
         Object result = evalScript("02_function_call.js");
         assertThat(result)
                 .isNotNull()
-                .isInstanceOf(DynPrimitiveNumber.class);
-        assertThat(((DynPrimitiveNumber) result).getDoubleValue()).isEqualTo(1.0);
+                .isInstanceOf(Double.class);
+        assertThat(result).isEqualTo(1.0);
 
     }
 
@@ -196,8 +196,8 @@ public class DynJSTest {
         Object result = evalScript("03_factorial.js");
         assertThat(result)
                 .isNotNull()
-                .isInstanceOf(DynNumber.class);
-        assertThat(((DynNumber) result).getValue()).isEqualTo(120.0);
+                .isInstanceOf(Double.class);
+        assertThat(result).isEqualTo(120.0);
     }
 
     private Object evalScript(String scriptName) {

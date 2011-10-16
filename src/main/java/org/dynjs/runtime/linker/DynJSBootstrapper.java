@@ -1,10 +1,8 @@
 package org.dynjs.runtime.linker;
 
-
 import org.dynalang.dynalink.DynamicLinker;
 import org.dynalang.dynalink.DynamicLinkerFactory;
 import org.dynalang.dynalink.MonomorphicCallSite;
-import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
@@ -16,8 +14,7 @@ public class DynJSBootstrapper {
 
     static {
         final DynamicLinkerFactory factory = new DynamicLinkerFactory();
-        final GuardingDynamicLinker dynJsLinker = new DynJSLinker();
-        factory.setPrioritizedLinker(dynJsLinker);
+        factory.setPrioritizedLinkers(new DynJSLinker(), new PrimitivesLinker());
         dynamicLinker = factory.createLinker();
     }
 
@@ -26,4 +23,5 @@ public class DynJSBootstrapper {
         dynamicLinker.link(callSite);
         return callSite;
     }
+
 }
