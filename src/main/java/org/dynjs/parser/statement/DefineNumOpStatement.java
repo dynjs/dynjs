@@ -2,8 +2,6 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynNumber;
 import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
@@ -23,10 +21,9 @@ public class DefineNumOpStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        String instruction = "dynjs:runtime:bop:" + operation;
         return newCodeBlock()
                 .append(leftHandStatement.getCodeBlock())
                 .append(rightHandStatement.getCodeBlock())
-                .invokedynamic(instruction, sig(DynNumber.class, DynAtom.class, DynAtom.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 }

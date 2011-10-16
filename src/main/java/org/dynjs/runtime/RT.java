@@ -31,7 +31,7 @@ public class RT {
     static {
         MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-        MethodType eqMethodType = methodType(Boolean.class, DynAtom.class, DynAtom.class);
+        MethodType eqMethodType = methodType(Boolean.class, Object.class, Object.class);
         EQ = Lookup.PUBLIC.findStatic(DynObject.class, "eq", eqMethodType);
         MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
@@ -82,6 +82,24 @@ public class RT {
 
         public static Double add(Double a, Double b) {
             return a + b;
+        }
+
+        public static Double sub(Double a, Double b) {
+            return a - b;
+        }
+
+        public static Double mul(Double a, Double b) {
+            return a * b;
+        }
+
+        public static Boolean eq(Double a, Double b) {
+            if (a.isNaN() || b.isNaN()) {
+                return false;
+            }
+            if (a.equals(b)) {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -84,7 +84,7 @@ public class DynObject implements DynAtom, Scope {
         return (value instanceof DynObject);
     }
 
-    public static Boolean eq(final DynAtom lhs, final DynAtom rhs) {
+    public static Boolean eq(final Object lhs, final Object rhs) {
         if ((lhs instanceof DynPrimitiveNumber || lhs instanceof DynNumber)
                 && (rhs instanceof DynPrimitiveNumber || rhs instanceof DynNumber)) {
             DynNumber n1 = lhs instanceof DynPrimitiveNumber ? new DynNumber((DynPrimitiveNumber) lhs) : (DynNumber) lhs;
