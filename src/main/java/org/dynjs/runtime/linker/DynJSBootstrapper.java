@@ -14,7 +14,7 @@ public class DynJSBootstrapper {
 
     static {
         final DynamicLinkerFactory factory = new DynamicLinkerFactory();
-        factory.setPrioritizedLinkers(new PrimitivesLinker(), new DynJSLinker());
+        factory.setPrioritizedLinkers(new DynJSLinker(), new PrimitivesLinker());
         dynamicLinker = factory.createLinker();
     }
 
