@@ -46,12 +46,12 @@ public class DynNumber extends DynObject {
         return new DynNumber(getValue() % other.getValue());
     }
 
-    public static DynNumber parseInt(final DynString string) {
+    public static DynNumber parseInt(final String string) {
         return parseInt(string, new DynNumber(10));
     }
 
-    public static DynNumber parseInt(final DynString string, final DynNumber radix) {
-        String given = string.toString().trim().toLowerCase();
+    public static DynNumber parseInt(final String string, final DynNumber radix) {
+        String given = string.trim().toLowerCase();
 
         if (given.equals("")) {
             return NAN;

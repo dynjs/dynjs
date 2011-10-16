@@ -20,8 +20,6 @@ public class StringLiteralStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         return newCodeBlock()
-                .aload(1)
-                .ldc(literal)
-                .invokevirtual(p(DynThreadContext.class), "defineStringLiteral", sig(DynAtom.class, String.class));
+                .ldc(literal);
     }
 }

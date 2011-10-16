@@ -28,8 +28,8 @@ public class DynThreadContext {
         this.runtime.set(runtime);
     }
 
-    public DynAtom defineStringLiteral(final String value) {
-        return new DynString(value);
+    public String defineStringLiteral(final String value) {
+        return value;
     }
 
     public Number defineDecimalLiteral(final String value) {

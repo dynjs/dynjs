@@ -76,9 +76,9 @@ public class DynObject implements DynAtom, Scope {
             return !(number.isNaN() || number.getValue() == 0);
         } else if (value instanceof Boolean) {
             return (Boolean) value;
-        } else if (value instanceof DynString) {
-            DynString string = (DynString) value;
-            return !"".equals(string.toString());
+        } else if (value instanceof String) {
+            String string = (String) value;
+            return !"".equals(string);
         }
         return (value instanceof DynObject);
     }
