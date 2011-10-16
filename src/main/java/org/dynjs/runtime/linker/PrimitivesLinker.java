@@ -50,7 +50,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         Class<? extends Object> receiverClass = receiver.getClass();
         Map<String, MethodHandle> vtable = entryPointClassValue.get(receiverClass);
         CallSiteDescriptor descriptor = linkRequest.getCallSiteDescriptor();
-        MethodType targetMethodType = methodTypeForArguments(arguments, receiverClass);
+        MethodType targetMethodType = methodTypeForArguments(descriptor, arguments, receiverClass);
 
         String selector = descriptor.getName() + targetMethodType.toMethodDescriptorString();
         MethodHandle handle = vtable.get(selector);
@@ -60,9 +60,14 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         return null;
     }
 
-    private MethodType methodTypeForArguments(Object[] arguments, Class<? extends Object> receiverClass) {
+    private MethodType methodTypeForArguments(CallSiteDescriptor descriptor, Object[] arguments, Class<? extends Object> receiverClass) {
         MethodType targetMethodType = MethodType.genericMethodType(arguments.length);
-        targetMethodType = targetMethodType.changeReturnType(receiverClass);
+        Class<?> originalReturnType = descriptor.getMethodType().returnType();
+        if (originalReturnType != Object.class) {
+            targetMethodType = targetMethodType.changeReturnType(originalReturnType);
+        } else {
+            targetMethodType = targetMethodType.changeReturnType(receiverClass);
+        }
         for (int i = 0; i < arguments.length; i++) {
             Object argument = arguments[i];
             targetMethodType = targetMethodType.changeParameterType(i, argument.getClass());
