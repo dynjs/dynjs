@@ -9,4 +9,8 @@ public class BooleanOperations {
         return a || b;
     }
 
+    public static Boolean land(Boolean a, Boolean b) {
+        return a && b;
+    }
+
 }

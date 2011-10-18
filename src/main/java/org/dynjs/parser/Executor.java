@@ -219,7 +219,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineLandOp(Statement l, Statement r) {
-        return null;
+        return new LogicalOperationStatement("land", l, r);
     }
 
     public Statement defineAndBitOp(Statement l, Statement r) {
