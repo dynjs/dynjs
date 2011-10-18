@@ -26,6 +26,7 @@ import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
@@ -192,16 +193,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineGtRelOp(final Statement l, final Statement r) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .append(l.getCodeBlock())
-                        .append(r.getCodeBlock())
-                        .invokedynamic("gt", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
-
+        return new RelationalOperationStatement("gt", l, r);
     }
 
     public Statement defineLteRelOp(Statement l, Statement r) {
