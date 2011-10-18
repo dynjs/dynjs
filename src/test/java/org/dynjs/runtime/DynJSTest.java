@@ -203,9 +203,13 @@ public class DynJSTest {
 
     @Test
     public void testRelationalOperators() {
-        dynJS.eval(context, "var result = 1 > 2;");
+        check("var result = 1 > 2;", false);
+    }
+
+    private void check(String scriptlet, Boolean expected) {
+        dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
-        assertThat(result).isEqualTo(false);
+        assertThat(result).isEqualTo(expected);
     }
 
     private Object evalScript(String scriptName) {
