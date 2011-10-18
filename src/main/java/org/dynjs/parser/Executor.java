@@ -191,8 +191,17 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement defineGtRelOp(Statement l, Statement r) {
-        return null;
+    public Statement defineGtRelOp(final Statement l, final Statement r) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .append(l.getCodeBlock())
+                        .append(r.getCodeBlock())
+                        .invokedynamic("gt", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            }
+        };
+
     }
 
     public Statement defineLteRelOp(Statement l, Statement r) {

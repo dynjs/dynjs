@@ -26,4 +26,8 @@ public class NumberOperations {
         }
         return false;
     }
+
+    public static Boolean gt(Double a, Double b) {
+        return a > b;
+    }
 }
