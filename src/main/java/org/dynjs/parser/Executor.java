@@ -322,7 +322,13 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineTrueLiteral() {
-        return null;
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
+            }
+        };
     }
 
     public Statement defineFalseLiteral() {
