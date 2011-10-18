@@ -216,6 +216,13 @@ public class DynJSTest {
     }
 
     @Test
+    public void testNullLiteral() {
+        dynJS.eval(context, "var result = null");
+        Object result = context.getScope().resolve("result");
+        assertThat(result).isNull();
+    }
+
+    @Test
     public void testTernaryOperator() {
         dynJS.eval(context, "var result = 1 > 2 ? 55 : 56;");
         Object result = context.getScope().resolve("result");
