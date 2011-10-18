@@ -27,6 +27,7 @@ import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
@@ -316,7 +317,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineNullLiteral() {
-        return null;
+        return new NullLiteralStatement();
     }
 
     public Statement defineRegExLiteral(String s) {
