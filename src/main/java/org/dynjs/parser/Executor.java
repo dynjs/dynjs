@@ -26,6 +26,7 @@ import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
+import org.dynjs.parser.statement.LogicalOperationStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
@@ -213,12 +214,12 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement defineLorOp(Statement l, Statement r) {
-        return null;
+    public Statement defineLorOp(final Statement l, final Statement r) {
+        return new LogicalOperationStatement("lor", l, r);
     }
 
     public Statement defineLandOp(Statement l, Statement r) {
-        return null;
+        return new LogicalOperationStatement("land", l, r);
     }
 
     public Statement defineAndBitOp(Statement l, Statement r) {

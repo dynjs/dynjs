@@ -6,6 +6,7 @@ import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
 import org.dynalang.dynalink.support.Guards;
+import org.dynjs.runtime.extensions.BooleanOperations;
 import org.dynjs.runtime.extensions.NumberOperations;
 
 import java.lang.invoke.MethodHandle;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
-    private static final List<Class> TYPES = Arrays.asList(new Class[]{Double.class});
+    private static final List<Class> TYPES = Arrays.asList(new Class[]{Double.class, Boolean.class});
     private static final ClassValue<Map<String, MethodHandle>> entryPointClassValue = new ClassValue<Map<String, MethodHandle>>() {
         @Override
         protected Map<String, MethodHandle> computeValue(Class<?> type) {
@@ -30,8 +31,8 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
     }
 
     private void initVtables() {
-        Map<String, MethodHandle> map = entryPointClassValue.get(Double.class);
-        map.putAll(VTablePopulator.vtableFrom(NumberOperations.class));
+        entryPointClassValue.get(Double.class).putAll(VTablePopulator.vtableFrom(NumberOperations.class));
+        entryPointClassValue.get(Boolean.class).putAll(VTablePopulator.vtableFrom(BooleanOperations.class));
     }
 
     @Override
