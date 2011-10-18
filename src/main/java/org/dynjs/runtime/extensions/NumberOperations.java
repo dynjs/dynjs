@@ -39,4 +39,8 @@ public class NumberOperations {
         return a <= b;
     }
 
+    public static Boolean ge(Double a, Double b) {
+        return a >= b;
+    }
+
 }
