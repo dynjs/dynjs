@@ -307,7 +307,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineQueOp(Statement ex1, Statement ex2, Statement ex3) {
-        return null;
+        return new IfStatement(context, ex1, ex2, ex3);
     }
 
     public Statement defineThisLiteral() {
