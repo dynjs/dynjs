@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
@@ -457,18 +458,4 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    private static class BooleanLiteralStatement implements Statement {
-
-        private final String value;
-
-        public BooleanLiteralStatement(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public CodeBlock getCodeBlock() {
-            return CodeBlock.newCodeBlock()
-                    .getstatic(p(Boolean.class), value, ci(Boolean.class));
-        }
-    }
 }
