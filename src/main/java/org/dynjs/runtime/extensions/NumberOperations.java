@@ -30,4 +30,8 @@ public class NumberOperations {
     public static Boolean gt(Double a, Double b) {
         return a > b;
     }
+
+    public static Boolean lt(Double a, Double b) {
+        return a < b;
+    }
 }
