@@ -26,6 +26,7 @@ import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
@@ -188,19 +189,19 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineLtRelOp(Statement l, Statement r) {
-        return null;
+        return new RelationalOperationStatement("lt", l, r);
     }
 
-    public Statement defineGtRelOp(Statement l, Statement r) {
-        return null;
+    public Statement defineGtRelOp(final Statement l, final Statement r) {
+        return new RelationalOperationStatement("gt", l, r);
     }
 
     public Statement defineLteRelOp(Statement l, Statement r) {
-        return null;
+        return new RelationalOperationStatement("le", l, r);
     }
 
     public Statement defineGteRelOp(Statement l, Statement r) {
-        return null;
+        return new RelationalOperationStatement("ge", l, r);
     }
 
     public Statement defineInstanceOfRelOp(Statement l, Statement r) {

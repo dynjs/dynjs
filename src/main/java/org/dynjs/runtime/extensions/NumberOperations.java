@@ -26,4 +26,21 @@ public class NumberOperations {
         }
         return false;
     }
+
+    public static Boolean lt(Double a, Double b) {
+        return a < b;
+    }
+
+    public static Boolean gt(Double a, Double b) {
+        return a > b;
+    }
+
+    public static Boolean le(Double a, Double b) {
+        return a <= b;
+    }
+
+    public static Boolean ge(Double a, Double b) {
+        return a >= b;
+    }
+
 }
