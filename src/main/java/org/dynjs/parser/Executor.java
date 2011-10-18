@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
@@ -322,11 +323,11 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineTrueLiteral() {
-        return null;
+        return new BooleanLiteralStatement("TRUE");
     }
 
     public Statement defineFalseLiteral() {
-        return null;
+        return new BooleanLiteralStatement("FALSE");
     }
 
     public Statement executeNew(Statement leftHandSideExpression10) {

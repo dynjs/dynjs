@@ -209,6 +209,12 @@ public class DynJSTest {
         check("var result = 2 >= 2;", true);
     }
 
+    @Test
+    public void testBooleanLiterals(){
+        check("var result = true;", true);
+        check("var result = false;", false);
+    }
+
     private void check(String scriptlet, Boolean expected) {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
