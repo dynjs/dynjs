@@ -213,8 +213,17 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement defineLorOp(Statement l, Statement r) {
-        return null;
+    public Statement defineLorOp(final Statement l, final Statement r) {
+        final String operator = "lor";
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .append(l.getCodeBlock())
+                        .append(r.getCodeBlock())
+                        .invokedynamic(operator, sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            }
+        };
     }
 
     public Statement defineLandOp(Statement l, Statement r) {

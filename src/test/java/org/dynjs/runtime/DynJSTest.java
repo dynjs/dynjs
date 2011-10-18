@@ -222,6 +222,11 @@ public class DynJSTest {
         assertThat(result).isEqualTo(56.0);
     }
 
+    @Test
+    public void testLogicalOperators() {
+        check("var result = false || true;", true);
+    }
+
     private void check(String scriptlet, Boolean expected) {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
