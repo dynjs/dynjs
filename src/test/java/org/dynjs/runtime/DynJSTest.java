@@ -210,9 +210,16 @@ public class DynJSTest {
     }
 
     @Test
-    public void testBooleanLiterals(){
+    public void testBooleanLiterals() {
         check("var result = true;", true);
         check("var result = false;", false);
+    }
+
+    @Test
+    public void testTernaryOperator() {
+        dynJS.eval(context, "var result = 1 > 2 ? 55 : 56;");
+        Object result = context.getScope().resolve("result");
+        assertThat(result).isEqualTo(56.0);
     }
 
     private void check(String scriptlet, Boolean expected) {
