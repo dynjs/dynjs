@@ -210,7 +210,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testBooleanLiterals(){
+    public void testBooleanLiterals() {
         check("var result = true;", true);
         check("var result = false;", false);
     }
