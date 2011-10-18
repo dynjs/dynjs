@@ -322,17 +322,11 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineTrueLiteral() {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
-            }
-        };
+        return new BooleanLiteralStatement("TRUE");
     }
 
     public Statement defineFalseLiteral() {
-        return null;
+        return new BooleanLiteralStatement("FALSE");
     }
 
     public Statement executeNew(Statement leftHandSideExpression10) {
@@ -463,4 +457,18 @@ public class Executor implements Opcodes {
         return null;
     }
 
+    private static class BooleanLiteralStatement implements Statement {
+
+        private final String value;
+
+        public BooleanLiteralStatement(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public CodeBlock getCodeBlock() {
+            return CodeBlock.newCodeBlock()
+                    .getstatic(p(Boolean.class), value, ci(Boolean.class));
+        }
+    }
 }
