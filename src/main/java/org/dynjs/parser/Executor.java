@@ -197,7 +197,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineLteRelOp(Statement l, Statement r) {
-        return null;
+        return new RelationalOperationStatement("le", l, r);
     }
 
     public Statement defineGteRelOp(Statement l, Statement r) {

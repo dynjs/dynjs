@@ -203,8 +203,9 @@ public class DynJSTest {
 
     @Test
     public void testRelationalOperators() {
-        check("var result = 1 > 2;", false);
         check("var result = 1 < 2;", true);
+        check("var result = 1 > 2;", false);
+        check("var result = 2 <= 2;", true);
     }
 
     private void check(String scriptlet, Boolean expected) {
