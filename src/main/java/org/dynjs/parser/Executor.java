@@ -24,6 +24,7 @@ import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
+import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
@@ -236,16 +237,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineEqOp(final Statement l, final Statement r) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock()
-                        .append(l.getCodeBlock())
-                        .append(r.getCodeBlock())
-                        .invokedynamic("eq", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
-            }
-        };
+        return new EqualsOperationStatement(l, r);
     }
 
     public Statement defineNEqOp(Statement l, Statement r) {
