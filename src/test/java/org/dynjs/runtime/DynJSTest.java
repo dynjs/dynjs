@@ -232,6 +232,13 @@ public class DynJSTest {
     }
 
     @Test
+    public void testAssignments(){
+        dynJS.eval(context, "var x = 1;x += 1; var result = x;");
+        final Object result = context.getScope().resolve("result");
+        assertThat(result).isEqualTo(2.0);
+    }
+
+    @Test
     public void testNullLiteral() {
         dynJS.eval(context, "var result = null");
         Object result = context.getScope().resolve("result");
