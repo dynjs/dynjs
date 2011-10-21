@@ -36,13 +36,11 @@ import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
 import java.util.List;
 
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
