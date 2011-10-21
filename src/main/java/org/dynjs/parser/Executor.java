@@ -259,7 +259,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineMulAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("mul", l, r);
     }
 
     public Statement defineDivAssOp(Statement l, Statement r) {
