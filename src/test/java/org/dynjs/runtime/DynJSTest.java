@@ -234,6 +234,7 @@ public class DynJSTest {
     @Test
     public void testAssignments() {
         check("var x = 1;x += 1; var result = x == 2;", true);
+        check("var x = 1;x -= 1; var result = x == 0;", true);
     }
 
     @Test

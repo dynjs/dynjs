@@ -275,7 +275,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineSubAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("sub", l, r);
     }
 
     public Statement defineShlAssOp(Statement l, Statement r) {
