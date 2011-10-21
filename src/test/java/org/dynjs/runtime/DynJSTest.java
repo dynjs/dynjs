@@ -217,7 +217,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testEquality(){
+    public void testEquality() {
         check("var result = 1 == 1;", true);
         check("var result = 1 != 1;", false);
     }
