@@ -19,7 +19,6 @@ package org.dynjs.parser;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
-import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
@@ -33,12 +32,12 @@ import org.dynjs.parser.statement.LogicalOperationStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.OperationAssignmentStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
 import java.util.List;
 
@@ -455,31 +454,4 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    private static class OperationAssignmentStatement implements Statement {
-
-        private final String operation;
-        private final Statement l;
-        private final Statement r;
-
-        public OperationAssignmentStatement(String operation, Statement l, Statement r) {
-            this.operation = operation;
-            this.l = l;
-            this.r = r;
-        }
-
-        @Override
-        public CodeBlock getCodeBlock() {
-            final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) l;
-            return CodeBlock.newCodeBlock()
-                    .append(l.getCodeBlock())
-                    .append(r.getCodeBlock())
-                    .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                    .aload(2)
-                    .swap()
-                    .ldc(resolvable.getName())
-                    .swap()
-                    .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
-        }
-    }
 }
