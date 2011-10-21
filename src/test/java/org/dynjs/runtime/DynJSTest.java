@@ -232,10 +232,8 @@ public class DynJSTest {
     }
 
     @Test
-    public void testAssignments(){
-        dynJS.eval(context, "var x = 1;x += 1; var result = x;");
-        final Object result = context.getScope().resolve("result");
-        assertThat(result).isEqualTo(2.0);
+    public void testAssignments() {
+        check("var x = 1;x += 1; var result = x == 2;", true);
     }
 
     @Test
