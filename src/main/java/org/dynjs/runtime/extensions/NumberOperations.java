@@ -27,6 +27,10 @@ public class NumberOperations {
         return false;
     }
 
+    public static Boolean neq(Double a, Double b) {
+        return !eq(a, b);
+    }
+
     public static Boolean lt(Double a, Double b) {
         return a < b;
     }

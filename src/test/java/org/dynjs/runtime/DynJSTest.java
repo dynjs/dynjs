@@ -216,6 +216,12 @@ public class DynJSTest {
     }
 
     @Test
+    public void testEquality(){
+        check("var result = 1 == 1;", true);
+        check("var result = 1 != 1;", false);
+    }
+
+    @Test
     public void testNullLiteral() {
         dynJS.eval(context, "var result = null");
         Object result = context.getScope().resolve("result");
