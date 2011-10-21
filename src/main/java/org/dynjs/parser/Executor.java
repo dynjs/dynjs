@@ -28,6 +28,7 @@ import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
@@ -240,8 +241,8 @@ public class Executor implements Opcodes {
         return new EqualsOperationStatement(l, r);
     }
 
-    public Statement defineNEqOp(Statement l, Statement r) {
-        return null;
+    public Statement defineNEqOp(final Statement l, final Statement r) {
+        return new NotEqualsOperationStatement(l, r);
     }
 
     public Statement defineSameOp(Statement l, Statement r) {
