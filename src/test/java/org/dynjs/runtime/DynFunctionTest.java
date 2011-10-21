@@ -1,4 +1,5 @@
 /**
+ *  Copyright 2011 Douglas Campos
  *  Copyright 2011 dynjs contributors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
