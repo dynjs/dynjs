@@ -30,11 +30,9 @@ public class BlockStatement implements Statement {
 
     public BlockStatement(final List<Statement> blockContent) {
         this.codeBlock = new CodeBlock() {{
-            label(beginLabel);
             for (Statement statement : blockContent) {
                 append(statement.getCodeBlock());
             }
-            label(endLabel);
         }};
     }
 
