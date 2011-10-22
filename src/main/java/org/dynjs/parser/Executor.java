@@ -25,6 +25,7 @@ import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
+import org.dynjs.parser.statement.DoWhileStatement;
 import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
@@ -344,7 +345,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement doStatement(Statement vbool, Statement vloop) {
-        return null;
+        return new DoWhileStatement(vbool, vloop);
     }
 
     public Statement whileStatement(final Statement vbool, final Statement vloop) {

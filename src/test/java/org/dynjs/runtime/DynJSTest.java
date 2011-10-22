@@ -223,7 +223,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testMathOperations(){
+    public void testMathOperations() {
         check("var x = 1 + 1;var result = x == 2", true);
         check("var x = 1 - 1;var result = x == 0", true);
         check("var x = 3 * 7;var result = x == 21", true);
@@ -241,8 +241,9 @@ public class DynJSTest {
     }
 
     @Test
-    public void testLoop(){
-        check("var x = 0; while(x < 10){x+=1;}; var result = x == 10;", true);
+    public void testLoop() {
+        check("var x = 10;var y = 0; while(x < 10){x+=1;y+=1}; var result = y == 0;", true);
+        check("var x = 10;var y = 0; do { x+=1;y+=1; } while(x < 10); var result = y == 1;", true);
     }
 
     @Test
