@@ -241,6 +241,11 @@ public class DynJSTest {
     }
 
     @Test
+    public void testLoop(){
+        check("var x = 0; while(x < 10){x+=1;}; var result = x == 10;", true);
+    }
+
+    @Test
     public void testNullLiteral() {
         dynJS.eval(context, "var result = null");
         Object result = context.getScope().resolve("result");
