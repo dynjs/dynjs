@@ -263,7 +263,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineDivAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("div", l, r);
     }
 
     public Statement defineModAssOp(Statement l, Statement r) {
