@@ -41,6 +41,7 @@ import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -70,7 +71,7 @@ public class Executor implements Opcodes {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr)
+                return newCodeBlock(expr.getCodeBlock())
                         .aprintln();
             }
         };
@@ -336,18 +337,6 @@ public class Executor implements Opcodes {
 
     public Statement defineByIndex(Statement lhs, Statement index) {
         return null;
-    }
-
-    public CodeBlock newCodeBlock(Statement stmt) {
-        if (stmt != null) {
-            return stmt.getCodeBlock();
-        } else {
-            return newCodeBlock();
-        }
-    }
-
-    private CodeBlock newCodeBlock() {
-        return CodeBlock.newCodeBlock();
     }
 
     public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
