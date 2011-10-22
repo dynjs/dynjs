@@ -223,6 +223,13 @@ public class DynJSTest {
     }
 
     @Test
+    public void testMathOperations(){
+        check("var x = 1 + 1;var result = x == 2", true);
+        check("var x = 1 - 1;var result = x == 0", true);
+        check("var x = 3 * 7;var result = x == 21", true);
+    }
+
+    @Test
     public void testNullLiteral() {
         dynJS.eval(context, "var result = null");
         Object result = context.getScope().resolve("result");
