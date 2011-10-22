@@ -170,6 +170,7 @@
                     <header>src/etc/header.txt</header>
                     <excludes>
                         <exclude>src/main/antlr3/**</exclude>
+                        <exclude>src/main/java/org/dynalang/**</exclude>
                     </excludes>
                     <includes>
                         <include>src/**</include>
