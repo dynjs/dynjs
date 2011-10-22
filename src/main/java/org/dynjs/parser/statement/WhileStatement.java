@@ -11,11 +11,11 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 public class WhileStatement implements Statement {
 
     private final Statement vbool;
-    private final Statement vloop;
+    private final BlockStatement vloop;
 
     public WhileStatement(Statement vbool, Statement vloop) {
         this.vbool = vbool;
-        this.vloop = vloop;
+        this.vloop = (BlockStatement) vloop;
     }
 
     @Override
