@@ -267,7 +267,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineModAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("mod", l, r);
     }
 
     public Statement defineAddAssOp(final Statement l, final Statement r) {

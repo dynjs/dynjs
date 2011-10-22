@@ -237,6 +237,7 @@ public class DynJSTest {
         check("var x = 1;x -= 1; var result = x == 0;", true);
         check("var x = 1;x *= 3; var result = x == 3;", true);
         check("var x = 1;x /= 1; var result = x == 1;", true);
+        check("var x = 2;x %= 1; var result = x == 0;", true);
     }
 
     @Test
