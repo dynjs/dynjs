@@ -44,7 +44,6 @@ import java.util.List;
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
