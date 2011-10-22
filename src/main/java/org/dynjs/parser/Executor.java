@@ -32,6 +32,7 @@ import org.dynjs.parser.statement.LogicalOperationStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.OperationAssignmentStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -257,23 +259,23 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineMulAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("mul", l, r);
     }
 
     public Statement defineDivAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("div", l, r);
     }
 
     public Statement defineModAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("mod", l, r);
     }
 
-    public Statement defineAddAssOp(Statement l, Statement r) {
-        return null;
+    public Statement defineAddAssOp(final Statement l, final Statement r) {
+        return new OperationAssignmentStatement("add", l, r);
     }
 
     public Statement defineSubAssOp(Statement l, Statement r) {
-        return null;
+        return new OperationAssignmentStatement("sub", l, r);
     }
 
     public Statement defineShlAssOp(Statement l, Statement r) {

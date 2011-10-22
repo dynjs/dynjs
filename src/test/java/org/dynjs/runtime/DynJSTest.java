@@ -217,7 +217,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testEquality(){
+    public void testEquality() {
         check("var result = 1 == 1;", true);
         check("var result = 1 != 1;", false);
     }
@@ -229,6 +229,15 @@ public class DynJSTest {
         check("var x = 3 * 7;var result = x == 21", true);
         check("var x = 3 / 2;var result = x == 1.5", true);
         check("var x = 3 % 2;var result = x == 1", true);
+    }
+
+    @Test
+    public void testAssignments() {
+        check("var x = 1;x += 1; var result = x == 2;", true);
+        check("var x = 1;x -= 1; var result = x == 0;", true);
+        check("var x = 1;x *= 3; var result = x == 3;", true);
+        check("var x = 1;x /= 1; var result = x == 1;", true);
+        check("var x = 2;x %= 1; var result = x == 0;", true);
     }
 
     @Test

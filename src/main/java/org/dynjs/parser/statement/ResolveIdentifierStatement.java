@@ -42,4 +42,8 @@ public class ResolveIdentifierStatement implements Statement {
                 .ldc(name)
                 .invokedynamic("dynjs:scope:resolve", sig(Object.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
+
+    public String getName() {
+        return name;
+    }
 }
