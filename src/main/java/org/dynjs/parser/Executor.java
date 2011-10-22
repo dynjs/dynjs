@@ -17,7 +17,6 @@
 package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
-import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
@@ -38,15 +37,14 @@ import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
+import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
 import java.util.List;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -350,23 +348,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement whileStatement(final Statement vbool, final Statement vloop) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                LabelNode beginBlock = new LabelNode();
-                LabelNode outBlock = new LabelNode();
-                CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                        .label(beginBlock)
-                        .append(vbool.getCodeBlock())
-                        .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                        .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
-                        .iffalse(outBlock)
-                        .append(vloop.getCodeBlock())
-                        .go_to(beginBlock)
-                        .label(outBlock);
-                return codeBlock;
-            }
-        };
+        return new WhileStatement(vbool, vloop);
     }
 
     public Statement forStepVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
