@@ -37,6 +37,7 @@ import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
+import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
@@ -346,8 +347,8 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement whileStatement(Statement vbool, Statement vloop) {
-        return null;
+    public Statement whileStatement(final Statement vbool, final Statement vloop) {
+        return new WhileStatement(vbool, vloop);
     }
 
     public Statement forStepVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
