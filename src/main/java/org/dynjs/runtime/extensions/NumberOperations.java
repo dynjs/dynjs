@@ -37,6 +37,10 @@ public class NumberOperations {
         return a / b;
     }
 
+    public static Double mod(Double a, Double b) {
+        return a % b;
+    }
+
     public static Boolean eq(Double a, Double b) {
         if (a.isNaN() || b.isNaN()) {
             return false;
