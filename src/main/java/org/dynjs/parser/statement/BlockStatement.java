@@ -16,24 +16,38 @@
  */
 package org.dynjs.parser.statement;
 
+import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
 import java.util.List;
 
 public class BlockStatement implements Statement {
+
     private final CodeBlock codeBlock;
+    private LabelNode beginLabel = new LabelNode();
+    private LabelNode endLabel = new LabelNode();
 
     public BlockStatement(final List<Statement> blockContent) {
         this.codeBlock = new CodeBlock() {{
+            label(beginLabel);
             for (Statement statement : blockContent) {
                 append(statement.getCodeBlock());
             }
+            label(endLabel);
         }};
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return this.codeBlock;
+    }
+
+    public LabelNode getBeginLabel() {
+        return beginLabel;
+    }
+
+    public LabelNode getEndLabel() {
+        return endLabel;
     }
 }
