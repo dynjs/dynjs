@@ -19,6 +19,6 @@ package org.dynjs.runtime;
 import org.junit.runner.RunWith;
 
 @RunWith(DynJSTestRunner.class)
-public class AllDynJSTests {
+public class AllDynJSTest {
 
 }
