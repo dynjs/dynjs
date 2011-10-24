@@ -22,4 +22,4 @@ function factorial(n) {
     }
 }
 
-var result = factorial(5);
+var result = factorial(5) == 120;
