@@ -133,7 +133,6 @@ public class DynJSTest {
                 .isEqualTo(2.0);
     }
 
-    //
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
         dynJS.eval(context, "print(x);");
