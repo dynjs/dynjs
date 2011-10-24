@@ -27,6 +27,7 @@ import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.DoWhileStatement;
 import org.dynjs.parser.statement.EqualsOperationStatement;
+import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
@@ -353,7 +354,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement forStepVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
-        return null;
+        return new ForStepVarStatement(varDef, expr1, expr2, statement);
     }
 
     public Statement forStepExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
