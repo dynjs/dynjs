@@ -263,34 +263,5 @@ public class DynJSTest {
         dynJS.eval(context, DynJSTest.class.getResourceAsStream(scriptName));
         return scope.resolve("result");
     }
-//
-//    @Test
-//    public void assignsObjectLiterals() {
-//        dynJS.eval(context, scope, "var x = {lol:function(){}, name:'john doe'};");
-//        assertThat(scope.resolve("x"))
-//                .isNotNull()
-//                .isInstanceOf(DynObject.class);
-//        DynObject x = (DynObject) scope.resolve("x");
-//        assertThat(x.resolve("lol"))
-//                .isNotNull()
-//                .isInstanceOf(Function.class);
-//        assertThat(x.resolve("name"))
-//                .isNotNull()
-//                .isInstanceOf(DynString.class);
-//
-//    }
-//
-//    @Test
-//    @Ignore("wip - qmx")
-//    public void constructsNewObjectFromFunction() {
-//        dynJS.eval(context, scope, "function MyObject(){}; var o = new MyObject();");
-//        assertThat(scope.resolve("MyObject"))
-//                .isNotNull()
-//                .isInstanceOf(Function.class);
-//        assertThat(scope.resolve("o"))
-//                .isNotNull()
-//                .isInstanceOf(DynObject.class);
-//    }
-//
 
 }
