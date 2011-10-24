@@ -203,6 +203,12 @@ public class DynJSTest {
     }
 
     @Test
+    public void testFibonnaci() {
+        final Object result = evalScript("04_fib.js");
+        assertThat(result).isEqualTo(8.0);
+    }
+
+    @Test
     public void testRelationalOperators() {
         check("var result = 1 < 2;", true);
         check("var result = 1 > 2;", false);
