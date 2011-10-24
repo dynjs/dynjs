@@ -56,57 +56,27 @@ public class DynJSTest {
 
     @Test
     public void assignsExprGlobalVariables() {
-        dynJS.eval(context, "var x = 2 + 1;");
-        Object atom = scope.resolve("x");
-        assertThat(atom)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-
-        assertThat(atom).isEqualTo(3.0);
+        check("var x = 2 + 1; var result = x == 3;");
     }
 
     @Test
     public void assignsExprMulGlobalVariables() {
-        dynJS.eval(context, "var x = 2 * 3;");
-        Object atom = scope.resolve("x");
-        assertThat(atom)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-
-        assertThat(atom).isEqualTo(6.0);
+        check("var x = 3 * 2; var result = x == 6;");
     }
 
     @Test
     public void assignsExprSubGlobalVariables() {
-        dynJS.eval(context, "var x = 3 - 1;");
-        Object atom = scope.resolve("x");
-        assertThat(atom)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-
-        assertThat(atom).isEqualTo(2.0);
+        check("var x = 3 - 1; var result = x == 2;");
     }
 
     @Test
     public void assignsComplexExprSubGlobalVariables() {
-        dynJS.eval(context, "var x = 3 * 2 - 1;");
-        Object atom = scope.resolve("x");
-        assertThat(atom)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-
-        assertThat(atom).isEqualTo(5.0);
+        check("var x = 3 * 2 - 1; var result = x == 5");
     }
 
     @Test
     public void assignsComplexparExprSubGlobalVariables() {
-        dynJS.eval(context, "var x = (3 * 2) - 1;");
-        Object atom = scope.resolve("x");
-        assertThat(atom)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-
-        assertThat(atom).isEqualTo(5.0);
+        check("var x = (3 * 2) - 1; var result = x == 5");
     }
 
     @Test
@@ -266,9 +236,7 @@ public class DynJSTest {
 
     @Test
     public void testTernaryOperator() {
-        dynJS.eval(context, "var result = 1 > 2 ? 55 : 56;");
-        Object result = context.getScope().resolve("result");
-        assertThat(result).isEqualTo(56.0);
+        check("var x = 1 > 2 ? 55 : 56; var result = x == 56");
     }
 
     @Test
