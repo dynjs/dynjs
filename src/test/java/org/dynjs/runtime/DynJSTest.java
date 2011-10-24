@@ -204,7 +204,7 @@ public class DynJSTest {
 
     @Test
     public void testFibonnaci() {
-        final Object result = evalScript("04_fib.js");
+        final Object result = evalScript("04_fib_recursive.js");
         assertThat(result).isEqualTo(8.0);
     }
 
