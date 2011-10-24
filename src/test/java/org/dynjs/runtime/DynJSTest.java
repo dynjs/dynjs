@@ -210,10 +210,10 @@ public class DynJSTest {
 
     @Test
     public void testRelationalOperators() {
-        check("var result = 1 < 2;", true);
-        check("var result = 1 > 2;", false);
-        check("var result = 2 <= 2;", true);
-        check("var result = 2 >= 2;", true);
+        check("var result = 1 < 2;");
+        check("var result = 2 > 1;");
+        check("var result = 2 <= 2;");
+        check("var result = 2 >= 2;");
     }
 
     @Test
@@ -224,37 +224,37 @@ public class DynJSTest {
 
     @Test
     public void testEquality() {
-        check("var result = 1 == 1;", true);
-        check("var result = 1 != 1;", false);
+        check("var result = 1 == 1;");
+        check("var result = 1 != 2;");
     }
 
     @Test
     public void testMathOperations() {
-        check("var x = 1 + 1;var result = x == 2", true);
-        check("var x = 1 - 1;var result = x == 0", true);
-        check("var x = 3 * 7;var result = x == 21", true);
-        check("var x = 3 / 2;var result = x == 1.5", true);
-        check("var x = 3 % 2;var result = x == 1", true);
+        check("var x = 1 + 1;var result = x == 2");
+        check("var x = 1 - 1;var result = x == 0");
+        check("var x = 3 * 7;var result = x == 21");
+        check("var x = 3 / 2;var result = x == 1.5");
+        check("var x = 3 % 2;var result = x == 1");
     }
 
     @Test
     public void testAssignments() {
-        check("var x = 1;x += 1; var result = x == 2;", true);
-        check("var x = 1;x -= 1; var result = x == 0;", true);
-        check("var x = 1;x *= 3; var result = x == 3;", true);
-        check("var x = 1;x /= 1; var result = x == 1;", true);
-        check("var x = 2;x %= 1; var result = x == 0;", true);
+        check("var x = 1;x += 1; var result = x == 2;");
+        check("var x = 1;x -= 1; var result = x == 0;");
+        check("var x = 1;x *= 3; var result = x == 3;");
+        check("var x = 1;x /= 1; var result = x == 1;");
+        check("var x = 2;x %= 1; var result = x == 0;");
     }
 
     @Test
     public void testLoop() {
-        check("var x = 10;var y = 0; while(x < 10){x+=1;y+=1}; var result = y == 0;", true);
-        check("var x = 10;var y = 0; do { x+=1;y+=1; } while(x < 10); var result = y == 1;", true);
+        check("var x = 10;var y = 0; while(x < 10){x+=1;y+=1}; var result = y == 0;");
+        check("var x = 10;var y = 0; do { x+=1;y+=1; } while(x < 10); var result = y == 1;");
     }
 
     @Test
     public void testFor() {
-        check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10", true);
+        check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
     }
 
     @Test
@@ -279,6 +279,10 @@ public class DynJSTest {
         check("var result = true && false;", false);
         check("var result = false && true;", false);
         check("var result = true && true;", true);
+    }
+
+    private void check(String scriptlet) {
+        check(scriptlet, true);
     }
 
     private void check(String scriptlet, Boolean expected) {
