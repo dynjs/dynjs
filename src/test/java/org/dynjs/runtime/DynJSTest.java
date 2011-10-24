@@ -139,45 +139,6 @@ public class DynJSTest {
     }
 
     @Test
-    public void testIfStatement() {
-        dynJS.eval(context, DynJSTest.class.getResourceAsStream("01_if_statement.js"));
-        Object actual = scope.resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        Function function = (Function) actual;
-        Object result = function.call(context, scope, new DynAtom[]{new DynObject()});
-        assertThat(result)
-                .isNotNull();
-    }
-
-    @Test
-    public void testFunctionCall() {
-        Object result = evalScript("02_function_call.js");
-        assertThat(result)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-        assertThat(result).isEqualTo(1.0);
-
-    }
-
-    @Test
-    public void testFactorial() {
-        Object result = evalScript("03_factorial.js");
-        assertThat(result)
-                .isNotNull()
-                .isInstanceOf(Double.class);
-        assertThat(result).isEqualTo(120.0);
-    }
-
-    @Test
-    public void testFibonnaci() {
-        final Object result = evalScript("04_fib_recursive.js");
-        assertThat(result).isEqualTo(8.0);
-    }
-
-    @Test
     public void testRelationalOperators() {
         check("var result = 1 < 2;");
         check("var result = 2 > 1;");
@@ -256,11 +217,6 @@ public class DynJSTest {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
         assertThat(result).isEqualTo(expected);
-    }
-
-    private Object evalScript(String scriptName) {
-        dynJS.eval(context, DynJSTest.class.getResourceAsStream(scriptName));
-        return scope.resolve("result");
     }
 
 }
