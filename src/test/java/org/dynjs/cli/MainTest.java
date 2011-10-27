@@ -18,6 +18,8 @@ package org.dynjs.cli;
 
 import org.junit.Test;
 
+import java.net.URL;
+
 public class MainTest {
     @Test
     public void callMainWithNoArguments(){
@@ -31,7 +33,8 @@ public class MainTest {
 
     @Test
     public void callMainWithValidFile(){
-        new Main(new String[]{"valid.js"}).run();
+        URL url = this.getClass().getResource("valid.js");
+        new Main(new String[]{url.getPath()}).run();
     }
 
     @Test
