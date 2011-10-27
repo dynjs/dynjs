@@ -42,11 +42,14 @@ public class OperationAssignmentStatement implements Statement {
                 .append(l.getCodeBlock())
                 .append(r.getCodeBlock())
                 .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .dup()
+                .astore(4)
                 .aload(2)
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .aload(4);
 
     }
 }
