@@ -63,7 +63,7 @@ public class DynJSTestRunner extends Runner {
                 });
                 this.files.addAll(Arrays.asList(files));
             } catch (URISyntaxException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }
