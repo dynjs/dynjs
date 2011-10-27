@@ -166,7 +166,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineIncOp(Statement expression) {
-        return null;
+        return new OperationAssignmentStatement("add", expression, new NumberLiteralStatement("1", 10));
     }
 
     public Statement defineDecOp(Statement expression) {
