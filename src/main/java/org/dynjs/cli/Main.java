@@ -24,18 +24,23 @@ import org.dynjs.runtime.DynThreadContext;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class Main {
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
+    private DynJS dynJS;
+    private DynThreadContext context;
 
     public Main(String[] args) {
         dynJsArguments = new Arguments();
         parser = new CmdLineParser(dynJsArguments);
         parser.setUsageWidth(80);
         arguments = args;
+        dynJS = new DynJS();
+        context = new DynThreadContext();
     }
 
     public static void main(String[] args) {
@@ -64,11 +69,11 @@ public class Main {
     }
 
     private void executeFile(String filename) {
-        File file = new File(filename);
-        if (!file.exists()) {
+        try {
+            context.setScope(new DynObject());
+            dynJS.eval(context, new FileInputStream(filename));
+        } catch (FileNotFoundException e) {
             System.out.println("File " + filename + " not found");
-        } else {
-            System.out.println("OK, you got me. Come back later please.");
         }
     }
 
