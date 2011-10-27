@@ -16,7 +16,6 @@
  */
 package org.dynjs.cli;
 
-import org.dynjs.cli.Main;
 import org.junit.Test;
 
 public class MainTest {
@@ -28,6 +27,11 @@ public class MainTest {
     @Test
     public void callMainWithInvalidFile(){
         new Main(new String[]{"meh.js"}).run();
+    }
+
+    @Test
+    public void callMainWithValidFile(){
+        new Main(new String[]{"valid.js"}).run();
     }
 
     @Test
