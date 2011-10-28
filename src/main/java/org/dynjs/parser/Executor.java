@@ -170,7 +170,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineDecOp(Statement expression) {
-        return null;
+        return new OperationAssignmentStatement("sub", expression, new NumberLiteralStatement("1", 10));
     }
 
     public Statement definePosOp(Statement expression) {
