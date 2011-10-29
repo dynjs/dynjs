@@ -16,12 +16,7 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DecrementStatement extends AbstractUnaryOperationStatement {
 

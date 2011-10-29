@@ -1,12 +1,3 @@
-package org.dynjs.parser.statement;
-
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 /**
  *  Copyright 2011 Douglas Campos
  *  Copyright 2011 dynjs contributors
@@ -23,8 +14,17 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.dynjs.parser.statement;
+
+import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Scope;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.RT;
+
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public abstract class AbstractUnaryOperationStatement implements Statement {
+
     protected final Statement expression;
 
     public AbstractUnaryOperationStatement(Statement expression) {
