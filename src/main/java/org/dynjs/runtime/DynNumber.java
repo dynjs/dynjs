@@ -92,7 +92,6 @@ public class DynNumber extends DynObject {
     }
 
     private static String removeRightInvalidCharacter(String given, int radix) {
-        System.out.println("-->" + given);
         return given;
     }
 

@@ -24,16 +24,20 @@ import org.dynjs.runtime.DynThreadContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 public class Repl {
+
     private final DynJS environment;
     private final DynThreadContext context;
     private final Scope scope;
+    private PrintStream stream;
 
-    public Repl(DynJS environment, DynThreadContext context, Scope scope) {
+    public Repl(DynJS environment, DynThreadContext context, Scope scope, PrintStream stream) {
         this.environment = environment;
         this.context = context;
         this.scope = scope;
+        this.stream = stream;
     }
 
     public void run() {
@@ -45,9 +49,9 @@ public class Repl {
                     .append(NEW_LINE)
                     .append("Type exit and press ENTER to leave.")
                     .append(NEW_LINE);
-            System.out.println(consoleHello.toString());
+            stream.println(consoleHello.toString());
             while (true) {
-                System.out.print("> ");
+                stream.print("> ");
                 String statement = input();
                 if (statement.equals("exit")) {
                     return;
@@ -55,8 +59,8 @@ public class Repl {
                     try {
                         environment.eval(context, statement);
                     } catch (DynJSException e) {
-                        System.out.println(e.getClass().getSimpleName());
-                    } catch (Exception e){
+                        stream.println(e.getClass().getSimpleName());
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
