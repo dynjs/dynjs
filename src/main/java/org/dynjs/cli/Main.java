@@ -90,7 +90,7 @@ public class Main {
         Scope scope = new DynObject();
         DynJS environment = new DynJS();
 
-        Repl repl = new Repl(environment, threadContext, scope);
+        Repl repl = new Repl(environment, threadContext, scope, stream);
         repl.run();
     }
 
