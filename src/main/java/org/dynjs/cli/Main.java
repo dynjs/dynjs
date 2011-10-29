@@ -26,29 +26,33 @@ import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 public class Main {
+
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
     private DynJS dynJS;
     private DynThreadContext context;
+    private PrintStream stream;
 
-    public Main(String[] args) {
+    public Main(PrintStream stream, String[] args) {
         dynJsArguments = new Arguments();
         parser = new CmdLineParser(dynJsArguments);
         parser.setUsageWidth(80);
         arguments = args;
         dynJS = new DynJS();
         context = new DynThreadContext();
+        this.stream = stream;
     }
 
     public static void main(String[] args) {
-        new Main(args).run();
+        new Main(System.out, args).run();
     }
 
     void run() {
-        try{
+        try {
             parser.parseArgument(arguments);
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
@@ -57,13 +61,13 @@ public class Main {
                 startRepl();
             } else if (dynJsArguments.isVersion()) {
                 showVersion();
-            } else if (!dynJsArguments.getFilename().isEmpty()){
+            } else if (!dynJsArguments.getFilename().isEmpty()) {
                 executeFile(dynJsArguments.getFilename());
             }
 
         } catch (CmdLineException e) {
-            System.out.println(e.getMessage());
-            System.out.println();
+            stream.println(e.getMessage());
+            stream.println();
             showUsage();
         }
     }
@@ -73,12 +77,12 @@ public class Main {
             context.setScope(new DynObject());
             dynJS.eval(context, new FileInputStream(filename));
         } catch (FileNotFoundException e) {
-            System.out.println("File " + filename + " not found");
+            stream.println("File " + filename + " not found");
         }
     }
 
     private void showVersion() {
-        System.out.println("Dyn.JS version " + DynJSVersion.FULL);
+        stream.println("Dyn.JS version " + DynJSVersion.FULL);
     }
 
     private void startRepl() {
@@ -94,8 +98,8 @@ public class Main {
         StringBuilder usageText = new StringBuilder("Usage: dynjs [--console | --help | --version | FILE]\n");
         usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
 
-        System.out.println(usageText.toString());
+        stream.println(usageText.toString());
 
-        parser.printUsage(System.out);
+        parser.printUsage(stream);
     }
 }

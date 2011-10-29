@@ -16,29 +16,40 @@
  */
 package org.dynjs.cli;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 
 public class MainTest {
-    @Test
-    public void callMainWithNoArguments(){
-        new Main(new String[]{}).run();
+
+    private PrintStream stream;
+
+    @Before
+    public void setup() {
+        stream = new PrintStream(new ByteArrayOutputStream());
     }
 
     @Test
-    public void callMainWithInvalidFile(){
-        new Main(new String[]{"meh.js"}).run();
+    public void callMainWithNoArguments() {
+        new Main(stream, new String[]{}).run();
     }
 
     @Test
-    public void callMainWithValidFile(){
+    public void callMainWithInvalidFile() {
+        new Main(stream, new String[]{"meh.js"}).run();
+    }
+
+    @Test
+    public void callMainWithValidFile() {
         URL url = this.getClass().getResource("valid.js");
-        new Main(new String[]{url.getPath()}).run();
+        new Main(stream, new String[]{url.getPath()}).run();
     }
 
     @Test
-    public void callMainWithInvalidArguments(){
-        new Main(new String[]{"--invalid"}).run();
+    public void callMainWithInvalidArguments() {
+        new Main(stream, new String[]{"--invalid"}).run();
     }
 }
