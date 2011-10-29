@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright 2011 Douglas Campos
  *  Copyright 2011 dynjs contributors
  *
@@ -14,31 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.cli;
-
-import org.junit.Test;
-
-import java.net.URL;
-
-public class MainTest {
-    @Test
-    public void callMainWithNoArguments(){
-        new Main(new String[]{}).run();
-    }
-
-    @Test
-    public void callMainWithInvalidFile(){
-        new Main(new String[]{"meh.js"}).run();
-    }
-
-    @Test
-    public void callMainWithValidFile(){
-        URL url = this.getClass().getResource("valid.js");
-        new Main(new String[]{url.getPath()}).run();
-    }
-
-    @Test
-    public void callMainWithInvalidArguments(){
-        new Main(new String[]{"--invalid"}).run();
+function factorial(n) {
+    if (n == 1) {
+        return 1;
+    } else {
+        return (n * factorial(n - 1));
     }
 }
+
+var result = factorial(5) == 120;
