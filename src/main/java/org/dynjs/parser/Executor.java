@@ -30,6 +30,8 @@ import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
+import org.dynjs.parser.statement.IncrementStatement;
+import org.dynjs.parser.statement.DecrementStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
@@ -166,11 +168,11 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineIncOp(Statement expression) {
-        return new OperationAssignmentStatement("add", expression, new NumberLiteralStatement("1", 10));
+        return new IncrementStatement(expression);
     }
 
     public Statement defineDecOp(Statement expression) {
-        return new OperationAssignmentStatement("sub", expression, new NumberLiteralStatement("1", 10));
+        return new DecrementStatement(expression);
     }
 
     public Statement definePosOp(Statement expression) {

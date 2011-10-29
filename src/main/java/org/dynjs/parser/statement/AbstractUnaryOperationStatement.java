@@ -23,30 +23,31 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class OperationAssignmentStatement implements Statement {
+public abstract class AbstractUnaryOperationStatement implements Statement {
 
-    private final String operation;
-    private final Statement l;
-    private final Statement r;
+    private final Statement expression;
 
-    public OperationAssignmentStatement(String operation, Statement l, Statement r) {
-        this.operation = operation;
-        this.l = l;
-        this.r = r;
+    public AbstractUnaryOperationStatement(Statement expression) {
+        this.expression = expression;
     }
+
+    protected abstract String operation();
 
     @Override
     public CodeBlock getCodeBlock() {
-        final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) l;
+        final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
         return CodeBlock.newCodeBlock()
-                .append(l.getCodeBlock())
-                .append(r.getCodeBlock())
-                .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .append(expression.getCodeBlock())
+                .append(new NumberLiteralStatement("1", 10).getCodeBlock())
+                .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .dup()
+                .astore(4)
                 .aload(2)
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
+                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .aload(4);
     }
+
 }
