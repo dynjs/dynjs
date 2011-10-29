@@ -25,7 +25,7 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public abstract class AbstractUnaryOperationStatement implements Statement {
 
-    protected final Statement expression;
+    private final Statement expression;
 
     public AbstractUnaryOperationStatement(Statement expression) {
         this.expression = expression;
