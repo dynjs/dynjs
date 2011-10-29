@@ -14,12 +14,5 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-function factorial(n) {
-    if (n == 1) {
-        return 1;
-    } else {
-        return (n * factorial(n - 1));
-    }
-}
 
-var result = factorial(5) == 120;
+var result = true;
