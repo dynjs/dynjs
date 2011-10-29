@@ -74,7 +74,6 @@ public class Main {
 
     private void executeFile(String filename) {
         try {
-            context.setScope(new DynObject());
             dynJS.eval(context, new FileInputStream(filename));
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");

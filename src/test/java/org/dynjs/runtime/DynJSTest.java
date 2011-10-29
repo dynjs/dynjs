@@ -27,20 +27,17 @@ public class DynJSTest {
 
     private DynJS dynJS;
     private DynThreadContext context;
-    private DynObject scope;
 
     @Before
     public void setUp() {
         dynJS = new DynJS();
         context = new DynThreadContext();
-        scope = new DynObject();
-        context.setScope(scope);
     }
 
     @Test
     public void assignsGlobalVariables() {
         dynJS.eval(context, "var x = 'test';");
-        assertThat(scope.resolve("x"))
+        assertThat(context.getScope().resolve("x"))
                 .isNotNull()
                 .isInstanceOf(String.class);
 //      TODO          .isEqualTo("test");
@@ -49,7 +46,7 @@ public class DynJSTest {
     @Test
     public void defineUnInitializedGlobalVariables() {
         dynJS.eval(context, "var x;");
-        assertThat(scope.resolve("x"))
+        assertThat(context.getScope().resolve("x"))
                 .isNotNull()
                 .isEqualTo(DynThreadContext.UNDEFINED);
     }
@@ -82,7 +79,7 @@ public class DynJSTest {
     @Test
     public void assignsNamedEmptyFunction() {
         dynJS.eval(context, "function x(){};");
-        assertThat(scope.resolve("x"))
+        assertThat(context.getScope().resolve("x"))
                 .isNotNull()
                 .isInstanceOf(Function.class);
     }
@@ -90,7 +87,7 @@ public class DynJSTest {
     @Test
     public void assignsAnonymousEmptyFunction() {
         dynJS.eval(context, "var x = function(a,b,c){};");
-        assertThat(scope.resolve("x"))
+        assertThat(context.getScope().resolve("x"))
                 .isNotNull()
                 .isInstanceOf(Function.class);
     }
@@ -98,36 +95,36 @@ public class DynJSTest {
     @Test
     public void buildFunctionWithBody() {
         dynJS.eval(context, "var x = function(a,b){var w = (1 + 2) * 3;}");
-        Object actual = scope.resolve("x");
+        Object actual = context.getScope().resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, context.getScope(), new DynAtom[]{}))
                 .isNull();
     }
 
     @Test
     public void buildFunctionWithMultipleStatementBody() {
         dynJS.eval(context, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
-        Object actual = scope.resolve("x");
+        Object actual = context.getScope().resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, context.getScope(), new DynAtom[]{}))
                 .isNull();
     }
 
     @Test
     public void buildFunctionWithReturn() {
         dynJS.eval(context, "var x = function(){return 1+1;};");
-        Object actual = scope.resolve("x");
+        Object actual = context.getScope().resolve("x");
         assertThat(actual)
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function) actual).call(context, scope, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, context.getScope(), new DynAtom[]{}))
                 .isNotNull()
                 .isInstanceOf(Double.class)
                 .isEqualTo(2.0);

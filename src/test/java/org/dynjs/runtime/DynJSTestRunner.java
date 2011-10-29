@@ -76,7 +76,6 @@ public class DynJSTestRunner extends Runner {
             final Boolean result;
             try {
                 DynThreadContext context = new DynThreadContext();
-                context.setScope(new DynObject());
                 final InputStream stream = testClass.getResourceAsStream(file);
                 dynJS.eval(context, stream);
                 result = (Boolean) context.getScope().resolve("result");

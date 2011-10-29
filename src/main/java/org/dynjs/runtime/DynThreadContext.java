@@ -32,7 +32,7 @@ public class DynThreadContext {
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();
-    private Scope scope;
+    private Scope scope = new DynObject();
     private Deque<Function> callStack = new LinkedList<>();
 
     public DynJS getRuntime() {
