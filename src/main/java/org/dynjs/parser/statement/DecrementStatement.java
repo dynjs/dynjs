@@ -23,28 +23,15 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class DecrementStatement implements Statement {
-
-    private final Statement expression;
+public class DecrementStatement extends AbstractUnaryOperationStatement {
 
     public DecrementStatement(Statement expression) {
-        this.expression = expression;
+        super(expression);
     }
 
     @Override
-    public CodeBlock getCodeBlock() {
-        final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
-        return CodeBlock.newCodeBlock()
-                .append(expression.getCodeBlock())
-                .append(new NumberLiteralStatement("1", 10).getCodeBlock())
-                .invokedynamic("sub", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .dup()
-                .astore(4)
-                .aload(2)
-                .swap()
-                .ldc(resolvable.getName())
-                .swap()
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aload(4);
+    protected String operation() {
+        return "sub";
     }
+
 }
