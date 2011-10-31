@@ -26,5 +26,7 @@ Getting started
 4. Try java -jar dynjs-all.jar --help
 5. Run the snippet below:
 
-    var x = 1 + 1;
-    print(x);
+```javascript
+var x = 1 + 1;
+print(x);
+```
