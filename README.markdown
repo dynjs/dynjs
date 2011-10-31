@@ -20,10 +20,10 @@ Setting up environment
 Getting started
 ------------
 
-1. git clone https://github.com/dynjs/dyn.js.git && cd dynjs
+1. git clone https://github.com/dynjs/dyn.js.git && cd dyn.js
 2. mvn install
-3. Get into dynjs/target folder
-4. Try java -jar dynjs-all.jar --help
+3. Get into dyn.js/target folder
+4. Try `java -jar dynjs-all.jar --help`
 5. Run the snippet below:
 
 ```javascript
