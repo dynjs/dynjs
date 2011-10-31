@@ -27,8 +27,11 @@ Getting started
 5. Run the snippet below:
 
 <pre>
-  dynJS = new DynJS()
-  ctx = new DynThreadContext()
-
-  dynJS.eval(ctx, "<any js snippet>");
+ var x = function(a) {
+    if (a) {
+      return 1;
+    } else {
+      return 2;
+    }
+ };
 </pre>
