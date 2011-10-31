@@ -26,12 +26,5 @@ Getting started
 4. Try java -jar dynjs-all.jar --help
 5. Run the snippet below:
 
-<pre>
- var x = function(a) {
-    if (a) {
-      return 1;
-    } else {
-      return 2;
-    }
- };
-</pre>
+    var x = 1 + 1;
+    print(x);
