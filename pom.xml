@@ -3,11 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dynjs</groupId>
-    <artifactId>dyn.js</artifactId>
+    <artifactId>dyn.js-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>dyn.js</name>
+    <packaging>pom</packaging>
+    <name>dyn.js-parent</name>
     <url>http://dynjs.org</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -18,118 +19,11 @@
         <version>7</version>
     </parent>
 
-    <developers>
-        <developer>
-            <id>qmx</id>
-            <name>Douglas Campos</name>
-            <url>http://github.com/qmx</url>
-            <email>qmx@qmx.me</email>
-            <roles>
-                <role>Project Leader and Dictator</role>
-                <role>Software Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>porcelli</id>
-            <name>Alexandre Porcelli</name>
-            <url>http://github.com/porcelli</url>
-            <email>alexandre.porcelli@gmail.com</email>
-            <roles>
-                <role>Parser Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>pbalduino</id>
-            <name>Plinio Balduino</name>
-            <url>http://github.com/pbalduino</url>
-            <email>pbalduino@gmail.com</email>
-            <roles>
-                <role>Software Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>abstractj</id>
-            <name>Bruno Oliveira</name>
-            <url>http://github.com/abstractj</url>
-            <email>bruno@abstractj.com</email>
-            <roles>
-                <role>Software Developer</role>
-            </roles>
-        </developer>
-    </developers>
+    <modules>
+        <module>core</module>
+        <module>docs</module>
+    </modules>
 
-    <licenses>
-        <license>
-            <name>The BSD License</name>
-            <url>http://www.opensource.org/licenses/bsd-license.php</url>
-            <distribution>repo</distribution>
-            <comments>parser license</comments>
-        </license>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <dependencies>
-        <!-- code generation dependencies -->
-        <dependency>
-            <groupId>me.qmx.jitescript</groupId>
-            <artifactId>jitescript</artifactId>
-            <version>0.2.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>r07</version>
-        </dependency>
-        <dependency>
-            <groupId>org.dynalang</groupId>
-            <artifactId>dynalink</artifactId>
-            <version>0.2</version>
-        </dependency>
-
-        <!-- standalone dependency -->
-        <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
-            <version>2.0.16</version>
-        </dependency>
-
-        <!-- antlr parser dependencies -->
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>stringtemplate</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr-runtime</artifactId>
-            <version>3.3</version>
-        </dependency>
-
-        <!-- test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>1.8.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -149,58 +43,6 @@
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>antlr</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
-                <configuration>
-                    <header>src/etc/header.txt</header>
-                    <excludes>
-                        <exclude>src/main/antlr3/**</exclude>
-                        <exclude>src/main/java/org/dynalang/**</exclude>
-                    </excludes>
-                    <includes>
-                        <include>src/**</include>
-                    </includes>
-                    <strictCheck>true</strictCheck>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedArtifactId>dynjs-all</shadedArtifactId>
-                            <finalName>dynjs-all</finalName>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.dynjs.cli.Main</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
