@@ -70,12 +70,10 @@ public class FunctionStatement implements Statement {
 
         codeBlock = codeBlock
                 .aload(DynJSCompiler.Arities.CONTEXT)
+                .invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class))
+                .aload(DynJSCompiler.Arities.CONTEXT)
                 .bipush(slot)
                 .invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class))
-                .astore(5)
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class))
-                .aload(5)
                 .aload(4)
                 .invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Function.class, CodeBlock.class, String[].class));
 
