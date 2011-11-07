@@ -18,12 +18,10 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class FunctionStatement implements Statement {
     public CodeBlock getCodeBlock() {
         final Integer slot = context.store(block.getCodeBlock());
         // put arguments on stack
-        CodeBlock codeBlock = newCodeBlock();
+        CodeBlock codeBlock = newCodeBlock(3);
 
         codeBlock = codeBlock
                 .bipush(args.size())
@@ -68,27 +66,37 @@ public class FunctionStatement implements Statement {
                     .aastore();
         }
 
+        codeBlock = getRuntime(codeBlock);
+        codeBlock = retrieveFromSlot(slot, codeBlock);
         codeBlock = codeBlock
-                .aload(1)
-                .bipush(slot)
-                .invokedynamic("dynjs:compile:lookup", sig(CodeBlock.class, DynThreadContext.class, int.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .astore(5)
-                .aload(1)
-                .invokevirtual(p(DynThreadContext.class), "getRuntime", sig(DynJS.class))
-                .aload(5)
                 .aload(4)
-                .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Function.class, CodeBlock.class, String[].class));
 
         if (identifier != null) {
             // TODO DRY
             codeBlock = codeBlock
                     .astore(3)
-                    .aload(2)
+                    .aload(DynJSCompiler.Arities.THIS)
                     .ldc(identifier)
                     .aload(3)
-                    .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                    .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
         }
 
+        return codeBlock;
+    }
+
+    private CodeBlock retrieveFromSlot(Integer slot, CodeBlock codeBlock) {
+        codeBlock = codeBlock
+                .aload(DynJSCompiler.Arities.CONTEXT)
+                .bipush(slot)
+                .invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
+        return codeBlock;
+    }
+
+    private CodeBlock getRuntime(CodeBlock codeBlock) {
+        codeBlock = codeBlock
+                .aload(DynJSCompiler.Arities.CONTEXT)
+                .invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
         return codeBlock;
     }
 

@@ -23,7 +23,6 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.dynjs.runtime.linker.anno.CompanionFor;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
@@ -44,7 +43,7 @@ public class RT {
     public static final MethodHandle SCOPE_RESOLVE;
 
     static {
-        MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, Object[].class);
+        MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
         MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);

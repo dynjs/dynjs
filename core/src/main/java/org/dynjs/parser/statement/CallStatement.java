@@ -19,8 +19,8 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
@@ -60,10 +60,9 @@ public class CallStatement implements Statement {
 
         codeBlock = codeBlock
                 .append(lhs.getCodeBlock())
-                .aload(1)
-                .aload(2)
+                .aload(DynJSCompiler.Arities.CONTEXT)
                 .aload(4)
-                .invokedynamic("dynjs:runtime:call", sig(Object.class, Function.class, DynThreadContext.class, Scope.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dynjs:runtime:call", sig(Object.class, Function.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
         return codeBlock;
     }

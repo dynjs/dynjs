@@ -17,7 +17,7 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
@@ -42,11 +42,11 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
                 .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .dup()
                 .astore(4)
-                .aload(2)
+                .aload(DynJSCompiler.Arities.THIS)
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class))
                 .aload(4);
     }
 

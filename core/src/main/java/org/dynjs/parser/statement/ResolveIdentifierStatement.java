@@ -18,8 +18,8 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
@@ -37,8 +37,8 @@ public class ResolveIdentifierStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         return newCodeBlock()
-                .aload(1)
-                .aload(2)
+                .aload(DynJSCompiler.Arities.CONTEXT)
+                .aload(DynJSCompiler.Arities.THIS)
                 .ldc(name)
                 .invokedynamic("dynjs:scope:resolve", sig(Object.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }

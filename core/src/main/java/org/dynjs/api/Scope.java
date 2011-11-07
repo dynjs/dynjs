@@ -16,8 +16,6 @@
  */
 package org.dynjs.api;
 
-import org.dynjs.runtime.DynAtom;
-
 public interface Scope {
 
     Scope getEnclosingScope();

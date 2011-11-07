@@ -16,7 +16,9 @@
  */
 package org.dynjs.runtime;
 
+@Deprecated
 public interface DynAtom {
+
     public boolean isPrimitive();
 
 }

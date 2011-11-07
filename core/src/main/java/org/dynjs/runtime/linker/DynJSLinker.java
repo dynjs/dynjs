@@ -16,19 +16,15 @@
  */
 package org.dynjs.runtime.linker;
 
-import me.qmx.jitescript.CodeBlock;
 import org.dynalang.dynalink.linker.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
 import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
 import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
-import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.DynAtom;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
 import java.lang.invoke.MethodHandle;
@@ -58,24 +54,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         targetHandle = RT.SCOPE_RESOLVE;
                         break;
                     }
-                    case "define": {
-                        MethodType targetType = methodType(void.class, String.class, Object.class);
-                        targetHandle = lookup().findVirtual(Scope.class, "define", targetType);
-                        break;
-                    }
-                    default:
-                        throw new IllegalArgumentException("should not reach here");
-                }
-            } else if (subsystem.equals("compile")) {
-                switch (action) {
-                    case "lookup":
-                        MethodType type = methodType(CodeBlock.class, int.class);
-                        targetHandle = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
-                        break;
-                    case "function":
-                        MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
-                        targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);
-                        break;
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }

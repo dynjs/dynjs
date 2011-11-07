@@ -24,12 +24,11 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.FunctionFactory;
-import org.dynjs.runtime.RT;
 import org.dynjs.runtime.Script;
 
 import java.io.PrintWriter;
@@ -38,7 +37,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -46,7 +44,7 @@ public class DynJSCompiler {
 
     private static final AtomicInteger counter = new AtomicInteger(0);
     private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private final DynamicClassLoader classLoader = new DynamicClassLoader();
 
     public Function compile(final DynFunction arg) {
@@ -58,7 +56,7 @@ public class DynJSCompiler {
                             .invokespecial(p(DynFunction.class), "<init>", sig(void.class))
                             .voidreturn()
             );
-            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Scope.class, Object[].class), alwaysReturnWrapper(arg));
+            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Object[].class), alwaysReturnWrapper(arg));
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 String[] arguments = arg.getArguments();
@@ -102,10 +100,7 @@ public class DynJSCompiler {
             }
 
             private CodeBlock getCodeBlock() {
-                final CodeBlock block = newCodeBlock()
-                        .aload(1)
-                        .invokevirtual(p(DynThreadContext.class), "getScope", sig(Scope.class))
-                        .astore(2);
+                final CodeBlock block = newCodeBlock();
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
                 }
@@ -130,4 +125,17 @@ public class DynJSCompiler {
         return classLoader.define(className.replace('/', '.'), bytecode);
     }
 
+    public static interface Types {
+
+        String RUNTIME = p(DynJS.class);
+        String CONTEXT = p(DynThreadContext.class);
+        String Scope = p(Scope.class);
+    }
+
+    public static interface Arities {
+
+        int THIS = 0;
+        int CONTEXT = 1;
+
+    }
 }
