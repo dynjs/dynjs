@@ -25,6 +25,7 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.FunctionFactory;
@@ -128,12 +129,16 @@ public class DynJSCompiler {
     }
 
     public static interface Constants {
-        public static final String CONTEXT = p(DynThreadContext.class);
+
+        String RUNTIME = p(DynJS.class);
+        String CONTEXT = p(DynThreadContext.class);
+        String Scope = p(Scope.class);
     }
 
     public static interface Arities {
-        public static final int CONTEXT = 1;
-        public static final int SCOPE = 2;
+
+        int CONTEXT = 1;
+        int SCOPE = 2;
 
     }
 }
