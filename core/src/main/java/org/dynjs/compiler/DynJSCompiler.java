@@ -102,7 +102,7 @@ public class DynJSCompiler {
             private CodeBlock getCodeBlock() {
                 final CodeBlock block = newCodeBlock()
                         .aload(DynJSCompiler.Arities.CONTEXT)
-                        .invokevirtual(Constants.CONTEXT, "getScope", sig(Scope.class))
+                        .invokevirtual(Types.CONTEXT, "getScope", sig(Scope.class))
                         .astore(2);
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
@@ -128,7 +128,7 @@ public class DynJSCompiler {
         return classLoader.define(className.replace('/', '.'), bytecode);
     }
 
-    public static interface Constants {
+    public static interface Types {
 
         String RUNTIME = p(DynJS.class);
         String CONTEXT = p(DynThreadContext.class);
