@@ -136,7 +136,6 @@ public class DynJSCompiler {
 
         int THIS = 0;
         int CONTEXT = 1;
-        int SCOPE = 2;
 
     }
 }

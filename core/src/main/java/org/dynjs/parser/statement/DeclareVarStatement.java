@@ -17,13 +17,10 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DeclareVarStatement implements Statement {
@@ -43,6 +40,6 @@ public class DeclareVarStatement implements Statement {
                 .aload(DynJSCompiler.Arities.THIS)
                 .ldc(id)
                 .aload(3)
-                .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, Object.class));
+                .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
     }
 }

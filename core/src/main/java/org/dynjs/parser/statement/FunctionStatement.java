@@ -18,7 +18,6 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynJS;
@@ -80,7 +79,7 @@ public class FunctionStatement implements Statement {
                     .aload(DynJSCompiler.Arities.THIS)
                     .ldc(identifier)
                     .aload(3)
-                    .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, Object.class));
+                    .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
         }
 
         return codeBlock;
