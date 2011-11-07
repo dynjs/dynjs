@@ -103,8 +103,8 @@ public class DynJSCompiler {
 
             private CodeBlock getCodeBlock() {
                 final CodeBlock block = newCodeBlock()
-                        .aload(1)
-                        .invokevirtual(p(DynThreadContext.class), "getScope", sig(Scope.class))
+                        .aload(DynJSCompiler.Arities.CONTEXT)
+                        .invokevirtual(Constants.CONTEXT, "getScope", sig(Scope.class))
                         .astore(2);
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
