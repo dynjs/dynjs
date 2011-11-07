@@ -38,7 +38,7 @@ public class ResolveIdentifierStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return newCodeBlock()
                 .aload(DynJSCompiler.Arities.CONTEXT)
-                .aload(2)
+                .aload(DynJSCompiler.Arities.SCOPE)
                 .ldc(name)
                 .invokedynamic("dynjs:scope:resolve", sig(Object.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }

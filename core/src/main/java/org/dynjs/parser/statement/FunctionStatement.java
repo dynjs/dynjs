@@ -83,7 +83,7 @@ public class FunctionStatement implements Statement {
             // TODO DRY
             codeBlock = codeBlock
                     .astore(3)
-                    .aload(2)
+                    .aload(DynJSCompiler.Arities.SCOPE)
                     .ldc(identifier)
                     .aload(3)
                     .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);

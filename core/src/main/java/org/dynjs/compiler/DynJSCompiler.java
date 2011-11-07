@@ -133,6 +133,7 @@ public class DynJSCompiler {
 
     public static interface Arities {
         public static final int CONTEXT = 1;
+        public static final int SCOPE = 2;
 
     }
 }

@@ -18,6 +18,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
@@ -38,7 +39,7 @@ public class DeclareVarStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return newCodeBlock(expr.getCodeBlock())
                 .astore(3)
-                .aload(2)
+                .aload(DynJSCompiler.Arities.SCOPE)
                 .ldc(id)
                 .aload(3)
                 .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);

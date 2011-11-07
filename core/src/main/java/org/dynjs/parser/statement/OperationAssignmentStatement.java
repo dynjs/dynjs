@@ -18,6 +18,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
@@ -42,7 +43,7 @@ public class OperationAssignmentStatement implements Statement {
                 .append(l.getCodeBlock())
                 .append(r.getCodeBlock())
                 .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aload(2)
+                .aload(DynJSCompiler.Arities.SCOPE)
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
