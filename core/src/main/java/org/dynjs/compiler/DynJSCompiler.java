@@ -130,4 +130,8 @@ public class DynJSCompiler {
         return classLoader.define(className.replace('/', '.'), bytecode);
     }
 
+    public static interface Arities {
+        public static final int CONTEXT = 1;
+
+    }
 }
