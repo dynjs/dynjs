@@ -68,10 +68,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                 }
             } else if (subsystem.equals("compile")) {
                 switch (action) {
-                    case "lookup":
-                        MethodType type = methodType(CodeBlock.class, int.class);
-                        targetHandle = lookup().findVirtual(DynThreadContext.class, "retrieve", type);
-                        break;
                     case "function":
                         MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
                         targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);

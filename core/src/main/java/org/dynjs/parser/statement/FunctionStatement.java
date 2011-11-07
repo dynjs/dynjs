@@ -71,7 +71,7 @@ public class FunctionStatement implements Statement {
         codeBlock = codeBlock
                 .aload(DynJSCompiler.Arities.CONTEXT)
                 .bipush(slot)
-                .invokedynamic("dynjs:compile:lookup", sig(CodeBlock.class, DynThreadContext.class, int.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .invokevirtual(DynJSCompiler.Constants.CONTEXT, "retrieve", sig(CodeBlock.class, int.class))
                 .astore(5)
                 .aload(DynJSCompiler.Arities.CONTEXT)
                 .invokevirtual(DynJSCompiler.Constants.CONTEXT, "getRuntime", sig(DynJS.class))
