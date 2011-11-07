@@ -16,8 +16,12 @@
  */
 package org.dynjs.runtime;
 
-public interface Script {
+import org.dynjs.api.Scope;
 
-   public void execute(DynThreadContext context);
+public interface Script extends Scope {
+
+    public void execute(DynThreadContext context);
+
+    public void setGlobalScope(Scope scope);
 
 }

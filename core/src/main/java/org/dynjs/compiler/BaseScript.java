@@ -16,14 +16,34 @@
  */
 package org.dynjs.compiler;
 
+import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
 
-public class BaseScript {
+public class BaseScript implements Scope {
 
     private final Statement[] statements;
+    private Scope globalScope;
 
-    public BaseScript(Statement... statements){
+    public BaseScript(Statement... statements) {
         this.statements = statements;
     }
 
+    public void setGlobalScope(Scope globalScope) {
+        this.globalScope = globalScope;
+    }
+
+    @Override
+    public Scope getEnclosingScope() {
+        return null;
+    }
+
+    @Override
+    public Object resolve(String name) {
+        return globalScope.resolve(name);
+    }
+
+    @Override
+    public void define(String property, Object value) {
+        globalScope.define(property, value);
+    }
 }

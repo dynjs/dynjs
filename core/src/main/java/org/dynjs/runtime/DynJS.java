@@ -95,6 +95,7 @@ public class DynJS {
 
     private void execute(DynThreadContext context, List<Statement> result) {
         Script script = compiler.compile(result.toArray(new Statement[]{}));
+        script.setGlobalScope(context.getScope());
         script.execute(context);
     }
 
