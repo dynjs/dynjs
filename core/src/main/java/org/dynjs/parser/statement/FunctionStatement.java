@@ -53,7 +53,7 @@ public class FunctionStatement implements Statement {
     public CodeBlock getCodeBlock() {
         final Integer slot = context.store(block.getCodeBlock());
         // put arguments on stack
-        CodeBlock codeBlock = newCodeBlock();
+        CodeBlock codeBlock = newCodeBlock(3);
 
         codeBlock = codeBlock
                 .bipush(args.size())
