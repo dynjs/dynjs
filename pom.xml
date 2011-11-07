@@ -43,7 +43,13 @@
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
-            </plugin>
+             </plugin>
+             <plugin>
+               <groupId>org.jboss.maven.plugins</groupId>
+               <artifactId>maven-jdocbook-plugin</artifactId>
+               <version>2.3.3</version>
+               <extensions>true</extensions>
+             </plugin>
         </plugins>
     </build>
 </project>
