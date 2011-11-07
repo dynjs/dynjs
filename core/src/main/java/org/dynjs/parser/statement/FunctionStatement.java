@@ -21,7 +21,6 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;

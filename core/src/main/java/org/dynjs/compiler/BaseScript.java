@@ -17,9 +17,6 @@
 package org.dynjs.compiler;
 
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.Script;
-
-import java.util.List;
 
 public class BaseScript {
 

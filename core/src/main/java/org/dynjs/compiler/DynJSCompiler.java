@@ -24,12 +24,10 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.FunctionFactory;
-import org.dynjs.runtime.RT;
 import org.dynjs.runtime.Script;
 
 import java.io.PrintWriter;
@@ -38,7 +36,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 

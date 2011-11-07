@@ -23,7 +23,6 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.dynjs.runtime.linker.anno.CompanionFor;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;

@@ -25,7 +25,6 @@ import org.kohsuke.args4j.ExampleMode;
 import static org.dynjs.cli.Arguments.CONSOLE;
 import static org.dynjs.cli.Arguments.HELP;
 import static org.dynjs.cli.Arguments.VERSION;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ArgumentsTest {
