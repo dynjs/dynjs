@@ -19,6 +19,7 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.DynJS;
@@ -74,7 +75,7 @@ public class FunctionStatement implements Statement {
                 .invokedynamic("dynjs:compile:lookup", sig(CodeBlock.class, DynThreadContext.class, int.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .astore(5)
                 .aload(1)
-                .invokevirtual(p(DynThreadContext.class), "getRuntime", sig(DynJS.class))
+                .invokevirtual(DynJSCompiler.Constants.CONTEXT, "getRuntime", sig(DynJS.class))
                 .aload(5)
                 .aload(4)
                 .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);

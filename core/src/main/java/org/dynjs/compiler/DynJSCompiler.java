@@ -130,6 +130,10 @@ public class DynJSCompiler {
         return classLoader.define(className.replace('/', '.'), bytecode);
     }
 
+    public static interface Constants {
+        public static final String CONTEXT = p(DynThreadContext.class);
+    }
+
     public static interface Arities {
         public static final int CONTEXT = 1;
 
