@@ -43,7 +43,7 @@ public class RT {
     public static final MethodHandle SCOPE_RESOLVE;
 
     static {
-        MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, Object[].class);
+        MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
         MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);

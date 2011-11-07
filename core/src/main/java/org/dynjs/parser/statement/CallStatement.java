@@ -61,9 +61,8 @@ public class CallStatement implements Statement {
         codeBlock = codeBlock
                 .append(lhs.getCodeBlock())
                 .aload(DynJSCompiler.Arities.CONTEXT)
-                .aload(DynJSCompiler.Arities.SCOPE)
                 .aload(4)
-                .invokedynamic("dynjs:runtime:call", sig(Object.class, Function.class, DynThreadContext.class, Scope.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dynjs:runtime:call", sig(Object.class, Function.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 
         return codeBlock;
     }

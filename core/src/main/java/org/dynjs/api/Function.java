@@ -21,6 +21,6 @@ import org.dynjs.runtime.DynThreadContext;
 
 public interface Function extends DynAtom, Scope {
 
-    public Object call(DynThreadContext context, Scope scope, Object[] arguments);
+    public Object call(DynThreadContext context, Object[] arguments);
 
 }

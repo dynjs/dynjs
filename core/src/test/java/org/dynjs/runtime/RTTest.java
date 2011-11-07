@@ -17,7 +17,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,13 +37,13 @@ public class RTTest {
     public void testFunctionCall() throws Throwable {
         Function f = new BaseFunction() {
             @Override
-            public Object call(DynThreadContext context, Scope scope, Object[] arguments) {
+            public Object call(DynThreadContext context, Object[] arguments) {
                 return "";
             }
 
         };
 
-        Object result = RT.FUNCTION_CALL.bindTo(f).invoke(context, scope, new DynAtom[]{});
+        Object result = RT.FUNCTION_CALL.bindTo(f).invoke(context, new DynAtom[]{});
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(String.class);

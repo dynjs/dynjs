@@ -56,7 +56,7 @@ public class DynJSCompiler {
                             .invokespecial(p(DynFunction.class), "<init>", sig(void.class))
                             .voidreturn()
             );
-            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Scope.class, Object[].class), alwaysReturnWrapper(arg));
+            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Object[].class), alwaysReturnWrapper(arg));
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 String[] arguments = arg.getArguments();
@@ -100,10 +100,7 @@ public class DynJSCompiler {
             }
 
             private CodeBlock getCodeBlock() {
-                final CodeBlock block = newCodeBlock()
-                        .aload(DynJSCompiler.Arities.CONTEXT)
-                        .invokevirtual(Types.CONTEXT, "getScope", sig(Scope.class))
-                        .astore(2);
+                final CodeBlock block = newCodeBlock();
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
                 }

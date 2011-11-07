@@ -34,12 +34,12 @@ public class FunctionFactory implements Function {
     }
 
     @Override
-    public Object call(DynThreadContext context, Scope scope, Object[] arguments) {
+    public Object call(DynThreadContext context, Object[] arguments) {
         Function function = instantiate();
         RT.paramPopulator((DynFunction) function, arguments);
         Deque<Function> callStack = context.getCallStack();
         callStack.push(function);
-        Object result = function.call(context, scope, arguments);
+        Object result = function.call(context, arguments);
         callStack.pop();
         return result;
     }
