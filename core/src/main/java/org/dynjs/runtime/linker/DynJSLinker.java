@@ -66,15 +66,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }
-            } else if (subsystem.equals("compile")) {
-                switch (action) {
-                    case "function":
-                        MethodType targetType = methodType(Function.class, CodeBlock.class, String[].class);
-                        targetHandle = lookup().findVirtual(DynJS.class, "compile", targetType);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("should not reach here");
-                }
             } else if (subsystem.equals("runtime")) {
                 switch (action) {
                     case "call":

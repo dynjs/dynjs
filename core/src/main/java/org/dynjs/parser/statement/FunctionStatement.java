@@ -77,7 +77,7 @@ public class FunctionStatement implements Statement {
                 .invokevirtual(DynJSCompiler.Constants.CONTEXT, "getRuntime", sig(DynJS.class))
                 .aload(5)
                 .aload(4)
-                .invokedynamic("dynjs:compile:function", sig(Function.class, DynJS.class, CodeBlock.class, String[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokevirtual(p(DynJS.class), "compile", sig(Function.class, CodeBlock.class, String[].class));
 
         if (identifier != null) {
             // TODO DRY
