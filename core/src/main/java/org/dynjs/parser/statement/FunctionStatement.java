@@ -68,12 +68,9 @@ public class FunctionStatement implements Statement {
                     .aastore();
         }
 
+        codeBlock = getRuntime(codeBlock);
+        codeBlock = retrieveFromSlot(slot, codeBlock);
         codeBlock = codeBlock
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class))
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .bipush(slot)
-                .invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class))
                 .aload(4)
                 .invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Function.class, CodeBlock.class, String[].class));
 
@@ -87,6 +84,21 @@ public class FunctionStatement implements Statement {
                     .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }
 
+        return codeBlock;
+    }
+
+    private CodeBlock retrieveFromSlot(Integer slot, CodeBlock codeBlock) {
+        codeBlock = codeBlock
+                .aload(DynJSCompiler.Arities.CONTEXT)
+                .bipush(slot)
+                .invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
+        return codeBlock;
+    }
+
+    private CodeBlock getRuntime(CodeBlock codeBlock) {
+        codeBlock = codeBlock
+                .aload(DynJSCompiler.Arities.CONTEXT)
+                .invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
         return codeBlock;
     }
 
