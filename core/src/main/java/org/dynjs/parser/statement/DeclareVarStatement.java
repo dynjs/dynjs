@@ -23,6 +23,7 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DeclareVarStatement implements Statement {
@@ -39,9 +40,9 @@ public class DeclareVarStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return newCodeBlock(expr.getCodeBlock())
                 .astore(3)
-                .aload(DynJSCompiler.Arities.SCOPE)
+                .aload(DynJSCompiler.Arities.THIS)
                 .ldc(id)
                 .aload(3)
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, Object.class));
     }
 }

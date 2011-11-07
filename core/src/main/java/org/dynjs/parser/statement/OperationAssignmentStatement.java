@@ -22,6 +22,7 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class OperationAssignmentStatement implements Statement {
@@ -43,11 +44,11 @@ public class OperationAssignmentStatement implements Statement {
                 .append(l.getCodeBlock())
                 .append(r.getCodeBlock())
                 .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aload(DynJSCompiler.Arities.SCOPE)
+                .aload(DynJSCompiler.Arities.THIS)
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, Object.class));
 
     }
 }

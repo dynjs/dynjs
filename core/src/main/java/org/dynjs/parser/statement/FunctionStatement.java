@@ -23,7 +23,6 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class FunctionStatement implements Statement {
                     .aload(DynJSCompiler.Arities.THIS)
                     .ldc(identifier)
                     .aload(3)
-                    .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                    .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, Object.class));
         }
 
         return codeBlock;

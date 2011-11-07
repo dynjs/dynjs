@@ -22,6 +22,7 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public abstract class AbstractUnaryOperationStatement implements Statement {
@@ -43,11 +44,11 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
                 .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .dup()
                 .astore(4)
-                .aload(DynJSCompiler.Arities.SCOPE)
+                .aload(DynJSCompiler.Arities.THIS)
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
-                .invokedynamic("dynjs:scope:define", sig(void.class, Scope.class, String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .invokeinterface(p(Scope.class), "define", sig(void.class, String.class, Object.class))
                 .aload(4);
     }
 
