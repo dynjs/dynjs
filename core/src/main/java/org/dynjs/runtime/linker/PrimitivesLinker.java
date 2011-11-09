@@ -54,7 +54,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         String selector = descriptor.getName() + targetMethodType.toMethodDescriptorString();
         MethodHandle handle = vtable.get(selector);
         if (handle != null) {
-            if (descriptor.getMethodType().toMethodDescriptorString() != handle.type().toMethodDescriptorString()) {
+            if (!descriptor.getMethodType().equals(handle.type())) {
                 handle = linkerServices.asType(handle, descriptor.getMethodType());
             }
             return new GuardedInvocation(handle, Guards.isInstance(receiverClass, 1, descriptor.getMethodType()));
