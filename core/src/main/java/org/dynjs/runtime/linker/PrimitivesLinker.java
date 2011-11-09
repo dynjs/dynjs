@@ -27,33 +27,19 @@ import org.dynjs.runtime.extensions.NumberOperations;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
-    private static final List<Class> TYPES = Arrays.asList(new Class[]{Double.class, Boolean.class});
-    private static final ClassValue<Map<String, MethodHandle>> entryPointClassValue = new ClassValue<Map<String, MethodHandle>>() {
-        @Override
-        protected Map<String, MethodHandle> computeValue(Class<?> type) {
-            return new HashMap<>();
-        }
-    };
-
-    public PrimitivesLinker() {
-        initVtables();
-    }
-
-    private void initVtables() {
-        entryPointClassValue.get(Double.class).putAll(VTablePopulator.vtableFrom(NumberOperations.class));
-        entryPointClassValue.get(Boolean.class).putAll(VTablePopulator.vtableFrom(BooleanOperations.class));
-    }
+    private static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap() {{
+        put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
+        put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
+    }};
 
     @Override
     public boolean canLinkType(Class<?> type) {
-        return TYPES.contains(type);
+        return vtable.containsKey(type);
     }
 
     @Override
@@ -61,7 +47,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         Object[] arguments = linkRequest.getArguments();
         Object receiver = arguments[0];
         Class<? extends Object> receiverClass = receiver.getClass();
-        Map<String, MethodHandle> vtable = entryPointClassValue.get(receiverClass);
+        Map<String, MethodHandle> vtable = PrimitivesLinker.vtable.get(receiverClass);
         CallSiteDescriptor descriptor = linkRequest.getCallSiteDescriptor();
         MethodType targetMethodType = methodTypeForArguments(descriptor, arguments, receiverClass);
 
