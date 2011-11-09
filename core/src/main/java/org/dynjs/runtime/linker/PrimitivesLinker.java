@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
-    private static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap() {{
+    private static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap<Class, Map<String, MethodHandle>>() {{
         put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
         put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
     }};
