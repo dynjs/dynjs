@@ -53,10 +53,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
     @Override
     public boolean canLinkType(Class<?> type) {
-        if (TYPES.contains(type)) {
-            return true;
-        }
-        return false;
+        return TYPES.contains(type);
     }
 
     @Override
