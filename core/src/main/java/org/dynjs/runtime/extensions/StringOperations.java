@@ -9,4 +9,11 @@ public class StringOperations {
         return value.equals(other);
     }
 
+    public static Boolean eq(String value, Double other) {
+        if (other == 0.0) {
+            return eq(value, "");
+        }
+        return eq(value, other.toString());
+    }
+
 }

@@ -15,4 +15,6 @@
  *  limitations under the License.
  */
 
-var result = "house" == "house";
+var result = "house" == "house"
+    && 'house' == 'house'
+    && "" == 0;
