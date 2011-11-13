@@ -120,7 +120,8 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineStringLiteral(final String literal) {
-        return new StringLiteralStatement(literal);
+        // TODO: hack until porcelli fixes the grammar
+        return new StringLiteralStatement(literal.replaceAll("^\"|^'|\"$|'$", ""));
     }
 
     public Statement resolveIdentifier(final CommonTree id) {
