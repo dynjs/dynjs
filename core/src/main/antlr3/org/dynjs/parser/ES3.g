@@ -854,8 +854,9 @@ fragment EscapeSequence
 	;
 
 StringLiteral
-	: SQUOTE ( ~( SQUOTE | BSLASH | LineTerminator ) | EscapeSequence )* SQUOTE
-	| DQUOTE ( ~( DQUOTE | BSLASH | LineTerminator ) | EscapeSequence )* DQUOTE
+	: (SQUOTE ( ~( SQUOTE | BSLASH | LineTerminator ) | EscapeSequence )* SQUOTE
+	| DQUOTE ( ~( DQUOTE | BSLASH | LineTerminator ) | EscapeSequence )* DQUOTE)
+	  { setText(input.substring($start+1, $stop - 1)); }
 	;
 
 // $>

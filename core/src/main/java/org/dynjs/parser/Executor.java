@@ -121,7 +121,7 @@ public class Executor implements Opcodes {
 
     public Statement defineStringLiteral(final String literal) {
         // TODO: hack until porcelli fixes the grammar
-        return new StringLiteralStatement(literal.replaceAll("^\"|^'|\"$|'$", ""));
+        return new StringLiteralStatement(literal);
     }
 
     public Statement resolveIdentifier(final CommonTree id) {
