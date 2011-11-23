@@ -20,28 +20,7 @@ import me.qmx.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.statement.BlockStatement;
-import org.dynjs.parser.statement.BooleanLiteralStatement;
-import org.dynjs.parser.statement.CallStatement;
-import org.dynjs.parser.statement.DeclareVarStatement;
-import org.dynjs.parser.statement.DecrementStatement;
-import org.dynjs.parser.statement.DefineNumOpStatement;
-import org.dynjs.parser.statement.DoWhileStatement;
-import org.dynjs.parser.statement.EqualsOperationStatement;
-import org.dynjs.parser.statement.ForStepVarStatement;
-import org.dynjs.parser.statement.FunctionStatement;
-import org.dynjs.parser.statement.IfStatement;
-import org.dynjs.parser.statement.IncrementStatement;
-import org.dynjs.parser.statement.LogicalOperationStatement;
-import org.dynjs.parser.statement.NotEqualsOperationStatement;
-import org.dynjs.parser.statement.NullLiteralStatement;
-import org.dynjs.parser.statement.NumberLiteralStatement;
-import org.dynjs.parser.statement.OperationAssignmentStatement;
-import org.dynjs.parser.statement.RelationalOperationStatement;
-import org.dynjs.parser.statement.ResolveIdentifierStatement;
-import org.dynjs.parser.statement.ReturnStatement;
-import org.dynjs.parser.statement.StringLiteralStatement;
-import org.dynjs.parser.statement.WhileStatement;
+import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
@@ -189,7 +168,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement defineNotOp(Statement expression) {
-        return null;
+        return new NotOperationStatement(expression);
     }
 
     public Statement definePIncOp(Statement expression) {
