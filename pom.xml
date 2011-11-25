@@ -21,7 +21,6 @@
 
     <modules>
         <module>core</module>
-        <module>docs</module>
     </modules>
 
     <build>
