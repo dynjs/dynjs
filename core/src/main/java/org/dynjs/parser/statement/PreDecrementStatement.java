@@ -18,14 +18,15 @@ package org.dynjs.parser.statement;
 
 import org.dynjs.parser.Statement;
 
-public class IncrementStatement extends AbstractUnaryOperationStatement {
+public class PreDecrementStatement extends AbstractUnaryOperationStatement {
 
-    public IncrementStatement(Statement expression) {
+    public PreDecrementStatement(Statement expression) {
         super(expression);
     }
 
     @Override
     protected String operation() {
-        return "add";
+        return "sub";
     }
+
 }
