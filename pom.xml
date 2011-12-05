@@ -20,7 +20,7 @@
     </parent>
 
     <modules>
-        <module>core</module>
+        <module>dynjs</module>
     </modules>
 
     <build>
