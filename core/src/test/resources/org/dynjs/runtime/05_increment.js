@@ -15,5 +15,6 @@
  *  limitations under the License.
  */
 var x = 1;
-var result = ++x == 2;
+var y = 1;
+var result = ++x == 2 && y++ == 1;
 
