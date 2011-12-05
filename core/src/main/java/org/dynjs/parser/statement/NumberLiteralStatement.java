@@ -21,6 +21,7 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -36,7 +37,7 @@ public class NumberLiteralStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .aload(DynJSCompiler.Arities.CONTEXT)
                 .ldc(value)
                 .invokevirtual(p(DynThreadContext.class), getFactoryMethod(), sig(Number.class, String.class));

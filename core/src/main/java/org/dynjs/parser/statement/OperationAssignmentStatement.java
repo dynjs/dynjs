@@ -21,6 +21,7 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class OperationAssignmentStatement implements Statement {
@@ -38,7 +39,7 @@ public class OperationAssignmentStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) l;
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .append(l.getCodeBlock())
                 .append(r.getCodeBlock())
                 .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)

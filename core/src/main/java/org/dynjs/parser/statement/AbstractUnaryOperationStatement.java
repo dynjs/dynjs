@@ -21,6 +21,7 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public abstract class AbstractUnaryOperationStatement implements Statement {
@@ -36,7 +37,7 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .append(expression.getCodeBlock())
                 .append(before())
                 .append(processOperation())
@@ -58,13 +59,13 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
     }
 
     protected CodeBlock store() {
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .dup()
                 .astore(4);
     }
 
     private CodeBlock processOperation() {
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .append(new NumberLiteralStatement("1", 10).getCodeBlock())
                 .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }

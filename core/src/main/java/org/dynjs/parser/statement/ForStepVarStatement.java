@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -39,7 +40,7 @@ public class ForStepVarStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .append(varDef.getCodeBlock())
                 .label(statement.getBeginLabel())
                 .append(expr1.getCodeBlock())

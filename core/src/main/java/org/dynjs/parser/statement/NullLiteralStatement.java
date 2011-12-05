@@ -19,11 +19,13 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+
 public class NullLiteralStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .aconst_null();
     }
 }

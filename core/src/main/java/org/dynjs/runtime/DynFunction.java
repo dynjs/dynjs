@@ -20,12 +20,14 @@ import me.qmx.jitescript.CodeBlock;
 
 import java.util.Arrays;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+
 public abstract class DynFunction extends DynObject {
 
     private final CodeBlock codeBlock;
 
     public DynFunction() {
-        this(CodeBlock.newCodeBlock());
+        this(newCodeBlock());
     }
 
     public DynFunction(CodeBlock codeBlock) {

@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class LogicalOperationStatement implements Statement {
@@ -36,7 +37,7 @@ public class LogicalOperationStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
+        return newCodeBlock()
                 .append(l.getCodeBlock())
                 .append(r.getCodeBlock())
                 .invokedynamic(operator, sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);

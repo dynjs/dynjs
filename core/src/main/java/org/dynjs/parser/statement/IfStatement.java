@@ -22,6 +22,7 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -43,7 +44,7 @@ public class IfStatement implements Statement {
     public CodeBlock getCodeBlock() {
         LabelNode elseBlock = new LabelNode();
         LabelNode outBlock = new LabelNode();
-        CodeBlock codeBlock = CodeBlock.newCodeBlock()
+        CodeBlock codeBlock = newCodeBlock()
                 .append(vbool.getCodeBlock())
                 .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))

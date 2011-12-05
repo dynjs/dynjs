@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
+import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -35,7 +36,7 @@ public class WhileStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = CodeBlock.newCodeBlock()
+        CodeBlock codeBlock = newCodeBlock()
                 .label(vloop.getBeginLabel())
                 .append(vbool.getCodeBlock())
                 .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
