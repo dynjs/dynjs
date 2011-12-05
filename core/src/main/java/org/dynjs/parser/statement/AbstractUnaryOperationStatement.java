@@ -38,8 +38,7 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
         return CodeBlock.newCodeBlock()
                 .append(expression.getCodeBlock())
-                .append(new NumberLiteralStatement("1", 10).getCodeBlock())
-                .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .append(processOperation())
                 .dup()
                 .astore(4)
                 .aload(DynJSCompiler.Arities.THIS)
@@ -48,6 +47,12 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
                 .swap()
                 .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class))
                 .aload(4);
+    }
+
+    private CodeBlock processOperation() {
+        return CodeBlock.newCodeBlock()
+                .append(new NumberLiteralStatement("1", 10).getCodeBlock())
+                .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 
 }
