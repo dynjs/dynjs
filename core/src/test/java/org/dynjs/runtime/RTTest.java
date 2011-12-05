@@ -43,7 +43,7 @@ public class RTTest {
 
         };
 
-        Object result = RT.FUNCTION_CALL.bindTo(f).invoke(context, new DynAtom[]{});
+        Object result = RT.FUNCTION_CALL.bindTo(f).invoke(context, new Object[]{});
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(String.class);
