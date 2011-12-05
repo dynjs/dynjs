@@ -19,7 +19,6 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.primitives.DynPrimitiveNull;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DynThreadContext {
 
     public static final Object UNDEFINED = new Object();
-    public static final DynPrimitiveNull NULL = new DynPrimitiveNull();
+    public static final Object NULL = new Object();
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();
