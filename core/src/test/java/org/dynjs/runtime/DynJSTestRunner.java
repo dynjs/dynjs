@@ -16,10 +16,12 @@
  */
 package org.dynjs.runtime;
 
+import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.mockito.internal.matchers.Equals;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -82,7 +84,7 @@ public class DynJSTestRunner extends Runner {
                 if (result) {
                     notifier.fireTestFinished(description);
                 } else {
-                    throw new IllegalStateException();
+                    notifier.fireTestFailure(new Failure(description, new AssumptionViolatedException(result, new Equals(true))));
                 }
             } catch (Exception e) {
                 notifier.fireTestFailure(new Failure(description, e));

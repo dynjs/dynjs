@@ -16,11 +16,12 @@
  */
 package org.dynjs.parser.statement;
 
+import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
-public class IncrementStatement extends AbstractUnaryOperationStatement {
+public class PreIncrementStatement extends AbstractUnaryOperationStatement {
 
-    public IncrementStatement(Statement expression) {
+    public PreIncrementStatement(Statement expression) {
         super(expression);
     }
 
@@ -28,4 +29,10 @@ public class IncrementStatement extends AbstractUnaryOperationStatement {
     protected String operation() {
         return "add";
     }
+
+    @Override
+    protected CodeBlock after() {
+        return store();
+    }
+
 }

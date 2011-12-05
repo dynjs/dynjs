@@ -16,17 +16,23 @@
  */
 package org.dynjs.parser.statement;
 
+import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
-public class DecrementStatement extends AbstractUnaryOperationStatement {
+public class PreDecrementStatement extends AbstractUnaryOperationStatement {
 
-    public DecrementStatement(Statement expression) {
+    public PreDecrementStatement(Statement expression) {
         super(expression);
     }
 
     @Override
     protected String operation() {
         return "sub";
+    }
+
+    @Override
+    protected CodeBlock after() {
+        return store();
     }
 
 }
