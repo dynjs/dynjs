@@ -140,6 +140,7 @@ public class DynJSCompiler {
     }
 
     public static interface Helper {
+
         CodeBlock EMPTY_CODEBLOCK = newCodeBlock();
     }
 }
