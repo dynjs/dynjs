@@ -18,9 +18,4 @@ package org.dynjs.runtime.primitives;
 
 public class DynPrimitiveNull {
 
-    public static final DynPrimitiveNull NULL = new DynPrimitiveNull();
-
-    private DynPrimitiveNull() {
-    }
-
 }
