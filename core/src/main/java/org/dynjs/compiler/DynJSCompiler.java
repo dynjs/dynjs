@@ -138,4 +138,8 @@ public class DynJSCompiler {
         int CONTEXT = 1;
 
     }
+
+    public static interface Helper {
+        CodeBlock EMPTY_CODEBLOCK = newCodeBlock();
+    }
 }
