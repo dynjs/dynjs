@@ -2,4 +2,4 @@
 if [ ! -f target/dynjs-all.jar ]; then
 	mvn clean package
 fi
-java -jar target/dynjs-all.jar --console
+java -jar core/target/dynjs-all.jar --console
