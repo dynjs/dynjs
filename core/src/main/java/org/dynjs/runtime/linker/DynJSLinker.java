@@ -22,16 +22,13 @@ import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
 import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
-import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
-import org.dynjs.runtime.DynAtom;
 import org.dynjs.runtime.RT;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
 import static java.lang.invoke.MethodHandles.lookup;
-import static java.lang.invoke.MethodType.methodType;
 
 public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverterFactory {
 
@@ -42,9 +39,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
-        } else if (callSiteDescriptor.getName().startsWith("dyn:getProp")) {
-            MethodType targetType = methodType(DynAtom.class, String.class);
-            targetHandle = lookup().findVirtual(Scope.class, "resolve", targetType);
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
             String subsystem = callSiteDescriptor.getNameToken(1);

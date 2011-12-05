@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DynThreadContext {
 
     public static final Object UNDEFINED = new Object();
+    public static final Object NULL = new Object();
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();

@@ -21,7 +21,7 @@ import org.dynjs.api.Scope;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DynObject implements DynAtom, Scope {
+public class DynObject implements Scope {
 
     private final Map<String, DynProperty> properties = new HashMap<>();
 
@@ -32,11 +32,6 @@ public class DynObject implements DynAtom, Scope {
     public void setProperty(String key, Object atom) {
         DynProperty property = new DynProperty(key).setAttribute("value", atom);
         this.properties.put(key, property);
-    }
-
-    @Override
-    public boolean isPrimitive() {
-        return false;
     }
 
     public DynProperty getProperty(String key) {

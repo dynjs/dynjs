@@ -100,7 +100,7 @@ public class DynJSTest {
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function) actual).call(context, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, new Object[]{}))
                 .isNull();
     }
 
@@ -112,7 +112,7 @@ public class DynJSTest {
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function) actual).call(context, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, new Object[]{}))
                 .isNull();
     }
 
@@ -124,7 +124,7 @@ public class DynJSTest {
                 .isNotNull()
                 .isInstanceOf(Function.class);
 
-        assertThat(((Function) actual).call(context, new DynAtom[]{}))
+        assertThat(((Function) actual).call(context, new Object[]{}))
                 .isNotNull()
                 .isInstanceOf(Double.class)
                 .isEqualTo(2.0);

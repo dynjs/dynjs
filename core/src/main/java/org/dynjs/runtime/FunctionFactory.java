@@ -54,11 +54,6 @@ public class FunctionFactory implements Function {
     }
 
     @Override
-    public boolean isPrimitive() {
-        return false;
-    }
-
-    @Override
     public Scope getEnclosingScope() {
         return null;
     }

@@ -49,15 +49,6 @@ public class RT {
         SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
     }
 
-    /**
-     * JS builtin print method
-     *
-     * @param atom the
-     */
-    public static void print(DynAtom atom) {
-        System.out.println(atom);
-    }
-
     public static DynFunction paramPopulator(DynFunction function, Object[] args) {
         String[] parameters = function.getArguments();
         for (int i = 0; i < parameters.length; i++) {
