@@ -36,6 +36,7 @@ import org.dynjs.parser.statement.NotOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
 import org.dynjs.parser.statement.OperationAssignmentStatement;
+import org.dynjs.parser.statement.PostDecrementStatement;
 import org.dynjs.parser.statement.PostIncrementStatement;
 import org.dynjs.parser.statement.PreDecrementStatement;
 import org.dynjs.parser.statement.PreIncrementStatement;
@@ -198,7 +199,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement definePDecOp(Statement expression) {
-        return null;
+        return new PostDecrementStatement(expression);
     }
 
     public Statement defineLtRelOp(Statement l, Statement r) {
