@@ -17,7 +17,6 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 
 public class PreIncrementStatement extends AbstractUnaryOperationStatement {
@@ -31,11 +30,9 @@ public class PreIncrementStatement extends AbstractUnaryOperationStatement {
         return "add";
     }
 
+    @Override
     protected CodeBlock after() {
         return store();
     }
 
-    protected CodeBlock before() {
-        return DynJSCompiler.Helper.EMPTY_CODEBLOCK;
-    }
 }

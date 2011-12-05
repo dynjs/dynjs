@@ -1,7 +1,6 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 
 public class PostDecrementStatement extends AbstractUnaryOperationStatement {
@@ -12,11 +11,6 @@ public class PostDecrementStatement extends AbstractUnaryOperationStatement {
 
     protected String operation() {
         return "sub";
-    }
-
-    @Override
-    protected CodeBlock after() {
-        return DynJSCompiler.Helper.EMPTY_CODEBLOCK;
     }
 
     @Override

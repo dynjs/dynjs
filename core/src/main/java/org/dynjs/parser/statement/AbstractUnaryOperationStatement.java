@@ -49,9 +49,13 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
                 .aload(4);
     }
 
-    protected abstract CodeBlock after();
+    protected CodeBlock after() {
+        return DynJSCompiler.Helper.EMPTY_CODEBLOCK;
+    }
 
-    protected abstract CodeBlock before();
+    protected CodeBlock before() {
+        return DynJSCompiler.Helper.EMPTY_CODEBLOCK;
+    }
 
     protected CodeBlock store() {
         return CodeBlock.newCodeBlock()
