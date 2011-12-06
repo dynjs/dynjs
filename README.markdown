@@ -22,7 +22,7 @@ Getting started
 
 ## Building from sources
 
-1. git clone https://github.com/dynjs/dyn.js.git && cd dynjs
+1. git clone https://github.com/dynjs/dynjs.git && cd dynjs
 2. mvn install
 3. Get the jar into dynjs/target folder
 
