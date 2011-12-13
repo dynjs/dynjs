@@ -72,8 +72,7 @@ public class DynJSCompiler {
                 areturn();
             }});
         }};
-        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-        Class<Function> functionClass = (Class<Function>) defineClass(className, bytecode);
+        Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
         return FunctionFactory.create(functionClass);
     }
 
@@ -107,8 +106,7 @@ public class DynJSCompiler {
                 return block.voidreturn();
             }
         };
-        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-        Class<?> functionClass = defineClass(className, bytecode);
+        Class<?> functionClass = defineClass(jiteClass);
         try {
             Constructor<?> ctor = functionClass.getDeclaredConstructor(Statement[].class);
             return (Script) ctor.newInstance(new Object[]{statements});
@@ -117,12 +115,14 @@ public class DynJSCompiler {
         }
     }
 
-    private Class<?> defineClass(String className, byte[] bytecode) {
+    private Class<?> defineClass(JiteClass jiteClass) {
+        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
+
         if (DEBUG) {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return classLoader.define(className.replace('/', '.'), bytecode);
+        return classLoader.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
     public static interface Types {
