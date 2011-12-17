@@ -17,7 +17,6 @@
 package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
-import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
@@ -45,14 +44,11 @@ import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
+import org.dynjs.parser.statement.UndefinedValueStatement;
 import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
-
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
 
 public class Executor implements Opcodes {
 
@@ -84,13 +80,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement declareVar(final CommonTree id) {
-        return declareVar(id, new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock()
-                        .getstatic(p(DynThreadContext.class), "UNDEFINED", ci(Object.class));
-            }
-        });
+        return declareVar(id, new UndefinedValueStatement());
     }
 
     public Statement declareVar(final CommonTree id, final Statement expr) {
