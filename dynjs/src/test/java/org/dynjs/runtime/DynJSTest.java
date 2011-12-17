@@ -39,8 +39,8 @@ public class DynJSTest {
         dynJS.eval(context, "var x = 'test';");
         assertThat(context.getScope().resolve("x"))
                 .isNotNull()
-                .isInstanceOf(String.class);
-//      TODO          .isEqualTo("test");
+                .isInstanceOf(String.class)
+                .isEqualTo("test");
     }
 
     @Test
