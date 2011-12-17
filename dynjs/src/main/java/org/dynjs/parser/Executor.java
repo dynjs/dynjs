@@ -40,6 +40,7 @@ import org.dynjs.parser.statement.PostDecrementStatement;
 import org.dynjs.parser.statement.PostIncrementStatement;
 import org.dynjs.parser.statement.PreDecrementStatement;
 import org.dynjs.parser.statement.PreIncrementStatement;
+import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
@@ -75,13 +76,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement printStatement(final Statement expr) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return newCodeBlock(expr.getCodeBlock())
-                        .aprintln();
-            }
-        };
+        return new PrintStatement(expr);
     }
 
     public Statement returnStatement(final Statement expr) {
