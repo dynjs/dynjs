@@ -43,7 +43,7 @@ import org.dynjs.parser.statement.PreDecrementStatement;
 import org.dynjs.parser.statement.PreIncrementStatement;
 import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
-import org.dynjs.parser.statement.ResolveByFieldStatement;
+import org.dynjs.parser.statement.ResolveByIndexStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
@@ -52,8 +52,6 @@ import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
-
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -329,11 +327,11 @@ public class Executor implements Opcodes {
     }
 
     public Statement resolveByField(final Statement lhs, final String field) {
-        return new ResolveByFieldStatement(lhs, field);
+        return new ResolveByIndexStatement(lhs, field);
     }
 
-    public Statement defineByIndex(Statement lhs, Statement index) {
-        return null;
+    public Statement defineByIndex(final Statement lhs, final Statement index) {
+        return new ResolveByIndexStatement(lhs, index);
     }
 
     public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
