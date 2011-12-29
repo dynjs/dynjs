@@ -25,7 +25,9 @@ public class ObjectLiteralStatement implements Statement {
                 .invokespecial(p(DynObject.class), "<init>", sig(void.class))
                 .astore(7);
         for (Statement namedValue : namedValues) {
-            obj = obj.append(namedValue.getCodeBlock());
+
+            obj = obj.aload(7)
+                    .append(namedValue.getCodeBlock());
         }
         return obj.aload(7);
     }
