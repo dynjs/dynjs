@@ -17,7 +17,6 @@
 package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
-import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
@@ -31,6 +30,7 @@ import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.NamedValueStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NotOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
@@ -432,15 +432,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement namedValue(final Statement propertyName, final Statement expr) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .append(propertyName.getCodeBlock())
-                        .append(expr.getCodeBlock())
-                        .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
-            }
-        };
+        return new NamedValueStatement(propertyName, expr);
     }
 
     public Statement arrayLiteral(List<Statement> exprs) {
