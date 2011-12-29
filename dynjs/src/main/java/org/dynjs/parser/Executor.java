@@ -425,7 +425,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement propertyNameString(String string) {
-        return null;
+        return new StringLiteralStatement(string);
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {

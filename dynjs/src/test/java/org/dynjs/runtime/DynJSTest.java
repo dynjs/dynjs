@@ -226,6 +226,7 @@ public class DynJSTest {
     @Test
     public void testObjectLiteralPropertyAccess() {
         check("var x = {w:true}; var result = x.w;", true);
+        check("var x = {'y':false}; var result = x.y;", false);
     }
 
     private void check(String scriptlet) {
