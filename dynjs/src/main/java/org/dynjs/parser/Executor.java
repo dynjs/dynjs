@@ -17,6 +17,7 @@
 package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
@@ -327,8 +328,16 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement resolveByField(Statement lhs, String field) {
-        return null;
+    public Statement resolveByField(final Statement lhs, final String field) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .append(lhs.getCodeBlock())
+                        .ldc(field)
+                        .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
+            }
+        };
     }
 
     public Statement defineByIndex(Statement lhs, Statement index) {

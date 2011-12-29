@@ -223,6 +223,11 @@ public class DynJSTest {
         assertThat(((DynObject) result).resolve("w")).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
     }
 
+    @Test
+    public void testObjectLiteralPropertyAccess() {
+        check("var x = {w:true}; var result = x.w;", true);
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }
