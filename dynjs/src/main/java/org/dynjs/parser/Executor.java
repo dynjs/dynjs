@@ -30,10 +30,12 @@ import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.NamedValueStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NotOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.ObjectLiteralStatement;
 import org.dynjs.parser.statement.OperationAssignmentStatement;
 import org.dynjs.parser.statement.PostDecrementStatement;
 import org.dynjs.parser.statement.PostIncrementStatement;
@@ -41,6 +43,7 @@ import org.dynjs.parser.statement.PreDecrementStatement;
 import org.dynjs.parser.statement.PreIncrementStatement;
 import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
+import org.dynjs.parser.statement.ResolveByIndexStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
@@ -323,12 +326,12 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement resolveByField(Statement lhs, String field) {
-        return null;
+    public Statement resolveByField(final Statement lhs, final String field) {
+        return new ResolveByIndexStatement(lhs, field);
     }
 
-    public Statement defineByIndex(Statement lhs, Statement index) {
-        return null;
+    public Statement resolveByIndex(final Statement lhs, final Statement index) {
+        return new ResolveByIndexStatement(lhs, index);
     }
 
     public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
@@ -412,23 +415,23 @@ public class Executor implements Opcodes {
     }
 
     public Statement objectValue(List<Statement> namedValues) {
-        return null;
+        return new ObjectLiteralStatement(namedValues);
     }
 
     public Statement propertyNameId(String id) {
-        return null;
+        return new StringLiteralStatement(id);
     }
 
     public Statement propertyNameString(String string) {
-        return null;
+        return new StringLiteralStatement(string);
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {
         return null;
     }
 
-    public Statement namedValue(Statement propertyName, Statement expr) {
-        return null;
+    public Statement namedValue(final Statement propertyName, final Statement expr) {
+        return new NamedValueStatement(propertyName, expr);
     }
 
     public Statement arrayLiteral(List<Statement> exprs) {

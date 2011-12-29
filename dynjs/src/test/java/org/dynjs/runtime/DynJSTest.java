@@ -205,6 +205,31 @@ public class DynJSTest {
         check("var result = true && true;", true);
     }
 
+    @Test
+    public void testEmptyObjectLiteral() {
+        dynJS.eval(context, "var result = {};");
+        assertThat(context.getScope().resolve("result"))
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+    }
+
+    @Test
+    public void testBasicObjectLiteral() {
+        dynJS.eval(context, "var result = {w:true};");
+        final Object result = context.getScope().resolve("result");
+        assertThat(result)
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+        assertThat(((DynObject) result).resolve("w")).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
+    }
+
+    @Test
+    public void testObjectLiteralPropertyAccess() {
+        check("var x = {w:true}; var result = x.w;", true);
+        check("var x = {'y':false}; var result = x.y;", false);
+        check("var x = {'z':true}; var result = x['z'];", true);
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }

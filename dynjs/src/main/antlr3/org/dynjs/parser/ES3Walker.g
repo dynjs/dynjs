@@ -399,7 +399,7 @@ callExpression returns [Statement value]
 	
 memberExpression returns [Statement value]
 	: ^( BYINDEX leftHandSideExpression expression)
-	{ $value = executor.defineByIndex($leftHandSideExpression.value, $expression.value); }
+	{ $value = executor.resolveByIndex($leftHandSideExpression.value, $expression.value); }
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	{ $value = executor.resolveByField($leftHandSideExpression.value, $Identifier.text); }
 	;
