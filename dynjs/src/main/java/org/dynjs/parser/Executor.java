@@ -17,6 +17,7 @@
 package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
@@ -50,6 +51,8 @@ import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
+
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor implements Opcodes {
 
@@ -417,7 +420,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement propertyNameId(String id) {
-        return null;
+        return new StringLiteralStatement(id);
     }
 
     public Statement propertyNameString(String string) {
@@ -428,8 +431,16 @@ public class Executor implements Opcodes {
         return null;
     }
 
-    public Statement namedValue(Statement propertyName, Statement expr) {
-        return null;
+    public Statement namedValue(final Statement propertyName, final Statement expr) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .append(propertyName.getCodeBlock())
+                        .append(expr.getCodeBlock())
+                        .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
+            }
+        };
     }
 
     public Statement arrayLiteral(List<Statement> exprs) {

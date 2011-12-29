@@ -211,7 +211,16 @@ public class DynJSTest {
         assertThat(context.getScope().resolve("result"))
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
+    }
 
+    @Test
+    public void testBasicObjectLiteral() {
+        dynJS.eval(context, "var x = {w:true}; var result = x;");
+        final Object result = context.getScope().resolve("result");
+        assertThat(result)
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+        assertThat(((DynObject) result).resolve("w")).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
     }
 
     private void check(String scriptlet) {
