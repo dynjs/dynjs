@@ -22,6 +22,7 @@ import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
 import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
+import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.RT;
 
@@ -40,8 +41,12 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
-            if(callSiteDescriptor.getNameToken(1).equals("call")){
+            if (callSiteDescriptor.getNameToken(1).equals("call")) {
                 targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
+            } else if (callSiteDescriptor.getNameToken(1).equals("getProp")) {
+                targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "resolve", MethodType.methodType(Object.class, String.class)), callSiteDescriptor.getMethodType());
+            } else if (callSiteDescriptor.getNameToken(1).equals("setProp")) {
+                targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "define", MethodType.methodType(void.class, String.class, Object.class)), callSiteDescriptor.getMethodType());
             }
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
@@ -72,7 +77,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     }
 
     private boolean isFromDynalink(CallSiteDescriptor callSiteDescriptor) {
-        return callSiteDescriptor.getNameTokenCount() == 2 && callSiteDescriptor.getNameToken(0).equals("dyn");
+        return callSiteDescriptor.getNameTokenCount() > 1 && callSiteDescriptor.getNameToken(0).equals("dyn");
     }
 
     @Override
