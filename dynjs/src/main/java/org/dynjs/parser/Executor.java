@@ -34,6 +34,7 @@ import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NotOperationStatement;
 import org.dynjs.parser.statement.NullLiteralStatement;
 import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.ObjectLiteralStatement;
 import org.dynjs.parser.statement.OperationAssignmentStatement;
 import org.dynjs.parser.statement.PostDecrementStatement;
 import org.dynjs.parser.statement.PostIncrementStatement;
@@ -412,7 +413,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement objectValue(List<Statement> namedValues) {
-        return null;
+        return new ObjectLiteralStatement(namedValues);
     }
 
     public Statement propertyNameId(String id) {

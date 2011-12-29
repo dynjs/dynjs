@@ -205,6 +205,15 @@ public class DynJSTest {
         check("var result = true && true;", true);
     }
 
+    @Test
+    public void testObjectLiterals() {
+        dynJS.eval(context, "var result = {};");
+        assertThat(context.getScope().resolve("result"))
+                .isNotNull()
+                .isInstanceOf(DynObject.class);
+
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }
