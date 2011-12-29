@@ -20,10 +20,13 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FunctionFactory implements Function {
 
     private final Class<Function> clazz;
+    private final Map<String, Object> scope = new HashMap<String, Object>();
 
     public FunctionFactory(Class<Function> clazz) {
         this.clazz = clazz;
@@ -37,6 +40,9 @@ public class FunctionFactory implements Function {
     public Object call(DynThreadContext context, Object[] arguments) {
         Function function = instantiate();
         RT.paramPopulator((DynFunction) function, arguments);
+        for (Map.Entry<String, Object> entry : scope.entrySet()) {
+            function.define(entry.getKey(), entry.getValue());
+        }
         Deque<Function> callStack = context.getCallStack();
         callStack.push(function);
         Object result = function.call(context, arguments);
@@ -60,11 +66,12 @@ public class FunctionFactory implements Function {
 
     @Override
     public Object resolve(String name) {
-        return null;
+        return scope.get(name);
     }
 
     @Override
     public void define(String property, Object value) {
+        scope.put(property, value);
     }
 
 }
