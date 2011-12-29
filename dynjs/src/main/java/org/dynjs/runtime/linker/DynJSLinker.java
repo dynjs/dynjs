@@ -39,6 +39,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
+        } else if (isFromDynalink(callSiteDescriptor)) {
+            if(callSiteDescriptor.getNameToken(1).equals("call")){
+                targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
+            }
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
             String subsystem = callSiteDescriptor.getNameToken(1);
@@ -48,14 +52,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         targetHandle = RT.SCOPE_RESOLVE;
                         break;
                     }
-                    default:
-                        throw new IllegalArgumentException("should not reach here");
-                }
-            } else if (subsystem.equals("runtime")) {
-                switch (action) {
-                    case "call":
-                        targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
-                        break;
                     default:
                         throw new IllegalArgumentException("should not reach here");
                 }
@@ -73,6 +69,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         }
 
         return null;
+    }
+
+    private boolean isFromDynalink(CallSiteDescriptor callSiteDescriptor) {
+        return callSiteDescriptor.getNameTokenCount() == 2 && callSiteDescriptor.getNameToken(0).equals("dyn");
     }
 
     @Override
