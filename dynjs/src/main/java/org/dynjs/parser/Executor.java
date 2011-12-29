@@ -17,7 +17,6 @@
 package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
-import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
@@ -44,6 +43,7 @@ import org.dynjs.parser.statement.PreDecrementStatement;
 import org.dynjs.parser.statement.PreIncrementStatement;
 import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
+import org.dynjs.parser.statement.ResolveByFieldStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
@@ -329,15 +329,7 @@ public class Executor implements Opcodes {
     }
 
     public Statement resolveByField(final Statement lhs, final String field) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .append(lhs.getCodeBlock())
-                        .ldc(field)
-                        .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
-            }
-        };
+        return new ResolveByFieldStatement(lhs, field);
     }
 
     public Statement defineByIndex(Statement lhs, Statement index) {
