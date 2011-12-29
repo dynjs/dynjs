@@ -330,7 +330,7 @@ public class Executor implements Opcodes {
         return new ResolveByIndexStatement(lhs, field);
     }
 
-    public Statement defineByIndex(final Statement lhs, final Statement index) {
+    public Statement resolveByIndex(final Statement lhs, final Statement index) {
         return new ResolveByIndexStatement(lhs, index);
     }
 
