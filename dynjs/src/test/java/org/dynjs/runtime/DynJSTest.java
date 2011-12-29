@@ -206,7 +206,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testObjectLiterals() {
+    public void testEmptyObjectLiteral() {
         dynJS.eval(context, "var result = {};");
         assertThat(context.getScope().resolve("result"))
                 .isNotNull()
