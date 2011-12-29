@@ -22,7 +22,7 @@ public class DynalinkTest {
     }
 
     @Test
-    public void testGetPropVariableName() {
+    public void testGetPropNonConstantName() {
         dynJS.eval(context, "var x = {w:function(){return 1;}};");
         final Object x = context.getScope().resolve("x");
         final CodeBlock codeBlock = CodeBlock.newCodeBlock()
