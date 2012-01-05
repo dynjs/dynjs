@@ -10,7 +10,8 @@ import javax.script.ScriptEngineFactory;
 public class DynJSEngineFactory implements ScriptEngineFactory {
 
 	private static final List<String> EXTENSIONS = asList("js");
-	private static final List<String> MIME_TYPES = asList("application/x-javascript", "application/javascript", "application/ecmascript", "text/javascript", "text/ecmascript");
+	private static final List<String> MIME_TYPES = asList("application/x-javascript", "application/javascript", "application/ecmascript", "text/javascript",
+			"text/ecmascript");
 	private static final String ENGINE_NAME = "dynjs";
 	private static final List<String> ENGINE_NAMES = asList(ENGINE_NAME);
 
@@ -43,43 +44,37 @@ public class DynJSEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public String getLanguageName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getLanguageVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getParameter(String key) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getMethodCallSyntax(String obj, String m, String... args) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getOutputStatement(String toDisplay) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getProgram(String... statements) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ScriptEngine getScriptEngine() {
-		return new DynJSEngine();
+		return new DynJSEngine(this);
 	}
 
 }
