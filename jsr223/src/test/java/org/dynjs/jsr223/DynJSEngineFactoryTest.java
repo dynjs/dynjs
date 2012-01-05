@@ -10,7 +10,7 @@ import org.junit.Test;
 public class DynJSEngineFactoryTest {
 
 	@Test
-	public void test() {
+	public void should_discover_engine_factory() {
 		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 		ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("dynjs");
 		assertNotNull(scriptEngine);
