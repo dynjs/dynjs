@@ -9,6 +9,8 @@ import javax.script.ScriptEngineFactory;
 
 public class DynJSEngineFactory implements ScriptEngineFactory {
 
+	private static final List<String> EXTENSIONS = asList("js");
+	private static final List<String> MIME_TYPES = asList("application/x-javascript", "application/javascript", "application/ecmascript", "text/javascript", "text/ecmascript");
 	private static final String ENGINE_NAME = "dynjs";
 	private static final List<String> ENGINE_NAMES = asList(ENGINE_NAME);
 
@@ -26,14 +28,12 @@ public class DynJSEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public List<String> getExtensions() {
-		// TODO Auto-generated method stub
-		return null;
+		return EXTENSIONS;
 	}
 
 	@Override
 	public List<String> getMimeTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return MIME_TYPES;
 	}
 
 	@Override
