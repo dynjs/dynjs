@@ -21,6 +21,7 @@
 
     <modules>
         <module>dynjs</module>
+        <module>support</module>
     </modules>
 
     <build>
@@ -43,6 +44,31 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
              </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <header>org/dynjs/dynjs-license.txt</header>
+                    <excludes>
+                        <exclude>src/main/antlr3/**</exclude>
+                        <exclude>src/main/java/org/dynalang/**</exclude>
+                        <exclude>src/main/resources/org/dynjs/dynjs-license.txt</exclude>
+                    </excludes>
+                    <includes>
+                        <include>src/**</include>
+                    </includes>
+                    <strictCheck>true</strictCheck>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.dynjs</groupId>
+                        <artifactId>support</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 </project>
