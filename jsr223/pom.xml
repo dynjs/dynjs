@@ -26,9 +26,9 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>jsr223</artifactId>
+  <artifactId>dynjs-jsr223</artifactId>
 
-  <name>jsr223</name>
+  <name>dynjs-jsr223</name>
   
   <dependencies>
     <dependency>
