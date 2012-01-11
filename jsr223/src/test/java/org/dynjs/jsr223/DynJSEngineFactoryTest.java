@@ -16,11 +16,13 @@
  */
 package org.dynjs.jsr223;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.dynjs.runtime.DynThreadContext;
 import org.junit.Test;
 
 public class DynJSEngineFactoryTest {
@@ -31,13 +33,13 @@ public class DynJSEngineFactoryTest {
 		ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("dynjs");
 		assertNotNull(scriptEngine);
 	}
-	
+
 	@Test
-	public void should_discover_engine_factory1() throws Exception {
+	public void should_eval_script() throws Exception {
 		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 		ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("dynjs");
-		scriptEngine.eval("var a = 1;");
+		Object result = scriptEngine.eval("var a = 1;");
+		assertEquals(DynThreadContext.UNDEFINED, result);
 	}
-	
 
 }

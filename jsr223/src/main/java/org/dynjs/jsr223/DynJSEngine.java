@@ -31,26 +31,27 @@ import org.dynjs.runtime.DynThreadContext;
 final class DynJSEngine extends AbstractScriptEngine {
 
 	private final ScriptEngineFactory scriptEngineFactory;
+	private final DynJS dynJS;
+	private final DynThreadContext dynThreadContext;
 
 	public DynJSEngine(ScriptEngineFactory scriptEngineFactory) {
 		super();
+		dynJS = new DynJS();
+		dynThreadContext = new DynThreadContext();
+		dynThreadContext.setRuntime(dynJS);
 		this.scriptEngineFactory = scriptEngineFactory;
 	}
 
 	@Override
-	public Object eval(String script, ScriptContext context)
-			throws ScriptException {
-		DynJS dynJS = new DynJS();
-		dynJS.eval(new DynThreadContext(), script);
-		return null;
+	public Object eval(String script, ScriptContext context) throws ScriptException {
+		dynJS.eval(dynThreadContext, script);
+		return DynThreadContext.UNDEFINED;
 	}
 
 	@Override
-	public Object eval(Reader reader, ScriptContext context)
-			throws ScriptException {
-		DynJS dynJS = new DynJS();
-		dynJS.eval(new DynThreadContext(), new ReaderInputStream(reader));
-		return null;
+	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
+		dynJS.eval(dynThreadContext, new ReaderInputStream(reader));
+		return DynThreadContext.UNDEFINED;
 	}
 
 	@Override
