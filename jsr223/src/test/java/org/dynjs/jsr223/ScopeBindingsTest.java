@@ -16,31 +16,33 @@
  */
 package org.dynjs.jsr223;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.DynObject;
 import org.junit.Test;
 
-public class ScopBindingsTest {
+public class ScopeBindingsTest {
 
 	@Test
 	public void should_get_object_put() {
-		Scope scope = new DynObject();
-		ScopeBindings bindings = new ScopeBindings(scope);
+		ScopeBindings bindings = new ScopeBindings();
+		Scope scope = bindings.asScope();
 		Object object = bindings.put("a", "a");
 		assertNull(object);
 		assertEquals("a", scope.resolve("a"));
+		assertEquals("a", bindings.get("a"));
 	}
 
 	@Test
 	public void should_return_previously_put() {
-		Scope scope = new DynObject();
-		ScopeBindings bindings = new ScopeBindings(scope);
+		ScopeBindings bindings = new ScopeBindings();
+		Scope scope = bindings.asScope();
 		bindings.put("a", "a");
 		Object object = bindings.put("a", "b");
 		assertEquals("a", object);
 		assertEquals("b", scope.resolve("a"));
+		assertEquals("b", bindings.get("a"));
 	}
 
 }

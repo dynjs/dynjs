@@ -17,6 +17,7 @@
 package org.dynjs.jsr223;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,71 +27,108 @@ import org.dynjs.api.Scope;
 
 public class ScopeBindings implements Bindings {
 
-	private final Scope scope;
+	private final Map<String, Object> properties = new HashMap<>();
 
-	public ScopeBindings(Scope scope) {
-		this.scope = scope;
+	public ScopeBindings() {
 	}
 
 	@Override
 	public void clear() {
-
+		properties.clear();
 	}
 
 	@Override
-	public boolean containsValue(Object arg0) {
-		return false;
+	public boolean containsValue(Object value) {
+		return properties.containsValue(value);
 	}
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		return null;
+		return properties.entrySet();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+		return properties.isEmpty();
 	}
 
 	@Override
 	public Set<String> keySet() {
-		return null;
+		return properties.keySet();
 	}
 
 	@Override
 	public int size() {
-		return 0;
+		return properties.size();
 	}
 
 	@Override
 	public Collection<Object> values() {
-		return null;
+		return properties.values();
 	}
 
 	@Override
-	public boolean containsKey(Object arg0) {
-		return false;
+	public boolean containsKey(Object key) {
+		return properties.containsKey(key);
 	}
 
 	@Override
-	public Object get(Object arg0) {
-		return null;
+	public Object get(Object key) {
+		return properties.get(key);
 	}
 
 	@Override
-	public Object put(String name, Object arg1) {
-		Object oldValue = scope.resolve(name);
-		scope.define(name, arg1);
-		return oldValue;
+	public Object put(String key, Object value) {
+		return properties.put(key, value);
 	}
 
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> arg0) {
+		properties.putAll(arg0);
 	}
 
 	@Override
-	public Object remove(Object arg0) {
-		return null;
+	public Object remove(Object key) {
+		return properties.remove(key);
 	}
 
+	public Scope asScope() {
+		return new Scope() {
+
+			@Override
+			public Scope getEnclosingScope() {
+				return null;
+			}
+
+			@Override
+			public Object resolve(String name) {
+				return properties.get(name);
+			}
+
+			@Override
+			public void define(String property, Object value) {
+				properties.put(property, value);
+			}
+		};
+	}
+
+	public Scope asScope(final Scope enclosingScope) {
+		return new Scope() {
+
+			@Override
+			public Scope getEnclosingScope() {
+				return enclosingScope;
+			}
+
+			@Override
+			public Object resolve(String name) {
+				return properties.get(name);
+			}
+
+			@Override
+			public void define(String property, Object value) {
+				properties.put(property, value);
+			}
+		};
+	}
 }

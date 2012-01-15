@@ -26,20 +26,19 @@ import javax.script.ScriptEngineFactory;
 public class DynJSEngineFactory implements ScriptEngineFactory {
 
 	private static final List<String> EXTENSIONS = asList("js");
-	private static final List<String> MIME_TYPES = asList("application/x-javascript", "application/javascript", "application/ecmascript", "text/javascript",
-			"text/ecmascript");
+	private static final List<String> MIME_TYPES = asList(
+			"application/x-javascript", "application/javascript",
+			"application/ecmascript", "text/javascript", "text/ecmascript");
 	private static final String ENGINE_NAME = "dynjs";
 	private static final List<String> ENGINE_NAMES = asList(ENGINE_NAME);
 
 	@Override
 	public String getEngineName() {
-		// TODO Auto-generated method stub
 		return ENGINE_NAME;
 	}
 
 	@Override
 	public String getEngineVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
