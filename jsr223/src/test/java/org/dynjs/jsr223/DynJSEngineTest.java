@@ -26,24 +26,28 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.dynjs.runtime.DynThreadContext;
+import org.junit.Before;
 import org.junit.Test;
 
 public class DynJSEngineTest {
 
+	private ScriptEngineManager scriptEngineManager;
+	private ScriptEngine scriptEngine;
+
+	@Before
+	public void setUp() {
+		scriptEngineManager = new ScriptEngineManager();
+		scriptEngine = scriptEngineManager.getEngineByName("dynjs");
+	}
+
 	@Test
 	public void should_eval_script() throws Exception {
-		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-		ScriptEngine scriptEngine = scriptEngineManager
-				.getEngineByName("dynjs");
 		Object result = scriptEngine.eval("var a = 1;");
 		assertEquals(DynThreadContext.UNDEFINED, result);
 	}
 
 	@Test
 	public void should_eval_reader() throws Exception {
-		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-		ScriptEngine scriptEngine = scriptEngineManager
-				.getEngineByName("dynjs");
 		StringReader reader = new StringReader("var a = 1;");
 		Object result = scriptEngine.eval(reader);
 		assertEquals(DynThreadContext.UNDEFINED, result);
@@ -51,9 +55,6 @@ public class DynJSEngineTest {
 
 	@Test
 	public void should_create_not_null_bindings() {
-		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-		ScriptEngine scriptEngine = scriptEngineManager
-				.getEngineByName("dynjs");
 		Bindings bindings = scriptEngine.createBindings();
 		assertNotNull(bindings);
 	}
