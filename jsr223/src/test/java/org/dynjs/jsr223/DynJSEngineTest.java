@@ -61,12 +61,27 @@ public class DynJSEngineTest {
 	}
 
 	@Test
-	public void should_delegate_property_define_to_bindings() throws Exception {
+	public void should_delegate_property_define_to_bindings_for_script()
+			throws Exception {
 		Bindings bindings = scriptEngine.createBindings();
 		bindings.put("a", "a");
 		scriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
 		scriptEngine.eval("var b=a;");
+
+		assertEquals("a", bindings.get("b"));
+	}
+
+	@Test
+	public void should_delegate_property_define_to_bindings_for_reader()
+			throws Exception {
+		Bindings bindings = scriptEngine.createBindings();
+		bindings.put("a", "a");
+		scriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+
+		StringReader reader = new StringReader("var b=a;");
+
+		scriptEngine.eval(reader);
 
 		assertEquals("a", bindings.get("b"));
 	}

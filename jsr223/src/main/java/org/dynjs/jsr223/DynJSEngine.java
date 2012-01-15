@@ -47,26 +47,21 @@ public class DynJSEngine extends AbstractScriptEngine {
 	public Object eval(String script, ScriptContext context)
 			throws ScriptException {
 
-		Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
-
-		Scope scope;
-		if (bindings instanceof ScopeBindings) {
-			scope = ((ScopeBindings) bindings).asScope();
-		} else {
-			// wrap non DynJS bindings
-			scope = ScopeBindings.wrap(bindings).asScope();
-		}
-
-		dynThreadContext.setScope(scope);
+		setScope(context);
 
 		dynJS.eval(dynThreadContext, script);
+
 		return DynThreadContext.UNDEFINED;
 	}
 
 	@Override
 	public Object eval(Reader reader, ScriptContext context)
 			throws ScriptException {
+
+		setScope(context);
+
 		dynJS.eval(dynThreadContext, new ReaderInputStream(reader));
+
 		return DynThreadContext.UNDEFINED;
 	}
 
@@ -78,5 +73,19 @@ public class DynJSEngine extends AbstractScriptEngine {
 	@Override
 	public ScriptEngineFactory getFactory() {
 		return scriptEngineFactory;
+	}
+
+	private void setScope(ScriptContext context) {
+		Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
+
+		Scope scope;
+		if (bindings instanceof ScopeBindings) {
+			scope = ((ScopeBindings) bindings).asScope();
+		} else {
+			// wrap non DynJS bindings
+			scope = ScopeBindings.wrap(bindings).asScope();
+		}
+
+		dynThreadContext.setScope(scope);
 	}
 }
