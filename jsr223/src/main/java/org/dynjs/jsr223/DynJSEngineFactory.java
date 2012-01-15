@@ -31,62 +31,126 @@ public class DynJSEngineFactory implements ScriptEngineFactory {
 			"application/ecmascript", "text/javascript", "text/ecmascript");
 	private static final String ENGINE_NAME = "dynjs";
 	private static final List<String> ENGINE_NAMES = asList(ENGINE_NAME);
+	private static final String LANG_NAME = "ECMAScript";
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getEngineName()
+	 */
 	@Override
 	public String getEngineName() {
 		return ENGINE_NAME;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getEngineVersion()
+	 */
 	@Override
 	public String getEngineVersion() {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getExtensions()
+	 */
 	@Override
 	public List<String> getExtensions() {
 		return EXTENSIONS;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getMimeTypes()
+	 */
 	@Override
 	public List<String> getMimeTypes() {
 		return MIME_TYPES;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getNames()
+	 */
 	@Override
 	public List<String> getNames() {
 		return ENGINE_NAMES;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getLanguageName()
+	 */
 	@Override
 	public String getLanguageName() {
-		return null;
+		return LANG_NAME;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getLanguageVersion()
+	 */
 	@Override
 	public String getLanguageVersion() {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getParameter(java.lang.String)
+	 */
 	@Override
 	public Object getParameter(String key) {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.script.ScriptEngineFactory#getMethodCallSyntax(java.lang.String,
+	 * java.lang.String, java.lang.String[])
+	 */
 	@Override
 	public String getMethodCallSyntax(String obj, String m, String... args) {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.script.ScriptEngineFactory#getOutputStatement(java.lang.String)
+	 */
 	@Override
 	public String getOutputStatement(String toDisplay) {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getProgram(java.lang.String[])
+	 */
 	@Override
 	public String getProgram(String... statements) {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.script.ScriptEngineFactory#getScriptEngine()
+	 */
 	@Override
 	public ScriptEngine getScriptEngine() {
 		return new DynJSEngine(this);
