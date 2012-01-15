@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.StringReader;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -57,5 +58,16 @@ public class DynJSEngineTest {
 	public void should_create_not_null_bindings() {
 		Bindings bindings = scriptEngine.createBindings();
 		assertNotNull(bindings);
+	}
+
+	@Test
+	public void should_delegate_property_define_to_bindings() throws Exception {
+		Bindings bindings = scriptEngine.createBindings();
+		bindings.put("a", "a");
+		scriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+
+		scriptEngine.eval("var b=a;");
+
+		assertEquals("a", bindings.get("b"));
 	}
 }

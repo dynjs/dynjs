@@ -25,6 +25,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 
@@ -45,6 +46,19 @@ public class DynJSEngine extends AbstractScriptEngine {
 	@Override
 	public Object eval(String script, ScriptContext context)
 			throws ScriptException {
+
+		Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
+
+		Scope scope;
+		if (bindings instanceof ScopeBindings) {
+			scope = ((ScopeBindings) bindings).asScope();
+		} else {
+			// wrap non DynJS bindings
+			scope = ScopeBindings.wrap(bindings).asScope();
+		}
+
+		dynThreadContext.setScope(scope);
+
 		dynJS.eval(dynThreadContext, script);
 		return DynThreadContext.UNDEFINED;
 	}

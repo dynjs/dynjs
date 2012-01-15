@@ -27,9 +27,22 @@ import org.dynjs.api.Scope;
 
 public class ScopeBindings implements Bindings {
 
-	private final Map<String, Object> properties = new HashMap<>();
+	private final Map<String, Object> properties;
 
+	/**
+	 * Default constructor
+	 */
 	public ScopeBindings() {
+		properties = new HashMap<>();
+	}
+
+	/**
+	 * Used to wrap bindings
+	 * 
+	 * @param bindings
+	 */
+	private ScopeBindings(Bindings bindings) {
+		properties = bindings;
 	}
 
 	@Override
@@ -130,5 +143,9 @@ public class ScopeBindings implements Bindings {
 				properties.put(property, value);
 			}
 		};
+	}
+
+	public static ScopeBindings wrap(Bindings bindings) {
+		return new ScopeBindings(bindings);
 	}
 }
