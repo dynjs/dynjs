@@ -19,6 +19,7 @@ package org.dynjs.cli;
 import org.dynjs.DynJSVersion;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.kohsuke.args4j.CmdLineException;
@@ -59,6 +60,8 @@ public class Main {
                 showUsage();
             } else if (dynJsArguments.isConsole()) {
                 startRepl();
+            } else if (dynJsArguments.isConsole() && dynJsArguments.isDebug()){
+                startReplDebugMode();
             } else if (dynJsArguments.isVersion()) {
                 showVersion();
             } else if (!dynJsArguments.getFilename().isEmpty()) {
@@ -70,6 +73,11 @@ public class Main {
             stream.println();
             showUsage();
         }
+    }
+
+    private void startReplDebugMode() {
+        //TODO finish implementation
+        DynJSConfig.fromArguments(dynJsArguments);
     }
 
     private void executeFile(String filename) {
