@@ -16,6 +16,16 @@
  */
 package org.dynjs.runtime;
 
-
 public class DynJSConfig {
+
+    private boolean debug;
+
+    public void enableDebug() {
+        this.debug = true;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
 }

@@ -19,6 +19,7 @@ package org.dynjs.cli;
 import org.dynjs.DynJSVersion;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.kohsuke.args4j.CmdLineException;
@@ -33,7 +34,6 @@ public class Main {
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
-    private DynJS dynJS;
     private DynThreadContext context;
     private PrintStream stream;
 
@@ -42,7 +42,6 @@ public class Main {
         parser = new CmdLineParser(dynJsArguments);
         parser.setUsageWidth(80);
         arguments = args;
-        dynJS = new DynJS();
         context = new DynThreadContext();
         this.stream = stream;
     }
@@ -74,7 +73,8 @@ public class Main {
 
     private void executeFile(String filename) {
         try {
-            dynJS.eval(context, new FileInputStream(filename));
+            final DynJSConfig cfg = new DynJSConfig();
+            new DynJS(cfg).eval(context, new FileInputStream(filename));
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");
         }
@@ -85,16 +85,15 @@ public class Main {
     }
 
     private void startRepl() {
-        DynThreadContext threadContext = new DynThreadContext();
+        final DynJSConfig cfg = dynJsArguments.getDynJSConfig();
         Scope scope = new DynObject();
-        DynJS environment = new DynJS();
-
-        Repl repl = new Repl(environment, threadContext, scope, stream);
+        final DynJS environment = new DynJS(cfg);
+        Repl repl = new Repl(environment, context, scope, stream);
         repl.run();
     }
 
     private void showUsage() {
-        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console | --help | --version | FILE]\n");
+        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console |--debug | --help | --version |FILE]\n");
         usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
 
         stream.println(usageText.toString());

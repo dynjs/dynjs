@@ -38,15 +38,10 @@ import java.util.List;
 
 public class DynJS {
 
-    private final DynJSConfig config;
-    private final DynJSCompiler compiler = new DynJSCompiler();
+    private final DynJSCompiler compiler;
 
     public DynJS(DynJSConfig config) {
-        this.config = config;
-    }
-
-    public DynJS() {
-        this.config = new DynJSConfig();
+        compiler = new DynJSCompiler(config);
     }
 
     public void eval(DynThreadContext context, String expression) {

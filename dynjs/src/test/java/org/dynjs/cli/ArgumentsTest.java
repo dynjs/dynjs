@@ -22,9 +22,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ExampleMode;
 
-import static org.dynjs.cli.Arguments.CONSOLE;
-import static org.dynjs.cli.Arguments.HELP;
-import static org.dynjs.cli.Arguments.VERSION;
+import static org.dynjs.cli.Arguments.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ArgumentsTest {
@@ -56,6 +54,14 @@ public class ArgumentsTest {
 
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isConsole()).isTrue();
+    }
+
+    @Test
+    public void callWithDebugArgument() throws CmdLineException {
+        parser.parseArgument(new String[]{DEBUG});
+
+        assertThat(arguments.isEmpty()).isFalse();
+        assertThat(arguments.isDebug()).isTrue();
     }
 
     @Test
