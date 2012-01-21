@@ -19,6 +19,7 @@ package org.dynjs.cli;
 import org.dynjs.DynJSVersion;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.kohsuke.args4j.CmdLineException;
@@ -57,6 +58,8 @@ public class Main {
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
                 showUsage();
+            } else if (dynJsArguments.isConsole() && dynJsArguments.isDebug()){
+                startReplDebugMode();
             } else if (dynJsArguments.isConsole()) {
                 startRepl();
             } else if (dynJsArguments.isVersion()) {
@@ -70,6 +73,18 @@ public class Main {
             stream.println();
             showUsage();
         }
+    }
+
+    private void startReplDebugMode() {
+        //TODO we must think about refactoring here @see startRepl
+        DynJSConfig cfg = DynJSConfig.fromArguments(dynJsArguments);
+
+        DynThreadContext threadContext = new DynThreadContext();
+        Scope scope = new DynObject();
+        DynJS environment = new DynJS(cfg);
+
+        Repl repl = new Repl(environment, threadContext, scope, stream);
+        repl.run();
     }
 
     private void executeFile(String filename) {
@@ -94,7 +109,7 @@ public class Main {
     }
 
     private void showUsage() {
-        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console | --help | --version | FILE]\n");
+        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console |--debug | --help | --version |FILE]\n");
         usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
 
         stream.println(usageText.toString());

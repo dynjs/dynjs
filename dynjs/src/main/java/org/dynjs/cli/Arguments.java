@@ -26,6 +26,7 @@ public class Arguments {
     static final String CONSOLE = "--console";
     static final String HELP    = "--help";
     static final String VERSION = "--version";
+    static final String DEBUG = "--debug";
 
     @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
     private boolean console;
@@ -36,11 +37,14 @@ public class Arguments {
     @Option(name = VERSION, usage = "Shows current dyn.js version.")
     private boolean version;
 
+    @Option(name = DEBUG, usage = "Run REPL in debug mode.")
+    private boolean debug;
+
     @Argument(usage = "File to be executed by dyn.js", required = false, metaVar = "FILE")
     private List<String> arguments = new ArrayList<>();
 
     public boolean isEmpty() {
-        return !(console || help || version) && arguments.isEmpty();
+        return !(console || help || version || debug) && arguments.isEmpty();
     }
 
     public boolean isConsole() {
@@ -53,6 +57,10 @@ public class Arguments {
 
     public boolean isVersion() {
         return version;
+    }
+
+    public boolean isDebug(){
+        return debug;
     }
 
     public String getFilename() {
