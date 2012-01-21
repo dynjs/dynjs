@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class CodeBlocksTest {
 
-    private DynJSCompiler compiler = new DynJSCompiler();
+    private DynJSCompiler compiler = new DynJSCompiler(new DynJSConfig());
     private Scope scope = new DynObject();
     private DynThreadContext context = new DynThreadContext();
 

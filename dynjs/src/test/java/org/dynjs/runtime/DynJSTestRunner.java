@@ -34,7 +34,7 @@ import java.util.List;
 
 public class DynJSTestRunner extends Runner {
 
-    private DynJS dynJS = new DynJS();
+    private DynJS dynJS;
 
     private final Class<?> testClass;
     private List<String> files = new ArrayList<>();
@@ -42,6 +42,7 @@ public class DynJSTestRunner extends Runner {
     public DynJSTestRunner(Class<?> testClass) {
         this.testClass = testClass;
         init();
+        dynJS = new DynJS(new DynJSConfig());
     }
 
     @Override

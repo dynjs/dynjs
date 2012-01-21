@@ -20,6 +20,7 @@ import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.junit.Before;
@@ -35,7 +36,8 @@ public class DynJSCompilerTest {
 
     @Before
     public void setUp() throws Exception {
-        dynJSCompiler = new DynJSCompiler();
+        final DynJSConfig cfg = new DynJSConfig();
+        dynJSCompiler = new DynJSCompiler(cfg);
         context = new DynThreadContext();
         scope = new DynObject();
     }
