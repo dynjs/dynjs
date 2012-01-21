@@ -16,22 +16,14 @@
  */
 package org.dynjs.runtime;
 
-
-import org.dynjs.cli.Arguments;
-
 public class DynJSConfig {
 
     private boolean debug;
 
-    public static DynJSConfig fromArguments(Arguments arguments){
-        DynJSConfig cfg = new DynJSConfig();
-        cfg.enableDebug(arguments.isDebug());
-        return cfg;
+    public void enableDebug() {
+        this.debug = true;
     }
 
-    private void enableDebug(boolean debug) {
-        this.debug = debug;
-    }
     public boolean isDebug() {
         return debug;
     }
