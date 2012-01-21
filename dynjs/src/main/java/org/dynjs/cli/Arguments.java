@@ -34,13 +34,13 @@ public class Arguments {
     @Option(name = HELP, usage = "Shows current screen. Running without parameters also shows this.")
     private boolean help;
 
-    @Option(name = VERSION, usage = "Shows current dyn.js version.")
+    @Option(name = VERSION, usage = "Shows current dynjs version.")
     private boolean version;
 
     @Option(name = DEBUG, usage = "Run REPL in debug mode.")
     private boolean debug;
 
-    @Argument(usage = "File to be executed by dyn.js", required = false, metaVar = "FILE")
+    @Argument(usage = "File to be executed by dynjs", required = false, metaVar = "FILE")
     private List<String> arguments = new ArrayList<>();
 
     public boolean isEmpty() {
