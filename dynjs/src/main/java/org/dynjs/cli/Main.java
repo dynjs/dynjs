@@ -58,10 +58,10 @@ public class Main {
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
                 showUsage();
-            } else if (dynJsArguments.isConsole()) {
-                startRepl();
             } else if (dynJsArguments.isConsole() && dynJsArguments.isDebug()){
                 startReplDebugMode();
+            } else if (dynJsArguments.isConsole()) {
+                startRepl();
             } else if (dynJsArguments.isVersion()) {
                 showVersion();
             } else if (!dynJsArguments.getFilename().isEmpty()) {
@@ -76,8 +76,15 @@ public class Main {
     }
 
     private void startReplDebugMode() {
-        //TODO finish implementation
-        DynJSConfig.fromArguments(dynJsArguments);
+        //TODO we must think about refactoring here @see startRepl
+        DynJSConfig cfg = DynJSConfig.fromArguments(dynJsArguments);
+
+        DynThreadContext threadContext = new DynThreadContext();
+        Scope scope = new DynObject();
+        DynJS environment = new DynJS(cfg);
+
+        Repl repl = new Repl(environment, threadContext, scope, stream);
+        repl.run();
     }
 
     private void executeFile(String filename) {
@@ -102,7 +109,7 @@ public class Main {
     }
 
     private void showUsage() {
-        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console | --help | --version | FILE]\n");
+        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console |--debug | --help | --version |FILE]\n");
         usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
 
         stream.println(usageText.toString());
