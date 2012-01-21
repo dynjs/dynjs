@@ -44,7 +44,7 @@ public class DynJSCompiler {
 
     private static final AtomicInteger counter = new AtomicInteger(0);
     private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
-    private static final boolean DEBUG = false;
+    private boolean debug = false;
     private final DynamicClassLoader classLoader = new DynamicClassLoader();
 
     public Function compile(final DynFunction arg) {
@@ -115,10 +115,14 @@ public class DynJSCompiler {
         }
     }
 
+    public void enableDebug(boolean debug){
+        this.debug = debug;
+    }
+
     private Class<?> defineClass(JiteClass jiteClass) {
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
-        if (DEBUG) {
+        if (debug) {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
