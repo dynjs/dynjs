@@ -18,7 +18,6 @@ package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.antlr.runtime.tree.CommonTree;
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
@@ -55,7 +54,6 @@ import java.util.List;
 
 public class Executor implements Opcodes {
 
-    private DynJSCompiler compiler = new DynJSCompiler();
     private final DynThreadContext context;
 
     public Executor(DynThreadContext context) {
