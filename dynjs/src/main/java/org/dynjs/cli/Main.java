@@ -34,7 +34,6 @@ public class Main {
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
-    private DynJS dynJS;
     private DynThreadContext context;
     private PrintStream stream;
 
@@ -43,7 +42,6 @@ public class Main {
         parser = new CmdLineParser(dynJsArguments);
         parser.setUsageWidth(80);
         arguments = args;
-        dynJS = new DynJS();
         context = new DynThreadContext();
         this.stream = stream;
     }
@@ -58,8 +56,6 @@ public class Main {
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
                 showUsage();
-            } else if (dynJsArguments.isConsole() && dynJsArguments.isDebug()){
-                startReplDebugMode();
             } else if (dynJsArguments.isConsole()) {
                 startRepl();
             } else if (dynJsArguments.isVersion()) {
@@ -75,21 +71,10 @@ public class Main {
         }
     }
 
-    private void startReplDebugMode() {
-        //TODO we must think about refactoring here @see startRepl
-        DynJSConfig cfg = DynJSConfig.fromArguments(dynJsArguments);
-
-        DynThreadContext threadContext = new DynThreadContext();
-        Scope scope = new DynObject();
-        DynJS environment = new DynJS(cfg);
-
-        Repl repl = new Repl(environment, threadContext, scope, stream);
-        repl.run();
-    }
-
     private void executeFile(String filename) {
         try {
-            dynJS.eval(context, new FileInputStream(filename));
+            final DynJSConfig cfg = new DynJSConfig();
+            new DynJS(cfg).eval(context, new FileInputStream(filename));
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");
         }
@@ -100,11 +85,10 @@ public class Main {
     }
 
     private void startRepl() {
-        DynThreadContext threadContext = new DynThreadContext();
+        final DynJSConfig cfg = dynJsArguments.getDynJSConfig();
         Scope scope = new DynObject();
-        DynJS environment = new DynJS();
-
-        Repl repl = new Repl(environment, threadContext, scope, stream);
+        final DynJS environment = new DynJS(cfg);
+        Repl repl = new Repl(environment, context, scope, stream);
         repl.run();
     }
 
