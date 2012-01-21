@@ -24,8 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Arguments {
+
     static final String CONSOLE = "--console";
-    static final String HELP    = "--help";
+    static final String HELP = "--help";
     static final String VERSION = "--version";
     static final String DEBUG = "--debug";
 
@@ -68,7 +69,7 @@ public class Arguments {
         return version;
     }
 
-    public boolean isDebug(){
+    public boolean isDebug() {
         return debug;
     }
 
