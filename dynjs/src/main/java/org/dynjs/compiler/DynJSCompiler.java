@@ -26,6 +26,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.FunctionFactory;
@@ -44,8 +45,12 @@ public class DynJSCompiler {
 
     private static final AtomicInteger counter = new AtomicInteger(0);
     private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
-    private boolean debug = false;
     private final DynamicClassLoader classLoader = new DynamicClassLoader();
+    private final DynJSConfig config;
+
+    public DynJSCompiler(DynJSConfig config) {
+        this.config = config;
+    }
 
     public Function compile(final DynFunction arg) {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
@@ -115,14 +120,10 @@ public class DynJSCompiler {
         }
     }
 
-    public void enableDebug(boolean debug){
-        this.debug = debug;
-    }
-
     private Class<?> defineClass(JiteClass jiteClass) {
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
-        if (debug) {
+        if (config.isDebug()) {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
