@@ -36,6 +36,7 @@ import static java.lang.invoke.MethodHandles.lookup;
 public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverterFactory {
 
     public static final MethodHandle RESOLVE;
+    public static final MethodHandle DEFINE;
 
     static {
         try {
@@ -43,6 +44,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     .from(Object.class, Object.class, Object.class)
                     .convert(Object.class, Scope.class, String.class)
                     .invokeVirtual(lookup(), "resolve");
+            DEFINE = Binder
+                    .from(void.class, Object.class, Object.class, Object.class)
+                    .convert(void.class, Scope.class, String.class, Object.class)
+                    .invokeVirtual(lookup(), "define");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -61,7 +66,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             } else if (callSiteDescriptor.getNameToken(1).equals("getProp")) {
                 return new GuardedInvocation(RESOLVE, Guards.isInstance(Scope.class, RESOLVE.type()));
             } else if (callSiteDescriptor.getNameToken(1).equals("setProp")) {
-                targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "define", MethodType.methodType(void.class, String.class, Object.class)), callSiteDescriptor.getMethodType());
+                return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
             }
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
