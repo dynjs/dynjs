@@ -16,12 +16,14 @@
  */
 package org.dynjs.runtime.linker;
 
+import com.headius.invoke.binder.Binder;
 import org.dynalang.dynalink.linker.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
 import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
 import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
+import org.dynalang.dynalink.support.Guards;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.RT;
@@ -32,6 +34,19 @@ import java.lang.invoke.MethodType;
 import static java.lang.invoke.MethodHandles.lookup;
 
 public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverterFactory {
+
+    public static final MethodHandle RESOLVE;
+
+    static {
+        try {
+            RESOLVE = Binder
+                    .from(Object.class, Object.class, Object.class)
+                    .convert(Object.class, Scope.class, String.class)
+                    .invokeVirtual(lookup(), "resolve");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
@@ -44,7 +59,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             if (callSiteDescriptor.getNameToken(1).equals("call")) {
                 targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
             } else if (callSiteDescriptor.getNameToken(1).equals("getProp")) {
-                targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "resolve", MethodType.methodType(Object.class, String.class)), callSiteDescriptor.getMethodType());
+                return new GuardedInvocation(RESOLVE, Guards.isInstance(Scope.class, RESOLVE.type()));
             } else if (callSiteDescriptor.getNameToken(1).equals("setProp")) {
                 targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "define", MethodType.methodType(void.class, String.class, Object.class)), callSiteDescriptor.getMethodType());
             }
