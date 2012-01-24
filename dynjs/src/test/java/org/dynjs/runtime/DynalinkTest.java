@@ -98,4 +98,28 @@ public class DynalinkTest {
         assertThat(((Scope) x).resolve("o")).isNotNull().isEqualTo("any");
     }
 
+    @Test
+    public void testSetPropConstantName() {
+        dynJS.eval(context, "var x = {w:function(){return 1;}};");
+        final Object x = context.getScope().resolve("x");
+        final CodeBlock codeBlock = CodeBlock.newCodeBlock()
+                .aload(0)
+                .ldc("x")
+                .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
+                .ldc("any")
+                .invokedynamic("dyn:setProp:o", sig(void.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .aconst_null()
+                .areturn();
+        final Function fn = dynJS.compile(codeBlock, new String[]{});
+        fn.define("x", x);
+        final Object call = fn.call(context, new Object[]{});
+
+        assertThat(x)
+                .isNotNull()
+                .isInstanceOf(Scope.class);
+
+        assertThat(((Scope) x).resolve("o")).isNotNull().isEqualTo("any");
+    }
+
+
 }

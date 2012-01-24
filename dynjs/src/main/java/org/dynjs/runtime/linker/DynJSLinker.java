@@ -76,7 +76,17 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     return new GuardedInvocation(RESOLVE, Guards.isInstance(Scope.class, RESOLVE.type()));
                 }
             } else if ("setProp".equals(callSiteDescriptor.getNameToken(1))) {
-                return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
+                if (hasConstantCall(callSiteDescriptor)) {
+                    final MethodHandle handle = Binder
+                            .from(void.class, Object.class, Object.class)
+                            .convert(DEFINE.type())
+                            .insert(1, callSiteDescriptor.getNameToken(2))
+                            .invoke(DEFINE);
+                    return new GuardedInvocation(handle,
+                            Guards.isInstance(Scope.class, handle.type()));
+                } else {
+                    return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
+                }
             }
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
