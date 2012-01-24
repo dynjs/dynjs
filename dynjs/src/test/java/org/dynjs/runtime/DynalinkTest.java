@@ -57,6 +57,24 @@ public class DynalinkTest {
     }
 
     @Test
+    public void testGetPropConstantName() {
+        dynJS.eval(context, "var x = {w:function(){return 1;}};");
+        final Object x = context.getScope().resolve("x");
+        final CodeBlock codeBlock = CodeBlock.newCodeBlock()
+                .aload(0)
+                .ldc("x")
+                .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
+                .invokedynamic("dyn:getProp:w", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
+                .areturn();
+        final Function fn = dynJS.compile(codeBlock, new String[]{});
+        fn.define("x", x);
+        final Object call = fn.call(context, new Object[]{});
+        assertThat(call)
+                .isNotNull()
+                .isInstanceOf(Function.class);
+    }
+
+    @Test
     public void testSetPropNonConstantName() {
         dynJS.eval(context, "var x = {w:function(){return 1;}};");
         final Object x = context.getScope().resolve("x");
