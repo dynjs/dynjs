@@ -16,12 +16,14 @@
  */
 package org.dynjs.runtime.linker;
 
+import com.headius.invoke.binder.Binder;
 import org.dynalang.dynalink.linker.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
 import org.dynalang.dynalink.linker.GuardingDynamicLinker;
 import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
 import org.dynalang.dynalink.linker.LinkRequest;
 import org.dynalang.dynalink.linker.LinkerServices;
+import org.dynalang.dynalink.support.Guards;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.RT;
@@ -33,6 +35,24 @@ import static java.lang.invoke.MethodHandles.lookup;
 
 public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverterFactory {
 
+    public static final MethodHandle RESOLVE;
+    public static final MethodHandle DEFINE;
+
+    static {
+        try {
+            RESOLVE = Binder
+                    .from(Object.class, Object.class, Object.class)
+                    .convert(Object.class, Scope.class, String.class)
+                    .invokeVirtual(lookup(), "resolve");
+            DEFINE = Binder
+                    .from(void.class, Object.class, Object.class, Object.class)
+                    .convert(void.class, Scope.class, String.class, Object.class)
+                    .invokeVirtual(lookup(), "define");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
         CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
@@ -43,10 +63,30 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         } else if (isFromDynalink(callSiteDescriptor)) {
             if (callSiteDescriptor.getNameToken(1).equals("call")) {
                 targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
-            } else if (callSiteDescriptor.getNameToken(1).equals("getProp")) {
-                targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "resolve", MethodType.methodType(Object.class, String.class)), callSiteDescriptor.getMethodType());
-            } else if (callSiteDescriptor.getNameToken(1).equals("setProp")) {
-                targetHandle = linkerServices.asType(lookup().findVirtual(Scope.class, "define", MethodType.methodType(void.class, String.class, Object.class)), callSiteDescriptor.getMethodType());
+            } else if ("getProp".equals(callSiteDescriptor.getNameToken(1))) {
+                if (hasConstantCall(callSiteDescriptor)) {
+                    final MethodHandle handle = Binder
+                            .from(Object.class, Object.class)
+                            .convert(RESOLVE.type())
+                            .insert(1, callSiteDescriptor.getNameToken(2))
+                            .invoke(RESOLVE);
+                    return new GuardedInvocation(handle,
+                            Guards.isInstance(Scope.class, handle.type()));
+                } else {
+                    return new GuardedInvocation(RESOLVE, Guards.isInstance(Scope.class, RESOLVE.type()));
+                }
+            } else if ("setProp".equals(callSiteDescriptor.getNameToken(1))) {
+                if (hasConstantCall(callSiteDescriptor)) {
+                    final MethodHandle handle = Binder
+                            .from(void.class, Object.class, Object.class)
+                            .convert(DEFINE.type())
+                            .insert(1, callSiteDescriptor.getNameToken(2))
+                            .invoke(DEFINE);
+                    return new GuardedInvocation(handle,
+                            Guards.isInstance(Scope.class, handle.type()));
+                } else {
+                    return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
+                }
             }
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
@@ -74,6 +114,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         }
 
         return null;
+    }
+
+    private boolean hasConstantCall(CallSiteDescriptor callSiteDescriptor) {
+        return callSiteDescriptor.getNameTokenCount() == 3;
     }
 
     private boolean isFromDynalink(CallSiteDescriptor callSiteDescriptor) {
