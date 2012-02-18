@@ -16,7 +16,7 @@
  */
 package org.dynjs.runtime.linker;
 
-import com.headius.invoke.binder.Binder;
+import com.headius.invokebinder.Binder;
 import org.dynalang.dynalink.linker.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
 import org.dynalang.dynalink.linker.GuardingDynamicLinker;
