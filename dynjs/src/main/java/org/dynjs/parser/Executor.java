@@ -18,6 +18,7 @@ package org.dynjs.parser;
 
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
@@ -432,8 +433,8 @@ public class Executor implements Opcodes {
         return new NamedValueStatement(propertyName, expr);
     }
 
-    public Statement arrayLiteral(List<Statement> exprs) {
-        return null;
+    public Statement arrayLiteral(final List<Statement> exprs) {
+        return new ArrayLiteralStatement(exprs);
     }
 
 }

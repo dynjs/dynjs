@@ -230,6 +230,11 @@ public class DynJSTest {
         check("var x = {'z':true}; var result = x['z'];", true);
     }
 
+    @Test
+    public void testLiteralArray() {
+        check("var x = [1,2,3]; var result = true", true);
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }
