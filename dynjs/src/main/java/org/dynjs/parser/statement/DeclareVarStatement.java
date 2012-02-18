@@ -19,6 +19,7 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -40,6 +41,6 @@ public class DeclareVarStatement implements Statement {
                 .aload(DynJSCompiler.Arities.THIS)
                 .ldc(id)
                 .aload(3)
-                .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
+                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 }

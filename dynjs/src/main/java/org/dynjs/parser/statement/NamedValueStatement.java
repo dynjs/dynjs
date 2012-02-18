@@ -19,6 +19,7 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -37,6 +38,6 @@ public class NamedValueStatement implements Statement {
         return CodeBlock.newCodeBlock()
                 .append(propertyName.getCodeBlock())
                 .append(expr.getCodeBlock())
-                .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class));
+                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 }
