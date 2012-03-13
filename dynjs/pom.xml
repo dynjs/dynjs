@@ -82,16 +82,19 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r07</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.dynalang</groupId>
             <artifactId>dynalink</artifactId>
             <version>0.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.headius</groupId>
             <artifactId>invokebinder</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -100,6 +103,7 @@
             <groupId>args4j</groupId>
             <artifactId>args4j</artifactId>
             <version>2.0.16</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- antlr parser dependencies -->
@@ -107,6 +111,7 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.3</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- test dependencies -->
