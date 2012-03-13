@@ -17,12 +17,7 @@
 package org.dynjs.runtime.linker;
 
 import com.headius.invokebinder.Binder;
-import org.dynalang.dynalink.linker.CallSiteDescriptor;
-import org.dynalang.dynalink.linker.GuardedInvocation;
-import org.dynalang.dynalink.linker.GuardingDynamicLinker;
-import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
-import org.dynalang.dynalink.linker.LinkRequest;
-import org.dynalang.dynalink.linker.LinkerServices;
+import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
@@ -91,16 +86,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
             String subsystem = callSiteDescriptor.getNameToken(1);
-            if (subsystem.equals("scope")) {
-                switch (action) {
-                    case "resolve": {
-                        targetHandle = RT.SCOPE_RESOLVE;
-                        break;
-                    }
-                    default:
-                        throw new IllegalArgumentException("should not reach here");
-                }
-            } else if (subsystem.equals("convert")) {
+            if (subsystem.equals("convert")) {
                 switch (action) {
                     case "to_boolean":
                         targetHandle = Converters.toBoolean;

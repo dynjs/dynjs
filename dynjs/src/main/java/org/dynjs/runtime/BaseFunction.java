@@ -21,4 +21,7 @@ import org.dynjs.api.Scope;
 
 public abstract class BaseFunction extends DynObject implements Function, Scope {
 
+    @Override
+    public void setContext(DynThreadContext context) {
+    }
 }
