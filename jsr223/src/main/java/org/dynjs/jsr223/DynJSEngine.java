@@ -27,6 +27,7 @@ import javax.script.ScriptException;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynThreadContext;
 
 public class DynJSEngine extends AbstractScriptEngine {
@@ -34,10 +35,11 @@ public class DynJSEngine extends AbstractScriptEngine {
 	private final ScriptEngineFactory scriptEngineFactory;
 	private final DynJS dynJS;
 	private final DynThreadContext dynThreadContext;
+    private final DynJSConfig config;
 
-	public DynJSEngine(ScriptEngineFactory scriptEngineFactory) {
-		super();
-		dynJS = new DynJS();
+    public DynJSEngine(ScriptEngineFactory scriptEngineFactory) {
+        config = new DynJSConfig();
+        dynJS = new DynJS(config);
 		dynThreadContext = new DynThreadContext();
 		dynThreadContext.setRuntime(dynJS);
 		this.scriptEngineFactory = scriptEngineFactory;
