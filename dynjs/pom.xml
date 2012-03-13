@@ -105,11 +105,6 @@
         <!-- antlr parser dependencies -->
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>stringtemplate</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.3</version>
         </dependency>
