@@ -17,6 +17,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
+import org.dynjs.exception.ReferenceError;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +36,15 @@ public class DynObject implements Scope {
     }
 
     public DynProperty getProperty(String key) {
-        if (this.properties.containsKey(key)) {
+        if (hasOwnProperty(key)) {
             return this.properties.get(key);
         } else {
             throw new IllegalStateException();
         }
+    }
+
+    protected boolean hasOwnProperty(String key) {
+        return this.properties.containsKey(key);
     }
 
     @Override
@@ -53,12 +58,12 @@ public class DynObject implements Scope {
 
     @Override
     public Object resolve(String name) {
-        if (this.properties.containsKey(name)) {
+        if (hasOwnProperty(name)) {
             return this.properties.get(name).getAttribute("value");
         } else if (getEnclosingScope() != null) {
             return getEnclosingScope().resolve(name);
         }
-        return null;
+        throw new ReferenceError();
     }
 
     @Override

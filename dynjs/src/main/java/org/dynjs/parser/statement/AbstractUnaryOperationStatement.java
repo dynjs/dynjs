@@ -46,7 +46,7 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
                 .swap()
                 .ldc(resolvable.getName())
                 .swap()
-                .invokeinterface(DynJSCompiler.Types.Scope, "define", sig(void.class, String.class, Object.class))
+                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .aload(4);
     }
 

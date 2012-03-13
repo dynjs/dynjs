@@ -22,4 +22,5 @@ public interface Function extends Scope {
 
     public Object call(DynThreadContext context, Object[] arguments);
 
+    void setContext(DynThreadContext context);
 }

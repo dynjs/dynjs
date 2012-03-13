@@ -37,10 +37,9 @@ public class ResolveIdentifierStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         return newCodeBlock()
-                .aload(DynJSCompiler.Arities.CONTEXT)
                 .aload(DynJSCompiler.Arities.THIS)
                 .ldc(name)
-                .invokedynamic("dynjs:scope:resolve", sig(Object.class, DynThreadContext.class, Scope.class, String.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                .invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 
     public String getName() {

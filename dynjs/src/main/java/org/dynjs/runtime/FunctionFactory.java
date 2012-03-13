@@ -39,6 +39,7 @@ public class FunctionFactory implements Function {
     @Override
     public Object call(DynThreadContext context, Object[] arguments) {
         Function function = instantiate();
+        function.setContext(context);
         RT.paramPopulator((DynFunction) function, arguments);
         for (Map.Entry<String, Object> entry : scope.entrySet()) {
             function.define(entry.getKey(), entry.getValue());
@@ -48,6 +49,11 @@ public class FunctionFactory implements Function {
         Object result = function.call(context, arguments);
         callStack.pop();
         return result;
+    }
+
+    @Override
+    public void setContext(DynThreadContext context) {
+
     }
 
     private Function instantiate() {

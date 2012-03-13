@@ -20,8 +20,6 @@ import me.qmx.internal.org.objectweb.asm.Handle;
 import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
-import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 import java.lang.invoke.CallSite;
@@ -40,13 +38,10 @@ public class RT {
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
     public static final MethodHandle FUNCTION_CALL;
-    public static final MethodHandle SCOPE_RESOLVE;
 
     static {
         MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
         FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-        MethodType scopeResolveMethodType = methodType(Object.class, DynThreadContext.class, Scope.class, String.class);
-        SCOPE_RESOLVE = Lookup.PUBLIC.findStatic(RT.class, "scopeResolve", scopeResolveMethodType);
     }
 
     public static DynFunction paramPopulator(DynFunction function, Object[] args) {
@@ -59,25 +54,6 @@ public class RT {
         }
         // function.define("arguments", args); TODO
         return function;
-    }
-
-    public static Object scopeResolve(DynThreadContext context, Scope scope, String id) {
-        Object atom = scope.resolve(id);
-        if (atom == null) {
-            for (Function callee : context.getCallStack()) {
-                atom = callee.resolve(id);
-                if (atom != null) {
-                    break;
-                }
-            }
-        }
-        if (atom == null) {
-            atom = context.getScope().resolve(id);
-        }
-        if (atom == null) {
-            throw new ReferenceError();
-        }
-        return atom;
     }
 
 }
