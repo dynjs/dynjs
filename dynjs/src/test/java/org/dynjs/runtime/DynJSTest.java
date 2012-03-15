@@ -232,7 +232,7 @@ public class DynJSTest {
 
     @Test
     public void testLiteralArray() {
-        check("var x = [1,2,3]; var result = true", true);
+        check("var x = [1,2,3]; var result = x[0] == 1", true);
     }
 
     private void check(String scriptlet) {
