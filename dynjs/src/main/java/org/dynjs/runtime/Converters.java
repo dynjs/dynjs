@@ -27,9 +27,11 @@ import static java.lang.invoke.MethodType.methodType;
 public class Converters {
 
     public static final MethodHandle toBoolean;
+    public static final MethodHandle toInteger;
 
     static {
         toBoolean = Lookup.PUBLIC.findStatic(Converters.class, "toBoolean", methodType(Boolean.class, Object.class));
+        toInteger = Lookup.PUBLIC.findStatic(Converters.class, "toInteger", methodType(Integer.class, Double.class));
     }
 
     public static final GuardedInvocation Guarded_toBoolean = new GuardedInvocation(toBoolean,
@@ -37,6 +39,10 @@ public class Converters {
 
     public static Boolean toBoolean(Object value) {
         return DynObject.toBoolean(value);
+    }
+
+    public static Integer toInteger(Double value) {
+        return value.intValue();
     }
 
 }

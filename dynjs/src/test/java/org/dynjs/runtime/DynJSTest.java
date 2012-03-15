@@ -30,7 +30,9 @@ public class DynJSTest {
 
     @Before
     public void setUp() {
-        dynJS = new DynJS(new DynJSConfig());
+        DynJSConfig config = new DynJSConfig();
+//        config.enableDebug();
+        dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
 
@@ -228,6 +230,13 @@ public class DynJSTest {
         check("var x = {w:true}; var result = x.w;", true);
         check("var x = {'y':false}; var result = x.y;", false);
         check("var x = {'z':true}; var result = x['z'];", true);
+    }
+
+    @Test
+    public void testLiteralArray() {
+        check("var x = [1,2,3]; var result = x[0] == 1", true);
+        check("var x = [1]; x[0] = 2; var result = x[0] == 2", true);
+        check("var x = [1,2]; x[0] = 4; x[1]= 3; var result = x[0] == 4 && x[1] == 3", true);
     }
 
     private void check(String scriptlet) {

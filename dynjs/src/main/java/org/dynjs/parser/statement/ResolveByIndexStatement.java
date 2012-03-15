@@ -19,6 +19,7 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -38,9 +39,21 @@ public class ResolveByIndexStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
-        .append(lhs.getCodeBlock())
-        .append(index.getCodeBlock())
-        .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
+        CodeBlock codeBlock = CodeBlock.newCodeBlock()
+                .append(lhs.getCodeBlock())
+                .append(index.getCodeBlock());
+        if(index instanceof NumberLiteralStatement){
+            return codeBlock.invokedynamic("dyn:getElement", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        } else {
+            return codeBlock.invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }
+    }
+
+    public Statement getLhs() {
+        return lhs;
+    }
+
+    public Statement getIndex() {
+        return index;
     }
 }
