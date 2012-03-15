@@ -20,7 +20,11 @@ public class DynArray {
     private Object[] array;
 
     public DynArray() {
-        this.array = new Object[DEFAULT_ARRAY_SIZE];
+        this(DEFAULT_ARRAY_SIZE);
+    }
+
+    public DynArray(int size) {
+        this.array = new Object[size];
         fillUndefinedArray(this.array, 0, this.array.length);
     }
 
