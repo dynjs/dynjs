@@ -48,4 +48,12 @@ public class ResolveByIndexStatement implements Statement {
             return codeBlock.invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }
     }
+
+    public Statement getLhs() {
+        return lhs;
+    }
+
+    public Statement getIndex() {
+        return index;
+    }
 }

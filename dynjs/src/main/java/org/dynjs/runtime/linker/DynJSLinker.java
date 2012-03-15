@@ -34,6 +34,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     public static final MethodHandle RESOLVE;
     public static final MethodHandle DEFINE;
     public static final MethodHandle GETELEMENT;
+    public static final MethodHandle SETELEMENT;
 
     static {
         try {
@@ -50,6 +51,11 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     .filter(1, Converters.toInteger)
                     .convert(Object.class, List.class, int.class)
                     .invokeVirtual(lookup(), "get");
+            SETELEMENT = Binder
+                    .from(void.class, Object.class, Object.class, Object.class)
+                    .filter(1, Converters.toInteger)
+                    .convert(Object.class, List.class, int.class, Object.class)
+                    .invokeVirtual(lookup(), "set");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -71,6 +77,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                 return handleSetProp(callSiteDescriptor);
             } else if ("getElement".equals(callSiteDescriptor.getNameToken(1))) {
                 return handleGetElement(callSiteDescriptor);
+            } else if ("setElement".equals(callSiteDescriptor.getNameToken(1))) {
+                return handleSetElement(callSiteDescriptor);
             }
         } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
             String action = callSiteDescriptor.getNameToken(2);
@@ -93,6 +101,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
 
     private GuardedInvocation handleGetElement(CallSiteDescriptor callSiteDescriptor) {
         return new GuardedInvocation(GETELEMENT, Guards.isInstance(Scope.class, GETELEMENT.type()));
+    }
+
+    private GuardedInvocation handleSetElement(CallSiteDescriptor callSiteDescriptor) {
+        return new GuardedInvocation(SETELEMENT, Guards.isInstance(Scope.class, SETELEMENT.type()));
     }
 
     private GuardedInvocation handleGetProp(CallSiteDescriptor callSiteDescriptor) {
