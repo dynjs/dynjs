@@ -30,7 +30,9 @@ public class DynJSTest {
 
     @Before
     public void setUp() {
-        dynJS = new DynJS(new DynJSConfig());
+        DynJSConfig config = new DynJSConfig();
+//        config.enableDebug();
+        dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
 
