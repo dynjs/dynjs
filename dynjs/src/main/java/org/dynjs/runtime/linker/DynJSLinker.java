@@ -21,6 +21,7 @@ import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
+import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.RT;
 
 import java.lang.invoke.MethodHandle;
@@ -49,12 +50,12 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             GETELEMENT = Binder
                     .from(Object.class, Object.class, Object.class)
                     .filter(1, Converters.toInteger)
-                    .convert(Object.class, List.class, int.class)
+                    .convert(Object.class, DynArray.class, int.class)
                     .invokeVirtual(lookup(), "get");
             SETELEMENT = Binder
                     .from(void.class, Object.class, Object.class, Object.class)
                     .filter(1, Converters.toInteger)
-                    .convert(Object.class, List.class, int.class, Object.class)
+                    .convert(void.class, DynArray.class, int.class, Object.class)
                     .invokeVirtual(lookup(), "set");
         } catch (Exception e) {
             throw new RuntimeException(e);

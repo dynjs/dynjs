@@ -18,8 +18,8 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynArray;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
@@ -36,17 +36,19 @@ public class ArrayLiteralStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         CodeBlock codeBlock = newCodeBlock()
-                .newobj(p(ArrayList.class))
+                .newobj(p(DynArray.class))
                 .dup()
                 .pushInt(exprs.size())
-                .invokespecial(p(ArrayList.class), "<init>", sig(void.class, int.class))
+                .invokespecial(p(DynArray.class), "<init>", sig(void.class, int.class))
                 .astore(4);
-
-        for (Statement expr : exprs) {
+        Statement[] statements = exprs.toArray(new Statement[]{});
+        for (int i = 0; i < statements.length; i++) {
+            Statement statement = statements[i];
             codeBlock = codeBlock
                     .aload(4)
-                    .append(expr.getCodeBlock())
-                    .invokevirtual(p(ArrayList.class), "add", sig(boolean.class, Object.class));
+                    .pushInt(i)
+                    .append(statement.getCodeBlock())
+                    .invokevirtual(p(DynArray.class), "set", sig(void.class, int.class, Object.class));
 
         }
         return codeBlock
