@@ -67,6 +67,8 @@ public class Repl {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            stream.close();
         }
     }
 
