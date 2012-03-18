@@ -2,4 +2,4 @@
 if [ ! -f dynjs/target/dynjs-all.jar ]; then
 	mvn clean package
 fi
-java -jar dynjs/target/dynjs-all.jar $1 $2
+java -jar dynjs/target/dynjs-all.jar --console $*
