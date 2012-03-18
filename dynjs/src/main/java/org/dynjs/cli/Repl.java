@@ -45,7 +45,7 @@ public class Repl {
             String NEW_LINE = System.getProperty("line.separator");
             StringBuilder consoleHello = new StringBuilder();
             consoleHello.append(NEW_LINE)
-                    .append("dyn.js console.")
+                    .append("dynjs console.")
                     .append(NEW_LINE)
                     .append("Type exit and press ENTER to leave.")
                     .append(NEW_LINE);
