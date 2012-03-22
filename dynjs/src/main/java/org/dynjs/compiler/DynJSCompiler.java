@@ -16,21 +16,15 @@
  */
 package org.dynjs.compiler;
 
-import me.qmx.internal.org.objectweb.asm.ClassReader;
-import me.qmx.internal.org.objectweb.asm.util.CheckClassAdapter;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynFunction;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynJSConfig;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.DynamicClassLoader;
-import org.dynjs.runtime.FunctionFactory;
-import org.dynjs.runtime.Script;
+import org.dynjs.runtime.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;

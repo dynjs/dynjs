@@ -16,9 +16,9 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
+import org.objectweb.asm.tree.LabelNode;
 
 import java.util.List;
 

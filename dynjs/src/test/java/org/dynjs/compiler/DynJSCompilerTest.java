@@ -16,7 +16,6 @@
  */
 package org.dynjs.compiler;
 
-import me.qmx.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
@@ -25,6 +24,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.objectweb.asm.tree.LabelNode;
 
 import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 

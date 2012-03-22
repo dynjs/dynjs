@@ -16,14 +16,13 @@
  */
 package org.dynjs.parser;
 
-import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.util.List;
 
-public class Executor implements Opcodes {
+public class Executor {
 
     private final DynThreadContext context;
 

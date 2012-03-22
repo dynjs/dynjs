@@ -16,11 +16,11 @@
  */
 package org.dynjs.runtime;
 
-import me.qmx.internal.org.objectweb.asm.Handle;
-import me.qmx.internal.org.objectweb.asm.Opcodes;
 import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Function;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Opcodes;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
