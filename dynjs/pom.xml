@@ -79,6 +79,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+          <groupId>asm</groupId>
+          <artifactId>asm-all</artifactId>
+          <version>3.3.1</version>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r07</version>
