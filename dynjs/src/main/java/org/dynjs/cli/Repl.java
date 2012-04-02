@@ -23,7 +23,9 @@ import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 public class Repl {
 
@@ -32,40 +34,42 @@ public class Repl {
             + "Type exit and press ENTER to leave."
             + System.lineSeparator();
     public static final String PROMPT = "dynjs> ";
-    private final DynJS environment;
+    private final DynJS dynJS;
     private final DynThreadContext context;
     private final Scope scope;
-    private PrintStream stream;
+    private final InputStream in;
+    private final OutputStream out;
 
-    public Repl(DynJS environment, DynThreadContext context, Scope scope, PrintStream stream) {
-        this.environment = environment;
+    public Repl(DynJS dynJS, DynThreadContext context, Scope scope, InputStream in, OutputStream out) {
+        this.dynJS = dynJS;
         this.context = context;
         this.scope = scope;
-        this.stream = stream;
+        this.in = in;
+        this.out = out;
     }
 
     public void run() {
+        ConsoleReader console = null;
         try {
-            stream.println(WELCOME_MESSAGE);
-            ConsoleReader reader = new ConsoleReader();
+            console = new ConsoleReader(in, out);
+            console.println(WELCOME_MESSAGE);
             String statement = null;
-            while ((statement = reader.readLine(PROMPT)) != null) {
+            while ((statement = console.readLine(PROMPT)) != null) {
                 if ("exit".equals(statement.trim())) {
                     return;
                 } else {
                     try {
-                        environment.eval(context, statement);
+                        dynJS.eval(context, statement);
                     } catch (DynJSException e) {
-                        stream.println(e.getClass().getSimpleName());
+                        console.println(e.getClass().getSimpleName());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        e.printStackTrace(new PrintWriter(out));
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            stream.close();
         }
+
     }
 }

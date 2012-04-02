@@ -88,7 +88,7 @@ public class Main {
         final DynJSConfig cfg = dynJsArguments.getDynJSConfig();
         Scope scope = new DynObject();
         final DynJS environment = new DynJS(cfg);
-        Repl repl = new Repl(environment, context, scope, stream);
+        Repl repl = new Repl(environment, context, scope, System.in, stream);
         repl.run();
     }
 
