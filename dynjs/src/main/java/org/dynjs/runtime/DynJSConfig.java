@@ -16,9 +16,15 @@
  */
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.loader.Builtin;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class DynJSConfig {
 
     private boolean debug;
+    private Set<Builtin> builtins = new LinkedHashSet<>();
 
     public void enableDebug() {
         this.debug = true;
@@ -28,4 +34,11 @@ public class DynJSConfig {
         return debug;
     }
 
+    public void addBuiltin(String bindingName, Object boundObject) {
+        builtins.add(new Builtin(bindingName, boundObject));
+    }
+
+    public Set<Builtin> getBuiltins() {
+        return builtins;
+    }
 }

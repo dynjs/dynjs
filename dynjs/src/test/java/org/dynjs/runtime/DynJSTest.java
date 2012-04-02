@@ -17,6 +17,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +28,11 @@ public class DynJSTest {
 
     private DynJS dynJS;
     private DynThreadContext context;
+    private DynJSConfig config;
 
     @Before
     public void setUp() {
-        DynJSConfig config = new DynJSConfig();
+        config = new DynJSConfig();
 //        config.enableDebug();
         dynJS = new DynJS(config);
         context = new DynThreadContext();
@@ -240,6 +242,12 @@ public class DynJSTest {
         check("var x = []; x[33] = 'lol'; var result = x[33] == 'lol';");
     }
 
+    @Test
+    public void testBuiltinLoading() {
+        config.addBuiltin("sample", new BypassFunction());
+        check("var result = sample(true);");
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }
@@ -250,4 +258,30 @@ public class DynJSTest {
         assertThat(result).isEqualTo(expected);
     }
 
+    private class BypassFunction implements Function{
+        @Override
+        public Object call(DynThreadContext context, Object[] arguments) {
+            return arguments[0];
+        }
+
+        @Override
+        public void setContext(DynThreadContext context) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public Scope getEnclosingScope() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public Object resolve(String name) {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public void define(String property, Object value) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }
 }
