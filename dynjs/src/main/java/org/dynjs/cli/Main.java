@@ -81,7 +81,7 @@ public class Main {
     }
 
     private void showVersion() {
-        stream.println("Dyn.JS version " + DynJSVersion.FULL);
+        stream.println("dynjs version " + DynJSVersion.FULL);
     }
 
     private void startRepl() {
