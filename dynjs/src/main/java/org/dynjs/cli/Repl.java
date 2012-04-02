@@ -16,18 +16,18 @@
  */
 package org.dynjs.cli;
 
+import jline.console.ConsoleReader;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 public class Repl {
 
+    public static final String PROMPT = "dynjs> ";
     private final DynJS environment;
     private final DynThreadContext context;
     private final Scope scope;
@@ -50,10 +50,10 @@ public class Repl {
                     .append("Type exit and press ENTER to leave.")
                     .append(NEW_LINE);
             stream.println(consoleHello.toString());
-            while (true) {
-                stream.print("> ");
-                String statement = input();
-                if (statement.equals("exit")) {
+            ConsoleReader reader = new ConsoleReader();
+            String statement = null;
+            while ((statement = reader.readLine(PROMPT)) != null) {
+                if ("exit".equals(statement.trim())) {
                     return;
                 } else {
                     try {
@@ -70,10 +70,5 @@ public class Repl {
         } finally {
             stream.close();
         }
-    }
-
-    private String input() throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        return in.readLine();
     }
 }
