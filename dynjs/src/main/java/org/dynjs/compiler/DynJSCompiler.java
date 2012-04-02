@@ -48,7 +48,7 @@ public class DynJSCompiler {
 
     public Function compile(final DynFunction arg) {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
-        JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
+        JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class), p(Scope.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
                     newCodeBlock()
                             .aload(0)

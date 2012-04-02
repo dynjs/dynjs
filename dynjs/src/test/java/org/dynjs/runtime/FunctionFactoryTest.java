@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,8 +46,8 @@ public class FunctionFactoryTest {
                 .areturn();
         final Function function = dynJS.compile(codeBlock, new String[]{});
         final Object x = new Object();
-        function.define("x", x);
-        assertThat(function.resolve("x")).isNotNull().isSameAs(x);
+        ((Scope) function).define("x", x);
+        assertThat(((Scope) function).resolve("x")).isNotNull().isSameAs(x);
         assertThat(function.call(context, new Object[]{})).isSameAs(x);
     }
 

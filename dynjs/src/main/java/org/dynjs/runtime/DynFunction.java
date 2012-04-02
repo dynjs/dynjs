@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 
 import java.util.Arrays;
@@ -70,7 +71,7 @@ public abstract class DynFunction extends DynObject {
                 if (callee == this) {
                     break;
                 }
-                atom = callee.resolve(name);
+                atom = ((Scope) callee).resolve(name);
                 if (atom != null) {
                     break;
                 }

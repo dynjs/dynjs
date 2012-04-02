@@ -49,7 +49,7 @@ public class DynalinkTest {
                 .invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .areturn();
         final Function fn = dynJS.compile(codeBlock, new String[]{});
-        fn.define("x", x);
+        ((Scope) fn).define("x", x);
         final Object call = fn.call(context, new Object[]{});
         assertThat(call)
                 .isNotNull()
@@ -67,7 +67,7 @@ public class DynalinkTest {
                 .invokedynamic("dyn:getProp:w", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .areturn();
         final Function fn = dynJS.compile(codeBlock, new String[]{});
-        fn.define("x", x);
+        ((Scope) fn).define("x", x);
         final Object call = fn.call(context, new Object[]{});
         assertThat(call)
                 .isNotNull()
@@ -88,7 +88,7 @@ public class DynalinkTest {
                 .aconst_null()
                 .areturn();
         final Function fn = dynJS.compile(codeBlock, new String[]{});
-        fn.define("x", x);
+        ((Scope) fn).define("x", x);
         final Object call = fn.call(context, new Object[]{});
 
         assertThat(x)
@@ -111,7 +111,7 @@ public class DynalinkTest {
                 .aconst_null()
                 .areturn();
         final Function fn = dynJS.compile(codeBlock, new String[]{});
-        fn.define("x", x);
+        ((Scope) fn).define("x", x);
         final Object call = fn.call(context, new Object[]{});
 
         assertThat(x)
@@ -120,6 +120,5 @@ public class DynalinkTest {
 
         assertThat(((Scope) x).resolve("o")).isNotNull().isEqualTo("any");
     }
-
 
 }

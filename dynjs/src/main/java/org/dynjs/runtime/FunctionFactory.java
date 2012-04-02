@@ -42,7 +42,7 @@ public class FunctionFactory implements Function {
         function.setContext(context);
         RT.paramPopulator((DynFunction) function, arguments);
         for (Map.Entry<String, Object> entry : scope.entrySet()) {
-            function.define(entry.getKey(), entry.getValue());
+            ((Scope) function).define(entry.getKey(), entry.getValue());
         }
         Deque<Function> callStack = context.getCallStack();
         callStack.push(function);
@@ -63,21 +63,6 @@ public class FunctionFactory implements Function {
             e.printStackTrace();
             throw new IllegalStateException(e);
         }
-    }
-
-    @Override
-    public Scope getEnclosingScope() {
-        return null;
-    }
-
-    @Override
-    public Object resolve(String name) {
-        return scope.get(name);
-    }
-
-    @Override
-    public void define(String property, Object value) {
-        scope.put(property, value);
     }
 
 }
