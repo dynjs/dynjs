@@ -27,6 +27,10 @@ import java.io.PrintStream;
 
 public class Repl {
 
+    public static final String WELCOME_MESSAGE = "dynjs console."
+            + System.lineSeparator()
+            + "Type exit and press ENTER to leave."
+            + System.lineSeparator();
     public static final String PROMPT = "dynjs> ";
     private final DynJS environment;
     private final DynThreadContext context;
@@ -42,14 +46,7 @@ public class Repl {
 
     public void run() {
         try {
-            String NEW_LINE = System.getProperty("line.separator");
-            StringBuilder consoleHello = new StringBuilder();
-            consoleHello.append(NEW_LINE)
-                    .append("dynjs console.")
-                    .append(NEW_LINE)
-                    .append("Type exit and press ENTER to leave.")
-                    .append(NEW_LINE);
-            stream.println(consoleHello.toString());
+            stream.println(WELCOME_MESSAGE);
             ConsoleReader reader = new ConsoleReader();
             String statement = null;
             while ((statement = reader.readLine(PROMPT)) != null) {
