@@ -33,7 +33,6 @@ public class DynJSTest {
     @Before
     public void setUp() {
         config = new DynJSConfig();
-//        config.enableDebug();
         dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
@@ -256,6 +255,12 @@ public class DynJSTest {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void testBuiltinLoading() {
+        config.addBuiltin("sample", new MockFunction());
+        check("var result = sample(true);");
     }
 
 }
