@@ -258,7 +258,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testBuiltinLoading() {
+    public void testMockFunctionLoading() {
         config.addBuiltin("sample", new MockFunction());
         check("var result = sample(true);");
     }
