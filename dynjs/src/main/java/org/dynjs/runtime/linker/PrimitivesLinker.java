@@ -16,11 +16,7 @@
  */
 package org.dynjs.runtime.linker;
 
-import org.dynalang.dynalink.linker.CallSiteDescriptor;
-import org.dynalang.dynalink.linker.GuardedInvocation;
-import org.dynalang.dynalink.linker.LinkRequest;
-import org.dynalang.dynalink.linker.LinkerServices;
-import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
+import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
 import org.dynjs.runtime.extensions.BooleanOperations;
 import org.dynjs.runtime.extensions.ClassOperations;
