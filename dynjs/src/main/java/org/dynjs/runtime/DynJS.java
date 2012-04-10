@@ -24,24 +24,25 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.api.Function;
+import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.SyntaxError;
-import org.dynjs.parser.ES3Lexer;
-import org.dynjs.parser.ES3Parser;
-import org.dynjs.parser.ES3Walker;
-import org.dynjs.parser.Executor;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.*;
+import org.dynjs.runtime.loader.Builtin;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 public class DynJS {
 
     private final DynJSCompiler compiler;
+    private final DynJSConfig config;
 
     public DynJS(DynJSConfig config) {
-        compiler = new DynJSCompiler(config);
+        this.config = config;
+        compiler = new DynJSCompiler(this.config);
     }
 
     public void eval(DynThreadContext context, String expression) {
@@ -90,8 +91,17 @@ public class DynJS {
 
     private void execute(DynThreadContext context, List<Statement> result) {
         Script script = compiler.compile(result.toArray(new Statement[]{}));
-        script.setGlobalScope(context.getScope());
+        Scope globalScope = context.getScope();
+        initBuiltins(globalScope);
+        script.setGlobalScope(globalScope);
         script.execute(context);
+    }
+
+    private void initBuiltins(Scope globalScope) {
+        Set<Builtin> builtins = config.getBuiltins();
+        for (Builtin builtin : builtins) {
+            globalScope.define(builtin.getBindingName(), builtin.getBoundObject());
+        }
     }
 
     public Function compile(CodeBlock codeBlock, final String[] args) {

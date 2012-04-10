@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.fixtures.BypassFunction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,10 +28,11 @@ public class DynJSTest {
 
     private DynJS dynJS;
     private DynThreadContext context;
+    private DynJSConfig config;
 
     @Before
     public void setUp() {
-        DynJSConfig config = new DynJSConfig();
+        config = new DynJSConfig();
 //        config.enableDebug();
         dynJS = new DynJS(config);
         context = new DynThreadContext();
@@ -238,6 +240,12 @@ public class DynJSTest {
         check("var x = [1]; x[0] = 2; var result = x[0] == 2", true);
         check("var x = [1,2]; x[0] = 4; x[1]= 3; var result = x[0] == 4 && x[1] == 3", true);
         check("var x = []; x[33] = 'lol'; var result = x[33] == 'lol';");
+    }
+
+    @Test
+    public void testBuiltinLoading() {
+        config.addBuiltin("sample", new BypassFunction());
+        check("var result = sample(true);");
     }
 
     private void check(String scriptlet) {
