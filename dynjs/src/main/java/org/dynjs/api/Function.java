@@ -18,9 +18,7 @@ package org.dynjs.api;
 
 import org.dynjs.runtime.DynThreadContext;
 
-public interface Function extends Scope {
-
-    public Object call(DynThreadContext context, Object[] arguments);
+public interface Function extends Scope, Callable {
 
     void setContext(DynThreadContext context);
 }
