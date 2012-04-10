@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
 import org.dynjs.runtime.java.SayHiToJava;
 import org.junit.Before;
