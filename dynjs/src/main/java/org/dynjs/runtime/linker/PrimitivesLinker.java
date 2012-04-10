@@ -72,7 +72,9 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         if (originalReturnType != Object.class) {
             targetMethodType = targetMethodType.changeReturnType(originalReturnType);
         } else {
-            targetMethodType = targetMethodType.changeReturnType(receiverClass);
+            if (arguments.length > 1 && originalReturnType != Class.class) {
+                targetMethodType = targetMethodType.changeReturnType(receiverClass);
+            }
         }
         for (int i = 0; i < arguments.length; i++) {
             Object argument = arguments[i];
