@@ -4,11 +4,18 @@ import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynThreadContext;
 
-public class MockFunction implements Function {
+public class JavaRequireFunction implements Function {
    @Override
-   public Object call(DynThreadContext context, Object[] arguments) {
-      System.out.println("Just printing my function argument: " + arguments[0]);
-      return arguments[0];
+   public Object call(DynThreadContext context, Object[] args) {
+      System.out.println("Just printing my function argument: " + args[0]);
+      String className = (String) args[0];
+      Class clazz = null;
+      try {
+         clazz = Class.forName(className);
+      } catch (ClassNotFoundException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      }
+      return clazz;
    }
 
    @Override

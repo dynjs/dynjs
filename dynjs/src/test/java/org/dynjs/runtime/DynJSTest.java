@@ -18,7 +18,8 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
-import org.dynjs.runtime.fixtures.BypassFunction;
+import org.dynjs.runtime.java.JavaRequireFunction;
+import org.dynjs.runtime.java.SayHiToJava;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -259,8 +260,12 @@ public class DynJSTest {
 
     @Test
     public void testMockFunctionLoading() {
-        config.addBuiltin("sample", new MockFunction());
-        check("var result = sample(true);");
+       config.addBuiltin("javaRequire", new JavaRequireFunction());
+       dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
+       assertThat(context.getScope().resolve("NiceClass"))
+               .isNotNull()
+               .isInstanceOf(Class.class)
+               .isEqualTo(SayHiToJava.class);
     }
 
 }
