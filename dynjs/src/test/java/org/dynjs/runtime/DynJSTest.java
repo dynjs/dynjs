@@ -268,6 +268,10 @@ public class DynJSTest {
                 .isNotNull()
                 .isInstanceOf(Class.class)
                 .isEqualTo(SayHiToJava.class);
+
+        assertThat(context.getScope().resolve("x"))
+                .isInstanceOf(SayHiToJava.class);
+
     }
 
 }
