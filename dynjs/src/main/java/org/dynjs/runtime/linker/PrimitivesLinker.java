@@ -23,6 +23,7 @@ import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
 import org.dynalang.dynalink.support.Guards;
 import org.dynjs.runtime.extensions.BooleanOperations;
+import org.dynjs.runtime.extensions.ClassOperations;
 import org.dynjs.runtime.extensions.NumberOperations;
 import org.dynjs.runtime.extensions.StringOperations;
 
@@ -37,7 +38,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
         put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
         put(String.class, VTablePopulator.vtableFrom(StringOperations.class));
-        put(Class.class, VTablePopulator.vtableFrom(Class.class));
+        put(Class.class, VTablePopulator.vtableFrom(ClassOperations.class));
     }};
 
     @Override
