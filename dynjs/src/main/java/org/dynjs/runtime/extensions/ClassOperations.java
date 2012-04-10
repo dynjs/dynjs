@@ -5,7 +5,7 @@ import org.dynjs.runtime.linker.anno.CompanionFor;
 @CompanionFor(Class.class)
 public class ClassOperations {
 
-    public Object newInstance(Class clazz) {
+    public static Object newInstance(Class clazz) {
         try {
             clazz.newInstance();
         } catch (InstantiationException e) {
