@@ -37,6 +37,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
         put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
         put(String.class, VTablePopulator.vtableFrom(StringOperations.class));
+        put(Class.class, VTablePopulator.vtableFrom(Class.class));
     }};
 
     @Override

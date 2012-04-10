@@ -259,13 +259,15 @@ public class DynJSTest {
     }
 
     @Test
-    public void testMockFunctionLoading() {
-       config.addBuiltin("javaRequire", new JavaRequireFunction());
-       dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
-       assertThat(context.getScope().resolve("NiceClass"))
-               .isNotNull()
-               .isInstanceOf(Class.class)
-               .isEqualTo(SayHiToJava.class);
+    public void testJavaRequireFunctionLoading() {
+        config.addBuiltin("javaRequire", new JavaRequireFunction());
+        dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
+        dynJS.eval(context, "var x = new NiceClass");
+
+        assertThat(context.getScope().resolve("NiceClass"))
+                .isNotNull()
+                .isInstanceOf(Class.class)
+                .isEqualTo(SayHiToJava.class);
     }
 
 }
