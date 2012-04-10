@@ -16,9 +16,13 @@
  */
 package org.dynjs.parser;
 
+import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
 import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
+
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
@@ -290,8 +294,15 @@ public class Executor {
         return new BooleanLiteralStatement("FALSE");
     }
 
-    public Statement executeNew(Statement leftHandSideExpression10) {
-        return null;
+    public Statement executeNew(final Statement statement) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .append(statement.getCodeBlock())
+                        .invokedynamic("newInstance", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            }
+        };
     }
 
     public Statement resolveByField(final Statement lhs, final String field) {

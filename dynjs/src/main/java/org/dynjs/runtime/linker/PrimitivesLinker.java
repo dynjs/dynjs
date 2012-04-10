@@ -16,13 +16,10 @@
  */
 package org.dynjs.runtime.linker;
 
-import org.dynalang.dynalink.linker.CallSiteDescriptor;
-import org.dynalang.dynalink.linker.GuardedInvocation;
-import org.dynalang.dynalink.linker.LinkRequest;
-import org.dynalang.dynalink.linker.LinkerServices;
-import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
+import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
 import org.dynjs.runtime.extensions.BooleanOperations;
+import org.dynjs.runtime.extensions.ClassOperations;
 import org.dynjs.runtime.extensions.NumberOperations;
 import org.dynjs.runtime.extensions.StringOperations;
 
@@ -37,6 +34,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
         put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
         put(String.class, VTablePopulator.vtableFrom(StringOperations.class));
+        put(Class.class, VTablePopulator.vtableFrom(ClassOperations.class));
     }};
 
     @Override
@@ -70,7 +68,9 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         if (originalReturnType != Object.class) {
             targetMethodType = targetMethodType.changeReturnType(originalReturnType);
         } else {
-            targetMethodType = targetMethodType.changeReturnType(receiverClass);
+            if (arguments.length > 1 && originalReturnType != Class.class) {
+                targetMethodType = targetMethodType.changeReturnType(receiverClass);
+            }
         }
         for (int i = 0; i < arguments.length; i++) {
             Object argument = arguments[i];

@@ -19,6 +19,8 @@ package org.dynjs.runtime;
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.fixtures.BypassFunction;
+import org.dynjs.runtime.java.JavaRequireFunction;
+import org.dynjs.runtime.java.SayHiToJava;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +35,6 @@ public class DynJSTest {
     @Before
     public void setUp() {
         config = new DynJSConfig();
-//        config.enableDebug();
         dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
@@ -256,6 +257,22 @@ public class DynJSTest {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void testJavaRequireFunctionLoading() {
+        config.addBuiltin("javaRequire", new JavaRequireFunction());
+        dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
+        dynJS.eval(context, "var x = new NiceClass");
+
+        assertThat(context.getScope().resolve("NiceClass"))
+                .isNotNull()
+                .isInstanceOf(Class.class)
+                .isEqualTo(SayHiToJava.class);
+
+        assertThat(context.getScope().resolve("x"))
+                .isInstanceOf(SayHiToJava.class);
+
     }
 
 }
