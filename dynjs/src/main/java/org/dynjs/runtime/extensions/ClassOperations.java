@@ -7,7 +7,7 @@ public class ClassOperations {
 
     public static Object newInstance(Class clazz) {
         try {
-            clazz.newInstance();
+            return clazz.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
