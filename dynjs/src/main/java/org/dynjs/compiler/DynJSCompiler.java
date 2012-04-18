@@ -39,7 +39,6 @@ public class DynJSCompiler {
 
     private static final AtomicInteger counter = new AtomicInteger(0);
     private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
-    private final DynamicClassLoader classLoader = new DynamicClassLoader();
     private final DynJSConfig config;
 
     public DynJSCompiler(DynJSConfig config) {
@@ -121,7 +120,7 @@ public class DynJSCompiler {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return classLoader.define(jiteClass.getClassName().replace('/', '.'), bytecode);
+        return config.getClassLoader().define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
     public static interface Types {

@@ -41,6 +41,7 @@ public class DynThreadContext {
     private Map<Integer, CodeBlock> storage = new HashMap<>();
     private Scope scope = new DynObject();
     private Deque<Function> callStack = new LinkedList<>();
+    private DynamicClassLoader classLoader;
 
     public DynJS getRuntime() {
         return this.runtime.get();
@@ -93,5 +94,13 @@ public class DynThreadContext {
 
     public Deque<Function> getCallStack() {
         return callStack;
+    }
+
+    public void setClassLoader(DynamicClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    public DynamicClassLoader getClassLoader() {
+        return classLoader;
     }
 }

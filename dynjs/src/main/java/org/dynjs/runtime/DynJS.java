@@ -83,6 +83,7 @@ public class DynJS {
         ES3Walker walker = new ES3Walker(treeNodeStream);
 
         context.setRuntime(this);
+        context.setClassLoader(config.getClassLoader());
         Executor executor = new Executor(context);
         walker.setExecutor(executor);
         walker.program();

@@ -16,8 +16,15 @@
  */
 package org.dynjs.runtime;
 
-
 public class DynamicClassLoader extends ClassLoader {
+
+    public DynamicClassLoader(ClassLoader parentClassLoader) {
+        super(parentClassLoader);
+    }
+
+    public DynamicClassLoader() {
+        super();
+    }
 
     public Class<?> define(String className, byte[] bytecode) {
         return super.defineClass(className, bytecode, 0, bytecode.length);

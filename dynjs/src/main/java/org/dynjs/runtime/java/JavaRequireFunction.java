@@ -10,7 +10,7 @@ public class JavaRequireFunction implements Function {
       String className = (String) args[0];
       Class clazz = null;
       try {
-         clazz = Class.forName(className);
+         clazz = Class.forName(className, true, context.getClassLoader());
       } catch (ClassNotFoundException e) {
          e.printStackTrace();
       }
