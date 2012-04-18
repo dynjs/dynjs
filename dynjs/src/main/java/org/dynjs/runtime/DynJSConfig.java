@@ -25,13 +25,14 @@ public class DynJSConfig {
 
     private boolean debug;
     private Set<Builtin> builtins = new LinkedHashSet<>();
-    private DynamicClassLoader classLoader = new DynamicClassLoader();
+    private final DynamicClassLoader classLoader;
 
     public DynJSConfig() {
+        this.classLoader = new DynamicClassLoader();
     }
 
-    public DynJSConfig(DynamicClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public DynJSConfig(ClassLoader parentClassLoader) {
+        this.classLoader = new DynamicClassLoader(parentClassLoader);
     }
 
     public void enableDebug() {
