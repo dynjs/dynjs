@@ -31,7 +31,7 @@ Download and install it to your user(not to the entire machine) and before runni
 
 ### Download
 
-Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/dynjs/ws/core/target/dynjs-all.jar) from our CI job.
+Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/dynjs/ws/target/dynjs-all.jar) from our CI job.
 
 ### Running 
 
