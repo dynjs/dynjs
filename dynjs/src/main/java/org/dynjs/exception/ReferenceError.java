@@ -17,4 +17,15 @@
 package org.dynjs.exception;
 
 public class ReferenceError extends DynJSException {
+    private final String name;
+
+    public ReferenceError(String name) {
+        super();
+        this.name = name;
+    }
+
+    @Override
+    public String getMessage() {
+        return String.format("%s not found", this.name);
+    }
 }

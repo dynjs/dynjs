@@ -80,7 +80,7 @@ public abstract class DynFunction extends DynObject {
             atom = context.getScope().resolve(name);
         }
         if (atom == null) {
-            throw new ReferenceError();
+            throw new ReferenceError(name);
         }
         return atom;
     }

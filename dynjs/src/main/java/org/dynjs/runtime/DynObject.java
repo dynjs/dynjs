@@ -63,7 +63,7 @@ public class DynObject implements Scope {
         } else if (getEnclosingScope() != null) {
             return getEnclosingScope().resolve(name);
         }
-        throw new ReferenceError();
+        throw new ReferenceError(name);
     }
 
     @Override
