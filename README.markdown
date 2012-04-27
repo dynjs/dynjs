@@ -27,7 +27,7 @@ Download and install it to your user(not to the entire machine) and before runni
 1. fetch the dependencies: **[jitescript]** and **[invokebinder]**
 1. `git clone https://github.com/dynjs/dynjs.git && cd dynjs`
 1. `mvn install`
-1. Get the jar into dynjs/target folder
+1. Get `dynjs-all.jar` into dynjs/target folder
 
 ### Download
 
