@@ -21,9 +21,10 @@ import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 import java.util.List;
+
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class Executor {
 
@@ -369,7 +370,16 @@ public class Executor {
     }
 
     public Statement throwStatement(Statement expression) {
-        return null;
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .newobj(p(RuntimeException.class))
+                        .dup()
+                        .invokespecial(p(RuntimeException.class), "<init>", sig(void.class))
+                        .athrow();
+            }
+        };
     }
 
     public Statement tryStatement(Statement block, Statement _catch, Statement _finally) {
