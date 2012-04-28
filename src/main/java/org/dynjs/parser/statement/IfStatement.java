@@ -43,6 +43,7 @@ public class IfStatement implements Statement {
     public CodeBlock getCodeBlock() {
         LabelNode elseBlock = new LabelNode();
         LabelNode outBlock = new LabelNode();
+        CodeBlock elseCodeBlock = velse != null ? velse.getCodeBlock() : newCodeBlock();
         CodeBlock codeBlock = newCodeBlock()
                 .append(vbool.getCodeBlock())
                 .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
@@ -51,7 +52,7 @@ public class IfStatement implements Statement {
                 .append(vthen.getCodeBlock())
                 .go_to(outBlock)
                 .label(elseBlock)
-                .append(velse.getCodeBlock())
+                .append(elseCodeBlock)
                 .label(outBlock);
         return codeBlock;
     }
