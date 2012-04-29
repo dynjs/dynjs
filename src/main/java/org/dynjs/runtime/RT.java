@@ -25,6 +25,8 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Deque;
+import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;
 import static me.qmx.jitescript.util.CodegenUtils.p;
@@ -55,4 +57,22 @@ public class RT {
         return function;
     }
 
+    public static Function callHelper(DynThreadContext context, DynFunction function, Object[] arguments) {
+        Function instance = null;
+        try {
+            instance = (Function) function.getClass().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        instance.setContext(context);
+        copyProperties(function, instance);
+        paramPopulator((DynFunction) instance, arguments);
+        return instance;
+    }
+
+    private static void copyProperties(DynFunction function, Function instance) {
+        for (Map.Entry<String, Object> entry : function.getAllProps().entrySet()) {
+            instance.define(entry.getKey(), entry.getValue());
+        }
+    }
 }

@@ -19,7 +19,9 @@ import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class DynObject implements Scope {
 
@@ -83,4 +85,11 @@ public class DynObject implements Scope {
         return (value instanceof DynObject);
     }
 
+    public Map<String, Object> getAllProps() {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        for (Map.Entry<String, DynProperty> entry : properties.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().getAttribute("value"));
+        }
+        return map;
+    }
 }
