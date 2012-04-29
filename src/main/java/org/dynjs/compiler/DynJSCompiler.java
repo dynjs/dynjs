@@ -133,7 +133,7 @@ public class DynJSCompiler {
 
         int THIS = 0;
         int CONTEXT = 1;
-
+        int ARGS = 2;
     }
 
     public static interface Helper {
