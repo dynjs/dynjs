@@ -349,8 +349,17 @@ public class Executor {
         return null;
     }
 
-    public Statement exprListStatement(List<Statement> exprList) {
-        return null;
+    public Statement exprListStatement(final List<Statement> exprList) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock() {{
+                    for (Statement statement : exprList) {
+                        append(statement.getCodeBlock());
+                    }
+                }};
+            }
+        };
     }
 
     public Statement resolveCallExpr(Statement lhs, List<Statement> args) {
