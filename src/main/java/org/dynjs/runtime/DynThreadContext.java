@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.runtime.builtins.Eval;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,6 +35,7 @@ public class DynThreadContext {
     public static final Object NULL = new Object();
 
     private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
+        put("eval", new Eval());
     }};
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();

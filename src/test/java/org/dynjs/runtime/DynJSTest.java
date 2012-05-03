@@ -248,6 +248,11 @@ public class DynJSTest {
         check("var result = sample(true);");
     }
 
+    @Test
+    public void testEval(){
+        check("eval('var result = true');");
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }
