@@ -143,7 +143,7 @@ public class DynJSCompiler {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return config.getClassLoader().define(jiteClass.getClassName().replace('/', '.'), bytecode);
+        return new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
     public static interface Types {
