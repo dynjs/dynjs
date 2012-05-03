@@ -37,6 +37,7 @@ public class DynThreadContext {
     private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
         put("eval", new Eval());
         put("undefined", UNDEFINED);
+        put("Object", new DynObject());
     }};
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
