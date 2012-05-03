@@ -23,4 +23,8 @@ public class DynJSException extends RuntimeException {
     public DynJSException(Exception e) {
         super(e);
     }
+
+    public DynJSException(String message) {
+        super(message);
+    }
 }

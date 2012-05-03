@@ -17,6 +17,7 @@ package org.dynjs.parser;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
@@ -99,15 +100,15 @@ public class Executor {
     }
 
     public Statement defineShlOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineShrOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineShuOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineDivOp(Statement l, Statement r) {
@@ -119,15 +120,15 @@ public class Executor {
     }
 
     public Statement defineDeleteOp(Statement expression) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineVoidOp(Statement expression) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineTypeOfOp(Statement expression) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineIncOp(Statement expression) {
@@ -139,15 +140,15 @@ public class Executor {
     }
 
     public Statement definePosOp(Statement expression) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineNegOp(Statement expression) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineInvOp(Statement expression) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineNotOp(Statement expression) {
@@ -179,11 +180,11 @@ public class Executor {
     }
 
     public Statement defineInstanceOfRelOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineInRelOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineLorOp(final Statement l, final Statement r) {
@@ -195,15 +196,15 @@ public class Executor {
     }
 
     public Statement defineAndBitOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineOrBitOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineXorBitOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineEqOp(final Statement l, final Statement r) {
@@ -247,27 +248,27 @@ public class Executor {
     }
 
     public Statement defineShlAssOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineShrAssOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineShuAssOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineAndAssOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineXorAssOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineOrAssOp(Statement l, Statement r) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineQueOp(Statement ex1, Statement ex2, Statement ex3) {
@@ -275,7 +276,7 @@ public class Executor {
     }
 
     public Statement defineThisLiteral() {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineNullLiteral() {
@@ -283,7 +284,7 @@ public class Executor {
     }
 
     public Statement defineRegExLiteral(String s) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement defineTrueLiteral() {
@@ -330,23 +331,23 @@ public class Executor {
     }
 
     public Statement forStepExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement forIterVar(Statement varDef, Statement expr1, Statement statement) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement forIterExpr(Statement expr1, Statement expr2, Statement statement) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement continueStatement(String id) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement breakStatement(String id) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement exprListStatement(final List<Statement> exprList) {
@@ -367,15 +368,15 @@ public class Executor {
     }
 
     public Statement switchStatement(Statement expr, Statement _default, List<Statement> cases) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement switchCaseClause(Statement expr, List<Statement> statements) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement switchDefaultClause(List<Statement> statements) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement throwStatement(Statement expression) {
@@ -392,23 +393,23 @@ public class Executor {
     }
 
     public Statement tryStatement(Statement block, Statement _catch, Statement _finally) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement tryCatchClause(String id, Statement block) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement tryFinallyClause(Statement block) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement withStatement(Statement expression, Statement statement) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement labelledStatement(String label, Statement statement) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement objectValue(List<Statement> namedValues) {
@@ -424,7 +425,7 @@ public class Executor {
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {
-        return null;
+        throw new DynJSException("not implemented yet");
     }
 
     public Statement namedValue(final Statement propertyName, final Statement expr) {
