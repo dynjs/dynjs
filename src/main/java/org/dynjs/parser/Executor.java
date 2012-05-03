@@ -275,7 +275,13 @@ public class Executor {
     }
 
     public Statement defineThisLiteral() {
-        return null;
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return CodeBlock.newCodeBlock()
+                        .aload(0);
+            }
+        };
     }
 
     public Statement defineNullLiteral() {
