@@ -215,11 +215,11 @@ public class Executor {
     }
 
     public Statement defineSameOp(Statement l, Statement r) {
-        return null;
+        return new EqualsOperationStatement(l, r);
     }
 
     public Statement defineNSameOp(Statement l, Statement r) {
-        return null;
+        return new NotEqualsOperationStatement(l, r);
     }
 
     public Statement defineAssOp(final Statement l, final Statement r) {
