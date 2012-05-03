@@ -38,6 +38,9 @@ public class DynThreadContext {
         put("eval", new Eval());
         put("undefined", UNDEFINED);
         put("Object", new DynObject());
+        put("Number", new DynObject() {{
+            define("NaN", Double.NaN);
+        }});
     }};
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
