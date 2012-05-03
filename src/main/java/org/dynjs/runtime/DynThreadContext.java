@@ -19,10 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DynThreadContext {
@@ -35,12 +32,22 @@ public class DynThreadContext {
     };
 
     public static final Object NULL = new Object();
+
+    private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
+    }};
+
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();
     private Scope scope = new DynObject();
     private Deque<Function> callStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
+
+    public DynThreadContext() {
+        for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
+            scope.define(builin.getKey(), builin.getValue());
+        }
+    }
 
     public DynJS getRuntime() {
         return this.runtime.get();
@@ -102,4 +109,5 @@ public class DynThreadContext {
     public DynamicClassLoader getClassLoader() {
         return classLoader;
     }
+
 }
