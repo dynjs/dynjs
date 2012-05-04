@@ -25,7 +25,6 @@ import org.dynjs.runtime.RT;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
-import java.util.List;
 
 import static java.lang.invoke.MethodHandles.lookup;
 

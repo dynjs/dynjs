@@ -25,7 +25,6 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.Deque;
 import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;

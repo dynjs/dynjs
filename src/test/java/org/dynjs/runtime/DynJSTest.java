@@ -249,7 +249,7 @@ public class DynJSTest {
     }
 
     @Test
-    public void testEval(){
+    public void testEval() {
         check("eval('var result = true');");
     }
 
