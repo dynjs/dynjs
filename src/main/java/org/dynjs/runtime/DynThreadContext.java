@@ -26,12 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DynThreadContext {
 
-    public static final Object UNDEFINED = new Object() {
-        @Override
-        public String toString() {
-            return "undefined";
-        }
-    };
+    public static final Object UNDEFINED = new Undefined();
 
     public static final Object NULL = new Object();
 
@@ -128,4 +123,10 @@ public class DynThreadContext {
         return classLoader;
     }
 
+    private static class Undefined {
+        @Override
+        public String toString() {
+            return "undefined";
+        }
+    }
 }
