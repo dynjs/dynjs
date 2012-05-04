@@ -39,6 +39,8 @@ public class DynThreadContext {
         put("eval", new Eval());
         put("undefined", UNDEFINED);
         put("NaN", Double.NaN);
+        put("Infinity", Double.POSITIVE_INFINITY);
+        put("-Infinity", Double.NEGATIVE_INFINITY);
         put("Object", new DynObject() {{
             setProperty("defineProperty", new DefineProperty());
         }});
