@@ -264,6 +264,11 @@ public class DynJSTest {
         check("function x(){}; var result = typeof x === 'function';");
     }
 
+    @Test
+    public void testVoid() {
+        check("var result = undefined === undefined;");
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }

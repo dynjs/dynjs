@@ -123,8 +123,16 @@ public class Executor {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineVoidOp(Statement expression) {
-        throw new DynJSException("not implemented yet");
+    public Statement defineVoidOp(final Statement expression) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock(){{
+                    append(expression.getCodeBlock());
+                    append(new UndefinedValueStatement().getCodeBlock());
+                }};
+            }
+        };
     }
 
     public Statement defineTypeOfOp(final Statement expression) {
