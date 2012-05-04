@@ -22,6 +22,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.RT;
+import org.dynjs.runtime.extensions.ObjectOperations;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -35,7 +36,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     public static final MethodHandle GETELEMENT;
     public static final MethodHandle SETELEMENT;
     public static final MethodHandle TYPEOF;
-
 
     static {
         try {
@@ -71,6 +71,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
+        } else if ("eq".equals(callSiteDescriptor.getName()) && argumentsAreNotStrings(linkRequest.getArguments())) {
+            targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
             if (callSiteDescriptor.getNameToken(1).equals("call")) {
                 return new GuardedInvocation(linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType()), null);
@@ -106,6 +108,15 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         }
 
         return null;
+    }
+
+    private boolean argumentsAreNotStrings(Object[] args) {
+        for (Object arg : args) {
+            if (arg instanceof String) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isFromDynJS(CallSiteDescriptor callSiteDescriptor) {
