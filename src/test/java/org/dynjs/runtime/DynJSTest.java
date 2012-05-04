@@ -253,6 +253,17 @@ public class DynJSTest {
         check("eval('var result = true');");
     }
 
+    @Test
+    public void testTypeOf() {
+        check("var result = typeof undefined == 'undefined';");
+        check("var result = typeof null === 'object';");
+        check("var result = typeof {} === 'object';");
+        check("var result = typeof true === 'boolean';");
+        check("var result = typeof 1.0 === 'number';");
+        check("var result = typeof 'lol' === 'string';");
+        check("function x(){}; var result = typeof x === 'function';");
+    }
+
     private void check(String scriptlet) {
         check(scriptlet, true);
     }

@@ -75,4 +75,22 @@ public class RT {
             instance.define(entry.getKey(), entry.getValue());
         }
     }
+
+    public static String typeof(Object obj) {
+        if (obj == null) {
+            return "object";
+        } else if (obj instanceof Function) {
+            return "function";
+        } else if (obj instanceof DynObject) {
+            return "object";
+        } else if (obj instanceof Boolean) {
+            return "boolean";
+        } else if (obj instanceof Number) {
+            return "number";
+        } else if (obj instanceof String) {
+            return "string";
+        }
+
+        return "undefined";
+    }
 }

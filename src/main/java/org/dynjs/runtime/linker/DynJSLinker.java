@@ -35,6 +35,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     public static final MethodHandle DEFINE;
     public static final MethodHandle GETELEMENT;
     public static final MethodHandle SETELEMENT;
+    public static final MethodHandle TYPEOF;
+
 
     static {
         try {
@@ -56,6 +58,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     .filter(1, Converters.toInteger)
                     .convert(void.class, DynArray.class, int.class, Object.class)
                     .invokeVirtual(lookup(), "set");
+            TYPEOF = Binder.from(String.class, Object.class)
+                    .invokeStatic(lookup(), RT.class, "typeof");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -70,7 +74,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
             if (callSiteDescriptor.getNameToken(1).equals("call")) {
-                targetHandle = linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType());
+                return new GuardedInvocation(linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType()), null);
             } else if ("getProp".equals(callSiteDescriptor.getNameToken(1))) {
                 return handleGetProp(callSiteDescriptor);
             } else if ("setProp".equals(callSiteDescriptor.getNameToken(1))) {
@@ -80,14 +84,20 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             } else if ("setElement".equals(callSiteDescriptor.getNameToken(1))) {
                 return handleSetElement(callSiteDescriptor);
             }
-        } else if (callSiteDescriptor.getNameTokenCount() >= 3 && callSiteDescriptor.getNameToken(0).equals("dynjs")) {
-            String action = callSiteDescriptor.getNameToken(2);
-            String subsystem = callSiteDescriptor.getNameToken(1);
-            if (subsystem.equals("convert")) {
-                switch (action) {
-                    case "to_boolean":
-                        targetHandle = Converters.toBoolean;
-                        break;
+        } else if (isFromDynJS(callSiteDescriptor)) {
+            if (callSiteDescriptor.getNameTokenCount() == 3) {
+                String action = callSiteDescriptor.getNameToken(2);
+                String subsystem = callSiteDescriptor.getNameToken(1);
+                if (subsystem.equals("convert")) {
+                    switch (action) {
+                        case "to_boolean":
+                            targetHandle = Converters.toBoolean;
+                            break;
+                    }
+                }
+            } else if (callSiteDescriptor.getNameTokenCount() == 2) {
+                if ("typeof".equals(callSiteDescriptor.getNameToken(1))) {
+                    return new GuardedInvocation(TYPEOF, null);
                 }
             }
         }
@@ -97,6 +107,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         }
 
         return null;
+    }
+
+    private boolean isFromDynJS(CallSiteDescriptor callSiteDescriptor) {
+        return callSiteDescriptor.getNameTokenCount() > 1 && callSiteDescriptor.getNameToken(0).equals("dynjs");
     }
 
     private GuardedInvocation handleGetElement(CallSiteDescriptor callSiteDescriptor) {

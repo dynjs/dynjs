@@ -127,8 +127,16 @@ public class Executor {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineTypeOfOp(Statement expression) {
-        throw new DynJSException("not implemented yet");
+    public Statement defineTypeOfOp(final Statement expression) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock() {{
+                    append(expression.getCodeBlock());
+                    invokedynamic("dynjs:typeof", sig(String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                }};
+            }
+        };
     }
 
     public Statement defineIncOp(Statement expression) {
