@@ -45,6 +45,13 @@ public class DynThreadContext {
             setProperty("defineProperty", new DefineProperty());
         }});
         put("Number", new DynObject());
+        put("Array", new DynObject());
+        put("Date", new DynObject());
+        put("String", new DynObject());
+        put("Boolean", new DynObject());
+        put("Error", new DynObject());
+        put("Function", new DynObject());
+        put("Math", new DynObject());
     }};
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
