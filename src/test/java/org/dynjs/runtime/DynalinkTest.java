@@ -47,10 +47,11 @@ public class DynalinkTest {
                 .ldc("w")
                 .invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .areturn();
-        final Function fn = dynJS.compile(codeBlock, new String[]{});
+        final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
-        final Object call = fn.call(context, new Object[]{});
-        assertThat(call)
+        Function w = (Function) fn.resolve("call");
+        final Object call = w.call(context, new Object[]{});
+        assertThat(w)
                 .isNotNull()
                 .isInstanceOf(Function.class);
     }
@@ -65,10 +66,11 @@ public class DynalinkTest {
                 .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
                 .invokedynamic("dyn:getProp:w", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .areturn();
-        final Function fn = dynJS.compile(codeBlock, new String[]{});
+        final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
-        final Object call = fn.call(context, new Object[]{});
-        assertThat(call)
+        Function w = (Function) fn.resolve("call");
+        final Object call = w.call(context, new Object[]{});
+        assertThat(w)
                 .isNotNull()
                 .isInstanceOf(Function.class);
     }
@@ -86,9 +88,13 @@ public class DynalinkTest {
                 .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .aconst_null()
                 .areturn();
-        final Function fn = dynJS.compile(codeBlock, new String[]{});
+        final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
-        final Object call = fn.call(context, new Object[]{});
+        Function w = (Function) fn.resolve("call");
+        final Object call = w.call(context, new Object[]{});
+        assertThat(w)
+                .isNotNull()
+                .isInstanceOf(Function.class);
 
         assertThat(x)
                 .isNotNull()
@@ -109,9 +115,13 @@ public class DynalinkTest {
                 .invokedynamic("dyn:setProp:o", sig(void.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
                 .aconst_null()
                 .areturn();
-        final Function fn = dynJS.compile(codeBlock, new String[]{});
+        final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
-        final Object call = fn.call(context, new Object[]{});
+        Function w = (Function) fn.resolve("call");
+        final Object call = w.call(context, new Object[]{});
+        assertThat(w)
+                .isNotNull()
+                .isInstanceOf(Function.class);
 
         assertThat(x)
                 .isNotNull()
@@ -119,6 +129,4 @@ public class DynalinkTest {
 
         assertThat(((Scope) x).resolve("o")).isNotNull().isEqualTo("any");
     }
-
-
 }
