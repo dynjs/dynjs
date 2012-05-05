@@ -15,14 +15,12 @@
  */
 package org.dynjs.runtime;
 
-import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Function;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 
 import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Map;
@@ -37,13 +35,6 @@ public class RT {
             MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
-    public static final MethodHandle FUNCTION_CALL;
-
-    static {
-        MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
-        FUNCTION_CALL = Lookup.PUBLIC.findVirtual(Function.class, "call", functionMethodType);
-    }
-
     public static DynFunction paramPopulator(DynFunction function, Object[] args) {
         String[] parameters = function.getArguments();
         for (int i = 0; i < parameters.length; i++) {
@@ -52,7 +43,6 @@ public class RT {
                 function.define(parameter, args[i]);
             }
         }
-        // function.define("arguments", args); TODO
         return function;
     }
 
@@ -78,9 +68,10 @@ public class RT {
     public static String typeof(Object obj) {
         if (obj == null) {
             return "object";
-        } else if (obj instanceof Function) {
-            return "function";
         } else if (obj instanceof DynObject) {
+            if (((DynObject) obj).hasOwnProperty("call")) {
+                return "function";
+            }
             return "object";
         } else if (obj instanceof Boolean) {
             return "boolean";
