@@ -125,6 +125,10 @@ public class DynThreadContext {
         return classLoader;
     }
 
+    public Object getBuiltin(String name) {
+        return BUILTINS.get(name);
+    }
+
     private static class Undefined {
         @Override
         public String toString() {
