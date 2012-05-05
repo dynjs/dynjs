@@ -16,6 +16,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
@@ -244,7 +245,7 @@ public class DynJSTest {
 
     @Test
     public void testBuiltinLoading() {
-        config.addBuiltin("sample", new BypassFunction());
+        config.addBuiltin("sample", DynJSCompiler.wrapFunction(context, new BypassFunction()));
         check("var result = sample(true);");
     }
 
@@ -281,7 +282,7 @@ public class DynJSTest {
 
     @Test
     public void testJavaRequireFunctionLoading() {
-        config.addBuiltin("javaRequire", new JavaRequireFunction());
+        config.addBuiltin("javaRequire", DynJSCompiler.wrapFunction(context, new JavaRequireFunction()));
         dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
         dynJS.eval(context, "var x = new NiceClass");
 
