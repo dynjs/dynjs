@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
 
@@ -31,7 +32,6 @@ public class DynThreadContext {
     public static final Object NULL = new Object();
 
     private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
-        put("eval", new Eval());
         put("undefined", UNDEFINED);
         put("NaN", Double.NaN);
         put("Infinity", Double.POSITIVE_INFINITY);
@@ -48,6 +48,7 @@ public class DynThreadContext {
         put("Function", new DynObject(){{
             setProperty("prototype", get("Object"));
         }});
+        put("eval", DynJSCompiler.wrapFunction(get("Function"), new Eval()));
         put("Math", new DynObject());
     }};
 

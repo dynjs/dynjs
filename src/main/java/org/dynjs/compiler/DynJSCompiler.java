@@ -70,17 +70,24 @@ public class DynJSCompiler {
                 areturn();
             }});
         }};
-        final Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
+        Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
         try {
-            return new DynObject() {{
-                setProperty("prototype", context.getBuiltin("Function"));
-                Function function = functionClass.newInstance();
-                setProperty("call", function);
-                setProperty("construct", function);
-            }};
+            Function function = functionClass.newInstance();
+            return wrapFunction(context, function);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static DynObject wrapFunction(final Object prototype, final Function function) {
+        return new DynObject() {{
+            setProperty("prototype", prototype);
+            setProperty("call", function);
+            setProperty("construct", function);
+        }};
+    }
+    public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
+        return wrapFunction(context.getBuiltin("Function"), function);
     }
 
     private CodeBlock fillCallStack(CodeBlock codeBlock) {
