@@ -250,6 +250,11 @@ public class DynJSTest {
     }
 
     @Test
+    public void testFunctionCall() {
+        check("var result = (function (){return true;})();");
+    }
+
+    @Test
     public void testEval() {
         check("eval('var result = true');");
     }
