@@ -12,7 +12,7 @@ public class DefineProperty implements Function {
         if (arguments.length == 3) {
             DynObject object = (DynObject) arguments[0];
             String name = (String) arguments[1];
-            DynProperty property = new DynProperty(name);
+            DynProperty property = new DynProperty();
             property.setAttribute("value", arguments[2]);
             object.setProperty(name, property);
             return object;

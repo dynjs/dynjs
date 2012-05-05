@@ -29,7 +29,7 @@ public class DynPropertyTest {
 
     @Test
     public void allowsAttributeChaining() {
-        DynProperty property = new DynProperty("x")
+        DynProperty property = new DynProperty()
                 .setAttribute("value", DynThreadContext.UNDEFINED)
                 .setAttribute("writable", true)
                 .setAttribute("enumerable", true)

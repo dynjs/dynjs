@@ -17,7 +17,6 @@ package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
-import org.dynjs.runtime.builtins.DefineProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +30,7 @@ public class DynObject implements Scope {
     }
 
     public void setProperty(String key, Object atom) {
-        DynProperty property = new DynProperty(key).setAttribute("value", atom);
-        this.properties.put(key, property);
+        this.properties.put(key, new DynProperty().setAttribute("value", atom));
     }
 
     public DynProperty getProperty(String key) {

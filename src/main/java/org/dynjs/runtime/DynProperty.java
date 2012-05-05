@@ -20,12 +20,7 @@ import java.util.Map;
 
 public class DynProperty {
 
-    private final String name;
     private final Map<String, Object> attributes = new HashMap<>();
-
-    public DynProperty(String name) {
-        this.name = name;
-    }
 
     public DynProperty setAttribute(String key, Object value) {
         this.attributes.put(key, value);
