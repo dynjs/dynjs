@@ -45,7 +45,9 @@ public class DynThreadContext {
         put("String", new DynObject());
         put("Boolean", new DynObject());
         put("Error", new DynObject());
-        put("Function", new DynObject());
+        put("Function", new DynObject(){{
+            setProperty("prototype", get("Object"));
+        }});
         put("Math", new DynObject());
     }};
 
