@@ -15,7 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.api.Function;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.fixtures.BypassFunction;
@@ -83,56 +82,27 @@ public class DynJSTest {
 
     @Test
     public void assignsNamedEmptyFunction() {
-        dynJS.eval(context, "function x(){};");
-        assertThat(context.getScope().resolve("x"))
-                .isNotNull()
-                .isInstanceOf(Function.class);
+        check("function x(){}; var result = x();", null);
     }
 
     @Test
     public void assignsAnonymousEmptyFunction() {
-        dynJS.eval(context, "var x = function(a,b,c){};");
-        assertThat(context.getScope().resolve("x"))
-                .isNotNull()
-                .isInstanceOf(Function.class);
+        check("var x = function(a,b,c){}; var result = x();", null);
     }
 
     @Test
     public void buildFunctionWithBody() {
-        dynJS.eval(context, "var x = function(a,b){var w = (1 + 2) * 3;}");
-        Object actual = context.getScope().resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        assertThat(((Function) actual).call(context, new Object[]{}))
-                .isNull();
+        check("var result = (function(a,b){var w = (1 + 2) * 3;})();", null);
     }
 
     @Test
     public void buildFunctionWithMultipleStatementBody() {
-        dynJS.eval(context, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
-        Object actual = context.getScope().resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        assertThat(((Function) actual).call(context, new Object[]{}))
-                .isNull();
+        check("var result = (function(){var a = 1;var b = 2; var c = a + b;})()", null);
     }
 
     @Test
     public void buildFunctionWithReturn() {
-        dynJS.eval(context, "var x = function(){return 1+1;};");
-        Object actual = context.getScope().resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        assertThat(((Function) actual).call(context, new Object[]{}))
-                .isNotNull()
-                .isInstanceOf(Double.class)
-                .isEqualTo(2.0);
+        check("var result = (function(){return 1+1;})() === 2;");
     }
 
     @Test(expected = ReferenceError.class)
