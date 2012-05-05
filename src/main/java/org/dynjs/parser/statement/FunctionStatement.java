@@ -66,11 +66,12 @@ public class FunctionStatement implements Statement {
                     .aastore();
         }
 
-        codeBlock = getRuntime(codeBlock);
+        codeBlock = getRuntime(codeBlock)
+                .aload(1);
         codeBlock = retrieveFromSlot(slot, codeBlock);
         codeBlock = codeBlock
                 .aload(4)
-                .invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Function.class, CodeBlock.class, String[].class));
+                .invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Object.class, DynThreadContext.class, CodeBlock.class, String[].class));
 
         if (identifier != null) {
             // TODO DRY
