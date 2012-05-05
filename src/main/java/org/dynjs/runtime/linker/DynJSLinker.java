@@ -18,16 +18,16 @@ package org.dynjs.runtime.linker;
 import com.headius.invokebinder.Binder;
 import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
+import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.Converters;
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.RT;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.extensions.ObjectOperations;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
 import static java.lang.invoke.MethodHandles.lookup;
+import static java.lang.invoke.MethodType.methodType;
 
 public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverterFactory {
 
@@ -75,7 +75,17 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
             if (callSiteDescriptor.getNameToken(1).equals("call")) {
-                return new GuardedInvocation(linkerServices.asType(RT.FUNCTION_CALL, callSiteDescriptor.getMethodType()), null);
+                MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
+
+                Object[] arguments = linkRequest.getArguments();
+                Scope scope = (Scope) arguments[0];
+                arguments[0] = scope.resolve("call");
+                linkRequest.replaceArguments(callSiteDescriptor, arguments);
+                MethodHandle call = Lookup.PUBLIC.findVirtual(linkRequest.getArguments()[0].getClass(), "call", functionMethodType);
+
+                return new GuardedInvocation(
+                        linkerServices.asType(call, callSiteDescriptor.getMethodType()),
+                        Guards.isInstance(linkRequest.getArguments()[0].getClass(), callSiteDescriptor.getMethodType()));
             } else if ("getProp".equals(callSiteDescriptor.getNameToken(1))) {
                 return handleGetProp(callSiteDescriptor);
             } else if ("setProp".equals(callSiteDescriptor.getNameToken(1))) {
