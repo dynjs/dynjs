@@ -45,7 +45,7 @@ public class DynJSCompiler {
         this.config = config;
     }
 
-    public Function compile(final DynFunction arg) {
+    public Object compile(final DynThreadContext context, final DynFunction arg) {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
@@ -70,9 +70,14 @@ public class DynJSCompiler {
                 areturn();
             }});
         }};
-        Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
+        final Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
         try {
-            return functionClass.newInstance();
+            return new DynObject() {{
+                setProperty("prototype", context.getBuiltin("Function"));
+                Function function = functionClass.newInstance();
+                setProperty("call", function);
+                setProperty("construct", function);
+            }};
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
