@@ -141,7 +141,7 @@ public class Executor {
             public CodeBlock getCodeBlock() {
                 return new CodeBlock() {{
                     append(expression.getCodeBlock());
-                    invokedynamic("dynjs:typeof", sig(String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                    invokedynamic("typeof", sig(String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
                 }};
             }
         };

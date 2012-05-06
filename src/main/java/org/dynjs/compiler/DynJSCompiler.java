@@ -80,11 +80,7 @@ public class DynJSCompiler {
     }
 
     public static DynObject wrapFunction(final Object prototype, final Function function) {
-        return new DynObject() {{
-            setProperty("prototype", prototype);
-            setProperty("call", function);
-            setProperty("construct", function);
-        }};
+        return new InternalDynObject(prototype, function);
     }
     public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
         return wrapFunction(context.getBuiltin("Function"), function);
@@ -175,5 +171,13 @@ public class DynJSCompiler {
     public static interface Helper {
 
         CodeBlock EMPTY_CODEBLOCK = newCodeBlock();
+    }
+
+    public static class InternalDynObject extends DynObject {
+        public InternalDynObject(Object prototype, Function function) {
+            setProperty("prototype", prototype);
+            setProperty("call", function);
+            setProperty("construct", function);
+        }
     }
 }

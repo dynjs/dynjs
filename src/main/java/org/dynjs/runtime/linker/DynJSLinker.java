@@ -20,7 +20,10 @@ import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
 import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.*;
+import org.dynjs.runtime.Converters;
+import org.dynjs.runtime.DynArray;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
 import org.dynjs.runtime.extensions.ObjectOperations;
 
 import java.lang.invoke.MethodHandle;
@@ -71,6 +74,16 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
+        } else if ("typeof".equals(callSiteDescriptor.getNameToken(0))) {
+            Object o = linkRequest.getArguments()[0];
+            if (o != null && !PrimitivesLinker.vtable.containsKey(o.getClass())) {
+                Class<? extends Object> targetClass = o.getClass();
+
+                MethodHandle typeof = Binder.from(String.class, Object.class)
+                        .convert(String.class, targetClass)
+                        .invokeVirtual(lookup(), "typeof");
+                return new GuardedInvocation(typeof, null);
+            }
         } else if ("eq".equals(callSiteDescriptor.getName()) && argumentsAreNotStrings(linkRequest.getArguments())) {
             targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
@@ -105,10 +118,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                             targetHandle = Converters.toBoolean;
                             break;
                     }
-                }
-            } else if (callSiteDescriptor.getNameTokenCount() == 2) {
-                if ("typeof".equals(callSiteDescriptor.getNameToken(1))) {
-                    return new GuardedInvocation(TYPEOF, null);
                 }
             }
         }

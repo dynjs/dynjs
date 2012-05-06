@@ -130,7 +130,15 @@ public class DynThreadContext {
         return BUILTINS.get(name);
     }
 
-    private static class Undefined {
+    public static class Undefined {
+
+        private Undefined() {
+        }
+
+        public String typeof() {
+            return "undefined";
+        }
+
         @Override
         public String toString() {
             return "undefined";
