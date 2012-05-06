@@ -17,6 +17,7 @@ package org.dynjs.parser;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
@@ -127,7 +128,7 @@ public class Executor {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return new CodeBlock(){{
+                return new CodeBlock() {{
                     append(expression.getCodeBlock());
                     append(new UndefinedValueStatement().getCodeBlock());
                 }};
@@ -195,8 +196,17 @@ public class Executor {
         return new RelationalOperationStatement("ge", l, r);
     }
 
-    public Statement defineInstanceOfRelOp(Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+    public Statement defineInstanceOfRelOp(final Statement l, final Statement r) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock() {{
+                    append(l.getCodeBlock());
+                    append(r.getCodeBlock());
+                    invokedynamic("instanceof", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                }};
+            }
+        };
     }
 
     public Statement defineInRelOp(Statement l, Statement r) {
@@ -316,8 +326,9 @@ public class Executor {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
+                        .aload(DynJSCompiler.Arities.CONTEXT)
                         .append(statement.getCodeBlock())
-                        .invokedynamic("newInstance", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("new", sig(Object.class, DynThreadContext.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }

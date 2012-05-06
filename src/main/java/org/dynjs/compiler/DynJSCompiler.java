@@ -82,6 +82,7 @@ public class DynJSCompiler {
     public static DynObject wrapFunction(final Object prototype, final Function function) {
         return new InternalDynObject(prototype, function);
     }
+
     public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
         return wrapFunction(context.getBuiltin("Function"), function);
     }
@@ -174,10 +175,20 @@ public class DynJSCompiler {
     }
 
     public static class InternalDynObject extends DynObject {
-        public InternalDynObject(Object prototype, Function function) {
+        public InternalDynObject(Object prototype, Object function) {
             setProperty("prototype", prototype);
-            setProperty("call", function);
-            setProperty("construct", function);
+            if (function != null) {
+                setProperty("call", function);
+                setProperty("construct", function);
+            }
+        }
+
+        public Boolean hasInstance(Object object) {
+            if (object instanceof DynObject) {
+                Object proto = getProperty("prototype").getAttribute("value");
+                return proto == object;
+            }
+            return false;
         }
     }
 }

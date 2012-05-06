@@ -74,7 +74,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
-        } else if ("typeof".equals(callSiteDescriptor.getNameToken(0))) {
+        } else if ("typeof".equals(callSiteDescriptor.getName())) {
             Object o = linkRequest.getArguments()[0];
             if (o != null && !PrimitivesLinker.vtable.containsKey(o.getClass())) {
                 Class<? extends Object> targetClass = o.getClass();
@@ -84,6 +84,19 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         .invokeVirtual(lookup(), "typeof");
                 return new GuardedInvocation(typeof, null);
             }
+        } else if ("instanceof".equals(callSiteDescriptor.getName())) {
+            Object lhs = linkRequest.getArguments()[0];
+            Object rhs = linkRequest.getArguments()[1];
+            if (lhs != null && !PrimitivesLinker.vtable.containsKey(lhs.getClass())) {
+                Class<? extends Object> lhsClass = lhs.getClass();
+                Class<? extends Object> rhsClass = rhs.getClass();
+                MethodHandle typeof = Binder.from(Boolean.class, Object.class, Object.class)
+                        .convert(Boolean.class, lhsClass, Object.class)
+                        .invokeVirtual(lookup(), "hasInstance");
+                return new GuardedInvocation(typeof, null);
+            }
+        } else if ("new".equals(callSiteDescriptor.getName())) {
+            return new GuardedInvocation(RT.CONSTRUCT, null);
         } else if ("eq".equals(callSiteDescriptor.getName()) && argumentsAreNotStrings(linkRequest.getArguments())) {
             targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
