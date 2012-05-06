@@ -162,7 +162,7 @@ public class DynJSTest {
     @Test
     public void testNullLiteral() {
         dynJS.eval(context, "var result = null");
-        assertThat(context.getScope().resolve("result")).isNull();
+        assertThat(context.getScope().resolve("result")).isEqualTo(DynThreadContext.NULL);
     }
 
     @Test

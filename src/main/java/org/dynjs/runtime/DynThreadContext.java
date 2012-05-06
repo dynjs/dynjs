@@ -28,8 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DynThreadContext {
 
     public static final Object UNDEFINED = new Undefined();
-
-    public static final Object NULL = new Object();
+    public static final Object NULL = new Null();
 
     private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
         put("undefined", UNDEFINED);
@@ -142,6 +141,20 @@ public class DynThreadContext {
         @Override
         public String toString() {
             return "undefined";
+        }
+    }
+
+    public static class Null {
+        private Null() {
+        }
+
+        public String typeof() {
+            return "object";
+        }
+
+        @Override
+        public String toString() {
+            return "null";
         }
     }
 }
