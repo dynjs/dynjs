@@ -255,6 +255,12 @@ public class DynJSTest {
         assertThat(result).isEqualTo(expected);
     }
 
+    private void check(String scriptlet, Object expected) {
+        dynJS.eval(context, scriptlet);
+        Object result = context.getScope().resolve("result");
+        assertThat(result).isEqualTo(expected);
+    }
+
     @Test
     public void testJavaRequireFunctionLoading() {
         config.addBuiltin("javaRequire", DynJSCompiler.wrapFunction(context, new JavaRequireFunction()));
