@@ -74,7 +74,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "print", methodType);
-        } else if ("typeof".equals(callSiteDescriptor.getNameToken(0))) {
+        } else if ("typeof".equals(callSiteDescriptor.getName())) {
             Object o = linkRequest.getArguments()[0];
             if (o != null && !PrimitivesLinker.vtable.containsKey(o.getClass())) {
                 Class<? extends Object> targetClass = o.getClass();
