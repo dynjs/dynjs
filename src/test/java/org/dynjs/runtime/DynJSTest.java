@@ -284,4 +284,9 @@ public class DynJSTest {
 
     }
 
+    @Test
+    public void testDeleteOper() {
+        check("var x = {a:'lol'}; var result = delete x.a;", false);
+    }
+
 }

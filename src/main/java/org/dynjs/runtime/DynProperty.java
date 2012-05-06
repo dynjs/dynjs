@@ -21,6 +21,7 @@ import java.util.Map;
 public class DynProperty {
 
     private final Map<String, Object> attributes = new HashMap<>();
+    public boolean configurable = false;
 
     public DynProperty setAttribute(String key, Object value) {
         this.attributes.put(key, value);

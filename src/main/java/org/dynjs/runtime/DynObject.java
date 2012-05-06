@@ -90,11 +90,26 @@ public class DynObject implements Scope {
         return map;
     }
 
-    public String typeof(){
-        if(hasOwnProperty("call")) {
+    public String typeof() {
+        if (hasOwnProperty("call")) {
             return "function";
         }
         return "object";
+    }
+
+    public Boolean delete(String propertyName) {
+        if (hasOwnProperty(propertyName)) {
+            DynProperty property = getProperty(propertyName);
+            if (property.configurable) {
+                this.removeProperty(propertyName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removeProperty(String propertyName) {
+        properties.remove(propertyName);
     }
 
 }
