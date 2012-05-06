@@ -82,6 +82,7 @@ public class DynJSCompiler {
     public static DynObject wrapFunction(final Object prototype, final Function function) {
         return new InternalDynObject(prototype, function);
     }
+
     public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
         return wrapFunction(context.getBuiltin("Function"), function);
     }

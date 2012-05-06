@@ -128,7 +128,7 @@ public class Executor {
         return new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                return new CodeBlock(){{
+                return new CodeBlock() {{
                     append(expression.getCodeBlock());
                     append(new UndefinedValueStatement().getCodeBlock());
                 }};
