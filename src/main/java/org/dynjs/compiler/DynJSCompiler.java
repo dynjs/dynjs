@@ -182,5 +182,13 @@ public class DynJSCompiler {
                 setProperty("construct", function);
             }
         }
+
+        public Boolean hasInstance(Object object) {
+            if (object instanceof DynObject) {
+                Object proto = getProperty("prototype").getAttribute("value");
+                return proto == object;
+            }
+            return false;
+        }
     }
 }

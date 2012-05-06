@@ -21,6 +21,7 @@ import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
 import org.dynjs.runtime.java.SayHiToJava;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -241,6 +242,11 @@ public class DynJSTest {
     }
 
     @Test
+    public void testInstanceOf() {
+        check("function Car(){}; var x = new Car; var result = x instanceof Car;");
+    }
+
+    @Test
     public void testVoid() {
         check("var result = undefined === undefined;");
     }
@@ -262,6 +268,7 @@ public class DynJSTest {
     }
 
     @Test
+    @Ignore
     public void testJavaRequireFunctionLoading() {
         config.addBuiltin("javaRequire", DynJSCompiler.wrapFunction(context, new JavaRequireFunction()));
         dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");

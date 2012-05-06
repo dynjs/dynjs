@@ -196,8 +196,17 @@ public class Executor {
         return new RelationalOperationStatement("ge", l, r);
     }
 
-    public Statement defineInstanceOfRelOp(Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+    public Statement defineInstanceOfRelOp(final Statement l, final Statement r) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                return new CodeBlock() {{
+                    append(l.getCodeBlock());
+                    append(r.getCodeBlock());
+                    invokedynamic("instanceof", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                }};
+            }
+        };
     }
 
     public Statement defineInRelOp(Statement l, Statement r) {

@@ -84,6 +84,17 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         .invokeVirtual(lookup(), "typeof");
                 return new GuardedInvocation(typeof, null);
             }
+        } else if ("instanceof".equals(callSiteDescriptor.getName())) {
+            Object lhs = linkRequest.getArguments()[0];
+            Object rhs = linkRequest.getArguments()[1];
+            if (lhs != null && !PrimitivesLinker.vtable.containsKey(lhs.getClass())) {
+                Class<? extends Object> lhsClass = lhs.getClass();
+                Class<? extends Object> rhsClass = rhs.getClass();
+                MethodHandle typeof = Binder.from(Boolean.class, Object.class, Object.class)
+                        .convert(Boolean.class, lhsClass, Object.class)
+                        .invokeVirtual(lookup(), "hasInstance");
+                return new GuardedInvocation(typeof, null);
+            }
         } else if ("new".equals(callSiteDescriptor.getName())) {
             return new GuardedInvocation(RT.CONSTRUCT, null);
         } else if ("eq".equals(callSiteDescriptor.getName()) && argumentsAreNotStrings(linkRequest.getArguments())) {
