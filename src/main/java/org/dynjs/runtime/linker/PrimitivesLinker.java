@@ -17,6 +17,7 @@ package org.dynjs.runtime.linker;
 
 import org.dynalang.dynalink.linker.*;
 import org.dynalang.dynalink.support.Guards;
+import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.extensions.BooleanOperations;
 import org.dynjs.runtime.extensions.NumberOperations;
 import org.dynjs.runtime.extensions.StringOperations;
@@ -28,7 +29,7 @@ import java.util.Map;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
-    private static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap<Class, Map<String, MethodHandle>>() {{
+    public static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap<Class, Map<String, MethodHandle>>() {{
         put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
         put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
         put(String.class, VTablePopulator.vtableFrom(StringOperations.class));

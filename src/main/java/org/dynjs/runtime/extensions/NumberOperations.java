@@ -70,4 +70,8 @@ public class NumberOperations {
         return a >= b;
     }
 
+    public static String typeof(Double a) {
+        return "number";
+    }
+
 }

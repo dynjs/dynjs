@@ -45,7 +45,7 @@ public class DynJSCompiler {
         this.config = config;
     }
 
-    public Function compile(final DynFunction arg) {
+    public Object compile(final DynThreadContext context, final DynFunction arg) {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
@@ -72,10 +72,18 @@ public class DynJSCompiler {
         }};
         Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
         try {
-            return functionClass.newInstance();
+            Function function = functionClass.newInstance();
+            return wrapFunction(context, function);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static DynObject wrapFunction(final Object prototype, final Function function) {
+        return new InternalDynObject(prototype, function);
+    }
+    public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
+        return wrapFunction(context.getBuiltin("Function"), function);
     }
 
     private CodeBlock fillCallStack(CodeBlock codeBlock) {
@@ -163,5 +171,13 @@ public class DynJSCompiler {
     public static interface Helper {
 
         CodeBlock EMPTY_CODEBLOCK = newCodeBlock();
+    }
+
+    public static class InternalDynObject extends DynObject {
+        public InternalDynObject(Object prototype, Function function) {
+            setProperty("prototype", prototype);
+            setProperty("call", function);
+            setProperty("construct", function);
+        }
     }
 }

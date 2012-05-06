@@ -31,4 +31,8 @@ public class StringOperations {
         return eq(value, other.toString());
     }
 
+    public static String typeof(String a) {
+        return "string";
+    }
+
 }

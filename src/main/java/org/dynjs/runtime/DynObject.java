@@ -90,4 +90,11 @@ public class DynObject implements Scope {
         return map;
     }
 
+    public String typeof(){
+        if(hasOwnProperty("call")) {
+            return "function";
+        }
+        return "object";
+    }
+
 }

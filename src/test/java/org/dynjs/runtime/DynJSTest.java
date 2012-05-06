@@ -15,7 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.api.Function;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
@@ -82,56 +82,27 @@ public class DynJSTest {
 
     @Test
     public void assignsNamedEmptyFunction() {
-        dynJS.eval(context, "function x(){};");
-        assertThat(context.getScope().resolve("x"))
-                .isNotNull()
-                .isInstanceOf(Function.class);
+        check("function x(){}; var result = x();", null);
     }
 
     @Test
     public void assignsAnonymousEmptyFunction() {
-        dynJS.eval(context, "var x = function(a,b,c){};");
-        assertThat(context.getScope().resolve("x"))
-                .isNotNull()
-                .isInstanceOf(Function.class);
+        check("var x = function(a,b,c){}; var result = x();", null);
     }
 
     @Test
     public void buildFunctionWithBody() {
-        dynJS.eval(context, "var x = function(a,b){var w = (1 + 2) * 3;}");
-        Object actual = context.getScope().resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        assertThat(((Function) actual).call(context, new Object[]{}))
-                .isNull();
+        check("var result = (function(a,b){var w = (1 + 2) * 3;})();", null);
     }
 
     @Test
     public void buildFunctionWithMultipleStatementBody() {
-        dynJS.eval(context, "var x = function(){var a = 1;var b = 2; var c = a + b;}");
-        Object actual = context.getScope().resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        assertThat(((Function) actual).call(context, new Object[]{}))
-                .isNull();
+        check("var result = (function(){var a = 1;var b = 2; var c = a + b;})()", null);
     }
 
     @Test
     public void buildFunctionWithReturn() {
-        dynJS.eval(context, "var x = function(){return 1+1;};");
-        Object actual = context.getScope().resolve("x");
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(Function.class);
-
-        assertThat(((Function) actual).call(context, new Object[]{}))
-                .isNotNull()
-                .isInstanceOf(Double.class)
-                .isEqualTo(2.0);
+        check("var result = (function(){return 1+1;})() === 2;");
     }
 
     @Test(expected = ReferenceError.class)
@@ -191,7 +162,7 @@ public class DynJSTest {
     @Test
     public void testNullLiteral() {
         dynJS.eval(context, "var result = null");
-        assertThat(context.getScope().resolve("result")).isNull();
+        assertThat(context.getScope().resolve("result")).isEqualTo(DynThreadContext.NULL);
     }
 
     @Test
@@ -244,8 +215,13 @@ public class DynJSTest {
 
     @Test
     public void testBuiltinLoading() {
-        config.addBuiltin("sample", new BypassFunction());
+        config.addBuiltin("sample", DynJSCompiler.wrapFunction(context, new BypassFunction()));
         check("var result = sample(true);");
+    }
+
+    @Test
+    public void testFunctionCall() {
+        check("var result = (function (){return true;})();");
     }
 
     @Test
@@ -255,7 +231,7 @@ public class DynJSTest {
 
     @Test
     public void testTypeOf() {
-        check("var result = typeof undefined == 'undefined';");
+        check("var result = typeof undefined;", "undefined");
         check("var result = typeof null === 'object';");
         check("var result = typeof {} === 'object';");
         check("var result = typeof true === 'boolean';");
@@ -279,9 +255,15 @@ public class DynJSTest {
         assertThat(result).isEqualTo(expected);
     }
 
+    private void check(String scriptlet, Object expected) {
+        dynJS.eval(context, scriptlet);
+        Object result = context.getScope().resolve("result");
+        assertThat(result).isEqualTo(expected);
+    }
+
     @Test
     public void testJavaRequireFunctionLoading() {
-        config.addBuiltin("javaRequire", new JavaRequireFunction());
+        config.addBuiltin("javaRequire", DynJSCompiler.wrapFunction(context, new JavaRequireFunction()));
         dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
         dynJS.eval(context, "var x = new NiceClass");
 

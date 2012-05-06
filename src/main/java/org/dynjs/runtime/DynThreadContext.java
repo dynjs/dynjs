@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
 
@@ -27,11 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DynThreadContext {
 
     public static final Object UNDEFINED = new Undefined();
-
-    public static final Object NULL = new Object();
+    public static final Object NULL = new Null();
 
     private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
-        put("eval", new Eval());
         put("undefined", UNDEFINED);
         put("NaN", Double.NaN);
         put("Infinity", Double.POSITIVE_INFINITY);
@@ -45,7 +44,10 @@ public class DynThreadContext {
         put("String", new DynObject());
         put("Boolean", new DynObject());
         put("Error", new DynObject());
-        put("Function", new DynObject());
+        put("Function", new DynObject() {{
+            setProperty("prototype", get("Object"));
+        }});
+        put("eval", DynJSCompiler.wrapFunction(get("Function"), new Eval()));
         put("Math", new DynObject());
     }};
 
@@ -123,10 +125,36 @@ public class DynThreadContext {
         return classLoader;
     }
 
-    private static class Undefined {
+    public Object getBuiltin(String name) {
+        return BUILTINS.get(name);
+    }
+
+    public static class Undefined {
+
+        private Undefined() {
+        }
+
+        public String typeof() {
+            return "undefined";
+        }
+
         @Override
         public String toString() {
             return "undefined";
+        }
+    }
+
+    public static class Null {
+        private Null() {
+        }
+
+        public String typeof() {
+            return "object";
+        }
+
+        @Override
+        public String toString() {
+            return "null";
         }
     }
 }

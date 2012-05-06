@@ -32,4 +32,8 @@ public class BooleanOperations {
         return !a;
     }
 
+    public static String typeof(Boolean a) {
+        return "boolean";
+    }
+
 }
