@@ -174,7 +174,7 @@ public class DynJSCompiler {
     }
 
     public static class InternalDynObject extends DynObject {
-        public InternalDynObject(Object prototype, Function function) {
+        public InternalDynObject(Object prototype, Object function) {
             setProperty("prototype", prototype);
             setProperty("call", function);
             setProperty("construct", function);

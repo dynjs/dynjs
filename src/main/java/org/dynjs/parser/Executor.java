@@ -17,6 +17,7 @@ package org.dynjs.parser;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.CommonTree;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.statement.*;
 import org.dynjs.runtime.DynThreadContext;
@@ -316,8 +317,9 @@ public class Executor {
             @Override
             public CodeBlock getCodeBlock() {
                 return CodeBlock.newCodeBlock()
+                        .aload(DynJSCompiler.Arities.CONTEXT)
                         .append(statement.getCodeBlock())
-                        .invokedynamic("newInstance", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                        .invokedynamic("new", sig(Object.class, DynThreadContext.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
         };
     }

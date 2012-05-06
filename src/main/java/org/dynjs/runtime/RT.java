@@ -16,11 +16,13 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Function;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 
 import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Map;
@@ -34,6 +36,15 @@ public class RT {
             p(DynJSBootstrapper.class), "bootstrap", methodType(CallSite.class,
             MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
+    public static final MethodHandle CONSTRUCT;
+
+    static {
+        try {
+            CONSTRUCT = MethodHandles.lookup().findStatic(RT.class, "construct", methodType(Object.class, DynThreadContext.class, Object.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static DynFunction paramPopulator(DynFunction function, Object[] args) {
         String[] parameters = function.getArguments();
@@ -82,5 +93,9 @@ public class RT {
         }
 
         return "undefined";
+    }
+
+    public static Object construct(DynThreadContext context, Object obj) {
+        return new DynJSCompiler.InternalDynObject(obj, null);
     }
 }
