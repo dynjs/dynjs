@@ -231,7 +231,7 @@ public class DynJSTest {
 
     @Test
     public void testTypeOf() {
-        check("var result = typeof undefined == 'undefined';");
+        check("var result = typeof undefined;", "undefined");
         check("var result = typeof null === 'object';");
         check("var result = typeof {} === 'object';");
         check("var result = typeof true === 'boolean';");
