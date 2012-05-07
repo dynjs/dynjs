@@ -57,11 +57,13 @@ public class DynThreadContext {
     private Scope scope = new DynObject();
     private Deque<Function> callStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
+    private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
 
     public DynThreadContext() {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
             scope.define(builin.getKey(), builin.getValue());
         }
+        loadPaths.add(System.getProperty("user.dir"));
     }
 
     public DynJS getRuntime() {
@@ -71,7 +73,7 @@ public class DynThreadContext {
     public void setRuntime(DynJS runtime) {
         this.runtime.set(runtime);
     }
-
+    
     public String defineStringLiteral(final String value) {
         return value;
     }
@@ -157,4 +159,16 @@ public class DynThreadContext {
             return "null";
         }
     }
+
+    public void addLoadPath(String loadPath) {
+    	loadPaths.add(loadPath);
+    }
+    
+    public List<String> getLoadPaths() {
+    	return Collections.unmodifiableList(loadPaths);
+    }
+
+	public void setLoadPaths(List<String> newLoadPaths) {
+	    loadPaths = Collections.synchronizedList(newLoadPaths);		
+	}
 }
