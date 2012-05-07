@@ -1,4 +1,4 @@
-# dyn.js - invokedynamic-based javascript impl
+# dynjs - invokedynamic-based javascript impl
 
 ![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
 
@@ -27,11 +27,11 @@ Download and install it to your user(not to the entire machine) and before runni
 1. fetch the dependencies: **[jitescript]** and **[invokebinder]**
 1. `git clone https://github.com/dynjs/dynjs.git && cd dynjs`
 1. `mvn install`
-1. Get the jar into dynjs/target folder
+1. Get `dynjs-all.jar` into dynjs/target folder
 
 ### Download
 
-Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/dynjs/ws/core/target/dynjs-all.jar) from our CI job.
+Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/dynjs/ws/target/dynjs-all.jar) from our CI job.
 
 ### Running 
 
@@ -43,6 +43,7 @@ Run the snippet below:
 var x = 1 + 1;
 print(x);
 ```
+
 [jitescript]:https://github.com/qmx/jitescript
 [invokebinder]:https://github.com/headius/invokebinder
 [openjdk-osx-build]:http://code.google.com/p/openjdk-osx-build
