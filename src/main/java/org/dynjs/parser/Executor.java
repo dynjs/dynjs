@@ -120,8 +120,19 @@ public class Executor {
         return defineNumOp("mod", l, r);
     }
 
-    public Statement defineDeleteOp(Statement expression) {
-        throw new DynJSException("not implemented yet");
+    public Statement defineDeleteOp(final Statement expression) {
+        return new Statement() {
+            @Override
+            public CodeBlock getCodeBlock() {
+                final Statement lhs = ((ResolveByIndexStatement) expression).getLhs();
+                final Statement index = ((ResolveByIndexStatement) expression).getIndex();
+                return new CodeBlock() {{
+                    append(lhs.getCodeBlock());
+                    append(index.getCodeBlock());
+                    invokedynamic("delete", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                }};
+            }
+        };
     }
 
     public Statement defineVoidOp(final Statement expression) {
