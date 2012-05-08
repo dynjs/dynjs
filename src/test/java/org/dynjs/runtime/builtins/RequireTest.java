@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynThreadContext;
@@ -48,6 +49,15 @@ public class RequireTest {
     @Test
     public void testExportsFunctions() {
     	check("var result = require('my_module').sayHello();", "Hello again");
+    }
+    
+    @Test
+    public void testKeepsPrivateVariablesPrivate() {
+    	try {
+    		check("var result = require('my_module').privateVariable", null);
+    	} catch (ReferenceError error) {
+    		assertThat(error.getMessage()).isEqualTo("privateVariable not found");
+    	}
     }
     
     private void check(String scriptlet, Object expected) {
