@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.DynThreadContext;
 
 public class Require implements Function {
@@ -40,9 +41,12 @@ public class Require implements Function {
 					evalContext.getScope().define("exports", null);
 					evalContext.setLoadPaths(context.getLoadPaths());
 					context.getRuntime().eval(evalContext, new FileInputStream(file));
-					exports = context.getScope().resolve("exports");
+					try {
+						exports = evalContext.getScope().resolve("exports");
+					} catch (ReferenceError error) {
+						System.err.println(error.getLocalizedMessage());
+					}
 				} catch (FileNotFoundException e) {
-					// Should not get here
 					System.err.println("Module not found: " + filename);
 				}
 			} else {
@@ -60,9 +64,7 @@ public class Require implements Function {
 		File file = null;
 		Iterator<String> iterator = context.getLoadPaths().iterator(); 
 		while (iterator.hasNext()) {
-			String fullPath = iterator.next() + fileName;
-			file = new File(fullPath);
-			System.out.println("Lookingn for: " + fullPath);
+			file = new File(iterator.next() + fileName);
 			if (file.exists()) { break; }
 		}
 		return file;

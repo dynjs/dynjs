@@ -1,1 +1,2 @@
-var is_truth = true;
+var exports = "Hello world"
+
