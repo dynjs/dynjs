@@ -30,13 +30,17 @@ public class Require implements Function {
 	@Override
 	public Object call(DynThreadContext context, Object[] arguments) {
 		// TODO: This should be a real thingy
-		Object exports = false;
+		Object exports = null;
 		if (arguments.length > 0) {
 			String filename = normalizeFileName( (String) arguments[0] );
 			File file = findFile(context, filename);
 			if (file != null) {
 				try {
-					context.getRuntime().eval(context, new FileInputStream(file));
+					DynThreadContext evalContext = new DynThreadContext();
+					evalContext.getScope().define("exports", null);
+					evalContext.setLoadPaths(context.getLoadPaths());
+					context.getRuntime().eval(evalContext, new FileInputStream(file));
+					exports = context.getScope().resolve("exports");
 				} catch (FileNotFoundException e) {
 					// Should not get here
 					System.err.println("Module not found: " + filename);
@@ -44,7 +48,6 @@ public class Require implements Function {
 			} else {
 				System.err.println("Module not found: " + filename);
 			}
-			exports = true;
 		}
 		return exports;
 	}
@@ -57,7 +60,9 @@ public class Require implements Function {
 		File file = null;
 		Iterator<String> iterator = context.getLoadPaths().iterator(); 
 		while (iterator.hasNext()) {
-			file = new File(iterator.next());
+			String fullPath = iterator.next() + fileName;
+			file = new File(fullPath);
+			System.out.println("Lookingn for: " + fullPath);
 			if (file.exists()) { break; }
 		}
 		return file;

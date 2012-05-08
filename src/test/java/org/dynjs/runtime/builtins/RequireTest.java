@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynThreadContext;
@@ -12,25 +13,26 @@ public class RequireTest {
     private DynJS dynJS;
     private DynThreadContext context;
     private DynJSConfig config;
+    private Require require;
 
     @Before
     public void setUp() {
         config  = new DynJSConfig();
-        config.addBuiltin("require", new Require());
-
+        require = new Require();
         context = new DynThreadContext();
         context.addLoadPath(System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/");
+        config.addBuiltin("require", DynJSCompiler.wrapFunction(context, require));
         dynJS   = new DynJS(config);
     }
 
     @Test
-    public void testReturnsFalseWithoutAnArgument() {
-        check("var result = !require();");
+    public void testReturnsNullWithoutAnArgument() {
+        check("var result = (null == require());");
     }
 
     @Test
-    public void testReturnsFalseWhenTheFileIsNotFound() {
-        check("var result = !require('nonexistant_module');");
+    public void testReturnsNullWhenTheFileIsNotFound() {
+        check("var result = (null == require('nonexistant_module'));");
     }
     
     @Test
@@ -41,11 +43,6 @@ public class RequireTest {
     @Test
     public void testAllowsFileExtension() {
         check("var result = require('my_module.js');");
-    }
-    
-    @Test
-    public void testExportsGlobals() {
-    	check( "var result = require('my_module') && is_truth;" );
     }
     
     private void check(String scriptlet) {

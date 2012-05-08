@@ -29,7 +29,7 @@ public class DynThreadContextTest {
         // load paths for Node.js parity. DYNJS-42
         List<String> paths = context.getLoadPaths();
         assertThat(paths.size()).isEqualTo(1);
-        assertThat(paths.get(0)).isEqualTo(System.getProperty("user.dir"));
+        assertThat(paths.get(0)).isEqualTo(System.getProperty("user.dir") + "/");
 	}
 	
 	@Test

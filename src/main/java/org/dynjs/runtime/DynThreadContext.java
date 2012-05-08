@@ -21,6 +21,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.Require;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -63,7 +64,7 @@ public class DynThreadContext {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
             scope.define(builin.getKey(), builin.getValue());
         }
-        loadPaths.add(System.getProperty("user.dir"));
+        loadPaths.add(System.getProperty("user.dir") + "/");
     }
 
     public DynJS getRuntime() {
