@@ -1,2 +1,2 @@
-var exports = "Hello world"
+exports.message = "Hello world";
 

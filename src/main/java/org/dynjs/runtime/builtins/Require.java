@@ -30,7 +30,6 @@ public class Require implements Function {
 
 	@Override
 	public Object call(DynThreadContext context, Object[] arguments) {
-		// TODO: This should be a real thingy
 		Object exports = null;
 		if (arguments.length > 0) {
 			String filename = normalizeFileName( (String) arguments[0] );
@@ -38,8 +37,8 @@ public class Require implements Function {
 			if (file != null) {
 				try {
 					DynThreadContext evalContext = new DynThreadContext();
-					evalContext.getScope().define("exports", null);
 					evalContext.setLoadPaths(context.getLoadPaths());
+					context.getRuntime().eval(evalContext, "var exports = {};");
 					context.getRuntime().eval(evalContext, new FileInputStream(file));
 					try {
 						exports = evalContext.getScope().resolve("exports");
