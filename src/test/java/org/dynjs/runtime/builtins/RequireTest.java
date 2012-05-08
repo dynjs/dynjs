@@ -37,19 +37,17 @@ public class RequireTest {
     
     @Test
     public void testReturnsExportsWhenTheFileIsFound() {
-        check("var result = require('my_module');", "Hello world");
+        check("var result = require('my_module').message;", "Hello world");
     }
     
     @Test
     public void testAllowsFileExtension() {
-        check("var result = require('my_module.js');", "Hello world");
+        check("var result = require('my_module.js').message;", "Hello world");
     }
     
     private void check(String scriptlet, Object expected) {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
-        System.err.println("EXPECTING: " + expected);
-        System.err.println("RESULT IS: " + result);
         assertThat(result).isEqualTo(expected);
     }
 }
