@@ -32,8 +32,10 @@ public class Require implements Function {
 	public Object call(DynThreadContext context, Object[] arguments) {
 		Object exports = null;
 		if (arguments.length > 0) {
-			String filename = normalizeFileName( (String) arguments[0] );
+			String moduleName = (String) arguments[0];
+			String filename = normalizeFileName( moduleName );
 			File file = findFile(context, filename);
+			if (file == null) { file = findFile(context, moduleName + "/index.js"); }
 			if (file != null) {
 				try {
 					DynThreadContext evalContext = new DynThreadContext();
@@ -63,8 +65,11 @@ public class Require implements Function {
 		File file = null;
 		Iterator<String> iterator = context.getLoadPaths().iterator(); 
 		while (iterator.hasNext()) {
-			file = new File(iterator.next() + fileName);
+			String path = iterator.next();
+//			System.err.println("Looking for " + path + fileName);
+			file = new File(path + fileName);
 			if (file.exists()) { break; }
+			else { file = null; }
 		}
 		return file;
 	}

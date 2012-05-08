@@ -2,7 +2,6 @@ package org.dynjs.runtime.builtins;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynJSConfig;
@@ -14,12 +13,11 @@ public class RequireTest {
     private DynJS dynJS;
     private DynThreadContext context;
     private DynJSConfig config;
-    private Require require;
-
+    
     @Before
     public void setUp() {
         config  = new DynJSConfig();
-        require = new Require();
+        new Require();
         context = new DynThreadContext();
         context.addLoadPath(System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/");
         dynJS   = new DynJS(config);
@@ -43,6 +41,11 @@ public class RequireTest {
     @Test
     public void testAllowsFileExtension() {
         check("var result = require('my_module.js').message;", "Hello world");
+    }
+    
+    @Test
+    public void testFindsPackagedModules() {
+    	check("var result = require('amodule').message", "Hello world");
     }
     
     @Test

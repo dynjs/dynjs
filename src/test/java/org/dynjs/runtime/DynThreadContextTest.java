@@ -1,12 +1,10 @@
 package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dynjs.runtime.builtins.Require;
 import org.junit.Before;
 import org.junit.Test;
 
