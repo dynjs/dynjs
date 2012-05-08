@@ -15,24 +15,28 @@
  */
 package org.dynjs.runtime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
+
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.SyntaxError;
-import org.dynjs.parser.*;
+import org.dynjs.parser.ES3Lexer;
+import org.dynjs.parser.ES3Parser;
+import org.dynjs.parser.ES3Walker;
+import org.dynjs.parser.Executor;
+import org.dynjs.parser.Statement;
 import org.dynjs.runtime.loader.Builtin;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
 
 public class DynJS {
 

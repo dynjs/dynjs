@@ -15,16 +15,23 @@
  */
 package org.dynjs.runtime;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import me.qmx.jitescript.CodeBlock;
+
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
-import org.dynjs.runtime.builtins.Require;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DynThreadContext {
 
