@@ -16,6 +16,7 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
@@ -34,14 +35,19 @@ public class AssignmentOperationStatement implements Statement {
     public CodeBlock getCodeBlock() {
         if (lhs instanceof ResolveByIndexStatement) {
             ResolveByIndexStatement statement = (ResolveByIndexStatement) lhs;
-            Statement targetObject = statement.getLhs();
-            Statement index = statement.getIndex();
-            return CodeBlock.newCodeBlock()
-                    .append(targetObject.getCodeBlock())
-                    .append(index.getCodeBlock())
-                    .append(rhs.getCodeBlock())
-                    .invokedynamic("dyn:setElement", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            final Statement targetObject = statement.getLhs();
+            final Statement index = statement.getIndex();
+            return new CodeBlock() {{
+                append(targetObject.getCodeBlock());
+                append(index.getCodeBlock());
+                append(rhs.getCodeBlock());
+                if (index instanceof StringLiteralStatement) {
+                    invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                } else {
+                    invokedynamic("dyn:setElement", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                }
+            }};
         }
-        return null;
+        throw new DynJSException("not inplemented");
     }
 }

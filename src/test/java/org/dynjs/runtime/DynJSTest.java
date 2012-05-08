@@ -215,6 +215,11 @@ public class DynJSTest {
     }
 
     @Test
+    public void testObjectAssignment() {
+        check("var x = {}; x.a = 'lol'; var result = x.a == 'lol';");
+    }
+
+    @Test
     public void testBuiltinLoading() {
         config.addBuiltin("sample", DynJSCompiler.wrapFunction(context, new BypassFunction()));
         check("var result = sample(true);");
