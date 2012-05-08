@@ -15,15 +15,24 @@
  */
 package org.dynjs.runtime;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import me.qmx.jitescript.CodeBlock;
+
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import org.dynjs.runtime.builtins.Require;
 
 public class DynThreadContext {
 
@@ -48,6 +57,7 @@ public class DynThreadContext {
             setProperty("prototype", get("Object"));
         }});
         put("eval", DynJSCompiler.wrapFunction(get("Function"), new Eval()));
+        put("require", DynJSCompiler.wrapFunction(get("Function"), new Require()));
         put("Math", new DynObject());
     }};
 
@@ -57,11 +67,16 @@ public class DynThreadContext {
     private Scope scope = new DynObject();
     private Deque<Function> callStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
+    private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
 
     public DynThreadContext() {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
             scope.define(builin.getKey(), builin.getValue());
         }
+        loadPaths.add(System.getProperty("user.dir") + "/");
+        loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
+        loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
+        loadPaths.add("/usr/local/lib/node/");
     }
 
     public DynJS getRuntime() {
@@ -71,7 +86,7 @@ public class DynThreadContext {
     public void setRuntime(DynJS runtime) {
         this.runtime.set(runtime);
     }
-
+    
     public String defineStringLiteral(final String value) {
         return value;
     }
@@ -157,4 +172,16 @@ public class DynThreadContext {
             return "null";
         }
     }
+
+    public void addLoadPath(String loadPath) {
+    	loadPaths.add(loadPath);
+    }
+    
+    public List<String> getLoadPaths() {
+    	return Collections.unmodifiableList(loadPaths);
+    }
+
+	public void setLoadPaths(List<String> newLoadPaths) {
+	    loadPaths = Collections.synchronizedList(newLoadPaths);		
+	}
 }
