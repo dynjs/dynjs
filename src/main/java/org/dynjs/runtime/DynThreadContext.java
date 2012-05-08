@@ -74,8 +74,8 @@ public class DynThreadContext {
             scope.define(builin.getKey(), builin.getValue());
         }
         loadPaths.add(System.getProperty("user.dir") + "/");
-        loadPaths.add(System.getProperty("user.dir") + "/.node_modules/");
-        loadPaths.add(System.getProperty("user.dir") + "/.node_libraries/");
+        loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
+        loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
         loadPaths.add("/usr/local/lib/node/");
     }
 

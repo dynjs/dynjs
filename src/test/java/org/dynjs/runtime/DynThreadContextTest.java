@@ -30,8 +30,8 @@ public class DynThreadContextTest {
         List<String> paths = context.getLoadPaths();
         assertThat(paths.size()).isGreaterThan(0);
         assertThat(paths.contains(System.getProperty("user.dir") + "/")).isTrue();
-        assertThat(paths.contains(System.getProperty("user.dir") + "/.node_modules/")).isTrue();
-        assertThat(paths.contains(System.getProperty("user.dir") + "/.node_libraries/")).isTrue();
+        assertThat(paths.contains(System.getProperty("user.home") + "/.node_modules/")).isTrue();
+        assertThat(paths.contains(System.getProperty("user.home") + "/.node_libraries/")).isTrue();
         assertThat(paths.contains("/usr/local/lib/node/")).isTrue();
 	}
 	
