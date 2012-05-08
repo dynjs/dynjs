@@ -45,6 +45,11 @@ public class RequireTest {
         check("var result = require('my_module.js').message;", "Hello world");
     }
     
+    @Test
+    public void testExportsFunctions() {
+    	check("var result = require('my_module').sayHello();", "Hello again");
+    }
+    
     private void check(String scriptlet, Object expected) {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
