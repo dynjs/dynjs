@@ -32,6 +32,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.Require;
 
 public class DynThreadContext {
 
@@ -56,6 +57,7 @@ public class DynThreadContext {
             setProperty("prototype", get("Object"));
         }});
         put("eval", DynJSCompiler.wrapFunction(get("Function"), new Eval()));
+        put("require", DynJSCompiler.wrapFunction(get("Function"), new Require()));
         put("Math", new DynObject());
     }};
 

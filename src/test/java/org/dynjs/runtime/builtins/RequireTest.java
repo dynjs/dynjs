@@ -22,7 +22,6 @@ public class RequireTest {
         require = new Require();
         context = new DynThreadContext();
         context.addLoadPath(System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/");
-        config.addBuiltin("require", DynJSCompiler.wrapFunction(context, require));
         dynJS   = new DynJS(config);
     }
 
