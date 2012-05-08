@@ -28,8 +28,11 @@ public class DynThreadContextTest {
         // TODO: This should include the classpath (perhaps), and the expected
         // load paths for Node.js parity. DYNJS-42
         List<String> paths = context.getLoadPaths();
-        assertThat(paths.size()).isEqualTo(1);
-        assertThat(paths.get(0)).isEqualTo(System.getProperty("user.dir") + "/");
+        assertThat(paths.size()).isGreaterThan(0);
+        assertThat(paths.contains(System.getProperty("user.dir") + "/")).isTrue();
+        assertThat(paths.contains(System.getProperty("user.dir") + "/.node_modules/")).isTrue();
+        assertThat(paths.contains(System.getProperty("user.dir") + "/.node_libraries/")).isTrue();
+        assertThat(paths.contains("/usr/local/lib/node/")).isTrue();
 	}
 	
 	@Test
