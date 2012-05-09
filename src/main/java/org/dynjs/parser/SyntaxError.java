@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.exception;
+package org.dynjs.parser;
 
 import org.antlr.runtime.RecognitionException;
 
-public class SyntaxError extends DynJSException {
+public class SyntaxError extends ParserException {
 
     public SyntaxError(RecognitionException e) {
         super(e);

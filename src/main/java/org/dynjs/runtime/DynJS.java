@@ -30,7 +30,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.exception.SyntaxError;
+import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;

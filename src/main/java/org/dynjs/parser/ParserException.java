@@ -17,15 +17,23 @@
 package org.dynjs.parser;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.exception.DynJSException;
 
-public class Position {
+public class ParserException extends DynJSException {
 
-    public Position(final Tree tree) {
-
+    public ParserException() {
+        super();
     }
 
-    @Override
-    public String toString() {
-        return "<>";
+    public ParserException(final Exception e) {
+        super(e);
+    }
+
+    public ParserException(final String message, final Tree tree) {
+        this(message, new Position(tree));
+    }
+
+    public ParserException(final String message, final Position position) {
+        super(position.toString() + " " + message);
     }
 }

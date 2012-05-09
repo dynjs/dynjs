@@ -18,7 +18,6 @@ package org.dynjs.parser;
 import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
@@ -129,15 +128,15 @@ public class Executor {
     }
 
     public Statement defineShlOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineShrOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineShuOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineDivOp(final Tree tree, Statement l, Statement r) {
@@ -169,15 +168,15 @@ public class Executor {
     }
 
     public Statement definePosOp(final Tree tree, Statement expression) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineNegOp(final Tree tree, Statement expression) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineInvOp(final Tree tree, Statement expression) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineNotOp(final Tree tree, Statement expression) {
@@ -213,7 +212,7 @@ public class Executor {
     }
 
     public Statement defineInRelOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineLorOp(final Tree tree, final Statement l, final Statement r) {
@@ -225,15 +224,15 @@ public class Executor {
     }
 
     public Statement defineAndBitOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineOrBitOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineXorBitOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineEqOp(final Tree tree, final Statement l, final Statement r) {
@@ -277,27 +276,27 @@ public class Executor {
     }
 
     public Statement defineShlAssOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineShrAssOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineShuAssOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineAndAssOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineXorAssOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineOrAssOp(final Tree tree, Statement l, Statement r) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineQueOp(final Tree tree, Statement ex1, Statement ex2, Statement ex3) {
@@ -305,7 +304,7 @@ public class Executor {
     }
 
     public Statement defineThisLiteral(final Tree tree) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineNullLiteral(final Tree tree) {
@@ -313,7 +312,7 @@ public class Executor {
     }
 
     public Statement defineRegExLiteral(final Tree tree) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineTrueLiteral(final Tree tree) {
@@ -353,23 +352,23 @@ public class Executor {
     }
 
     public Statement forStepExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement expr3, Statement statement) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement forIterExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement statement) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement continueStatement(final Tree tree, String id) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement breakStatement(final Tree tree, String id) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement exprListStatement(final List<Statement> exprList) {
@@ -381,15 +380,15 @@ public class Executor {
     }
 
     public Statement switchStatement(final Tree tree, Statement expr, Statement _default, List<Statement> cases) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement switchCaseClause(final Tree tree, Statement expr, List<Statement> statements) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement switchDefaultClause(final Tree tree, List<Statement> statements) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement throwStatement(final Tree tree, final Statement expression) {
@@ -397,23 +396,23 @@ public class Executor {
     }
 
     public Statement tryStatement(final Tree tree, Statement block, Statement _catch, Statement _finally) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement withStatement(final Tree tree, Statement expression, Statement statement) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement labelledStatement(final Tree tree, String label, Statement statement) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement objectValue(final Tree tree, List<Statement> namedValues) {
@@ -429,7 +428,7 @@ public class Executor {
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {
-        throw new DynJSException("not implemented yet");
+        throw new ParserException("not implemented yet", numericLiteral.getPosition());
     }
 
     public Statement namedValue(final Tree tree, final Statement propertyName, final Statement expr) {
