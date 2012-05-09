@@ -79,7 +79,7 @@ public class DynJSTestRunner extends Runner {
             try {
                 DynThreadContext context = new DynThreadContext();
                 final InputStream stream = testClass.getResourceAsStream(file);
-                dynJS.eval(context, stream);
+                dynJS.eval(context, stream, file);
                 result = (Boolean) context.getScope().resolve("result");
                 if (result) {
                     notifier.fireTestFinished(description);

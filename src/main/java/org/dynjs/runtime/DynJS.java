@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -30,12 +29,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.loader.Builtin;
 
 public class DynJS {
@@ -49,25 +48,37 @@ public class DynJS {
     }
 
     public void eval(DynThreadContext context, String expression) {
-        execute(context, parseSourceCode(context, expression));
+        execute(context, parseSourceCode(context, expression, null));
+    }
+
+    public void eval(DynThreadContext context, String expression, String filename) {
+        execute(context, parseSourceCode(context, expression, filename));
     }
 
     public void eval(DynThreadContext context, InputStream is) {
-        execute(context, parseSourceCode(context, is));
+        execute(context, parseSourceCode(context, is, null));
     }
 
-    private List<Statement> parseSourceCode(DynThreadContext context, String code) {
+    public void eval(DynThreadContext context, InputStream is, String filename) {
+        execute(context, parseSourceCode(context, is, filename));
+    }
+
+    private List<Statement> parseSourceCode(DynThreadContext context, String code, String filename) {
         try {
-            ES3Lexer lexer = new ES3Lexer(new ANTLRStringStream(code));
+            final ANTLRStringStream stream = new ANTLRStringStream(code);
+            stream.name = filename;
+            ES3Lexer lexer = new ES3Lexer(stream);
             return parseSourceCode(context, lexer);
         } catch (RecognitionException e) {
             throw new SyntaxError(e);
         }
     }
 
-    private List<Statement> parseSourceCode(DynThreadContext context, InputStream inputStream) {
+    private List<Statement> parseSourceCode(DynThreadContext context, InputStream inputStream, String filename) {
         try {
-            ES3Lexer lexer = new ES3Lexer(new ANTLRInputStream(inputStream));
+            final ANTLRInputStream stream = new ANTLRInputStream(inputStream);
+            stream.name = filename;
+            ES3Lexer lexer = new ES3Lexer(stream);
             return parseSourceCode(context, lexer);
         } catch (RecognitionException e) {
             throw new SyntaxError(e);

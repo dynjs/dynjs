@@ -15,6 +15,10 @@
  */
 package org.dynjs.cli;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 import org.dynjs.DynJSVersion;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.DynJS;
@@ -23,10 +27,6 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 
 public class Main {
 
@@ -73,7 +73,7 @@ public class Main {
     private void executeFile(String filename) {
         try {
             final DynJSConfig cfg = new DynJSConfig();
-            new DynJS(cfg).eval(context, new FileInputStream(filename));
+            new DynJS(cfg).eval(context, new FileInputStream(filename), filename);
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");
         }
