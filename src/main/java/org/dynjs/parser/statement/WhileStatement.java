@@ -16,19 +16,20 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class WhileStatement implements Statement {
+public class WhileStatement extends BaseStatement implements Statement {
 
     private final Statement vbool;
     private final BlockStatement vloop;
 
-    public WhileStatement(Statement vbool, Statement vloop) {
+    public WhileStatement(final Tree tree, Statement vbool, Statement vloop) {
+        super(tree);
         this.vbool = vbool;
         this.vloop = (BlockStatement) vloop;
     }

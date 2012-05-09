@@ -16,20 +16,21 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NumberLiteralStatement implements Statement {
+public class NumberLiteralStatement extends BaseStatement implements Statement {
 
     private final String value;
     private final int radix;
 
-    public NumberLiteralStatement(String value, int radix) {
+    public NumberLiteralStatement(final Tree tree, final String value, final int radix) {
+        super(tree);
         this.value = value;
         this.radix = radix;
     }

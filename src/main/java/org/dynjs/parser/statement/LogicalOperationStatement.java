@@ -16,19 +16,21 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class LogicalOperationStatement implements Statement {
+public class LogicalOperationStatement extends BaseStatement implements Statement {
 
     private final String operator;
     private final Statement l;
     private final Statement r;
 
-    public LogicalOperationStatement(String operator, Statement l, Statement r) {
+    public LogicalOperationStatement(final Tree tree, final String operator, final Statement l, final Statement r) {
+        super(tree);
         this.operator = operator;
         this.l = l;
         this.r = r;

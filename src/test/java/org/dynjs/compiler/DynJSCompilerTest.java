@@ -17,6 +17,7 @@ package org.dynjs.compiler;
 
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Scope;
+import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
@@ -25,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.asm.tree.LabelNode;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+import static me.qmx.jitescript.CodeBlock.*;
 
 public class DynJSCompilerTest {
 
@@ -59,6 +60,10 @@ public class DynJSCompilerTest {
                         .ldc("else reached")
                         .label(vout)
                         .aconst_null();
+            }
+
+            @Override public Position getPosition() {
+                return null;
             }
         }).execute(new DynThreadContext());
     }

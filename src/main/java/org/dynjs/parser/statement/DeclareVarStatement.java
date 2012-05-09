@@ -16,19 +16,21 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class DeclareVarStatement implements Statement {
+public class DeclareVarStatement extends BaseStatement implements Statement {
 
     private final Statement expr;
     private final String id;
 
-    public DeclareVarStatement(Statement expr, String id) {
+    public DeclareVarStatement(final Tree tree, final Tree treeId, final Statement expr, final String id) {
+        super(tree);
         this.expr = expr;
         this.id = id;
     }

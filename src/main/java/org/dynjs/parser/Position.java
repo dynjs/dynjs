@@ -13,14 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.dynjs.parser;
 
-import me.qmx.jitescript.CodeBlock;
-
-public interface Statement {
-
-    CodeBlock getCodeBlock();
-
-    Position getPosition();
+public interface Position {
 
 }

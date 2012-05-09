@@ -1505,7 +1505,7 @@ defaultClause
 
 labelledStatement
 	: Identifier COLON statement
-	-> ^( LABELLED Identifier statement )
+	-> ^( LABELLED[$COLON] Identifier statement )
 	;
 
 // $>

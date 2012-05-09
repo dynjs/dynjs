@@ -16,20 +16,20 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class ResolveIdentifierStatement implements Statement {
+public class ResolveIdentifierStatement extends BaseStatement implements Statement {
 
     private final String name;
 
-    public ResolveIdentifierStatement(String name) {
+    public ResolveIdentifierStatement(final Tree tree, final String name) {
+        super(tree);
         this.name = name;
     }
 

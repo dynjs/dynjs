@@ -16,18 +16,19 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.compiler.DynJSCompiler;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NamedValueStatement implements Statement {
+public class NamedValueStatement extends BaseStatement implements Statement {
 
     private final Statement propertyName;
     private final Statement expr;
 
-    public NamedValueStatement(Statement propertyName, Statement expr) {
+    public NamedValueStatement(final Tree tree, final Statement propertyName, final Statement expr) {
+        super(tree);
         this.propertyName = propertyName;
         this.expr = expr;
     }

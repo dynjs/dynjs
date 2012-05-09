@@ -13,26 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.dynjs.parser.statement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-public class PreIncrementStatement extends AbstractUnaryOperationStatement {
+public class ExpressionListStatement extends BaseStatement implements Statement {
 
-    public PreIncrementStatement(final Tree tree, final Statement expression) {
-        super(tree, expression);
+    private final List<Statement> exprList;
+
+    public ExpressionListStatement(final Tree tree, final List<Statement> exprList) {
+        super(tree);
+        this.exprList = new ArrayList<Statement>(exprList);
     }
 
     @Override
-    protected String operation() {
-        return "add";
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock() {{
+            for (Statement statement : exprList) {
+                append(statement.getCodeBlock());
+            }
+        }};
     }
-
-    @Override
-    protected CodeBlock after() {
-        return store();
-    }
-
 }

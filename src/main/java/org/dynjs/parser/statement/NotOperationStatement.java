@@ -16,17 +16,19 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NotOperationStatement implements Statement {
+public class NotOperationStatement extends BaseStatement implements Statement {
 
     private final Statement s;
 
-    public NotOperationStatement(Statement s) {
+    public NotOperationStatement(final Tree tree, final Statement s) {
+        super(tree);
         this.s = s;
     }
 

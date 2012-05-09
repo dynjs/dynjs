@@ -13,14 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser;
 
-import me.qmx.jitescript.CodeBlock;
+package org.dynjs.parser.statement;
 
-public interface Statement {
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.Position;
 
-    CodeBlock getCodeBlock();
+public abstract class BaseStatement {
 
-    Position getPosition();
+    private Tree tree;
 
+    BaseStatement(final Tree tree) {
+        this.tree = tree;
+    }
+
+    public Position getPosition() {
+        return null;
+    }
 }

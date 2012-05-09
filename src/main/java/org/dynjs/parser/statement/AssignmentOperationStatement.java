@@ -16,17 +16,20 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class AssignmentOperationStatement implements Statement {
+public class AssignmentOperationStatement extends BaseStatement implements Statement {
+
     private final Statement lhs;
     private final Statement rhs;
 
-    public AssignmentOperationStatement(Statement lhs, Statement rhs) {
+    public AssignmentOperationStatement(final Tree tree, final Statement lhs, final Statement rhs) {
+        super(tree);
         this.lhs = lhs;
         this.rhs = rhs;
     }

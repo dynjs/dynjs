@@ -16,23 +16,24 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.objectweb.asm.tree.LabelNode;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class IfStatement implements Statement {
+public class IfStatement extends BaseStatement implements Statement {
 
     private final DynThreadContext context;
     private final Statement vbool;
     private final Statement vthen;
     private final Statement velse;
 
-    public IfStatement(DynThreadContext context, Statement vbool, Statement vthen, Statement velse) {
+    public IfStatement(final Tree tree, final DynThreadContext context, final Statement vbool, final Statement vthen, final Statement velse) {
+        super(tree);
         this.context = context;
         this.vbool = vbool;
         this.vthen = vthen;

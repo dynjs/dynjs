@@ -13,14 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser;
+
+package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.Statement;
 
-public interface Statement {
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-    CodeBlock getCodeBlock();
+public class ThrowStatement extends BaseStatement implements Statement {
 
-    Position getPosition();
+    public ThrowStatement(final Tree tree) {
+        super(tree);
+    }
+
+    @Override
+    public CodeBlock getCodeBlock() {
+        return CodeBlock.newCodeBlock()
+                .newobj(p(RuntimeException.class))
+                .dup()
+                .invokespecial(p(RuntimeException.class), "<init>", sig(void.class))
+                .athrow();
+    }
 
 }

@@ -16,22 +16,24 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.compiler.DynJSCompiler;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class ResolveByIndexStatement implements Statement {
+public class ResolveByIndexStatement extends BaseStatement implements Statement {
 
     private final Statement lhs;
     private final Statement index;
 
-    public ResolveByIndexStatement(Statement lhs, String index) {
-        this(lhs, new StringLiteralStatement(index));
+    public ResolveByIndexStatement(final Tree tree, final Statement lhs, final Tree treeIndex, final String index) {
+        this(tree, lhs, new StringLiteralStatement(treeIndex, index));
 
     }
-    public ResolveByIndexStatement(Statement lhs, Statement index) {
+
+    public ResolveByIndexStatement(final Tree tree, final Statement lhs, final Statement index) {
+        super(tree);
         this.lhs = lhs;
         this.index = index;
     }
@@ -41,7 +43,7 @@ public class ResolveByIndexStatement implements Statement {
         CodeBlock codeBlock = CodeBlock.newCodeBlock()
                 .append(lhs.getCodeBlock())
                 .append(index.getCodeBlock());
-        if(index instanceof NumberLiteralStatement){
+        if (index instanceof NumberLiteralStatement) {
             return codeBlock.invokedynamic("dyn:getElement", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         } else {
             return codeBlock.invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);

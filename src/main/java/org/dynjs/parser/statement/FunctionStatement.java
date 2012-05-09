@@ -15,32 +15,32 @@
  */
 package org.dynjs.parser.statement;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Function;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-import java.util.List;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
-public class FunctionStatement implements Statement {
+public class FunctionStatement extends BaseStatement implements Statement {
 
     private final DynThreadContext context;
     private final String identifier;
     private final List<String> args;
     private final Statement block;
 
-    public FunctionStatement(final DynThreadContext context, final List<String> args, final Statement block) {
-        this(context, null, args, block);
+    public FunctionStatement(final Tree tree, final DynThreadContext context, final List<String> args, final Statement block) {
+        this(tree, context, null, args, block);
     }
 
-    public FunctionStatement(final DynThreadContext context, final String identifier, final List<String> args, final Statement block) {
+    public FunctionStatement(final Tree tree, final DynThreadContext context, final String identifier, final List<String> args, final Statement block) {
+        super(tree);
         this.context = context;
         this.identifier = identifier;
         this.args = args;

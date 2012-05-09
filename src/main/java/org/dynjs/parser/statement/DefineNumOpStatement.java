@@ -16,19 +16,21 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class DefineNumOpStatement implements Statement {
+public class DefineNumOpStatement extends BaseStatement implements Statement {
 
     private final String operation;
     private final Statement leftHandStatement;
     private final Statement rightHandStatement;
 
-    public DefineNumOpStatement(String operation, Statement leftHandStatement, Statement rightHandStatement) {
+    public DefineNumOpStatement(final Tree tree, final String operation, final Statement leftHandStatement, final Statement rightHandStatement) {
+        super(tree);
         this.operation = operation;
         this.leftHandStatement = leftHandStatement;
         this.rightHandStatement = rightHandStatement;

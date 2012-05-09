@@ -16,18 +16,20 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NotEqualsOperationStatement implements Statement {
+public class NotEqualsOperationStatement extends BaseStatement implements Statement {
 
     private final Statement l;
     private final Statement r;
 
-    public NotEqualsOperationStatement(Statement l, Statement r) {
+    public NotEqualsOperationStatement(final Tree tree, final Statement l, final Statement r) {
+        super(tree);
         this.l = l;
         this.r = r;
     }

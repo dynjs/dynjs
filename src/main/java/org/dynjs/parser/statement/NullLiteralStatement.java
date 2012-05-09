@@ -16,14 +16,18 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NullLiteralStatement implements Statement {
+public class NullLiteralStatement extends BaseStatement implements Statement {
+
+    public NullLiteralStatement(final Tree tree) {
+        super(tree);
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

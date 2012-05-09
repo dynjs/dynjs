@@ -16,18 +16,20 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public abstract class AbstractUnaryOperationStatement implements Statement {
+public abstract class AbstractUnaryOperationStatement extends BaseStatement implements Statement {
 
     private final Statement expression;
 
-    public AbstractUnaryOperationStatement(Statement expression) {
+    public AbstractUnaryOperationStatement(final Tree tree, final Statement expression) {
+        super(tree);
         this.expression = expression;
     }
 
@@ -65,7 +67,7 @@ public abstract class AbstractUnaryOperationStatement implements Statement {
 
     private CodeBlock processOperation() {
         return newCodeBlock()
-                .append(new NumberLiteralStatement("1", 10).getCodeBlock())
+                .append(new NumberLiteralStatement(null, "1", 10).getCodeBlock())
                 .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
     }
 

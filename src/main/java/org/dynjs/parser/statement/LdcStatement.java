@@ -16,15 +16,17 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+import static me.qmx.jitescript.CodeBlock.*;
 
-public class LdcStatement implements Statement {
+public class LdcStatement extends BaseStatement implements Statement {
 
     private final CodeBlock codeBlock;
 
-    public LdcStatement(final Object arg0){
+    public LdcStatement(final Tree tree, final Object arg0) {
+        super(tree);
         this.codeBlock = newCodeBlock().ldc(arg0);
     }
 

@@ -15,20 +15,22 @@
  */
 package org.dynjs.parser.statement;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynArray;
 
-import java.util.List;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+public class ArrayLiteralStatement extends BaseStatement implements Statement {
 
-public class ArrayLiteralStatement implements Statement {
     private final List<Statement> exprs;
 
-    public ArrayLiteralStatement(List<Statement> exprs) {
+    public ArrayLiteralStatement(final Tree tree, final List<Statement> exprs) {
+        super(tree);
         this.exprs = exprs;
     }
 

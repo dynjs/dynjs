@@ -16,21 +16,22 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class ForStepVarStatement implements Statement {
+public class ForStepVarStatement extends BaseStatement implements Statement {
 
     private final Statement varDef;
     private final Statement expr1;
     private final Statement expr2;
     private final BlockStatement statement;
 
-    public ForStepVarStatement(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
+    public ForStepVarStatement(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, final Statement statement) {
+        super(tree);
         this.varDef = varDef;
         this.expr1 = expr1;
         this.expr2 = expr2;

@@ -13,26 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.RT;
 
-public class PreIncrementStatement extends AbstractUnaryOperationStatement {
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-    public PreIncrementStatement(final Tree tree, final Statement expression) {
-        super(tree, expression);
+public class TypeOfOpExpressionStatement extends BaseStatement implements Statement {
+
+    private final Statement expression;
+
+    public TypeOfOpExpressionStatement(final Tree tree, final Statement expression) {
+        super(tree);
+        this.expression = expression;
     }
 
     @Override
-    protected String operation() {
-        return "add";
-    }
-
-    @Override
-    protected CodeBlock after() {
-        return store();
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock() {{
+            append(expression.getCodeBlock());
+            invokedynamic("typeof", sig(String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 
 }

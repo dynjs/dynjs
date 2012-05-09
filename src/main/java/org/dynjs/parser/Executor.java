@@ -15,18 +15,50 @@
  */
 package org.dynjs.parser;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.CommonTree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.exception.DynJSException;
-import org.dynjs.parser.statement.*;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
-
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.exception.DynJSException;
+import org.dynjs.parser.statement.ArrayLiteralStatement;
+import org.dynjs.parser.statement.AssignmentOperationStatement;
+import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.BooleanLiteralStatement;
+import org.dynjs.parser.statement.CallStatement;
+import org.dynjs.parser.statement.DeclareVarStatement;
+import org.dynjs.parser.statement.DefineNumOpStatement;
+import org.dynjs.parser.statement.DeleteOpStatement;
+import org.dynjs.parser.statement.DoWhileStatement;
+import org.dynjs.parser.statement.EqualsOperationStatement;
+import org.dynjs.parser.statement.ExpressionListStatement;
+import org.dynjs.parser.statement.ForStepVarStatement;
+import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.IfStatement;
+import org.dynjs.parser.statement.InstanceOfRelOpStatement;
+import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.NamedValueStatement;
+import org.dynjs.parser.statement.NewStatement;
+import org.dynjs.parser.statement.NotEqualsOperationStatement;
+import org.dynjs.parser.statement.NotOperationStatement;
+import org.dynjs.parser.statement.NullLiteralStatement;
+import org.dynjs.parser.statement.NumberLiteralStatement;
+import org.dynjs.parser.statement.ObjectLiteralStatement;
+import org.dynjs.parser.statement.OperationAssignmentStatement;
+import org.dynjs.parser.statement.PostDecrementStatement;
+import org.dynjs.parser.statement.PostIncrementStatement;
+import org.dynjs.parser.statement.PreDecrementStatement;
+import org.dynjs.parser.statement.PreIncrementStatement;
+import org.dynjs.parser.statement.PrintStatement;
+import org.dynjs.parser.statement.RelationalOperationStatement;
+import org.dynjs.parser.statement.ResolveByIndexStatement;
+import org.dynjs.parser.statement.ResolveIdentifierStatement;
+import org.dynjs.parser.statement.ReturnStatement;
+import org.dynjs.parser.statement.StringLiteralStatement;
+import org.dynjs.parser.statement.ThrowStatement;
+import org.dynjs.parser.statement.TypeOfOpExpressionStatement;
+import org.dynjs.parser.statement.UndefinedValueStatement;
+import org.dynjs.parser.statement.VoidOpStatement;
+import org.dynjs.parser.statement.WhileStatement;
+import org.dynjs.runtime.DynThreadContext;
 
 public class Executor {
 
@@ -44,434 +76,368 @@ public class Executor {
         return blockContent;
     }
 
-    public Statement block(final List<Statement> blockContent) {
-        return new BlockStatement(blockContent);
+    public Statement block(final Tree tree, final List<Statement> blockContent) {
+        return new BlockStatement(tree, blockContent);
     }
 
-    public Statement printStatement(final Statement expr) {
-        return new PrintStatement(expr);
+    public Statement printStatement(final Tree tree, final Statement expr) {
+        return new PrintStatement(tree, expr);
     }
 
-    public Statement returnStatement(final Statement expr) {
-        return new ReturnStatement(expr);
+    public Statement returnStatement(final Tree tree, final Statement expr) {
+        return new ReturnStatement(tree, expr);
     }
 
-    public Statement declareVar(final CommonTree id) {
-        return declareVar(id, new UndefinedValueStatement());
+    public Statement declareVar(final Tree tree, final Tree treeId, final String id) {
+        return declareVar(tree, treeId, id, new UndefinedValueStatement());
     }
 
-    public Statement declareVar(final CommonTree id, final Statement expr) {
-        return declareVar(id.getText(), expr);
+    public Statement declareVar(final Tree tree, final Tree treeId, final String id, final Statement expr) {
+        return new DeclareVarStatement(tree, treeId, expr, id);
     }
 
-    public Statement declareVar(final String id, final Statement expr) {
-        return new DeclareVarStatement(expr, id);
+    public Statement defineAddOp(final Tree tree, final Statement l, final Statement r) {
+        return defineNumOp(tree, "add", l, r);
     }
 
-    public Statement defineAddOp(final Statement l, final Statement r) {
-        return defineNumOp("add", l, r);
+    public Statement defineSubOp(final Tree tree, final Statement l, final Statement r) {
+        return defineNumOp(tree, "sub", l, r);
     }
 
-    public Statement defineSubOp(final Statement l, final Statement r) {
-        return defineNumOp("sub", l, r);
+    public Statement defineMulOp(final Tree tree, final Statement l, final Statement r) {
+        return defineNumOp(tree, "mul", l, r);
     }
 
-    public Statement defineMulOp(final Statement l, final Statement r) {
-        return defineNumOp("mul", l, r);
+    public Statement defineNumOp(final Tree tree, final String op, final Statement l, final Statement r) {
+        return new DefineNumOpStatement(tree, op, l, r);
     }
 
-    public Statement defineNumOp(final String op, final Statement l, final Statement r) {
-        return new DefineNumOpStatement(op, l, r);
+    public Statement defineStringLiteral(final Tree tree, final String literal) {
+        return new StringLiteralStatement(tree, literal);
     }
 
-    public Statement defineStringLiteral(final String literal) {
-        return new StringLiteralStatement(literal);
+    public Statement resolveIdentifier(final Tree tree, final String id) {
+        return new ResolveIdentifierStatement(tree, id);
     }
 
-    public Statement resolveIdentifier(final CommonTree id) {
-        return new ResolveIdentifierStatement(id.getText());
+    public Statement defineNumberLiteral(final Tree tree, String value, final int radix) {
+        return new NumberLiteralStatement(tree, value, radix);
     }
 
-    public Statement defineNumberLiteral(final String value, final int radix) {
-        return new NumberLiteralStatement(value, radix);
+    public Statement defineFunction(final Tree tree, final String identifier, final List<String> args, final Statement block) {
+        return new FunctionStatement(tree, getContext(), identifier, args, block);
     }
 
-    public Statement defineFunction(final String identifier, final List<String> args, final Statement block) {
-        return new FunctionStatement(getContext(), identifier, args, block);
-    }
-
-    public Statement defineShlOp(Statement l, Statement r) {
+    public Statement defineShlOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineShrOp(Statement l, Statement r) {
+    public Statement defineShrOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineShuOp(Statement l, Statement r) {
+    public Statement defineShuOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineDivOp(Statement l, Statement r) {
-        return defineNumOp("div", l, r);
+    public Statement defineDivOp(final Tree tree, Statement l, Statement r) {
+        return defineNumOp(tree, "div", l, r);
     }
 
-    public Statement defineModOp(Statement l, Statement r) {
-        return defineNumOp("mod", l, r);
+    public Statement defineModOp(final Tree tree, Statement l, Statement r) {
+        return defineNumOp(tree, "mod", l, r);
     }
 
-    public Statement defineDeleteOp(final Statement expression) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                final Statement lhs = ((ResolveByIndexStatement) expression).getLhs();
-                final Statement index = ((ResolveByIndexStatement) expression).getIndex();
-                return new CodeBlock() {{
-                    append(lhs.getCodeBlock());
-                    append(index.getCodeBlock());
-                    invokedynamic("delete", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-                }};
-            }
-        };
+    public Statement defineDeleteOp(final Tree tree, final Statement expression) {
+        return new DeleteOpStatement(tree, expression);
     }
 
-    public Statement defineVoidOp(final Statement expression) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    append(expression.getCodeBlock());
-                    append(new UndefinedValueStatement().getCodeBlock());
-                }};
-            }
-        };
+    public Statement defineVoidOp(final Tree tree, final Statement expression) {
+        return new VoidOpStatement(tree, expression);
     }
 
-    public Statement defineTypeOfOp(final Statement expression) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    append(expression.getCodeBlock());
-                    invokedynamic("typeof", sig(String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-                }};
-            }
-        };
+    public Statement defineTypeOfOp(final Tree tree, final Statement expression) {
+        return new TypeOfOpExpressionStatement(tree, expression);
     }
 
-    public Statement defineIncOp(Statement expression) {
-        return new PreIncrementStatement(expression);
+    public Statement defineIncOp(final Tree tree, Statement expression) {
+        return new PreIncrementStatement(tree, expression);
     }
 
-    public Statement defineDecOp(Statement expression) {
-        return new PreDecrementStatement(expression);
+    public Statement defineDecOp(final Tree tree, Statement expression) {
+        return new PreDecrementStatement(tree, expression);
     }
 
-    public Statement definePosOp(Statement expression) {
+    public Statement definePosOp(final Tree tree, Statement expression) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineNegOp(Statement expression) {
+    public Statement defineNegOp(final Tree tree, Statement expression) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineInvOp(Statement expression) {
+    public Statement defineInvOp(final Tree tree, Statement expression) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineNotOp(Statement expression) {
-        return new NotOperationStatement(expression);
+    public Statement defineNotOp(final Tree tree, Statement expression) {
+        return new NotOperationStatement(tree, expression);
     }
 
-    public Statement definePIncOp(Statement expression) {
-        return new PostIncrementStatement(expression);
+    public Statement definePIncOp(final Tree tree, Statement expression) {
+        return new PostIncrementStatement(tree, expression);
     }
 
-    public Statement definePDecOp(Statement expression) {
-        return new PostDecrementStatement(expression);
+    public Statement definePDecOp(final Tree tree, Statement expression) {
+        return new PostDecrementStatement(tree, expression);
     }
 
-    public Statement defineLtRelOp(Statement l, Statement r) {
-        return new RelationalOperationStatement("lt", l, r);
+    public Statement defineLtRelOp(final Tree tree, Statement l, Statement r) {
+        return new RelationalOperationStatement(tree, "lt", l, r);
     }
 
-    public Statement defineGtRelOp(final Statement l, final Statement r) {
-        return new RelationalOperationStatement("gt", l, r);
+    public Statement defineGtRelOp(final Tree tree, final Statement l, final Statement r) {
+        return new RelationalOperationStatement(tree, "gt", l, r);
     }
 
-    public Statement defineLteRelOp(Statement l, Statement r) {
-        return new RelationalOperationStatement("le", l, r);
+    public Statement defineLteRelOp(final Tree tree, Statement l, Statement r) {
+        return new RelationalOperationStatement(tree, "le", l, r);
     }
 
-    public Statement defineGteRelOp(Statement l, Statement r) {
-        return new RelationalOperationStatement("ge", l, r);
+    public Statement defineGteRelOp(final Tree tree, Statement l, Statement r) {
+        return new RelationalOperationStatement(tree, "ge", l, r);
     }
 
-    public Statement defineInstanceOfRelOp(final Statement l, final Statement r) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    append(l.getCodeBlock());
-                    append(r.getCodeBlock());
-                    invokedynamic("instanceof", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-                }};
-            }
-        };
+    public Statement defineInstanceOfRelOp(final Tree tree, final Statement l, final Statement r) {
+        return new InstanceOfRelOpStatement(tree, l, r);
     }
 
-    public Statement defineInRelOp(Statement l, Statement r) {
+    public Statement defineInRelOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineLorOp(final Statement l, final Statement r) {
-        return new LogicalOperationStatement("lor", l, r);
+    public Statement defineLorOp(final Tree tree, final Statement l, final Statement r) {
+        return new LogicalOperationStatement(tree, "lor", l, r);
     }
 
-    public Statement defineLandOp(Statement l, Statement r) {
-        return new LogicalOperationStatement("land", l, r);
+    public Statement defineLandOp(final Tree tree, Statement l, Statement r) {
+        return new LogicalOperationStatement(tree, "land", l, r);
     }
 
-    public Statement defineAndBitOp(Statement l, Statement r) {
+    public Statement defineAndBitOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineOrBitOp(Statement l, Statement r) {
+    public Statement defineOrBitOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineXorBitOp(Statement l, Statement r) {
+    public Statement defineXorBitOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineEqOp(final Statement l, final Statement r) {
-        return new EqualsOperationStatement(l, r);
+    public Statement defineEqOp(final Tree tree, final Statement l, final Statement r) {
+        return new EqualsOperationStatement(tree, l, r);
     }
 
-    public Statement defineNEqOp(final Statement l, final Statement r) {
-        return new NotEqualsOperationStatement(l, r);
+    public Statement defineNEqOp(final Tree tree, final Statement l, final Statement r) {
+        return new NotEqualsOperationStatement(tree, l, r);
     }
 
-    public Statement defineSameOp(Statement l, Statement r) {
-        return new EqualsOperationStatement(l, r);
+    public Statement defineSameOp(final Tree tree, Statement l, Statement r) {
+        return new EqualsOperationStatement(tree, l, r);
     }
 
-    public Statement defineNSameOp(Statement l, Statement r) {
-        return new NotEqualsOperationStatement(l, r);
+    public Statement defineNSameOp(final Tree tree, Statement l, Statement r) {
+        return new NotEqualsOperationStatement(tree, l, r);
     }
 
-    public Statement defineAssOp(final Statement l, final Statement r) {
-        return new AssignmentOperationStatement(l, r);
+    public Statement defineAssOp(final Tree tree, final Statement l, final Statement r) {
+        return new AssignmentOperationStatement(tree, l, r);
     }
 
-    public Statement defineMulAssOp(Statement l, Statement r) {
-        return new OperationAssignmentStatement("mul", l, r);
+    public Statement defineMulAssOp(final Tree tree, Statement l, Statement r) {
+        return new OperationAssignmentStatement(tree, "mul", l, r);
     }
 
-    public Statement defineDivAssOp(Statement l, Statement r) {
-        return new OperationAssignmentStatement("div", l, r);
+    public Statement defineDivAssOp(final Tree tree, Statement l, Statement r) {
+        return new OperationAssignmentStatement(tree, "div", l, r);
     }
 
-    public Statement defineModAssOp(Statement l, Statement r) {
-        return new OperationAssignmentStatement("mod", l, r);
+    public Statement defineModAssOp(final Tree tree, Statement l, Statement r) {
+        return new OperationAssignmentStatement(tree, "mod", l, r);
     }
 
-    public Statement defineAddAssOp(final Statement l, final Statement r) {
-        return new OperationAssignmentStatement("add", l, r);
+    public Statement defineAddAssOp(final Tree tree, final Statement l, final Statement r) {
+        return new OperationAssignmentStatement(tree, "add", l, r);
     }
 
-    public Statement defineSubAssOp(Statement l, Statement r) {
-        return new OperationAssignmentStatement("sub", l, r);
+    public Statement defineSubAssOp(final Tree tree, Statement l, Statement r) {
+        return new OperationAssignmentStatement(tree, "sub", l, r);
     }
 
-    public Statement defineShlAssOp(Statement l, Statement r) {
+    public Statement defineShlAssOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineShrAssOp(Statement l, Statement r) {
+    public Statement defineShrAssOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineShuAssOp(Statement l, Statement r) {
+    public Statement defineShuAssOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineAndAssOp(Statement l, Statement r) {
+    public Statement defineAndAssOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineXorAssOp(Statement l, Statement r) {
+    public Statement defineXorAssOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineOrAssOp(Statement l, Statement r) {
+    public Statement defineOrAssOp(final Tree tree, Statement l, Statement r) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineQueOp(Statement ex1, Statement ex2, Statement ex3) {
-        return new IfStatement(context, ex1, ex2, ex3);
+    public Statement defineQueOp(final Tree tree, Statement ex1, Statement ex2, Statement ex3) {
+        return new IfStatement(tree, context, ex1, ex2, ex3);
     }
 
-    public Statement defineThisLiteral() {
+    public Statement defineThisLiteral(final Tree tree) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineNullLiteral() {
-        return new NullLiteralStatement();
+    public Statement defineNullLiteral(final Tree tree) {
+        return new NullLiteralStatement(tree);
     }
 
-    public Statement defineRegExLiteral(String s) {
+    public Statement defineRegExLiteral(final Tree tree) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement defineTrueLiteral() {
-        return new BooleanLiteralStatement("TRUE");
+    public Statement defineTrueLiteral(final Tree tree) {
+        return new BooleanLiteralStatement(tree, "TRUE");
     }
 
-    public Statement defineFalseLiteral() {
-        return new BooleanLiteralStatement("FALSE");
+    public Statement defineFalseLiteral(final Tree tree) {
+        return new BooleanLiteralStatement(tree, "FALSE");
     }
 
-    public Statement executeNew(final Statement statement) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .aload(DynJSCompiler.Arities.CONTEXT)
-                        .append(statement.getCodeBlock())
-                        .invokedynamic("new", sig(Object.class, DynThreadContext.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-        };
+    public Statement executeNew(final Tree tree, final Statement statement) {
+        return new NewStatement(tree, statement);
     }
 
-    public Statement resolveByField(final Statement lhs, final String field) {
-        return new ResolveByIndexStatement(lhs, field);
+    public Statement resolveByField(final Tree tree, final Statement lhs, final Tree treeField, final String field) {
+        return new ResolveByIndexStatement(tree, lhs, treeField, field);
     }
 
-    public Statement resolveByIndex(final Statement lhs, final Statement index) {
-        return new ResolveByIndexStatement(lhs, index);
+    public Statement resolveByIndex(final Tree tree, final Statement lhs, final Statement index) {
+        return new ResolveByIndexStatement(tree, lhs, index);
     }
 
-    public Statement ifStatement(Statement vbool, Statement vthen, Statement velse) {
-        return new IfStatement(getContext(), vbool, vthen, velse);
+    public Statement ifStatement(final Tree tree, Statement vbool, Statement vthen, Statement velse) {
+        return new IfStatement(tree, getContext(), vbool, vthen, velse);
     }
 
-    public Statement doStatement(Statement vbool, Statement vloop) {
-        return new DoWhileStatement(vbool, vloop);
+    public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
+        return new DoWhileStatement(tree, vbool, vloop);
     }
 
-    public Statement whileStatement(final Statement vbool, final Statement vloop) {
-        return new WhileStatement(vbool, vloop);
+    public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
+        return new WhileStatement(tree, vbool, vloop);
     }
 
-    public Statement forStepVar(Statement varDef, Statement expr1, Statement expr2, Statement statement) {
-        return new ForStepVarStatement(varDef, expr1, expr2, statement);
+    public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
+        return new ForStepVarStatement(tree, varDef, expr1, expr2, statement);
     }
 
-    public Statement forStepExpr(Statement expr1, Statement expr2, Statement expr3, Statement statement) {
+    public Statement forStepExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement expr3, Statement statement) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement forIterVar(Statement varDef, Statement expr1, Statement statement) {
+    public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement forIterExpr(Statement expr1, Statement expr2, Statement statement) {
+    public Statement forIterExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement statement) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement continueStatement(String id) {
+    public Statement continueStatement(final Tree tree, String id) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement breakStatement(String id) {
+    public Statement breakStatement(final Tree tree, String id) {
         throw new DynJSException("not implemented yet");
     }
 
     public Statement exprListStatement(final List<Statement> exprList) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return new CodeBlock() {{
-                    for (Statement statement : exprList) {
-                        append(statement.getCodeBlock());
-                    }
-                }};
-            }
-        };
+        return new ExpressionListStatement(null, exprList);
     }
 
-    public Statement resolveCallExpr(Statement lhs, List<Statement> args) {
-        return new CallStatement(getContext(), lhs, args);
+    public Statement resolveCallExpr(final Tree tree, Statement lhs, List<Statement> args) {
+        return new CallStatement(tree, getContext(), lhs, args);
     }
 
-    public Statement switchStatement(Statement expr, Statement _default, List<Statement> cases) {
+    public Statement switchStatement(final Tree tree, Statement expr, Statement _default, List<Statement> cases) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement switchCaseClause(Statement expr, List<Statement> statements) {
+    public Statement switchCaseClause(final Tree tree, Statement expr, List<Statement> statements) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement switchDefaultClause(List<Statement> statements) {
+    public Statement switchDefaultClause(final Tree tree, List<Statement> statements) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement throwStatement(Statement expression) {
-        return new Statement() {
-            @Override
-            public CodeBlock getCodeBlock() {
-                return CodeBlock.newCodeBlock()
-                        .newobj(p(RuntimeException.class))
-                        .dup()
-                        .invokespecial(p(RuntimeException.class), "<init>", sig(void.class))
-                        .athrow();
-            }
-        };
+    public Statement throwStatement(final Tree tree, final Statement expression) {
+        return new ThrowStatement(tree);
     }
 
-    public Statement tryStatement(Statement block, Statement _catch, Statement _finally) {
+    public Statement tryStatement(final Tree tree, Statement block, Statement _catch, Statement _finally) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement tryCatchClause(String id, Statement block) {
+    public Statement tryCatchClause(final Tree tree, String id, Statement block) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement tryFinallyClause(Statement block) {
+    public Statement tryFinallyClause(final Tree tree, Statement block) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement withStatement(Statement expression, Statement statement) {
+    public Statement withStatement(final Tree tree, Statement expression, Statement statement) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement labelledStatement(String label, Statement statement) {
+    public Statement labelledStatement(final Tree tree, String label, Statement statement) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement objectValue(List<Statement> namedValues) {
-        return new ObjectLiteralStatement(namedValues);
+    public Statement objectValue(final Tree tree, List<Statement> namedValues) {
+        return new ObjectLiteralStatement(tree, namedValues);
     }
 
-    public Statement propertyNameId(String id) {
-        return new StringLiteralStatement(id);
+    public Statement propertyNameId(final Tree tree, final String id) {
+        return new StringLiteralStatement(tree, id);
     }
 
-    public Statement propertyNameString(String string) {
-        return new StringLiteralStatement(string);
+    public Statement propertyNameString(final Tree tree, final String string) {
+        return new StringLiteralStatement(tree, string);
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {
         throw new DynJSException("not implemented yet");
     }
 
-    public Statement namedValue(final Statement propertyName, final Statement expr) {
-        return new NamedValueStatement(propertyName, expr);
+    public Statement namedValue(final Tree tree, final Statement propertyName, final Statement expr) {
+        return new NamedValueStatement(tree, propertyName, expr);
     }
 
-    public Statement arrayLiteral(final List<Statement> exprs) {
-        return new ArrayLiteralStatement(exprs);
+    public Statement arrayLiteral(final Tree tree, final List<Statement> exprs) {
+        return new ArrayLiteralStatement(tree, exprs);
     }
 
 }

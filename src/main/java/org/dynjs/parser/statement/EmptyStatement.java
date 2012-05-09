@@ -18,9 +18,13 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
+import static me.qmx.jitescript.CodeBlock.*;
 
-public class EmptyStatement implements Statement {
+public class EmptyStatement extends BaseStatement implements Statement {
+
+    public EmptyStatement() {
+        super(null);
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

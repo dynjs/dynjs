@@ -15,27 +15,26 @@
  */
 package org.dynjs.parser.statement;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-import java.util.List;
+import static me.qmx.jitescript.CodeBlock.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
-public class CallStatement implements Statement {
+public class CallStatement extends BaseStatement implements Statement {
 
     private final DynThreadContext context;
     private final Statement lhs;
     private final List<Statement> args;
 
-    public CallStatement(DynThreadContext context, Statement lhs, List<Statement> args) {
+    public CallStatement(final Tree tree, final DynThreadContext context, final Statement lhs, final List<Statement> args) {
+        super(tree);
         this.context = context;
         this.lhs = lhs;
         this.args = args;

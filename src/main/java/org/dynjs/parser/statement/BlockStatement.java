@@ -15,19 +15,22 @@
  */
 package org.dynjs.parser.statement;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.objectweb.asm.tree.LabelNode;
 
-import java.util.List;
-
-public class BlockStatement implements Statement {
+public class BlockStatement extends BaseStatement implements Statement {
 
     private final CodeBlock codeBlock;
+
     private LabelNode beginLabel = new LabelNode();
     private LabelNode endLabel = new LabelNode();
 
-    public BlockStatement(final List<Statement> blockContent) {
+    public BlockStatement(final Tree tree, final List<Statement> blockContent) {
+        super(tree);
         this.codeBlock = new CodeBlock() {{
             for (Statement statement : blockContent) {
                 append(statement.getCodeBlock());

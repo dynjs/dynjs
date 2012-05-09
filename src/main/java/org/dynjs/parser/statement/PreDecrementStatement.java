@@ -16,12 +16,13 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
 public class PreDecrementStatement extends AbstractUnaryOperationStatement {
 
-    public PreDecrementStatement(Statement expression) {
-        super(expression);
+    public PreDecrementStatement(final Tree tree, final Statement expression) {
+        super(tree, expression);
     }
 
     @Override
