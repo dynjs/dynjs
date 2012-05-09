@@ -20,12 +20,21 @@ import org.antlr.runtime.tree.Tree;
 
 public class Position {
 
-    public Position(final Tree tree) {
+    private final int line;
+    private final int charPositionInLine;
 
+    public Position(final Tree tree) {
+        if (tree != null) {
+            this.line = tree.getLine();
+            this.charPositionInLine = tree.getCharPositionInLine();
+        } else {
+            this.line = -1;
+            this.charPositionInLine = -1;
+        }
     }
 
     @Override
     public String toString() {
-        return "<>";
+        return "<" + line + ":" + charPositionInLine + ">";
     }
 }

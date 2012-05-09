@@ -21,13 +21,13 @@ import org.dynjs.parser.Position;
 
 public abstract class BaseStatement {
 
-    private Tree tree;
+    private final Position position;
 
     BaseStatement(final Tree tree) {
-        this.tree = tree;
+        this.position = new Position(tree);
     }
 
     public Position getPosition() {
-        return null;
+        return position;
     }
 }
