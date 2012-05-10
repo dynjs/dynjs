@@ -77,6 +77,11 @@ public class RequireTest {
     	}
     }
     
+    @Test
+    public void testSupportsNestedRequires() {
+    	check("var result = require('outer').quadruple(4);", 16);
+    }
+    
     private void check(String scriptlet, Object expected) {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
