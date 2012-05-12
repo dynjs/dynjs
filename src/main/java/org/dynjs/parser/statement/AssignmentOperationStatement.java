@@ -17,11 +17,11 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.exception.DynJSException;
+import org.dynjs.parser.ParserException;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class AssignmentOperationStatement extends BaseStatement implements Statement {
 
@@ -51,6 +51,6 @@ public class AssignmentOperationStatement extends BaseStatement implements State
                 }
             }};
         }
-        throw new DynJSException("not inplemented");
+        throw new ParserException("not implemented", getPosition());
     }
 }
