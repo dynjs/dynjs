@@ -15,8 +15,6 @@
  */
 package org.dynjs.parser.statement;
 
-import java.util.List;
-
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
@@ -24,8 +22,10 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import java.util.List;
+
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class CallStatement extends BaseStatement implements Statement {
 
@@ -42,26 +42,22 @@ public class CallStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = newCodeBlock();
-        codeBlock = codeBlock
-                .bipush(args.size())
-                .anewarray(p(Object.class))
-                .astore(4);
+        return new CodeBlock() {{
+            bipush(args.size());
+            anewarray(p(Object.class));
+            astore(4);
 
-        for (int i = 0; i < args.size(); i++) {
-            codeBlock = codeBlock
-                    .aload(4)
-                    .bipush(i)
-                    .append(args.get(i).getCodeBlock())
-                    .aastore();
-        }
+            for (int i = 0; i < args.size(); i++) {
+                aload(4);
+                bipush(i);
+                append(args.get(i).getCodeBlock());
+                aastore();
+            }
 
-        codeBlock = codeBlock
-                .append(lhs.getCodeBlock())
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .aload(4)
-                .invokedynamic("dyn:call", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
-        return codeBlock;
+            append(lhs.getCodeBlock());
+            aload(DynJSCompiler.Arities.CONTEXT);
+            aload(4);
+            invokedynamic("dyn:call", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 }
