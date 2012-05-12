@@ -40,16 +40,17 @@ public class ForStepVarStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .append(varDef.getCodeBlock())
-                .label(statement.getBeginLabel())
-                .append(expr1.getCodeBlock())
-                .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
-                .iffalse(statement.getEndLabel())
-                .append(statement.getCodeBlock())
-                .append(expr2.getCodeBlock())
-                .go_to(statement.getBeginLabel())
-                .label(statement.getEndLabel());
+        return new CodeBlock() {{
+            append(varDef.getCodeBlock());
+            label(statement.getBeginLabel());
+            append(expr1.getCodeBlock());
+            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
+            iffalse(statement.getEndLabel());
+            append(statement.getCodeBlock());
+            append(expr2.getCodeBlock());
+            go_to(statement.getBeginLabel());
+            label(statement.getEndLabel());
+        }};
     }
 }
