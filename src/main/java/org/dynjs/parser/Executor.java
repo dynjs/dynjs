@@ -21,6 +21,7 @@ import org.dynjs.parser.statement.AssignmentOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
+import org.dynjs.parser.statement.ContinueStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.DeleteOpStatement;
@@ -351,7 +352,7 @@ public class Executor {
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
-        return new ForStepVarStatement(tree, varDef, expr1, expr2, statement);
+        return new ForStepVarStatement(labelStack, tree, varDef, expr1, expr2, statement);
     }
 
     public Statement forStepExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement expr3, Statement statement) {
@@ -367,7 +368,7 @@ public class Executor {
     }
 
     public Statement continueStatement(final Tree tree, String id) {
-        throw new ParserException("not implemented yet", tree);
+        return new ContinueStatement(labelStack, tree, id);
     }
 
     public Statement breakStatement(final Tree tree, String id) {

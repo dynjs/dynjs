@@ -158,6 +158,12 @@ public class DynJSTest {
     @Test
     public void testFor() {
         check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
+        check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
+    }
+
+    @Test
+    public void testContinue() {
+        check("var x = 0; for (var i = 0;i < 10; i+=1){ continue; x+=1;}; var result = x == 0;");
     }
 
     @Test
