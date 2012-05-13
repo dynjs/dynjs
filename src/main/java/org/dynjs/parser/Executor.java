@@ -15,8 +15,6 @@
  */
 package org.dynjs.parser;
 
-import java.util.List;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
@@ -58,10 +56,15 @@ import org.dynjs.parser.statement.UndefinedValueStatement;
 import org.dynjs.parser.statement.VoidOpStatement;
 import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
+import org.objectweb.asm.tree.LabelNode;
+
+import java.util.List;
+import java.util.Stack;
 
 public class Executor {
 
     private final DynThreadContext context;
+    private final Stack<LabelNode> labelStack = new Stack<>();
 
     public Executor(DynThreadContext context) {
         this.context = context;
