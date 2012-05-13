@@ -348,7 +348,7 @@ public class Executor {
     }
 
     public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new WhileStatement(tree, vbool, vloop);
+        return new WhileStatement(labelStack, tree, vbool, vloop);
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {

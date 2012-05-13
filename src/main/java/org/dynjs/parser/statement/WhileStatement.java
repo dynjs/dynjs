@@ -19,32 +19,39 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
+import org.objectweb.asm.tree.LabelNode;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import java.util.Stack;
+
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class WhileStatement extends BaseStatement implements Statement {
 
+    private final Stack<LabelNode> labelStack;
     private final Statement vbool;
     private final BlockStatement vloop;
 
-    public WhileStatement(final Tree tree, Statement vbool, Statement vloop) {
+    public WhileStatement(Stack<LabelNode> labelStack, final Tree tree, Statement vbool, Statement vloop) {
         super(tree);
+        this.labelStack = labelStack;
         this.vbool = vbool;
         this.vloop = (BlockStatement) vloop;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = newCodeBlock()
-                .label(vloop.getBeginLabel())
-                .append(vbool.getCodeBlock())
-                .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
-                .iffalse(vloop.getEndLabel())
-                .append(vloop.getCodeBlock())
-                .go_to(vloop.getBeginLabel())
-                .label(vloop.getEndLabel());
-        return codeBlock;
+        return new CodeBlock() {{
+            labelStack.push(vloop.getBeginLabel());
+            label(vloop.getBeginLabel());
+            append(vbool.getCodeBlock());
+            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
+            iffalse(vloop.getEndLabel());
+            append(vloop.getCodeBlock());
+            go_to(vloop.getBeginLabel());
+            label(vloop.getEndLabel());
+            labelStack.pop();
+        }};
     }
 }
