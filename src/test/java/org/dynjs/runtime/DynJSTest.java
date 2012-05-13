@@ -164,6 +164,7 @@ public class DynJSTest {
     @Test
     public void testContinue() {
         check("var x = 0; for (var i = 0;i < 10; i+=1){ continue; x+=1;}; var result = x == 0;");
+        check("var x = 0; do { x+=1;if(x % 3 == 0) {continue;};x+=3 } while(x < 10); var result = x == 13;");
     }
 
     @Test

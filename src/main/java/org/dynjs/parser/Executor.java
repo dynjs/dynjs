@@ -344,7 +344,7 @@ public class Executor {
     }
 
     public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new DoWhileStatement(tree, vbool, vloop);
+        return new DoWhileStatement(labelStack, tree, vbool, vloop);
     }
 
     public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
