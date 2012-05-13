@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser;
 
-import java.util.List;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
+import org.dynjs.parser.statement.ContinueStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
 import org.dynjs.parser.statement.DeleteOpStatement;
@@ -58,10 +57,15 @@ import org.dynjs.parser.statement.UndefinedValueStatement;
 import org.dynjs.parser.statement.VoidOpStatement;
 import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.DynThreadContext;
+import org.objectweb.asm.tree.LabelNode;
+
+import java.util.List;
+import java.util.Stack;
 
 public class Executor {
 
     private final DynThreadContext context;
+    private final Stack<LabelNode> labelStack = new Stack<>();
 
     public Executor(DynThreadContext context) {
         this.context = context;
@@ -340,15 +344,15 @@ public class Executor {
     }
 
     public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new DoWhileStatement(tree, vbool, vloop);
+        return new DoWhileStatement(labelStack, tree, vbool, vloop);
     }
 
     public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new WhileStatement(tree, vbool, vloop);
+        return new WhileStatement(labelStack, tree, vbool, vloop);
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
-        return new ForStepVarStatement(tree, varDef, expr1, expr2, statement);
+        return new ForStepVarStatement(labelStack, tree, varDef, expr1, expr2, statement);
     }
 
     public Statement forStepExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement expr3, Statement statement) {
@@ -364,7 +368,7 @@ public class Executor {
     }
 
     public Statement continueStatement(final Tree tree, String id) {
-        throw new ParserException("not implemented yet", tree);
+        return new ContinueStatement(labelStack, tree, id);
     }
 
     public Statement breakStatement(final Tree tree, String id) {

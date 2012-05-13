@@ -19,37 +19,47 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
+import org.objectweb.asm.tree.LabelNode;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import java.util.Stack;
+
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ForStepVarStatement extends BaseStatement implements Statement {
 
+    private final Stack<LabelNode> labelStack;
     private final Statement varDef;
-    private final Statement expr1;
-    private final Statement expr2;
+    private final Statement test;
+    private final Statement increment;
     private final BlockStatement statement;
+    private final LabelNode preIncrement = new LabelNode();
 
-    public ForStepVarStatement(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, final Statement statement) {
+    public ForStepVarStatement(Stack<LabelNode> labelStack, final Tree tree, final Statement varDef, final Statement test, final Statement increment, final Statement statement) {
         super(tree);
+        this.labelStack = labelStack;
         this.varDef = varDef;
-        this.expr1 = expr1;
-        this.expr2 = expr2;
+        this.test = test;
+        this.increment = increment;
         this.statement = (BlockStatement) statement;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .append(varDef.getCodeBlock())
-                .label(statement.getBeginLabel())
-                .append(expr1.getCodeBlock())
-                .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
-                .iffalse(statement.getEndLabel())
-                .append(statement.getCodeBlock())
-                .append(expr2.getCodeBlock())
-                .go_to(statement.getBeginLabel())
-                .label(statement.getEndLabel());
+        return new CodeBlock() {{
+            labelStack.push(preIncrement);
+            append(varDef.getCodeBlock());
+            label(statement.getBeginLabel());
+            append(test.getCodeBlock());
+            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
+            iffalse(statement.getEndLabel());
+            append(statement.getCodeBlock());
+            label(preIncrement);
+            append(increment.getCodeBlock());
+            go_to(statement.getBeginLabel());
+            label(statement.getEndLabel());
+            labelStack.pop();
+        }};
     }
 }
