@@ -38,17 +38,18 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
     @Override
     public CodeBlock getCodeBlock() {
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
-        return newCodeBlock()
-                .append(expression.getCodeBlock())
-                .append(before())
-                .append(processOperation())
-                .append(after())
-                .aload(DynJSCompiler.Arities.THIS)
-                .swap()
-                .ldc(resolvable.getName())
-                .swap()
-                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aload(4);
+        return new CodeBlock() {{
+            append(expression.getCodeBlock());
+            append(before());
+            append(processOperation());
+            append(after());
+            aload(DynJSCompiler.Arities.THIS);
+            swap();
+            ldc(resolvable.getName());
+            swap();
+            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            aload(4);
+        }};
     }
 
     protected CodeBlock after() {
@@ -60,15 +61,17 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
     }
 
     protected CodeBlock store() {
-        return newCodeBlock()
-                .dup()
-                .astore(4);
+        return new CodeBlock() {{
+            dup();
+            astore(4);
+        }};
     }
 
     private CodeBlock processOperation() {
-        return newCodeBlock()
-                .append(new NumberLiteralStatement(null, "1", 10).getCodeBlock())
-                .invokedynamic(this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock() {{
+            append(new NumberLiteralStatement(null, "1", 10).getCodeBlock());
+            invokedynamic(AbstractUnaryOperationStatement.this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 
 }

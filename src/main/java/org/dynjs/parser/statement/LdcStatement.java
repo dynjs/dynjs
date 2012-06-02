@@ -27,7 +27,9 @@ public class LdcStatement extends BaseStatement implements Statement {
 
     public LdcStatement(final Tree tree, final Object arg0) {
         super(tree);
-        this.codeBlock = newCodeBlock().ldc(arg0);
+        this.codeBlock = new CodeBlock() {{
+            ldc(arg0);
+        }};
     }
 
     @Override

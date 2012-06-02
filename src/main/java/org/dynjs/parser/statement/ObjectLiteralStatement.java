@@ -35,11 +35,12 @@ public class ObjectLiteralStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock obj = CodeBlock.newCodeBlock()
-                .newobj(p(DynObject.class))
-                .dup()
-                .invokespecial(p(DynObject.class), "<init>", sig(void.class))
-                .astore(7);
+        CodeBlock obj = new CodeBlock() {{
+            newobj(p(DynObject.class));
+            dup();
+            invokespecial(p(DynObject.class), "<init>", sig(void.class));
+            astore(7);
+        }};
         for (Statement namedValue : namedValues) {
 
             obj = obj.aload(7)

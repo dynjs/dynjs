@@ -36,23 +36,29 @@ public class ArrayLiteralStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = newCodeBlock()
-                .newobj(p(DynArray.class))
-                .dup()
-                .pushInt(exprs.size())
-                .invokespecial(p(DynArray.class), "<init>", sig(void.class, int.class))
-                .astore(4);
+        CodeBlock codeBlock = new CodeBlock() {{
+            newobj(p(DynArray.class));
+            dup();
+            pushInt(exprs.size());
+            invokespecial(p(DynArray.class), "<init>", sig(void.class, int.class));
+            astore(4);
+        }};
         Statement[] statements = exprs.toArray(new Statement[]{});
         for (int i = 0; i < statements.length; i++) {
             Statement statement = statements[i];
-            codeBlock = codeBlock
-                    .aload(4)
-                    .pushInt(i)
-                    .append(statement.getCodeBlock())
-                    .invokevirtual(p(DynArray.class), "set", sig(void.class, int.class, Object.class));
-
+            codeBlock = retrieveArrayReference(i, statement, codeBlock);
         }
-        return codeBlock
-                .aload(4);
+        return codeBlock.aload(4);
+    }
+
+    private CodeBlock retrieveArrayReference(final int stackReference, final Statement statement,
+                                             final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            aload(4);
+            pushInt(stackReference);
+            append(statement.getCodeBlock());
+            invokevirtual(p(DynArray.class), "set", sig(void.class, int.class, Object.class));
+        }};
     }
 }

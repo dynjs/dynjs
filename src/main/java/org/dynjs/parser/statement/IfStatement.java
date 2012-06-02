@@ -42,19 +42,21 @@ public class IfStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        LabelNode elseBlock = new LabelNode();
-        LabelNode outBlock = new LabelNode();
-        CodeBlock elseCodeBlock = velse != null ? velse.getCodeBlock() : newCodeBlock();
-        CodeBlock codeBlock = newCodeBlock()
-                .append(vbool.getCodeBlock())
-                .invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
-                .iffalse(elseBlock)
-                .append(vthen.getCodeBlock())
-                .go_to(outBlock)
-                .label(elseBlock)
-                .append(elseCodeBlock)
-                .label(outBlock);
+        final LabelNode elseBlock = new LabelNode();
+        final LabelNode outBlock = new LabelNode();
+        final CodeBlock elseCodeBlock = velse != null ? velse.getCodeBlock() : new CodeBlock();
+
+        CodeBlock codeBlock = new CodeBlock() {{
+            append(vbool.getCodeBlock());
+            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
+            iffalse(elseBlock);
+            append(vthen.getCodeBlock());
+            go_to(outBlock);
+            label(elseBlock);
+            append(elseCodeBlock);
+            label(outBlock);
+        }};
         return codeBlock;
     }
 }

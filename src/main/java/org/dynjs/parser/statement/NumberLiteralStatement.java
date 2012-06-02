@@ -37,10 +37,11 @@ public class NumberLiteralStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .ldc(value)
-                .invokevirtual(p(DynThreadContext.class), getFactoryMethod(), sig(Number.class, String.class));
+        return new CodeBlock() {{
+            aload(DynJSCompiler.Arities.CONTEXT);
+            ldc(value);
+            invokevirtual(p(DynThreadContext.class), getFactoryMethod(), sig(Number.class, String.class));
+        }};
     }
 
     private String getFactoryMethod() {

@@ -28,6 +28,6 @@ public class EmptyStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock();
+        return new CodeBlock();
     }
 }

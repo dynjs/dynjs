@@ -36,10 +36,10 @@ public class NotEqualsOperationStatement extends BaseStatement implements Statem
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .append(l.getCodeBlock())
-                .append(r.getCodeBlock())
-                .invokedynamic("neq", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
+        return new CodeBlock() {{
+            append(l.getCodeBlock());
+            append(r.getCodeBlock());
+            invokedynamic("neq", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 }

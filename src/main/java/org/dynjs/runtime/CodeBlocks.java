@@ -17,10 +17,7 @@ package org.dynjs.runtime;
 
 import me.qmx.jitescript.CodeBlock;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-
 public class CodeBlocks {
 
-    public static final CodeBlock GETPROP = newCodeBlock()
-            .aload(0);
+    public static final CodeBlock GETPROP = new CodeBlock().aload(0);
 }

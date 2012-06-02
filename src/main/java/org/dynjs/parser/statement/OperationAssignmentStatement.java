@@ -40,15 +40,15 @@ public class OperationAssignmentStatement extends BaseStatement implements State
     @Override
     public CodeBlock getCodeBlock() {
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) l;
-        return newCodeBlock()
-                .append(l.getCodeBlock())
-                .append(r.getCodeBlock())
-                .invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aload(DynJSCompiler.Arities.THIS)
-                .swap()
-                .ldc(resolvable.getName())
-                .swap()
-                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-
+        return new CodeBlock() {{
+            append(l.getCodeBlock());
+            append(r.getCodeBlock());
+            invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            aload(DynJSCompiler.Arities.THIS);
+            swap();
+            ldc(resolvable.getName());
+            swap();
+            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 }

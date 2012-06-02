@@ -31,7 +31,8 @@ public class NullLiteralStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .getstatic(p(DynThreadContext.class), "NULL", ci(Object.class));
+        return new CodeBlock() {{
+            getstatic(p(DynThreadContext.class), "NULL", ci(Object.class));
+        }};
     }
 }

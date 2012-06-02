@@ -30,11 +30,12 @@ public class ThrowStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
-                .newobj(p(RuntimeException.class))
-                .dup()
-                .invokespecial(p(RuntimeException.class), "<init>", sig(void.class))
-                .athrow();
+        return new CodeBlock() {{
+            newobj(p(RuntimeException.class));
+            dup();
+            invokespecial(p(RuntimeException.class), "<init>", sig(void.class));
+            athrow();
+        }};
     }
 
 }

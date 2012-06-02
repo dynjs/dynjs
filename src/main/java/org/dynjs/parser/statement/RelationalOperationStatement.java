@@ -38,9 +38,10 @@ public class RelationalOperationStatement extends BaseStatement implements State
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .append(l.getCodeBlock())
-                .append(r.getCodeBlock())
-                .invokedynamic(operator, sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock() {{
+            append(l.getCodeBlock());
+            append(r.getCodeBlock());
+            invokedynamic(operator, sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 }

@@ -40,13 +40,14 @@ public class DynalinkTest {
     public void testGetPropNonConstantName() {
         dynJS.eval(context, "var x = {w:function(){return 1;}};");
         final Object x = context.getScope().resolve("x");
-        final CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                .aload(0)
-                .ldc("x")
-                .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
-                .ldc("w")
-                .invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .areturn();
+        final CodeBlock codeBlock = new CodeBlock() {{
+            aload(0);
+            ldc("x");
+            invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
+            ldc("w");
+            invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            areturn();
+        }};
         final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
         Function w = (Function) fn.resolve("call");
@@ -60,12 +61,13 @@ public class DynalinkTest {
     public void testGetPropConstantName() {
         dynJS.eval(context, "var x = {w:function(){return 1;}};");
         final Object x = context.getScope().resolve("x");
-        final CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                .aload(0)
-                .ldc("x")
-                .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
-                .invokedynamic("dyn:getProp:w", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .areturn();
+        final CodeBlock codeBlock = new CodeBlock() {{
+            aload(0);
+            ldc("x");
+            invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
+            invokedynamic("dyn:getProp:w", sig(Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            areturn();
+        }};
         final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
         Function w = (Function) fn.resolve("call");
@@ -79,18 +81,21 @@ public class DynalinkTest {
     public void testSetPropNonConstantName() {
         dynJS.eval(context, "var x = {w:function(){return 1;}};");
         final Object x = context.getScope().resolve("x");
-        final CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                .aload(0)
-                .ldc("x")
-                .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
-                .ldc("o")
-                .ldc("any")
-                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aconst_null()
-                .areturn();
+        final CodeBlock codeBlock = new CodeBlock() {{
+            aload(0);
+            ldc("x");
+            invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
+            ldc("o");
+            ldc("any");
+            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            aconst_null();
+            areturn();
+        }};
         final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
         Function w = (Function) fn.resolve("call");
+
+        //TODO variable call will never be used
         final Object call = w.call(context, new Object[]{});
         assertThat(w)
                 .isNotNull()
@@ -107,14 +112,15 @@ public class DynalinkTest {
     public void testSetPropConstantName() {
         dynJS.eval(context, "var x = {w:function(){return 1;}};");
         final Object x = context.getScope().resolve("x");
-        final CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                .aload(0)
-                .ldc("x")
-                .invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class))
-                .ldc("any")
-                .invokedynamic("dyn:setProp:o", sig(void.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS)
-                .aconst_null()
-                .areturn();
+        final CodeBlock codeBlock = new CodeBlock() {{
+            aload(0);
+            ldc("x");
+            invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
+            ldc("any");
+            invokedynamic("dyn:setProp:o", sig(void.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            aconst_null();
+            areturn();
+        }};
         final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});
         fn.define("x", x);
         Function w = (Function) fn.resolve("call");

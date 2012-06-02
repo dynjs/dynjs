@@ -36,10 +36,10 @@ public class NewStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .append(statement.getCodeBlock())
-                .invokedynamic("new", sig(Object.class, DynThreadContext.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock() {{
+            aload(DynJSCompiler.Arities.CONTEXT);
+            append(statement.getCodeBlock());
+            invokedynamic("new", sig(Object.class, DynThreadContext.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
-
 }

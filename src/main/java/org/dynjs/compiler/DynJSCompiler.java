@@ -31,7 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
@@ -49,11 +48,11 @@ public class DynJSCompiler {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
-                    newCodeBlock()
-                            .aload(0)
-                            .invokespecial(p(DynFunction.class), "<init>", sig(void.class))
-                            .voidreturn()
-            );
+                    new CodeBlock() {{
+                        aload(0);
+                        invokespecial(p(DynFunction.class), "<init>", sig(void.class));
+                        voidreturn();
+                    }});
             defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Object[].class), fillCallStack(alwaysReturnWrapper(arg.getCodeBlock())));
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
@@ -87,24 +86,25 @@ public class DynJSCompiler {
         return wrapFunction(context.getBuiltin("Function"), function);
     }
 
-    private CodeBlock fillCallStack(CodeBlock codeBlock) {
-        return newCodeBlock()
-                .aload(Arities.CONTEXT)
-                .aload(Arities.THIS)
-                .aload(Arities.ARGS)
-                .invokestatic(p(RT.class), "callHelper", sig(Function.class, DynThreadContext.class, DynFunction.class, Object[].class))
-                .dup()
-                .astore(0)
-                .aload(Arities.CONTEXT)
-                .invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class))
-                .swap()
-                .invokeinterface(p(Deque.class), "push", sig(void.class, Object.class))
-                .append(codeBlock)
-                .dup()
-                .aload(Arities.CONTEXT)
-                .invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class))
-                .invokeinterface(p(Deque.class), "pop", sig(Object.class))
-                .pop();
+    private CodeBlock fillCallStack(final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            aload(Arities.CONTEXT);
+            aload(Arities.THIS);
+            aload(Arities.ARGS);
+            invokestatic(p(RT.class), "callHelper", sig(Function.class, DynThreadContext.class, DynFunction.class, Object[].class));
+            dup();
+            astore(0);
+            aload(Arities.CONTEXT);
+            invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class));
+            swap();
+            invokeinterface(p(Deque.class), "push", sig(void.class, Object.class));
+            append(codeBlock);
+            dup();
+            aload(Arities.CONTEXT);
+            invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class));
+            invokeinterface(p(Deque.class), "pop", sig(Object.class));
+            pop();
+        }};
     }
 
     private CodeBlock alwaysReturnWrapper(CodeBlock codeBlock) {
@@ -119,17 +119,18 @@ public class DynJSCompiler {
         JiteClass jiteClass = new JiteClass(className, p(BaseScript.class), new String[]{p(Script.class)}) {
             {
                 defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Statement[].class),
-                        newCodeBlock()
-                                .aload(0)
-                                .aload(1)
-                                .invokespecial(p(BaseScript.class), "<init>", sig(void.class, Statement[].class))
-                                .voidreturn()
-                );
+                        new CodeBlock() {{
+                            aload(0);
+                            aload(1);
+                            invokespecial(p(BaseScript.class), "<init>", sig(void.class, Statement[].class));
+                            voidreturn();
+                        }});
+
                 defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, DynThreadContext.class), getCodeBlock());
             }
 
             private CodeBlock getCodeBlock() {
-                final CodeBlock block = newCodeBlock();
+                final CodeBlock block = new CodeBlock();
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
                 }
@@ -171,7 +172,7 @@ public class DynJSCompiler {
 
     public static interface Helper {
 
-        CodeBlock EMPTY_CODEBLOCK = newCodeBlock();
+        CodeBlock EMPTY_CODEBLOCK = new CodeBlock();
     }
 
     public static class InternalDynObject extends DynObject {

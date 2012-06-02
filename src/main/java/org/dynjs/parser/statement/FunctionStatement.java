@@ -25,7 +25,6 @@ import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class FunctionStatement extends BaseStatement implements Statement {
@@ -51,54 +50,79 @@ public class FunctionStatement extends BaseStatement implements Statement {
     public CodeBlock getCodeBlock() {
         final Integer slot = context.store(block.getCodeBlock());
         // put arguments on stack
-        CodeBlock codeBlock = newCodeBlock(3);
+        CodeBlock codeBlock = new CodeBlock(3);
 
-        codeBlock = codeBlock
-                .bipush(args.size())
-                .anewarray(p(String.class))
-                .astore(4);
+        codeBlock = retrieveNewStringArrayReference(codeBlock);
 
         for (int i = 0; i < args.size(); i++) {
-            codeBlock = codeBlock
-                    .aload(4)
-                    .bipush(i)
-                    .ldc(args.get(i))
-                    .aastore();
+            codeBlock = storeArrayReference(i, codeBlock);
         }
 
-        codeBlock = getRuntime(codeBlock)
-                .aload(1);
+        codeBlock = getRuntime(codeBlock).aload(1);
         codeBlock = retrieveFromSlot(slot, codeBlock);
-        codeBlock = codeBlock
-                .aload(4)
-                .invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Object.class, DynThreadContext.class, CodeBlock.class, String[].class));
+        codeBlock = retrieveCompiledArrayBlock(codeBlock);
 
         if (identifier != null) {
             // TODO DRY
-            codeBlock = codeBlock
-                    .astore(3)
-                    .aload(DynJSCompiler.Arities.THIS)
-                    .ldc(identifier)
-                    .aload(3)
-                    .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            codeBlock = retrievePropertyReference(codeBlock);
         }
 
         return codeBlock;
     }
 
-    private CodeBlock retrieveFromSlot(Integer slot, CodeBlock codeBlock) {
-        codeBlock = codeBlock
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .bipush(slot)
-                .invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
-        return codeBlock;
+    private CodeBlock retrievePropertyReference(final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            astore(3);
+            aload(DynJSCompiler.Arities.THIS);
+            ldc(identifier);
+            aload(3);
+            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 
-    private CodeBlock getRuntime(CodeBlock codeBlock) {
-        codeBlock = codeBlock
-                .aload(DynJSCompiler.Arities.CONTEXT)
-                .invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
-        return codeBlock;
+    private CodeBlock storeArrayReference(final int stackReference, final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            aload(4);
+            bipush(stackReference);
+            ldc(args.get(stackReference));
+            aastore();
+        }};
+    }
+
+    private CodeBlock retrieveCompiledArrayBlock(final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            aload(4);
+            invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Object.class, DynThreadContext.class, CodeBlock.class, String[].class));
+        }};
+    }
+
+    private CodeBlock retrieveNewStringArrayReference(final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            bipush(args.size());
+            anewarray(p(String.class));
+            astore(4);
+        }};
+    }
+
+    private CodeBlock retrieveFromSlot(final Integer slot, final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            aload(DynJSCompiler.Arities.CONTEXT);
+            bipush(slot);
+            invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
+        }};
+    }
+
+    private CodeBlock getRuntime(final CodeBlock codeBlock) {
+        return new CodeBlock() {{
+            append(codeBlock);
+            aload(DynJSCompiler.Arities.CONTEXT);
+            invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
+        }};
     }
 
 }

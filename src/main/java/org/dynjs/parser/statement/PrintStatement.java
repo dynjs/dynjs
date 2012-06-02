@@ -19,8 +19,6 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-import static me.qmx.jitescript.CodeBlock.*;
-
 public class PrintStatement extends BaseStatement implements Statement {
 
     private final Statement expr;
@@ -32,7 +30,6 @@ public class PrintStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock(expr.getCodeBlock())
-                .aprintln();
+        return new CodeBlock(expr.getCodeBlock()).aprintln();
     }
 }

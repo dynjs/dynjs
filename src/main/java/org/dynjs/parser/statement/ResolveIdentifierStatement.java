@@ -35,10 +35,11 @@ public class ResolveIdentifierStatement extends BaseStatement implements Stateme
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .aload(DynJSCompiler.Arities.THIS)
-                .ldc(name)
-                .invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock() {{
+            aload(DynJSCompiler.Arities.THIS);
+            ldc(name);
+            invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 
     public String getName() {

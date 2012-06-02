@@ -33,7 +33,8 @@ public class BooleanLiteralStatement extends BaseStatement implements Statement 
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock()
-                .getstatic(p(Boolean.class), value, ci(Boolean.class));
+        return new CodeBlock() {{
+            getstatic(p(Boolean.class), value, ci(Boolean.class));
+        }};
     }
 }

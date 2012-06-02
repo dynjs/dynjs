@@ -35,9 +35,10 @@ public class NamedValueStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlock.newCodeBlock()
-                .append(propertyName.getCodeBlock())
-                .append(expr.getCodeBlock())
-                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock() {{
+            append(propertyName.getCodeBlock());
+            append(expr.getCodeBlock());
+            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 }

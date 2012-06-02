@@ -37,11 +37,12 @@ public class DeclareVarStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return newCodeBlock(expr.getCodeBlock())
-                .astore(3)
-                .aload(DynJSCompiler.Arities.THIS)
-                .ldc(id)
-                .aload(3)
-                .invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock(expr.getCodeBlock()) {{
+            astore(3);
+            aload(DynJSCompiler.Arities.THIS);
+            ldc(id);
+            aload(3);
+            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        }};
     }
 }

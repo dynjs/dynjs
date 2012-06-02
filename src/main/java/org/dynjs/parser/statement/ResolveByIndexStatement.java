@@ -40,9 +40,10 @@ public class ResolveByIndexStatement extends BaseStatement implements Statement 
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = CodeBlock.newCodeBlock()
-                .append(lhs.getCodeBlock())
-                .append(index.getCodeBlock());
+        CodeBlock codeBlock = new CodeBlock() {{
+            append(lhs.getCodeBlock());
+            append(index.getCodeBlock());
+        }};
         if (index instanceof NumberLiteralStatement) {
             return codeBlock.invokedynamic("dyn:getElement", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         } else {

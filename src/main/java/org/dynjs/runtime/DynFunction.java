@@ -21,14 +21,12 @@ import org.dynjs.exception.ReferenceError;
 
 import java.util.Arrays;
 
-import static me.qmx.jitescript.CodeBlock.newCodeBlock;
-
 public abstract class DynFunction extends DynObject {
 
     private final CodeBlock codeBlock;
 
     public DynFunction() {
-        this(newCodeBlock());
+        this(new CodeBlock());
     }
 
     public DynFunction(CodeBlock codeBlock) {

@@ -47,19 +47,20 @@ public class DynJSCompilerTest {
         dynJSCompiler.compile(new Statement() {
             @Override
             public CodeBlock getCodeBlock() {
-                LabelNode velse = new LabelNode();
-                LabelNode vout = new LabelNode();
-                return newCodeBlock()
-                        .pushBoolean(true)
-                        .pushBoolean(true)
-                        .ifeq(velse)
-                        .ldc("then reached")
-                        .aprintln()
-                        .go_to(vout)
-                        .label(velse)
-                        .ldc("else reached")
-                        .label(vout)
-                        .aconst_null();
+                final LabelNode velse = new LabelNode();
+                final LabelNode vout = new LabelNode();
+                return new CodeBlock() {{
+                    pushBoolean(true);
+                    pushBoolean(true);
+                    ifeq(velse);
+                    ldc("then reached");
+                    aprintln();
+                    go_to(vout);
+                    label(velse);
+                    ldc("else reached");
+                    label(vout);
+                    aconst_null();
+                }};
             }
 
             @Override public Position getPosition() {
