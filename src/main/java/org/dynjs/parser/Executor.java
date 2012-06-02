@@ -51,6 +51,7 @@ import org.dynjs.parser.statement.ResolveByIndexStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
+import org.dynjs.parser.statement.ThisStatement;
 import org.dynjs.parser.statement.ThrowStatement;
 import org.dynjs.parser.statement.TypeOfOpExpressionStatement;
 import org.dynjs.parser.statement.UndefinedValueStatement;
@@ -308,7 +309,7 @@ public class Executor {
     }
 
     public Statement defineThisLiteral(final Tree tree) {
-        throw new ParserException("not implemented yet", tree);
+        return new ThisStatement(tree);
     }
 
     public Statement defineNullLiteral(final Tree tree) {

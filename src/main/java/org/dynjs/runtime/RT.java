@@ -131,4 +131,8 @@ public class RT {
     public static Object construct(DynThreadContext context, Object obj) {
         return new DynJSCompiler.InternalDynObject(obj, null);
     }
+
+    public static Object findThis(Object thiz, Object self) {
+        return thiz;
+    }
 }

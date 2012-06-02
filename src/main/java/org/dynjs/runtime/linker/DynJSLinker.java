@@ -16,7 +16,12 @@
 package org.dynjs.runtime.linker;
 
 import com.headius.invokebinder.Binder;
-import org.dynalang.dynalink.linker.*;
+import org.dynalang.dynalink.linker.CallSiteDescriptor;
+import org.dynalang.dynalink.linker.GuardedInvocation;
+import org.dynalang.dynalink.linker.GuardingDynamicLinker;
+import org.dynalang.dynalink.linker.GuardingTypeConverterFactory;
+import org.dynalang.dynalink.linker.LinkRequest;
+import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynalang.dynalink.support.Guards;
 import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Scope;
@@ -109,6 +114,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             }
         } else if ("eq".equals(callSiteDescriptor.getName()) && argumentsAreNotStrings(linkRequest.getArguments())) {
             targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
+        } else if ("this".equals(callSiteDescriptor.getName())) {
+            targetHandle = lookup().findStatic(RT.class, "findThis", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
             if (callSiteDescriptor.getNameToken(1).equals("call")) {
                 MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
