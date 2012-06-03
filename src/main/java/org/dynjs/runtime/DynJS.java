@@ -120,10 +120,6 @@ public class DynJS {
     }
 
     public Object compile(DynThreadContext context, CodeBlock codeBlock, final String[] args) {
-        return this.compiler.compile(context, new DynFunction(codeBlock) {
-            public String[] getArguments() {
-                return args;
-            }
-        });
+        return this.compiler.compile(context, codeBlock, args);
     }
 }

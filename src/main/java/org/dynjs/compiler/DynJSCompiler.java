@@ -21,7 +21,14 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.*;
+import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
+import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.RT;
+import org.dynjs.runtime.Script;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
@@ -44,7 +51,7 @@ public class DynJSCompiler {
         this.config = config;
     }
 
-    public Object compile(final DynThreadContext context, final DynFunction arg) {
+    public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
@@ -53,10 +60,9 @@ public class DynJSCompiler {
                         invokespecial(p(DynFunction.class), "<init>", sig(void.class));
                         voidreturn();
                     }});
-            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Object[].class), fillCallStack(alwaysReturnWrapper(arg.getCodeBlock())));
+            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Object[].class), fillCallStack(alwaysReturnWrapper(codeBlock)));
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
-                String[] arguments = arg.getArguments();
                 bipush(arguments.length);
                 anewarray(p(String.class));
                 for (int i = 0; i < arguments.length; i++) {
