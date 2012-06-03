@@ -45,7 +45,7 @@ public class DynalinkTest {
             ldc("x");
             invokeinterface(DynJSCompiler.Types.Scope, "resolve", sig(Object.class, String.class));
             ldc("w");
-            invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             areturn();
         }};
         final DynObject fn = (DynObject) dynJS.compile(context, codeBlock, new String[]{});

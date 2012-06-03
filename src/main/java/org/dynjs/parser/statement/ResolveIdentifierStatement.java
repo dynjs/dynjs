@@ -21,9 +21,6 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
 public class ResolveIdentifierStatement extends BaseStatement implements Statement {
 
     private final String name;
@@ -38,7 +35,7 @@ public class ResolveIdentifierStatement extends BaseStatement implements Stateme
         return new CodeBlock() {{
             aload(DynJSCompiler.Arities.THIS);
             ldc(name);
-            invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }};
     }
 

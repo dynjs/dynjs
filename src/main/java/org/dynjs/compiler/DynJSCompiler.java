@@ -43,8 +43,6 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DynJSCompiler {
 
-    public static final String FCALL_SIG = sig(Object.class, DynThreadContext.class, Object[].class);
-
     private static final AtomicInteger counter = new AtomicInteger(0);
     private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
     private final DynJSConfig config;
@@ -62,7 +60,7 @@ public class DynJSCompiler {
                         invokespecial(p(DynFunction.class), "<init>", sig(void.class));
                         voidreturn();
                     }});
-            defineMethod("call", ACC_PUBLIC, FCALL_SIG, fillCallStack(alwaysReturnWrapper(codeBlock)));
+            defineMethod("call", ACC_PUBLIC, Signatures.FCALL, fillCallStack(alwaysReturnWrapper(codeBlock)));
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 bipush(arguments.length);
@@ -176,6 +174,12 @@ public class DynJSCompiler {
         int THIS = 0;
         int CONTEXT = 1;
         int ARGS = 2;
+    }
+
+    public static interface Signatures {
+
+        String FCALL = sig(Object.class, DynThreadContext.class, Object[].class);
+        String ARITY_2 = sig(Object.class, Object.class, Object.class);
     }
 
     public static interface Helper {
