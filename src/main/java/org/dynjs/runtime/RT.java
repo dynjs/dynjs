@@ -15,6 +15,7 @@
  */
 package org.dynjs.runtime;
 
+import com.headius.invokebinder.Binder;
 import org.dynjs.api.Function;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
@@ -25,6 +26,7 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.MutableCallSite;
 import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;
@@ -35,6 +37,9 @@ public class RT {
     public static final Handle BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
             p(DynJSBootstrapper.class), "bootstrap", methodType(CallSite.class,
             MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
+    public static final Handle BOOTSTRAP_2 = new Handle(Opcodes.H_INVOKESTATIC,
+            p(RT.class), "bootstrap", methodType(CallSite.class,
+            MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
     public static final MethodHandle CONSTRUCT;
 
@@ -44,6 +49,27 @@ public class RT {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static CallSite bootstrap(MethodHandles.Lookup caller, String name, MethodType methodType) throws NoSuchMethodException, IllegalAccessException {
+        if ("call2".equals(name)) {
+            MutableCallSite site = new MutableCallSite(methodType);
+            MethodHandle target = Binder
+                    .from(Object.class, Object.class, DynThreadContext.class, Object[].class)
+                    .insert(0, caller)
+                    .insert(1, site)
+                    .invokeStatic(caller, RT.class, "callBootstrap");
+            site.setTarget(target);
+            return site;
+        }
+        return null;
+    }
+
+    public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable, IllegalAccessException {
+        Function f = (Function) ((DynJSCompiler.InternalDynObject) self).getProperty("call").getAttribute("value");
+        return Binder.from(Object.class, Object.class, DynThreadContext.class, Object[].class)
+                .convert(Object.class, f.getClass(), DynThreadContext.class, Object[].class)
+                .invokeVirtual(caller, "call").invoke(f, context, args);
     }
 
     public static DynFunction paramPopulator(DynFunction function, Object[] args) {
