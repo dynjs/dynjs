@@ -107,35 +107,6 @@ public class RT {
         };
     }
 
-    public static DynFunction paramPopulator(DynFunction function, Object[] args) {
-        String[] parameters = function.getArguments();
-        for (int i = 0; i < parameters.length; i++) {
-            String parameter = parameters[i];
-            if (i < args.length) {
-                function.define(parameter, args[i]);
-            }
-        }
-        return function;
-    }
-
-    public static Function callHelper(DynThreadContext context, DynFunction function, Object[] arguments) {
-//        Function instance = null;
-//        try {
-//            instance = (Function) function.getClass().newInstance();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        copyProperties(function, instance);
-//        paramPopulator((DynFunction) instance, arguments);
-        return (Function) function;
-    }
-
-    private static void copyProperties(DynFunction function, Function instance) {
-//        for (Map.Entry<String, Object> entry : function.getAllProps().entrySet()) {
-//            instance.define(entry.getKey(), entry.getValue());
-//        }
-    }
-
     public static String typeof(Object obj) {
         if (obj == null) {
             return "object";
@@ -151,7 +122,6 @@ public class RT {
         } else if (obj instanceof String) {
             return "string";
         }
-
         return "undefined";
     }
 

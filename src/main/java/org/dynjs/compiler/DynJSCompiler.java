@@ -27,7 +27,6 @@ import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
-import org.dynjs.runtime.RT;
 import org.dynjs.runtime.Script;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
@@ -35,7 +34,6 @@ import org.objectweb.asm.util.CheckClassAdapter;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
@@ -63,10 +61,6 @@ public class DynJSCompiler {
             defineMethod("call", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {{
                 append(alwaysReturnWrapper(codeBlock));
             }});
-
-//            defineMethod("call2", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {{
-//                alwaysReturnWrapper(codeBlock);
-//            }});
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 bipush(arguments.length);
@@ -96,27 +90,6 @@ public class DynJSCompiler {
 
     public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
         return wrapFunction(context.getBuiltin("Function"), function);
-    }
-
-    private CodeBlock fillCallStack(final CodeBlock codeBlock) {
-        return new CodeBlock() {{
-            aload(Arities.CONTEXT);
-            aload(Arities.THIS);
-            aload(Arities.ARGS);
-            invokestatic(p(RT.class), "callHelper", sig(Function.class, DynThreadContext.class, DynFunction.class, Object[].class));
-            dup();
-            astore(0);
-            aload(Arities.CONTEXT);
-            invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class));
-            swap();
-            invokeinterface(p(Deque.class), "push", sig(void.class, Object.class));
-            append(codeBlock);
-            dup();
-            aload(Arities.CONTEXT);
-            invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class));
-            invokeinterface(p(Deque.class), "pop", sig(Object.class));
-            pop();
-        }};
     }
 
     private CodeBlock alwaysReturnWrapper(CodeBlock codeBlock) {
