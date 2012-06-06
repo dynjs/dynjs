@@ -66,6 +66,7 @@ public class DynThreadContext {
     private Map<Integer, CodeBlock> storage = new HashMap<>();
     private Scope scope = new DynObject();
     private Deque<Function> callStack = new LinkedList<>();
+    private Deque<Frame> frameStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
     private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
 
@@ -184,4 +185,8 @@ public class DynThreadContext {
 	public void setLoadPaths(List<String> newLoadPaths) {
 	    loadPaths = Collections.synchronizedList(newLoadPaths);		
 	}
+
+    public Deque<Frame> getFrameStack() {
+        return frameStack;
+    }
 }
