@@ -89,7 +89,7 @@ public class RequireTest {
     
     @Test
     public void testSupportsNestedRequires() {
-    	check("var x = require('outer'); var result = x.quadruple(4);", 16);
+    	check("var x = require('outer'); var result = x.quadruple(4);", 16.0);
     }
     
     private void check(String scriptlet, Object expected) {
