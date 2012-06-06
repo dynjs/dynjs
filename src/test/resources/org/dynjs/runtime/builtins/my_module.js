@@ -19,5 +19,10 @@ exports.sayHello = function() {
   return "Hello again";
 }
 
+var sayGoodbye = function() {
+  return "Goodbye, cruel world."
+}
+
+exports.farewell = sayGoodbye;
 
 var privateVariable = "Something not null";

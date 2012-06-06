@@ -138,6 +138,10 @@ public class DynThreadContext {
         return BUILTINS.get(name);
     }
 
+    public Map<Class<?>, Scope> getCapturedScopeStore() {
+        return getRuntime().getCapturedScopeStore();
+    }
+
     public static class Undefined {
 
         private Undefined() {
@@ -182,4 +186,5 @@ public class DynThreadContext {
     public Deque<Frame> getFrameStack() {
         return frameStack;
     }
+
 }

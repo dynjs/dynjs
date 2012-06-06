@@ -69,12 +69,27 @@ public class RequireTest {
     }
     
     @Test
+    public void testHasPrivateFunctions() {
+    	check("var result = require('my_module').farewell();", "Goodbye, cruel world.");
+    	try {
+    		check("var result = require('my_module').sayGoodbye", null);
+    	} catch (ReferenceError error) {
+    		assertThat(error.getMessage()).isEqualTo("sayGoodbye not found");
+    	}
+    }
+
+    @Test
     public void testKeepsPrivateVariablesPrivate() {
     	try {
     		check("var result = require('my_module').privateVariable", null);
     	} catch (ReferenceError error) {
     		assertThat(error.getMessage()).isEqualTo("privateVariable not found");
     	}
+    }
+    
+    @Test
+    public void testSupportsNestedRequires() {
+    	check("var x = require('outer'); var result = x.quadruple(4);", 16.0);
     }
     
     private void check(String scriptlet, Object expected) {
