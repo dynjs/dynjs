@@ -19,7 +19,10 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
+
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ResolveIdentifierStatement extends BaseStatement implements Statement {
 
@@ -33,7 +36,10 @@ public class ResolveIdentifierStatement extends BaseStatement implements Stateme
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
+            aload(DynJSCompiler.Arities.CONTEXT);
             aload(DynJSCompiler.Arities.THIS);
+            aload(DynJSCompiler.Arities.SELF);
+            invokedynamic("getScope", sig(Object.class, DynThreadContext.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
             ldc(name);
             invokedynamic("dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }};

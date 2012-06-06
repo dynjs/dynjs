@@ -109,7 +109,7 @@ public class DynJS {
         Scope globalScope = context.getScope();
         initBuiltins(globalScope);
         script.setGlobalScope(globalScope);
-        script.execute(context);
+        script.execute(globalScope, context);
     }
 
     private void initBuiltins(Scope globalScope) {

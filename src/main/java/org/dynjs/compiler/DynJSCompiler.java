@@ -60,7 +60,13 @@ public class DynJSCompiler {
                         invokespecial(p(DynFunction.class), "<init>", sig(void.class));
                         voidreturn();
                     }});
-            defineMethod("call", ACC_PUBLIC, Signatures.FCALL, fillCallStack(alwaysReturnWrapper(codeBlock)));
+            defineMethod("call", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {{
+                append(alwaysReturnWrapper(codeBlock));
+            }});
+
+//            defineMethod("call2", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {{
+//                alwaysReturnWrapper(codeBlock);
+//            }});
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 bipush(arguments.length);
@@ -132,7 +138,7 @@ public class DynJSCompiler {
                             voidreturn();
                         }});
 
-                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, DynThreadContext.class), getCodeBlock());
+                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Scope.class, DynThreadContext.class), getCodeBlock());
             }
 
             private CodeBlock getCodeBlock() {
@@ -172,13 +178,15 @@ public class DynJSCompiler {
     public static interface Arities {
 
         int THIS = 0;
-        int CONTEXT = 1;
-        int ARGS = 2;
+        int SELF = 1;
+        int CONTEXT = 2;
+        int ARGS = 3;
     }
 
     public static interface Signatures {
 
         String FCALL = sig(Object.class, DynThreadContext.class, Object[].class);
+        String FCALL_WITH_SELF = sig(Object.class, Object.class, DynThreadContext.class, Object[].class);
         String ARITY_2 = sig(Object.class, Object.class, Object.class);
     }
 

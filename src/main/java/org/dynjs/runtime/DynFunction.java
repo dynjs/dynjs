@@ -19,7 +19,11 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.api.Function;
 import org.dynjs.exception.ReferenceError;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Arrays;
+
+import static java.lang.invoke.MethodHandles.lookup;
 
 public abstract class DynFunction extends DynObject {
 
@@ -56,31 +60,31 @@ public abstract class DynFunction extends DynObject {
 
     private DynThreadContext context;
 
-    @Override
-    public Object resolve(String name) {
-        Object atom = null;
-        if (hasOwnProperty(name)) {
-            atom = getProperty(name).getAttribute("value");
-        }
-        if (atom == null) {
-            for (Function callee : context.getCallStack()) {
-                if (callee == this) {
-                    break;
-                }
-                atom = callee.resolve(name);
-                if (atom != null) {
-                    break;
-                }
-            }
-        }
-        if (atom == null) {
-            atom = context.getScope().resolve(name);
-        }
-        if (atom == null) {
-            throw new ReferenceError(name);
-        }
-        return atom;
-    }
+//    @Override
+//    public Object resolve(String name) {
+//        Object atom = null;
+//        if (hasOwnProperty(name)) {
+//            atom = getProperty(name).getAttribute("value");
+//        }
+//        if (atom == null) {
+//            for (Function callee : context.getCallStack()) {
+//                if (callee == this) {
+//                    break;
+//                }
+////                atom = callee.resolve(name);
+//                if (atom != null) {
+//                    break;
+//                }
+//            }
+//        }
+//        if (atom == null) {
+//            atom = context.getScope().resolve(name);
+//        }
+//        if (atom == null) {
+//            throw new ReferenceError(name);
+//        }
+//        return atom;
+//    }
 
     public void setContext(DynThreadContext context) {
         this.context = context;

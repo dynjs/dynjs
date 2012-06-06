@@ -17,7 +17,9 @@ package org.dynjs.runtime;
 
 import com.headius.invokebinder.Binder;
 import org.dynjs.api.Function;
+import org.dynjs.api.Resolver;
 import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
@@ -27,7 +29,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.MutableCallSite;
-import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;
 import static me.qmx.jitescript.util.CodegenUtils.p;
@@ -61,15 +62,49 @@ public class RT {
                     .invokeStatic(caller, RT.class, "callBootstrap");
             site.setTarget(target);
             return site;
+        } else if ("getScope".equals(name)) {
+            MutableCallSite site = new MutableCallSite(methodType);
+            MethodHandle getScope = Binder
+                    .from(Object.class, DynThreadContext.class, Object.class, Object.class)
+                    .insert(0, site)
+                    .invokeStatic(caller, RT.class, "getScope");
+            site.setTarget(getScope);
+            return site;
         }
         return null;
     }
 
     public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable, IllegalAccessException {
         Function f = (Function) ((DynJSCompiler.InternalDynObject) self).getProperty("call").getAttribute("value");
-        return Binder.from(Object.class, Object.class, DynThreadContext.class, Object[].class)
-                .convert(Object.class, f.getClass(), DynThreadContext.class, Object[].class)
-                .invokeVirtual(caller, "call").invoke(f, context, args);
+        context.getFrameStack().push(new Frame(f, args));
+        final Object result = Binder.from(Object.class, Object.class, Object.class, DynThreadContext.class, Object[].class)
+                .convert(Object.class, f.getClass(), Object.class, DynThreadContext.class, Object[].class)
+                .invokeVirtual(caller, "call").invoke(f, self, context, args);
+        context.getFrameStack().pop();
+        return result;
+    }
+
+    public static Object getScope(MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
+        return new Resolver() {
+            @Override
+            public Object resolve(String name) {
+                Object value = null;
+                value = ((Resolver) self).resolve(name);
+                if (value == null) {
+                    value = ((Resolver) thiz).resolve(name);
+                }
+                if (value == null && thiz instanceof Function) {
+                    value = context.getFrameStack().peek().resolve(name);
+                }
+                if (value == null) {
+                    value = ((Resolver) context.getScope()).resolve(name);
+                }
+                if (value == null) {
+                    throw new ReferenceError(name);
+                }
+                return value;
+            }
+        };
     }
 
     public static DynFunction paramPopulator(DynFunction function, Object[] args) {
@@ -84,22 +119,21 @@ public class RT {
     }
 
     public static Function callHelper(DynThreadContext context, DynFunction function, Object[] arguments) {
-        Function instance = null;
-        try {
-            instance = (Function) function.getClass().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        instance.setContext(context);
-        copyProperties(function, instance);
-        paramPopulator((DynFunction) instance, arguments);
-        return instance;
+//        Function instance = null;
+//        try {
+//            instance = (Function) function.getClass().newInstance();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        copyProperties(function, instance);
+//        paramPopulator((DynFunction) instance, arguments);
+        return (Function) function;
     }
 
     private static void copyProperties(DynFunction function, Function instance) {
-        for (Map.Entry<String, Object> entry : function.getAllProps().entrySet()) {
-            instance.define(entry.getKey(), entry.getValue());
-        }
+//        for (Map.Entry<String, Object> entry : function.getAllProps().entrySet()) {
+//            instance.define(entry.getKey(), entry.getValue());
+//        }
     }
 
     public static String typeof(Object obj) {
