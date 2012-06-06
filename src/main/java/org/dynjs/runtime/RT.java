@@ -99,6 +99,9 @@ public class RT {
                 if (value == null) {
                     value = ((Resolver) context.getScope()).resolve(name);
                 }
+                if (value == null && thiz instanceof Function) {
+                    value = context.getCapturedScopeStore().get(thiz.getClass()).resolve(name);
+                }
                 if (value == null) {
                     throw new ReferenceError(name);
                 }

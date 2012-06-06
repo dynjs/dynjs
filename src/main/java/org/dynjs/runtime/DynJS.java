@@ -17,8 +17,12 @@ package org.dynjs.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.ANTLRInputStream;
@@ -41,6 +45,7 @@ public class DynJS {
 
     private final DynJSCompiler compiler;
     private final DynJSConfig config;
+    private Map<Class<?>, Scope> capturedScopeStore = Collections.synchronizedMap(new WeakHashMap<Class<?>, Scope>());
 
     public DynJS(DynJSConfig config) {
         this.config = config;
@@ -121,5 +126,9 @@ public class DynJS {
 
     public Object compile(DynThreadContext context, CodeBlock codeBlock, final String[] args) {
         return this.compiler.compile(context, codeBlock, args);
+    }
+
+    public Map<Class<?>, Scope> getCapturedScopeStore() {
+        return capturedScopeStore;
     }
 }

@@ -76,6 +76,7 @@ public class DynJSCompiler {
             }});
         }};
         Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
+        context.getCapturedScopeStore().put(functionClass, context.getScope());
         try {
             Function function = functionClass.newInstance();
             return wrapFunction(context, function);
