@@ -15,79 +15,8 @@
  */
 package org.dynjs.runtime;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Function;
-import org.dynjs.exception.ReferenceError;
-
-import java.util.Arrays;
-
 public abstract class DynFunction extends DynObject {
 
-    private final CodeBlock codeBlock;
-
-    public DynFunction() {
-        this(new CodeBlock());
-    }
-
-    public DynFunction(CodeBlock codeBlock) {
-        this.codeBlock = codeBlock;
-        initBuiltins();
-    }
-
-    private void initBuiltins() {
-//        setProperty("construct", Functions.CONSTRUCTOR);
-    }
-
-    public CodeBlock getCodeBlock() {
-        return this.codeBlock;
-    }
-
-    protected int getArgumentsOffset() {
-        // context + scope + one-based index
-        return 3;
-    }
-
-    protected int getArgumentOffset(String key) {
-        // list is zero based
-        return Arrays.asList(getArguments()).indexOf(key);
-    }
-
     public abstract String[] getArguments();
-
-    private DynThreadContext context;
-
-    @Override
-    public Object resolve(String name) {
-        Object atom = null;
-        if (hasOwnProperty(name)) {
-            atom = getProperty(name).getAttribute("value");
-        }
-        if (atom == null) {
-            for (Function callee : context.getCallStack()) {
-                if (callee == this) {
-                    break;
-                }
-                atom = callee.resolve(name);
-                if (atom != null) {
-                    break;
-                }
-            }
-        }
-        if (atom == null) {
-            atom = context.getScope().resolve(name);
-        }
-        if (atom == null) {
-            throw new ReferenceError(name);
-        }
-        return atom;
-    }
-
-    public void setContext(DynThreadContext context) {
-        this.context = context;
-    }
-
-    public DynThreadContext getContext() {
-        return context;
-    }
 
 }

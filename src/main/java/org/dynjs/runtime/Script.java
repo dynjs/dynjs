@@ -19,7 +19,7 @@ import org.dynjs.api.Scope;
 
 public interface Script extends Scope {
 
-    public void execute(DynThreadContext context);
+    public void execute(Scope scope, DynThreadContext context);
 
     public void setGlobalScope(Scope scope);
 

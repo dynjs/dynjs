@@ -21,14 +21,19 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.*;
+import org.dynjs.runtime.DynFunction;
+import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynJSConfig;
+import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.Script;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
@@ -44,7 +49,7 @@ public class DynJSCompiler {
         this.config = config;
     }
 
-    public Object compile(final DynThreadContext context, final DynFunction arg) {
+    public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
         final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
@@ -53,10 +58,11 @@ public class DynJSCompiler {
                         invokespecial(p(DynFunction.class), "<init>", sig(void.class));
                         voidreturn();
                     }});
-            defineMethod("call", ACC_PUBLIC, sig(Object.class, DynThreadContext.class, Object[].class), fillCallStack(alwaysReturnWrapper(arg.getCodeBlock())));
+            defineMethod("call", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {{
+                append(alwaysReturnWrapper(codeBlock));
+            }});
 
             defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
-                String[] arguments = arg.getArguments();
                 bipush(arguments.length);
                 anewarray(p(String.class));
                 for (int i = 0; i < arguments.length; i++) {
@@ -86,27 +92,6 @@ public class DynJSCompiler {
         return wrapFunction(context.getBuiltin("Function"), function);
     }
 
-    private CodeBlock fillCallStack(final CodeBlock codeBlock) {
-        return new CodeBlock() {{
-            aload(Arities.CONTEXT);
-            aload(Arities.THIS);
-            aload(Arities.ARGS);
-            invokestatic(p(RT.class), "callHelper", sig(Function.class, DynThreadContext.class, DynFunction.class, Object[].class));
-            dup();
-            astore(0);
-            aload(Arities.CONTEXT);
-            invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class));
-            swap();
-            invokeinterface(p(Deque.class), "push", sig(void.class, Object.class));
-            append(codeBlock);
-            dup();
-            aload(Arities.CONTEXT);
-            invokevirtual(p(DynThreadContext.class), "getCallStack", sig(Deque.class));
-            invokeinterface(p(Deque.class), "pop", sig(Object.class));
-            pop();
-        }};
-    }
-
     private CodeBlock alwaysReturnWrapper(CodeBlock codeBlock) {
         if (!codeBlock.returns()) {
             codeBlock = codeBlock.aconst_null().areturn();
@@ -126,7 +111,7 @@ public class DynJSCompiler {
                             voidreturn();
                         }});
 
-                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, DynThreadContext.class), getCodeBlock());
+                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Scope.class, DynThreadContext.class), getCodeBlock());
             }
 
             private CodeBlock getCodeBlock() {
@@ -166,8 +151,16 @@ public class DynJSCompiler {
     public static interface Arities {
 
         int THIS = 0;
-        int CONTEXT = 1;
-        int ARGS = 2;
+        int SELF = 1;
+        int CONTEXT = 2;
+        int ARGS = 3;
+    }
+
+    public static interface Signatures {
+
+        String FCALL = sig(Object.class, DynThreadContext.class, Object[].class);
+        String FCALL_WITH_SELF = sig(Object.class, Object.class, DynThreadContext.class, Object[].class);
+        String ARITY_2 = sig(Object.class, Object.class, Object.class);
     }
 
     public static interface Helper {

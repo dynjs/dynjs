@@ -15,11 +15,9 @@
  */
 package org.dynjs.api;
 
-public interface Scope {
+public interface Scope extends Resolver {
 
     Scope getEnclosingScope();
-
-    Object resolve(String name);
 
     void define(String property, Object value);
 }

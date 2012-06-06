@@ -31,7 +31,7 @@ public class DynObjectTest {
 
     @Test
     public void hasDefaultAttributes() {
-        assertThat(object.getProperty("prototype")).isNotNull();
+        assertThat(object.prototype).isNotNull();
     }
 
     @Test

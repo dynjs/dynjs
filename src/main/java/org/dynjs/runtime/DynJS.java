@@ -109,7 +109,7 @@ public class DynJS {
         Scope globalScope = context.getScope();
         initBuiltins(globalScope);
         script.setGlobalScope(globalScope);
-        script.execute(context);
+        script.execute(globalScope, context);
     }
 
     private void initBuiltins(Scope globalScope) {
@@ -120,10 +120,6 @@ public class DynJS {
     }
 
     public Object compile(DynThreadContext context, CodeBlock codeBlock, final String[] args) {
-        return this.compiler.compile(context, new DynFunction(codeBlock) {
-            public String[] getArguments() {
-                return args;
-            }
-        });
+        return this.compiler.compile(context, codeBlock, args);
     }
 }

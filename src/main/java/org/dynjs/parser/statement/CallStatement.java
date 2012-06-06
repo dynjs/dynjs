@@ -57,7 +57,7 @@ public class CallStatement extends BaseStatement implements Statement {
             append(lhs.getCodeBlock());
             aload(DynJSCompiler.Arities.CONTEXT);
             aload(4);
-            invokedynamic("dyn:call", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("call2", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
         }};
     }
 }

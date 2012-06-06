@@ -26,8 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.asm.tree.LabelNode;
 
-import static me.qmx.jitescript.CodeBlock.*;
-
 public class DynJSCompilerTest {
 
     private DynJSCompiler dynJSCompiler;
@@ -63,10 +61,11 @@ public class DynJSCompilerTest {
                 }};
             }
 
-            @Override public Position getPosition() {
+            @Override
+            public Position getPosition() {
                 return null;
             }
-        }).execute(new DynThreadContext());
+        }).execute(scope, new DynThreadContext());
     }
 
 }

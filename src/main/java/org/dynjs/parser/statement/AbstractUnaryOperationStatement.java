@@ -21,7 +21,6 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public abstract class AbstractUnaryOperationStatement extends BaseStatement implements Statement {
@@ -70,7 +69,7 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
     private CodeBlock processOperation() {
         return new CodeBlock() {{
             append(new NumberLiteralStatement(null, "1", 10).getCodeBlock());
-            invokedynamic(AbstractUnaryOperationStatement.this.operation(), sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic(AbstractUnaryOperationStatement.this.operation(), DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }};
     }
 

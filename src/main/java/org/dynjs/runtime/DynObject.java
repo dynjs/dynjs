@@ -16,7 +16,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.api.Scope;
-import org.dynjs.exception.ReferenceError;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +23,9 @@ import java.util.Map;
 public class DynObject implements Scope {
 
     private final Map<String, DynProperty> properties = new HashMap<>();
+    public Object prototype = DynThreadContext.UNDEFINED;
 
     public DynObject() {
-        setProperty("prototype", DynThreadContext.UNDEFINED);
     }
 
     public void setProperty(String key, Object atom) {
@@ -47,8 +46,7 @@ public class DynObject implements Scope {
 
     @Override
     public Scope getEnclosingScope() {
-        Object prototype = getProperty("prototype").getAttribute("value");
-        if (prototype instanceof DynObject) {
+        if (this.prototype instanceof DynObject) {
             return (DynObject) prototype;
         }
         return null;
@@ -61,7 +59,7 @@ public class DynObject implements Scope {
         } else if (getEnclosingScope() != null) {
             return getEnclosingScope().resolve(name);
         }
-        throw new ReferenceError(name);
+        return null;
     }
 
     @Override
@@ -80,14 +78,6 @@ public class DynObject implements Scope {
             return !"".equals(string);
         }
         return (value instanceof DynObject);
-    }
-
-    public Map<String, Object> getAllProps() {
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        for (Map.Entry<String, DynProperty> entry : properties.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getAttribute("value"));
-        }
-        return map;
     }
 
     public String typeof() {

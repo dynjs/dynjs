@@ -21,7 +21,6 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class OperationAssignmentStatement extends BaseStatement implements Statement {
@@ -43,7 +42,7 @@ public class OperationAssignmentStatement extends BaseStatement implements State
         return new CodeBlock() {{
             append(l.getCodeBlock());
             append(r.getCodeBlock());
-            invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic(operation, DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             aload(DynJSCompiler.Arities.THIS);
             swap();
             ldc(resolvable.getName());

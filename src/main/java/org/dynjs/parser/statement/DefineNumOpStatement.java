@@ -17,10 +17,9 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DefineNumOpStatement extends BaseStatement implements Statement {
 
@@ -40,7 +39,7 @@ public class DefineNumOpStatement extends BaseStatement implements Statement {
         return new CodeBlock() {{
             append(leftHandStatement.getCodeBlock());
             append(rightHandStatement.getCodeBlock());
-            invokedynamic(operation, sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic(operation, DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }};
     }
 }

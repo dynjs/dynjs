@@ -17,10 +17,9 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class ResolveByIndexStatement extends BaseStatement implements Statement {
 
@@ -45,9 +44,9 @@ public class ResolveByIndexStatement extends BaseStatement implements Statement 
             append(index.getCodeBlock());
         }};
         if (index instanceof NumberLiteralStatement) {
-            return codeBlock.invokedynamic("dyn:getElement", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            return codeBlock.invokedynamic("dyn:getElement", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         } else {
-            return codeBlock.invokedynamic("dyn:getProp", sig(Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            return codeBlock.invokedynamic("dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }
     }
 
