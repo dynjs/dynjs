@@ -65,7 +65,6 @@ public class DynThreadContext {
     private AtomicInteger storageCounter = new AtomicInteger();
     private Map<Integer, CodeBlock> storage = new HashMap<>();
     private Scope scope = new DynObject();
-    private Deque<Function> callStack = new LinkedList<>();
     private Deque<Frame> frameStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
     private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
@@ -127,10 +126,6 @@ public class DynThreadContext {
      */
     public CodeBlock retrieve(int id) {
         return storage.get(id);
-    }
-
-    public Deque<Function> getCallStack() {
-        return callStack;
     }
 
     public void setClassLoader(DynamicClassLoader classLoader) {
