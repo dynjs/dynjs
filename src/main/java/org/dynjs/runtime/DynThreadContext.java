@@ -15,6 +15,13 @@
  */
 package org.dynjs.runtime;
 
+import me.qmx.jitescript.CodeBlock;
+import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.runtime.builtins.DefineProperty;
+import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.Require;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -24,15 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import me.qmx.jitescript.CodeBlock;
-
-import org.dynjs.api.Function;
-import org.dynjs.api.Scope;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.runtime.builtins.DefineProperty;
-import org.dynjs.runtime.builtins.Eval;
-import org.dynjs.runtime.builtins.Require;
 
 public class DynThreadContext {
 
@@ -86,7 +84,7 @@ public class DynThreadContext {
     public void setRuntime(DynJS runtime) {
         this.runtime.set(runtime);
     }
-    
+
     public String defineStringLiteral(final String value) {
         return value;
     }
@@ -170,16 +168,16 @@ public class DynThreadContext {
     }
 
     public void addLoadPath(String loadPath) {
-    	loadPaths.add(loadPath);
-    }
-    
-    public List<String> getLoadPaths() {
-    	return Collections.unmodifiableList(loadPaths);
+        loadPaths.add(loadPath);
     }
 
-	public void setLoadPaths(List<String> newLoadPaths) {
-	    loadPaths = Collections.synchronizedList(newLoadPaths);		
-	}
+    public List<String> getLoadPaths() {
+        return Collections.unmodifiableList(loadPaths);
+    }
+
+    public void setLoadPaths(List<String> newLoadPaths) {
+        loadPaths = Collections.synchronizedList(newLoadPaths);
+    }
 
     public Deque<Frame> getFrameStack() {
         return frameStack;
