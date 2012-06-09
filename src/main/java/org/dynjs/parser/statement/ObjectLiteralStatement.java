@@ -15,14 +15,15 @@
  */
 package org.dynjs.parser.statement;
 
-import java.util.List;
-
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynObject;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import java.util.List;
+
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ObjectLiteralStatement extends BaseStatement implements Statement {
 
@@ -35,17 +36,17 @@ public class ObjectLiteralStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock obj = new CodeBlock() {{
+        return new CodeBlock() {{
             newobj(p(DynObject.class));
             dup();
             invokespecial(p(DynObject.class), "<init>", sig(void.class));
+            dup();
             astore(7);
+            for (Statement namedValue : namedValues) {
+                aload(7);
+                append(namedValue.getCodeBlock());
+            }
+            aload(7);
         }};
-        for (Statement namedValue : namedValues) {
-
-            obj = obj.aload(7)
-                    .append(namedValue.getCodeBlock());
-        }
-        return obj.aload(7);
     }
 }
