@@ -68,12 +68,27 @@
         </license>
     </licenses>
 
+    <repositories>
+      <repository>
+        <id>projectodd-upstream</id>
+        <name>project:odd Upstream Builds</name>
+        <url>https://repository-projectodd.forge.cloudbees.com/upstream</url>
+        <layout>default</layout>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>
+    </repositories>
+
     <dependencies>
         <!-- code generation dependencies -->
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.x.incremental.7</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
