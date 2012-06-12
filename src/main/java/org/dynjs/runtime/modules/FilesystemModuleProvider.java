@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 
+import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
@@ -37,10 +38,8 @@ public class FilesystemModuleProvider implements ModuleProvider {
 					System.err.println(error.getLocalizedMessage());
 				}
 			} catch (FileNotFoundException e) {
-				System.err.println("Module not found: " + filename);
+				throw new ModuleLoadException( moduleName, e );
 			}
-		} else {
-			System.err.println("Module not found: " + filename);
 		}
 		return exports;
 	}
