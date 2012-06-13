@@ -112,7 +112,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                         .invokeVirtual(lookup(), "delete");
                 return new GuardedInvocation(delete, null);
             }
-        } else if ("eq".equals(callSiteDescriptor.getName()) && argumentsAreNotStrings(linkRequest.getArguments())) {
+        } else if ("eq".equals(callSiteDescriptor.getName()) && RT.allArgsAreSameType(linkRequest.getArguments())) {
             targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
         } else if ("this".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "findThis", methodType);
@@ -157,15 +157,6 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         }
 
         return null;
-    }
-
-    private boolean argumentsAreNotStrings(Object[] args) {
-        for (Object arg : args) {
-            if (arg instanceof String) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private boolean isFromDynJS(CallSiteDescriptor callSiteDescriptor) {

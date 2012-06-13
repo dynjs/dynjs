@@ -149,4 +149,18 @@ public class RT {
     public static Object findThis(Object thiz, Object self) {
         return thiz;
     }
+
+    public static boolean allArgsAreSameType(Object[] args) {
+        boolean isSameType = true;
+        if (args.length > 0 && args[0] != null) {
+            Class type = args[0].getClass();
+            for (int i = 1; i < args.length; i++) {
+                Object arg = args[i];
+                if (arg != null) {
+                    isSameType = type.isAssignableFrom(arg.getClass());
+                }
+            }
+        }
+        return isSameType;
+    }
 }
