@@ -45,6 +45,11 @@ public class JavaFunction implements Function {
             newArgs.add( arg );
         }
         
+        int additionalNulls = methodParamTypes.length - newArgs.size();
+        for ( int i = 0 ; i < additionalNulls ; ++i ) {
+            newArgs.add( null );
+        }
+        
         return newArgs;
     }
 

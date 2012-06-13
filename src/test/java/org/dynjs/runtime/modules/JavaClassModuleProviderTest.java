@@ -46,6 +46,12 @@ public class JavaClassModuleProviderTest {
     public void testMethodWithDynJSArgumentsAndMore() {
         check( "var x = require('tacos'); var result = x.dinner('soup');", "fish soup" );
     }
+    
+    @Test
+    public void testMethodWithDynJSArgumentsAndMoreButMissingSomeWhichAreSubsequentlyPassedSomeNulls() {
+        check( "var x = require('tacos'); var result = x.dinner();", "fish null" );
+    }
+    
     private void check(String scriptlet, Object expected) {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
