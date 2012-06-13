@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.InvalidModuleException;
+import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 
@@ -35,10 +36,14 @@ public class JavaClassModuleProvider implements ModuleProvider {
             return null;
         }
         
-        return buildExports( context, javaModule );
+        try {
+            return buildExports( context, javaModule );
+        } catch (IllegalAccessException e) {
+            throw new ModuleLoadException( moduleName, e );
+        }
     }
     
-    private DynObject buildExports(DynThreadContext context, Object javaModule) {
+    private DynObject buildExports(DynThreadContext context, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
         
         DynObject exports = new DynObject();
@@ -57,13 +62,12 @@ public class JavaClassModuleProvider implements ModuleProvider {
             }
             
             DynObject function = buildFunction(context, javaModule, method);
-            
             exports.setProperty( exportName, function );
         }
         return exports;
     }
     
-    private DynObject buildFunction(DynThreadContext context, Object module, Method method) {
+    private DynObject buildFunction(DynThreadContext context, Object module, Method method) throws IllegalAccessException {
         return DynJSCompiler.wrapFunction( context, new JavaFunction( module, method )  );
     }
 
