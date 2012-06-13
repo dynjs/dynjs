@@ -1,6 +1,5 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.api.Function;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.BaseFunction;
 import org.dynjs.runtime.DynObject;
