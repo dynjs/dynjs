@@ -68,12 +68,27 @@
         </license>
     </licenses>
 
+    <repositories>
+      <repository>
+        <id>projectodd-upstream</id>
+        <name>project:odd Upstream Builds</name>
+        <url>https://repository-projectodd.forge.cloudbees.com/upstream</url>
+        <layout>default</layout>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>
+    </repositories>
+
     <dependencies>
         <!-- code generation dependencies -->
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.x.incremental.7</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -139,6 +154,13 @@
         </dependency>
     </dependencies>
     <build>
+        <extensions>
+          <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-webdav-jackrabbit</artifactId>
+            <version>1.0-beta-7</version>
+          </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

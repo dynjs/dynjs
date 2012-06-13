@@ -24,6 +24,7 @@ public class DynObject implements Scope {
 
     private final Map<String, DynProperty> properties = new HashMap<>();
     public Object prototype = DynThreadContext.UNDEFINED;
+    private DynObject parent;
 
     public DynObject() {
     }
@@ -64,6 +65,9 @@ public class DynObject implements Scope {
 
     @Override
     public void define(String property, Object value) {
+        if (value instanceof DynObject) {
+            ((DynObject) value).setParent(this);
+        }
         setProperty(property, value);
     }
 
@@ -102,4 +106,11 @@ public class DynObject implements Scope {
         properties.remove(propertyName);
     }
 
+    public void setParent(DynObject parent) {
+        this.parent = parent;
+    }
+
+    public DynObject getParent() {
+        return parent;
+    }
 }

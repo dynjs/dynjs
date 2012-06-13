@@ -20,7 +20,7 @@ public class DynJSException extends RuntimeException {
         super();
     }
 
-    public DynJSException(Exception e) {
+    public DynJSException(Throwable e) {
         super(e);
     }
 

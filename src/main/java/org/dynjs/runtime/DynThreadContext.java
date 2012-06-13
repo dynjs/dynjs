@@ -15,13 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import me.qmx.jitescript.CodeBlock;
-import org.dynjs.api.Scope;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.runtime.builtins.DefineProperty;
-import org.dynjs.runtime.builtins.Eval;
-import org.dynjs.runtime.builtins.Require;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -31,6 +24,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import me.qmx.jitescript.CodeBlock;
+
+import org.dynjs.api.Scope;
+import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.runtime.builtins.DefineProperty;
+import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.Require;
+import org.dynjs.runtime.modules.FilesystemModuleProvider;
+import org.dynjs.runtime.modules.ModuleProvider;
 
 public class DynThreadContext {
 
@@ -66,6 +69,7 @@ public class DynThreadContext {
     private Deque<Frame> frameStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
     private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
+    private List<ModuleProvider> moduleProviders = Collections.synchronizedList(new ArrayList<ModuleProvider>());
 
     public DynThreadContext() {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
@@ -75,6 +79,29 @@ public class DynThreadContext {
         loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
         loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
         loadPaths.add("/usr/local/lib/node/");
+        
+        moduleProviders.add( new FilesystemModuleProvider() );
+    }
+    
+    
+    /** Copy/child constructor.
+     * 
+     * <p>Build a new context based upon a parent. While a new
+     * frame-stack and scope is provided, the following are
+     * initialized through the passed-on parent context:</p>
+     * 
+     * <ul>
+     *   <li>Load paths</li>
+     *   <li>Module providers</li>
+     *   <li>Class loader</li>
+     * </ul>
+     * @param original The original context to seed the child.
+     */
+    public DynThreadContext(DynThreadContext original) {
+    	this();
+    	setLoadPaths( new ArrayList<>( original.getLoadPaths() ) );
+    	setModuleProviders( new ArrayList<>( original.getModuleProviders() ) );
+    	setClassLoader( original.getClassLoader() );
     }
 
     public DynJS getRuntime() {
@@ -169,6 +196,18 @@ public class DynThreadContext {
         public String toString() {
             return "null";
         }
+    }
+    
+    public void addModuleProvider(ModuleProvider moduleProvider) {
+    	moduleProviders.add( moduleProvider );
+    }
+    
+    public List<ModuleProvider> getModuleProviders() {
+    	return Collections.unmodifiableList( this.moduleProviders);
+    }
+    
+    public void setModuleProviders(List<ModuleProvider> newModuleProviders) {
+    	moduleProviders = Collections.synchronizedList( moduleProviders );
     }
 
     public void addLoadPath(String loadPath) {

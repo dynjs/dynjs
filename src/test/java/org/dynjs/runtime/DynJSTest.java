@@ -298,6 +298,11 @@ public class DynJSTest {
     }
 
     @Test
+    public void testThis() {
+        check("var x = {name:'myName', lol:function(){return this.name;}}; var result = x.name == 'myName' && x.lol() == 'myName';");
+    }
+
+    @Test
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
     }

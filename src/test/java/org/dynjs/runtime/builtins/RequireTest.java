@@ -35,6 +35,7 @@ public class RequireTest {
         new Require();
         context = new DynThreadContext();
         context.addLoadPath(System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/");
+        context.addModuleProvider(new TestModuleProvider() );
         dynJS   = new DynJS(config);
     }
 
@@ -90,6 +91,11 @@ public class RequireTest {
     @Test
     public void testSupportsNestedRequires() {
     	check("var x = require('outer'); var result = x.quadruple(4);", 16.0);
+    }
+    
+    @Test
+    public void testJavaImplementedRequires() {
+    	check( "var x = require('java_impl'); var result = x.cheese();", "cheddar" );
     }
     
     private void check(String scriptlet, Object expected) {
