@@ -38,7 +38,7 @@ public class NamedValueStatement extends BaseStatement implements Statement {
         return new CodeBlock() {{
             append(propertyName.getCodeBlock());
             append(expr.getCodeBlock());
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("DefineOwnProperty", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
         }};
     }
 }

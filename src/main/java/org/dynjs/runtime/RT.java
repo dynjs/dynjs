@@ -79,6 +79,14 @@ public class RT {
                     .invokeStatic(caller, RT.class, "getThis");
             site.setTarget(getThis);
             return site;
+        } else if ("DefineOwnProperty".equals(name)) {
+            final MutableCallSite site = new MutableCallSite(methodType);
+            final MethodHandle defineOwnPropertyBootstrap = Binder
+                    .from(methodType)
+                    .insert(0, caller)
+                    .invokeStatic(caller, RT.class, "defineOwnPropertyBootstrap");
+            site.setTarget(defineOwnPropertyBootstrap);
+            return site;
         }
         return null;
     }
@@ -122,6 +130,15 @@ public class RT {
     public static Object getThis(MethodHandles.Lookup caller, MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
         final DynObject parent = ((DynObject) self).getParent();
         return parent;
+    }
+
+    public static void defineOwnPropertyBootstrap(MethodHandles.Lookup caller, Object self, Object propertyName, Object value) throws Throwable, IllegalAccessException {
+
+        final MethodHandle setProperty = Binder
+                .from(void.class, Object.class, Object.class, Object.class)
+                .convert(void.class, self.getClass(), String.class, Object.class)
+                .invokeVirtual(caller, "define");
+        setProperty.invokeWithArguments(self, propertyName, value);
     }
 
     public static String typeof(Object obj) {
