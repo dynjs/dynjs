@@ -19,22 +19,24 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ThrowStatement extends BaseStatement implements Statement {
 
-    public ThrowStatement(final Tree tree) {
+    private final Statement expression;
+
+    public ThrowStatement(final Tree tree, Statement expression) {
         super(tree);
+        this.expression = expression;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            newobj(p(RuntimeException.class));
-            dup();
-            invokespecial(p(RuntimeException.class), "<init>", sig(void.class));
-            athrow();
+            append(expression.getCodeBlock());
+            invokedynamic("throw", sig(void.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
         }};
     }
 

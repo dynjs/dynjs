@@ -397,7 +397,7 @@ public class Executor {
     }
 
     public Statement throwStatement(final Tree tree, final Statement expression) {
-        return new ThrowStatement(tree);
+        return new ThrowStatement(tree, expression);
     }
 
     public Statement tryStatement(final Tree tree, Statement block, Statement _catch, Statement _finally) {

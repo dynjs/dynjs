@@ -16,6 +16,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
@@ -300,6 +301,11 @@ public class DynJSTest {
     @Test
     public void testThis() {
         check("var x = {name:'myName', lol:function(){return this.name;}}; var result = x.name == 'myName' && x.lol() == 'myName';");
+    }
+
+    @Test(expected = DynJSException.class)
+    public void testThrow() {
+        check("throw 'pizza';");
     }
 
     @Test
