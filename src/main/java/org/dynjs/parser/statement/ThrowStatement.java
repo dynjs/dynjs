@@ -24,8 +24,11 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class ThrowStatement extends BaseStatement implements Statement {
 
-    public ThrowStatement(final Tree tree) {
+    private final Statement expression;
+
+    public ThrowStatement(final Tree tree, Statement expression) {
         super(tree);
+        this.expression = expression;
     }
 
     @Override
