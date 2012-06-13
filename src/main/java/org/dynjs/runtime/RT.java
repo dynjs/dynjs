@@ -70,6 +70,15 @@ public class RT {
                     .invokeStatic(caller, RT.class, "getScope");
             site.setTarget(getScope);
             return site;
+        } else if ("this".equals(name)) {
+            final MutableCallSite site = new MutableCallSite(methodType);
+            final MethodHandle getThis = Binder
+                    .from(Object.class, DynThreadContext.class, Object.class, Object.class)
+                    .insert(0, caller)
+                    .insert(1, site)
+                    .invokeStatic(caller, RT.class, "getThis");
+            site.setTarget(getThis);
+            return site;
         }
         return null;
     }
@@ -108,6 +117,11 @@ public class RT {
                 return value;
             }
         };
+    }
+
+    public static Object getThis(MethodHandles.Lookup caller, MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
+        final DynObject parent = ((DynObject) self).getParent();
+        return parent;
     }
 
     public static String typeof(Object obj) {
