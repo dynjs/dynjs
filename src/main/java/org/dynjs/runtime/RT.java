@@ -19,12 +19,14 @@ import com.headius.invokebinder.Binder;
 import org.dynjs.api.Function;
 import org.dynjs.api.Resolver;
 import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 
 import java.lang.invoke.CallSite;
+import java.lang.invoke.ConstantCallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -87,6 +89,11 @@ public class RT {
                     .invokeStatic(caller, RT.class, "defineOwnPropertyBootstrap");
             site.setTarget(defineOwnPropertyBootstrap);
             return site;
+        } else if ("throw".equals(name)) {
+            final ConstantCallSite throwException = new ConstantCallSite(Binder
+                    .from(methodType)
+                    .invokeStatic(caller, RT.class, "throwException"));
+            return throwException;
         }
         return null;
     }
@@ -139,6 +146,10 @@ public class RT {
                 .convert(void.class, self.getClass(), String.class, Object.class)
                 .invokeVirtual(caller, "define");
         setProperty.invokeWithArguments(self, propertyName, value);
+    }
+
+    public static void throwException(Object o) {
+        throw new DynJSException(String.valueOf(o));
     }
 
     public static String typeof(Object obj) {
