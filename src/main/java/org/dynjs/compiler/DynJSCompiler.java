@@ -170,6 +170,7 @@ public class DynJSCompiler {
     }
 
     public static class InternalDynObject extends DynObject {
+
         public InternalDynObject(Object prototype, Object function) {
             setProperty("prototype", prototype);
             if (function != null) {
@@ -185,5 +186,6 @@ public class DynJSCompiler {
             }
             return false;
         }
+
     }
 }
