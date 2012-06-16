@@ -19,9 +19,9 @@ public class JavaFunction implements Function {
     }
 
     @Override
-    public Object call(Object self, DynThreadContext context, Object... args) {
+    public Object call(Object self, DynThreadContext context, Object... arguments) {
 
-        List<Object> newArgs = buildArguments( self, context, args );
+        List<Object> newArgs = buildArguments( self, context, arguments);
 
         try {
             return this.handle.invokeWithArguments( newArgs );
@@ -54,7 +54,7 @@ public class JavaFunction implements Function {
     }
 
     @Override
-    public String[] getArguments() {
+    public String[] getParameters() {
         // TODO Auto-generated method stub
         return null;
     }

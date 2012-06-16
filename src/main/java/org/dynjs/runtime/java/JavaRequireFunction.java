@@ -20,8 +20,8 @@ import org.dynjs.runtime.DynThreadContext;
 
 public class JavaRequireFunction implements Function {
     @Override
-    public Object call(Object self, DynThreadContext context, Object[] args) {
-        String className = (String) args[0];
+    public Object call(Object self, DynThreadContext context, Object[] arguments) {
+        String className = (String) arguments[0];
         Class clazz = null;
         try {
             clazz = Class.forName(className, true, context.getClassLoader());
@@ -32,7 +32,7 @@ public class JavaRequireFunction implements Function {
     }
 
     @Override
-    public String[] getArguments() {
+    public String[] getParameters() {
         return new String[]{"className"};
     }
 

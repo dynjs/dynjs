@@ -20,25 +20,25 @@ import org.dynjs.api.Resolver;
 
 public class Frame implements Resolver {
     private final Function function;
-    private final Object[] params;
+    private final Object[] arguments;
 
-    public Frame(Function function, Object... params) {
+    public Frame(Function function, Object... arguments) {
         this.function = function;
-        this.params = params;
+        this.arguments = arguments;
     }
 
-    public Object[] getParams() {
-        return params;
+    public Object[] getArguments() {
+        return arguments;
     }
 
     @Override
     public Object resolve(String name) {
-        final String[] arguments = function.getArguments();
+        final String[] arguments = function.getParameters();
         for (int i = 0; i < arguments.length; i++) {
             String argument = arguments[i];
             if (argument.equals(name)) {
-                if (getParams().length > i) {
-                    return getParams()[i];
+                if (getArguments().length > i) {
+                    return getArguments()[i];
                 }
             }
         }

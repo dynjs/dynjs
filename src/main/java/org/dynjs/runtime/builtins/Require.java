@@ -56,7 +56,7 @@ public class Require implements Function {
     }
 
 	@Override
-    public String[] getArguments() {
+    public String[] getParameters() {
         return new String[]{"moduleName"};
     }
 

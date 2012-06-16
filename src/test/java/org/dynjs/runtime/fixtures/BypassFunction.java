@@ -21,12 +21,12 @@ import org.dynjs.runtime.DynThreadContext;
 public class BypassFunction implements Function {
 
     @Override
-    public Object call(Object self, DynThreadContext context, Object... args) {
-        return args[0];
+    public Object call(Object self, DynThreadContext context, Object... arguments) {
+        return arguments[0];
     }
 
     @Override
-    public String[] getArguments() {
+    public String[] getParameters() {
         return new String[]{"x"};
     }
 }

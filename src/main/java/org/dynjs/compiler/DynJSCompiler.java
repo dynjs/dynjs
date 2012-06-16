@@ -62,7 +62,7 @@ public class DynJSCompiler {
                 append(alwaysReturnWrapper(codeBlock));
             }});
 
-            defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
+            defineMethod("getParameters", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 bipush(arguments.length);
                 anewarray(p(String.class));
                 for (int i = 0; i < arguments.length; i++) {

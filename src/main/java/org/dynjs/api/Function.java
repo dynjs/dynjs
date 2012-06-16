@@ -19,8 +19,8 @@ import org.dynjs.runtime.DynThreadContext;
 
 public interface Function {
 
-    Object call(Object self, DynThreadContext context, Object... args);
+    Object call(Object self, DynThreadContext context, Object... arguments);
 
-    String[] getArguments();
+    String[] getParameters();
 
 }
