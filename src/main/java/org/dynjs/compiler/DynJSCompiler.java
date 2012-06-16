@@ -49,6 +49,10 @@ public class DynJSCompiler {
         this.config = config;
     }
 
+    public Object compileExceptionHandler(DynThreadContext context, final CodeBlock codeBlock, final String identifier) {
+        return internalCompile("ExceptionHandler", context, codeBlock, new String[]{identifier}, false);
+    }
+
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
         return internalCompile("AnonymousDynFunction", context, codeBlock, arguments, true);
     }

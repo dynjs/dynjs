@@ -128,6 +128,10 @@ public class DynJS {
         return this.compiler.compile(context, codeBlock, args);
     }
 
+    public Object compileExceptionHandler(DynThreadContext context, CodeBlock codeBlock, final String identifier) {
+        return this.compiler.compileExceptionHandler(context, codeBlock, identifier);
+    }
+
     public Map<Class<?>, Scope> getCapturedScopeStore() {
         return capturedScopeStore;
     }
