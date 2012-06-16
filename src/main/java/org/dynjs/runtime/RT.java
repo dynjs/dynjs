@@ -159,6 +159,14 @@ public class RT {
     }
 
     public static void trycatchfinally(MethodHandles.Lookup caller, Object self, DynThreadContext context, Object _try, Object _catch, Object _finally) throws NoSuchMethodException, IllegalAccessException {
+        final MethodHandle catchHandle = Binder.from(void.class, Object.class, Throwable.class)
+                .convert(void.class, Function.class, Object.class)
+                .collect(1, Object[].class)
+                .insert(1, self)
+                .insert(2, context)
+                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                .invokeVirtual(caller, "call")
+                .bindTo(_catch);
     }
 
     public static String typeof(Object obj) {
