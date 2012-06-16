@@ -50,7 +50,11 @@ public class DynJSCompiler {
     }
 
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
-        final String className = generateNameFromBase("AnonymousDynFunction");
+        return internalCompile("AnonymousDynFunction", context, codeBlock, arguments, true);
+    }
+
+    private Object internalCompile(String prefix, DynThreadContext context, final CodeBlock codeBlock, final String[] arguments, boolean wrap) {
+        final String className = generateNameFromBase(prefix);
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
                     new CodeBlock() {{
@@ -79,7 +83,11 @@ public class DynJSCompiler {
         context.getCapturedScopeStore().put(functionClass, context.getScope());
         try {
             Function function = functionClass.newInstance();
-            return wrapFunction(context, function);
+            if (wrap) {
+                return wrapFunction(context, function);
+            } else {
+                return function;
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
