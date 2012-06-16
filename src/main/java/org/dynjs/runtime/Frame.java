@@ -15,15 +15,15 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.api.Function;
+import org.dynjs.api.LexicalEnvironment;
 import org.dynjs.api.Resolver;
 
 public class Frame implements Resolver {
-    private final Function function;
+    private final LexicalEnvironment environment;
     private final Object[] arguments;
 
-    public Frame(Function function, Object... arguments) {
-        this.function = function;
+    public Frame(LexicalEnvironment environment, Object... arguments) {
+        this.environment = environment;
         this.arguments = arguments;
     }
 
@@ -33,7 +33,7 @@ public class Frame implements Resolver {
 
     @Override
     public Object resolve(String name) {
-        final String[] arguments = function.getParameters();
+        final String[] arguments = environment.getParameters();
         for (int i = 0; i < arguments.length; i++) {
             String argument = arguments[i];
             if (argument.equals(name)) {
