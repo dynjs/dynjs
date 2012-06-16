@@ -54,6 +54,7 @@ import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.parser.statement.ThisStatement;
 import org.dynjs.parser.statement.ThrowStatement;
+import org.dynjs.parser.statement.TryCatchFinallyStatement;
 import org.dynjs.parser.statement.TypeOfOpExpressionStatement;
 import org.dynjs.parser.statement.UndefinedValueStatement;
 import org.dynjs.parser.statement.VoidOpStatement;
@@ -401,8 +402,8 @@ public class Executor {
         return new ThrowStatement(tree, expression);
     }
 
-    public Statement tryStatement(final Tree tree, Statement block, Statement _catch, Statement _finally) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement tryStatement(final Tree tree, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
+        return new TryCatchFinallyStatement(tree, tryBlock, catchBlock, finallyBlock);
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
