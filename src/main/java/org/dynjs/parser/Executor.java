@@ -21,6 +21,7 @@ import org.dynjs.parser.statement.AssignmentOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
+import org.dynjs.parser.statement.CatchClauseStatement;
 import org.dynjs.parser.statement.ContinueStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
@@ -405,7 +406,7 @@ public class Executor {
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
-        throw new ParserException("not implemented yet", tree);
+        return new CatchClauseStatement(tree, id, block);
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {

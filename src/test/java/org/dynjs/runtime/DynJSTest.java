@@ -309,6 +309,16 @@ public class DynJSTest {
     }
 
     @Test
+    public void tryCatchBlock() {
+        check("var result; try { throw 'mud'; } catch (e) { result = e; };", "mud");
+    }
+
+    @Test
+    public void tryFinallyBlock() {
+        check("var result; try { throw 'mud'; } finally { result = e; };", "mud");
+    }
+
+    @Test
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
     }
