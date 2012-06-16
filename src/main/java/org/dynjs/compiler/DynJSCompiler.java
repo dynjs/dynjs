@@ -50,7 +50,7 @@ public class DynJSCompiler {
     }
 
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
-        final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
+        final String className = generateNameFromBase("AnonymousDynFunction");
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
                     new CodeBlock() {{
@@ -83,6 +83,10 @@ public class DynJSCompiler {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String generateNameFromBase(String prefix) {
+        return PACKAGE + prefix + counter.incrementAndGet();
     }
 
     public static DynObject wrapFunction(final Object prototype, final Function function) {
