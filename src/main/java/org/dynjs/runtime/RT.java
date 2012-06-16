@@ -94,6 +94,12 @@ public class RT {
                     .from(methodType)
                     .invokeStatic(caller, RT.class, "throwException"));
             return throwException;
+        } else if ("trycatchfinally".equals(name)) {
+            final ConstantCallSite throwException = new ConstantCallSite(Binder
+                    .from(methodType)
+                    .insert(0, caller)
+                    .invokeStatic(caller, RT.class, "trycatchfinally"));
+            return throwException;
         }
         return null;
     }
@@ -150,6 +156,9 @@ public class RT {
 
     public static void throwException(Object o) {
         throw new DynJSException(String.valueOf(o));
+    }
+
+    public static void trycatchfinally(MethodHandles.Lookup caller, Object self, DynThreadContext context, Object _try, Object _catch, Object _finally) throws NoSuchMethodException, IllegalAccessException {
     }
 
     public static String typeof(Object obj) {
