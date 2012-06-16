@@ -21,12 +21,12 @@ public class TestModuleProvider implements ModuleProvider {
 	public static class Cheddar extends BaseFunction {
 
 		@Override
-		public Object call(Object self, DynThreadContext context, Object... args) {
+		public Object call(Object self, DynThreadContext context, Object... arguments) {
 			return "cheddar";
 		}
 
 		@Override
-		public String[] getArguments() {
+		public String[] getParameters() {
 			return new String[0];
 		}
 		
