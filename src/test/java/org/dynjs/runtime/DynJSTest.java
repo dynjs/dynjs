@@ -310,7 +310,7 @@ public class DynJSTest {
 
     @Test
     public void tryCatchBlock() {
-        check("var result; try { throw 'mud'; } catch (e) { result = e; };", "mud");
+        check("var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;", "mud");
     }
 
     @Test
