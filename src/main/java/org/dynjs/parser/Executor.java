@@ -406,7 +406,7 @@ public class Executor {
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
-        return new CatchClauseStatement(tree, id, block);
+        return new CatchClauseStatement(tree, context, id, block);
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {
