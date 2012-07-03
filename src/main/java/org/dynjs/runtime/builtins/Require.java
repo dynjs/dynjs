@@ -23,8 +23,8 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.modules.ModuleProvider;
 
-
-/** Built-in implementation of <code>require(moduleName)</code>.
+/**
+ * Built-in implementation of <code>require(moduleName)</code>.
  * 
  * @author Lance Ball
  * @author Bob McWhirter
@@ -32,33 +32,36 @@ import org.dynjs.runtime.modules.ModuleProvider;
  * @see ModuleProvider
  */
 public class Require implements Function {
-	
+
     @Override
-    public Object call(Object self, DynThreadContext context, Object...arguments) {
+    public Object call(Object self, DynThreadContext context, Object... arguments) {
         DynObject exports = null;
-        
-        if ( arguments.length != 1 ) {
-        	return null;
+
+        if (arguments.length != 1) {
+            return null;
         }
-        
+
         String moduleName = (String) arguments[0];
-        
+
         List<ModuleProvider> moduleProviders = context.getModuleProviders();
-        
-        for ( ModuleProvider provider : moduleProviders ) {
-        	exports = provider.load(context,  moduleName );
-        	if ( exports != null ) {
-        		break;
-        	}
+
+        for (ModuleProvider provider : moduleProviders) {
+            exports = provider.load( context, moduleName );
+            if (exports != null) {
+                break;
+            }
         }
-        
+
+        if (exports == null) {
+            System.err.println( "Cannot find module: " + moduleName );
+        }
+
         return exports;
     }
 
-	@Override
+    @Override
     public String[] getArguments() {
-        return new String[]{"moduleName"};
+        return new String[] { "moduleName" };
     }
 
 }
-

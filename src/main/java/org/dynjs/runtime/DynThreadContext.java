@@ -79,6 +79,7 @@ public class DynThreadContext {
         loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
         loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
         loadPaths.add("/usr/local/lib/node/");
+        loadPaths.add("/usr/local/lib/node_modules/");
         
         moduleProviders.add( new FilesystemModuleProvider() );
     }

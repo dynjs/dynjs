@@ -61,6 +61,8 @@ public class Repl {
                         dynJS.eval(context, statement);
                     } catch (DynJSException e) {
                         console.println(e.getClass().getSimpleName());
+                        console.println(e.getLocalizedMessage());
+                        console.println("Error parsing statement: " + statement.toString());
                     } catch (Exception e) {
                         e.printStackTrace(new PrintWriter(out));
                     }
