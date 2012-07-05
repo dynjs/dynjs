@@ -32,7 +32,9 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.Require;
+import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
+import org.dynjs.runtime.modules.JavaClassModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class DynThreadContext {
@@ -82,6 +84,10 @@ public class DynThreadContext {
         loadPaths.add("/usr/local/lib/node_modules/");
         
         moduleProviders.add( new FilesystemModuleProvider() );
+        
+        JavaClassModuleProvider builtInModuleProvider = new JavaClassModuleProvider();
+        builtInModuleProvider.addModule( new ConsoleModule() );
+        moduleProviders.add(  builtInModuleProvider );
     }
     
     

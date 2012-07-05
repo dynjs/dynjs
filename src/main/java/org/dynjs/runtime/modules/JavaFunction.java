@@ -18,14 +18,30 @@ public class JavaFunction implements Function {
 		this.object = object;
 		this.method = method;
 		this.handle = MethodHandles.lookup().unreflect(method).bindTo(this.object);
+		
+		int trueNumberOfArgs = -1;
+		
+		Class<?>[] methodParamTypes = this.method.getParameterTypes();
+		if ( methodParamTypes.length >= 2 ) {
+			if (methodParamTypes[1].equals(DynThreadContext.class)) {
+				trueNumberOfArgs = methodParamTypes.length - 2;
+			}
+		}
+		
+		if ( trueNumberOfArgs < 0 ) {
+			trueNumberOfArgs = methodParamTypes.length;
+		}
+		
+		this.args = new String[ trueNumberOfArgs ];
+		
+		for ( int i = 0 ; i < trueNumberOfArgs ; ++i ) {
+			this.args[i] = "arg" + i;
+		}
 	}
 
 	@Override
 	public Object call(Object self, DynThreadContext context, Object... args) {
-		System.err.println("original args: " + Arrays.asList(args));
 		List<Object> newArgs = buildArguments(self, context, args);
-
-		System.err.println("calling with args " + newArgs);
 
 		try {
 			return this.handle.invokeWithArguments(newArgs);
@@ -60,19 +76,12 @@ public class JavaFunction implements Function {
 
 	@Override
 	public String[] getArguments() {
-		Class<?>[] paramTypes = this.method.getParameterTypes();
-		
-		String[] args = new String[ paramTypes.length ];
-		
-		for ( int i = 0 ; i < args.length ; ++i ) {
-			args[i] = "arg" + (i+1);
-		}
-		
-		return args;
+		return this.args;
 	}
 
 	private Object object;
 	private Method method;
 	private MethodHandle handle;
+	private String[] args;
 
 }
