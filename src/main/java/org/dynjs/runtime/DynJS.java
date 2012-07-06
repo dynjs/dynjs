@@ -50,6 +50,17 @@ public class DynJS {
         this.config = config;
         compiler = new DynJSCompiler(this.config);
     }
+    
+    public void evalLines(DynThreadContext context, String...lines) {
+        StringBuffer concat = new StringBuffer();
+        
+        for (String line : lines ) {
+            concat.append( line );
+            concat.append( ";" );
+        }
+        
+        execute( context, parseSourceCode( context, concat.toString(), null ) );
+    }
 
     public void eval(DynThreadContext context, String expression) {
         execute(context, parseSourceCode(context, expression, null));

@@ -39,6 +39,17 @@ public class DynJSTest {
         dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
+    
+    @Test
+    public void evalLines() {
+        dynJS.evalLines( context, 
+                "var x = 'test'",
+                "var y = x" );
+        assertThat(context.getScope().resolve("y"))
+                .isNotNull()
+                .isInstanceOf(String.class)
+                .isEqualTo("test");
+    }
 
     @Test
     public void assignsGlobalVariables() {
