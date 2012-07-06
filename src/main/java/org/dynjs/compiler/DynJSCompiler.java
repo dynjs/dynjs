@@ -53,6 +53,14 @@ public class DynJSCompiler {
         return internalCompile("ExceptionHandler", context, codeBlock, new String[]{identifier}, false);
     }
 
+    public Object compileBasicBlock(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
+        return internalCompile("BasicBlock", context, codeBlock, arguments, false);
+    }
+
+    public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
+        return internalCompile("TryBlock", context, codeBlock, new String[]{}, false);
+    }
+
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
         return internalCompile("AnonymousDynFunction", context, codeBlock, arguments, true);
     }

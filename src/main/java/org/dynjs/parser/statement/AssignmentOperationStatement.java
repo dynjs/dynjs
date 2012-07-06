@@ -50,6 +50,11 @@ public class AssignmentOperationStatement extends BaseStatement implements State
                     invokedynamic("dyn:setElement", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
                 }
             }};
+        } else if (lhs instanceof ResolveIdentifierStatement) {
+            return new CodeBlock() {{
+                append(lhs.getCodeBlock());
+                append(rhs.getCodeBlock());
+            }};
         }
         throw new ParserException("not implemented", getPosition());
     }

@@ -403,7 +403,7 @@ public class Executor {
     }
 
     public Statement tryStatement(final Tree tree, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
-        return new TryCatchFinallyStatement(tree, tryBlock, catchBlock, finallyBlock);
+        return new TryCatchFinallyStatement(tree, context, tryBlock, catchBlock, finallyBlock);
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
