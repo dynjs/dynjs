@@ -49,4 +49,8 @@ public class Position {
         }
         return "<" + fileName + " -> " + line + ":" + charPositionInLine + ">";
     }
+
+    public int getLine() {
+        return line;
+    }
 }

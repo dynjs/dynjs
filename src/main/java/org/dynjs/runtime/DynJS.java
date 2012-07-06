@@ -15,15 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -40,6 +31,14 @@ import org.dynjs.parser.Executor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.loader.Builtin;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public class DynJS {
 
@@ -126,6 +125,14 @@ public class DynJS {
 
     public Object compile(DynThreadContext context, CodeBlock codeBlock, final String[] args) {
         return this.compiler.compile(context, codeBlock, args);
+    }
+
+    public Object compileExceptionHandler(DynThreadContext context, CodeBlock codeBlock, final String identifier) {
+        return this.compiler.compileExceptionHandler(context, codeBlock, identifier);
+    }
+
+    public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
+        return this.compiler.compileTryBlock(context, codeBlock);
     }
 
     public Map<Class<?>, Scope> getCapturedScopeStore() {

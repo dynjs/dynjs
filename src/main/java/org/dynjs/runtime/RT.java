@@ -94,6 +94,12 @@ public class RT {
                     .from(methodType)
                     .invokeStatic(caller, RT.class, "throwException"));
             return throwException;
+        } else if ("trycatchfinally".equals(name)) {
+            final ConstantCallSite throwException = new ConstantCallSite(Binder
+                    .from(methodType)
+                    .insert(0, caller)
+                    .invokeStatic(caller, RT.class, "trycatchfinally"));
+            return throwException;
         }
         return null;
     }
@@ -118,7 +124,10 @@ public class RT {
                     value = ((Resolver) thiz).resolve(name);
                 }
                 if (value == null && thiz instanceof Function) {
-                    value = context.getFrameStack().peek().resolve(name);
+                    final Frame frame = context.getFrameStack().peek();
+                    if (frame != null) {
+                        value = frame.resolve(name);
+                    }
                 }
                 if (value == null) {
                     value = ((Resolver) context.getScope()).resolve(name);
@@ -150,6 +159,39 @@ public class RT {
 
     public static void throwException(Object o) {
         throw new DynJSException(String.valueOf(o));
+    }
+
+    public static void trycatchfinally(MethodHandles.Lookup caller, Object self, DynThreadContext context, Object _try, Object _catch, Object _finally) throws Throwable, IllegalAccessException {
+        final MethodHandle pushException = Binder
+                .from(void.class, Object.class, Throwable.class)
+                .convert(void.class, Function.class, Throwable.class)
+                .insert(0, context)
+                .invokeStatic(caller, RT.class, "pushException");
+        final MethodHandle catchHandle = Binder.from(Object.class, Object.class, Throwable.class)
+                .fold(pushException)
+                .convert(void.class, Function.class, Object.class)
+                .collect(1, Object[].class)
+                .insert(1, self)
+                .insert(2, context)
+                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                .invokeVirtual(caller, "call")
+                .bindTo(_catch);
+        final MethodHandle tryHandle = Binder.from(Object.class, Object.class)
+                .convert(void.class, Function.class)
+                .collect(1, Object[].class)
+                .insert(1, self)
+                .insert(2, context)
+                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                .catchException(Throwable.class, catchHandle)
+                .invokeVirtual(caller, "call");
+
+        tryHandle.invokeWithArguments(_try);
+        // FIXME: REFACTOR ME PLEASE
+        context.getFrameStack().pop();
+    }
+
+    public static void pushException(DynThreadContext context, Function f, Throwable t) {
+        context.getFrameStack().push(new Frame(f, t));
     }
 
     public static String typeof(Object obj) {

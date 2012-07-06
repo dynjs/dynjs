@@ -17,10 +17,8 @@ package org.dynjs.api;
 
 import org.dynjs.runtime.DynThreadContext;
 
-public interface Function {
+public interface Function extends LexicalEnvironment {
 
-    Object call(Object self, DynThreadContext context, Object... args);
-
-    String[] getArguments();
+    Object call(Object self, DynThreadContext context, Object... arguments);
 
 }

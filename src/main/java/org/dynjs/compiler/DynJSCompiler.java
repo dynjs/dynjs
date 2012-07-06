@@ -49,8 +49,24 @@ public class DynJSCompiler {
         this.config = config;
     }
 
+    public Object compileExceptionHandler(DynThreadContext context, final CodeBlock codeBlock, final String identifier) {
+        return internalCompile("ExceptionHandler", context, codeBlock, new String[]{identifier}, false);
+    }
+
+    public Object compileBasicBlock(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
+        return internalCompile("BasicBlock", context, codeBlock, arguments, false);
+    }
+
+    public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
+        return internalCompile("TryBlock", context, codeBlock, new String[]{}, false);
+    }
+
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
-        final String className = PACKAGE + "AnonymousDynFunction" + counter.incrementAndGet();
+        return internalCompile("AnonymousDynFunction", context, codeBlock, arguments, true);
+    }
+
+    private Object internalCompile(String prefix, DynThreadContext context, final CodeBlock codeBlock, final String[] arguments, boolean wrap) {
+        final String className = generateNameFromBase(prefix);
         JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
             defineMethod("<init>", ACC_PUBLIC, sig(void.class),
                     new CodeBlock() {{
@@ -62,7 +78,7 @@ public class DynJSCompiler {
                 append(alwaysReturnWrapper(codeBlock));
             }});
 
-            defineMethod("getArguments", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
+            defineMethod("getParameters", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
                 bipush(arguments.length);
                 anewarray(p(String.class));
                 for (int i = 0; i < arguments.length; i++) {
@@ -79,10 +95,18 @@ public class DynJSCompiler {
         context.getCapturedScopeStore().put(functionClass, context.getScope());
         try {
             Function function = functionClass.newInstance();
-            return wrapFunction(context, function);
+            if (wrap) {
+                return wrapFunction(context, function);
+            } else {
+                return function;
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String generateNameFromBase(String prefix) {
+        return PACKAGE + prefix + counter.incrementAndGet();
     }
 
     public static DynObject wrapFunction(final Object prototype, final Function function) {

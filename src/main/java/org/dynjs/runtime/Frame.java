@@ -15,30 +15,30 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.api.Function;
+import org.dynjs.api.LexicalEnvironment;
 import org.dynjs.api.Resolver;
 
 public class Frame implements Resolver {
-    private final Function function;
-    private final Object[] params;
+    private final LexicalEnvironment environment;
+    private final Object[] arguments;
 
-    public Frame(Function function, Object... params) {
-        this.function = function;
-        this.params = params;
+    public Frame(LexicalEnvironment environment, Object... arguments) {
+        this.environment = environment;
+        this.arguments = arguments;
     }
 
-    public Object[] getParams() {
-        return params;
+    public Object[] getArguments() {
+        return arguments;
     }
 
     @Override
     public Object resolve(String name) {
-        final String[] arguments = function.getArguments();
+        final String[] arguments = environment.getParameters();
         for (int i = 0; i < arguments.length; i++) {
             String argument = arguments[i];
             if (argument.equals(name)) {
-                if (getParams().length > i) {
-                    return getParams()[i];
+                if (getArguments().length > i) {
+                    return getArguments()[i];
                 }
             }
         }

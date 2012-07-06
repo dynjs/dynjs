@@ -35,7 +35,7 @@ public class DefineProperty implements Function {
     }
 
     @Override
-    public String[] getArguments() {
+    public String[] getParameters() {
         return new String[]{"object", "name", "desc"};
     }
 

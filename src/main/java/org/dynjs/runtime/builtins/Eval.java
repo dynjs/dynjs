@@ -31,7 +31,7 @@ public class Eval implements Function {
     }
 
     @Override
-    public String[] getArguments() {
+    public String[] getParameters() {
         return new String[]{"x"};
     }
 

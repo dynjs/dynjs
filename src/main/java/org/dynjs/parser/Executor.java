@@ -21,6 +21,7 @@ import org.dynjs.parser.statement.AssignmentOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.CallStatement;
+import org.dynjs.parser.statement.CatchClauseStatement;
 import org.dynjs.parser.statement.ContinueStatement;
 import org.dynjs.parser.statement.DeclareVarStatement;
 import org.dynjs.parser.statement.DefineNumOpStatement;
@@ -53,6 +54,7 @@ import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.parser.statement.ThisStatement;
 import org.dynjs.parser.statement.ThrowStatement;
+import org.dynjs.parser.statement.TryCatchFinallyStatement;
 import org.dynjs.parser.statement.TypeOfOpExpressionStatement;
 import org.dynjs.parser.statement.UndefinedValueStatement;
 import org.dynjs.parser.statement.VoidOpStatement;
@@ -400,12 +402,12 @@ public class Executor {
         return new ThrowStatement(tree, expression);
     }
 
-    public Statement tryStatement(final Tree tree, Statement block, Statement _catch, Statement _finally) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement tryStatement(final Tree tree, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
+        return new TryCatchFinallyStatement(tree, context, tryBlock, catchBlock, finallyBlock);
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
-        throw new ParserException("not implemented yet", tree);
+        return new CatchClauseStatement(tree, context, id, block);
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {
