@@ -15,16 +15,19 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.runtime.loader.Builtin;
-
+import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.dynjs.runtime.loader.Builtin;
 
 public class DynJSConfig {
 
     private boolean debug;
     private Set<Builtin> builtins = new LinkedHashSet<>();
     private final DynamicClassLoader classLoader;
+    private PrintStream outputStream = System.out;
+    private PrintStream errorStream = System.err;
 
     public DynJSConfig() {
         this.classLoader = new DynamicClassLoader();
@@ -53,4 +56,21 @@ public class DynJSConfig {
     public DynamicClassLoader getClassLoader() {
         return classLoader;
     }
+    
+    public void setOutput(PrintStream outputStream) {
+        this.outputStream = outputStream;
+    }
+    
+    public PrintStream getOutputStream() {
+        return this.outputStream;
+    }
+    
+    public void setErrorStream(PrintStream errorStream) {
+        this.errorStream = errorStream;
+    }
+    
+    public PrintStream getErrorStream() {
+        return this.errorStream;
+    }
+    
 }

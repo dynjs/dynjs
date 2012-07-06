@@ -15,6 +15,8 @@
  */
 package org.dynjs.runtime;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -72,6 +74,8 @@ public class DynThreadContext {
     private DynamicClassLoader classLoader;
     private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
     private List<ModuleProvider> moduleProviders = Collections.synchronizedList(new ArrayList<ModuleProvider>());
+    private PrintStream outputStream = System.out;
+    private PrintStream errorStream = System.err;
 
     public DynThreadContext() {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
@@ -203,6 +207,22 @@ public class DynThreadContext {
         public String toString() {
             return "null";
         }
+    }
+    
+    public void setOutputStream(PrintStream outputStream) {
+        this.outputStream = outputStream;
+    }
+    
+    public PrintStream getOutputStream() {
+        return this.outputStream;
+    }
+    
+    public void setErrorStream(PrintStream errorStream) {
+        this.errorStream = errorStream;
+    }
+    
+    public PrintStream getErrorStream() {
+        return this.errorStream;
     }
     
     public void addModuleProvider(ModuleProvider moduleProvider) {

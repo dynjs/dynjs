@@ -113,6 +113,8 @@ public class DynJS {
 
         context.setRuntime(this);
         context.setClassLoader(config.getClassLoader());
+        context.setOutputStream(config.getOutputStream());
+        context.setErrorStream(config.getErrorStream());
         Executor executor = new Executor(context);
         walker.setExecutor(executor);
         walker.program();
