@@ -13,21 +13,14 @@ Download and install it to your user(not to the entire machine) and before runni
 		
 		export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
 		
-### Getting dependencies
-
-	1. download and install **[jitescript]**
-	1. download and install **[invokebinder]**
-
 
 ## Getting started
 
 
 ### Building from sources
 
-1. fetch the dependencies: **[jitescript]** and **[invokebinder]**
 1. `git clone https://github.com/dynjs/dynjs.git && cd dynjs`
-1. `mvn install`
-1. Get `dynjs-all.jar` into dynjs/target folder
+2. `mvn install`
 
 ### Download
 
@@ -35,14 +28,14 @@ Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/d
 
 ### Running 
 
-Try `java -jar dynjs-all.jar --help`
-
-Run the snippet below:
+Run `./run-repl` for the REPL and try the snippet below:
 
 ```javascript
 var x = 1 + 1;
 print(x);
 ```
+
+For more options, run `java -jar target/dynjs-all.jar --help`.
 
 [jitescript]:https://github.com/qmx/jitescript
 [invokebinder]:https://github.com/headius/invokebinder
