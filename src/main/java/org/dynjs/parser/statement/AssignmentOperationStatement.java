@@ -45,7 +45,7 @@ public class AssignmentOperationStatement extends BaseStatement implements State
                 append(index.getCodeBlock());
                 append(rhs.getCodeBlock());
                 if (index instanceof StringLiteralStatement) {
-                    invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                    invokedynamic("dyn:setProp", sig(Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
                 } else {
                     invokedynamic("dyn:setElement", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
                 }

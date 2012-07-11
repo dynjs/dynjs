@@ -42,7 +42,7 @@ public class BaseScript implements Scope {
     }
 
     @Override
-    public void define(String property, Object value) {
-        globalScope.define(property, value);
+    public Object define(String property, Object value) {
+        return globalScope.define(property, value);
     }
 }

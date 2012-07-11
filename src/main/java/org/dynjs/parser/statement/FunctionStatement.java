@@ -80,7 +80,7 @@ public class FunctionStatement extends BaseStatement implements Statement {
                 aload(DynJSCompiler.Arities.THIS);
                 ldc(identifier);
                 aload(5);
-                invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+                invokedynamic("dyn:setProp", sig(Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
 
         }};

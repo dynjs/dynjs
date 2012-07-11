@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class DeclareVarStatement extends BaseStatement implements Statement {
 
@@ -42,7 +41,8 @@ public class DeclareVarStatement extends BaseStatement implements Statement {
             aload(DynJSCompiler.Arities.THIS);
             ldc(id);
             aload(3);
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("dyn:setProp", sig(Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            aload(3);
         }};
     }
 }

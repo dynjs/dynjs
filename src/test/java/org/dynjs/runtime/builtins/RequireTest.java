@@ -32,6 +32,7 @@ public class RequireTest {
     @Before
     public void setUp() {
         config = new DynJSConfig();
+        config.enableDebug();
         new Require();
         context = new DynThreadContext();
         context.addLoadPath( System.getProperty( "user.dir" ) + "/src/test/resources/org/dynjs/runtime/builtins/" );
@@ -66,7 +67,8 @@ public class RequireTest {
 
     @Test
     public void testExportsFunctions() {
-        check( "var result = require('my_module').sayHello();", "Hello again" );
+        //check( "var result = require('my_module').sayHello();", "Hello again" );
+        assertThat( dynJS.eval( context, "require('my_module').sayHello()" ) ).isEqualTo( "Hello again" );
     }
 
     @Test

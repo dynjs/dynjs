@@ -47,7 +47,7 @@ public class OperationAssignmentStatement extends BaseStatement implements State
             swap();
             ldc(resolvable.getName());
             swap();
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("dyn:setProp", sig(Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
         }};
     }
 }

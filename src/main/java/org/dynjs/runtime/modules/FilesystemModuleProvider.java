@@ -32,9 +32,13 @@ public class FilesystemModuleProvider implements ModuleProvider {
                 DynThreadContext evalContext = new DynThreadContext( context );
                 // System.err.println("ADDING LOAD PATH: " + file.getParent());
                 evalContext.addLoadPath( file.getParent() + "/" );
+                System.err.println( "A ---" );
                 context.getRuntime().eval( evalContext, "var module  = {};" );
+                System.err.println( "B ---" );
                 context.getRuntime().eval( evalContext, "var exports = {};" );
+                System.err.println( "C ---" );
                 context.getRuntime().eval( evalContext, "module.exports = exports;" );
+                System.err.println( "D ---" );
                 context.getRuntime().eval( evalContext,
                         new FileInputStream( file ), filename );
                 try {

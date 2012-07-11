@@ -36,9 +36,30 @@ public class DynJSTest {
     @Before
     public void setUp() {
         config = new DynJSConfig();
+        config.enableDebug();
         dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
+    
+    public void newCheck(String expr, Object expected) {
+        assertThat( dynJS.eval( context, expr ) ).isEqualTo( expected );
+    }
+    
+    @Test
+    public void testEvalReturns() {
+        assertThat( dynJS.eval( context, "2+2") ).isEqualTo( 4.0 );
+    }
+    
+    @Test
+    public void testVarAssignmentReturns() {
+        newCheck( "var x = 42", 42.0);
+    }
+    
+    @Test
+    public void testStringLiteralReturns() {
+        newCheck( "'cheese'", "cheese");
+    }
+    
     
     @Test
     public void evalLines() {

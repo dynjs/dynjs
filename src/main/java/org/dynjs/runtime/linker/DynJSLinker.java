@@ -52,8 +52,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     .convert(Object.class, Scope.class, String.class)
                     .invokeVirtual(lookup(), "resolve");
             DEFINE = Binder
-                    .from(void.class, Object.class, Object.class, Object.class)
-                    .convert(void.class, Scope.class, String.class, Object.class)
+                    .from(Object.class, Object.class, Object.class, Object.class)
+                    .convert(Object.class, Scope.class, String.class, Object.class)
                     .invokeVirtual(lookup(), "define");
             GETELEMENT = Binder
                     .from(Object.class, Object.class, Object.class)
@@ -75,6 +75,9 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
         CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
+        
+        System.err.println( "DYNJS=" + callSiteDescriptor.getName() );
+        System.err.println( "callSite.methodType=" + callSiteDescriptor.getMethodType() );
         MethodType methodType = callSiteDescriptor.getMethodType();
         MethodHandle targetHandle = null;
         if ("print".equals(callSiteDescriptor.getName())) {
@@ -156,6 +159,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             return new GuardedInvocation(targetHandle, null);
         }
 
+        System.err.println( "DynJSLinker: return null for " + callSiteDescriptor.getName() );
         return null;
     }
 
@@ -187,15 +191,18 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
 
     private GuardedInvocation handleSetProp(CallSiteDescriptor callSiteDescriptor) {
         if (hasConstantCall(callSiteDescriptor)) {
+            System.err.println( "barnch A" );
             final MethodHandle handle = Binder
-                    .from(void.class, Object.class, Object.class)
+                    .from(Object.class, Object.class, Object.class)
                     .convert(DEFINE.type())
                     .insert(1, callSiteDescriptor.getNameToken(2))
                     .invoke(DEFINE);
             return new GuardedInvocation(handle,
                     Guards.isInstance(Scope.class, handle.type()));
         } else {
-            return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
+            System.err.println( "branch B" );
+            //return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
+            return new GuardedInvocation(DEFINE, null );
         }
     }
 

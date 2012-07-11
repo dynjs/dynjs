@@ -46,7 +46,7 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
             swap();
             ldc(resolvable.getName());
             swap();
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            invokedynamic("dyn:setProp", sig(Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             aload(4);
         }};
     }

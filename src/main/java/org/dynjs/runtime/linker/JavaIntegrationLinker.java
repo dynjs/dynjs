@@ -37,6 +37,7 @@ public class JavaIntegrationLinker implements TypeBasedGuardingDynamicLinker {
 
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
+        System.err.println( "JAVAS: " + linkRequest.getCallSiteDescriptor().getName() );
         Object[] arguments = linkRequest.getArguments();
         Object receiver = arguments[0];
         Class<? extends Object> receiverClass = receiver.getClass();

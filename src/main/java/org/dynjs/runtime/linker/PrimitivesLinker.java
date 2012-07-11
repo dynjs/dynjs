@@ -37,11 +37,13 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
     @Override
     public boolean canLinkType(Class<?> type) {
+        System.err.println( "canLinkType? " + type + " " + vtable.containsKey( type ));
         return vtable.containsKey(type);
     }
 
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
+        System.err.println( "PRIMITIVES: " + linkRequest.getCallSiteDescriptor().getName() );
         Object[] arguments = linkRequest.getArguments();
         Object receiver = arguments[0];
         Class<? extends Object> receiverClass = receiver.getClass();
@@ -57,6 +59,8 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
             }
             return new GuardedInvocation(handle, Guards.isInstance(receiverClass, 0, descriptor.getMethodType()));
         }
+        
+        System.err.println( "primitivesLinker returns null" );
         return null;
     }
 

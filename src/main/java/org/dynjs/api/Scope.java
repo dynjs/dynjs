@@ -19,5 +19,5 @@ public interface Scope extends Resolver {
 
     Scope getEnclosingScope();
 
-    void define(String property, Object value);
+    Object define(String property, Object value);
 }

@@ -148,16 +148,16 @@ public class RT {
         return parent;
     }
 
-    public static void defineOwnPropertyBootstrap(MethodHandles.Lookup caller, Object self, Object propertyName, Object value) throws Throwable, IllegalAccessException {
+    public static Object defineOwnPropertyBootstrap(MethodHandles.Lookup caller, Object self, Object propertyName, Object value) throws Throwable, IllegalAccessException {
 
         final MethodHandle setProperty = Binder
-                .from(void.class, Object.class, Object.class, Object.class)
-                .convert(void.class, self.getClass(), String.class, Object.class)
+                .from(Object.class, Object.class, Object.class, Object.class)
+                .convert(Object.class, self.getClass(), String.class, Object.class)
                 .invokeVirtual(caller, "define");
-        setProperty.invokeWithArguments(self, propertyName, value);
+        return setProperty.invokeWithArguments(self, propertyName, value);
     }
 
-    public static void throwException(Object o) {
+    public static Object throwException(Object o) {
         throw new DynJSException(String.valueOf(o));
     }
 

@@ -136,7 +136,7 @@ public class DynJSCompiler {
                             voidreturn();
                         }});
 
-                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Scope.class, DynThreadContext.class), getCodeBlock());
+                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(Object.class, Scope.class, DynThreadContext.class), getCodeBlock());
             }
 
             private CodeBlock getCodeBlock() {
@@ -144,7 +144,7 @@ public class DynJSCompiler {
                 for (Statement statement : statements) {
                     block.append(statement.getCodeBlock());
                 }
-                return block.voidreturn();
+                return block.areturn();
             }
         };
         Class<?> functionClass = defineClass(jiteClass);

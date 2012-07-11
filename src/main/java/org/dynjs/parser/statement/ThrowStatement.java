@@ -36,7 +36,7 @@ public class ThrowStatement extends BaseStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
             append(expression.getCodeBlock());
-            invokedynamic("throw", sig(void.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
+            invokedynamic("throw", sig(Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
         }};
     }
 

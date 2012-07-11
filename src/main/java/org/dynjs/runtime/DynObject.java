@@ -15,10 +15,10 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.api.Scope;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.dynjs.api.Scope;
 
 public class DynObject implements Scope {
 
@@ -29,12 +29,17 @@ public class DynObject implements Scope {
     public DynObject() {
     }
 
-    public void setProperty(String key, Object atom) {
-        this.properties.put(key, new DynProperty().setAttribute("value", atom));
+    public Object setProperty(String key, Object atom) {
+        DynProperty prop = new DynProperty();
+        prop.setAttribute( "value", atom );
+        this.properties.put(key, prop );
+        System.err.println( "setProp return " + prop );
+        return atom;
     }
 
     public DynProperty getProperty(String key) {
         if (hasOwnProperty(key)) {
+            System.err.println( "getProp return " + this.properties.get(key) );
             return this.properties.get(key);
         } else {
             throw new IllegalStateException();
@@ -64,11 +69,12 @@ public class DynObject implements Scope {
     }
 
     @Override
-    public void define(String property, Object value) {
+    public Object define(String property, Object value) {
         if (value instanceof DynObject) {
             ((DynObject) value).setParent(this);
         }
         setProperty(property, value);
+        return getProperty( property );
     }
 
     public static Boolean toBoolean(final Object value) {

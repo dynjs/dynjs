@@ -35,6 +35,8 @@ public class DynJSBootstrapper {
 
     public static CallSite bootstrap(MethodHandles.Lookup caller, String name, MethodType type) {
         final MonomorphicCallSite callSite = new MonomorphicCallSite(caller, name, type);
+        System.err.println( "callSite=" + callSite + " // " + name + " // " + type );
+        System.err.println( "against linker: " + dynamicLinker );
         dynamicLinker.link(callSite);
         return callSite;
     }

@@ -33,6 +33,8 @@ import java.util.List;
 
 public class DynJSTestRunner extends Runner {
 
+
+    private DynJSConfig config;
     private DynJS dynJS;
 
     private final Class<?> testClass;
@@ -41,7 +43,9 @@ public class DynJSTestRunner extends Runner {
     public DynJSTestRunner(Class<?> testClass) {
         this.testClass = testClass;
         init();
-        dynJS = new DynJS(new DynJSConfig());
+        config = new DynJSConfig();
+        config.enableDebug();
+        dynJS = new DynJS( config );
     }
 
     @Override
@@ -60,7 +64,8 @@ public class DynJSTestRunner extends Runner {
                 final String[] files = new File(resource.toURI()).list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String name) {
-                        return name.matches(".*\\.js$");
+                        //return name.matches(".*\\.js$");
+                        return name.matches("05.*\\.js$");
                     }
                 });
                 this.files.addAll(Arrays.asList(files));
