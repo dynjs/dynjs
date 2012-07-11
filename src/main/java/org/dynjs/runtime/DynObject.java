@@ -74,7 +74,7 @@ public class DynObject implements Scope {
             ((DynObject) value).setParent(this);
         }
         setProperty(property, value);
-        return getProperty( property );
+        return getProperty( property ).getAttribute( "value" );
     }
 
     public static Boolean toBoolean(final Object value) {

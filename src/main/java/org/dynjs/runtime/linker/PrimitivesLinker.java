@@ -27,6 +27,7 @@ import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
     public static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap<Class, Map<String, MethodHandle>>() {{
@@ -47,6 +48,7 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         Object[] arguments = linkRequest.getArguments();
         Object receiver = arguments[0];
         Class<? extends Object> receiverClass = receiver.getClass();
+        System.err.println( "receiver: " + receiver );
         Map<String, MethodHandle> vtable = PrimitivesLinker.vtable.get(receiverClass);
         CallSiteDescriptor descriptor = linkRequest.getCallSiteDescriptor();
         MethodType targetMethodType = methodTypeForArguments(descriptor, arguments, receiverClass);
