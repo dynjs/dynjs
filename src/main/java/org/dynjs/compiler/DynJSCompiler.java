@@ -142,8 +142,10 @@ public class DynJSCompiler {
             private CodeBlock getCodeBlock() {
                 final CodeBlock block = new CodeBlock();
                 for (Statement statement : statements) {
+                    System.err.println( "Accumulate: " + statement );
                     block.append(statement.getCodeBlock());
                 }
+                System.err.println( "done" );
                 return block.areturn();
             }
         };

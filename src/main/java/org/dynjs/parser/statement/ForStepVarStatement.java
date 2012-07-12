@@ -46,6 +46,7 @@ public class ForStepVarStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( "BLOCK: ForStepVarStatement" );
         return new CodeBlock() {{
             labelStack.push(preIncrement);
             append(varDef.getCodeBlock());

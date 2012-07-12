@@ -64,8 +64,8 @@ public class DynJSTestRunner extends Runner {
                 final String[] files = new File(resource.toURI()).list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String name) {
-                        //return name.matches(".*\\.js$");
-                        return name.matches("05.*\\.js$");
+                        return name.matches(".*\\.js$");
+                        //return name.matches("05.*\\.js$");
                     }
                 });
                 this.files.addAll(Arrays.asList(files));

@@ -39,7 +39,7 @@ public class DynObject implements Scope {
 
     public DynProperty getProperty(String key) {
         if (hasOwnProperty(key)) {
-            System.err.println( "getProp return " + this.properties.get(key) );
+            System.err.println( "getProp(" + key + ") return " + this.properties.get(key).getAttribute( "value" ) );
             return this.properties.get(key);
         } else {
             throw new IllegalStateException();

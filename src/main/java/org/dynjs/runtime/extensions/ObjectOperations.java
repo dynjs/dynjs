@@ -21,6 +21,8 @@ import org.dynjs.runtime.linker.anno.CompanionFor;
 public class ObjectOperations {
 
     public static Boolean eq(Object o1, Object o2) {
-        return o1.equals(o2);
+        boolean result = o1.equals(o2);
+        System.err.println( "eq(" + o1 + ", " + o2 + ") " + result );
+        return result;
     }
 }

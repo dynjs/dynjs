@@ -190,8 +190,9 @@ public class DynJSTest {
 
     @Test
     public void testFor() {
+        newCheck( "var x = 0; for ( var i = 0 ; i < 10 ; i = i + 1) {}", null );
         check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
-        check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
+        //check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
     }
 
     @Test

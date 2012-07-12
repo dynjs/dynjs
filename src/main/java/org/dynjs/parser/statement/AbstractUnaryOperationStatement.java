@@ -36,6 +36,7 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( "BLOCK: AbstractUnaryOp" );
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
         return new CodeBlock() {{
             append(expression.getCodeBlock());

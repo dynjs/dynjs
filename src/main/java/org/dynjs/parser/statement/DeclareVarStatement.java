@@ -42,7 +42,6 @@ public class DeclareVarStatement extends BaseStatement implements Statement {
             ldc(id);
             aload(3);
             invokedynamic("dyn:setProp", sig(Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            aload(3);
         }};
     }
 }
