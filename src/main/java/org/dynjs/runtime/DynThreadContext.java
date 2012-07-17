@@ -15,7 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,6 +75,7 @@ public class DynThreadContext {
     private List<ModuleProvider> moduleProviders = Collections.synchronizedList(new ArrayList<ModuleProvider>());
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
+    private Object lastValue;
 
     public DynThreadContext() {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
@@ -251,6 +251,14 @@ public class DynThreadContext {
 
     public Deque<Frame> getFrameStack() {
         return frameStack;
+    }
+
+    public void setLastValue(Object value) {
+        this.lastValue = value;
+    }
+
+    public Object getLastValue() {
+        return lastValue;
     }
 
 }

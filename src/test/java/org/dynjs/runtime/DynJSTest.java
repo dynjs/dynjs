@@ -50,6 +50,11 @@ public class DynJSTest {
                 .isInstanceOf(String.class)
                 .isEqualTo("test");
     }
+    
+    @Test
+    public void evalReturns() {
+        assertThat( dynJS.eval(  context, "var x = 42" ) ).isEqualTo( 42.0 );
+    }
 
     @Test
     public void assignsGlobalVariables() {

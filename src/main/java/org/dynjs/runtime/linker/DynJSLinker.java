@@ -44,6 +44,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     public static final MethodHandle GETELEMENT;
     public static final MethodHandle SETELEMENT;
     public static final MethodHandle TYPEOF;
+    public static final MethodHandle SETLASTVALUE;
 
     static {
         try {
@@ -67,6 +68,10 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                     .invokeVirtual(lookup(), "set");
             TYPEOF = Binder.from(String.class, Object.class)
                     .invokeStatic(lookup(), RT.class, "typeof");
+            SETLASTVALUE = Binder
+                    .from(void.class, Object.class, Object.class)
+                    .convert(void.class, DynThreadContext.class, Object.class)
+                    .invokeVirtual(lookup(), "setLastValue");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -137,6 +142,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
                 return handleGetElement(callSiteDescriptor);
             } else if ("setElement".equals(callSiteDescriptor.getNameToken(1))) {
                 return handleSetElement(callSiteDescriptor);
+            } else if ("setLastValue".equals(callSiteDescriptor.getNameToken(1))) {
+                return handleSetLastValue(callSiteDescriptor);
             }
         } else if (isFromDynJS(callSiteDescriptor)) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
@@ -197,6 +204,11 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         } else {
             return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
         }
+    }
+    
+    private GuardedInvocation handleSetLastValue(CallSiteDescriptor callSiteDescriptor) {
+        System.err.println( "handleSetLastValue for " + callSiteDescriptor.getName() + " // " + callSiteDescriptor.getMethodType() );
+        return new GuardedInvocation( SETLASTVALUE, Guards.isInstance( DynThreadContext.class, SETLASTVALUE.type()) );
     }
 
     private boolean hasConstantCall(CallSiteDescriptor callSiteDescriptor) {
