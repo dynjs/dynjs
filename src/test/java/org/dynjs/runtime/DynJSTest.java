@@ -59,7 +59,7 @@ public class DynJSTest {
                 .isInstanceOf(String.class)
                 .isEqualTo("test");
     }
-
+    
     @Test
     public void defineUnInitializedGlobalVariables() {
         dynJS.eval(context, "var x;");
@@ -172,7 +172,7 @@ public class DynJSTest {
         check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
         check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
     	check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
-    	check("var i = 0; var x = 33; for(; i < 10; i += 1) { x -= 1} var result = x == 23");
+    	check("var i = 0; var x = 33; for(; i < 10; i++) { x -= 1} var result = x == 23");
     }
 
     @Test

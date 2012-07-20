@@ -57,6 +57,9 @@ public class ForStepVarStatement extends BaseStatement implements Statement {
             append(statement.getCodeBlock());
             label(preIncrement);
             append(increment.getCodeBlock());
+            if (increment instanceof AbstractUnaryOperationStatement) {
+            	pop();
+            }
             go_to(statement.getBeginLabel());
             label(statement.getEndLabel());
             labelStack.pop();
