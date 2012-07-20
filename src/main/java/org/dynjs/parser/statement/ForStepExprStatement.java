@@ -48,7 +48,9 @@ public class ForStepExprStatement extends BaseStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
             labelStack.push(preIncrement);
-            append(initialize.getCodeBlock());
+            if (initialize != null) {
+            	append(initialize.getCodeBlock());
+            }
             label(statement.getBeginLabel());
             append(test.getCodeBlock());
             invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);

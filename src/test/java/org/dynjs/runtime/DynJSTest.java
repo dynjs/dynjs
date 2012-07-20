@@ -175,7 +175,7 @@ public class DynJSTest {
 
     @Test
     public void testForStepExpr() {
-    	check("for (x = 0; x < 10; x += 1) { x += 1; }; var result = x == 10");
+    	check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
     }
 
     @Test
