@@ -171,6 +171,8 @@ public class DynJSTest {
     public void testFor() {
         check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
         check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
+    	check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
+    	check("var i = 0; var x = 33; for(; i < 10; i += 1) { x -= 1} var result = x == 23");
     }
 
     @Test
@@ -336,5 +338,4 @@ public class DynJSTest {
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
     }
-
 }
