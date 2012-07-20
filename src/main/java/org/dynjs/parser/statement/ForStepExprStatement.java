@@ -29,16 +29,16 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 public class ForStepExprStatement extends BaseStatement implements Statement {
 
     private final Stack<LabelNode> labelStack;
-    private final Statement varDef;
+    private final Statement initialize;
     private final Statement test;
     private final Statement increment;
     private final BlockStatement statement;
     private final LabelNode preIncrement = new LabelNode();
 
-    public ForStepExprStatement(Stack<LabelNode> labelStack, final Tree tree, final Statement varDef, final Statement test, final Statement increment, final Statement statement) {
+    public ForStepExprStatement(Stack<LabelNode> labelStack, final Tree tree, final Statement initialize, final Statement test, final Statement increment, final Statement statement) {
         super(tree);
         this.labelStack = labelStack;
-        this.varDef = varDef;
+        this.initialize = initialize;
         this.test = test;
         this.increment = increment;
         this.statement = (BlockStatement) statement;
@@ -48,7 +48,7 @@ public class ForStepExprStatement extends BaseStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
             labelStack.push(preIncrement);
-            append(varDef.getCodeBlock());
+            append(initialize.getCodeBlock());
             label(statement.getBeginLabel());
             append(test.getCodeBlock());
             invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
