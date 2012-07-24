@@ -58,8 +58,14 @@ public class DynJSTest {
                 .isNotNull()
                 .isInstanceOf(String.class)
                 .isEqualTo("test");
+
+        dynJS.eval(context, "var x = undefined; x = 1.0;");
+    	assertThat(context.getScope().resolve("x"))
+    			.isNotNull()
+    			.isInstanceOf(Double.class)
+    			.isEqualTo(1.0);
     }
-    
+
     @Test
     public void defineUnInitializedGlobalVariables() {
         dynJS.eval(context, "var x;");
