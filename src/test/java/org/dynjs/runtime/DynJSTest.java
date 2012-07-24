@@ -21,25 +21,13 @@ import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
 import org.dynjs.runtime.java.SayHiToJava;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class DynJSTest {
+public class DynJSTest extends DynJSTestSupport {
 
-    private DynJS dynJS;
-    private DynThreadContext context;
-    private DynJSConfig config;
-
-    @Before
-    public void setUp() {
-        config = new DynJSConfig();
-        dynJS = new DynJS(getConfig());
-        context = new DynThreadContext();
-    }
-    
     @Test
     public void evalLines() {
         getDynJS().evalLines(getContext(),
@@ -168,8 +156,8 @@ public class DynJSTest {
     public void testFor() {
         check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
         check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
-    	check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
-    	check("var i = 0; var x = 33; for(; i < 10; i++) { x -= 1} var result = x == 23");
+        check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
+        check("var i = 0; var x = 33; for(; i < 10; i++) { x -= 1} var result = x == 23");
     }
 
     @Test
@@ -275,22 +263,6 @@ public class DynJSTest {
         check("var result = undefined === undefined;");
     }
 
-    private void check(String scriptlet) {
-        check(scriptlet, true);
-    }
-
-    private void check(String scriptlet, Boolean expected) {
-        getDynJS().eval(getContext(), scriptlet);
-        Object result = getContext().getScope().resolve("result");
-        assertThat(result).isEqualTo(expected);
-    }
-
-    private void check(String scriptlet, Object expected) {
-        getDynJS().eval(getContext(), scriptlet);
-        Object result = getContext().getScope().resolve("result");
-        assertThat(result).isEqualTo(expected);
-    }
-
     @Test
     @Ignore
     public void testJavaRequireFunctionLoading() {
@@ -336,15 +308,4 @@ public class DynJSTest {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
     }
 
-    public DynJS getDynJS() {
-        return dynJS;
-    }
-
-    public DynThreadContext getContext() {
-        return context;
-    }
-
-    public DynJSConfig getConfig() {
-        return config;
-    }
 }
