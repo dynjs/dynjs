@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class DynJSTest extends DynJSTestSupport {
+public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void evalLines() {

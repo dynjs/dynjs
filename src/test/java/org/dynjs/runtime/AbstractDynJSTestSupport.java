@@ -4,7 +4,7 @@ import org.junit.Before;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class DynJSTestSupport {
+public abstract class AbstractDynJSTestSupport {
     protected DynJS dynJS;
     protected DynThreadContext context;
     protected DynJSConfig config;
