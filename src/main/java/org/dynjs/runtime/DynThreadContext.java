@@ -33,6 +33,7 @@ import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
@@ -63,6 +64,7 @@ public class DynThreadContext {
         }});
         put("eval", DynJSCompiler.wrapFunction(get("Function"), new Eval()));
         put("require", DynJSCompiler.wrapFunction(get("Function"), new Require()));
+        put("parseFloat", DynJSCompiler.wrapFunction(get("Function"), new ParseFloat()));
         put("Math", new DynObject());
     }};
 
