@@ -36,16 +36,16 @@ public class DynJSTest {
     @Before
     public void setUp() {
         config = new DynJSConfig();
-        dynJS = new DynJS(config);
+        dynJS = new DynJS(getConfig());
         context = new DynThreadContext();
     }
     
     @Test
     public void evalLines() {
-        dynJS.evalLines( context, 
+        getDynJS().evalLines(getContext(),
                 "var x = 'test'",
-                "var y = x" );
-        assertThat(context.getScope().resolve("y"))
+                "var y = x");
+        assertThat(getContext().getScope().resolve("y"))
                 .isNotNull()
                 .isInstanceOf(String.class)
                 .isEqualTo("test");
@@ -59,8 +59,8 @@ public class DynJSTest {
 
     @Test
     public void defineUnInitializedGlobalVariables() {
-        dynJS.eval(context, "var x;");
-        assertThat(context.getScope().resolve("x"))
+        getDynJS().eval(getContext(), "var x;");
+        assertThat(getContext().getScope().resolve("x"))
                 .isNotNull()
                 .isEqualTo(DynThreadContext.UNDEFINED);
     }
@@ -117,7 +117,7 @@ public class DynJSTest {
 
     @Test(expected = ReferenceError.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
-        dynJS.eval(context, "print(x);");
+        getDynJS().eval(getContext(), "print(x);");
     }
 
     @Test
@@ -181,8 +181,8 @@ public class DynJSTest {
 
     @Test
     public void testNullLiteral() {
-        dynJS.eval(context, "var result = null");
-        assertThat(context.getScope().resolve("result")).isEqualTo(DynThreadContext.NULL);
+        getDynJS().eval(getContext(), "var result = null");
+        assertThat(getContext().getScope().resolve("result")).isEqualTo(DynThreadContext.NULL);
     }
 
     @Test
@@ -202,16 +202,16 @@ public class DynJSTest {
 
     @Test
     public void testEmptyObjectLiteral() {
-        dynJS.eval(context, "var result = {};");
-        assertThat(context.getScope().resolve("result"))
+        getDynJS().eval(getContext(), "var result = {};");
+        assertThat(getContext().getScope().resolve("result"))
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
     }
 
     @Test
     public void testBasicObjectLiteral() {
-        dynJS.eval(context, "var result = {w:true};");
-        final Object result = context.getScope().resolve("result");
+        getDynJS().eval(getContext(), "var result = {w:true};");
+        final Object result = getContext().getScope().resolve("result");
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
@@ -240,7 +240,7 @@ public class DynJSTest {
 
     @Test
     public void testBuiltinLoading() {
-        config.addBuiltin("sample", DynJSCompiler.wrapFunction(context, new BypassFunction()));
+        getConfig().addBuiltin("sample", DynJSCompiler.wrapFunction(getContext(), new BypassFunction()));
         check("var result = sample(true);");
     }
 
@@ -280,30 +280,30 @@ public class DynJSTest {
     }
 
     private void check(String scriptlet, Boolean expected) {
-        dynJS.eval(context, scriptlet);
-        Object result = context.getScope().resolve("result");
+        getDynJS().eval(getContext(), scriptlet);
+        Object result = getContext().getScope().resolve("result");
         assertThat(result).isEqualTo(expected);
     }
 
     private void check(String scriptlet, Object expected) {
-        dynJS.eval(context, scriptlet);
-        Object result = context.getScope().resolve("result");
+        getDynJS().eval(getContext(), scriptlet);
+        Object result = getContext().getScope().resolve("result");
         assertThat(result).isEqualTo(expected);
     }
 
     @Test
     @Ignore
     public void testJavaRequireFunctionLoading() {
-        config.addBuiltin("javaRequire", DynJSCompiler.wrapFunction(context, new JavaRequireFunction()));
-        dynJS.eval(context, "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
-        dynJS.eval(context, "var x = new NiceClass");
+        getConfig().addBuiltin("javaRequire", DynJSCompiler.wrapFunction(getContext(), new JavaRequireFunction()));
+        getDynJS().eval(getContext(), "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
+        getDynJS().eval(getContext(), "var x = new NiceClass");
 
-        assertThat(context.getScope().resolve("NiceClass"))
+        assertThat(getContext().getScope().resolve("NiceClass"))
                 .isNotNull()
                 .isInstanceOf(Class.class)
                 .isEqualTo(SayHiToJava.class);
 
-        assertThat(context.getScope().resolve("x"))
+        assertThat(getContext().getScope().resolve("x"))
                 .isInstanceOf(SayHiToJava.class);
 
     }
@@ -320,8 +320,8 @@ public class DynJSTest {
 
     @Test
     public void tryCatchBlock() {
-        dynJS.eval(context, "var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
-        Object result = context.getScope().resolve("result");
+        getDynJS().eval(getContext(), "var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
+        Object result = getContext().getScope().resolve("result");
         assertThat(result).isInstanceOf(DynJSException.class);
     }
 
@@ -334,5 +334,17 @@ public class DynJSTest {
     @Test
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
+    }
+
+    public DynJS getDynJS() {
+        return dynJS;
+    }
+
+    public DynThreadContext getContext() {
+        return context;
+    }
+
+    public DynJSConfig getConfig() {
+        return config;
     }
 }
