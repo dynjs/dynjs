@@ -9,4 +9,5 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     public void parsesFloats() {
         check("var result = parseFloat('33.2');", 33.2);
     }
+
 }
