@@ -17,6 +17,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.ParserException;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
@@ -52,8 +53,11 @@ public class AssignmentOperationStatement extends BaseStatement implements State
             }};
         } else if (lhs instanceof ResolveIdentifierStatement) {
             return new CodeBlock() {{
-                append(lhs.getCodeBlock());
+            	ResolveIdentifierStatement resolveIdentifierStatement = (ResolveIdentifierStatement) lhs;
+            	aload(DynJSCompiler.Arities.THIS);
+            	ldc(resolveIdentifierStatement.getName());
                 append(rhs.getCodeBlock());
+                invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }};
         }
         throw new ParserException("not implemented", getPosition());
