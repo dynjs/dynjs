@@ -31,7 +31,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Override
     public DynJSConfig getConfig() {
         final DynJSConfig config = super.getConfig();
-//        config.enableDebug();
+        config.enableDebug();
         return config;
     }
 
@@ -310,7 +310,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void tryFinallyBlock() {
-        check("var result; try { throw 'mud'; } finally { result = e; };", "mud");
+        check("var result = undefined; try { throw 'mud'; } finally { result = 'mud'; };", "mud");
     }
 
     @Test
