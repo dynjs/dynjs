@@ -44,6 +44,7 @@ public class RT {
             p(RT.class), "bootstrap", methodType(CallSite.class,
             MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
+    public static final MethodType FCALL_MT = MethodType.methodType(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class);
     public static final MethodHandle CONSTRUCT;
 
     static {
@@ -176,7 +177,8 @@ public class RT {
                     .collect(1, Object[].class)
                     .insert(1, _catch)
                     .insert(2, context)
-                    .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                    .convert(FCALL_MT)
+                    .convert(FCALL_MT)
                     .invokeVirtual(caller, "call")
                     .bindTo(_catch);
         } else {
@@ -185,7 +187,7 @@ public class RT {
                     .convert(void.class, Function.class, Object.class)
                     .insert(1, new Object[]{})
                     .insert(2, context)
-                    .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                    .convert(FCALL_MT)
                     .invokeVirtual(caller, "call")
                     .bindTo(DynThreadContext.NOOP);
         }
@@ -195,7 +197,7 @@ public class RT {
                 .collect(1, Object[].class)
                 .insert(1, _try)
                 .insert(2, context)
-                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                .convert(FCALL_MT)
                 .catchException(Throwable.class, catchHandle)
                 .invokeVirtual(caller, "call");
 
