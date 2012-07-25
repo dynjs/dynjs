@@ -33,14 +33,22 @@ public class TryCatchFinallyStatement extends BaseStatement implements Statement
         return new CodeBlock() {{
             aload(DynJSCompiler.Arities.CONTEXT);
             append(compileTryBlock(tryBlock.getCodeBlock()));
-            append(catchBlock.getCodeBlock());
+            if (hasCatchBlock()) {
+                append(catchBlock.getCodeBlock());
+            } else {
+                aconst_null();
+            }
             if (hasFinallyBlock()) {
                 append(finallyBlock.getCodeBlock());
             } else {
                 aconst_null();
             }
-            invokedynamic("trycatchfinally", sig(void.class, Object.class, DynThreadContext.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
+            invokedynamic("trycatchfinally", sig(void.class, DynThreadContext.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
         }};
+    }
+
+    private boolean hasCatchBlock() {
+        return catchBlock != null;
     }
 
     private boolean hasFinallyBlock() {

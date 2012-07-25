@@ -292,12 +292,16 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void tryCatchBlock() {
-        Object result = resultFor("var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
+        Object result = resultFor("var y = {lol:'zomg'}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
         assertThat(result).isInstanceOf(DynJSException.class);
     }
 
     @Test
-    @Ignore
+    public void tryCatchFinallyBlock() {
+        check("var result = undefined; try { throw 'mud'; } catch (e) { result = 'wrong'; } finally { result = 'lol';};", "lol");
+    }
+
+    @Test
     public void tryFinallyBlock() {
         check("var result; try { throw 'mud'; } finally { result = e; };", "mud");
     }

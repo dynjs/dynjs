@@ -161,25 +161,39 @@ public class RT {
         throw new DynJSException(String.valueOf(o));
     }
 
-    public static void trycatchfinally(MethodHandles.Lookup caller, Object self, DynThreadContext context, Object _try, Object _catch, Object _finally) throws Throwable, IllegalAccessException {
+    public static void trycatchfinally(MethodHandles.Lookup caller, DynThreadContext context, Object _try, Object _catch, Object _finally) throws Throwable, IllegalAccessException {
         final MethodHandle pushException = Binder
                 .from(void.class, Object.class, Throwable.class)
                 .convert(void.class, Function.class, Throwable.class)
                 .insert(0, context)
                 .invokeStatic(caller, RT.class, "pushException");
-        final MethodHandle catchHandle = Binder.from(Object.class, Object.class, Throwable.class)
-                .fold(pushException)
-                .convert(void.class, Function.class, Object.class)
-                .collect(1, Object[].class)
-                .insert(1, self)
-                .insert(2, context)
-                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
-                .invokeVirtual(caller, "call")
-                .bindTo(_catch);
+        final MethodHandle catchHandle;
+
+        if (_catch != null) {
+            catchHandle = Binder.from(Object.class, Object.class, Throwable.class)
+                    .fold(pushException)
+                    .convert(void.class, Function.class, Object.class)
+                    .collect(1, Object[].class)
+                    .insert(1, _catch)
+                    .insert(2, context)
+                    .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                    .invokeVirtual(caller, "call")
+                    .bindTo(_catch);
+        } else {
+            catchHandle = Binder.from(Object.class, Object.class, Throwable.class)
+                    .fold(pushException)
+                    .convert(void.class, Function.class, Object.class)
+                    .insert(1, new Object[]{})
+                    .insert(2, context)
+                    .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                    .invokeVirtual(caller, "call")
+                    .bindTo(DynThreadContext.NOOP);
+        }
+
         final MethodHandle tryHandle = Binder.from(Object.class, Object.class)
                 .convert(void.class, Function.class)
                 .collect(1, Object[].class)
-                .insert(1, self)
+                .insert(1, _try)
                 .insert(2, context)
                 .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
                 .catchException(Throwable.class, catchHandle)
