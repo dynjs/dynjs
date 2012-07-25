@@ -169,8 +169,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNullLiteral() {
-        getDynJS().eval(getContext(), "var result = null");
-        assertThat(getContext().getScope().resolve("result")).isEqualTo(DynThreadContext.NULL);
+        Object result = resultFor("var result = null");
+        assertThat(result).isEqualTo(DynThreadContext.NULL);
     }
 
     @Test
@@ -190,16 +190,16 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testEmptyObjectLiteral() {
-        getDynJS().eval(getContext(), "var result = {};");
-        assertThat(getContext().getScope().resolve("result"))
+        final Object result = resultFor("var result = {};");
+        assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
     }
 
     @Test
     public void testBasicObjectLiteral() {
-        getDynJS().eval(getContext(), "var result = {w:true};");
-        final Object result = getContext().getScope().resolve("result");
+        final String expression = "var result = {w:true};";
+        final Object result = resultFor(expression);
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
@@ -292,8 +292,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void tryCatchBlock() {
-        getDynJS().eval(getContext(), "var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
-        Object result = getContext().getScope().resolve("result");
+        Object result = resultFor("var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
         assertThat(result).isInstanceOf(DynJSException.class);
     }
 
