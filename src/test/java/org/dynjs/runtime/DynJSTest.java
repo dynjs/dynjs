@@ -28,6 +28,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
+    @Override
+    public DynJSConfig getConfig() {
+        final DynJSConfig config = super.getConfig();
+//        config.enableDebug();
+        return config;
+    }
+
     @Test
     public void evalLines() {
         getDynJS().evalLines(getContext(),
