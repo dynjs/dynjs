@@ -29,6 +29,7 @@ import org.dynjs.parser.statement.DeleteOpStatement;
 import org.dynjs.parser.statement.DoWhileStatement;
 import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.ExpressionListStatement;
+import org.dynjs.parser.statement.FinallyClauseStatement;
 import org.dynjs.parser.statement.ForStepExprStatement;
 import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
@@ -412,7 +413,7 @@ public class Executor {
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {
-        throw new ParserException("not implemented yet", tree);
+        return new FinallyClauseStatement(tree, context, block);
     }
 
     public Statement withStatement(final Tree tree, Statement expression, Statement statement) {
