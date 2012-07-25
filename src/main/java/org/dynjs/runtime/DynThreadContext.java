@@ -15,20 +15,8 @@
  */
 package org.dynjs.runtime;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import me.qmx.jitescript.CodeBlock;
-
+import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.runtime.builtins.DefineProperty;
@@ -40,10 +28,22 @@ import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.JavaClassModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class DynThreadContext {
 
     public static final Object UNDEFINED = new Undefined();
     public static final Object NULL = new Null();
+    public static final Function NOOP = new Noop();
 
     private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
         put("undefined", UNDEFINED);
@@ -255,4 +255,15 @@ public class DynThreadContext {
         return frameStack;
     }
 
+    private static class Noop implements Function {
+        @Override
+        public Object call(Object self, DynThreadContext context, Object... arguments) {
+            return null;
+        }
+
+        @Override
+        public String[] getParameters() {
+            return new String[0];
+        }
+    }
 }
