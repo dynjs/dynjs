@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import com.headius.invokebinder.Binder;
 import org.dynjs.api.Function;
 import org.dynjs.api.Resolver;
+import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
@@ -101,8 +102,23 @@ public class RT {
                     .insert(0, caller)
                     .invokeStatic(caller, RT.class, "trycatchfinally"));
             return throwException;
+        } else if ("setProp".equals(name)) {
+            return new ConstantCallSite(Binder
+                    .from(methodType)
+                    .insert(0, caller)
+                    .invokeStatic(caller, RT.class, "setProperty")
+            );
         }
         return null;
+    }
+
+    public static Object setProperty(MethodHandles.Lookup caller, Object scope, Object target, Object name, Object value) {
+        if (target instanceof DynThreadContext.Undefined) {
+            if (scope instanceof DelegatingScopeResolver) {
+                ((Scope) ((DelegatingScopeResolver) scope).self).define((String) name, value);
+            }
+        }
+        return value;
     }
 
     public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable, IllegalAccessException {
