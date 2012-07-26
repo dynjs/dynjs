@@ -172,7 +172,7 @@ public class RT {
                 .fold(pushException)
                 .convert(void.class, Function.class, Object.class)
                 .collect(1, Object[].class)
-                .insert(1, self)
+                .insert(1, _catch)
                 .insert(2, context)
                 .convert(FCALL_MT)
                 .invokeVirtual(caller, "call")
