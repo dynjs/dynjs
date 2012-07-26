@@ -116,32 +116,7 @@ public class RT {
     }
 
     public static Object getScope(MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
-        return new Resolver() {
-            @Override
-            public Object resolve(String name) {
-                Object value = null;
-                value = ((Resolver) self).resolve(name);
-                if (value == null) {
-                    value = ((Resolver) thiz).resolve(name);
-                }
-                if (value == null && thiz instanceof Function) {
-                    final Frame frame = context.getFrameStack().peek();
-                    if (frame != null) {
-                        value = frame.resolve(name);
-                    }
-                }
-                if (value == null) {
-                    value = ((Resolver) context.getScope()).resolve(name);
-                }
-                if (value == null && thiz instanceof Function) {
-                    value = context.getCapturedScopeStore().get(thiz.getClass()).resolve(name);
-                }
-                if (value == null) {
-                    throw new ReferenceError(name);
-                }
-                return value;
-            }
-        };
+        return new DelegatingScopeResolver(context, thiz, self);
     }
 
     public static Object getThis(MethodHandles.Lookup caller, MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
@@ -252,5 +227,42 @@ public class RT {
             }
         }
         return isSameType;
+    }
+
+    private static class DelegatingScopeResolver implements Resolver {
+        private final DynThreadContext context;
+        private final Object thiz;
+        private final Object self;
+
+        public DelegatingScopeResolver(DynThreadContext context, Object thiz, Object self) {
+            this.context = context;
+            this.thiz = thiz;
+            this.self = self;
+        }
+
+        @Override
+        public Object resolve(String name) {
+            Object value = null;
+            value = ((Resolver) self).resolve(name);
+            if (value == null) {
+                value = ((Resolver) thiz).resolve(name);
+            }
+            if (value == null && thiz instanceof Function) {
+                final Frame frame = context.getFrameStack().peek();
+                if (frame != null) {
+                    value = frame.resolve(name);
+                }
+            }
+            if (value == null) {
+                value = ((Resolver) context.getScope()).resolve(name);
+            }
+            if (value == null && thiz instanceof Function) {
+                value = context.getCapturedScopeStore().get(thiz.getClass()).resolve(name);
+            }
+            if (value == null) {
+                throw new ReferenceError(name);
+            }
+            return value;
+        }
     }
 }
