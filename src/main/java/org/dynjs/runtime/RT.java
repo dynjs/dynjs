@@ -119,6 +119,8 @@ public class RT {
             } else if (scope instanceof Scope) {
                 ((Scope) scope).define((String) name, value);
             }
+        } else if (scope instanceof DelegatingScopeResolver) {
+            extractSelf((DelegatingScopeResolver) scope).define((String) name, value);
         }
         return value;
     }
