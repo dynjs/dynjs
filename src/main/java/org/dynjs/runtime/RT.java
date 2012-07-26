@@ -115,10 +115,16 @@ public class RT {
     public static Object setProperty(MethodHandles.Lookup caller, Object scope, Object target, Object name, Object value) {
         if (target instanceof DynThreadContext.Undefined) {
             if (scope instanceof DelegatingScopeResolver) {
-                ((Scope) ((DelegatingScopeResolver) scope).self).define((String) name, value);
+                extractSelf((DelegatingScopeResolver) scope).define((String) name, value);
+            } else if (scope instanceof Scope) {
+                ((Scope) scope).define((String) name, value);
             }
         }
         return value;
+    }
+
+    private static Scope extractSelf(DelegatingScopeResolver scope) {
+        return (Scope) ((DelegatingScopeResolver) scope).self;
     }
 
     public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable, IllegalAccessException {
