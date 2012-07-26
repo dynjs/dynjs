@@ -49,9 +49,6 @@ public class ParseInt implements Function {
                 radix = 10;
             }
         }
-        if (isHexValue( arguments[0].toString().trim() )) {
-            radix = 16;
-        }
         if (radix < 2 || radix > 36) {
             radix = -1;
         }
