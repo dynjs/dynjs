@@ -29,6 +29,7 @@ import org.dynjs.parser.statement.DeleteOpStatement;
 import org.dynjs.parser.statement.DoWhileStatement;
 import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.ExpressionListStatement;
+import org.dynjs.parser.statement.FinallyClauseStatement;
 import org.dynjs.parser.statement.ForStepExprStatement;
 import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionStatement;
@@ -360,7 +361,7 @@ public class Executor {
     }
 
     public Statement forStepExpr(final Tree tree, final Statement initialize, final Statement test, final Statement increment, Statement statement) {
-    	return new ForStepExprStatement(labelStack, tree, initialize, test, increment, statement);
+        return new ForStepExprStatement(labelStack, tree, initialize, test, increment, statement);
     }
 
     public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {
@@ -412,7 +413,7 @@ public class Executor {
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {
-        throw new ParserException("not implemented yet", tree);
+        return new FinallyClauseStatement(tree, context, block);
     }
 
     public Statement withStatement(final Tree tree, Statement expression, Statement statement) {

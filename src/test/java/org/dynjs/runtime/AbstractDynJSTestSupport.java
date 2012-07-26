@@ -43,4 +43,9 @@ public abstract class AbstractDynJSTestSupport {
     public DynJSConfig getConfig() {
         return config;
     }
+
+    protected Object resultFor(String expression) {
+        getDynJS().eval(getContext(), expression);
+        return getContext().getScope().resolve("result");
+    }
 }

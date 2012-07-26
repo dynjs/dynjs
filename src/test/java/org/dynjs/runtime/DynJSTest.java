@@ -28,6 +28,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
+    @Override
+    public DynJSConfig getConfig() {
+        final DynJSConfig config = super.getConfig();
+        config.enableDebug();
+        return config;
+    }
+
     @Test
     public void evalLines() {
         getDynJS().evalLines(getContext(),
@@ -169,8 +176,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNullLiteral() {
-        getDynJS().eval(getContext(), "var result = null");
-        assertThat(getContext().getScope().resolve("result")).isEqualTo(DynThreadContext.NULL);
+        Object result = resultFor("var result = null");
+        assertThat(result).isEqualTo(DynThreadContext.NULL);
     }
 
     @Test
@@ -190,16 +197,16 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testEmptyObjectLiteral() {
-        getDynJS().eval(getContext(), "var result = {};");
-        assertThat(getContext().getScope().resolve("result"))
+        final Object result = resultFor("var result = {};");
+        assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
     }
 
     @Test
     public void testBasicObjectLiteral() {
-        getDynJS().eval(getContext(), "var result = {w:true};");
-        final Object result = getContext().getScope().resolve("result");
+        final String expression = "var result = {w:true};";
+        final Object result = resultFor(expression);
         assertThat(result)
                 .isNotNull()
                 .isInstanceOf(DynObject.class);
@@ -292,15 +299,18 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void tryCatchBlock() {
-        getDynJS().eval(getContext(), "var y = {}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
-        Object result = getContext().getScope().resolve("result");
+        Object result = resultFor("var y = {lol:'zomg'}; try { throw 'mud'; } catch (e) { y.e = e; }; var result = y.e;");
         assertThat(result).isInstanceOf(DynJSException.class);
     }
 
     @Test
-    @Ignore
+    public void tryCatchFinallyBlock() {
+        check("var result = undefined; try { throw 'mud'; } catch (e) { result = 'wrong'; } finally { result = 'lol';};", "lol");
+    }
+
+    @Test
     public void tryFinallyBlock() {
-        check("var result; try { throw 'mud'; } finally { result = e; };", "mud");
+        check("var result = undefined; try { throw 'mud'; } finally { result = 'mud'; };", "mud");
     }
 
     @Test

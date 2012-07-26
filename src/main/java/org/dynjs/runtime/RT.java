@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import com.headius.invokebinder.Binder;
 import org.dynjs.api.Function;
 import org.dynjs.api.Resolver;
+import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
@@ -44,6 +45,7 @@ public class RT {
             p(RT.class), "bootstrap", methodType(CallSite.class,
             MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
+    public static final MethodType FCALL_MT = MethodType.methodType(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class);
     public static final MethodHandle CONSTRUCT;
 
     static {
@@ -100,8 +102,31 @@ public class RT {
                     .insert(0, caller)
                     .invokeStatic(caller, RT.class, "trycatchfinally"));
             return throwException;
+        } else if ("setProp".equals(name)) {
+            return new ConstantCallSite(Binder
+                    .from(methodType)
+                    .insert(0, caller)
+                    .invokeStatic(caller, RT.class, "setProperty")
+            );
         }
         return null;
+    }
+
+    public static Object setProperty(MethodHandles.Lookup caller, Object scope, Object target, Object name, Object value) {
+        if (target instanceof DynThreadContext.Undefined) {
+            if (scope instanceof DelegatingScopeResolver) {
+                extractSelf((DelegatingScopeResolver) scope).define((String) name, value);
+            } else if (scope instanceof Scope) {
+                ((Scope) scope).define((String) name, value);
+            }
+        } else if (scope instanceof DelegatingScopeResolver) {
+            extractSelf((DelegatingScopeResolver) scope).define((String) name, value);
+        }
+        return value;
+    }
+
+    private static Scope extractSelf(DelegatingScopeResolver scope) {
+        return (Scope) ((DelegatingScopeResolver) scope).self;
     }
 
     public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable, IllegalAccessException {
@@ -115,32 +140,7 @@ public class RT {
     }
 
     public static Object getScope(MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
-        return new Resolver() {
-            @Override
-            public Object resolve(String name) {
-                Object value = null;
-                value = ((Resolver) self).resolve(name);
-                if (value == null) {
-                    value = ((Resolver) thiz).resolve(name);
-                }
-                if (value == null && thiz instanceof Function) {
-                    final Frame frame = context.getFrameStack().peek();
-                    if (frame != null) {
-                        value = frame.resolve(name);
-                    }
-                }
-                if (value == null) {
-                    value = ((Resolver) context.getScope()).resolve(name);
-                }
-                if (value == null && thiz instanceof Function) {
-                    value = context.getCapturedScopeStore().get(thiz.getClass()).resolve(name);
-                }
-                if (value == null) {
-                    throw new ReferenceError(name);
-                }
-                return value;
-            }
-        };
+        return new DelegatingScopeResolver(context, thiz, self);
     }
 
     public static Object getThis(MethodHandles.Lookup caller, MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
@@ -167,27 +167,46 @@ public class RT {
                 .convert(void.class, Function.class, Throwable.class)
                 .insert(0, context)
                 .invokeStatic(caller, RT.class, "pushException");
+
         final MethodHandle catchHandle = Binder.from(Object.class, Object.class, Throwable.class)
                 .fold(pushException)
                 .convert(void.class, Function.class, Object.class)
                 .collect(1, Object[].class)
-                .insert(1, self)
+                .insert(1, _catch)
                 .insert(2, context)
-                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                .convert(FCALL_MT)
                 .invokeVirtual(caller, "call")
                 .bindTo(_catch);
+
         final MethodHandle tryHandle = Binder.from(Object.class, Object.class)
                 .convert(void.class, Function.class)
                 .collect(1, Object[].class)
                 .insert(1, self)
                 .insert(2, context)
-                .convert(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class)
+                .convert(FCALL_MT)
                 .catchException(Throwable.class, catchHandle)
-                .invokeVirtual(caller, "call");
+                .invokeVirtual(caller, "call")
+                .bindTo(_try);
 
-        tryHandle.invokeWithArguments(_try);
+        final MethodHandle finallyHandle = Binder.from(Object.class, Object.class)
+                .convert(void.class, Function.class)
+                .collect(1, Object[].class)
+                .insert(1, self)
+                .insert(2, context)
+                .convert(FCALL_MT)
+                .invokeVirtual(caller, "call")
+                .bindTo(_finally);
+
+        try {
+            tryHandle.invoke();
+        } finally {
+            finallyHandle.invoke();
+        }
+
         // FIXME: REFACTOR ME PLEASE
-        context.getFrameStack().pop();
+        if (!context.getFrameStack().isEmpty()) {
+            context.getFrameStack().pop();
+        }
     }
 
     public static void pushException(DynThreadContext context, Function f, Throwable t) {
@@ -232,5 +251,42 @@ public class RT {
             }
         }
         return isSameType;
+    }
+
+    private static class DelegatingScopeResolver implements Resolver {
+        private final DynThreadContext context;
+        private final Object thiz;
+        private final Object self;
+
+        public DelegatingScopeResolver(DynThreadContext context, Object thiz, Object self) {
+            this.context = context;
+            this.thiz = thiz;
+            this.self = self;
+        }
+
+        @Override
+        public Object resolve(String name) {
+            Object value = null;
+            value = ((Resolver) self).resolve(name);
+            if (value == null) {
+                value = ((Resolver) thiz).resolve(name);
+            }
+            if (value == null && thiz instanceof Function) {
+                final Frame frame = context.getFrameStack().peek();
+                if (frame != null) {
+                    value = frame.resolve(name);
+                }
+            }
+            if (value == null) {
+                value = ((Resolver) context.getScope()).resolve(name);
+            }
+            if (value == null && thiz instanceof Function) {
+                value = context.getCapturedScopeStore().get(thiz.getClass()).resolve(name);
+            }
+            if (value == null) {
+                throw new ReferenceError(name);
+            }
+            return value;
+        }
     }
 }
