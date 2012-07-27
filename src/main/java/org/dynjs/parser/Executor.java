@@ -363,7 +363,7 @@ public class Executor {
     }
 
     public Statement forStepExpr(final Tree tree, final Statement initialize, final Statement test, final Statement increment, Statement statement) {
-        return new ForStepExprStatement(labelStack, tree, initialize, test, increment, statement);
+        return new ForStepExprStatement(labelStack, breakStack, tree, initialize, test, increment, statement);
     }
 
     public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {

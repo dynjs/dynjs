@@ -177,6 +177,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void testBreak() {
     	check("var x = 0; for (var i = 0;i < 10; i+=1){ x+=1; break;}; var result = x == 1.0;");
+    	check("var x = 0 var i = 0; for (;i < 10; i+=1){ x+=1; break;}; var result = x == 1.0;");
 //    	check("var x = 0; do { x+=1;if(x % 3 == 0) {break;};x+=3 } while(x < 10); var result = x == 9;");
 //    	check("var x = 0; while(x < 10) { x+=1; if(x % 2) {break;};x+=3}; var result = x == 1;");
     }
