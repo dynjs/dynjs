@@ -148,10 +148,6 @@ public class DynJS {
         return this.compiler.compileBasicBlock(blockName, context, codeBlock, arg);
     }
 
-    public Object compileFinallyBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return this.compiler.compileBasicBlock("FinallyBlock", context, codeBlock);
-    }
-
     public Map<Class<?>, Scope> getCapturedScopeStore() {
         return capturedScopeStore;
     }

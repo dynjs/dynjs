@@ -31,12 +31,13 @@ public class FinallyClauseStatement extends BaseStatement implements Statement {
             aload(DynJSCompiler.Arities.CONTEXT);
             invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
 
+            ldc("FinallyBlock");
             aload(DynJSCompiler.Arities.CONTEXT);
             dup();
             bipush(slot);
             invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
 
-            invokevirtual(DynJSCompiler.Types.RUNTIME, "compileFinallyBlock", sig(Object.class, DynThreadContext.class, CodeBlock.class));
+            invokevirtual(DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig(Object.class, String.class, DynThreadContext.class, CodeBlock.class));
         }};
     }
 
