@@ -41,6 +41,10 @@ public class DynJSConfig {
         this.debug = true;
     }
 
+    public void disableDebug() {
+        this.debug = false;
+    }
+
     public boolean isDebug() {
         return debug;
     }

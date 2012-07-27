@@ -155,4 +155,12 @@ public class DynJS {
     public Map<Class<?>, Scope> getCapturedScopeStore() {
         return capturedScopeStore;
     }
+
+    public void enableDebug() {
+        config.enableDebug();
+    }
+
+    public void disableDebug() {
+        config.disableDebug();
+    }
 }
