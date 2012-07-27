@@ -141,15 +141,15 @@ public class DynJS {
     }
 
     public Object compileExceptionHandler(DynThreadContext context, CodeBlock codeBlock, final String identifier) {
-        return this.compiler.compileExceptionHandler(context, codeBlock, identifier);
+        return this.compiler.compileBasicBlock("ExceptionHandlerBlock", context, codeBlock, identifier);
     }
 
     public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return this.compiler.compileTryBlock(context, codeBlock);
+        return this.compiler.compileBasicBlock("TryBlock", context, codeBlock);
     }
 
     public Object compileFinallyBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return this.compiler.compileFinallyBlock(context, codeBlock);
+        return this.compiler.compileBasicBlock("FinallyBlock", context, codeBlock);
     }
 
     public Map<Class<?>, Scope> getCapturedScopeStore() {
