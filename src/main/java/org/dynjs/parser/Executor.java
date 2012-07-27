@@ -20,6 +20,7 @@ import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
+import org.dynjs.parser.statement.BreakStatement;
 import org.dynjs.parser.statement.CallStatement;
 import org.dynjs.parser.statement.CatchClauseStatement;
 import org.dynjs.parser.statement.ContinueStatement;
@@ -71,6 +72,7 @@ public class Executor {
 
     private final DynThreadContext context;
     private final Stack<LabelNode> labelStack = new Stack<>();
+    private final Stack<LabelNode> breakStack = new Stack<>();
 
     public Executor(DynThreadContext context) {
         this.context = context;
@@ -349,19 +351,19 @@ public class Executor {
     }
 
     public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new DoWhileStatement(labelStack, tree, vbool, vloop);
+        return new DoWhileStatement(labelStack, breakStack, tree, vbool, vloop);
     }
 
     public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new WhileStatement(labelStack, tree, vbool, vloop);
+        return new WhileStatement(labelStack, breakStack, tree, vbool, vloop);
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
-        return new ForStepVarStatement(labelStack, tree, varDef, expr1, expr2, statement);
+        return new ForStepVarStatement(labelStack, breakStack, tree, varDef, expr1, expr2, statement);
     }
 
     public Statement forStepExpr(final Tree tree, final Statement initialize, final Statement test, final Statement increment, Statement statement) {
-        return new ForStepExprStatement(labelStack, tree, initialize, test, increment, statement);
+        return new ForStepExprStatement(labelStack, breakStack, tree, initialize, test, increment, statement);
     }
 
     public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {
@@ -377,7 +379,7 @@ public class Executor {
     }
 
     public Statement breakStatement(final Tree tree, String id) {
-        throw new ParserException("not implemented yet", tree);
+    	return new BreakStatement(breakStack, tree, id);
     }
 
     public Statement exprListStatement(final List<Statement> exprList) {
