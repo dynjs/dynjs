@@ -140,8 +140,8 @@ public class DynJS {
         return this.compiler.compile(context, codeBlock, args);
     }
 
-    public Object compileExceptionHandler(DynThreadContext context, CodeBlock codeBlock, final String identifier) {
-        return this.compiler.compileBasicBlock("ExceptionHandlerBlock", context, codeBlock, identifier);
+    public Object compileBasicBlock(String blockName, DynThreadContext context, CodeBlock codeBlock, final String arg) {
+        return this.compiler.compileBasicBlock(blockName, context, codeBlock, arg);
     }
 
     public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {

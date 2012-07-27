@@ -30,13 +30,14 @@ public class CatchClauseStatement extends BaseStatement implements Statement {
             aload(DynJSCompiler.Arities.CONTEXT);
             invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
 
+            ldc("ExceptionHandlerBlock");
             aload(DynJSCompiler.Arities.CONTEXT);
             dup();
             bipush(slot);
             invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
 
             ldc(id);
-            invokevirtual(DynJSCompiler.Types.RUNTIME, "compileExceptionHandler", sig(Object.class, DynThreadContext.class, CodeBlock.class, String.class));
+            invokevirtual(DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig(Object.class, String.class, DynThreadContext.class, CodeBlock.class, String.class));
         }};
     }
 }
