@@ -140,12 +140,12 @@ public class DynJS {
         return this.compiler.compile(context, codeBlock, args);
     }
 
-    public Object compileBasicBlock(String blockName, DynThreadContext context, CodeBlock codeBlock, final String arg) {
-        return this.compiler.compileBasicBlock(blockName, context, codeBlock, arg);
+    public Object compileBasicBlock(String blockName, DynThreadContext context, CodeBlock codeBlock) {
+        return this.compiler.compileBasicBlock(blockName, context, codeBlock);
     }
 
-    public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return this.compiler.compileBasicBlock("TryBlock", context, codeBlock);
+    public Object compileBasicBlock(String blockName, DynThreadContext context, CodeBlock codeBlock, final String arg) {
+        return this.compiler.compileBasicBlock(blockName, context, codeBlock, arg);
     }
 
     public Object compileFinallyBlock(DynThreadContext context, CodeBlock codeBlock) {
