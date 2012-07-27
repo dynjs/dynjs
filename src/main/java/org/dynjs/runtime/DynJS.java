@@ -140,16 +140,12 @@ public class DynJS {
         return this.compiler.compile(context, codeBlock, args);
     }
 
-    public Object compileExceptionHandler(DynThreadContext context, CodeBlock codeBlock, final String identifier) {
-        return this.compiler.compileExceptionHandler(context, codeBlock, identifier);
+    public Object compileBasicBlock(String blockName, DynThreadContext context, CodeBlock codeBlock) {
+        return this.compiler.compileBasicBlock(blockName, context, codeBlock);
     }
 
-    public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return this.compiler.compileTryBlock(context, codeBlock);
-    }
-
-    public Object compileFinallyBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return this.compiler.compileFinallyBlock(context, codeBlock);
+    public Object compileBasicBlock(String blockName, DynThreadContext context, CodeBlock codeBlock, final String arg) {
+        return this.compiler.compileBasicBlock(blockName, context, codeBlock, arg);
     }
 
     public Map<Class<?>, Scope> getCapturedScopeStore() {

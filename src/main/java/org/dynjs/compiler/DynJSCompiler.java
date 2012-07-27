@@ -49,20 +49,8 @@ public class DynJSCompiler {
         this.config = config;
     }
 
-    public Object compileExceptionHandler(DynThreadContext context, final CodeBlock codeBlock, final String identifier) {
-        return internalCompile("ExceptionHandler", context, codeBlock, new String[]{identifier}, false);
-    }
-
-    public Object compileBasicBlock(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
-        return internalCompile("BasicBlock", context, codeBlock, arguments, false);
-    }
-
-    public Object compileTryBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return internalCompile("TryBlock", context, codeBlock, new String[]{}, false);
-    }
-
-    public Object compileFinallyBlock(DynThreadContext context, CodeBlock codeBlock) {
-        return internalCompile("FinallyBlock", context, codeBlock, new String[]{}, false);
+    public Object compileBasicBlock(String blockName, DynThreadContext context, final CodeBlock codeBlock, final String... arguments) {
+        return internalCompile(blockName, context, codeBlock, arguments, false);
     }
 
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
