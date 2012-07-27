@@ -351,11 +351,11 @@ public class Executor {
     }
 
     public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new DoWhileStatement(labelStack, tree, vbool, vloop);
+        return new DoWhileStatement(labelStack, breakStack, tree, vbool, vloop);
     }
 
     public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new WhileStatement(labelStack, tree, vbool, vloop);
+        return new WhileStatement(labelStack, breakStack, tree, vbool, vloop);
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {

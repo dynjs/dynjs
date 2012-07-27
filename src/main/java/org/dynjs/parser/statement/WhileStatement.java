@@ -29,12 +29,14 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 public class WhileStatement extends BaseStatement implements Statement {
 
     private final Stack<LabelNode> labelStack;
+    private final Stack<LabelNode> breakStack;
     private final Statement vbool;
     private final BlockStatement vloop;
 
-    public WhileStatement(Stack<LabelNode> labelStack, final Tree tree, Statement vbool, Statement vloop) {
+    public WhileStatement(Stack<LabelNode> labelStack, Stack<LabelNode> breakStack, final Tree tree, Statement vbool, Statement vloop) {
         super(tree);
         this.labelStack = labelStack;
+		this.breakStack = breakStack;
         this.vbool = vbool;
         this.vloop = (BlockStatement) vloop;
     }
@@ -43,6 +45,7 @@ public class WhileStatement extends BaseStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
             labelStack.push(vloop.getBeginLabel());
+            breakStack.push(vloop.getEndLabel());
             label(vloop.getBeginLabel());
             append(vbool.getCodeBlock());
             invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
@@ -52,6 +55,7 @@ public class WhileStatement extends BaseStatement implements Statement {
             go_to(vloop.getBeginLabel());
             label(vloop.getEndLabel());
             labelStack.pop();
+            breakStack.pop();
         }};
     }
 }
