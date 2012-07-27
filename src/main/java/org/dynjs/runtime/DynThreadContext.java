@@ -23,6 +23,7 @@ import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
+import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
@@ -67,6 +68,7 @@ public class DynThreadContext {
         put("require", DynJSCompiler.wrapFunction(get("Function"), new Require()));
         put("parseFloat", DynJSCompiler.wrapFunction(get("Function"), new ParseFloat()));
         put("parseInt", DynJSCompiler.wrapFunction(get("Function"), new ParseInt()));
+        put("isNaN", DynJSCompiler.wrapFunction( get("Function"), new IsNaN()));
         put("Math", new DynObject());
     }};
 

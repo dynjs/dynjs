@@ -21,6 +21,10 @@ import org.dynjs.runtime.DynThreadContext;
 public class ParseInt implements Function {
     @Override
     public Object call(Object self, DynThreadContext context, Object... arguments) {
+        return parseInt( arguments );
+    }
+
+    protected static Object parseInt(Object... arguments) {
         if (isDefinedCall( arguments )) {
             int radix = determineRadix( arguments );
             try {
@@ -28,6 +32,7 @@ public class ParseInt implements Function {
                 if (isHexValue( value )) {
                     value = value.substring( 2 );
                 }
+                value = removeDecimal( value );
                 return Integer.parseInt( value, radix );
             } catch (NumberFormatException e) {
                 return Double.NaN;
@@ -40,8 +45,14 @@ public class ParseInt implements Function {
     public String[] getParameters() {
         return new String[] { "a", "b" }; // what is this for?
     }
+    
+    private static String removeDecimal( String value ) {
+        int i = value.indexOf( '.' );
+        if (i == -1) { return value; }
+        return value.substring(0, i);
+    }
 
-    private int determineRadix(Object[] arguments) {
+    private static int determineRadix(Object[] arguments) {
         int radix = 10;
         if (arguments.length == 2) {
             radix = (int) Double.parseDouble( arguments[1].toString() );
@@ -55,12 +66,12 @@ public class ParseInt implements Function {
         return radix;
     }
 
-    private boolean isHexValue(String string) {
+    private static boolean isHexValue(String string) {
         final String value = string.trim();
         return (value.startsWith( "0x" ) || value.startsWith( "0X" ));
     }
 
-    private boolean isDefinedCall(Object[] args) {
+    private static boolean isDefinedCall(Object[] args) {
         boolean valid = true;
         if (args.length > 0 && args.length < 3) {
             if (args[0] == null) {

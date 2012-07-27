@@ -75,4 +75,9 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     public void parseIntReturnsUndefinedForMoreThanTwoParameters() {
         check( "var result = parseInt('123', 10, 20);", DynThreadContext.UNDEFINED );
     }
+    
+    @Test
+    public void parseIntReturnsTheFloorOfAFloat() {
+        check( "var result = parseInt('12.6');", 12 );
+    }
 }
