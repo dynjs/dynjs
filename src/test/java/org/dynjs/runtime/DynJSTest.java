@@ -325,4 +325,9 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
     }
+
+	@Test
+	public void testIf() {
+		check("var x = 0; var i = 1; if (i % 2) { x += 1 } else { x +=2 }; var result = x == 1");
+	}
 }
