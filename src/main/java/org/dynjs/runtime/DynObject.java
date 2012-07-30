@@ -81,7 +81,7 @@ public class DynObject implements Scope {
             String string = (String) value;
             return !"".equals(string);
         }
-        return (value instanceof DynObject);
+        return value != null;
     }
 
     public String typeof() {

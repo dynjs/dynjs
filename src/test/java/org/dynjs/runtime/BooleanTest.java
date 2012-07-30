@@ -76,5 +76,6 @@ public class BooleanTest {
     @Test
     public void objectBecomesTrue() {
         assertThat(toBoolean(new DynObject())).isTrue();
+        assertThat(toBoolean(new Double(0.0))).isTrue();
     }
 }
