@@ -145,6 +145,11 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testHexValue() {
+    	check("var result = 0x16", 22.0);
+    }
+
+    @Test
     public void testAssignments() {
         check("var x = 1;x += 1; var result = x == 2;");
         check("var x = 1;x -= 1; var result = x == 0;");
