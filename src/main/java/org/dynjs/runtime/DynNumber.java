@@ -17,6 +17,7 @@ package org.dynjs.runtime;
 
 import static java.lang.Double.NaN;
 
+@Deprecated
 public class DynNumber extends DynObject {
 
     public static final DynNumber NAN = new DynNumber(NaN);

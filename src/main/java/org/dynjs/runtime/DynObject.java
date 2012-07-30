@@ -75,6 +75,10 @@ public class DynObject implements Scope {
         if (value instanceof DynNumber) {
             DynNumber number = (DynNumber) value;
             return !(number.isNaN() || number.getValue() == 0);
+        } else if (value instanceof Double) {
+            final Double valueAsDouble = (Double) value;
+            final boolean b = !(valueAsDouble.isNaN() || valueAsDouble == 0.0);
+            return b;
         } else if (value instanceof Boolean) {
             return (Boolean) value;
         } else if (value instanceof String) {
