@@ -72,6 +72,9 @@ public class DynObject implements Scope {
     }
 
     public static Boolean toBoolean(final Object value) {
+        if (value == null) {
+            return false;
+        }
         if (value instanceof DynNumber) {
             DynNumber number = (DynNumber) value;
             return !(number.isNaN() || number.getValue() == 0);
@@ -84,9 +87,7 @@ public class DynObject implements Scope {
         } else if (value instanceof String) {
             String string = (String) value;
             return !"".equals(string);
-        }
-
-        if (value instanceof DynThreadContext.Undefined ||
+        } else if (value instanceof DynThreadContext.Undefined ||
                 value instanceof DynThreadContext.Null) {
             return false;
         }
