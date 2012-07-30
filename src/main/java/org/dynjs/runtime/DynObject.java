@@ -81,7 +81,13 @@ public class DynObject implements Scope {
             String string = (String) value;
             return !"".equals(string);
         }
-        return value != null;
+
+        if (value instanceof DynThreadContext.Undefined ||
+        	 value instanceof DynThreadContext.Null) {
+        	return false;
+        }
+
+		return value != null;
     }
 
     public String typeof() {
