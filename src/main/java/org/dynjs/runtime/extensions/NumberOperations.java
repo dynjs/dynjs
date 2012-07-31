@@ -40,6 +40,18 @@ public class NumberOperations {
         return a % b;
     }
 
+    public static Double and(Double a, Double b) {
+    	return (double) (a.intValue() & b.intValue());
+    }
+
+    public static Double or(Double a, Double b) {
+    	return (double) (a.intValue() | b.intValue());
+    }
+
+    public static Double xor(Double a, Double b) {
+    	return (double) (a.intValue() ^ b.intValue());
+    }
+
     public static Boolean eq(Double a, Double b) {
         if (a.isNaN() || b.isNaN()) {
             return false;

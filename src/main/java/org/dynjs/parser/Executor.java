@@ -18,6 +18,7 @@ package org.dynjs.parser;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
+import org.dynjs.parser.statement.BitwiseOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
 import org.dynjs.parser.statement.BreakStatement;
@@ -234,16 +235,20 @@ public class Executor {
         return new LogicalOperationStatement(tree, "land", l, r);
     }
 
-    public Statement defineAndBitOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineAndBitOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+        return defineBitwiseOp(tree, "and", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineOrBitOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineOrBitOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+        return defineBitwiseOp(tree, "or", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineXorBitOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineXorBitOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return defineBitwiseOp(tree, "xor", leftHandStatement, rightHandStatement);
+    }
+
+    public Statement defineBitwiseOp(final Tree tree, String operation, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseOperationStatement(tree, operation, leftHandStatement, rightHandStatement);
     }
 
     public Statement defineEqOp(final Tree tree, final Statement l, final Statement r) {
