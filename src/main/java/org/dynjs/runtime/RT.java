@@ -135,8 +135,17 @@ public class RT {
         final Object result = Binder.from(Object.class, Object.class, Object.class, DynThreadContext.class, Object[].class)
                 .convert(Object.class, f.getClass(), Object.class, DynThreadContext.class, Object[].class)
                 .invokeVirtual(caller, "call").invoke(f, self, context, args);
-        context.getFrameStack().pop();
+
+        // FIXME: REFACTOR ME PLEASE
+        popFrameFromCallStack(context);
         return result;
+    }
+
+    private static void popFrameFromCallStack(DynThreadContext context) {
+        // FIXME: REFACTOR ME PLEASE
+        if (!context.getFrameStack().isEmpty()) {
+            context.getFrameStack().pop();
+        }
     }
 
     public static Object getScope(MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
@@ -204,9 +213,7 @@ public class RT {
         }
 
         // FIXME: REFACTOR ME PLEASE
-        if (!context.getFrameStack().isEmpty()) {
-            context.getFrameStack().pop();
-        }
+        popFrameFromCallStack(context);
     }
 
     public static void pushException(DynThreadContext context, Function f, Throwable t) {
