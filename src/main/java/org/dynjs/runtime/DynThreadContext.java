@@ -141,6 +141,10 @@ public class DynThreadContext {
         return Integer.parseInt(value, 8);
     }
 
+    public Number defineHexaDecimalLiteral(final String value) {
+    	return (double) Integer.parseInt(value.substring(2), 16);
+    }
+
     public Scope getScope() {
         return scope;
     }
