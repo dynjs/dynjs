@@ -18,6 +18,7 @@ package org.dynjs.parser;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
+import org.dynjs.parser.statement.BitwiseAssignmentStatement;
 import org.dynjs.parser.statement.BitwiseOperationStatement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralStatement;
@@ -303,16 +304,16 @@ public class Executor {
         throw new ParserException("not implemented yet", tree);
     }
 
-    public Statement defineAndAssOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineAndAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseAssignmentStatement(tree, "and", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineXorAssOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineXorAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseAssignmentStatement(tree, "xor", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineOrAssOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineOrAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseAssignmentStatement(tree, "or", leftHandStatement, rightHandStatement);
     }
 
     public Statement defineQueOp(final Tree tree, Statement ex1, Statement ex2, Statement ex3) {
