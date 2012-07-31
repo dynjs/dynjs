@@ -150,6 +150,13 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testBitwise() {
+    	check("var result = 0x000F & 0x2222", 2.0);
+    	check("var result = 0x000F | 0x2222", 8751.0);
+    	check("var result = 0x000F ^ 0x2222", 8749.0);
+    }
+
+    @Test
     public void testAssignments() {
         check("var x = 1;x += 1; var result = x == 2;");
         check("var x = 1;x -= 1; var result = x == 0;");
