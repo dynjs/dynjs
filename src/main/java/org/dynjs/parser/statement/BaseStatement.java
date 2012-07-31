@@ -16,18 +16,27 @@
 
 package org.dynjs.parser.statement;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Position;
 
 public abstract class BaseStatement {
 
+    private final static AtomicInteger counter = new AtomicInteger();
     private final Position position;
+    private int number;
 
     BaseStatement(final Tree tree) {
         this.position = new Position(tree);
+        this.number = counter.incrementAndGet();
     }
 
     public Position getPosition() {
         return position;
+    }
+    
+    public int getStatementNumber() {
+        return this.number;
     }
 }

@@ -158,7 +158,6 @@ public class RT {
     }
 
     public static void defineOwnPropertyBootstrap(MethodHandles.Lookup caller, Object self, Object propertyName, Object value) throws Throwable, IllegalAccessException {
-
         final MethodHandle setProperty = Binder
                 .from(void.class, Object.class, Object.class, Object.class)
                 .convert(void.class, self.getClass(), String.class, Object.class)

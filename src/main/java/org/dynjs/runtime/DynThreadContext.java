@@ -15,31 +15,31 @@
  */
 package org.dynjs.runtime;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import me.qmx.jitescript.CodeBlock;
+
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.runtime.CodeStorage.Entry;
 import org.dynjs.runtime.builtins.DefineProperty;
 import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
-import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.JavaClassModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
-
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DynThreadContext {
 
@@ -73,8 +73,7 @@ public class DynThreadContext {
     }};
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
-    private AtomicInteger storageCounter = new AtomicInteger();
-    private Map<Integer, CodeBlock> storage = new HashMap<>();
+    private CodeStorage codeStorage = new CodeStorage();
     private Scope scope = new DynObject();
     private Deque<Frame> frameStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
@@ -154,24 +153,15 @@ public class DynThreadContext {
     }
 
     /**
-     * stores codeblock on internal storage
+     * retrieves (or create) code entry from internal storage
      *
-     * @param block
-     */
-    public int store(CodeBlock block) {
-        Integer slot = storageCounter.getAndIncrement();
-        storage.put(slot, block);
-        return slot;
-    }
-
-    /**
-     * retrieves codeblock from internal storage
-     *
-     * @param id
+     * @param statementNumber the statement number of the entry.
      * @return
      */
-    public CodeBlock retrieve(int id) {
-        return storage.get(id);
+    public Entry retrieve(int statementNumber) {
+        Entry result = this.codeStorage.retrieve( statementNumber );
+        System.err.println( "retrieve for " + statementNumber + " = " + result );
+        return result;
     }
 
     public void setClassLoader(DynamicClassLoader classLoader) {

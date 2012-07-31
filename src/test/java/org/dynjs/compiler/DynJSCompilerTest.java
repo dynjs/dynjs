@@ -65,6 +65,11 @@ public class DynJSCompilerTest {
             public Position getPosition() {
                 return null;
             }
+            
+            @Override
+            public int getStatementNumber() {
+                return 42;
+            }
         }).execute(scope, new DynThreadContext());
     }
 
