@@ -15,18 +15,20 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import me.qmx.jitescript.CodeBlock;
+
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.CodeStorage.Entry;
+import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
+import org.objectweb.asm.tree.LabelNode;
 
 public class FunctionStatement extends BaseStatement implements Statement {
 
@@ -50,13 +52,34 @@ public class FunctionStatement extends BaseStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            final Integer slot = context.store(block.getCodeBlock());
+            LabelNode skipCompile = new LabelNode();
+            
+            int statementNumber = block.getStatementNumber();
+            Entry entry = context.retrieve(statementNumber);
+            
+            // Stash codeblock if required
+            if ( entry.codeBlock == null ) {
+                entry.codeBlock = block.getCodeBlock();
+            }
+            
+            aload(DynJSCompiler.Arities.CONTEXT);
+            bipush( statementNumber );
+            invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(Entry.class, int.class));
+            astore(4); // Entry
+            
+            getfield( p(Entry.class), "compiled", ci(Object.class));
+            
+            dup(); // needed if we goto
+            
+            ifnonnull( skipCompile );
+            pop(); // pop the dup'd null
+            
             bipush(args.size());
             anewarray(p(String.class));
-            astore(4);
+            astore(5); // Args array
 
             for (int i = 0; i < args.size(); i++) {
-                aload(4);
+                aload(5);
                 bipush(i);
                 ldc(args.get(i));
                 aastore();
@@ -64,22 +87,27 @@ public class FunctionStatement extends BaseStatement implements Statement {
 
             aload(DynJSCompiler.Arities.CONTEXT);
             invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
-
+            
             aload(DynJSCompiler.Arities.CONTEXT);
-            dup();
-            bipush(slot);
-            invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
-
             aload(4);
+            getfield( p(Entry.class), "codeBlock", ci(Object.class) );
+            
+            aload(5);
             invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Object.class, DynThreadContext.class, CodeBlock.class, String[].class));
+            dup();
+            
+            aload(4);
+            swap();
+            putfield( p(Entry.class), "codeBlock", ci(Object.class) );
+            
+            label( skipCompile );
 
             if (identifier != null) {
                 // TODO DRY
-
-                astore(5);
+                astore(4); // trample the Entry with 
                 aload(DynJSCompiler.Arities.THIS);
                 ldc(identifier);
-                aload(5);
+                aload(4);
                 invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
             }
 
