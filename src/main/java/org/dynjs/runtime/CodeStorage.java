@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,15 +28,26 @@ public class CodeStorage {
             this.statementNumber = statementNumber;
         }
         
+        public Object getCompiled() {
+            if ( compiled == null ) {
+               return null; 
+            }
+            
+            return compiled.get();
+        }
+        
+        public void setCompiled(Object compiled) {
+            this.compiled = new WeakReference<Object>( compiled );
+        }
+        
         public String toString() {
-            return "[Entry: codeBlock=" + codeBlock + "; compiled=" + compiled + "]";
+            return "[Entry: codeBlock=" + codeBlock + "; compiled=" + ( compiled == null ? null : compiled.get() ) + "]";
         }
 
         public int statementNumber;
         public CodeBlock codeBlock;
-        public Object compiled;
+        private WeakReference<Object> compiled;
     }
 
     private Map<Integer, Entry> storage = new HashMap<>();
-
 }

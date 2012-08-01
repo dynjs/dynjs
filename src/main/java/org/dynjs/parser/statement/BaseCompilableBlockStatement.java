@@ -62,7 +62,8 @@ public class BaseCompilableBlockStatement extends BaseStatement {
                 astore( 4 ); // Entry
                 aload( 4 );
 
-                getfield( p( Entry.class ), "compiled", ci( Object.class ) );
+                //getfield( p( Entry.class ), "compiled", ci( Object.class ) );
+                invokevirtual( p( Entry.class), "getCompiled", sig( Object.class ) );
                 astore( 5 ); // Compiled object
                 aload( 5 );
 
@@ -106,7 +107,8 @@ public class BaseCompilableBlockStatement extends BaseStatement {
                 astore( 5 ); // Compiled object
                 aload( 4 ); // Entry
                 swap();
-                putfield( p( Entry.class ), "compiled", ci( Object.class ) );
+                //putfield( p( Entry.class ), "compiled", ci( Object.class ) );
+                invokevirtual( p(Entry.class), "setCompiled", sig( void.class, Object.class ) );
 
                 label( skipCompile );
                 aload(5);
