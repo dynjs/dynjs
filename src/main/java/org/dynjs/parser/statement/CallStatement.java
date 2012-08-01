@@ -17,6 +17,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
@@ -54,7 +55,7 @@ public class CallStatement extends BaseStatement implements Statement {
                 aastore();
             }
 
-            append(lhs.getCodeBlock());
+            append(CodeBlockUtils.offset( lhs.getCodeBlock(), 1) );
             aload(DynJSCompiler.Arities.CONTEXT);
             aload(4);
             invokedynamic("call2", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);

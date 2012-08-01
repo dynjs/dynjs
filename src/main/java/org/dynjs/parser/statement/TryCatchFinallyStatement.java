@@ -14,19 +14,12 @@ import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class TryCatchFinallyStatement extends BaseStatement implements Statement {
-    private final DynThreadContext context;
-    private final Statement tryBlock;
+public class TryCatchFinallyStatement extends BaseCompilableBlockStatement implements Statement {
     private final Statement catchBlock;
     private final Statement finallyBlock;
-    private final LabelNode blockStart = new LabelNode();
-    private final LabelNode catchStart = new LabelNode();
-    private final LabelNode finallyStart = new LabelNode();
 
     public TryCatchFinallyStatement(Tree tree, DynThreadContext context, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
-        super(tree);
-        this.context = context;
-        this.tryBlock = tryBlock;
+        super(tree, context, tryBlock);
         this.catchBlock = catchBlock;
         this.finallyBlock = finallyBlock;
     }
@@ -39,7 +32,7 @@ public class TryCatchFinallyStatement extends BaseStatement implements Statement
             aload(DynJSCompiler.Arities.SELF);
             invokedynamic("getScope", sig(Object.class, DynThreadContext.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
             aload(DynJSCompiler.Arities.CONTEXT);
-            append(compileTryBlock(tryBlock.getCodeBlock()));
+            append( compileBasicBlockIfNecessary( "Try" ));
             if (hasCatchBlock()) {
                 append(catchBlock.getCodeBlock());
             } else {
@@ -60,22 +53,5 @@ public class TryCatchFinallyStatement extends BaseStatement implements Statement
 
     private boolean hasFinallyBlock() {
         return finallyBlock != null;
-    }
-
-    public CodeBlock compileTryBlock(final CodeBlock block) {
-        return new CodeBlock() {{
-            final Integer slot = context.store(block);
-
-            aload(DynJSCompiler.Arities.CONTEXT);
-            invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
-
-            ldc("TryBlock");
-            aload(DynJSCompiler.Arities.CONTEXT);
-            dup();
-            bipush(slot);
-            invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
-
-            invokevirtual(DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig(Object.class, String.class, DynThreadContext.class, CodeBlock.class));
-        }};
     }
 }

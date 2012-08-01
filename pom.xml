@@ -87,7 +87,7 @@
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
-            <version>0.3.x.incremental.9</version>
+            <version>0.3.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

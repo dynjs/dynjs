@@ -15,74 +15,50 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import me.qmx.jitescript.CodeBlock;
 
-public class FunctionStatement extends BaseStatement implements Statement {
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.DynJSCompiler;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.RT;
 
-    private final DynThreadContext context;
+public class FunctionStatement extends BaseCompilableBlockStatement implements Statement {
+
     private final String identifier;
     private final List<String> args;
-    private final Statement block;
 
     public FunctionStatement(final Tree tree, final DynThreadContext context, final List<String> args, final Statement block) {
-        this(tree, context, null, args, block);
+        this( tree, context, null, args, block );
     }
 
     public FunctionStatement(final Tree tree, final DynThreadContext context, final String identifier, final List<String> args, final Statement block) {
-        super(tree);
-        this.context = context;
+        super( tree, context, block );
         this.identifier = identifier;
         this.args = args;
-        this.block = block != null ? block : new EmptyStatement();
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            final Integer slot = context.store(block.getCodeBlock());
-            bipush(args.size());
-            anewarray(p(String.class));
-            astore(4);
+        return new CodeBlock() {
+            {
+                append( compileFunctionIfNecessary( args ) );
+                if (identifier != null) {
+                    // TODO DRY
+                    aload( DynJSCompiler.Arities.THIS );
+                    ldc( identifier );
+                    aload( 5 );
+                    invokedynamic( "dyn:setProp", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                    aload( 5 );
+                } else {
+                    nop();
+                }
 
-            for (int i = 0; i < args.size(); i++) {
-                aload(4);
-                bipush(i);
-                ldc(args.get(i));
-                aastore();
             }
-
-            aload(DynJSCompiler.Arities.CONTEXT);
-            invokevirtual(DynJSCompiler.Types.CONTEXT, "getRuntime", sig(DynJS.class));
-
-            aload(DynJSCompiler.Arities.CONTEXT);
-            dup();
-            bipush(slot);
-            invokevirtual(DynJSCompiler.Types.CONTEXT, "retrieve", sig(CodeBlock.class, int.class));
-
-            aload(4);
-            invokevirtual(DynJSCompiler.Types.RUNTIME, "compile", sig(Object.class, DynThreadContext.class, CodeBlock.class, String[].class));
-
-            if (identifier != null) {
-                // TODO DRY
-
-                astore(5);
-                aload(DynJSCompiler.Arities.THIS);
-                ldc(identifier);
-                aload(5);
-                invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            }
-
-        }};
+        };
     }
 }

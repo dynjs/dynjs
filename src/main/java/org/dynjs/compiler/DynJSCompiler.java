@@ -54,6 +54,7 @@ public class DynJSCompiler {
     }
 
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
+        System.err.println( "compiling: " + codeBlock );
         return internalCompile("AnonymousDynFunction", context, codeBlock, arguments, true);
     }
 
