@@ -157,6 +157,13 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     	check("var result = 0x000F; result &= 0x2222", 2.0);
     	check("var result = 0x000F; result |= 0x2222", 8751.0);
     	check("var result = 0x000F; result ^= 0x2222", 8749.0);
+
+    	check("var result = 9 << 2", 36.0);
+    	check("var result = 9 >> 2", 2.0);
+    	check("var result = 9 >>> 2", 2.0);
+    	check("var result = 9; result <<= 2", 36.0);
+    	check("var result = 9; result >>= 2", 2.0);
+    	check("var result = 9; result >>>= 2", 2.0);
     }
 
     @Test

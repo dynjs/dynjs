@@ -140,16 +140,16 @@ public class Executor {
         return new FunctionStatement(tree, getContext(), identifier, args, block);
     }
 
-    public Statement defineShlOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineShlOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseOperationStatement(tree, "lshift", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineShrOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineShrOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseOperationStatement(tree, "rshift", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineShuOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineShuOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseOperationStatement(tree, "urshift", leftHandStatement, rightHandStatement);
     }
 
     public Statement defineDivOp(final Tree tree, Statement l, Statement r) {
@@ -237,19 +237,15 @@ public class Executor {
     }
 
     public Statement defineAndBitOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
-        return defineBitwiseOp(tree, "and", leftHandStatement, rightHandStatement);
+        return new BitwiseOperationStatement(tree, "and", leftHandStatement, rightHandStatement);
     }
 
     public Statement defineOrBitOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
-        return defineBitwiseOp(tree, "or", leftHandStatement, rightHandStatement);
+        return new BitwiseOperationStatement(tree, "or", leftHandStatement, rightHandStatement);
     }
 
     public Statement defineXorBitOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
-    	return defineBitwiseOp(tree, "xor", leftHandStatement, rightHandStatement);
-    }
-
-    public Statement defineBitwiseOp(final Tree tree, String operation, Statement leftHandStatement, Statement rightHandStatement) {
-    	return new BitwiseOperationStatement(tree, operation, leftHandStatement, rightHandStatement);
+    	return new BitwiseOperationStatement(tree, "xor", leftHandStatement, rightHandStatement);
     }
 
     public Statement defineEqOp(final Tree tree, final Statement l, final Statement r) {
@@ -292,16 +288,16 @@ public class Executor {
         return new OperationAssignmentStatement(tree, "sub", l, r);
     }
 
-    public Statement defineShlAssOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineShlAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseAssignmentStatement(tree, "lshift", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineShrAssOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineShrAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseAssignmentStatement(tree, "rshift", leftHandStatement, rightHandStatement);
     }
 
-    public Statement defineShuAssOp(final Tree tree, Statement l, Statement r) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement defineShuAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
+    	return new BitwiseAssignmentStatement(tree, "urshift", leftHandStatement, rightHandStatement);
     }
 
     public Statement defineAndAssOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {

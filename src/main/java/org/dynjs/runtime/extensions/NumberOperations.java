@@ -52,6 +52,18 @@ public class NumberOperations {
     	return (double) (a.intValue() ^ b.intValue());
     }
 
+    public static Double lshift(Double a, Double b) {
+    	return (double) (a.intValue() << b.intValue());
+    }
+
+    public static Double rshift(Double a, Double b) {
+    	return (double) (a.intValue() >> b.intValue());
+    }
+
+    public static Double urshift(Double a, Double b) {
+    	return (double) (a.intValue() >>> b.intValue());
+    }
+
     public static Boolean eq(Double a, Double b) {
         if (a.isNaN() || b.isNaN()) {
             return false;
