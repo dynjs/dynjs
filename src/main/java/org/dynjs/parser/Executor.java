@@ -39,6 +39,7 @@ import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.InstanceOfRelOpStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.UnaryMinusStatement;
 import org.dynjs.parser.statement.NamedValueStatement;
 import org.dynjs.parser.statement.NewStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
@@ -185,7 +186,7 @@ public class Executor {
     }
 
     public Statement defineNegOp(final Tree tree, Statement expression) {
-        throw new ParserException("not implemented yet", tree);
+    	return new UnaryMinusStatement(tree, expression);
     }
 
     public Statement defineInvOp(final Tree tree, Statement expression) {
