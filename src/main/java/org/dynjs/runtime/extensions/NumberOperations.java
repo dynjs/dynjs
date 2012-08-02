@@ -64,6 +64,10 @@ public class NumberOperations {
     	return (double) (a.intValue() >>> b.intValue());
     }
 
+	public static Double unary_minus(Double number) {
+		return -number;
+	}
+
     public static Boolean eq(Double a, Double b) {
         if (a.isNaN() || b.isNaN()) {
             return false;
