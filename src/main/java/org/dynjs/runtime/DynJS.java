@@ -28,6 +28,7 @@ import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
+import org.dynjs.parser.ParserException;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.loader.Builtin;
@@ -102,10 +103,14 @@ public class DynJS {
         }
     }
 
-    private List<Statement> parseSourceCode(DynThreadContext context, ES3Lexer lexer) throws RecognitionException {
+    private List<Statement> parseSourceCode(DynThreadContext context, ES3Lexer lexer) throws RecognitionException, SyntaxError {
         CommonTokenStream stream = new CommonTokenStream(lexer);
         ES3Parser parser = new ES3Parser(stream);
         ES3Parser.program_return program = parser.program();
+        List<String> errors = parser.getErrors();
+        if ( ! errors.isEmpty() ) {
+            throw new SyntaxError( errors );
+        }
         CommonTree tree = (CommonTree) program.getTree();
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);

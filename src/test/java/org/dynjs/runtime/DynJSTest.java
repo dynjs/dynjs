@@ -18,6 +18,7 @@ package org.dynjs.runtime;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.parser.ParserException;
 import org.dynjs.runtime.fixtures.BypassFunction;
 import org.dynjs.runtime.java.JavaRequireFunction;
 import org.dynjs.runtime.java.SayHiToJava;
@@ -34,7 +35,12 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 //        config.enableDebug();
         return config;
     }
-
+    
+    @Test(expected=ParserException.class)
+    public void testSyntaxErrorThrows() {
+        getDynJS().eval( getContext(), "var f ( {;");
+    }
+    
     @Test
     public void evalLines() {
         getDynJS().evalLines(getContext(),

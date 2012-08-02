@@ -225,6 +225,8 @@ package org.dynjs.parser;
 package org.dynjs.parser;
 }
 
+
+
 @lexer::members
 {
 private Token last;
@@ -308,6 +310,19 @@ public Token nextToken()
 
 @parser::members
 {
+	
+private List<String> errors = new ArrayList<String>();
+public void displayRecognitionError(String[] tokenNames, RecognitionException e) 
+{
+    String hdr = getErrorHeader(e);
+    String msg = getErrorMessage(e, tokenNames);
+    errors.add(hdr + " " + msg);
+}
+    
+public List<String> getErrors() 
+{
+    return errors;
+}
 
 private String retrieveLT(int LTNumber) {
     if (null == input)
@@ -456,6 +471,9 @@ private final void promoteEOL(ParserRuleReturnScope rule)
 	}
 }	
 }
+
+
+
 
 //
 // $<	A.1 Lexical Grammar (7)
