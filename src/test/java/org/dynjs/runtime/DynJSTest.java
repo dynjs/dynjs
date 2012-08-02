@@ -160,10 +160,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     	check("var result = 9 << 2", 36.0);
     	check("var result = 9 >> 2", 2.0);
-    	check("var result = 9 >>> 2", 2.0);
+    	check("var result = -1 >>> 2", 1.073741823E9);
     	check("var result = 9; result <<= 2", 36.0);
     	check("var result = 9; result >>= 2", 2.0);
-    	check("var result = 9; result >>>= 2", 2.0);
+    	check("var result = -1; result >>>= 2", 1.073741823E9);
     }
 
     @Test
@@ -346,5 +346,12 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", false);
+    }
+
+    @Test
+    public void testUnaryMinusOper() {
+    	check("var result = -1 + 1", 0.0);
+    	check("var result = -1", -1.0);
+    	check("var x = 1; var result = -x == -1");
     }
 }
