@@ -31,7 +31,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Override
     public DynJSConfig getConfig() {
         final DynJSConfig config = super.getConfig();
-        config.enableDebug();
+//        config.enableDebug();
         return config;
     }
 
