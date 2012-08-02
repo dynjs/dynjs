@@ -50,17 +50,17 @@ public class BooleanTest {
 
     @Test
     public void nanBecomesFalse() {
-        assertThat(toBoolean(DynNumber.NAN)).isFalse();
+        assertThat(toBoolean(Double.NaN)).isFalse();
     }
 
     @Test
     public void zeroBecomesFalse() {
-        assertThat(toBoolean(new DynNumber(0))).isFalse();
+        assertThat(toBoolean(0.0)).isFalse();
     }
 
     @Test
     public void anotherValidNumberBecomesTrue() {
-        assertThat(toBoolean(new DynNumber(42))).isTrue();
+        assertThat(toBoolean(42.0)).isTrue();
     }
 
     @Test
