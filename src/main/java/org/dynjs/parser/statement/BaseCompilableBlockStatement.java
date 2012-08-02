@@ -54,8 +54,9 @@ public class BaseCompilableBlockStatement extends BaseStatement {
                     context.retrieve( statementNumber );
                 }
 
-                //
-
+                // ----------------------------------------
+                // ----------------------------------------
+                
                 aload( DynJSCompiler.Arities.CONTEXT );
                 ldc( statementNumber );
                 invokevirtual( DynJSCompiler.Types.CONTEXT, "retrieve", sig( Entry.class, int.class ) );

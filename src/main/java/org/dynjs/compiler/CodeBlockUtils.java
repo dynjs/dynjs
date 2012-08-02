@@ -2,8 +2,11 @@ package org.dynjs.compiler;
 
 import me.qmx.jitescript.CodeBlock;
 
+import org.dynjs.parser.Position;
+import org.dynjs.parser.Statement;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class CodeBlockUtils {
@@ -24,6 +27,15 @@ public class CodeBlockUtils {
         }
 
         return block;
+    }
+
+    public static void injectLineNumber(CodeBlock block, Statement statement) {
+        Position position = statement.getPosition();
+        if ( position != null ) {
+            LabelNode lineLabel = new LabelNode();
+            block.line( position.getLine(), lineLabel );
+            block.label( lineLabel );
+        }
     }
 
 }

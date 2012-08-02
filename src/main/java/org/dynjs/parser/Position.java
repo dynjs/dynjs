@@ -53,4 +53,8 @@ public class Position {
     public int getLine() {
         return line;
     }
+    
+    public String getFileName() {
+        return this.fileName;
+    }
 }

@@ -20,6 +20,7 @@ import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
+import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynFunction;
 import org.dynjs.runtime.DynJS;
@@ -28,7 +29,9 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.Script;
+import org.mockito.asm.tree.LineNumberNode;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
@@ -41,8 +44,8 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DynJSCompiler {
 
-    private static final AtomicInteger counter = new AtomicInteger(0);
-    private static final String PACKAGE = "org.dynjs.gen.".replace('.', '/');
+    private static final AtomicInteger counter = new AtomicInteger( 0 );
+    private static final String PACKAGE = "org.dynjs.gen.".replace( '.', '/' );
     private final DynJSConfig config;
 
     public DynJSCompiler(DynJSConfig config) {
@@ -50,51 +53,59 @@ public class DynJSCompiler {
     }
 
     public Object compileBasicBlock(String blockName, DynThreadContext context, final CodeBlock codeBlock, final String... arguments) {
-        return internalCompile(blockName, context, codeBlock, arguments, false);
+        return internalCompile( blockName, context, codeBlock, arguments, false );
     }
 
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
         System.err.println( "compiling: " + codeBlock );
-        return internalCompile("AnonymousDynFunction", context, codeBlock, arguments, true);
+        return internalCompile( "AnonymousDynFunction", context, codeBlock, arguments, true );
     }
 
     private Object internalCompile(String prefix, DynThreadContext context, final CodeBlock codeBlock, final String[] arguments, boolean wrap) {
-        final String className = generateNameFromBase(prefix);
-        JiteClass jiteClass = new JiteClass(className, p(DynFunction.class), new String[]{p(Function.class)}) {{
-            defineMethod("<init>", ACC_PUBLIC, sig(void.class),
-                    new CodeBlock() {{
-                        aload(0);
-                        invokespecial(p(DynFunction.class), "<init>", sig(void.class));
-                        voidreturn();
-                    }});
-            defineMethod("call", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {{
-                append(alwaysReturnWrapper(codeBlock));
-            }});
+        final String className = generateNameFromBase( prefix );
+        JiteClass jiteClass = new JiteClass( className, p( DynFunction.class ), new String[] { p( Function.class ) } ) {
+            {
+                defineMethod( "<init>", ACC_PUBLIC, sig( void.class ),
+                        new CodeBlock() {
+                            {
+                                aload( 0 );
+                                invokespecial( p( DynFunction.class ), "<init>", sig( void.class ) );
+                                voidreturn();
+                            }
+                        } );
+                defineMethod( "call", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {
+                    {
+                        append( alwaysReturnWrapper( codeBlock ) );
+                    }
+                } );
 
-            defineMethod("getParameters", ACC_PUBLIC, sig(String[].class), new CodeBlock() {{
-                bipush(arguments.length);
-                anewarray(p(String.class));
-                for (int i = 0; i < arguments.length; i++) {
-                    String argument = arguments[i];
-                    dup();
-                    bipush(i);
-                    ldc(argument);
-                    aastore();
-                }
-                areturn();
-            }});
-        }};
-        Class<Function> functionClass = (Class<Function>) defineClass(jiteClass);
-        context.getCapturedScopeStore().put(functionClass, context.getScope());
+                defineMethod( "getParameters", ACC_PUBLIC, sig( String[].class ), new CodeBlock() {
+                    {
+                        bipush( arguments.length );
+                        anewarray( p( String.class ) );
+                        for (int i = 0; i < arguments.length; i++) {
+                            String argument = arguments[i];
+                            dup();
+                            bipush( i );
+                            ldc( argument );
+                            aastore();
+                        }
+                        areturn();
+                    }
+                } );
+            }
+        };
+        Class<Function> functionClass = (Class<Function>) defineClass( jiteClass );
+        context.getCapturedScopeStore().put( functionClass, context.getScope() );
         try {
             Function function = functionClass.newInstance();
             if (wrap) {
-                return wrapFunction(context, function);
+                return wrapFunction( context, function );
             } else {
                 return function;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException( e );
         }
     }
 
@@ -103,11 +114,11 @@ public class DynJSCompiler {
     }
 
     public static DynObject wrapFunction(final Object prototype, final Function function) {
-        return new InternalDynObject(prototype, function);
+        return new InternalDynObject( prototype, function );
     }
 
     public static DynObject wrapFunction(final DynThreadContext context, final Function function) {
-        return wrapFunction(context.getBuiltin("Function"), function);
+        return wrapFunction( context.getBuiltin( "Function" ), function );
     }
 
     private CodeBlock alwaysReturnWrapper(CodeBlock codeBlock) {
@@ -119,51 +130,63 @@ public class DynJSCompiler {
 
     public Script compile(final Statement... statements) {
         String className = PACKAGE + "AnonymousDynScript" + counter.incrementAndGet();
-        JiteClass jiteClass = new JiteClass(className, p(BaseScript.class), new String[]{p(Script.class)}) {
+        JiteClass jiteClass = new JiteClass( className, p( BaseScript.class ), new String[] { p( Script.class ) } ) {
             {
-                defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Statement[].class),
-                        new CodeBlock() {{
-                            aload(0);
-                            aload(1);
-                            invokespecial(p(BaseScript.class), "<init>", sig(void.class, Statement[].class));
-                            voidreturn();
-                        }});
+                defineMethod( "<init>", ACC_PUBLIC | ACC_VARARGS, sig( void.class, Statement[].class ),
+                        new CodeBlock() {
+                            {
+                                aload( 0 );
+                                aload( 1 );
+                                invokespecial( p( BaseScript.class ), "<init>", sig( void.class, Statement[].class ) );
+                                voidreturn();
+                            }
+                        } );
 
-                defineMethod("execute", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Scope.class, DynThreadContext.class), getCodeBlock());
+                defineMethod( "execute", ACC_PUBLIC | ACC_VARARGS, sig( void.class, Scope.class, DynThreadContext.class ), getCodeBlock() );
             }
 
             private CodeBlock getCodeBlock() {
                 final CodeBlock block = new CodeBlock();
                 for (Statement statement : statements) {
-                    block.append(statement.getCodeBlock());
+                    CodeBlockUtils.injectLineNumber( block, statement );
+                    block.append( statement.getCodeBlock() );
                 }
                 return block.voidreturn();
             }
         };
-        Class<?> functionClass = defineClass(jiteClass);
+
+        if (statements.length > 0) {
+            Position position = statements[0].getPosition();
+            if (position != null) {
+                jiteClass.setSourceDebug( position.getFileName() );
+                jiteClass.setSourceFile( position.getFileName() );
+            }
+        }
+
+        Class<?> functionClass = defineClass( jiteClass );
         try {
-            Constructor<?> ctor = functionClass.getDeclaredConstructor(Statement[].class);
-            return (Script) ctor.newInstance(new Object[]{statements});
+            Constructor<?> ctor = functionClass.getDeclaredConstructor( Statement[].class );
+            return (Script) ctor.newInstance( new Object[] { statements } );
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException( e );
         }
     }
 
     private Class<?> defineClass(JiteClass jiteClass) {
-        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
+        byte[] bytecode = jiteClass.toBytes( JDKVersion.V1_7 );
 
         if (config.isDebug()) {
-            ClassReader reader = new ClassReader(bytecode);
-            CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
+            ClassReader reader = new ClassReader( bytecode );
+            CheckClassAdapter.verify( reader, true, new PrintWriter( System.out ) );
         }
-        return new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
+        return new DynamicClassLoader( config.getClassLoader() ).define( jiteClass.getClassName().replace( '/', '.' ), bytecode );
     }
 
     public static interface Types {
 
-        String RUNTIME = p(DynJS.class);
-        String CONTEXT = p(DynThreadContext.class);
-        String Scope = p(Scope.class);
+        String RUNTIME = p( DynJS.class );
+        String CONTEXT = p( DynThreadContext.class );
+        String Scope = p( Scope.class );
     }
 
     public static interface Arities {
@@ -176,9 +199,9 @@ public class DynJSCompiler {
 
     public static interface Signatures {
 
-        String FCALL = sig(Object.class, DynThreadContext.class, Object[].class);
-        String FCALL_WITH_SELF = sig(Object.class, Object.class, DynThreadContext.class, Object[].class);
-        String ARITY_2 = sig(Object.class, Object.class, Object.class);
+        String FCALL = sig( Object.class, DynThreadContext.class, Object[].class );
+        String FCALL_WITH_SELF = sig( Object.class, Object.class, DynThreadContext.class, Object[].class );
+        String ARITY_2 = sig( Object.class, Object.class, Object.class );
     }
 
     public static interface Helper {
@@ -189,16 +212,16 @@ public class DynJSCompiler {
     public static class InternalDynObject extends DynObject {
 
         public InternalDynObject(Object prototype, Object function) {
-            setProperty("prototype", prototype);
+            setProperty( "prototype", prototype );
             if (function != null) {
-                setProperty("call", function);
-                setProperty("construct", function);
+                setProperty( "call", function );
+                setProperty( "construct", function );
             }
         }
 
         public Boolean hasInstance(Object object) {
             if (object instanceof DynObject) {
-                Object proto = getProperty("prototype").getAttribute("value");
+                Object proto = getProperty( "prototype" ).getAttribute( "value" );
                 return proto == object;
             }
             return false;
