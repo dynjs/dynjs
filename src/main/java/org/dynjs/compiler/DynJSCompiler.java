@@ -15,9 +15,17 @@
  */
 package org.dynjs.compiler;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
+
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.parser.Position;
@@ -29,18 +37,8 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.Script;
-import org.mockito.asm.tree.LineNumberNode;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.util.CheckClassAdapter;
-
-import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DynJSCompiler {
 
