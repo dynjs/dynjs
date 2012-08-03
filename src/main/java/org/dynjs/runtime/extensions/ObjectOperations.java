@@ -53,11 +53,11 @@ public class ObjectOperations {
 		}
 
 		if (o1 instanceof Double && o2 instanceof String) {
-			return o1.equals(Double.parseDouble((String) o2));
+			o2 = ((String) o2).isEmpty() ? 0 : Double.parseDouble((String) o2);
 		}
 
 		if (o1 instanceof String && o2 instanceof Double) {
-			return o2.equals(Double.parseDouble((String) o1));
+			o1 = ((String) o1).isEmpty() ? 0 : Double.parseDouble((String) o1);
 		}
 
 		if (o1 instanceof Boolean) {

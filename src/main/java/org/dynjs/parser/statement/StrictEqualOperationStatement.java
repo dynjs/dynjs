@@ -30,6 +30,5 @@ public class StrictEqualOperationStatement extends BaseStatement implements Stat
 						RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
 			}
 		};
-
 	}
 }
