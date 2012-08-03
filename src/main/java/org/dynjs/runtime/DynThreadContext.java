@@ -47,77 +47,86 @@ public class DynThreadContext {
     public static final Object NULL = new Null();
     public static final Function NOOP = new Noop();
 
-    private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {{
-        put("undefined", UNDEFINED);
-        put("NaN", Double.NaN);
-        put("Infinity", Double.POSITIVE_INFINITY);
-        put("-Infinity", Double.NEGATIVE_INFINITY);
-        put("Object", new DynObject() {{
-            setProperty("defineProperty", new DefineProperty());
-        }});
-        put("Number", new DynObject());
-        put("Array", new DynObject());
-        put("Date", new DynObject());
-        put("String", new DynObject());
-        put("Boolean", new DynObject());
-        put("Error", new DynObject());
-        put("Function", new DynObject() {{
-            setProperty("prototype", get("Object"));
-        }});
-        put("eval", DynJSCompiler.wrapFunction(get("Function"), new Eval()));
-        put("require", DynJSCompiler.wrapFunction(get("Function"), new Require()));
-        put("parseFloat", DynJSCompiler.wrapFunction(get("Function"), new ParseFloat()));
-        put("parseInt", DynJSCompiler.wrapFunction(get("Function"), new ParseInt()));
-        put("isNaN", DynJSCompiler.wrapFunction( get("Function"), new IsNaN()));
-        put("Math", new DynObject());
-    }};
+    private static final Map<String, Object> BUILTINS = new LinkedHashMap<String, Object>() {
+        {
+            put( "undefined", UNDEFINED );
+            put( "NaN", Double.NaN );
+            put( "Infinity", Double.POSITIVE_INFINITY );
+            put( "-Infinity", Double.NEGATIVE_INFINITY );
+            put( "Object", new DynObject() {
+                {
+                    setProperty( "defineProperty", new DefineProperty() );
+                }
+            } );
+            put( "Number", new DynObject() );
+            put( "Array", new DynObject() );
+            put( "Date", new DynObject() );
+            put( "String", new DynObject() );
+            put( "Boolean", new DynObject() );
+            put( "Error", new DynObject() );
+            put( "Function", new DynObject() {
+                {
+                    setProperty( "prototype", get( "Object" ) );
+                }
+            } );
+            put( "eval", DynJSCompiler.wrapFunction( get( "Function" ), new Eval() ) );
+            put( "require", DynJSCompiler.wrapFunction( get( "Function" ), new Require() ) );
+            put( "parseFloat", DynJSCompiler.wrapFunction( get( "Function" ), new ParseFloat() ) );
+            put( "parseInt", DynJSCompiler.wrapFunction( get( "Function" ), new ParseInt() ) );
+            put( "isNaN", DynJSCompiler.wrapFunction( get( "Function" ), new IsNaN() ) );
+            put( "Math", new DynObject() );
+        }
+    };
 
     private ThreadLocal<DynJS> runtime = new ThreadLocal<>();
     private CodeStorage codeStorage = new CodeStorage();
     private Scope scope = new DynObject();
     private Deque<Frame> frameStack = new LinkedList<>();
     private DynamicClassLoader classLoader;
-    private List<String> loadPaths = Collections.synchronizedList(new ArrayList<String>());
-    private List<ModuleProvider> moduleProviders = Collections.synchronizedList(new ArrayList<ModuleProvider>());
+    private List<String> loadPaths = Collections.synchronizedList( new ArrayList<String>() );
+    private List<ModuleProvider> moduleProviders = Collections.synchronizedList( new ArrayList<ModuleProvider>() );
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
 
     public DynThreadContext() {
         for (Map.Entry<String, Object> builin : BUILTINS.entrySet()) {
-            scope.define(builin.getKey(), builin.getValue());
+            scope.define( builin.getKey(), builin.getValue() );
         }
-        loadPaths.add(System.getProperty("user.dir") + "/");
-        loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
-        loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
-        loadPaths.add("/usr/local/lib/node/");
-        loadPaths.add("/usr/local/lib/node_modules/");
-        
+        loadPaths.add( System.getProperty( "user.dir" ) + "/" );
+        loadPaths.add( System.getProperty( "user.home" ) + "/.node_modules/" );
+        loadPaths.add( System.getProperty( "user.home" ) + "/.node_libraries/" );
+        loadPaths.add( "/usr/local/lib/node/" );
+        loadPaths.add( "/usr/local/lib/node_modules/" );
+
         moduleProviders.add( new FilesystemModuleProvider() );
-        
+
         JavaClassModuleProvider builtInModuleProvider = new JavaClassModuleProvider();
         builtInModuleProvider.addModule( new ConsoleModule() );
-        moduleProviders.add(  builtInModuleProvider );
+        moduleProviders.add( builtInModuleProvider );
     }
-    
-    
-    /** Copy/child constructor.
+
+    /**
+     * Copy/child constructor.
      * 
-     * <p>Build a new context based upon a parent. While a new
-     * frame-stack and scope is provided, the following are
-     * initialized through the passed-on parent context:</p>
+     * <p>
+     * Build a new context based upon a parent. While a new frame-stack and
+     * scope is provided, the following are initialized through the passed-on
+     * parent context:
+     * </p>
      * 
      * <ul>
-     *   <li>Load paths</li>
-     *   <li>Module providers</li>
-     *   <li>Class loader</li>
+     * <li>Load paths</li>
+     * <li>Module providers</li>
+     * <li>Class loader</li>
      * </ul>
+     * 
      * @param original The original context to seed the child.
      */
     public DynThreadContext(DynThreadContext original) {
-    	this();
-    	setLoadPaths( new ArrayList<>( original.getLoadPaths() ) );
-    	setModuleProviders( new ArrayList<>( original.getModuleProviders() ) );
-    	setClassLoader( original.getClassLoader() );
+        this();
+        setLoadPaths( new ArrayList<>( original.getLoadPaths() ) );
+        setModuleProviders( new ArrayList<>( original.getModuleProviders() ) );
+        setClassLoader( original.getClassLoader() );
     }
 
     public DynJS getRuntime() {
@@ -125,7 +134,7 @@ public class DynThreadContext {
     }
 
     public void setRuntime(DynJS runtime) {
-        this.runtime.set(runtime);
+        this.runtime.set( runtime );
     }
 
     public String defineStringLiteral(final String value) {
@@ -133,15 +142,15 @@ public class DynThreadContext {
     }
 
     public Number defineDecimalLiteral(final String value) {
-        return Double.parseDouble(value);
+        return Double.parseDouble( value );
     }
 
     public Number defineOctalLiteral(final String value) {
-        return Integer.parseInt(value, 8);
+        return Integer.parseInt( value, 8 );
     }
 
     public Number defineHexaDecimalLiteral(final String value) {
-    	return (double) Integer.parseInt(value.substring(2), 16);
+        return (double) Integer.parseInt( value.substring( 2 ), 16 );
     }
 
     public Scope getScope() {
@@ -154,13 +163,17 @@ public class DynThreadContext {
 
     /**
      * retrieves (or create) code entry from internal storage
-     *
+     * 
      * @param statementNumber the statement number of the entry.
      * @return
      */
     public Entry retrieve(int statementNumber) {
         Entry result = this.codeStorage.retrieve( statementNumber );
-        System.err.println( "retrieve for " + statementNumber + " = " + result );
+        if (result.codeBlock != null) {
+            System.err.println( "retrieve for " + statementNumber + " = " + result + " with " + result.codeBlock.getInstructionList().size() );
+        } else {
+            System.err.println( "retrieve for " + statementNumber + " = " + result  );
+        }
         return result;
     }
 
@@ -173,7 +186,7 @@ public class DynThreadContext {
     }
 
     public Object getBuiltin(String name) {
-        return BUILTINS.get(name);
+        return BUILTINS.get( name );
     }
 
     public Map<Class<?>, Scope> getCapturedScopeStore() {
@@ -208,45 +221,45 @@ public class DynThreadContext {
             return "null";
         }
     }
-    
+
     public void setOutputStream(PrintStream outputStream) {
         this.outputStream = outputStream;
     }
-    
+
     public PrintStream getOutputStream() {
         return this.outputStream;
     }
-    
+
     public void setErrorStream(PrintStream errorStream) {
         this.errorStream = errorStream;
     }
-    
+
     public PrintStream getErrorStream() {
         return this.errorStream;
     }
-    
+
     public void addModuleProvider(ModuleProvider moduleProvider) {
-    	moduleProviders.add( moduleProvider );
+        moduleProviders.add( moduleProvider );
     }
-    
+
     public List<ModuleProvider> getModuleProviders() {
-    	return Collections.unmodifiableList( this.moduleProviders);
+        return Collections.unmodifiableList( this.moduleProviders );
     }
-    
+
     public void setModuleProviders(List<ModuleProvider> newModuleProviders) {
-    	moduleProviders = Collections.synchronizedList( moduleProviders );
+        moduleProviders = Collections.synchronizedList( moduleProviders );
     }
 
     public void addLoadPath(String loadPath) {
-        loadPaths.add(loadPath);
+        loadPaths.add( loadPath );
     }
 
     public List<String> getLoadPaths() {
-        return Collections.unmodifiableList(loadPaths);
+        return Collections.unmodifiableList( loadPaths );
     }
 
     public void setLoadPaths(List<String> newLoadPaths) {
-        loadPaths = Collections.synchronizedList(newLoadPaths);
+        loadPaths = Collections.synchronizedList( newLoadPaths );
     }
 
     public Deque<Frame> getFrameStack() {

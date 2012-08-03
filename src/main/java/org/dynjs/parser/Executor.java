@@ -315,7 +315,7 @@ public class Executor {
     }
 
     public Statement defineQueOp(final Tree tree, Statement ex1, Statement ex2, Statement ex3) {
-        return new IfStatement(tree, context, ex1, ex2, ex3);
+        return new IfStatement(tree, context, ex1, ex2, ex3, true);
     }
 
     public Statement defineThisLiteral(final Tree tree) {
@@ -351,7 +351,7 @@ public class Executor {
     }
 
     public Statement ifStatement(final Tree tree, Statement vbool, Statement vthen, Statement velse) {
-        return new IfStatement(tree, getContext(), vbool, vthen, velse);
+        return new IfStatement(tree, getContext(), vbool, vthen, velse, false);
     }
 
     public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {

@@ -52,7 +52,7 @@ public class DynJS {
         compiler = new DynJSCompiler(this.config);
     }
     
-    public void evalLines(DynThreadContext context, String...lines) {
+    public Object evalLines(DynThreadContext context, String...lines) {
         StringBuffer concat = new StringBuffer();
         
         for (String line : lines ) {
@@ -60,23 +60,23 @@ public class DynJS {
             concat.append( ";" );
         }
         
-        execute( context, parseSourceCode( context, concat.toString(), null ) );
+        return execute( context, parseSourceCode( context, concat.toString(), null ) );
     }
 
-    public void eval(DynThreadContext context, String expression) {
-        execute(context, parseSourceCode(context, expression, null));
+    public Object eval(DynThreadContext context, String expression) {
+        return execute(context, parseSourceCode(context, expression, null));
     }
 
-    public void eval(DynThreadContext context, String expression, String filename) {
-        execute(context, parseSourceCode(context, expression, filename));
+    public Object eval(DynThreadContext context, String expression, String filename) {
+        return execute(context, parseSourceCode(context, expression, filename));
     }
 
-    public void eval(DynThreadContext context, InputStream is) {
-        execute(context, parseSourceCode(context, is, null));
+    public Object eval(DynThreadContext context, InputStream is) {
+        return execute(context, parseSourceCode(context, is, null));
     }
 
-    public void eval(DynThreadContext context, InputStream is, String filename) {
-        execute(context, parseSourceCode(context, is, filename));
+    public Object eval(DynThreadContext context, InputStream is, String filename) {
+        return execute(context, parseSourceCode(context, is, filename));
     }
 
     private List<Statement> parseSourceCode(DynThreadContext context, String code, String filename) {
@@ -126,12 +126,12 @@ public class DynJS {
         return walker.getResult();
     }
 
-    private void execute(DynThreadContext context, List<Statement> result) {
+    private Object execute(DynThreadContext context, List<Statement> result) {
         Script script = compiler.compile(result.toArray(new Statement[]{}));
         Scope globalScope = context.getScope();
         initBuiltins(globalScope);
         script.setGlobalScope(globalScope);
-        script.execute(globalScope, context);
+        return script.execute(globalScope, context);
     }
 
     private void initBuiltins(Scope globalScope) {

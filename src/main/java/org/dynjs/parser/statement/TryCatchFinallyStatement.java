@@ -3,6 +3,7 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.api.Function;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynJS;
@@ -14,12 +15,16 @@ import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class TryCatchFinallyStatement extends BaseCompilableBlockStatement implements Statement {
+public class TryCatchFinallyStatement extends BaseStatement implements Statement {
+    private final DynThreadContext context;
+    private final Statement tryBlock;
     private final Statement catchBlock;
     private final Statement finallyBlock;
 
     public TryCatchFinallyStatement(Tree tree, DynThreadContext context, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
-        super(tree, context, tryBlock);
+        super(tree );
+        this.context = context;
+        this.tryBlock = tryBlock;
         this.catchBlock = catchBlock;
         this.finallyBlock = finallyBlock;
     }
@@ -32,7 +37,7 @@ public class TryCatchFinallyStatement extends BaseCompilableBlockStatement imple
             aload(DynJSCompiler.Arities.SELF);
             invokedynamic("getScope", sig(Object.class, DynThreadContext.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
             aload(DynJSCompiler.Arities.CONTEXT);
-            append( compileBasicBlockIfNecessary( "Try" ));
+            append( CodeBlockUtils.compileBasicBlock( context, "Try", tryBlock ) );
             if (hasCatchBlock()) {
                 append(catchBlock.getCodeBlock());
             } else {

@@ -38,76 +38,75 @@ import static me.qmx.jitescript.util.CodegenUtils.p;
 
 public class RT {
 
-    public static final Handle BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
-            p(DynJSBootstrapper.class), "bootstrap", methodType(CallSite.class,
-            MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
-    public static final Handle BOOTSTRAP_2 = new Handle(Opcodes.H_INVOKESTATIC,
-            p(RT.class), "bootstrap", methodType(CallSite.class,
-            MethodHandles.Lookup.class, String.class, MethodType.class).toMethodDescriptorString());
+    public static final Handle BOOTSTRAP = new Handle( Opcodes.H_INVOKESTATIC,
+            p( DynJSBootstrapper.class ), "bootstrap", methodType( CallSite.class,
+                    MethodHandles.Lookup.class, String.class, MethodType.class ).toMethodDescriptorString() );
+    public static final Handle BOOTSTRAP_2 = new Handle( Opcodes.H_INVOKESTATIC,
+            p( RT.class ), "bootstrap", methodType( CallSite.class,
+                    MethodHandles.Lookup.class, String.class, MethodType.class ).toMethodDescriptorString() );
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
-    public static final MethodType FCALL_MT = MethodType.methodType(Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class);
+    public static final MethodType FCALL_MT = MethodType.methodType( Object.class, Function.class, Object.class, DynThreadContext.class, Object[].class );
     public static final MethodHandle CONSTRUCT;
 
     static {
         try {
-            CONSTRUCT = MethodHandles.lookup().findStatic(RT.class, "construct", methodType(Object.class, DynThreadContext.class, Object.class));
+            CONSTRUCT = MethodHandles.lookup().findStatic( RT.class, "construct", methodType( Object.class, DynThreadContext.class, Object.class ) );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException( e );
         }
     }
 
     public static CallSite bootstrap(MethodHandles.Lookup caller, String name, MethodType methodType) throws NoSuchMethodException, IllegalAccessException {
-        if ("call2".equals(name)) {
-            MutableCallSite site = new MutableCallSite(methodType);
+        if ("call2".equals( name )) {
+            MutableCallSite site = new MutableCallSite( methodType );
             MethodHandle target = Binder
-                    .from(Object.class, Object.class, DynThreadContext.class, Object[].class)
-                    .insert(0, caller)
-                    .insert(1, site)
-                    .invokeStatic(caller, RT.class, "callBootstrap");
-            site.setTarget(target);
+                    .from( Object.class, Object.class, DynThreadContext.class, Object[].class )
+                    .insert( 0, caller )
+                    .insert( 1, site )
+                    .invokeStatic( caller, RT.class, "callBootstrap" );
+            site.setTarget( target );
             return site;
-        } else if ("getScope".equals(name)) {
-            MutableCallSite site = new MutableCallSite(methodType);
+        } else if ("getScope".equals( name )) {
+            MutableCallSite site = new MutableCallSite( methodType );
             MethodHandle getScope = Binder
-                    .from(Object.class, DynThreadContext.class, Object.class, Object.class)
-                    .insert(0, site)
-                    .invokeStatic(caller, RT.class, "getScope");
-            site.setTarget(getScope);
+                    .from( Object.class, DynThreadContext.class, Object.class, Object.class )
+                    .insert( 0, site )
+                    .invokeStatic( caller, RT.class, "getScope" );
+            site.setTarget( getScope );
             return site;
-        } else if ("this".equals(name)) {
-            final MutableCallSite site = new MutableCallSite(methodType);
+        } else if ("this".equals( name )) {
+            final MutableCallSite site = new MutableCallSite( methodType );
             final MethodHandle getThis = Binder
-                    .from(Object.class, DynThreadContext.class, Object.class, Object.class)
-                    .insert(0, caller)
-                    .insert(1, site)
-                    .invokeStatic(caller, RT.class, "getThis");
-            site.setTarget(getThis);
+                    .from( Object.class, DynThreadContext.class, Object.class, Object.class )
+                    .insert( 0, caller )
+                    .insert( 1, site )
+                    .invokeStatic( caller, RT.class, "getThis" );
+            site.setTarget( getThis );
             return site;
-        } else if ("DefineOwnProperty".equals(name)) {
-            final MutableCallSite site = new MutableCallSite(methodType);
+        } else if ("DefineOwnProperty".equals( name )) {
+            final MutableCallSite site = new MutableCallSite( methodType );
             final MethodHandle defineOwnPropertyBootstrap = Binder
-                    .from(methodType)
-                    .insert(0, caller)
-                    .invokeStatic(caller, RT.class, "defineOwnPropertyBootstrap");
-            site.setTarget(defineOwnPropertyBootstrap);
+                    .from( methodType )
+                    .insert( 0, caller )
+                    .invokeStatic( caller, RT.class, "defineOwnPropertyBootstrap" );
+            site.setTarget( defineOwnPropertyBootstrap );
             return site;
-        } else if ("throw".equals(name)) {
-            final ConstantCallSite throwException = new ConstantCallSite(Binder
-                    .from(methodType)
-                    .invokeStatic(caller, RT.class, "throwException"));
+        } else if ("throw".equals( name )) {
+            final ConstantCallSite throwException = new ConstantCallSite( Binder
+                    .from( methodType )
+                    .invokeStatic( caller, RT.class, "throwException" ) );
             return throwException;
-        } else if ("trycatchfinally".equals(name)) {
-            final ConstantCallSite throwException = new ConstantCallSite(Binder
-                    .from(methodType)
-                    .insert(0, caller)
-                    .invokeStatic(caller, RT.class, "trycatchfinally"));
+        } else if ("trycatchfinally".equals( name )) {
+            final ConstantCallSite throwException = new ConstantCallSite( Binder
+                    .from( methodType )
+                    .insert( 0, caller )
+                    .invokeStatic( caller, RT.class, "trycatchfinally" ) );
             return throwException;
-        } else if ("setProp".equals(name)) {
-            return new ConstantCallSite(Binder
-                    .from(methodType)
-                    .insert(0, caller)
-                    .invokeStatic(caller, RT.class, "setProperty")
-            );
+        } else if ("setProp".equals( name )) {
+            return new ConstantCallSite( Binder
+                    .from( methodType )
+                    .insert( 0, caller )
+                    .invokeStatic( caller, RT.class, "setProperty" ) );
         }
         return null;
     }
@@ -115,12 +114,12 @@ public class RT {
     public static Object setProperty(MethodHandles.Lookup caller, Object scope, Object target, Object name, Object value) {
         if (target instanceof DynThreadContext.Undefined) {
             if (scope instanceof DelegatingScopeResolver) {
-                extractSelf((DelegatingScopeResolver) scope).define((String) name, value);
+                extractSelf( (DelegatingScopeResolver) scope ).define( (String) name, value );
             } else if (scope instanceof Scope) {
-                ((Scope) scope).define((String) name, value);
+                ((Scope) scope).define( (String) name, value );
             }
         } else if (scope instanceof DelegatingScopeResolver) {
-            extractSelf((DelegatingScopeResolver) scope).define((String) name, value);
+            extractSelf( (DelegatingScopeResolver) scope ).define( (String) name, value );
         }
         return value;
     }
@@ -129,15 +128,16 @@ public class RT {
         return (Scope) ((DelegatingScopeResolver) scope).self;
     }
 
-    public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable, IllegalAccessException {
-        Function f = (Function) ((DynJSCompiler.InternalDynObject) self).getProperty("call").getAttribute("value");
-        context.getFrameStack().push(new Frame(f, args));
-        final Object result = Binder.from(Object.class, Object.class, Object.class, DynThreadContext.class, Object[].class)
-                .convert(Object.class, f.getClass(), Object.class, DynThreadContext.class, Object[].class)
-                .invokeVirtual(caller, "call").invoke(f, self, context, args);
+    public static Object callBootstrap(MethodHandles.Lookup caller, MutableCallSite site, Object self, DynThreadContext context, Object... args) throws Throwable,
+            IllegalAccessException {
+        Function f = (Function) ((DynJSCompiler.InternalDynObject) self).getProperty( "call" ).getAttribute( "value" );
+        context.getFrameStack().push( new Frame( f, args ) );
+        final Object result = Binder.from( Object.class, Object.class, Object.class, DynThreadContext.class, Object[].class )
+                .convert( Object.class, f.getClass(), Object.class, DynThreadContext.class, Object[].class )
+                .invokeVirtual( caller, "call" ).invoke( f, self, context, args );
 
         // FIXME: REFACTOR ME PLEASE
-        popFrameFromCallStack(context);
+        popFrameFromCallStack( context );
         return result;
     }
 
@@ -149,7 +149,7 @@ public class RT {
     }
 
     public static Object getScope(MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
-        return new DelegatingScopeResolver(context, thiz, self);
+        return new DelegatingScopeResolver( context, thiz, self );
     }
 
     public static Object getThis(MethodHandles.Lookup caller, MutableCallSite site, final DynThreadContext context, final Object thiz, final Object self) {
@@ -159,51 +159,52 @@ public class RT {
 
     public static void defineOwnPropertyBootstrap(MethodHandles.Lookup caller, Object self, Object propertyName, Object value) throws Throwable, IllegalAccessException {
         final MethodHandle setProperty = Binder
-                .from(void.class, Object.class, Object.class, Object.class)
-                .convert(void.class, self.getClass(), String.class, Object.class)
-                .invokeVirtual(caller, "define");
-        setProperty.invokeWithArguments(self, propertyName, value);
+                .from( void.class, Object.class, Object.class, Object.class )
+                .convert( void.class, self.getClass(), String.class, Object.class )
+                .invokeVirtual( caller, "define" );
+        setProperty.invokeWithArguments( self, propertyName, value );
     }
 
     public static void throwException(Object o) {
-        throw new DynJSException(String.valueOf(o));
+        throw new DynJSException( String.valueOf( o ) );
     }
 
-    public static void trycatchfinally(MethodHandles.Lookup caller, Object self, DynThreadContext context, Object _try, Object _catch, Object _finally) throws Throwable, IllegalAccessException {
+    public static void trycatchfinally(MethodHandles.Lookup caller, Object self, DynThreadContext context, Object _try, Object _catch, Object _finally) throws Throwable,
+            IllegalAccessException {
         final MethodHandle pushException = Binder
-                .from(void.class, Object.class, Throwable.class)
-                .convert(void.class, Function.class, Throwable.class)
-                .insert(0, context)
-                .invokeStatic(caller, RT.class, "pushException");
+                .from( void.class, Object.class, Throwable.class )
+                .convert( void.class, Function.class, Throwable.class )
+                .insert( 0, context )
+                .invokeStatic( caller, RT.class, "pushException" );
 
-        final MethodHandle catchHandle = Binder.from(Object.class, Object.class, Throwable.class)
-                .fold(pushException)
-                .convert(void.class, Function.class, Object.class)
-                .collect(1, Object[].class)
-                .insert(1, _catch)
-                .insert(2, context)
-                .convert(FCALL_MT)
-                .invokeVirtual(caller, "call")
-                .bindTo(_catch);
+        final MethodHandle catchHandle = Binder.from( Object.class, Object.class, Throwable.class )
+                .fold( pushException )
+                .convert( void.class, Function.class, Object.class )
+                .collect( 1, Object[].class )
+                .insert( 1, _catch )
+                .insert( 2, context )
+                .convert( FCALL_MT )
+                .invokeVirtual( caller, "call" )
+                .bindTo( _catch );
 
-        final MethodHandle tryHandle = Binder.from(Object.class, Object.class)
-                .convert(void.class, Function.class)
-                .collect(1, Object[].class)
-                .insert(1, self)
-                .insert(2, context)
-                .convert(FCALL_MT)
-                .catchException(Throwable.class, catchHandle)
-                .invokeVirtual(caller, "call")
-                .bindTo(_try);
+        final MethodHandle tryHandle = Binder.from( Object.class, Object.class )
+                .convert( void.class, Function.class )
+                .collect( 1, Object[].class )
+                .insert( 1, self )
+                .insert( 2, context )
+                .convert( FCALL_MT )
+                .catchException( Throwable.class, catchHandle )
+                .invokeVirtual( caller, "call" )
+                .bindTo( _try );
 
-        final MethodHandle finallyHandle = Binder.from(Object.class, Object.class)
-                .convert(void.class, Function.class)
-                .collect(1, Object[].class)
-                .insert(1, self)
-                .insert(2, context)
-                .convert(FCALL_MT)
-                .invokeVirtual(caller, "call")
-                .bindTo(_finally);
+        final MethodHandle finallyHandle = Binder.from( Object.class, Object.class )
+                .convert( void.class, Function.class )
+                .collect( 1, Object[].class )
+                .insert( 1, self )
+                .insert( 2, context )
+                .convert( FCALL_MT )
+                .invokeVirtual( caller, "call" )
+                .bindTo( _finally );
 
         try {
             tryHandle.invoke();
@@ -212,18 +213,32 @@ public class RT {
         }
 
         // FIXME: REFACTOR ME PLEASE
-        popFrameFromCallStack(context);
+        popFrameFromCallStack( context );
+    }
+
+    public static Object ifThenElse(Object self, DynThreadContext context, Function test, Function thenBranch, Function elseBranch) {
+        
+        System.err.println( "ifThenElse:" );
+        Boolean testResult = (Boolean) test.call( self, context );
+
+        if (testResult.booleanValue()) {
+            return thenBranch.call( self, context );
+        } else if (elseBranch != null) {
+            return elseBranch.call( self, context );
+        }
+        
+        return null;
     }
 
     public static void pushException(DynThreadContext context, Function f, Throwable t) {
-        context.getFrameStack().push(new Frame(f, t));
+        context.getFrameStack().push( new Frame( f, t ) );
     }
 
     public static String typeof(Object obj) {
         if (obj == null) {
             return "object";
         } else if (obj instanceof DynObject) {
-            if (((DynObject) obj).hasOwnProperty("call")) {
+            if (((DynObject) obj).hasOwnProperty( "call" )) {
                 return "function";
             }
             return "object";
@@ -238,7 +253,7 @@ public class RT {
     }
 
     public static Object construct(DynThreadContext context, Object obj) {
-        return new DynJSCompiler.InternalDynObject(obj, null);
+        return new DynJSCompiler.InternalDynObject( obj, null );
     }
 
     public static Object findThis(Object thiz, Object self) {
@@ -252,7 +267,7 @@ public class RT {
             for (int i = 1; i < args.length; i++) {
                 Object arg = args[i];
                 if (arg != null) {
-                    isSameType = type.isAssignableFrom(arg.getClass());
+                    isSameType = type.isAssignableFrom( arg.getClass() );
                 }
             }
         }
@@ -273,24 +288,24 @@ public class RT {
         @Override
         public Object resolve(String name) {
             Object value = null;
-            value = ((Resolver) self).resolve(name);
+            value = ((Resolver) self).resolve( name );
             if (value == null) {
-                value = ((Resolver) thiz).resolve(name);
+                value = ((Resolver) thiz).resolve( name );
             }
             if (value == null && thiz instanceof Function) {
                 final Frame frame = context.getFrameStack().peek();
                 if (frame != null) {
-                    value = frame.resolve(name);
+                    value = frame.resolve( name );
                 }
             }
             if (value == null) {
-                value = ((Resolver) context.getScope()).resolve(name);
+                value = ((Resolver) context.getScope()).resolve( name );
             }
             if (value == null && thiz instanceof Function) {
-                value = context.getCapturedScopeStore().get(thiz.getClass()).resolve(name);
+                value = context.getCapturedScopeStore().get( thiz.getClass() ).resolve( name );
             }
             if (value == null) {
-                throw new ReferenceError(name);
+                throw new ReferenceError( name );
             }
             return value;
         }

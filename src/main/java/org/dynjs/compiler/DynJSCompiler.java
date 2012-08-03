@@ -38,6 +38,8 @@ import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.Script;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 public class DynJSCompiler {
@@ -55,11 +57,15 @@ public class DynJSCompiler {
     }
 
     public Object compile(DynThreadContext context, final CodeBlock codeBlock, final String[] arguments) {
-        System.err.println( "compiling: " + codeBlock );
         return internalCompile( "AnonymousDynFunction", context, codeBlock, arguments, true );
     }
 
     private Object internalCompile(String prefix, DynThreadContext context, final CodeBlock codeBlock, final String[] arguments, boolean wrap) {
+        System.err.println( "Compiler: compiling: " + codeBlock );
+        for ( int i = 0 ; i < codeBlock.getInstructionList().size() ; ++i ) {
+            AbstractInsnNode insn = codeBlock.getInstructionList().get( i );
+            System.err.println( "- " + insn );
+        }
         final String className = generateNameFromBase( prefix );
         JiteClass jiteClass = new JiteClass( className, p( DynFunction.class ), new String[] { p( Function.class ) } ) {
             {
@@ -73,7 +79,10 @@ public class DynJSCompiler {
                         } );
                 defineMethod( "call", ACC_PUBLIC, Signatures.FCALL_WITH_SELF, new CodeBlock() {
                     {
-                        append( alwaysReturnWrapper( codeBlock ) );
+                        append( codeBlock );
+                        //append( alwaysReturnWrapper( codeBlock ) );
+                        aconst_null();
+                        areturn();
                     }
                 } );
 
@@ -140,7 +149,7 @@ public class DynJSCompiler {
                             }
                         } );
 
-                defineMethod( "execute", ACC_PUBLIC | ACC_VARARGS, sig( void.class, Scope.class, DynThreadContext.class ), getCodeBlock() );
+                defineMethod( "execute", ACC_PUBLIC | ACC_VARARGS, sig( Object.class, Scope.class, DynThreadContext.class ), getCodeBlock() );
             }
 
             private CodeBlock getCodeBlock() {
@@ -149,7 +158,8 @@ public class DynJSCompiler {
                     CodeBlockUtils.injectLineNumber( block, statement );
                     block.append( statement.getCodeBlock() );
                 }
-                return block.voidreturn();
+                block.aconst_null();
+                return block.areturn();
             }
         };
 

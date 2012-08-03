@@ -22,31 +22,36 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-public class FunctionStatement extends BaseCompilableBlockStatement implements Statement {
+public class FunctionStatement extends BaseStatement implements Statement {
 
     private final String identifier;
     private final List<String> args;
+    private DynThreadContext context;
+    private Statement block;
 
     public FunctionStatement(final Tree tree, final DynThreadContext context, final List<String> args, final Statement block) {
         this( tree, context, null, args, block );
     }
 
     public FunctionStatement(final Tree tree, final DynThreadContext context, final String identifier, final List<String> args, final Statement block) {
-        super( tree, context, block );
+        super( tree );
+        this.context = context;
         this.identifier = identifier;
         this.args = args;
+        this.block = block;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( compileFunctionIfNecessary( args ) );
+                append( CodeBlockUtils.compileFunction( context, block, args ) );
                 if (identifier != null) {
                     dup();
                     // object object
