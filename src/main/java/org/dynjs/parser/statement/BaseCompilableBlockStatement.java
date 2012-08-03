@@ -42,6 +42,7 @@ public class BaseCompilableBlockStatement extends BaseStatement {
         return new CodeBlock() {
             {
                 LabelNode skipCompile = new LabelNode();
+                LabelNode end = new LabelNode();
 
                 int statementNumber = compilable.getStatementNumber();
                 Entry entry = context.retrieve( statementNumber );
@@ -60,43 +61,58 @@ public class BaseCompilableBlockStatement extends BaseStatement {
                 aload( DynJSCompiler.Arities.CONTEXT );
                 ldc( statementNumber );
                 invokevirtual( DynJSCompiler.Types.CONTEXT, "retrieve", sig( Entry.class, int.class ) );
-                astore( 4 ); // Entry
-                aload( 4 );
-
-                //getfield( p( Entry.class ), "compiled", ci( Object.class ) );
+                dup();
+                // entry entry
                 invokevirtual( p( Entry.class), "getCompiled", sig( Object.class ) );
-                astore( 5 ); // Compiled object
-                aload( 5 );
+                // entry object
+                dup();
+                // entry object object
 
                 ifnonnull( skipCompile );
-
-                if (name == null) { // not a basic-block
+                // entry object
+                pop();
+                // entry 
+                
+                aload( DynJSCompiler.Arities.CONTEXT );
+                invokevirtual( DynJSCompiler.Types.CONTEXT, "getRuntime", sig( DynJS.class ) );
+                
+                // entry runtime
+                swap();
+                
+                // runtime entry
+                
+                if ( name != null ) { // basic-block prefix
+                    ldc( name );
+                    swap();
+                    // runtime name entry
+                } else  { // not a basic block
                     bipush( args.size() );
                     anewarray( p( String.class ) );
-                    astore( 6 ); // Args array
+                    astore( 4 ); // Args array
 
                     for (int i = 0; i < args.size(); i++) {
-                        aload( 6 );
+                        aload( 4 );
                         bipush( i );
                         ldc( args.get( i ) );
                         aastore();
                     }
+                    // runtime entry (array in 4)
                 }
-
-                aload( DynJSCompiler.Arities.CONTEXT );
-                invokevirtual( DynJSCompiler.Types.CONTEXT, "getRuntime", sig( DynJS.class ) );
                 
-                if ( name != null ) { // basic-block prefix
-                    ldc( name );
-                }
-
                 aload( DynJSCompiler.Arities.CONTEXT );
-                aload( 4 ); // Entry
+                swap();
+                // runtime [ name ] context entry
+                
                 getfield( p( Entry.class ), "codeBlock", ci( CodeBlock.class ) );
+                // runtime [ name ] context codeblock
+                
                 if (name == null ) { // not a basic-block
-                    aload( 6 ); // args array
+                    aload( 4 ); // args array
+                    // runtime context codeblock args
+                    // REQUIRE: runtime context codebock array 
                     invokevirtual( DynJSCompiler.Types.RUNTIME, "compile", sig( Object.class, DynThreadContext.class, CodeBlock.class, String[].class ) );
                 } else { // basic-block, maybe with and arg, or not.
+                    // REQUIRE: runtime name context codebock [ arg ]
                     if ( args == null ) {
                         invokevirtual( DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig( Object.class, String.class, DynThreadContext.class, CodeBlock.class ) );
                     } else {
@@ -104,15 +120,31 @@ public class BaseCompilableBlockStatement extends BaseStatement {
                         invokevirtual( DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig( Object.class, String.class, DynThreadContext.class, CodeBlock.class, String.class ) );
                     }
                 }
+                // object
+                
                 dup();
-                astore( 5 ); // Compiled object
-                aload( 4 ); // Entry
+                
+                // object object
+                aload( DynJSCompiler.Arities.CONTEXT );
+                ldc( statementNumber );
+                
+                // object object context statementnum
+                invokevirtual( DynJSCompiler.Types.CONTEXT, "retrieve", sig( Entry.class, int.class ) );
+                // object object entry
                 swap();
-                //putfield( p( Entry.class ), "compiled", ci( Object.class ) );
+                // object entry object
                 invokevirtual( p(Entry.class), "setCompiled", sig( void.class, Object.class ) );
+                
+                
+                go_to( end);
 
                 label( skipCompile );
-                aload(5);
+                // entry object
+                swap();
+                // object entry
+                pop();
+                // object 
+                label( end );
             }
         };
     }

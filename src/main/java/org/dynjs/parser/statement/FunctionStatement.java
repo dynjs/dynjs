@@ -48,14 +48,18 @@ public class FunctionStatement extends BaseCompilableBlockStatement implements S
             {
                 append( compileFunctionIfNecessary( args ) );
                 if (identifier != null) {
-                    // TODO DRY
+                    dup();
+                    // object object
                     aload( DynJSCompiler.Arities.THIS );
+                    // object object this
+                    swap();
+                    // object this object
                     ldc( identifier );
-                    aload( 5 );
+                    // object this object id
+                    swap();
+                    // object this id object
                     invokedynamic( "dyn:setProp", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
-                    aload( 5 );
-                } else {
-                    nop();
+                    // object
                 }
 
             }
