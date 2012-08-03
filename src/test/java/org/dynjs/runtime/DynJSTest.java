@@ -135,7 +135,6 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var result = false;", false);
     }
 
-    @Test
     public void testMathOperations() {
         check("var x = 1 + 1;var result = x == 2");
         check("var x = 1 - 1;var result = x == 0");
@@ -377,11 +376,23 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var x = 10; var result = (x > 9) && (x < 11) && (x <= 10) && (x >= 10);");
     }
 
-    @Test
-    public void testEquality(){
+   @Test
+    public void testEquality() {
+    	check("var result = undefined == undefined;");
+        check("var result = null == null;");
+        check("var result = NaN == NaN;", false);
         check("var result = 1 == 1;");
+        check("var result = 0 == -0;");
+        check("var result = -0 == 0;");
+        check("var result = null == undefined;");
+        check("var result = undefined == null;");
+        check("var result = 1 == '1';");
+        check("var result = '1' == 1;");
+        check("var result = true == 1;");
+        check("var result = false == 0;");
+        check("var result = 1 == true;");
+        check("var result = 0 == false;");
         check("var result = 1 != 2;");
-        check("var x = 10; var result = (x == 10) && (x != 11);");
     }
 
     @Test

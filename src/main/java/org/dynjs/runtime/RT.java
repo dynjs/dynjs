@@ -245,7 +245,7 @@ public class RT {
         return thiz;
     }
 
-    public static boolean allArgsAreSameType(Object[] args) {
+    public static boolean allArgsAreSameType(Object... args) {
         boolean isSameType = true;
         if (args.length > 0 && args[0] != null) {
             Class type = args[0].getClass();
