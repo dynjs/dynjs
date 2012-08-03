@@ -74,6 +74,24 @@ public class ObjectOperations {
 	}
 
 	public static Boolean strict_eq(Object o1, Object o2) {
+		if (RT.allArgsAreSameType(o1, o2)) {
+			if (DynThreadContext.UNDEFINED == o1 || DynThreadContext.NULL == o1) {
+				return true;
+			}
+
+			if (o1 instanceof Double) {
+				Double n1 = (Double) o1;
+				Double n2 = (Double) o2;
+				if (n1.equals(Double.NaN) || n2.equals(Double.NaN == n2)) {
+					return false;
+				}
+
+				if ((n1 == +0.0 && n2 == -0.0) || (n1 == -0.0 && n2 == +0.0)) {
+					return true;
+				}
+			}
+		}
+
 		return o1.equals(o2);
 	}
 }

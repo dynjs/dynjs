@@ -114,6 +114,8 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
             }
         } else if ("eq".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
+        } else if ("strict_eq".equals(callSiteDescriptor.getName())) {
+        	targetHandle = lookup().findStatic(ObjectOperations.class, "strict_eq", methodType);
         } else if ("this".equals(callSiteDescriptor.getName())) {
             targetHandle = lookup().findStatic(RT.class, "findThis", methodType);
         } else if (isFromDynalink(callSiteDescriptor)) {
