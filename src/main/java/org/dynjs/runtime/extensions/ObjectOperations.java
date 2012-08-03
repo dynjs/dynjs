@@ -22,6 +22,12 @@ import org.dynjs.runtime.linker.anno.CompanionFor;
 @CompanionFor(Object.class)
 public class ObjectOperations {
 
+	/**
+	 * Implementing the equality algorithm by following
+	 * http://es5.github.com/#x11.9.
+	 *
+	 * FIXME: missing #8 and #9 since there is no ToPrimitive at the moment
+	 */
 	public static Boolean eq(Object o1, Object o2) {
 		if (RT.allArgsAreSameType(o1, o2)) {
 			if (DynThreadContext.UNDEFINED == o1 || DynThreadContext.NULL == o1) {
