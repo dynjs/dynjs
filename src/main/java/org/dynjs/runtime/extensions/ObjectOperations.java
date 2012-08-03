@@ -37,14 +37,31 @@ public class ObjectOperations {
 			if (o1 instanceof Double) {
 				Double n1 = (Double) o1;
 				Double n2 = (Double) o2;
-				if (n1.equals(Double.NaN) || n2.equals(Double.NaN == n2)) {
+
+				if (n1.equals(Double.NaN) || n2.equals(Double.NaN)) {
 					return false;
+				}
+
+				if (n1.equals(n2)) {
+					return true;
 				}
 
 				if ((n1 == +0.0 && n2 == -0.0) || (n1 == -0.0 && n2 == +0.0)) {
 					return true;
 				}
+
+				return false;
 			}
+
+			if (o1 instanceof String) {
+				return o1.equals(o2);
+			}
+
+			if (o2 instanceof Boolean) {
+				return o1.equals(o2);
+			}
+
+			return o1 == o2;
 		}
 
 		if ((DynThreadContext.NULL == o1 && DynThreadContext.UNDEFINED == o2)
@@ -54,44 +71,65 @@ public class ObjectOperations {
 
 		if (o1 instanceof Double && o2 instanceof String) {
 			o2 = ((String) o2).isEmpty() ? 0 : Double.parseDouble((String) o2);
+			return o1.equals(o2);
 		}
 
 		if (o1 instanceof String && o2 instanceof Double) {
 			o1 = ((String) o1).isEmpty() ? 0 : Double.parseDouble((String) o1);
+			return o1.equals(o2);
 		}
 
 		if (o1 instanceof Boolean) {
 			o1 = ((Boolean) o1) ? 1.0 : 0.0;
+			return o1.equals(o2);
 		}
 
 		if (o2 instanceof Boolean) {
 			o2 = ((Boolean) o2) ? 1.0 : 0.0;
+			return o1.equals(o2);
 		}
 
 		// missing #8 and #9 from http://es5.github.com/#x11.9
 
-		return o1.equals(o2);
+		return false;
 	}
 
 	public static Boolean strict_eq(Object o1, Object o2) {
-		if (RT.allArgsAreSameType(o1, o2)) {
-			if (DynThreadContext.UNDEFINED == o1 || DynThreadContext.NULL == o1) {
+		if (!RT.allArgsAreSameType(o1, o2)) {
+			return false;
+		}
+
+		if (DynThreadContext.UNDEFINED == o1 || DynThreadContext.NULL == o1) {
+			return true;
+		}
+
+		if (o1 instanceof Double) {
+			Double n1 = (Double) o1;
+			Double n2 = (Double) o2;
+
+			if (n1.equals(Double.NaN) || n2.equals(Double.NaN)) {
+				return false;
+			}
+
+			if (n1.equals(n2)) {
 				return true;
 			}
 
-			if (o1 instanceof Double) {
-				Double n1 = (Double) o1;
-				Double n2 = (Double) o2;
-				if (n1.equals(Double.NaN) || n2.equals(Double.NaN == n2)) {
-					return false;
-				}
-
-				if ((n1 == +0.0 && n2 == -0.0) || (n1 == -0.0 && n2 == +0.0)) {
-					return true;
-				}
+			if ((n1 == +0.0 && n2 == -0.0) || (n1 == -0.0 && n2 == +0.0)) {
+				return true;
 			}
+			
+			return false;
+		}
+		
+		if (o1 instanceof String) {
+			o1.equals(o2);
+		}
+		
+		if (o1 instanceof Boolean) {
+			o1.equals(o2);
 		}
 
-		return o1.equals(o2);
+		return o1 == o2;
 	}
 }
