@@ -136,12 +136,6 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testEquality() {
-        check("var result = 1 == 1;");
-        check("var result = 1 != 2;");
-    }
-
-    @Test
     public void testMathOperations() {
         check("var x = 1 + 1;var result = x == 2");
         check("var x = 1 - 1;var result = x == 0");
@@ -179,20 +173,6 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var x = 1;x *= 3; var result = x == 3;");
         check("var x = 1;x /= 1; var result = x == 1;");
         check("var x = 2;x %= 1; var result = x == 0;");
-    }
-
-    @Test
-    public void testLoop() {
-        check("var x = 10;var y = 0; while(x < 10){x+=1;y+=1}; var result = y == 0;");
-        check("var x = 10;var y = 0; do { x+=1;y+=1; } while(x < 10); var result = y == 1;");
-    }
-
-    @Test
-    public void testFor() {
-        check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
-        check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
-        check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
-        check("var i = 0; var x = 33; for(; i < 10; i++) { x -= 1} var result = x == 23");
     }
 
     @Test
@@ -276,11 +256,6 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testFunctionCall() {
-        check("var result = (function (){return true;})();");
-    }
-
-    @Test
     public void testEval() {
         check("eval('var result = true');");
     }
@@ -360,4 +335,84 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     	check("var result = -1", -1.0);
     	check("var x = 1; var result = -x == -1");
     }
+
+    @Test
+    public void testIfStatement() {
+        check("var x = function(a) { if (a) { return 1; } else { return 2; } }; var result = x(true) == 1;");
+    }
+
+    @Test
+    public void testFunctionCall() {
+        check("var result = (function () { return true; } )();");
+        check("function testCall(a) { return a; }; var result = testCall(1) == 1;");
+    }
+
+    @Test
+    public void testFactorial() {
+        check("function factorial(n) { if (n == 1) { return 1; } else { return (n * factorial(n - 1)); } }; var result = factorial(5) == 120;");
+    }
+
+    @Test
+    public void testFibRecursive() {
+        check("function fib(n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }; var result = fib(6) == 8;");
+    }
+
+    @Test
+    public void testIncrement() {
+        check("var x = 1; var y = 1; var result = ++x == 2 && y++ == 1;");
+    }
+
+    @Test
+    public void testDecrement() {
+        check("var x = 2; var y = 2; var result = --x == 1 && y-- == 2;");
+    }
+
+    @Test
+    public void testMath(){
+        check("var x = 10; var result = (x + 5 == 15) && (x - 1 == 9) && (x * 3 == 30) && (x / 2 == 5) && (x % 3 == 1);");
+    }
+
+    @Test
+    public void testRelational(){
+        check("var x = 10; var result = (x > 9) && (x < 11) && (x <= 10) && (x >= 10);");
+    }
+
+    @Test
+    public void testEquality(){
+        check("var result = 1 == 1;");
+        check("var result = 1 != 2;");
+        check("var x = 10; var result = (x == 10) && (x != 11);");
+    }
+
+    @Test
+    public void testLoop(){
+        check("var x = 10;var y = 0; while(x < 10){x+=1;y+=1}; var result = y == 0;");
+        check("var x = 10;var y = 0; do { x+=1;y+=1; } while(x < 10); var result = y == 1;");
+        check("var x = 10; var y = 0; while(x < 10){ x += 1; y += 1 }; var result = y == 0;");
+    }
+
+    @Test
+    public void testFor(){
+        check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
+        check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
+        check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
+        check("var i = 0; var x = 33; for(; i < 10; i++) { x -= 1} var result = x == 23");
+        check("var x = 0; for (var i =0; i < 10; i += 1) { x += 1; } var result = x == 10;");
+    }
+
+    @Test
+    public void testDivision(){
+        check("var x = 10; var result = x / 2 == 5;");
+    }
+
+    @Test
+    public void testNoTop(){
+        check("var x = 10; var result = !(x == 20);");
+    }
+
+    @Test
+    public void testStringEquality(){
+        check("var result = \"house\" == \"house\" && 'house' == 'house' && \"\" == 0;");
+    }
 }
+
