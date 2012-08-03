@@ -39,6 +39,7 @@ import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.InstanceOfRelOpStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
+import org.dynjs.parser.statement.StrictEqualOperationStatement;
 import org.dynjs.parser.statement.UnaryMinusStatement;
 import org.dynjs.parser.statement.NamedValueStatement;
 import org.dynjs.parser.statement.NewStatement;
@@ -258,7 +259,7 @@ public class Executor {
     }
 
     public Statement defineSameOp(final Tree tree, Statement l, Statement r) {
-        return new EqualsOperationStatement(tree, l, r);
+    	return new StrictEqualOperationStatement(tree, l, r);
     }
 
     public Statement defineNSameOp(final Tree tree, Statement l, Statement r) {
