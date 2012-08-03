@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class CodeBlockUtils {
 
-    public static CodeBlock offset(CodeBlock block, int offset) {
+    public static CodeBlock relocateLocalVars(CodeBlock block, int offset) {
 
         InsnList list = block.getInstructionList();
         int len = list.size();

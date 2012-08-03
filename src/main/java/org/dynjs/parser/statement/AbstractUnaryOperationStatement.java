@@ -17,6 +17,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
@@ -38,7 +39,8 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
     public CodeBlock getCodeBlock() {
         final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
         return new CodeBlock() {{
-            append(expression.getCodeBlock());
+            // relocate +1, since this statement uses astore(4)
+            append(CodeBlockUtils.relocateLocalVars( expression.getCodeBlock(), 1 ) );
             append(before());
             append(processOperation());
             append(after());

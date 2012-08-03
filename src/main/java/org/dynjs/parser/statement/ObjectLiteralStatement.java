@@ -17,6 +17,7 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynObject;
 
@@ -44,7 +45,8 @@ public class ObjectLiteralStatement extends BaseStatement implements Statement {
             astore(7);
             for (Statement namedValue : namedValues) {
                 aload(7);
-                append(namedValue.getCodeBlock());
+                // relocate 4 (?!) since this uses 4 (?!) (astore(4, 5, 6, 7)
+                append(CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 4 ) );
             }
             aload(7);
         }};

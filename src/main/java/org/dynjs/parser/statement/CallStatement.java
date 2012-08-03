@@ -51,11 +51,11 @@ public class CallStatement extends BaseStatement implements Statement {
             for (int i = 0; i < args.size(); i++) {
                 aload(4);
                 bipush(i);
-                append(args.get(i).getCodeBlock());
+                append(CodeBlockUtils.relocateLocalVars( args.get(i).getCodeBlock(), 1 ) );
                 aastore();
             }
 
-            append(CodeBlockUtils.offset( lhs.getCodeBlock(), 1) );
+            append(CodeBlockUtils.relocateLocalVars( lhs.getCodeBlock(), 1) );
             aload(DynJSCompiler.Arities.CONTEXT);
             aload(4);
             invokedynamic("call2", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
