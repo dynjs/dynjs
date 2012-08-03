@@ -42,13 +42,12 @@ public class ObjectLiteralStatement extends BaseStatement implements Statement {
             dup();
             invokespecial(p(DynObject.class), "<init>", sig(void.class));
             dup();
-            astore(7);
+            astore(4);
             for (Statement namedValue : namedValues) {
-                aload(7);
-                // relocate 4 (?!) since this uses 4 (?!) (astore(4, 5, 6, 7)
-                append(CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 4 ) );
+                aload(4);
+                append(CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 1 ) );
             }
-            aload(7);
+            aload(4);
         }};
     }
 }
