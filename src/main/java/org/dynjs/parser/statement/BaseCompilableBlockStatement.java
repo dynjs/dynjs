@@ -25,19 +25,19 @@ public class BaseCompilableBlockStatement extends BaseStatement {
         this.context = context;
         this.compilable = compilable != null ? compilable : new EmptyStatement();
     }
-    
+
     public CodeBlock compileBasicBlockIfNecessary(String name, String arg) {
-        return compileIfNecessary(Collections.singletonList( arg ), name);
+        return compileIfNecessary( Collections.singletonList( arg ), name );
     }
-    
+
     public CodeBlock compileBasicBlockIfNecessary(String name) {
-        return compileIfNecessary(null, name);
+        return compileIfNecessary( null, name );
     }
-    
+
     public CodeBlock compileFunctionIfNecessary(final List<String> args) {
-        return compileIfNecessary(args, null);
+        return compileIfNecessary( args, null );
     }
-    
+
     protected CodeBlock compileIfNecessary(final List<String> args, final String name) {
         return new CodeBlock() {
             {
@@ -57,13 +57,13 @@ public class BaseCompilableBlockStatement extends BaseStatement {
 
                 // ----------------------------------------
                 // ----------------------------------------
-                
+
                 aload( DynJSCompiler.Arities.CONTEXT );
                 ldc( statementNumber );
                 invokevirtual( DynJSCompiler.Types.CONTEXT, "retrieve", sig( Entry.class, int.class ) );
                 dup();
                 // entry entry
-                invokevirtual( p( Entry.class), "getCompiled", sig( Object.class ) );
+                invokevirtual( p( Entry.class ), "getCompiled", sig( Object.class ) );
                 // entry object
                 dup();
                 // entry object object
@@ -71,79 +71,75 @@ public class BaseCompilableBlockStatement extends BaseStatement {
                 ifnonnull( skipCompile );
                 // entry object
                 pop();
-                // entry 
-                
+                // entry
+
                 aload( DynJSCompiler.Arities.CONTEXT );
                 invokevirtual( DynJSCompiler.Types.CONTEXT, "getRuntime", sig( DynJS.class ) );
-                
+
                 // entry runtime
                 swap();
-                
+
                 // runtime entry
-                
-                if ( name != null ) { // basic-block prefix
+
+                if (name != null) { // basic-block prefix
                     ldc( name );
                     swap();
                     // runtime name entry
-                } else  { // not a basic block
-                    bipush( args.size() );
-                    anewarray( p( String.class ) );
-                    astore( 4 ); // Args array
+                }
 
-                    for (int i = 0; i < args.size(); i++) {
-                        aload( 4 );
+                aload( DynJSCompiler.Arities.CONTEXT );
+                swap();
+                // runtime [ name ] context entry
+
+                getfield( p( Entry.class ), "codeBlock", ci( CodeBlock.class ) );
+                // runtime [ name ] context codeblock
+
+                if (name == null) { // not a basic-block
+                    int len = args.size();
+                    bipush( len );
+                    anewarray( p( String.class ) );
+                    for (int i = 0; i < len; ++i) {
+                        dup();
                         bipush( i );
                         ldc( args.get( i ) );
                         aastore();
                     }
-                    // runtime entry (array in 4)
-                }
-                
-                aload( DynJSCompiler.Arities.CONTEXT );
-                swap();
-                // runtime [ name ] context entry
-                
-                getfield( p( Entry.class ), "codeBlock", ci( CodeBlock.class ) );
-                // runtime [ name ] context codeblock
-                
-                if (name == null ) { // not a basic-block
-                    aload( 4 ); // args array
                     // runtime context codeblock args
-                    // REQUIRE: runtime context codebock array 
+                    // REQUIRE: runtime context codebock array
                     invokevirtual( DynJSCompiler.Types.RUNTIME, "compile", sig( Object.class, DynThreadContext.class, CodeBlock.class, String[].class ) );
                 } else { // basic-block, maybe with and arg, or not.
                     // REQUIRE: runtime name context codebock [ arg ]
-                    if ( args == null ) {
+                    if (args == null) {
                         invokevirtual( DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig( Object.class, String.class, DynThreadContext.class, CodeBlock.class ) );
                     } else {
                         ldc( args.get( 0 ) );
-                        invokevirtual( DynJSCompiler.Types.RUNTIME, "compileBasicBlock", sig( Object.class, String.class, DynThreadContext.class, CodeBlock.class, String.class ) );
+                        invokevirtual( DynJSCompiler.Types.RUNTIME, "compileBasicBlock",
+                                sig( Object.class, String.class, DynThreadContext.class, CodeBlock.class, String.class ) );
                     }
                 }
                 // object
-                
+
                 dup();
-                
+
                 // object object
                 aload( DynJSCompiler.Arities.CONTEXT );
                 ldc( statementNumber );
-                
+
                 // object object context statementnum
                 invokevirtual( DynJSCompiler.Types.CONTEXT, "retrieve", sig( Entry.class, int.class ) );
                 // object object entry
                 swap();
                 // object entry object
-                invokevirtual( p(Entry.class), "setCompiled", sig( void.class, Object.class ) );
-                
-                
-                go_to( end);
+                invokevirtual( p( Entry.class ), "setCompiled", sig( void.class, Object.class ) );
+
+                go_to( end );
 
                 label( skipCompile );
                 // entry object
                 swap();
                 // object entry
                 pop();
-                // object 
+                // object
                 label( end );
             }
         };
