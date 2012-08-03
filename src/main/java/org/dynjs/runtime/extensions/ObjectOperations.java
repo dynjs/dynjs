@@ -36,7 +36,7 @@ public class ObjectOperations {
                 Double n1 = (Double) o1;
                 Double n2 = (Double) o2;
 
-                if (n1.equals(Double.NaN) || n2.equals(Double.NaN == n2)) {
+                if (n1.equals(Double.NaN) || n2.equals(Double.NaN)) {
                     return false;
                 }
 
@@ -68,22 +68,22 @@ public class ObjectOperations {
         }
 
         if (o1 instanceof Double && o2 instanceof String) {
-            o2 = ((String) o2).isEmpty() ? 0 : Double.parseDouble((String) o2);
+            o2 = toNumber((String) o2);
             return o1.equals(o2);
         }
 
         if (o1 instanceof String && o2 instanceof Double) {
-            o1 = ((String) o1).isEmpty() ? 0 : Double.parseDouble((String) o1);
+            o1 = toNumber((String) o1);
             return o1.equals(o2);
         }
 
         if (o1 instanceof Boolean) {
-            o1 = ((Boolean) o1) ? 1.0 : 0.0;
+            o1 = toNumber((Boolean) o1);
             return o1.equals(o2);
         }
 
         if (o2 instanceof Boolean) {
-            o2 = ((Boolean) o2) ? 1.0 : 0.0;
+            o2 = toNumber((Boolean) o2);
             return o1.equals(o2);
         }
 
@@ -105,7 +105,7 @@ public class ObjectOperations {
             Double n1 = (Double) o1;
             Double n2 = (Double) o2;
 
-            if (n1.equals(Double.NaN) || n2.equals(Double.NaN == n2)) {
+            if (n1.equals(Double.NaN) || n2.equals(Double.NaN)) {
                 return false;
             }
 
@@ -129,5 +129,13 @@ public class ObjectOperations {
         }
 
         return o1 == o2;
+    }
+
+    private static double toNumber(String s) {
+        return s.isEmpty() ? 0.0 : Double.parseDouble(s);
+    }
+
+    private static double toNumber(Boolean b) {
+        return b ? 1.0 : 0.0;
     }
 }
