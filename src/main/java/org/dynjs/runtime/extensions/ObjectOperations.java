@@ -26,7 +26,7 @@ public class ObjectOperations {
 	 * Implementing the equality algorithm by following
 	 * http://es5.github.com/#x11.9.
 	 *
-	 * FIXME: missing #8 and #9 since there is no ToPrimitive at the moment
+	 *
 	 */
 	public static Boolean eq(Object o1, Object o2) {
 		if (RT.allArgsAreSameType(o1, o2)) {
@@ -89,7 +89,7 @@ public class ObjectOperations {
 			return o1.equals(o2);
 		}
 
-		// missing #8 and #9 from http://es5.github.com/#x11.9
+		// FIXME: missing #8 and #9 from http://es5.github.com/#x11.9 since there is no ToPrimitive at the moment
 
 		return false;
 	}
