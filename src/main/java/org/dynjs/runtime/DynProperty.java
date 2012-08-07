@@ -22,6 +22,10 @@ public class DynProperty {
 
     private final Map<String, Object> attributes = new HashMap<>();
     public boolean configurable = false;
+    
+    public DynProperty() {
+        setValue( DynThreadContext.UNDEFINED );
+    }
 
     public DynProperty setAttribute(String key, Object value) {
         this.attributes.put(key, value);
@@ -34,5 +38,25 @@ public class DynProperty {
         } else {
             return DynThreadContext.UNDEFINED;
         }
+    }
+    
+    /** Retrieve the value of the property.
+     * 
+     * @return
+     */
+    public Object getValue() {
+        Object value = this.attributes.get(  "value"  );
+        if ( value == null ) {
+            return DynThreadContext.UNDEFINED;
+        }
+        return value;
+    }
+    
+    /** Set the value of the property.
+     * 
+     * @param value
+     */
+    public void setValue(Object value) {
+        this.attributes.put(  "value", value );
     }
 }

@@ -43,7 +43,7 @@ import org.dynjs.runtime.modules.ModuleProvider;
 
 public class DynThreadContext {
 
-    public static final Object UNDEFINED = new Undefined();
+    public static final Undefined UNDEFINED = new Undefined();
     public static final Object NULL = new Null();
     public static final Function NOOP = new Noop();
 
