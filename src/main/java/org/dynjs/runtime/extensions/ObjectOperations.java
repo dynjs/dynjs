@@ -15,9 +15,12 @@
  */
 package org.dynjs.runtime.extensions;
 
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
+import static org.dynjs.runtime.conversion.ToPrimitive.toPrimitive;
 import org.dynjs.runtime.linker.anno.CompanionFor;
+import static org.dynjs.runtime.conversion.ToNumber.toNumber;
 
 @CompanionFor(Object.class)
 public class ObjectOperations {
@@ -87,12 +90,22 @@ public class ObjectOperations {
             return o1.equals(o2);
         }
 
-        // FIXME: missing #8 and #9 from http://es5.github.com/#x11.9 since there is no ToPrimitive at the moment
+		if ((o1 instanceof String || o1 instanceof Double)
+				&& o2 instanceof DynObject) {
+			o2 = toPrimitive((DynObject) o2);
+			return o1.equals(o2);
+		}
+
+		if (o1 instanceof DynObject
+				&& (o2 instanceof String || o2 instanceof Double)) {
+			o1 = toPrimitive((DynObject) o1);
+			return o1.equals(o2);
+		}
 
         return false;
     }
 
-    public static Boolean strict_eq(Object o1, Object o2) {
+	public static Boolean strict_eq(Object o1, Object o2) {
         if (!RT.allArgsAreSameType(o1, o2)) {
             return false;
         }
@@ -129,13 +142,5 @@ public class ObjectOperations {
         }
 
         return o1 == o2;
-    }
-
-    private static double toNumber(String s) {
-        return s.isEmpty() ? 0.0 : Double.parseDouble(s);
-    }
-
-    private static double toNumber(Boolean b) {
-        return b ? 1.0 : 0.0;
     }
 }
