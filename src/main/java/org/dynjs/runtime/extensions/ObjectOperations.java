@@ -18,9 +18,9 @@ package org.dynjs.runtime.extensions;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
-import org.dynjs.runtime.conversion.ToNumber;
-import org.dynjs.runtime.conversion.ToPrimitive;
+import static org.dynjs.runtime.conversion.ToPrimitive.toPrimitive;
 import org.dynjs.runtime.linker.anno.CompanionFor;
+import static org.dynjs.runtime.conversion.ToNumber.toNumber;
 
 @CompanionFor(Object.class)
 public class ObjectOperations {
@@ -71,34 +71,34 @@ public class ObjectOperations {
         }
 
         if (o1 instanceof Double && o2 instanceof String) {
-            o2 = ToNumber.convert((String) o2);
+            o2 = toNumber((String) o2);
             return o1.equals(o2);
         }
 
         if (o1 instanceof String && o2 instanceof Double) {
-            o1 = ToNumber.convert((String) o1);
+            o1 = toNumber((String) o1);
             return o1.equals(o2);
         }
 
         if (o1 instanceof Boolean) {
-            o1 = ToNumber.convert((Boolean) o1);
+            o1 = toNumber((Boolean) o1);
             return o1.equals(o2);
         }
 
         if (o2 instanceof Boolean) {
-            o2 = ToNumber.convert((Boolean) o2);
+            o2 = toNumber((Boolean) o2);
             return o1.equals(o2);
         }
 
 		if ((o1 instanceof String || o1 instanceof Double)
 				&& o2 instanceof DynObject) {
-			o2 = ToPrimitive.convert((DynObject) o2);
+			o2 = toPrimitive((DynObject) o2);
 			return o1.equals(o2);
 		}
 
 		if (o1 instanceof DynObject
 				&& (o2 instanceof String || o2 instanceof Double)) {
-			o1 = ToPrimitive.convert((DynObject) o1);
+			o1 = toPrimitive((DynObject) o1);
 			return o1.equals(o2);
 		}
 
