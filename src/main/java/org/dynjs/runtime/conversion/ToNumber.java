@@ -51,7 +51,15 @@ public class ToNumber {
 	}
 
 	public static Double toNumber(String s) {
-		return s.isEmpty() ? 0.0 : Double.parseDouble(s);
+		if (s.isEmpty()) {
+			return 0.0;
+		} else {
+			try {
+				return Double.parseDouble(s);
+			} catch (NumberFormatException e) {
+				return Double.NaN;
+			}
+		}
 	}
 
 	public static Double toNumber(DynObject o) {
