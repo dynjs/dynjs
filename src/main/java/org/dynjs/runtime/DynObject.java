@@ -18,7 +18,6 @@ package org.dynjs.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dynjs.exception.ReferenceError;
 import org.dynjs.exception.TypeError;
 
 public class DynObject implements JSObject {
@@ -40,6 +39,10 @@ public class DynObject implements JSObject {
     public JSObject getPrototype() {
         return this.prototype;
     }
+    
+    protected void setPrototype(JSObject prototype) {
+        this.prototype = prototype;
+    }
 
     @Override
     public String getClassName() {
@@ -54,13 +57,17 @@ public class DynObject implements JSObject {
     public boolean isExtensible() {
         return extensible;
     }
+    
+    protected void setExtensible(boolean extensible) {
+        this.extensible = extensible;
+    }
 
     @Override
-    public Object get(String name) {
+    public Object get(ExecutionContext context, String name) {
         // 8.12.3
-        Object d = getProperty( name );
-        if (d == DynThreadContext.UNDEFINED) {
-            return DynThreadContext.UNDEFINED;
+        Object d = getProperty( context, name );
+        if (d == Types.UNDEFINED) {
+            return Types.UNDEFINED;
         }
 
         PropertyDescriptor desc = (PropertyDescriptor) d;
@@ -69,22 +76,22 @@ public class DynObject implements JSObject {
         }
 
         Object g = desc.getGetter();
-        if (g == DynThreadContext.UNDEFINED) {
-            return DynThreadContext.UNDEFINED;
+        if (g == Types.UNDEFINED) {
+            return Types.UNDEFINED;
         }
 
-        Getter getter = (Getter) g;
-        return getter.call( this );
+        JSFunction getter = (JSFunction) g;
+        return getter.call( context, this );
     }
 
     @Override
-    public Object getOwnProperty(String name) {
+    public Object getOwnProperty(ExecutionContext context, String name) {
         // 8.12.1
         // Returns PropertyDescriptor or UNDEFINED
         PropertyDescriptor x = this.properties.get( name );
 
         if (x == null) {
-            return DynThreadContext.UNDEFINED;
+            return Types.UNDEFINED;
         }
 
         if (x.isDataDescriptor()) {
@@ -95,40 +102,40 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public Object getProperty(String name) {
+    public Object getProperty(ExecutionContext context, String name) {
         // 8.12.2
         // Returns PropertyDescriptor or UNDEFINED
-        Object d = getOwnProperty( name );
-        if (d != DynThreadContext.UNDEFINED) {
+        Object d = getOwnProperty( context, name );
+        if (d != Types.UNDEFINED) {
             return d;
         }
 
         if (this.prototype == null) {
-            return DynThreadContext.UNDEFINED;
+            return Types.UNDEFINED;
         }
 
-        return this.prototype.getProperty( name );
+        return this.prototype.getProperty( context, name );
     }
 
     @Override
-    public boolean hasProperty(String name) {
+    public boolean hasProperty(ExecutionContext context, String name) {
         // 8.12.6
-        return (getProperty( name ) != DynThreadContext.UNDEFINED);
+        return (getProperty( context, name ) != Types.UNDEFINED);
     }
 
     @Override
-    public void put(final String name, final Object value, final boolean shouldThrow) {
+    public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
         // 8.12.5
-        if (!canPut( name )) {
+        if (!canPut( context, name )) {
             if (shouldThrow) {
                 throw new TypeError();
             }
             return;
         }
 
-        Object d = getOwnProperty( name );
+        Object d = getOwnProperty( context, name );
 
-        if (d == DynThreadContext.UNDEFINED || ((PropertyDescriptor) d).isDataDescriptor()) {
+        if (d == Types.UNDEFINED || ((PropertyDescriptor) d).isDataDescriptor()) {
             PropertyDescriptor newDesc = new PropertyDescriptor() {
                 {
                     set( "Value", value );
@@ -137,12 +144,12 @@ public class DynObject implements JSObject {
                     set( "Configurable", true );
                 }
             };
-            defineOwnProperty( name, newDesc, shouldThrow );
+            defineOwnProperty( context, name, newDesc, shouldThrow );
         } else {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             if (desc.isAccessorDescriptor()) {
-                Setter set = (Setter) desc.get( "Set" );
-                set.call( this, value );
+                JSFunction set = (JSFunction) desc.get( "Set" );
+                set.call( context, this, value );
             } else {
 
             }
@@ -150,22 +157,22 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public boolean canPut(String name) {
+    public boolean canPut(ExecutionContext context, String name) {
         // 8.12.4
-        Object d = getOwnProperty( name );
+        Object d = getOwnProperty( context, name );
 
         // Find the property on ourself, or our prototype
-        if (d == DynThreadContext.UNDEFINED) {
+        if (d == Types.UNDEFINED) {
             if (this.prototype != null) {
-                d = this.prototype.getProperty( name );
+                d = this.prototype.getProperty( context, name );
             }
         }
 
         // If either has it, deal with descriptor appropriately
-        if (d != DynThreadContext.UNDEFINED) {
+        if (d != Types.UNDEFINED) {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             if (desc.isAccessorDescriptor()) {
-                if (desc.get( "Set" ) == DynThreadContext.UNDEFINED) {
+                if (desc.get( "Set" ) == Types.UNDEFINED) {
                     return false;
                 }
                 return true;
@@ -179,10 +186,10 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public boolean delete(String name, boolean shouldThrow) {
+    public boolean delete(ExecutionContext context, String name, boolean shouldThrow) {
         // 8.12.7
-        Object d = getOwnProperty( name );
-        if (d == DynThreadContext.UNDEFINED) {
+        Object d = getOwnProperty( context, name );
+        if (d == Types.UNDEFINED) {
             return true;
         }
 
@@ -207,11 +214,11 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public boolean defineOwnProperty(String name, PropertyDescriptor desc, boolean shouldThrow) {
+    public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 8.12.9
-        Object c = getOwnProperty( name );
+        Object c = getOwnProperty( context, name );
 
-        if (c == DynThreadContext.UNDEFINED) {
+        if (c == Types.UNDEFINED) {
             if (!isExtensible()) {
                 return reject( shouldThrow );
             } else {
@@ -292,7 +299,7 @@ public class DynObject implements JSObject {
         return false;
     }
 
-    private boolean reject(boolean shouldThrow) {
+    protected boolean reject(boolean shouldThrow) {
         if (shouldThrow) {
             throw new TypeError();
         }

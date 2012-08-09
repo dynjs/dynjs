@@ -1,5 +1,7 @@
 package org.dynjs.runtime;
 
+import org.dynjs.Config;
+
 public class LexicalEnvironment {
     
     public static LexicalEnvironment newDeclarativeEnvironment(LexicalEnvironment outer) {
@@ -10,8 +12,8 @@ public class LexicalEnvironment {
         return new LexicalEnvironment( new ObjectEnvironmentRecord( object, provideThis ), outer );
     }
     
-    public static LexicalEnvironment newGlobalEnvironment() {
-        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject(), false ), null );
+    public static LexicalEnvironment newGlobalEnvironment(Config config) {
+        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject(config), false ), null );
     }
     
     private LexicalEnvironment outer;
@@ -30,26 +32,26 @@ public class LexicalEnvironment {
         return this.outer;
     }
     
-    public JSObject getGlobalObject() {
+    public GlobalObject getGlobalObject() {
         if ( this.outer == null ) {
-            return ((ObjectEnvironmentRecord)this.record).getBindingObject();
+            return (GlobalObject) ((ObjectEnvironmentRecord)this.record).getBindingObject();
         } else {
             return this.outer.getGlobalObject();
         }
     }
     
-    public Reference getIdentifierReference(String name, boolean strict) {
+    public Reference getIdentifierReference(ExecutionContext context, String name, boolean strict) {
         // 10.2.2.1
-        boolean exists = record.hasBinding( name );
+        boolean exists = record.hasBinding( context, name );
         if ( exists ) {
             return new Reference( getGlobalObject(), name, this.record, strict );
         }
         
         if ( outer == null ) {
-            return new Reference( getGlobalObject(), name, DynThreadContext.UNDEFINED, strict );
+            return new Reference( getGlobalObject(), name, Types.UNDEFINED, strict );
         }
         
-        return outer.getIdentifierReference( name, strict );
+        return outer.getIdentifierReference( context, name, strict );
     }
 
 }

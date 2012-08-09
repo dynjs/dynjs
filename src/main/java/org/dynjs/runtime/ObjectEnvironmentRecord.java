@@ -17,47 +17,47 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     }
 
     @Override
-    public boolean hasBinding(String name) {
+    public boolean hasBinding(ExecutionContext context, String name) {
         // 10.2.1.2.1
-        return this.object.hasProperty( name );
+        return this.object.hasProperty( context, name );
     }
 
     @Override
-    public void createMutableBinding(final String name, final boolean configValue) {
+    public void createMutableBinding(ExecutionContext context, final String name, final boolean configValue) {
         // 10.2.1.2.2
         PropertyDescriptor desc = new PropertyDescriptor() {{
-            set( "Value", DynThreadContext.UNDEFINED );
+            set( "Value", Types.UNDEFINED );
             set( "Writable", true );
             set( "Enumerable", true );
             set( "Configurable", configValue );
         }};
-        this.object.defineOwnProperty( name, desc, true);
+        this.object.defineOwnProperty( context, name, desc, true);
     }
 
     @Override
-    public void setMutableBinding(String name, Object value, boolean strict) {
+    public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
         // 10.2.1.2.3
-        this.object.put( name, value, strict );
+        this.object.put( context, name, value, strict );
     }
 
     @Override
-    public Object getBindingValue(String name, boolean strict) {
+    public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.2.4
-        Object d = this.object.getProperty( name );
-        if ( d == DynThreadContext.UNDEFINED ) {
+        Object d = this.object.getProperty( context, name );
+        if ( d == Types.UNDEFINED ) {
             if ( strict ) {
                 throw new ReferenceError( name );
             }
-            return DynThreadContext.UNDEFINED;
+            return Types.UNDEFINED;
         }
         PropertyDescriptor desc = (PropertyDescriptor) d;
         return desc.getValue();
     }
 
     @Override
-    public boolean deleteBinding(String name) {
+    public boolean deleteBinding(ExecutionContext context, String name) {
         // 10.2.1.2.4
-        return this.object.delete( name, false );
+        return this.object.delete( context, name, false );
     }
 
     @Override
@@ -67,7 +67,11 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
             return this.object;
         }
         
-        return DynThreadContext.UNDEFINED;
+        return Types.UNDEFINED;
+    }
+    
+    public boolean isGlobal() {
+        return (this.object instanceof GlobalObject);
     }
 
 }

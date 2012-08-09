@@ -15,34 +15,44 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
+
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
 
 public class DeclareVarStatement extends BaseStatement implements Statement {
 
     private final Statement expr;
-    private final String id;
+    private final String identifier;
 
-    public DeclareVarStatement(final Tree tree, final Tree treeId, final Statement expr, final String id) {
+    public DeclareVarStatement(final Tree tree, final Tree treeId, final Statement expr, final String identifier) {
         super(tree);
         this.expr = expr;
-        this.id = id;
+        this.identifier = identifier;
+    }
+    
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock(expr.getCodeBlock()) {{
-            astore(3);
-            aload(DynJSCompiler.Arities.THIS);
-            ldc(id);
-            aload(3);
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+        return new CodeBlock() {{
+            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+            // context
+            ldc( identifier );
+            // context identifier
+            invokevirtual( p(ExecutionContext.class), "resolve", sig(Reference.class, String.class) );
+            // reference
+            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+            // reference context
+            append( expr.getCodeBlock() );
+            // reference context value
+            invokevirtual( p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
         }};
     }
 }

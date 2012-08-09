@@ -7,9 +7,9 @@ public class PropertyDescriptor {
 
     private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>() {
         {
-            put( "Value", DynThreadContext.UNDEFINED );
-            put( "Set", DynThreadContext.UNDEFINED );
-            put( "Get", DynThreadContext.UNDEFINED );
+            put( "Value", Types.UNDEFINED );
+            put( "Set", Types.UNDEFINED );
+            put( "Get", Types.UNDEFINED );
             put( "Writable", false );
             put( "Configurable", false );
             put( "Enumerable", false );
@@ -97,7 +97,7 @@ public class PropertyDescriptor {
         return get( "Set" );
     }
 
-    public void setSetter(Object setter) {
+    public void setSetter(JSFunction setter) {
         set( "Set", setter );
     }
 
@@ -105,7 +105,7 @@ public class PropertyDescriptor {
         return get( "Get" );
     }
 
-    public void setGetter(Getter getter) {
+    public void setGetter(JSFunction getter) {
         set( "Get", getter );
     }
 
@@ -120,10 +120,14 @@ public class PropertyDescriptor {
     public Object get(String name) {
         Object v = this.attributes.get( name );
         if (v == null) {
-            return DynThreadContext.UNDEFINED;
+            return Types.UNDEFINED;
         }
 
         return v;
+    }
+    
+    public boolean isPresent(String name) {
+        return this.attributes.containsKey( name );
     }
 
     public Object getWithDefault(String name) {

@@ -28,15 +28,11 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class DoWhileStatement extends BaseStatement implements Statement {
 
-    private final Stack<LabelNode> labelStack;
-    private final Stack<LabelNode> breakStack;
     private final Statement vbool;
     private final BlockStatement vloop;
 
-    public DoWhileStatement(Stack<LabelNode> labelStack, Stack<LabelNode> breakStack, final Tree tree, final Statement vbool, final Statement vloop) {
+    public DoWhileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
         super(tree);
-        this.labelStack = labelStack;
-		this.breakStack = breakStack;
         this.vbool = vbool;
         this.vloop = (BlockStatement) vloop;
     }
@@ -44,8 +40,6 @@ public class DoWhileStatement extends BaseStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            labelStack.push(vloop.getBeginLabel());
-            breakStack.push(vloop.getEndLabel());
             label(vloop.getBeginLabel());
             append(vloop.getCodeBlock());
             append(vbool.getCodeBlock());
@@ -54,8 +48,6 @@ public class DoWhileStatement extends BaseStatement implements Statement {
             iffalse(vloop.getEndLabel());
             go_to(vloop.getBeginLabel());
             label(vloop.getEndLabel());
-            labelStack.pop();
-            breakStack.pop();
         }};
     }
 }

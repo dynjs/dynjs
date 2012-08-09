@@ -1,11 +1,20 @@
 package org.dynjs.runtime;
 
+import org.dynjs.Config;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.BlockStorage.Entry;
+
 
 public class GlobalObject extends DynObject {
     
-    public GlobalObject() {
+    private JSCompiler compiler;
+    private BlockStorage blockStorage;
+
+    public GlobalObject(Config config) {
+        this.compiler = new JSCompiler( config );
+        this.blockStorage = new BlockStorage();
         
-        defineGlobalProperty( "undefined", DynThreadContext.UNDEFINED );
+        defineGlobalProperty( "undefined", Types.UNDEFINED );
         defineGlobalProperty( "NaN", Double.NaN );
         defineGlobalProperty( "Infinity", Double.POSITIVE_INFINITY );
         defineGlobalProperty( "-Infinite", Double.NEGATIVE_INFINITY );
@@ -33,6 +42,14 @@ public class GlobalObject extends DynObject {
          */
     }
     
+    public JSCompiler getCompiler() {
+        return this.compiler;
+    }
+    
+    public Entry retrieveBlockEntry(int statementNumber) {
+        return this.blockStorage.retrieve( statementNumber );
+    }
+    
     protected void defineGlobalProperty(final String name, final Object value) {
         PropertyDescriptor desc = new PropertyDescriptor(){{
             set( "Value", value );
@@ -40,7 +57,7 @@ public class GlobalObject extends DynObject {
             set( "Configurable", true );
             set( "Enumerable", true);
         }};
-        defineOwnProperty( name, desc, false );
+        defineOwnProperty( null, name, desc, false );
     }
 
 }

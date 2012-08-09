@@ -15,12 +15,11 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.Types;
 
 public class UndefinedValueStatement extends BaseStatement implements Statement {
 
@@ -30,7 +29,6 @@ public class UndefinedValueStatement extends BaseStatement implements Statement 
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock()
-                .getstatic(p(DynThreadContext.class), "UNDEFINED", ci(Object.class));
+        return new CodeBlock().getstatic(p(Types.class), "UNDEFINED", ci(Object.class));
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.dynjs.parser;
 
+import java.util.List;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.statement.ArrayLiteralStatement;
 import org.dynjs.parser.statement.AssignmentOperationStatement;
@@ -39,8 +41,6 @@ import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.InstanceOfRelOpStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
-import org.dynjs.parser.statement.StrictEqualOperationStatement;
-import org.dynjs.parser.statement.UnaryMinusStatement;
 import org.dynjs.parser.statement.NamedValueStatement;
 import org.dynjs.parser.statement.NewStatement;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
@@ -58,32 +58,20 @@ import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ResolveByIndexStatement;
 import org.dynjs.parser.statement.ResolveIdentifierStatement;
 import org.dynjs.parser.statement.ReturnStatement;
+import org.dynjs.parser.statement.StrictEqualOperationStatement;
 import org.dynjs.parser.statement.StringLiteralStatement;
 import org.dynjs.parser.statement.ThisStatement;
 import org.dynjs.parser.statement.ThrowStatement;
 import org.dynjs.parser.statement.TryCatchFinallyStatement;
 import org.dynjs.parser.statement.TypeOfOpExpressionStatement;
+import org.dynjs.parser.statement.UnaryMinusStatement;
 import org.dynjs.parser.statement.UndefinedValueStatement;
 import org.dynjs.parser.statement.VoidOpStatement;
 import org.dynjs.parser.statement.WhileStatement;
-import org.dynjs.runtime.DynThreadContext;
-import org.objectweb.asm.tree.LabelNode;
-
-import java.util.List;
-import java.util.Stack;
 
 public class Executor {
 
-    private final DynThreadContext context;
-    private final Stack<LabelNode> labelStack = new Stack<>();
-    private final Stack<LabelNode> breakStack = new Stack<>();
-
-    public Executor(DynThreadContext context) {
-        this.context = context;
-    }
-
-    public DynThreadContext getContext() {
-        return context;
+    public Executor() {
     }
 
     public List<Statement> program(final List<Statement> blockContent) {
@@ -139,7 +127,7 @@ public class Executor {
     }
 
     public Statement defineFunction(final Tree tree, final String identifier, final List<String> args, final Statement block) {
-        return new FunctionStatement(tree, getContext(), identifier, args, block);
+        return new FunctionStatement(tree, identifier, args, block);
     }
 
     public Statement defineShlOp(final Tree tree, Statement leftHandStatement, Statement rightHandStatement) {
@@ -315,7 +303,7 @@ public class Executor {
     }
 
     public Statement defineQueOp(final Tree tree, Statement ex1, Statement ex2, Statement ex3) {
-        return new IfStatement(tree, context, ex1, ex2, ex3);
+        return new IfStatement(tree, ex1, ex2, ex3);
     }
 
     public Statement defineThisLiteral(final Tree tree) {
@@ -351,23 +339,23 @@ public class Executor {
     }
 
     public Statement ifStatement(final Tree tree, Statement vbool, Statement vthen, Statement velse) {
-        return new IfStatement(tree, getContext(), vbool, vthen, velse);
+        return new IfStatement(tree, vbool, vthen, velse);
     }
 
     public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new DoWhileStatement(labelStack, breakStack, tree, vbool, vloop);
+        return new DoWhileStatement(tree, vbool, vloop);
     }
 
     public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new WhileStatement(labelStack, breakStack, tree, vbool, vloop);
+        return new WhileStatement(tree, vbool, vloop);
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
-        return new ForStepVarStatement(labelStack, breakStack, tree, varDef, expr1, expr2, statement);
+        return new ForStepVarStatement(tree, varDef, expr1, expr2, statement);
     }
 
     public Statement forStepExpr(final Tree tree, final Statement initialize, final Statement test, final Statement increment, Statement statement) {
-        return new ForStepExprStatement(labelStack, breakStack, tree, initialize, test, increment, statement);
+        return new ForStepExprStatement(tree, initialize, test, increment, statement);
     }
 
     public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {
@@ -379,11 +367,11 @@ public class Executor {
     }
 
     public Statement continueStatement(final Tree tree, String id) {
-        return new ContinueStatement(labelStack, tree, id);
+        return new ContinueStatement(tree, id);
     }
 
     public Statement breakStatement(final Tree tree, String id) {
-    	return new BreakStatement(breakStack, tree, id);
+    	return new BreakStatement(tree, id);
     }
 
     public Statement exprListStatement(final List<Statement> exprList) {
@@ -391,7 +379,7 @@ public class Executor {
     }
 
     public Statement resolveCallExpr(final Tree tree, Statement lhs, List<Statement> args) {
-        return new CallStatement(tree, getContext(), lhs, args);
+        return new CallStatement(tree, lhs, args);
     }
 
     public Statement switchStatement(final Tree tree, Statement expr, Statement _default, List<Statement> cases) {
@@ -411,15 +399,15 @@ public class Executor {
     }
 
     public Statement tryStatement(final Tree tree, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
-        return new TryCatchFinallyStatement(tree, context, tryBlock, catchBlock, finallyBlock);
+        return new TryCatchFinallyStatement(tree, tryBlock, catchBlock, finallyBlock);
     }
 
     public Statement tryCatchClause(final Tree tree, String id, Statement block) {
-        return new CatchClauseStatement(tree, context, id, block);
+        return new CatchClauseStatement(tree, id, block);
     }
 
     public Statement tryFinallyClause(final Tree tree, Statement block) {
-        return new FinallyClauseStatement(tree, context, block);
+        return new FinallyClauseStatement(tree, block);
     }
 
     public Statement withStatement(final Tree tree, Statement expression, Statement statement) {

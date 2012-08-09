@@ -18,8 +18,6 @@ package org.dynjs.parser.statement;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Position;
 

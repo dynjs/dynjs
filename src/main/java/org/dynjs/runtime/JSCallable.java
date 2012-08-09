@@ -2,6 +2,6 @@ package org.dynjs.runtime;
 
 public interface JSCallable {
     
-    Object call(JSObject self, String...args);
+    Object call(ExecutionContext context, Object self, Object...args);
 
 }

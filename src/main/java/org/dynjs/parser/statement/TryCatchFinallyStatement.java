@@ -14,12 +14,14 @@ import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class TryCatchFinallyStatement extends BaseCompilableBlockStatement implements Statement {
+public class TryCatchFinallyStatement extends BaseStatement implements Statement {
+    private Statement tryBlock;
     private final Statement catchBlock;
     private final Statement finallyBlock;
 
-    public TryCatchFinallyStatement(Tree tree, DynThreadContext context, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
-        super(tree, context, tryBlock);
+    public TryCatchFinallyStatement(Tree tree, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
+        super(tree );
+        this.tryBlock = tryBlock;
         this.catchBlock = catchBlock;
         this.finallyBlock = finallyBlock;
     }
@@ -32,7 +34,7 @@ public class TryCatchFinallyStatement extends BaseCompilableBlockStatement imple
             aload(DynJSCompiler.Arities.SELF);
             invokedynamic("getScope", sig(Object.class, DynThreadContext.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
             aload(DynJSCompiler.Arities.CONTEXT);
-            append( compileBasicBlockIfNecessary( "Try" ));
+            //append( compileBasicBlockIfNecessary( "Try" ));
             if (hasCatchBlock()) {
                 append(catchBlock.getCodeBlock());
             } else {

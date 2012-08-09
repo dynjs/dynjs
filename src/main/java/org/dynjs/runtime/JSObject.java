@@ -5,14 +5,15 @@ public interface JSObject {
     JSObject getPrototype();
     String getClassName();
     boolean isExtensible();
-    Object get(String name);
-    Object getOwnProperty(String name);
-    Object getProperty(String name);
-    boolean hasProperty(String name);
-    void put(String name, Object value, boolean shouldThrow);
-    boolean canPut(String name);
-    boolean delete(String name, boolean flag);
+    Object get(ExecutionContext context, String name);
+    Object getOwnProperty(ExecutionContext context, String name);
+    Object getProperty(ExecutionContext context, String name);
+    boolean hasProperty(ExecutionContext context, String name);
+    void put(ExecutionContext context, String name, Object value, boolean shouldThrow);
+    boolean canPut(ExecutionContext context, String name);
+    boolean delete(ExecutionContext context, String name, boolean shouldThrow);
     Object defaultValue(String hint);
-    boolean defineOwnProperty(String name, PropertyDescriptor desc, boolean flag);
+    boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow);
+    
 
 }

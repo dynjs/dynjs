@@ -11,20 +11,20 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     private Map<String, PropertyDescriptor> immutableBindings = new HashMap<String, PropertyDescriptor>();
 
     @Override
-    public boolean hasBinding(String name) {
+    public boolean hasBinding(ExecutionContext context, String name) {
         return this.mutableBindings.containsKey( name ) || this.immutableBindings.containsKey( name );
     }
 
     @Override
-    public void createMutableBinding(final String name, final boolean configurable) {
+    public void createMutableBinding(ExecutionContext context, final String name, final boolean configurable) {
         // 10.2.1.1.2
-        if ( hasBinding( name ) ) {
+        if ( hasBinding( context, name ) ) {
             throw new AssertionError( "10.2.1.1.2: Binding already exists for " + name );
         }
         
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set( "Value", DynThreadContext.UNDEFINED );
+                set( "Value", Types.UNDEFINED );
                 set( "Configurable", configurable );
             }
         };
@@ -32,9 +32,9 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     }
 
     @Override
-    public void setMutableBinding(String name, Object value, boolean strict) {
+    public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
         // 10.2.1.1.3
-        if ( ! hasBinding( name ) ) {
+        if ( ! hasBinding( context, name ) ) {
             throw new AssertionError( "10.2.1.1.3: No binding exists for " + name );
         }
         
@@ -50,10 +50,10 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     }
 
     @Override
-    public Object getBindingValue(String name, boolean strict) {
+    public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.1.4
         
-        if ( ! hasBinding( name ) ) {
+        if ( ! hasBinding( context, name ) ) {
             throw new AssertionError( "10.2.1.1.4: No binding exists for " + name );
         }
         
@@ -62,20 +62,20 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
             if (strict) {
                 throw new TypeError();
             }
-            return DynThreadContext.UNDEFINED;
+            return Types.UNDEFINED;
         }
 
         desc = this.mutableBindings.get( name );
 
         if (desc == null) {
-            return DynThreadContext.UNDEFINED;
+            return Types.UNDEFINED;
         }
 
         return desc.getValue();
     }
 
     @Override
-    public boolean deleteBinding(String name) {
+    public boolean deleteBinding(ExecutionContext context, String name) {
         // 10.2.1.1.5
         PropertyDescriptor desc = this.immutableBindings.get( name );
         if (desc == null) {
@@ -96,15 +96,14 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     @Override
     public Object implicitThisValue() {
         // 10.2.1.1.6
-        return DynThreadContext.UNDEFINED;
+        return Types.UNDEFINED;
     }
 
-    public void createImmutableBinding(final String name, final boolean configurable) {
+    public void createImmutableBinding(final String name) {
         // 10.2.1.1.7
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set( "Value", DynThreadContext.UNDEFINED );
-                set( "Configurable", configurable );
+                set( "Value", Types.UNDEFINED );
             }
         };
         this.immutableBindings.put( name, desc );
@@ -116,6 +115,9 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         PropertyDescriptor desc = this.immutableBindings.get( name );
         desc.setValue( value );
         desc.set( "Initialized", Boolean.TRUE );
-
+    }
+    
+    public boolean isGlobal() {
+        return false;
     }
 }

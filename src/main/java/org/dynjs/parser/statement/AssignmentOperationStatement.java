@@ -15,15 +15,14 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.ParserException;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
 
 public class AssignmentOperationStatement extends BaseStatement implements Statement {
 
@@ -31,37 +30,25 @@ public class AssignmentOperationStatement extends BaseStatement implements State
     private final Statement rhs;
 
     public AssignmentOperationStatement(final Tree tree, final Statement lhs, final Statement rhs) {
-        super(tree);
+        super( tree );
         this.lhs = lhs;
         this.rhs = rhs;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        if (lhs instanceof ResolveByIndexStatement) {
-            ResolveByIndexStatement statement = (ResolveByIndexStatement) lhs;
-            final Statement targetObject = statement.getLhs();
-            final Statement index = statement.getIndex();
-            return new CodeBlock() {{
-                append(targetObject.getCodeBlock());
-                append(index.getCodeBlock());
-                append(rhs.getCodeBlock());
-                if (index instanceof StringLiteralStatement) {
-                    invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-                } else {
-                    invokedynamic("dyn:setElement", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-                }
-            }};
-        } else if (lhs instanceof ResolveIdentifierStatement) {
-            return new CodeBlock() {{
-            	ResolveIdentifierStatement resolveIdentifierStatement = (ResolveIdentifierStatement) lhs;
-                aload(DynJSCompiler.Arities.SELF);
-                append(lhs.getCodeBlock());
-            	ldc(resolveIdentifierStatement.getName());
-                append(rhs.getCodeBlock());
-                invokedynamic("setProp", sig(Object.class, Object.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
-            }};
-        }
-        throw new ParserException("not implemented", getPosition());
+        return new CodeBlock() {
+            {
+                append( lhs.getCodeBlock() );
+                // reference
+                append( rhs.getCodeBlock() );
+                // reference value
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // reference value context
+                swap();
+                // reference context value
+                invokevirtual( p(Reference.class), "putValue", sig( void.class, ExecutionContext.class, Object.class) );
+            }
+        };
     }
 }

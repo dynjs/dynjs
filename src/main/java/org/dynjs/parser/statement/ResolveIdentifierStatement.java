@@ -15,37 +15,32 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
 
 public class ResolveIdentifierStatement extends BaseStatement implements Statement {
 
-    private final String name;
+    private final String identifier;
 
-    public ResolveIdentifierStatement(final Tree tree, final String name) {
+    public ResolveIdentifierStatement(final Tree tree, final String identifier) {
         super(tree);
-        this.name = name;
+        this.identifier = identifier;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            aload(DynJSCompiler.Arities.CONTEXT);
-            aload(DynJSCompiler.Arities.THIS);
-            aload(DynJSCompiler.Arities.SELF);
-            invokedynamic("getScope", sig(Object.class, DynThreadContext.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
-            ldc(name);
-            invokedynamic("dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+            // context
+            ldc( identifier );
+            // context identifier
+            invokevirtual( p(ExecutionContext.class), "resolve", sig( void.class, String.class) );
+            // reference
         }};
-    }
-
-    public String getName() {
-        return name;
     }
 }

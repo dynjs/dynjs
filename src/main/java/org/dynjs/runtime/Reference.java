@@ -38,10 +38,10 @@ public class Reference {
     }
     
     public boolean isUnresolvableReference() {
-        return this.base == DynThreadContext.UNDEFINED;
+        return this.base == Types.UNDEFINED;
     }
     
-    public Object getValue() {
+    public Object getValue(ExecutionContext context) {
         // 8.7.1
         Object value = null;
         if ( isUnresolvableReference() ) {
@@ -50,32 +50,32 @@ public class Reference {
         
         if ( isPropertyReference() ) {
             if ( ! hasPrimitiveBase() ) {
-                value = ((JSObject) this.base).get( this.referencedName );
+                value = ((JSObject) this.base).get( context, this.referencedName );
             } else {
                 // TODO: handle primitives (8.7.1 special case)
             }
         } else {
-           value = ((EnvironmentRecord) this.base).getBindingValue( this.referencedName, this.strict );
+           value = ((EnvironmentRecord) this.base).getBindingValue( context, this.referencedName, this.strict );
         }
         return value;
     }
     
-    public void putValue(Object value) {
+    public void putValue(ExecutionContext context, Object value) {
         // 8.7.2
         if ( isUnresolvableReference() ) {
             if ( isStrictReference() ) {
                 throw new ReferenceError( this.referencedName );
             } else {
-                this.globalObject.put(  this.referencedName, value, false );
+                this.globalObject.put(  context, this.referencedName, value, false );
             }
         } else if ( isPropertyReference() ) {
             if ( ! hasPrimitiveBase() ) {
-                ((JSObject) this.base).put( this.referencedName, value, this.strict );
+                ((JSObject) this.base).put( context, this.referencedName, value, this.strict );
             } else {
                 // TODO: handle primitives
             }
         } else {
-            ((EnvironmentRecord) this.base).setMutableBinding( this.referencedName, value, this.strict );
+            ((EnvironmentRecord) this.base).setMutableBinding( context, this.referencedName, value, this.strict );
         }
     }
 

@@ -15,50 +15,51 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.util.List;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import me.qmx.jitescript.CodeBlock;
+
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 
 public class CallStatement extends BaseStatement implements Statement {
 
-    private final DynThreadContext context;
     private final Statement lhs;
     private final List<Statement> args;
 
-    public CallStatement(final Tree tree, final DynThreadContext context, final Statement lhs, final List<Statement> args) {
-        super(tree);
-        this.context = context;
+    public CallStatement(final Tree tree, final Statement lhs, final List<Statement> args) {
+        super( tree );
         this.lhs = lhs;
         this.args = args;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            bipush(args.size());
-            anewarray(p(Object.class));
-            astore(4);
-
-            for (int i = 0; i < args.size(); i++) {
-                aload(4);
-                bipush(i);
-                append(CodeBlockUtils.relocateLocalVars( args.get(i).getCodeBlock(), 1 ) );
-                aastore();
+        return new CodeBlock() {
+            {
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                append( lhs.getCodeBlock() );
+                // context callable
+                aload( JSCompiler.Arities.SELF );
+                // context callable self
+                bipush( args.size() );
+                anewarray( p( Object.class ) );
+                for (int i = 0; i < args.size(); i++) {
+                    dup();
+                    bipush( i );
+                    append( CodeBlockUtils.relocateLocalVars( args.get( i ).getCodeBlock(), 1 ) );
+                    aastore();
+                }
+                // context callable self args
+                invokevirtual( p(ExecutionContext.class), "call", sig(Object.class, JSFunction.class, Object.class, Object[].class ) );
             }
-
-            append(CodeBlockUtils.relocateLocalVars( lhs.getCodeBlock(), 1) );
-            aload(DynJSCompiler.Arities.CONTEXT);
-            aload(4);
-            invokedynamic("call2", sig(Object.class, Object.class, DynThreadContext.class, Object[].class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
-        }};
+        };
     }
 }

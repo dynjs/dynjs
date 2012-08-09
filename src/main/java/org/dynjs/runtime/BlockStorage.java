@@ -6,9 +6,9 @@ import java.util.Map;
 
 import me.qmx.jitescript.CodeBlock;
 
-public class CodeStorage {
+public class BlockStorage {
 
-    public CodeStorage() {
+    public BlockStorage() {
 
     }
 

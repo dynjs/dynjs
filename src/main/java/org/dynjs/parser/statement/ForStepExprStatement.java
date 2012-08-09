@@ -28,18 +28,14 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ForStepExprStatement extends BaseStatement implements Statement {
 
-    private final Stack<LabelNode> labelStack;
-    private final Stack<LabelNode> breakStack;
     private final Statement initialize;
     private final Statement test;
     private final Statement increment;
     private final BlockStatement statement;
     private final LabelNode preIncrement = new LabelNode();
 
-    public ForStepExprStatement(Stack<LabelNode> labelStack, Stack<LabelNode> breakStack, final Tree tree, final Statement initialize, final Statement test, final Statement increment, final Statement statement) {
+    public ForStepExprStatement(final Tree tree, final Statement initialize, final Statement test, final Statement increment, final Statement statement) {
         super(tree);
-        this.labelStack = labelStack;
-		this.breakStack = breakStack;
         this.initialize = initialize;
         this.test = test;
         this.increment = increment;
@@ -49,8 +45,6 @@ public class ForStepExprStatement extends BaseStatement implements Statement {
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            labelStack.push(preIncrement);
-            breakStack.push(statement.getEndLabel());
             if (initialize != null) {
             	append(initialize.getCodeBlock());
             }
@@ -67,8 +61,6 @@ public class ForStepExprStatement extends BaseStatement implements Statement {
             }
             go_to(statement.getBeginLabel());
             label(statement.getEndLabel());
-            labelStack.pop();
-            breakStack.pop();
         }};
     }
 }

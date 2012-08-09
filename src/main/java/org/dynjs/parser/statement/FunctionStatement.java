@@ -27,25 +27,40 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 
-public class FunctionStatement extends BaseCompilableBlockStatement implements Statement {
+public class FunctionStatement extends BaseStatement implements Statement {
 
     private final String identifier;
-    private final List<String> args;
+    private final List<String> formalParameters;
+    private Statement block;
 
-    public FunctionStatement(final Tree tree, final DynThreadContext context, final List<String> args, final Statement block) {
-        this( tree, context, null, args, block );
+    public FunctionStatement(final Tree tree, final List<String> args, final Statement block) {
+        this( tree, null, args, block );
     }
 
-    public FunctionStatement(final Tree tree, final DynThreadContext context, final String identifier, final List<String> args, final Statement block) {
-        super( tree, context, block );
+    public FunctionStatement(final Tree tree, final String identifier, final List<String> formalParameters, final Statement block) {
+        super( tree );
         this.identifier = identifier;
-        this.args = args;
+        this.formalParameters = formalParameters;
+        this.block = block;
+    }
+    
+    public String getIdentifier() {
+        return this.identifier;
+    }
+    
+    public List<String> getFormalParameters() {
+        return this.formalParameters;
+    }
+    
+    public Statement getBlock() {
+        return this.block;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                /**
                 append( compileFunctionIfNecessary( args ) );
                 if (identifier != null) {
                     dup();
@@ -61,6 +76,7 @@ public class FunctionStatement extends BaseCompilableBlockStatement implements S
                     invokedynamic( "dyn:setProp", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
                     // object
                 }
+                **/
 
             }
         };
