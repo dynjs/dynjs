@@ -5,7 +5,6 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 
 /** The <code>this</code> keyword evaluates to the value of the ThisBinding of the current execution context.

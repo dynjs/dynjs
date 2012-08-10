@@ -15,14 +15,10 @@
  */
 package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.ExecutionContext;
 
 
 /** Access a property with dot notation

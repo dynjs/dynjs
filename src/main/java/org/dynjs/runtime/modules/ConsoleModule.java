@@ -3,8 +3,6 @@ package org.dynjs.runtime.modules;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import org.dynjs.runtime.DynThreadContext;
-
 @Module(name = "console")
 public class ConsoleModule {
 

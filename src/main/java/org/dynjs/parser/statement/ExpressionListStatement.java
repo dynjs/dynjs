@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 

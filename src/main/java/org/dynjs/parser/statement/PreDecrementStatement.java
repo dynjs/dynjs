@@ -16,6 +16,7 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 

@@ -16,10 +16,9 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
-
-import static me.qmx.jitescript.CodeBlock.*;
 
 public class LdcStatement extends AbstractStatement implements Statement {
 

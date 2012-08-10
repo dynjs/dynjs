@@ -1,8 +1,8 @@
 package org.dynjs.runtime;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import org.objectweb.asm.tree.LabelNode;
 
 public class Completion {

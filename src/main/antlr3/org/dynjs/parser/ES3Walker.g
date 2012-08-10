@@ -78,7 +78,7 @@ statement returns [Statement value]
 	| variableDeclaration
 	    {  $value = $variableDeclaration.value;   }
 	| expression
-	    {  $value = executor.expressionStatement( $BLOCK, $expression.value);   }
+	    {  $value = executor.expressionStatement( $expression.value);   }
 	| printStatement
         { $value = $printStatement.value; }
 	| ifStatement

@@ -3,8 +3,8 @@ package org.dynjs.runtime;
 import java.util.Collections;
 import java.util.List;
 
-import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.parser.statement.FunctionDeclaration;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public abstract class AbstractNativeFunction extends AbstractFunction {
 

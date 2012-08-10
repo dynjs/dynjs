@@ -15,13 +15,13 @@
  */
 package org.dynjs.runtime.linker;
 
-import org.dynalang.dynalink.DynamicLinker;
-import org.dynalang.dynalink.DynamicLinkerFactory;
-import org.dynalang.dynalink.MonomorphicCallSite;
-
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+
+import org.dynalang.dynalink.DynamicLinker;
+import org.dynalang.dynalink.DynamicLinkerFactory;
+import org.dynalang.dynalink.MonomorphicCallSite;
 
 public class DynJSBootstrapper {
 

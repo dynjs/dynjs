@@ -26,6 +26,10 @@ public abstract class AbstractExpression extends AbstractByteCodeEmitter impleme
     AbstractExpression(final Tree tree) {
         this.position = new Position(tree);
     }
+    
+    AbstractExpression(Position position) {
+        this.position = position;
+    }
 
     public Position getPosition() {
         return position;

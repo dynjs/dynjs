@@ -17,8 +17,6 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.api.Function;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynProperty;
-import org.dynjs.runtime.DynThreadContext;
 
 public class DefineProperty implements Function {
     @Override

@@ -25,7 +25,6 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.objectweb.asm.tree.LabelNode;
 

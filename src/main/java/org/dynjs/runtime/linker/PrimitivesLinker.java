@@ -15,17 +15,20 @@
  */
 package org.dynjs.runtime.linker;
 
-import org.dynalang.dynalink.linker.*;
-import org.dynalang.dynalink.support.Guards;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.extensions.BooleanOperations;
-import org.dynjs.runtime.extensions.NumberOperations;
-import org.dynjs.runtime.extensions.StringOperations;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.dynalang.dynalink.linker.CallSiteDescriptor;
+import org.dynalang.dynalink.linker.GuardedInvocation;
+import org.dynalang.dynalink.linker.LinkRequest;
+import org.dynalang.dynalink.linker.LinkerServices;
+import org.dynalang.dynalink.linker.TypeBasedGuardingDynamicLinker;
+import org.dynalang.dynalink.support.Guards;
+import org.dynjs.runtime.extensions.BooleanOperations;
+import org.dynjs.runtime.extensions.NumberOperations;
+import org.dynjs.runtime.extensions.StringOperations;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 

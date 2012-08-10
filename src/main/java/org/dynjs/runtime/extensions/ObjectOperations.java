@@ -15,12 +15,12 @@
  */
 package org.dynjs.runtime.extensions;
 
+import static org.dynjs.runtime.conversion.ToNumber.*;
+import static org.dynjs.runtime.conversion.ToPrimitive.*;
+
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
-import static org.dynjs.runtime.conversion.ToPrimitive.toPrimitive;
 import org.dynjs.runtime.linker.anno.CompanionFor;
-import static org.dynjs.runtime.conversion.ToNumber.toNumber;
 
 @CompanionFor(Object.class)
 public class ObjectOperations {

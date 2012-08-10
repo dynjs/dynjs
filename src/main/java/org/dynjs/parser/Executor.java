@@ -34,7 +34,6 @@ import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.Expression;
 import org.dynjs.parser.statement.ExpressionListStatement;
 import org.dynjs.parser.statement.ExpressionStatement;
-import org.dynjs.parser.statement.FinallyClause;
 import org.dynjs.parser.statement.ForStepExprStatement;
 import org.dynjs.parser.statement.ForStepVarStatement;
 import org.dynjs.parser.statement.FunctionCallExpression;
@@ -335,8 +334,8 @@ public class Executor {
         return new BooleanLiteralExpression( tree, false );
     }
     
-    public ExpressionStatement expressionStatement(final Tree tree, Expression expr) {
-        return new ExpressionStatement( tree, expr );
+    public ExpressionStatement expressionStatement(Expression expr) {
+        return new ExpressionStatement( expr );
     }
 
     public Statement executeNew(final Tree tree, final Statement statement) {

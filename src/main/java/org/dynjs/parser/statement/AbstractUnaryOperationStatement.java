@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public abstract class AbstractUnaryOperationStatement extends AbstractStatement implements Statement {
 

@@ -16,12 +16,12 @@
 
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
-
-import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class TypeOfOpExpressionStatement extends AbstractStatement implements Statement {
 

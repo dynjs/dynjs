@@ -16,7 +16,6 @@
 package org.dynjs.runtime.java;
 
 import org.dynjs.api.Function;
-import org.dynjs.runtime.DynThreadContext;
 
 public class JavaRequireFunction implements Function {
     @Override

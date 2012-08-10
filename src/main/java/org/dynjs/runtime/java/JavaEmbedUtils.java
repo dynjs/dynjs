@@ -2,8 +2,6 @@ package org.dynjs.runtime.java;
 
 import org.dynjs.api.Function;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynProperty;
-import org.dynjs.runtime.DynThreadContext;
 
 public class JavaEmbedUtils {
 

@@ -8,7 +8,6 @@ import java.util.Iterator;
 import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the

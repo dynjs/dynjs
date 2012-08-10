@@ -1,8 +1,8 @@
 package org.dynjs.parser.statement;
 
-import org.antlr.runtime.tree.Tree;
-
 import me.qmx.jitescript.CodeBlock;
+
+import org.antlr.runtime.tree.Tree;
 
 public class RelationalExpression extends AbstractBinaryExpression {
 

@@ -4,12 +4,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.dynjs.api.Function;
 import org.dynjs.exception.DynJSException;
-import org.dynjs.runtime.DynThreadContext;
 
 public class JavaFunction implements Function {
 

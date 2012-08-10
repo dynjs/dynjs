@@ -1,6 +1,6 @@
 package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;

@@ -15,16 +15,15 @@
  */
 package org.dynjs.cli;
 
-import jline.console.ConsoleReader;
-import org.dynjs.api.Scope;
-import org.dynjs.exception.DynJSException;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynThreadContext;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+
+import jline.console.ConsoleReader;
+
+import org.dynjs.api.Scope;
+import org.dynjs.exception.DynJSException;
 
 public class Repl {
 

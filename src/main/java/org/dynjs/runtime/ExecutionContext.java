@@ -6,8 +6,8 @@ import java.util.List;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.TypeError;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.parser.statement.FunctionDeclaration;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.runtime.BlockManager.Entry;
 
 public class ExecutionContext {

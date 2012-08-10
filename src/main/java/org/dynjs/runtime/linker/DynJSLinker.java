@@ -15,7 +15,12 @@
  */
 package org.dynjs.runtime.linker;
 
-import com.headius.invokebinder.Binder;
+import static java.lang.invoke.MethodHandles.*;
+import static java.lang.invoke.MethodType.*;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodType;
+
 import org.dynalang.dynalink.linker.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
 import org.dynalang.dynalink.linker.GuardingDynamicLinker;
@@ -27,15 +32,10 @@ import org.dynalang.dynalink.support.Lookup;
 import org.dynjs.api.Scope;
 import org.dynjs.runtime.Converters;
 import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.RT;
 import org.dynjs.runtime.extensions.ObjectOperations;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodType;
-
-import static java.lang.invoke.MethodHandles.lookup;
-import static java.lang.invoke.MethodType.methodType;
+import com.headius.invokebinder.Binder;
 
 public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverterFactory {
 

@@ -15,16 +15,13 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 import org.objectweb.asm.tree.LabelNode;
-
-import java.util.Stack;
-
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ForStepExprStatement extends AbstractStatement implements Statement {
 

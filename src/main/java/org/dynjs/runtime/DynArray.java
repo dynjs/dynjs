@@ -17,8 +17,6 @@ package org.dynjs.runtime;
 
 import java.util.Arrays;
 
-import static org.dynjs.runtime.DynThreadContext.UNDEFINED;
-
 public class DynArray {
 
     public static final int DEFAULT_ARRAY_SIZE = 16;

@@ -15,13 +15,13 @@
  */
 package org.dynjs.runtime.linker;
 
-import org.dynjs.runtime.linker.anno.CompanionFor;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.dynjs.runtime.linker.anno.CompanionFor;
 
 public class VTablePopulator {
 

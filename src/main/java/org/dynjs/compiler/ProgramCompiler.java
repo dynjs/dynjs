@@ -4,7 +4,6 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;

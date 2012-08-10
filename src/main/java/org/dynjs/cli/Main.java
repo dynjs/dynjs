@@ -21,10 +21,8 @@ import java.io.PrintStream;
 
 import org.dynjs.DynJSVersion;
 import org.dynjs.api.Scope;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynJSConfig;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 

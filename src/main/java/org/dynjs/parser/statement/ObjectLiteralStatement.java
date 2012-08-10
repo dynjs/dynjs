@@ -15,16 +15,16 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynObject;
-
-import java.util.List;
-
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ObjectLiteralStatement extends AbstractStatement implements Statement {
 

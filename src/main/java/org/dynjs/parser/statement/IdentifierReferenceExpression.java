@@ -20,7 +20,6 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 
 

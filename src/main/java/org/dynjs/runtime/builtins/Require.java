@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.dynjs.api.Function;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 /**

@@ -15,12 +15,12 @@
  */
 package org.dynjs.cli;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.runtime.DynJSConfig;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Arguments {
 

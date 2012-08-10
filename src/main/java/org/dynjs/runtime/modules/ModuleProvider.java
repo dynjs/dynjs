@@ -1,7 +1,6 @@
 package org.dynjs.runtime.modules;
 
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 
 
 /** Provider for loading Javascript modules.

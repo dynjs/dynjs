@@ -15,16 +15,8 @@
  */
 package org.dynjs.runtime;
 
-import com.headius.invokebinder.Binder;
-import org.dynjs.api.Function;
-import org.dynjs.api.Resolver;
-import org.dynjs.api.Scope;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.exception.DynJSException;
-import org.dynjs.exception.ReferenceError;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Opcodes;
+import static java.lang.invoke.MethodType.*;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.ConstantCallSite;
@@ -33,8 +25,16 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.MutableCallSite;
 
-import static java.lang.invoke.MethodType.methodType;
-import static me.qmx.jitescript.util.CodegenUtils.p;
+import org.dynjs.api.Function;
+import org.dynjs.api.Resolver;
+import org.dynjs.api.Scope;
+import org.dynjs.exception.DynJSException;
+import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Opcodes;
+
+import com.headius.invokebinder.Binder;
 
 public class RT {
 

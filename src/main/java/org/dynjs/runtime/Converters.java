@@ -15,13 +15,13 @@
  */
 package org.dynjs.runtime;
 
-import org.dynalang.dynalink.linker.GuardedInvocation;
-import org.dynalang.dynalink.support.Guards;
-import org.dynalang.dynalink.support.Lookup;
+import static java.lang.invoke.MethodType.*;
 
 import java.lang.invoke.MethodHandle;
 
-import static java.lang.invoke.MethodType.methodType;
+import org.dynalang.dynalink.linker.GuardedInvocation;
+import org.dynalang.dynalink.support.Guards;
+import org.dynalang.dynalink.support.Lookup;
 
 public class Converters {
 

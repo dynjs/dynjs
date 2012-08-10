@@ -2,10 +2,8 @@ package org.dynjs.runtime.java;
 
 import java.lang.reflect.Method;
 
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 import org.dynjs.runtime.modules.JavaFunction;
 
 /** Factory to create DynObject instances based upon Java classes annotated with <code>@JavaPrototype</code>

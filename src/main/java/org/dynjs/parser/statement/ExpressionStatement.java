@@ -17,14 +17,12 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 
-import org.antlr.runtime.tree.Tree;
-
 public class ExpressionStatement extends AbstractStatement {
 
     private final Expression expr;
 
-    public ExpressionStatement(final Tree tree, final Expression expr) {
-        super( tree );
+    public ExpressionStatement(final Expression expr) {
+        super( expr.getPosition() );
         this.expr = expr;
     }
 

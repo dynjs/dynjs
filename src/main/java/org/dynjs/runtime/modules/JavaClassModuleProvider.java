@@ -4,11 +4,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.InvalidModuleException;
 import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
 
 public class JavaClassModuleProvider implements ModuleProvider {
 

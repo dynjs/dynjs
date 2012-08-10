@@ -16,7 +16,6 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.api.Function;
-import org.dynjs.runtime.DynThreadContext;
 
 public class ParseInt implements Function {
     @Override

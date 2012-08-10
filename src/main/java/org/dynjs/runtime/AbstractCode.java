@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.parser.statement.FunctionDeclaration;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public abstract class AbstractCode implements JSCode {
     
