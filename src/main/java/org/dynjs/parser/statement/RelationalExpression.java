@@ -12,23 +12,25 @@ public class RelationalExpression extends AbstractBinaryExpression {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append( getLhs().getCodeBlock() );
-            append( jsGetValue() );
-            append( getRhs().getCodeBlock() );
-            append( jsGetValue() );
-            // lhs rhs
-            
-            if ( getOp().equals( "<") || getOp().equals( "<=" )  ) {
-                compare( true );
-                // result
-            } else {
-                compare( false );
-                // result
+        return new CodeBlock() {
+            {
+                append( getLhs().getCodeBlock() );
+                append( jsGetValue() );
+                append( getRhs().getCodeBlock() );
+                append( jsGetValue() );
+                // lhs rhs
+
+                if (getOp().equals( "<" ) || getOp().equals( "<=" )) {
+                    compare( true );
+                    // result
+                } else {
+                    compare( false );
+                    // result
+                }
             }
-        }};
+        };
     }
-    
+
     public CodeBlock compare(boolean leftFirst) {
         return null;
     }

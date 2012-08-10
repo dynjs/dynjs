@@ -15,7 +15,6 @@
  */
 package org.dynjs.api;
 
-
 public interface Callable {
     Object call(DynThreadContext context, Object[] arguments);
 }

@@ -26,16 +26,18 @@ public class VoidOpStatement extends AbstractStatement implements Statement {
     private final Statement expression;
 
     public VoidOpStatement(final Tree tree, final Statement expression) {
-        super(tree);
+        super( tree );
         this.expression = expression;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(expression.getCodeBlock());
-            append(new UndefinedValueStatement().getCodeBlock());
-        }};
+        return new CodeBlock() {
+            {
+                append( expression.getCodeBlock() );
+                append( new UndefinedValueStatement().getCodeBlock() );
+            }
+        };
     }
 
 }

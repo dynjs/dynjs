@@ -27,18 +27,20 @@ public class NotOperationStatement extends AbstractStatement implements Statemen
     private final Statement s;
 
     public NotOperationStatement(final Tree tree, final Statement s) {
-        super(tree);
+        super( tree );
         this.s = s;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(s.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokedynamic("not", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            dup();
-        }};
+        return new CodeBlock() {
+            {
+                append( s.getCodeBlock() );
+                invokedynamic( "dynjs:convert:to_boolean", sig( Boolean.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                invokedynamic( "not", sig( Boolean.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                dup();
+            }
+        };
     }
 
 }

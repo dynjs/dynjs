@@ -29,7 +29,7 @@ public class RelationalOperationStatement extends AbstractStatement implements S
     private final Statement r;
 
     public RelationalOperationStatement(final Tree tree, final String operator, final Statement l, final Statement r) {
-        super(tree);
+        super( tree );
         this.operator = operator;
         this.l = l;
         this.r = r;
@@ -37,10 +37,12 @@ public class RelationalOperationStatement extends AbstractStatement implements S
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(l.getCodeBlock());
-            append(r.getCodeBlock());
-            invokedynamic(operator, sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( l.getCodeBlock() );
+                append( r.getCodeBlock() );
+                invokedynamic( operator, sig( Boolean.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 }

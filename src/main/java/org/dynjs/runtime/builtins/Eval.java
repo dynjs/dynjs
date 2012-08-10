@@ -23,14 +23,14 @@ public class Eval implements Function {
     public Object call(Object self, DynThreadContext context, Object[] arguments) {
         if (arguments.length == 1 && arguments[0] instanceof String) {
             DynJS runtime = context.getRuntime();
-            runtime.eval(context, (String) arguments[0]);
+            runtime.eval( context, (String) arguments[0] );
         }
         return DynThreadContext.UNDEFINED;
     }
 
     @Override
     public String[] getParameters() {
-        return new String[]{"x"};
+        return new String[] { "x" };
     }
 
 }

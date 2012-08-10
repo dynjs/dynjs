@@ -125,7 +125,7 @@ public class PropertyDescriptor {
 
         return v;
     }
-    
+
     public boolean isPresent(String name) {
         return this.attributes.containsKey( name );
     }

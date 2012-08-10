@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 package org.dynjs.parser.statement;
+
 import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
@@ -43,39 +44,39 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 LabelNode normalTarget = new LabelNode();
                 LabelNode breakTarget = new LabelNode();
                 LabelNode begin = new LabelNode();
-                
-                getstatic( p(Completion.class), "NORMAL_COMPLETION", sig(Completion.class ) );
+
+                getstatic( p( Completion.class ), "NORMAL_COMPLETION", sig( Completion.class ) );
                 // completion(block)
-                
-                label(begin);
+
+                label( begin );
                 append( CodeBlockUtils.compiledBasicBlock( getBlockManager(), "While", vbool, true ) );
                 // completion(block) completion(bool)
-                
+
                 append( CodeBlockUtils.ifCompletionIsFalse( end ) );
                 // completion(block)
-                
+
                 append( CodeBlockUtils.compiledBasicBlock( getBlockManager(), "Do", vloop, true ) );
                 // completion(block,prev) completion(block,cur)
                 swap();
                 // completion(block,cur) completion(block,prev)
                 pop();
                 // completion(block,cur)
-                
+
                 dup();
                 // completion(block) completion(block)
                 append( Completion.handle( normalTarget, breakTarget, normalTarget, end, end ) );
-                
-                label(normalTarget);
+
+                label( normalTarget );
                 // completion(block)
-                
+
                 // ----------------------------------------
                 // BREAK
                 label( breakTarget );
                 // completion(block,BREAK)
-                
+
                 append( Completion.convertToNormal() );
                 // completion(block,NORMAL)
-                
+
                 // ----------------------------------------
                 label( end );
                 // completion(block)

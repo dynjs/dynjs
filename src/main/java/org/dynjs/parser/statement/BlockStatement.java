@@ -36,19 +36,19 @@ public class BlockStatement extends AbstractStatement implements Statement {
         super( tree );
         this.blockContent = blockContent;
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        if ( this.blockContent == null ) {
+        if (this.blockContent == null) {
             return Collections.emptyList();
         }
-        
+
         List<FunctionDeclaration> decls = new ArrayList<>();
-        for ( Statement each : this.blockContent ) {
-            if ( each instanceof FunctionDeclaration ) {
-                decls.add( (FunctionDeclaration) each);
+        for (Statement each : this.blockContent) {
+            if (each instanceof FunctionDeclaration) {
+                decls.add( (FunctionDeclaration) each );
             }
         }
-        
+
         return decls;
     }
 
@@ -59,7 +59,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
                 // 12.1
                 LabelNode abrupt = new LabelNode();
                 LabelNode end = new LabelNode();
-                
+
                 append( normalCompletion() );
                 // completion
 
@@ -67,7 +67,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     LabelNode nonAbrupt = new LabelNode();
                     LabelNode bringForwardValue = new LabelNode();
                     LabelNode nextStatement = new LabelNode();
-                    
+
                     append( statement.getCodeBlock() );
                     // completion(prev) completion(cur)
                     dup();
@@ -75,43 +75,43 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     append( handleCompletion( nonAbrupt, nonAbrupt, abrupt, abrupt, abrupt ) );
                     label( nonAbrupt );
                     // completion(prev) completion(cur);
-                    
+
                     dup();
                     // completion(prev) completion(cur) completion(cur)
                     append( jsCompletionValue() );
                     // completion(prev) completion(cur) value
                     ifnull( bringForwardValue );
-                    // completion(prev) completion(cur) 
+                    // completion(prev) completion(cur)
                     swap();
-                    // completion(cur) completion(prev) 
+                    // completion(cur) completion(prev)
                     pop();
-                    // completion(cur) 
+                    // completion(cur)
                     go_to( nextStatement );
-                    
-                    label(bringForwardValue);
+
+                    label( bringForwardValue );
                     // completion(prev) completion(cur)
                     swap();
                     // completion(cur) completion(prev)
                     append( jsCompletionValue() );
                     // completion(cur) val(prev)
-                    putfield( p(Completion.class), "value", sig(Object.class) );
+                    putfield( p( Completion.class ), "value", sig( Object.class ) );
                     // completion(cur)
                     label( nextStatement );
                     // completion(cur)
                 }
-                
-                go_to(end);
-                
+
+                go_to( end );
+
                 // ----------------------------------------
                 // ABRUPT
-                
-                label(abrupt); 
+
+                label( abrupt );
                 // completion(prev) completion(cur)
                 swap();
                 // completion(cur) completion(prev)
                 pop();
                 // completion(cur)
-                
+
                 // ----------------------------------------
                 // END
                 label( end );

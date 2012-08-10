@@ -37,15 +37,15 @@ public class FunctionDeclaration extends AbstractStatement {
         this.formalParameters = formalParameters;
         this.block = block;
     }
-    
+
     public String getIdentifier() {
         return this.identifier;
     }
-    
+
     public List<String> getFormalParameters() {
         return this.formalParameters;
     }
-    
+
     public BlockStatement getBlock() {
         return this.block;
     }

@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 package org.dynjs.parser.statement;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
@@ -30,18 +29,20 @@ public class InstanceOfRelOpStatement extends AbstractStatement implements State
     private final Statement r;
 
     public InstanceOfRelOpStatement(final Tree tree, final Statement l, final Statement r) {
-        super(tree);
+        super( tree );
         this.l = l;
         this.r = r;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(l.getCodeBlock());
-            append(r.getCodeBlock());
-            invokedynamic("instanceof", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( l.getCodeBlock() );
+                append( r.getCodeBlock() );
+                invokedynamic( "instanceof", sig( Boolean.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 
 }

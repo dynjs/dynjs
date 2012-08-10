@@ -28,7 +28,7 @@ public class DeleteOpStatement extends AbstractStatement implements Statement {
     private final Statement expression;
 
     public DeleteOpStatement(final Tree tree, final Statement expression) {
-        super(tree);
+        super( tree );
         this.expression = expression;
     }
 
@@ -36,11 +36,13 @@ public class DeleteOpStatement extends AbstractStatement implements Statement {
     public CodeBlock getCodeBlock() {
         final Statement lhs = ((ResolveByIndexStatement) expression).getLhs();
         final Statement index = ((ResolveByIndexStatement) expression).getIndex();
-        return new CodeBlock() {{
-            append(lhs.getCodeBlock());
-            append(index.getCodeBlock());
-            invokedynamic("delete", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( lhs.getCodeBlock() );
+                append( index.getCodeBlock() );
+                invokedynamic( "delete", sig( Boolean.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 
 }

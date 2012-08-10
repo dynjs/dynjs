@@ -39,7 +39,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         this.position = new Position( tree );
         this.number = counter.incrementAndGet();
     }
-    
+
     AbstractStatement(final Position position) {
         this.position = position;
         this.number = counter.incrementAndGet();
@@ -94,7 +94,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             }
         };
     }
-    
+
     public CodeBlock breakCompletion(final String target) {
         return new CodeBlock() {
             {
@@ -110,7 +110,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             }
         };
     }
-    
+
     public CodeBlock throwCompletion() {
         return new CodeBlock() {
             {

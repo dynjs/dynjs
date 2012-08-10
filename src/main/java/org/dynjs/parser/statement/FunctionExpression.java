@@ -65,22 +65,22 @@ public class FunctionExpression extends AbstractCompilingStatement {
         return new CodeBlock() {
             {
                 LabelNode skipCompile = new LabelNode();
-                
+
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                // context 
+                // context
                 ldc( block.getStatementNumber() );
                 // context statement-num
                 invokevirtual( p( ExecutionContext.class ), "retrieveBlockEntry", sig( Entry.class, int.class ) );
                 // entry
                 dup();
                 // entry entry
-                getfield( p(Entry.class), "compiled", sig(Object.class)  );
+                getfield( p( Entry.class ), "compiled", sig( Object.class ) );
                 // entry function
                 ifnonnull( skipCompile );
                 // entry
                 dup();
                 // entry entry
-                
+
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 invokevirtual( p( ExecutionContext.class ), "getCompiler", sig( JSFunction.class ) );
                 // entry entry compiler
@@ -111,13 +111,13 @@ public class FunctionExpression extends AbstractCompilingStatement {
                 // entry entry compiler context bool statement
                 invokevirtual( p( JSCompiler.class ), "compileFunction", sig( JSFunction.class, ExecutionContext.class, boolean.class, Statement.class ) );
                 // entry entry function
-                
-                putfield( p(Entry.class), "compiled", sig(Object.class )  );
+
+                putfield( p( Entry.class ), "compiled", sig( Object.class ) );
                 // entry
-                
-                label(skipCompile);
-                // entry 
-                getfield( p(Entry.class), "compiled", sig(Object.class )  );
+
+                label( skipCompile );
+                // entry
+                getfield( p( Entry.class ), "compiled", sig( Object.class ) );
                 // function
             }
         };

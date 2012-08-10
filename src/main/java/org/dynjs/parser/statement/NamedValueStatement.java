@@ -28,17 +28,19 @@ public class NamedValueStatement extends AbstractStatement implements Statement 
     private final Statement expr;
 
     public NamedValueStatement(final Tree tree, final Statement propertyName, final Statement expr) {
-        super(tree);
+        super( tree );
         this.propertyName = propertyName;
         this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(propertyName.getCodeBlock());
-            append(expr.getCodeBlock());
-            invokedynamic("DefineOwnProperty", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( propertyName.getCodeBlock() );
+                append( expr.getCodeBlock() );
+                invokedynamic( "DefineOwnProperty", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 }

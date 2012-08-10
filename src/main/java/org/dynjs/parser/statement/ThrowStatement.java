@@ -26,17 +26,19 @@ public class ThrowStatement extends AbstractStatement implements Statement {
     private final Statement expression;
 
     public ThrowStatement(final Tree tree, Statement expression) {
-        super(tree);
+        super( tree );
         this.expression = expression;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(expression.getCodeBlock());
-            append( jsGetValue() );
-            append( throwCompletion() );
-        }};
+        return new CodeBlock() {
+            {
+                append( expression.getCodeBlock() );
+                append( jsGetValue() );
+                append( throwCompletion() );
+            }
+        };
     }
 
 }

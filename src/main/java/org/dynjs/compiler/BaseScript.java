@@ -38,11 +38,11 @@ public class BaseScript implements Scope {
 
     @Override
     public Object resolve(String name) {
-        return globalScope.resolve(name);
+        return globalScope.resolve( name );
     }
 
     @Override
     public void define(String property, Object value) {
-        globalScope.define(property, value);
+        globalScope.define( property, value );
     }
 }

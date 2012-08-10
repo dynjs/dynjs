@@ -9,11 +9,11 @@ public class CatchClause extends AbstractStatement {
     private final BlockStatement block;
 
     public CatchClause(Tree tree, String identifier, BlockStatement block) {
-        super(tree);
+        super( tree );
         this.identifier = identifier;
         this.block = block;
     }
-    
+
     public String getIdentifier() {
         return this.identifier;
     }

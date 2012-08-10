@@ -108,7 +108,7 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 // lhs
                 append( jsToNumber() );
                 // num(lhs)
-                
+
                 append( getRhs().getCodeBlock() );
                 // num(lhs) rhs
                 append( jsToNumber() );

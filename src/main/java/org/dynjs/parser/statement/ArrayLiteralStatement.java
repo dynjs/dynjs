@@ -30,35 +30,39 @@ public class ArrayLiteralStatement extends AbstractStatement implements Statemen
     private final List<Statement> exprs;
 
     public ArrayLiteralStatement(final Tree tree, final List<Statement> exprs) {
-        super(tree);
+        super( tree );
         this.exprs = exprs;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = new CodeBlock() {{
-            newobj(p(DynArray.class));
-            dup();
-            pushInt(exprs.size());
-            invokespecial(p(DynArray.class), "<init>", sig(void.class, int.class));
-            astore(4);
-        }};
-        Statement[] statements = exprs.toArray(new Statement[]{});
+        CodeBlock codeBlock = new CodeBlock() {
+            {
+                newobj( p( DynArray.class ) );
+                dup();
+                pushInt( exprs.size() );
+                invokespecial( p( DynArray.class ), "<init>", sig( void.class, int.class ) );
+                astore( 4 );
+            }
+        };
+        Statement[] statements = exprs.toArray( new Statement[] {} );
         for (int i = 0; i < statements.length; i++) {
             Statement statement = statements[i];
-            codeBlock = retrieveArrayReference(i, statement, codeBlock);
+            codeBlock = retrieveArrayReference( i, statement, codeBlock );
         }
-        return codeBlock.aload(4);
+        return codeBlock.aload( 4 );
     }
 
     private CodeBlock retrieveArrayReference(final int stackReference, final Statement statement,
-                                             final CodeBlock codeBlock) {
-        return new CodeBlock() {{
-            append(codeBlock);
-            aload(4);
-            pushInt(stackReference);
-            append(statement.getCodeBlock());
-            invokevirtual(p(DynArray.class), "set", sig(void.class, int.class, Object.class));
-        }};
+            final CodeBlock codeBlock) {
+        return new CodeBlock() {
+            {
+                append( codeBlock );
+                aload( 4 );
+                pushInt( stackReference );
+                append( statement.getCodeBlock() );
+                invokevirtual( p( DynArray.class ), "set", sig( void.class, int.class, Object.class ) );
+            }
+        };
     }
 }

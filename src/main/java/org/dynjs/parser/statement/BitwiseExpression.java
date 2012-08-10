@@ -46,11 +46,11 @@ public class BitwiseExpression extends AbstractBinaryExpression {
                     iand();
                 } else if (getOp().equals( "|" )) {
                     ior();
-                } else if ( getOp().equals("^" ) ) {
+                } else if (getOp().equals( "^" )) {
                     ixor();
                 }
                 // int
-                
+
                 i2d();
                 // double
 

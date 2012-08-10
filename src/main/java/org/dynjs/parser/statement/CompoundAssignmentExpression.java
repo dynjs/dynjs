@@ -38,16 +38,16 @@ public class CompoundAssignmentExpression extends AbstractExpression {
             {
                 append( rootExpr.getLhs().getCodeBlock() );
                 // reference
-                
+
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // reference context
-                
+
                 append( rootExpr.getCodeBlock() );
                 // reference context value
-                
+
                 dup();
                 // reference context value value
-                
+
                 invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
                 // value
             }

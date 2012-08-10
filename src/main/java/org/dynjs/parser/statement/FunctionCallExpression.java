@@ -59,14 +59,14 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context function ref
                 dup();
                 // context function ref ref
-                instance_of( p(Reference.class ) );
+                instance_of( p( Reference.class ) );
                 // context function ref isref?
                 iffalse( noSelf );
                 // context function ref
                 append( jsGetBase() );
                 // context function self
                 go_to( doCall );
-                
+
                 // ------------------------------------------
                 // No self
                 label( noSelf );
@@ -75,26 +75,26 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context function
                 append( jsPushUndefined() );
                 // context function UNDEFINED
-                
+
                 // ------------------------------------------
                 // call()
-                
+
                 label( doCall );
                 // context function self
-                
+
                 int numArgs = argExprs.size();
                 bipush( numArgs );
-                anewarray( p(Object.class) );
-                // context function self  array
-                for ( int i = 0 ; i < numArgs ; ++i ) {
+                anewarray( p( Object.class ) );
+                // context function self array
+                for (int i = 0; i < numArgs; ++i) {
                     dup();
                     bipush( i );
-                    append( argExprs.get(i).getCodeBlock() );
+                    append( argExprs.get( i ).getCodeBlock() );
                     aastore();
                 }
                 // context function self array
                 // call ExecutionContext#call(fn, self, args) -> Object
-                invokevirtual( p(ExecutionContext.class), "call", sig( Object.class, JSFunction.class, Object.class, Object[].class) );
+                invokevirtual( p( ExecutionContext.class ), "call", sig( Object.class, JSFunction.class, Object.class, Object[].class ) );
                 // obj
             }
         };

@@ -17,31 +17,31 @@ public class LogicalExpression extends AbstractBinaryExpression {
         return new CodeBlock() {
             {
                 LabelNode end = new LabelNode();
-                
+
                 append( getLhs().getCodeBlock() );
                 append( jsGetValue() );
                 append( jsToBoolean() );
-                invokevirtual( p(Boolean.class), "boolValue", sig( boolean.class ) );
+                invokevirtual( p( Boolean.class ), "boolValue", sig( boolean.class ) );
                 // bool(lhs)
                 dup();
                 // bool(lhs) bool(lhs)
-                
-                if ( getOp().equals( "&&" ) ) {
+
+                if (getOp().equals( "&&" )) {
                     iffalse( end );
-                } else if ( getOp().equals( "||" ) ) {
+                } else if (getOp().equals( "||" )) {
                     iftrue( end );
                 }
-                
+
                 append( getRhs().getCodeBlock() );
                 append( jsGetValue() );
                 append( jsToBoolean() );
-                invokevirtual( p(Boolean.class), "boolValue", sig( boolean.class ) );
+                invokevirtual( p( Boolean.class ), "boolValue", sig( boolean.class ) );
                 // bool(lhs) bool(rhs)
                 swap();
                 // bool(rhs) bool(lhs)
                 pop();
-                // bool(rhs) 
-                
+                // bool(rhs)
+
                 // ----------------------------------------
                 label( end );
                 nop();

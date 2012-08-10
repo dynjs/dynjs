@@ -16,46 +16,48 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private String[] formalParameters;
     private LexicalEnvironment scope;
     private boolean strict;
-    
-    public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String...formalParameters) {
-        this( null, scope, strict, formalParameters);
+
+    public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+        this( null, scope, strict, formalParameters );
     }
 
-    public AbstractFunction(final BlockStatement body, final LexicalEnvironment scope, final boolean strict, final String...formalParameters) {
+    public AbstractFunction(final BlockStatement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         this.body = body;
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
         setClassName( "Function" );
-        PropertyDescriptor desc = new PropertyDescriptor() {{
-            set( "Value", formalParameters.length );
-            set( "Writable", false );
-            set( "Configurable", false );
-            set( "Enumerable", false );
-        }};
+        PropertyDescriptor desc = new PropertyDescriptor() {
+            {
+                set( "Value", formalParameters.length );
+                set( "Writable", false );
+                set( "Configurable", false );
+                set( "Enumerable", false );
+            }
+        };
         defineOwnProperty( null, "length", desc, false );
     }
-    
+
     public LexicalEnvironment getScope() {
         return this.scope;
     }
-    
+
     public boolean isStrict() {
         return this.strict;
     }
-    
+
     @Override
     public String[] getFormalParameters() {
         return this.formalParameters;
     }
-    
+
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
 
     @Override
     public Object get(ExecutionContext context, String name) {
         // 15.3.5.4
-        if ( this.strict ) {
+        if (this.strict) {
             throw new TypeError();
         }
         return super.get( context, name );
@@ -63,10 +65,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        if ( this.body == null ) {
+        if (this.body == null) {
             return Collections.emptyList();
         }
-        
+
     }
 
     @Override
@@ -74,8 +76,5 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         // TODO Auto-generated method stub
         return null;
     }
-    
-    
-    
 
 }

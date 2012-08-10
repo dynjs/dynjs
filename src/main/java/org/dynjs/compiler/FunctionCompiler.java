@@ -20,7 +20,6 @@ public class FunctionCompiler extends AbstractCompiler {
 
     private final String CALL = sig( Object.class, ExecutionContext.class, Object.class, Object[].class );
 
-
     public FunctionCompiler(Config config) {
         super( config, "Function" );
     }
@@ -34,21 +33,23 @@ public class FunctionCompiler extends AbstractCompiler {
                                 aload( 0 );
                                 // this
                                 aload( 1 );
-                                // this statements 
+                                // this statements
                                 aload( 2 );
                                 // this statements scope
                                 pushBoolean( strict );
                                 // this statements scope strict
                                 aload( 3 );
-                                // this statements scope strict formal-parameters
-                                invokespecial( p( AbstractFunction.class ), "<init>", sig( void.class, Statement[].class, LexicalEnvironment.class, boolean.class, String[].class ) );
+                                // this statements scope strict
+                                // formal-parameters
+                                invokespecial( p( AbstractFunction.class ), "<init>",
+                                        sig( void.class, Statement[].class, LexicalEnvironment.class, boolean.class, String[].class ) );
                                 voidreturn();
                             }
                         } );
                 defineMethod( "call", ACC_PUBLIC, CALL, body.getCodeBlock() );
             }
         };
-        
+
         Class<AbstractFunction> functionClass = (Class<AbstractFunction>) defineClass( jiteClass );
         try {
             Constructor<AbstractFunction> ctor = functionClass.getDeclaredConstructor( BlockStatement.class, LexicalEnvironment.class, String[].class );

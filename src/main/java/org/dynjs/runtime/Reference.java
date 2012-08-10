@@ -4,7 +4,7 @@ import org.dynjs.exception.ReferenceError;
 import org.dynjs.exception.TypeError;
 
 public class Reference {
-    
+
     private JSObject globalObject;
     private Object base;
     private String referencedName;
@@ -16,60 +16,60 @@ public class Reference {
         this.base = base;
         this.strict = strict;
     }
-    
+
     public Object getBase() {
         return this.base;
     }
-    
+
     public String getReferencedName() {
         return this.referencedName;
     }
-    
+
     public boolean isStrictReference() {
         return this.strict;
     }
-    
+
     public boolean hasPrimitiveBase() {
         return false;
     }
-    
+
     public boolean isPropertyReference() {
-        return ( this.base instanceof JSObject )  || hasPrimitiveBase();
+        return (this.base instanceof JSObject) || hasPrimitiveBase();
     }
-    
+
     public boolean isUnresolvableReference() {
         return this.base == Types.UNDEFINED;
     }
-    
+
     public Object getValue(ExecutionContext context) {
         // 8.7.1
         Object value = null;
-        if ( isUnresolvableReference() ) {
+        if (isUnresolvableReference()) {
             throw new TypeError();
         }
-        
-        if ( isPropertyReference() ) {
-            if ( ! hasPrimitiveBase() ) {
+
+        if (isPropertyReference()) {
+            if (!hasPrimitiveBase()) {
                 value = ((JSObject) this.base).get( context, this.referencedName );
             } else {
                 // TODO: handle primitives (8.7.1 special case)
             }
         } else {
-           value = ((EnvironmentRecord) this.base).getBindingValue( context, this.referencedName, this.strict );
+            value = ((EnvironmentRecord) this.base).getBindingValue( context, this.referencedName, this.strict );
         }
         return value;
     }
-    
+
     public void putValue(ExecutionContext context, Object value) {
         // 8.7.2
-        if ( isUnresolvableReference() ) {
-            if ( isStrictReference() ) {
+        if (isUnresolvableReference()) {
+            if (isStrictReference()) {
                 throw new ReferenceError( this.referencedName );
             } else {
-                this.globalObject.put(  context, this.referencedName, value, false );
+                this.globalObject.put( context, this.referencedName, value, false );
             }
-        } else if ( isPropertyReference() ) {
-            if ( ! hasPrimitiveBase() ) {
+        } else if (isPropertyReference()) {
+            if (!hasPrimitiveBase()) {
                 ((JSObject) this.base).put( context, this.referencedName, value, this.strict );
             } else {
                 // TODO: handle primitives

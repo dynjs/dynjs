@@ -29,7 +29,7 @@ public class OperationAssignmentStatement extends AbstractStatement implements S
     private final Statement r;
 
     public OperationAssignmentStatement(final Tree tree, final String operation, final Statement l, final Statement r) {
-        super(tree);
+        super( tree );
         this.operation = operation;
         this.l = l;
         this.r = r;
@@ -38,15 +38,17 @@ public class OperationAssignmentStatement extends AbstractStatement implements S
     @Override
     public CodeBlock getCodeBlock() {
         final IdentifierReferenceExpression resolvable = (IdentifierReferenceExpression) l;
-        return new CodeBlock() {{
-            append(l.getCodeBlock());
-            append(r.getCodeBlock());
-            invokedynamic(operation, DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            aload(DynJSCompiler.Arities.THIS);
-            swap();
-            ldc(resolvable.getName());
-            swap();
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( l.getCodeBlock() );
+                append( r.getCodeBlock() );
+                invokedynamic( operation, DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                aload( DynJSCompiler.Arities.THIS );
+                swap();
+                ldc( resolvable.getName() );
+                swap();
+                invokedynamic( "dyn:setProp", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 }

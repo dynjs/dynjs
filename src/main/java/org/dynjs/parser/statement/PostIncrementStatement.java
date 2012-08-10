@@ -23,7 +23,7 @@ import org.dynjs.parser.Statement;
 public class PostIncrementStatement extends AbstractUnaryOperationStatement {
 
     public PostIncrementStatement(final Tree tree, final Statement expression) {
-        super(tree, expression);
+        super( tree, expression );
     }
 
     protected String operation() {

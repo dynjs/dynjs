@@ -104,11 +104,10 @@ public class Executor {
     public Statement variableDeclarationStatement(final Tree tree, List<VariableDeclarationExpression> declExprs) {
         return new VariableDeclarationStatement( tree, declExprs );
     }
-    
+
     public VariableDeclarationExpression variableDeclarationExpression(final Tree tree, String identifier, Expression initializer) {
         return new VariableDeclarationExpression( tree, identifier, initializer );
     }
-
 
     public AdditiveExpression defineAddOp(final Tree tree, final Expression l, final Expression r) {
         return new AdditiveExpression( tree, l, r, "+" );
@@ -333,7 +332,7 @@ public class Executor {
     public BooleanLiteralExpression defineFalseLiteral(final Tree tree) {
         return new BooleanLiteralExpression( tree, false );
     }
-    
+
     public ExpressionStatement expressionStatement(Expression expr) {
         return new ExpressionStatement( expr );
     }

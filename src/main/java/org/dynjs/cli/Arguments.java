@@ -73,6 +73,6 @@ public class Arguments {
     }
 
     public String getFilename() {
-        return arguments.get(0);
+        return arguments.get( 0 );
     }
 }

@@ -28,16 +28,18 @@ public class TypeOfOpExpressionStatement extends AbstractStatement implements St
     private final Statement expression;
 
     public TypeOfOpExpressionStatement(final Tree tree, final Statement expression) {
-        super(tree);
+        super( tree );
         this.expression = expression;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(expression.getCodeBlock());
-            invokedynamic("typeof", sig(String.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( expression.getCodeBlock() );
+                invokedynamic( "typeof", sig( String.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 
 }

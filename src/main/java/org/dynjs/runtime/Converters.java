@@ -29,15 +29,15 @@ public class Converters {
     public static final MethodHandle toInteger;
 
     static {
-        toBoolean = Lookup.PUBLIC.findStatic(Converters.class, "toBoolean", methodType(Boolean.class, Object.class));
-        toInteger = Lookup.PUBLIC.findStatic(Converters.class, "toInteger", methodType(Integer.class, Double.class));
+        toBoolean = Lookup.PUBLIC.findStatic( Converters.class, "toBoolean", methodType( Boolean.class, Object.class ) );
+        toInteger = Lookup.PUBLIC.findStatic( Converters.class, "toInteger", methodType( Integer.class, Double.class ) );
     }
 
-    public static final GuardedInvocation Guarded_toBoolean = new GuardedInvocation(toBoolean,
-            Guards.isInstance(Object.class, methodType(Boolean.class, Object.class)));
+    public static final GuardedInvocation Guarded_toBoolean = new GuardedInvocation( toBoolean,
+            Guards.isInstance( Object.class, methodType( Boolean.class, Object.class ) ) );
 
     public static Boolean toBoolean(Object value) {
-        return DynObject.toBoolean(value);
+        return DynObject.toBoolean( value );
     }
 
     public static Integer toInteger(Double value) {

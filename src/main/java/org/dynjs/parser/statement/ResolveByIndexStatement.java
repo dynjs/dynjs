@@ -27,26 +27,28 @@ public class ResolveByIndexStatement extends AbstractStatement implements Statem
     private final Statement index;
 
     public ResolveByIndexStatement(final Tree tree, final Statement lhs, final Tree treeIndex, final String index) {
-        this(tree, lhs, new StringLiteralExpression(treeIndex, index));
+        this( tree, lhs, new StringLiteralExpression( treeIndex, index ) );
 
     }
 
     public ResolveByIndexStatement(final Tree tree, final Statement lhs, final Statement index) {
-        super(tree);
+        super( tree );
         this.lhs = lhs;
         this.index = index;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = new CodeBlock() {{
-            append(lhs.getCodeBlock());
-            append(index.getCodeBlock());
-        }};
+        CodeBlock codeBlock = new CodeBlock() {
+            {
+                append( lhs.getCodeBlock() );
+                append( index.getCodeBlock() );
+            }
+        };
         if (index instanceof NumberLiteralStatement) {
-            return codeBlock.invokedynamic("dyn:getElement", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            return codeBlock.invokedynamic( "dyn:getElement", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
         } else {
-            return codeBlock.invokedynamic("dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            return codeBlock.invokedynamic( "dyn:getProp", DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
         }
     }
 

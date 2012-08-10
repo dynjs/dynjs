@@ -24,11 +24,11 @@ import org.dynjs.runtime.Types;
 public class UndefinedValueStatement extends AbstractStatement implements Statement {
 
     public UndefinedValueStatement() {
-        super(null);
+        super( null );
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock().getstatic(p(Types.class), "UNDEFINED", ci(Object.class));
+        return new CodeBlock().getstatic( p( Types.class ), "UNDEFINED", ci( Object.class ) );
     }
 }

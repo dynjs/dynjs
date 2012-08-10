@@ -24,18 +24,20 @@ public class BooleanLiteralExpression extends AbstractExpression {
     private final boolean value;
 
     public BooleanLiteralExpression(final Tree tree, final boolean value) {
-        super(tree);
+        super( tree );
         this.value = value;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            if ( value ) {
-                iconst_1();
-            } else {
-                iconst_0();
+        return new CodeBlock() {
+            {
+                if (value) {
+                    iconst_1();
+                } else {
+                    iconst_0();
+                }
             }
-        }};
+        };
     }
 }

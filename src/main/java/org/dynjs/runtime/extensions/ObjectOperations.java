@@ -30,7 +30,7 @@ public class ObjectOperations {
      * http://es5.github.com/#x11.9.
      */
     public static Boolean eq(Object o1, Object o2) {
-        if (RT.allArgsAreSameType(o1, o2)) {
+        if (RT.allArgsAreSameType( o1, o2 )) {
             if (DynThreadContext.UNDEFINED == o1 || DynThreadContext.NULL == o1) {
                 return true;
             }
@@ -39,11 +39,11 @@ public class ObjectOperations {
                 Double n1 = (Double) o1;
                 Double n2 = (Double) o2;
 
-                if (n1.equals(Double.NaN) || n2.equals(Double.NaN)) {
+                if (n1.equals( Double.NaN ) || n2.equals( Double.NaN )) {
                     return false;
                 }
 
-                if (n1.equals(n2)) {
+                if (n1.equals( n2 )) {
                     return true;
                 }
 
@@ -55,11 +55,11 @@ public class ObjectOperations {
             }
 
             if (o1 instanceof String) {
-                return o1.equals(o2);
+                return o1.equals( o2 );
             }
 
             if (o2 instanceof Boolean) {
-                return o1.equals(o2);
+                return o1.equals( o2 );
             }
 
             return o1 == o2;
@@ -71,42 +71,42 @@ public class ObjectOperations {
         }
 
         if (o1 instanceof Double && o2 instanceof String) {
-            o2 = toNumber((String) o2);
-            return o1.equals(o2);
+            o2 = toNumber( (String) o2 );
+            return o1.equals( o2 );
         }
 
         if (o1 instanceof String && o2 instanceof Double) {
-            o1 = toNumber((String) o1);
-            return o1.equals(o2);
+            o1 = toNumber( (String) o1 );
+            return o1.equals( o2 );
         }
 
         if (o1 instanceof Boolean) {
-            o1 = toNumber((Boolean) o1);
-            return o1.equals(o2);
+            o1 = toNumber( (Boolean) o1 );
+            return o1.equals( o2 );
         }
 
         if (o2 instanceof Boolean) {
-            o2 = toNumber((Boolean) o2);
-            return o1.equals(o2);
+            o2 = toNumber( (Boolean) o2 );
+            return o1.equals( o2 );
         }
 
-		if ((o1 instanceof String || o1 instanceof Double)
-				&& o2 instanceof DynObject) {
-			o2 = toPrimitive((DynObject) o2);
-			return o1.equals(o2);
-		}
+        if ((o1 instanceof String || o1 instanceof Double)
+                && o2 instanceof DynObject) {
+            o2 = toPrimitive( (DynObject) o2 );
+            return o1.equals( o2 );
+        }
 
-		if (o1 instanceof DynObject
-				&& (o2 instanceof String || o2 instanceof Double)) {
-			o1 = toPrimitive((DynObject) o1);
-			return o1.equals(o2);
-		}
+        if (o1 instanceof DynObject
+                && (o2 instanceof String || o2 instanceof Double)) {
+            o1 = toPrimitive( (DynObject) o1 );
+            return o1.equals( o2 );
+        }
 
         return false;
     }
 
-	public static Boolean strict_eq(Object o1, Object o2) {
-        if (!RT.allArgsAreSameType(o1, o2)) {
+    public static Boolean strict_eq(Object o1, Object o2) {
+        if (!RT.allArgsAreSameType( o1, o2 )) {
             return false;
         }
 
@@ -118,11 +118,11 @@ public class ObjectOperations {
             Double n1 = (Double) o1;
             Double n2 = (Double) o2;
 
-            if (n1.equals(Double.NaN) || n2.equals(Double.NaN)) {
+            if (n1.equals( Double.NaN ) || n2.equals( Double.NaN )) {
                 return false;
             }
 
-            if (n1.equals(n2)) {
+            if (n1.equals( n2 )) {
                 return true;
             }
 
@@ -134,11 +134,11 @@ public class ObjectOperations {
         }
 
         if (o1 instanceof String) {
-            o1.equals(o2);
+            o1.equals( o2 );
         }
 
         if (o1 instanceof Boolean) {
-            o1.equals(o2);
+            o1.equals( o2 );
         }
 
         return o1 == o2;

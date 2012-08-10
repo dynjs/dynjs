@@ -24,13 +24,15 @@ import org.dynjs.runtime.Types;
 public class NullLiteralExpression extends AbstractExpression {
 
     public NullLiteralExpression(final Tree tree) {
-        super(tree);
+        super( tree );
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            getstatic(p(Types.class), "NULL", ci(Types.Null.class));
-        }};
+        return new CodeBlock() {
+            {
+                getstatic( p( Types.class ), "NULL", ci( Types.Null.class ) );
+            }
+        };
     }
 }

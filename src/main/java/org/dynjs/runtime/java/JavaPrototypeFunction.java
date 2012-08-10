@@ -5,5 +5,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JavaPrototypeFunction {
-	String name() default "";
+    String name() default "";
 }

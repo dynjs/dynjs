@@ -8,23 +8,23 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
 public class UnaryMinusStatement extends AbstractStatement implements
-		Statement {
+        Statement {
 
-	private Statement expression;
+    private Statement expression;
 
-	public UnaryMinusStatement(Tree tree, Statement expression) {
-		super(tree);
-		this.expression = expression;
-	}
+    public UnaryMinusStatement(Tree tree, Statement expression) {
+        super( tree );
+        this.expression = expression;
+    }
 
-	@Override
-	public CodeBlock getCodeBlock() {
-		return new CodeBlock() {
-			{
-				append(expression.getCodeBlock());
-				invokedynamic("unary_minus", sig(Double.class, Object.class),
-						RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-			}
-		};
-	}
+    @Override
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock() {
+            {
+                append( expression.getCodeBlock() );
+                invokedynamic( "unary_minus", sig( Double.class, Object.class ),
+                        RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
+    }
 }

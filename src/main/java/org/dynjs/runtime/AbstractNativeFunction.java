@@ -8,7 +8,7 @@ import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
-    public AbstractNativeFunction(LexicalEnvironment scope, boolean strict, String...formalParameters) {
+    public AbstractNativeFunction(LexicalEnvironment scope, boolean strict, String... formalParameters) {
         super( scope, strict, formalParameters );
     }
 

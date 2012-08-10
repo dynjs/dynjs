@@ -24,24 +24,24 @@ public class SyntaxError extends ParserException {
     private List<String> errors;
 
     public SyntaxError(RecognitionException e) {
-        super(e);
+        super( e );
     }
-    
+
     public SyntaxError(List<String> errors) {
         this.errors = errors;
     }
-    
+
     public List<String> getErrors() {
         return this.errors;
     }
-    
+
     public String getMessage() {
         StringBuffer buf = new StringBuffer();
-        
-        for ( String message : errors ) {
+
+        for (String message : errors) {
             buf.append( message + "\n" );
         }
-        
+
         return buf.toString();
     }
 }

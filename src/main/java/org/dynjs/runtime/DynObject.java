@@ -39,7 +39,7 @@ public class DynObject implements JSObject {
     public JSObject getPrototype() {
         return this.prototype;
     }
-    
+
     protected void setPrototype(JSObject prototype) {
         this.prototype = prototype;
     }
@@ -48,7 +48,7 @@ public class DynObject implements JSObject {
     public String getClassName() {
         return this.className;
     }
-    
+
     protected void setClassName(String className) {
         this.className = className;
     }
@@ -57,7 +57,7 @@ public class DynObject implements JSObject {
     public boolean isExtensible() {
         return extensible;
     }
-    
+
     protected void setExtensible(boolean extensible) {
         this.extensible = extensible;
     }

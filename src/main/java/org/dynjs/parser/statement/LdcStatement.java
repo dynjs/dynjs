@@ -25,10 +25,12 @@ public class LdcStatement extends AbstractStatement implements Statement {
     private final CodeBlock codeBlock;
 
     public LdcStatement(final Tree tree, final Object arg0) {
-        super(tree);
-        this.codeBlock = new CodeBlock() {{
-            ldc(arg0);
-        }};
+        super( tree );
+        this.codeBlock = new CodeBlock() {
+            {
+                ldc( arg0 );
+            }
+        };
     }
 
     @Override

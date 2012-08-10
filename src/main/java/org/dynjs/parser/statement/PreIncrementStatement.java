@@ -23,7 +23,7 @@ import org.dynjs.parser.Statement;
 public class PreIncrementStatement extends AbstractUnaryOperationStatement {
 
     public PreIncrementStatement(final Tree tree, final Statement expression) {
-        super(tree, expression);
+        super( tree, expression );
     }
 
     @Override

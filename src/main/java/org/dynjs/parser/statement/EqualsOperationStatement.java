@@ -28,18 +28,20 @@ public class EqualsOperationStatement extends AbstractStatement implements State
     private final Statement r;
 
     public EqualsOperationStatement(final Tree tree, final Statement l, final Statement r) {
-        super(tree);
+        super( tree );
         this.l = l;
         this.r = r;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(l.getCodeBlock());
-            append(r.getCodeBlock());
-            invokedynamic("eq", sig(Boolean.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( l.getCodeBlock() );
+                append( r.getCodeBlock() );
+                invokedynamic( "eq", sig( Boolean.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
 
     }
 }

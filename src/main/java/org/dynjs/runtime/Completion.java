@@ -34,7 +34,7 @@ public class Completion {
     public static Completion createNormal(Object value) {
         return new Completion( Type.NORMAL, value, null );
     }
-    
+
     public static Completion createBreak() {
         return new Completion( Type.BREAK, null, null );
     }

@@ -34,35 +34,37 @@ public class NewOperatorExpression extends AbstractExpression {
     private List<Expression> argExprs;
 
     public NewOperatorExpression(final Tree tree, final Expression newExpr, final List<Expression> argExprs) {
-        super(tree);
+        super( tree );
         this.newExpr = newExpr;
         this.argExprs = argExprs;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            // 11.2.2
-            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-            // context
-            append( newExpr.getCodeBlock() );
-            // context reference
-            append( jsGetValue( JSFunction.class ) );
-            // context ctor
-            int numArgs = argExprs.size();
-            bipush( numArgs );
-            anewarray( p(Object.class) );
-            // context ctor array
-            for ( int i = 0 ; i < numArgs ; ++i ) {
-                dup();
-                bipush( i );
-                append( argExprs.get(i).getCodeBlock() );
-                aastore();
+        return new CodeBlock() {
+            {
+                // 11.2.2
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                append( newExpr.getCodeBlock() );
+                // context reference
+                append( jsGetValue( JSFunction.class ) );
+                // context ctor
+                int numArgs = argExprs.size();
+                bipush( numArgs );
+                anewarray( p( Object.class ) );
+                // context ctor array
+                for (int i = 0; i < numArgs; ++i) {
+                    dup();
+                    bipush( i );
+                    append( argExprs.get( i ).getCodeBlock() );
+                    aastore();
+                }
+                // context ctor array
+                // call ExecutionContext#construct(fn, args) -> Object
+                invokevirtual( p( ExecutionContext.class ), "construct", sig( JSObject.class, JSFunction.class, Object[].class ) );
+                // obj
             }
-            // context ctor array
-            // call ExecutionContext#construct(fn, args) -> Object
-            invokevirtual( p(ExecutionContext.class), "construct", sig( JSObject.class, JSFunction.class, Object[].class) );
-            // obj
-        }};
+        };
     }
 }

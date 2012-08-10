@@ -32,15 +32,17 @@ import org.dynjs.runtime.extensions.StringOperations;
 
 public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
 
-    public static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap<Class, Map<String, MethodHandle>>() {{
-        put(Double.class, VTablePopulator.vtableFrom(NumberOperations.class));
-        put(Boolean.class, VTablePopulator.vtableFrom(BooleanOperations.class));
-        put(String.class, VTablePopulator.vtableFrom(StringOperations.class));
-    }};
+    public static final Map<Class, Map<String, MethodHandle>> vtable = new HashMap<Class, Map<String, MethodHandle>>() {
+        {
+            put( Double.class, VTablePopulator.vtableFrom( NumberOperations.class ) );
+            put( Boolean.class, VTablePopulator.vtableFrom( BooleanOperations.class ) );
+            put( String.class, VTablePopulator.vtableFrom( StringOperations.class ) );
+        }
+    };
 
     @Override
     public boolean canLinkType(Class<?> type) {
-        return vtable.containsKey(type);
+        return vtable.containsKey( type );
     }
 
     @Override
@@ -48,32 +50,32 @@ public class PrimitivesLinker implements TypeBasedGuardingDynamicLinker {
         Object[] arguments = linkRequest.getArguments();
         Object receiver = arguments[0];
         Class<? extends Object> receiverClass = receiver.getClass();
-        Map<String, MethodHandle> vtable = PrimitivesLinker.vtable.get(receiverClass);
+        Map<String, MethodHandle> vtable = PrimitivesLinker.vtable.get( receiverClass );
         CallSiteDescriptor descriptor = linkRequest.getCallSiteDescriptor();
-        MethodType targetMethodType = methodTypeForArguments(descriptor, arguments, receiverClass);
+        MethodType targetMethodType = methodTypeForArguments( descriptor, arguments, receiverClass );
 
         String selector = descriptor.getName() + targetMethodType.toMethodDescriptorString();
-        MethodHandle handle = vtable.get(selector);
+        MethodHandle handle = vtable.get( selector );
         if (handle != null) {
-            if (!descriptor.getMethodType().equals(handle.type())) {
-                handle = linkerServices.asType(handle, descriptor.getMethodType());
+            if (!descriptor.getMethodType().equals( handle.type() )) {
+                handle = linkerServices.asType( handle, descriptor.getMethodType() );
             }
-            return new GuardedInvocation(handle, Guards.isInstance(receiverClass, 0, descriptor.getMethodType()));
+            return new GuardedInvocation( handle, Guards.isInstance( receiverClass, 0, descriptor.getMethodType() ) );
         }
         return null;
     }
 
     private MethodType methodTypeForArguments(CallSiteDescriptor descriptor, Object[] arguments, Class<? extends Object> receiverClass) {
-        MethodType targetMethodType = MethodType.genericMethodType(arguments.length);
+        MethodType targetMethodType = MethodType.genericMethodType( arguments.length );
         Class<?> originalReturnType = descriptor.getMethodType().returnType();
         if (originalReturnType != Object.class) {
-            targetMethodType = targetMethodType.changeReturnType(originalReturnType);
+            targetMethodType = targetMethodType.changeReturnType( originalReturnType );
         } else {
-            targetMethodType = targetMethodType.changeReturnType(receiverClass);
+            targetMethodType = targetMethodType.changeReturnType( receiverClass );
         }
         for (int i = 0; i < arguments.length; i++) {
             Object argument = arguments[i];
-            targetMethodType = targetMethodType.changeParameterType(i, argument.getClass());
+            targetMethodType = targetMethodType.changeParameterType( i, argument.getClass() );
         }
         return targetMethodType;
     }

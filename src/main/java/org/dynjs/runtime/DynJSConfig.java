@@ -34,7 +34,7 @@ public class DynJSConfig {
     }
 
     public DynJSConfig(ClassLoader parentClassLoader) {
-        this.classLoader = new DynamicClassLoader(parentClassLoader);
+        this.classLoader = new DynamicClassLoader( parentClassLoader );
     }
 
     public void enableDebug() {
@@ -50,7 +50,7 @@ public class DynJSConfig {
     }
 
     public void addBuiltin(String bindingName, Object boundObject) {
-        builtins.add(new Builtin(bindingName, boundObject));
+        builtins.add( new Builtin( bindingName, boundObject ) );
     }
 
     public Set<Builtin> getBuiltins() {
@@ -60,21 +60,21 @@ public class DynJSConfig {
     public DynamicClassLoader getClassLoader() {
         return classLoader;
     }
-    
+
     public void setOutput(PrintStream outputStream) {
         this.outputStream = outputStream;
     }
-    
+
     public PrintStream getOutputStream() {
         return this.outputStream;
     }
-    
+
     public void setErrorStream(PrintStream errorStream) {
         this.errorStream = errorStream;
     }
-    
+
     public PrintStream getErrorStream() {
         return this.errorStream;
     }
-    
+
 }

@@ -7,6 +7,8 @@ import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public interface JSCode {
     boolean isStrict();
+
     List<FunctionDeclaration> getFunctionDeclarations();
+
     List<VariableDeclarationStatement> getVariableDeclarations();
 }

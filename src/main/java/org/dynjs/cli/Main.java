@@ -36,20 +36,20 @@ public class Main {
 
     public Main(PrintStream stream, String[] args) {
         dynJsArguments = new Arguments();
-        parser = new CmdLineParser(dynJsArguments);
-        parser.setUsageWidth(80);
+        parser = new CmdLineParser( dynJsArguments );
+        parser.setUsageWidth( 80 );
         arguments = args;
         context = new DynThreadContext();
         this.stream = stream;
     }
 
     public static void main(String[] args) {
-        new Main(System.out, args).run();
+        new Main( System.out, args ).run();
     }
 
     void run() {
         try {
-            parser.parseArgument(arguments);
+            parser.parseArgument( arguments );
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
                 showUsage();
@@ -58,11 +58,11 @@ public class Main {
             } else if (dynJsArguments.isVersion()) {
                 showVersion();
             } else if (!dynJsArguments.getFilename().isEmpty()) {
-                executeFile(dynJsArguments.getFilename());
+                executeFile( dynJsArguments.getFilename() );
             }
 
         } catch (CmdLineException e) {
-            stream.println(e.getMessage());
+            stream.println( e.getMessage() );
             stream.println();
             showUsage();
         }
@@ -71,30 +71,30 @@ public class Main {
     private void executeFile(String filename) {
         try {
             final DynJSConfig cfg = new DynJSConfig();
-            new DynJS(cfg).eval(context, new FileInputStream(filename), filename);
+            new DynJS( cfg ).eval( context, new FileInputStream( filename ), filename );
         } catch (FileNotFoundException e) {
-            stream.println("File " + filename + " not found");
+            stream.println( "File " + filename + " not found" );
         }
     }
 
     private void showVersion() {
-        stream.println("dynjs version " + DynJSVersion.FULL);
+        stream.println( "dynjs version " + DynJSVersion.FULL );
     }
 
     private void startRepl() {
         final DynJSConfig cfg = dynJsArguments.getDynJSConfig();
         Scope scope = new DynObject();
-        final DynJS environment = new DynJS(cfg);
-        Repl repl = new Repl(environment, context, scope, System.in, stream);
+        final DynJS environment = new DynJS( cfg );
+        Repl repl = new Repl( environment, context, scope, System.in, stream );
         repl.run();
     }
 
     private void showUsage() {
-        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console |--debug | --help | --version |FILE]\n");
-        usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
+        StringBuilder usageText = new StringBuilder( "Usage: dynjs [--console |--debug | --help | --version |FILE]\n" );
+        usageText.append( "Starts the dynjs console or executes FILENAME depending the parameters\n" );
 
-        stream.println(usageText.toString());
+        stream.println( usageText.toString() );
 
-        parser.printUsage(stream);
+        parser.printUsage( stream );
     }
 }

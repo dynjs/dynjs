@@ -9,26 +9,26 @@ import org.dynjs.runtime.RT;
 
 public class StrictEqualOperationStatement extends AbstractStatement implements Statement {
 
-	private final Statement leftHandStatement;
-	private final Statement rightHandStatement;
+    private final Statement leftHandStatement;
+    private final Statement rightHandStatement;
 
-	public StrictEqualOperationStatement(Tree tree, Statement leftHandStatement,
-			Statement rightHandStatement) {
-		super(tree);
-		this.leftHandStatement = leftHandStatement;
-		this.rightHandStatement = rightHandStatement;
-	}
+    public StrictEqualOperationStatement(Tree tree, Statement leftHandStatement,
+            Statement rightHandStatement) {
+        super( tree );
+        this.leftHandStatement = leftHandStatement;
+        this.rightHandStatement = rightHandStatement;
+    }
 
-	@Override
-	public CodeBlock getCodeBlock() {
-		return new CodeBlock() {
-			{
-				append(leftHandStatement.getCodeBlock());
-				append(rightHandStatement.getCodeBlock());
-				invokedynamic("strict_eq",
-						sig(Boolean.class, Object.class, Object.class),
-						RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-			}
-		};
-	}
+    @Override
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock() {
+            {
+                append( leftHandStatement.getCodeBlock() );
+                append( rightHandStatement.getCodeBlock() );
+                invokedynamic( "strict_eq",
+                        sig( Boolean.class, Object.class, Object.class ),
+                        RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
+    }
 }

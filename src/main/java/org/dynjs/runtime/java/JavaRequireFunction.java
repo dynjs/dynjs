@@ -23,7 +23,7 @@ public class JavaRequireFunction implements Function {
         String className = (String) arguments[0];
         Class clazz = null;
         try {
-            clazz = Class.forName(className, true, context.getClassLoader());
+            clazz = Class.forName( className, true, context.getClassLoader() );
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,7 @@ public class JavaRequireFunction implements Function {
 
     @Override
     public String[] getParameters() {
-        return new String[]{"className"};
+        return new String[] { "className" };
     }
 
 }

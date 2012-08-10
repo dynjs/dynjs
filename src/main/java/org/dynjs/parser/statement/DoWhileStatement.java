@@ -30,51 +30,53 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
     private final Statement vloop;
 
     public DoWhileStatement(final Tree tree, BlockManager blockManager, final Statement vbool, final Statement vloop) {
-        super(tree, blockManager);
+        super( tree, blockManager );
         this.vbool = vbool;
         this.vloop = vloop;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            LabelNode begin = new LabelNode();
-            LabelNode normalTarget = new LabelNode();
-            LabelNode breakTarget = new LabelNode();
-            LabelNode end = new LabelNode();
-            
-            label(begin);
-            append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Do", vloop, true ) );
-            // completion(block)
-            dup();
-            // completion(block) completion(block)
-            append( Completion.handle( normalTarget, breakTarget, normalTarget, end, end ) );
-            
-            // ----------------------------------------
-            // NORMAL
-            label( normalTarget );
-            // completion(block)
-            
-            append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "While", vbool, true ) );
-            // completion(block) completion(bool)
-            append( CodeBlockUtils.ifCompletionIsFalse( end ) );
-            // completion(block)
-            pop();
-            // <EMPTY>
-            go_to(begin);
-            
-            // ----------------------------------------
-            // BREAK
-            label(breakTarget);
-            // completion(block,BREAK)
-            append( Completion.convertToNormal() );
-            // completion(block,NORMAL)
-            
-            // ----------------------------------------
-            label( end );
-            // completion(block)
-            nop();
-            // completion(block) 
-        }};
+        return new CodeBlock() {
+            {
+                LabelNode begin = new LabelNode();
+                LabelNode normalTarget = new LabelNode();
+                LabelNode breakTarget = new LabelNode();
+                LabelNode end = new LabelNode();
+
+                label( begin );
+                append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Do", vloop, true ) );
+                // completion(block)
+                dup();
+                // completion(block) completion(block)
+                append( Completion.handle( normalTarget, breakTarget, normalTarget, end, end ) );
+
+                // ----------------------------------------
+                // NORMAL
+                label( normalTarget );
+                // completion(block)
+
+                append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "While", vbool, true ) );
+                // completion(block) completion(bool)
+                append( CodeBlockUtils.ifCompletionIsFalse( end ) );
+                // completion(block)
+                pop();
+                // <EMPTY>
+                go_to( begin );
+
+                // ----------------------------------------
+                // BREAK
+                label( breakTarget );
+                // completion(block,BREAK)
+                append( Completion.convertToNormal() );
+                // completion(block,NORMAL)
+
+                // ----------------------------------------
+                label( end );
+                // completion(block)
+                nop();
+                // completion(block)
+            }
+        };
     }
 }

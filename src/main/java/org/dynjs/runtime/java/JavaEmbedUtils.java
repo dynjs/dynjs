@@ -12,10 +12,10 @@ public class JavaEmbedUtils {
 
         DynProperty functionProperty = self.getProperty( name );
         DynObject functionObject = (DynObject) functionProperty.getAttribute( "value" );
-        
+
         return invoke( functionObject, context, args );
     }
-    
+
     public static Object invoke(DynObject self, DynThreadContext context, Object... args) {
         DynProperty callProperty = self.getProperty( "call" );
         Function function = (Function) callProperty.getAttribute( "value" );

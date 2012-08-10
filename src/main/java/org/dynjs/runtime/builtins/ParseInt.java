@@ -44,11 +44,13 @@ public class ParseInt implements Function {
     public String[] getParameters() {
         return new String[] { "a", "b" }; // what is this for?
     }
-    
-    private static String removeDecimal( String value ) {
+
+    private static String removeDecimal(String value) {
         int i = value.indexOf( '.' );
-        if (i == -1) { return value; }
-        return value.substring(0, i);
+        if (i == -1) {
+            return value;
+        }
+        return value.substring( 0, i );
     }
 
     private static int determineRadix(Object[] arguments) {

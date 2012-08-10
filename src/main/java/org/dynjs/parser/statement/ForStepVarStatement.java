@@ -32,7 +32,7 @@ public class ForStepVarStatement extends AbstractStatement implements Statement 
     private final LabelNode preIncrement = new LabelNode();
 
     public ForStepVarStatement(final Tree tree, final Statement varDef, final Statement test, final Statement increment, final Statement statement) {
-        super(tree);
+        super( tree );
         this.varDef = varDef;
         this.test = test;
         this.increment = increment;
@@ -41,21 +41,23 @@ public class ForStepVarStatement extends AbstractStatement implements Statement 
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(varDef.getCodeBlock());
-            label(statement.getBeginLabel());
-            append(test.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-            iffalse(statement.getEndLabel());
-            append(statement.getCodeBlock());
-            label(preIncrement);
-            append(increment.getCodeBlock());
-            if (increment instanceof AbstractUnaryOperationStatement) {
-            	pop();
+        return new CodeBlock() {
+            {
+                append( varDef.getCodeBlock() );
+                label( statement.getBeginLabel() );
+                append( test.getCodeBlock() );
+                invokedynamic( "dynjs:convert:to_boolean", sig( Boolean.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                invokevirtual( p( Boolean.class ), "booleanValue", sig( boolean.class ) );
+                iffalse( statement.getEndLabel() );
+                append( statement.getCodeBlock() );
+                label( preIncrement );
+                append( increment.getCodeBlock() );
+                if (increment instanceof AbstractUnaryOperationStatement) {
+                    pop();
+                }
+                go_to( statement.getBeginLabel() );
+                label( statement.getEndLabel() );
             }
-            go_to(statement.getBeginLabel());
-            label(statement.getEndLabel());
-        }};
+        };
     }
 }

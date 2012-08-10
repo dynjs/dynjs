@@ -18,10 +18,10 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void createMutableBinding(ExecutionContext context, final String name, final boolean configurable) {
         // 10.2.1.1.2
-        if ( hasBinding( context, name ) ) {
+        if (hasBinding( context, name )) {
             throw new AssertionError( "10.2.1.1.2: Binding already exists for " + name );
         }
-        
+
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
                 set( "Value", Types.UNDEFINED );
@@ -34,10 +34,10 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
         // 10.2.1.1.3
-        if ( ! hasBinding( context, name ) ) {
+        if (!hasBinding( context, name )) {
             throw new AssertionError( "10.2.1.1.3: No binding exists for " + name );
         }
-        
+
         if (this.mutableBindings.containsKey( name )) {
             PropertyDescriptor desc = this.mutableBindings.get( name );
             desc.setValue( value );
@@ -52,11 +52,11 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     @Override
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.1.4
-        
-        if ( ! hasBinding( context, name ) ) {
+
+        if (!hasBinding( context, name )) {
             throw new AssertionError( "10.2.1.1.4: No binding exists for " + name );
         }
-        
+
         PropertyDescriptor desc = this.immutableBindings.get( name );
         if ((desc != null) && (desc.get( "Initialized" ) == null)) {
             if (strict) {
@@ -116,7 +116,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         desc.setValue( value );
         desc.set( "Initialized", Boolean.TRUE );
     }
-    
+
     public boolean isGlobal() {
         return false;
     }

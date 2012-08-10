@@ -31,23 +31,25 @@ public class ObjectLiteralStatement extends AbstractStatement implements Stateme
     private final List<Statement> namedValues;
 
     public ObjectLiteralStatement(final Tree tree, final List<Statement> namedValues) {
-        super(tree);
+        super( tree );
         this.namedValues = namedValues;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            newobj(p(DynObject.class));
-            dup();
-            invokespecial(p(DynObject.class), "<init>", sig(void.class));
-            dup();
-            astore(4);
-            for (Statement namedValue : namedValues) {
-                aload(4);
-                append(CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 1 ) );
+        return new CodeBlock() {
+            {
+                newobj( p( DynObject.class ) );
+                dup();
+                invokespecial( p( DynObject.class ), "<init>", sig( void.class ) );
+                dup();
+                astore( 4 );
+                for (Statement namedValue : namedValues) {
+                    aload( 4 );
+                    append( CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 1 ) );
+                }
+                aload( 4 );
             }
-            aload(4);
-        }};
+        };
     }
 }

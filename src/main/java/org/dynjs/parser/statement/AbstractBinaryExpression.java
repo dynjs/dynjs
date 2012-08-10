@@ -14,15 +14,15 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
         this.rhs = rhs;
         this.op = op;
     }
-    
+
     public Expression getLhs() {
         return this.lhs;
     }
-    
+
     public Expression getRhs() {
         return this.rhs;
     }
-    
+
     public String getOp() {
         return this.op;
     }

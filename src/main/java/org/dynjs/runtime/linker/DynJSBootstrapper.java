@@ -29,13 +29,13 @@ public class DynJSBootstrapper {
 
     static {
         final DynamicLinkerFactory factory = new DynamicLinkerFactory();
-        factory.setPrioritizedLinkers(new DynJSLinker(), new PrimitivesLinker(), new JavaIntegrationLinker());
+        factory.setPrioritizedLinkers( new DynJSLinker(), new PrimitivesLinker(), new JavaIntegrationLinker() );
         dynamicLinker = factory.createLinker();
     }
 
     public static CallSite bootstrap(MethodHandles.Lookup caller, String name, MethodType type) {
-        final MonomorphicCallSite callSite = new MonomorphicCallSite(caller, name, type);
-        dynamicLinker.link(callSite);
+        final MonomorphicCallSite callSite = new MonomorphicCallSite( caller, name, type );
+        dynamicLinker.link( callSite );
         return callSite;
     }
 

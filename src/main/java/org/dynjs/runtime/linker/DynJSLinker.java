@@ -48,27 +48,27 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     static {
         try {
             RESOLVE = Binder
-                    .from(Object.class, Object.class, Object.class)
-                    .convert(Object.class, Scope.class, String.class)
-                    .invokeVirtual(lookup(), "resolve");
+                    .from( Object.class, Object.class, Object.class )
+                    .convert( Object.class, Scope.class, String.class )
+                    .invokeVirtual( lookup(), "resolve" );
             DEFINE = Binder
-                    .from(void.class, Object.class, Object.class, Object.class)
-                    .convert(void.class, Scope.class, String.class, Object.class)
-                    .invokeVirtual(lookup(), "define");
+                    .from( void.class, Object.class, Object.class, Object.class )
+                    .convert( void.class, Scope.class, String.class, Object.class )
+                    .invokeVirtual( lookup(), "define" );
             GETELEMENT = Binder
-                    .from(Object.class, Object.class, Object.class)
-                    .filter(1, Converters.toInteger)
-                    .convert(Object.class, DynArray.class, int.class)
-                    .invokeVirtual(lookup(), "get");
+                    .from( Object.class, Object.class, Object.class )
+                    .filter( 1, Converters.toInteger )
+                    .convert( Object.class, DynArray.class, int.class )
+                    .invokeVirtual( lookup(), "get" );
             SETELEMENT = Binder
-                    .from(void.class, Object.class, Object.class, Object.class)
-                    .filter(1, Converters.toInteger)
-                    .convert(void.class, DynArray.class, int.class, Object.class)
-                    .invokeVirtual(lookup(), "set");
-            TYPEOF = Binder.from(String.class, Object.class)
-                    .invokeStatic(lookup(), RT.class, "typeof");
+                    .from( void.class, Object.class, Object.class, Object.class )
+                    .filter( 1, Converters.toInteger )
+                    .convert( void.class, DynArray.class, int.class, Object.class )
+                    .invokeVirtual( lookup(), "set" );
+            TYPEOF = Binder.from( String.class, Object.class )
+                    .invokeStatic( lookup(), RT.class, "typeof" );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException( e );
         }
     }
 
@@ -77,127 +77,127 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
         CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
         MethodType methodType = callSiteDescriptor.getMethodType();
         MethodHandle targetHandle = null;
-        if ("print".equals(callSiteDescriptor.getName())) {
-            targetHandle = lookup().findStatic(RT.class, "print", methodType);
-        } else if ("typeof".equals(callSiteDescriptor.getName())) {
+        if ("print".equals( callSiteDescriptor.getName() )) {
+            targetHandle = lookup().findStatic( RT.class, "print", methodType );
+        } else if ("typeof".equals( callSiteDescriptor.getName() )) {
             Object o = linkRequest.getArguments()[0];
-            if (o != null && !PrimitivesLinker.vtable.containsKey(o.getClass())) {
+            if (o != null && !PrimitivesLinker.vtable.containsKey( o.getClass() )) {
                 Class<? extends Object> targetClass = o.getClass();
 
-                MethodHandle typeof = Binder.from(String.class, Object.class)
-                        .convert(String.class, targetClass)
-                        .invokeVirtual(lookup(), "typeof");
-                return new GuardedInvocation(typeof, null);
+                MethodHandle typeof = Binder.from( String.class, Object.class )
+                        .convert( String.class, targetClass )
+                        .invokeVirtual( lookup(), "typeof" );
+                return new GuardedInvocation( typeof, null );
             }
-        } else if ("instanceof".equals(callSiteDescriptor.getName())) {
+        } else if ("instanceof".equals( callSiteDescriptor.getName() )) {
             Object lhs = linkRequest.getArguments()[0];
             Object rhs = linkRequest.getArguments()[1];
-            if (lhs != null && !PrimitivesLinker.vtable.containsKey(lhs.getClass())) {
+            if (lhs != null && !PrimitivesLinker.vtable.containsKey( lhs.getClass() )) {
                 Class<? extends Object> lhsClass = lhs.getClass();
                 Class<? extends Object> rhsClass = rhs.getClass();
-                MethodHandle typeof = Binder.from(Boolean.class, Object.class, Object.class)
-                        .convert(Boolean.class, lhsClass, Object.class)
-                        .invokeVirtual(lookup(), "hasInstance");
-                return new GuardedInvocation(typeof, null);
+                MethodHandle typeof = Binder.from( Boolean.class, Object.class, Object.class )
+                        .convert( Boolean.class, lhsClass, Object.class )
+                        .invokeVirtual( lookup(), "hasInstance" );
+                return new GuardedInvocation( typeof, null );
             }
-        } else if ("new".equals(callSiteDescriptor.getName())) {
-            return new GuardedInvocation(RT.CONSTRUCT, null);
-        } else if ("delete".equals(callSiteDescriptor.getName())) {
+        } else if ("new".equals( callSiteDescriptor.getName() )) {
+            return new GuardedInvocation( RT.CONSTRUCT, null );
+        } else if ("delete".equals( callSiteDescriptor.getName() )) {
             Object o = linkRequest.getArguments()[0];
-            if (o != null && !PrimitivesLinker.vtable.containsKey(o.getClass())) {
+            if (o != null && !PrimitivesLinker.vtable.containsKey( o.getClass() )) {
                 Class<? extends Object> targetClass = o.getClass();
 
-                MethodHandle delete = Binder.from(Boolean.class, Object.class, Object.class)
-                        .convert(Boolean.class, targetClass, String.class)
-                        .invokeVirtual(lookup(), "delete");
-                return new GuardedInvocation(delete, null);
+                MethodHandle delete = Binder.from( Boolean.class, Object.class, Object.class )
+                        .convert( Boolean.class, targetClass, String.class )
+                        .invokeVirtual( lookup(), "delete" );
+                return new GuardedInvocation( delete, null );
             }
-        } else if ("eq".equals(callSiteDescriptor.getName())) {
-            targetHandle = lookup().findStatic(ObjectOperations.class, "eq", methodType);
-        } else if ("strict_eq".equals(callSiteDescriptor.getName())) {
-        	targetHandle = lookup().findStatic(ObjectOperations.class, "strict_eq", methodType);
-        } else if ("this".equals(callSiteDescriptor.getName())) {
-            targetHandle = lookup().findStatic(RT.class, "findThis", methodType);
-        } else if (isFromDynalink(callSiteDescriptor)) {
-            if (callSiteDescriptor.getNameToken(1).equals("call")) {
-                MethodType functionMethodType = methodType(Object.class, DynThreadContext.class, Object[].class);
+        } else if ("eq".equals( callSiteDescriptor.getName() )) {
+            targetHandle = lookup().findStatic( ObjectOperations.class, "eq", methodType );
+        } else if ("strict_eq".equals( callSiteDescriptor.getName() )) {
+            targetHandle = lookup().findStatic( ObjectOperations.class, "strict_eq", methodType );
+        } else if ("this".equals( callSiteDescriptor.getName() )) {
+            targetHandle = lookup().findStatic( RT.class, "findThis", methodType );
+        } else if (isFromDynalink( callSiteDescriptor )) {
+            if (callSiteDescriptor.getNameToken( 1 ).equals( "call" )) {
+                MethodType functionMethodType = methodType( Object.class, DynThreadContext.class, Object[].class );
 
                 Object[] arguments = linkRequest.getArguments();
                 Scope scope = (Scope) arguments[0];
-                arguments[0] = scope.resolve("call");
-                linkRequest.replaceArguments(callSiteDescriptor, arguments);
-                MethodHandle call = Lookup.PUBLIC.findVirtual(linkRequest.getArguments()[0].getClass(), "call", functionMethodType);
+                arguments[0] = scope.resolve( "call" );
+                linkRequest.replaceArguments( callSiteDescriptor, arguments );
+                MethodHandle call = Lookup.PUBLIC.findVirtual( linkRequest.getArguments()[0].getClass(), "call", functionMethodType );
 
                 return new GuardedInvocation(
-                        linkerServices.asType(call, callSiteDescriptor.getMethodType()),
-                        Guards.isInstance(linkRequest.getArguments()[0].getClass(), callSiteDescriptor.getMethodType()));
-            } else if ("getProp".equals(callSiteDescriptor.getNameToken(1))) {
-                return handleGetProp(callSiteDescriptor);
-            } else if ("setProp".equals(callSiteDescriptor.getNameToken(1))) {
-                return handleSetProp(callSiteDescriptor);
-            } else if ("getElement".equals(callSiteDescriptor.getNameToken(1))) {
-                return handleGetElement(callSiteDescriptor);
-            } else if ("setElement".equals(callSiteDescriptor.getNameToken(1))) {
-                return handleSetElement(callSiteDescriptor);
+                        linkerServices.asType( call, callSiteDescriptor.getMethodType() ),
+                        Guards.isInstance( linkRequest.getArguments()[0].getClass(), callSiteDescriptor.getMethodType() ) );
+            } else if ("getProp".equals( callSiteDescriptor.getNameToken( 1 ) )) {
+                return handleGetProp( callSiteDescriptor );
+            } else if ("setProp".equals( callSiteDescriptor.getNameToken( 1 ) )) {
+                return handleSetProp( callSiteDescriptor );
+            } else if ("getElement".equals( callSiteDescriptor.getNameToken( 1 ) )) {
+                return handleGetElement( callSiteDescriptor );
+            } else if ("setElement".equals( callSiteDescriptor.getNameToken( 1 ) )) {
+                return handleSetElement( callSiteDescriptor );
             }
-        } else if (isFromDynJS(callSiteDescriptor)) {
+        } else if (isFromDynJS( callSiteDescriptor )) {
             if (callSiteDescriptor.getNameTokenCount() == 3) {
-                String action = callSiteDescriptor.getNameToken(2);
-                String subsystem = callSiteDescriptor.getNameToken(1);
-                if (subsystem.equals("convert")) {
+                String action = callSiteDescriptor.getNameToken( 2 );
+                String subsystem = callSiteDescriptor.getNameToken( 1 );
+                if (subsystem.equals( "convert" )) {
                     switch (action) {
-                        case "to_boolean":
-                            targetHandle = Converters.toBoolean;
-                            break;
+                    case "to_boolean":
+                        targetHandle = Converters.toBoolean;
+                        break;
                     }
                 }
             }
         }
 
         if (targetHandle != null) {
-            return new GuardedInvocation(targetHandle, null);
+            return new GuardedInvocation( targetHandle, null );
         }
 
         return null;
     }
 
     private boolean isFromDynJS(CallSiteDescriptor callSiteDescriptor) {
-        return callSiteDescriptor.getNameTokenCount() > 1 && callSiteDescriptor.getNameToken(0).equals("dynjs");
+        return callSiteDescriptor.getNameTokenCount() > 1 && callSiteDescriptor.getNameToken( 0 ).equals( "dynjs" );
     }
 
     private GuardedInvocation handleGetElement(CallSiteDescriptor callSiteDescriptor) {
-        return new GuardedInvocation(GETELEMENT, Guards.isInstance(Scope.class, GETELEMENT.type()));
+        return new GuardedInvocation( GETELEMENT, Guards.isInstance( Scope.class, GETELEMENT.type() ) );
     }
 
     private GuardedInvocation handleSetElement(CallSiteDescriptor callSiteDescriptor) {
-        return new GuardedInvocation(SETELEMENT, Guards.isInstance(Scope.class, SETELEMENT.type()));
+        return new GuardedInvocation( SETELEMENT, Guards.isInstance( Scope.class, SETELEMENT.type() ) );
     }
 
     private GuardedInvocation handleGetProp(CallSiteDescriptor callSiteDescriptor) {
-        if (hasConstantCall(callSiteDescriptor)) {
+        if (hasConstantCall( callSiteDescriptor )) {
             final MethodHandle handle = Binder
-                    .from(Object.class, Object.class)
-                    .convert(RESOLVE.type())
-                    .insert(1, callSiteDescriptor.getNameToken(2))
-                    .invoke(RESOLVE);
-            return new GuardedInvocation(handle,
-                    Guards.isInstance(Scope.class, handle.type()));
+                    .from( Object.class, Object.class )
+                    .convert( RESOLVE.type() )
+                    .insert( 1, callSiteDescriptor.getNameToken( 2 ) )
+                    .invoke( RESOLVE );
+            return new GuardedInvocation( handle,
+                    Guards.isInstance( Scope.class, handle.type() ) );
         } else {
-            return new GuardedInvocation(RESOLVE, Guards.isInstance(Scope.class, RESOLVE.type()));
+            return new GuardedInvocation( RESOLVE, Guards.isInstance( Scope.class, RESOLVE.type() ) );
         }
     }
 
     private GuardedInvocation handleSetProp(CallSiteDescriptor callSiteDescriptor) {
-        if (hasConstantCall(callSiteDescriptor)) {
+        if (hasConstantCall( callSiteDescriptor )) {
             final MethodHandle handle = Binder
-                    .from(void.class, Object.class, Object.class)
-                    .convert(DEFINE.type())
-                    .insert(1, callSiteDescriptor.getNameToken(2))
-                    .invoke(DEFINE);
-            return new GuardedInvocation(handle,
-                    Guards.isInstance(Scope.class, handle.type()));
+                    .from( void.class, Object.class, Object.class )
+                    .convert( DEFINE.type() )
+                    .insert( 1, callSiteDescriptor.getNameToken( 2 ) )
+                    .invoke( DEFINE );
+            return new GuardedInvocation( handle,
+                    Guards.isInstance( Scope.class, handle.type() ) );
         } else {
-            return new GuardedInvocation(DEFINE, Guards.isInstance(Scope.class, DEFINE.type()));
+            return new GuardedInvocation( DEFINE, Guards.isInstance( Scope.class, DEFINE.type() ) );
         }
     }
 
@@ -206,7 +206,7 @@ public class DynJSLinker implements GuardingDynamicLinker, GuardingTypeConverter
     }
 
     private boolean isFromDynalink(CallSiteDescriptor callSiteDescriptor) {
-        return callSiteDescriptor.getNameTokenCount() > 1 && callSiteDescriptor.getNameToken(0).equals("dyn");
+        return callSiteDescriptor.getNameTokenCount() > 1 && callSiteDescriptor.getNameToken( 0 ).equals( "dyn" );
     }
 
     @Override

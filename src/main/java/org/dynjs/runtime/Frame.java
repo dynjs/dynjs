@@ -36,7 +36,7 @@ public class Frame implements Resolver {
         final String[] arguments = environment.getParameters();
         for (int i = 0; i < arguments.length; i++) {
             String argument = arguments[i];
-            if (argument.equals(name)) {
+            if (argument.equals( name )) {
                 if (getArguments().length > i) {
                     return getArguments()[i];
                 }

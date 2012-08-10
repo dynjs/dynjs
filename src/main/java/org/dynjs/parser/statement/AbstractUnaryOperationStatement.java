@@ -28,7 +28,7 @@ public abstract class AbstractUnaryOperationStatement extends AbstractStatement 
     private final Statement expression;
 
     public AbstractUnaryOperationStatement(final Tree tree, final Statement expression) {
-        super(tree);
+        super( tree );
         this.expression = expression;
     }
 
@@ -37,19 +37,21 @@ public abstract class AbstractUnaryOperationStatement extends AbstractStatement 
     @Override
     public CodeBlock getCodeBlock() {
         final IdentifierReferenceExpression resolvable = (IdentifierReferenceExpression) expression;
-        return new CodeBlock() {{
-            // relocate +1, since this statement uses astore(4)
-            append(CodeBlockUtils.relocateLocalVars( expression.getCodeBlock(), 1 ) );
-            append(before());
-            append(processOperation());
-            append(after());
-            aload(DynJSCompiler.Arities.THIS);
-            swap();
-            ldc(resolvable.getName());
-            swap();
-            invokedynamic("dyn:setProp", sig(void.class, Object.class, Object.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            aload(4);
-        }};
+        return new CodeBlock() {
+            {
+                // relocate +1, since this statement uses astore(4)
+                append( CodeBlockUtils.relocateLocalVars( expression.getCodeBlock(), 1 ) );
+                append( before() );
+                append( processOperation() );
+                append( after() );
+                aload( DynJSCompiler.Arities.THIS );
+                swap();
+                ldc( resolvable.getName() );
+                swap();
+                invokedynamic( "dyn:setProp", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                aload( 4 );
+            }
+        };
     }
 
     protected CodeBlock after() {
@@ -61,17 +63,21 @@ public abstract class AbstractUnaryOperationStatement extends AbstractStatement 
     }
 
     protected CodeBlock store() {
-        return new CodeBlock() {{
-            dup();
-            astore(4);
-        }};
+        return new CodeBlock() {
+            {
+                dup();
+                astore( 4 );
+            }
+        };
     }
 
     private CodeBlock processOperation() {
-        return new CodeBlock() {{
-            append(new NumberLiteralStatement(null, "1", 10).getCodeBlock());
-            invokedynamic(AbstractUnaryOperationStatement.this.operation(), DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( new NumberLiteralStatement( null, "1", 10 ).getCodeBlock() );
+                invokedynamic( AbstractUnaryOperationStatement.this.operation(), DynJSCompiler.Signatures.ARITY_2, RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+            }
+        };
     }
 
 }

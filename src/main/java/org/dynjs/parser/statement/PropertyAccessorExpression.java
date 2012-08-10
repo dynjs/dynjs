@@ -20,9 +20,9 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 
-
-/** Access a property with dot notation
- *  
+/**
+ * Access a property with dot notation
+ * 
  * @see 11.2.1
  * 
  * @author Douglas Campos
@@ -34,7 +34,7 @@ public class PropertyAccessorExpression extends AbstractExpression {
     private Expression identifierExpr;
 
     public PropertyAccessorExpression(final Tree tree, final Expression memberExpr, final Expression identifierExpr) {
-        super(tree);
+        super( tree );
         this.memberExpr = memberExpr;
         this.identifierExpr = identifierExpr;
     }
@@ -42,21 +42,23 @@ public class PropertyAccessorExpression extends AbstractExpression {
     @Override
     public CodeBlock getCodeBlock() {
         // 11.2.1
-        return new CodeBlock() {{
-            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-            // context
-            append( memberExpr.getCodeBlock() );
-            // context reference
-            append( jsGetValue() );
-            // context object
-            append( identifierExpr.getCodeBlock() );
-            // context object identifier-maybe-reference
-            append( jsGetValue() );
-            // context object identifier-obj
-            append( jsToString() );
-            // context object identifier-str
-            append( jsCreatePropertyReference() );
-            // reference
-        }};
+        return new CodeBlock() {
+            {
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                append( memberExpr.getCodeBlock() );
+                // context reference
+                append( jsGetValue() );
+                // context object
+                append( identifierExpr.getCodeBlock() );
+                // context object identifier-maybe-reference
+                append( jsGetValue() );
+                // context object identifier-obj
+                append( jsToString() );
+                // context object identifier-str
+                append( jsCreatePropertyReference() );
+                // reference
+            }
+        };
     }
 }

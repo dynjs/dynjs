@@ -23,7 +23,7 @@ public class BasicBlockCompiler extends AbstractCompiler {
     }
 
     public BasicBlock compile(final String grist, final BlockStatement body) {
-        JiteClass jiteClass = new JiteClass( nextClassName(grist), p( AbstractBasicBlock.class ), new String[0] ) {
+        JiteClass jiteClass = new JiteClass( nextClassName( grist ), p( AbstractBasicBlock.class ), new String[0] ) {
             {
                 defineMethod( "<init>", ACC_PUBLIC, sig( void.class, BlockStatement.class ),
                         new CodeBlock() {
@@ -36,17 +36,17 @@ public class BasicBlockCompiler extends AbstractCompiler {
                                 voidreturn();
                             }
                         } );
-                defineMethod( "invoke", ACC_PUBLIC, INVOKE, 
+                defineMethod( "invoke", ACC_PUBLIC, INVOKE,
                         new CodeBlock() {
-                    {
-                        append( body.getCodeBlock() );
-                        areturn();
-                    }
-                } );
+                            {
+                                append( body.getCodeBlock() );
+                                areturn();
+                            }
+                        } );
 
             }
         };
-        
+
         Class<AbstractBasicBlock> blockClass = (Class<AbstractBasicBlock>) defineClass( jiteClass );
         try {
             Constructor<AbstractBasicBlock> ctor = blockClass.getDeclaredConstructor( BlockStatement.class );

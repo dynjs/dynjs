@@ -11,7 +11,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
         this.object = object;
         this.provideThis = provideThis;
     }
-    
+
     public JSObject getBindingObject() {
         return this.object;
     }
@@ -25,13 +25,15 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void createMutableBinding(ExecutionContext context, final String name, final boolean configValue) {
         // 10.2.1.2.2
-        PropertyDescriptor desc = new PropertyDescriptor() {{
-            set( "Value", Types.UNDEFINED );
-            set( "Writable", true );
-            set( "Enumerable", true );
-            set( "Configurable", configValue );
-        }};
-        this.object.defineOwnProperty( context, name, desc, true);
+        PropertyDescriptor desc = new PropertyDescriptor() {
+            {
+                set( "Value", Types.UNDEFINED );
+                set( "Writable", true );
+                set( "Enumerable", true );
+                set( "Configurable", configValue );
+            }
+        };
+        this.object.defineOwnProperty( context, name, desc, true );
     }
 
     @Override
@@ -44,8 +46,8 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.2.4
         Object d = this.object.getProperty( context, name );
-        if ( d == Types.UNDEFINED ) {
-            if ( strict ) {
+        if (d == Types.UNDEFINED) {
+            if (strict) {
                 throw new ReferenceError( name );
             }
             return Types.UNDEFINED;
@@ -63,13 +65,13 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public Object implicitThisValue() {
         // 10.2.1.2.6
-        if ( provideThis ) {
+        if (provideThis) {
             return this.object;
         }
-        
+
         return Types.UNDEFINED;
     }
-    
+
     public boolean isGlobal() {
         return (this.object instanceof GlobalObject);
     }

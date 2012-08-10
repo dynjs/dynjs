@@ -32,7 +32,7 @@ public class ForStepExprStatement extends AbstractStatement implements Statement
     private final LabelNode preIncrement = new LabelNode();
 
     public ForStepExprStatement(final Tree tree, final Statement initialize, final Statement test, final Statement increment, final Statement statement) {
-        super(tree);
+        super( tree );
         this.initialize = initialize;
         this.test = test;
         this.increment = increment;
@@ -41,23 +41,25 @@ public class ForStepExprStatement extends AbstractStatement implements Statement
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            if (initialize != null) {
-            	append(initialize.getCodeBlock());
+        return new CodeBlock() {
+            {
+                if (initialize != null) {
+                    append( initialize.getCodeBlock() );
+                }
+                label( statement.getBeginLabel() );
+                append( test.getCodeBlock() );
+                invokedynamic( "dynjs:convert:to_boolean", sig( Boolean.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                invokevirtual( p( Boolean.class ), "booleanValue", sig( boolean.class ) );
+                iffalse( statement.getEndLabel() );
+                append( statement.getCodeBlock() );
+                label( preIncrement );
+                append( increment.getCodeBlock() );
+                if (increment instanceof AbstractUnaryOperationStatement) {
+                    pop();
+                }
+                go_to( statement.getBeginLabel() );
+                label( statement.getEndLabel() );
             }
-            label(statement.getBeginLabel());
-            append(test.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-            iffalse(statement.getEndLabel());
-            append(statement.getCodeBlock());
-            label(preIncrement);
-            append(increment.getCodeBlock());
-            if (increment instanceof AbstractUnaryOperationStatement) {
-            	pop();
-            }
-            go_to(statement.getBeginLabel());
-            label(statement.getEndLabel());
-        }};
+        };
     }
 }

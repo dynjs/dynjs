@@ -29,16 +29,18 @@ public class ExpressionListStatement extends AbstractStatement implements Statem
     private final List<Statement> exprList;
 
     public ExpressionListStatement(final Tree tree, final List<Statement> exprList) {
-        super(tree);
-        this.exprList = new ArrayList<Statement>(exprList);
+        super( tree );
+        this.exprList = new ArrayList<Statement>( exprList );
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            for (Statement statement : exprList) {
-                append(statement.getCodeBlock());
+        return new CodeBlock() {
+            {
+                for (Statement statement : exprList) {
+                    append( statement.getCodeBlock() );
+                }
             }
-        }};
+        };
     }
 }

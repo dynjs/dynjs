@@ -27,20 +27,22 @@ public class VariableDeclarationStatement extends AbstractStatement implements S
     private List<VariableDeclarationExpression> declExprs;
 
     public VariableDeclarationStatement(final Tree tree, final List<VariableDeclarationExpression> declExprs) {
-        super(tree);
+        super( tree );
         this.declExprs = declExprs;
     }
-    
+
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            for ( VariableDeclarationExpression each : declExprs ) {
-                append( each.getCodeBlock() );
-                // identifier
-                pop();
-                // <EMPTY>
+        return new CodeBlock() {
+            {
+                for (VariableDeclarationExpression each : declExprs) {
+                    append( each.getCodeBlock() );
+                    // identifier
+                    pop();
+                    // <EMPTY>
+                }
+                append( normalCompletion() );
             }
-            append( normalCompletion() );
-        }};
+        };
     }
 }

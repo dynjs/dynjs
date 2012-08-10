@@ -23,7 +23,7 @@ import org.dynjs.parser.Statement;
 public class EmptyStatement extends AbstractStatement implements Statement {
 
     public EmptyStatement() {
-        super(null);
+        super( null );
     }
 
     @Override

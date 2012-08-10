@@ -45,36 +45,36 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
 
                 append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "If", vbool, true ) );
                 // completion
-                
+
                 append( CodeBlockUtils.handleCompletion() );
                 // result
 
                 iffalse( elseBranch );
                 // <empty>
-                
+
                 // ----------------------------------------
                 // THEN
-                
+
                 append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Then", vthen, asExpression ) );
                 // completion
 
                 append( CodeBlockUtils.handleCompletion() );
                 // value
-                
-                if ( ! asExpression ) {
+
+                if (!asExpression) {
                     pop();
                 }
-                
+
                 go_to( end );
 
                 // ----------------------------------------
                 // ELSE
                 label( elseBranch );
-                
+
                 append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Else", velse, asExpression ) );
                 // completion
                 append( CodeBlockUtils.handleCompletion() );
-                
+
                 // value
                 if (!asExpression) {
                     pop();

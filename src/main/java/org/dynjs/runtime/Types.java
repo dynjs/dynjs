@@ -62,47 +62,47 @@ public class Types {
             return Double.NaN;
         }
     }
-    
+
     static Boolean toBoolean(Object o) {
         // 9.2
-        if ( o instanceof Boolean ) {
+        if (o instanceof Boolean) {
             return (Boolean) o;
         }
-        if ( o == Types.UNDEFINED || o == Types.NULL ) {
+        if (o == Types.UNDEFINED || o == Types.NULL) {
             return false;
         }
-        if (o instanceof Number ) {
-            double d = ((Number)o).doubleValue();
-            if (d == 0 || d == Double.NaN )  {
+        if (o instanceof Number) {
+            double d = ((Number) o).doubleValue();
+            if (d == 0 || d == Double.NaN) {
                 return false;
             }
             return true;
         }
-        if ( o instanceof String ) {
-            return (((String)o).length() != 0);
+        if (o instanceof String) {
+            return (((String) o).length() != 0);
         }
-        
+
         return true;
     }
 
     static Double toUint32(Object o) {
         // 9.5
         Double n = toNumber( o );
-        if ( n == Double.POSITIVE_INFINITY || n == Double.NEGATIVE_INFINITY || n == Double.NaN ) {
+        if (n == Double.POSITIVE_INFINITY || n == Double.NEGATIVE_INFINITY || n == Double.NaN) {
             return 0.0;
         }
-        
-         double posInt = ( n < 0 ? -1 : 1 ) * Math.floor( Math.abs( n )  );
-         
-         double int32bit = posInt % Math.pow(2, 32);
-         
-         return int32bit;
+
+        double posInt = (n < 0 ? -1 : 1) * Math.floor( Math.abs( n ) );
+
+        double int32bit = posInt % Math.pow( 2, 32 );
+
+        return int32bit;
     }
 
     static Double toInt32(Object o) {
         double int32bit = toUint32( o );
-        if ( int32bit > Math.pow( 2, 31 )) {
-            return int32bit - Math.pow(  2, 32 );
+        if (int32bit > Math.pow( 2, 31 )) {
+            return int32bit - Math.pow( 2, 32 );
         }
         return int32bit;
     }

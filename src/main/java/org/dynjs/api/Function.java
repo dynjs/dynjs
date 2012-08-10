@@ -15,7 +15,6 @@
  */
 package org.dynjs.api;
 
-
 public interface Function extends LexicalEnvironment {
 
     Object call(Object self, DynThreadContext context, Object... arguments);

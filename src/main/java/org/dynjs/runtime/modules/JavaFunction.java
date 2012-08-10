@@ -11,75 +11,75 @@ import org.dynjs.exception.DynJSException;
 
 public class JavaFunction implements Function {
 
-	public JavaFunction(Object object, Method method)
-			throws IllegalAccessException {
-		this.object = object;
-		this.method = method;
-		this.handle = MethodHandles.lookup().unreflect(method).bindTo(this.object);
-		
-		int trueNumberOfArgs = -1;
-		
-		Class<?>[] methodParamTypes = this.method.getParameterTypes();
-		if ( methodParamTypes.length >= 2 ) {
-			if (methodParamTypes[1].equals(DynThreadContext.class)) {
-				trueNumberOfArgs = methodParamTypes.length - 2;
-			}
-		}
-		
-		if ( trueNumberOfArgs < 0 ) {
-			trueNumberOfArgs = methodParamTypes.length;
-		}
-		
-		this.args = new String[ trueNumberOfArgs ];
-		
-		for ( int i = 0 ; i < trueNumberOfArgs ; ++i ) {
-			this.args[i] = "arg" + i;
-		}
-	}
+    public JavaFunction(Object object, Method method)
+            throws IllegalAccessException {
+        this.object = object;
+        this.method = method;
+        this.handle = MethodHandles.lookup().unreflect( method ).bindTo( this.object );
 
-	@Override
+        int trueNumberOfArgs = -1;
+
+        Class<?>[] methodParamTypes = this.method.getParameterTypes();
+        if (methodParamTypes.length >= 2) {
+            if (methodParamTypes[1].equals( DynThreadContext.class )) {
+                trueNumberOfArgs = methodParamTypes.length - 2;
+            }
+        }
+
+        if (trueNumberOfArgs < 0) {
+            trueNumberOfArgs = methodParamTypes.length;
+        }
+
+        this.args = new String[trueNumberOfArgs];
+
+        for (int i = 0; i < trueNumberOfArgs; ++i) {
+            this.args[i] = "arg" + i;
+        }
+    }
+
+    @Override
     public Object call(Object self, DynThreadContext context, Object... arguments) {
-        List<Object> newArgs = buildArguments( self, context, arguments);
+        List<Object> newArgs = buildArguments( self, context, arguments );
 
-		try {
-			return this.handle.invokeWithArguments(newArgs);
-		} catch (Throwable e) {
-			throw new DynJSException(e);
-		}
-	}
+        try {
+            return this.handle.invokeWithArguments( newArgs );
+        } catch (Throwable e) {
+            throw new DynJSException( e );
+        }
+    }
 
-	private List<Object> buildArguments(Object self, DynThreadContext context,
-			Object... args) {
-		List<Object> newArgs = new ArrayList<Object>();
+    private List<Object> buildArguments(Object self, DynThreadContext context,
+            Object... args) {
+        List<Object> newArgs = new ArrayList<Object>();
 
-		Class<?>[] methodParamTypes = this.method.getParameterTypes();
-		if (methodParamTypes.length >= 2) {
-			if (methodParamTypes[1].equals(DynThreadContext.class)) {
-				newArgs.add(self);
-				newArgs.add(context);
-			}
-		}
+        Class<?>[] methodParamTypes = this.method.getParameterTypes();
+        if (methodParamTypes.length >= 2) {
+            if (methodParamTypes[1].equals( DynThreadContext.class )) {
+                newArgs.add( self );
+                newArgs.add( context );
+            }
+        }
 
-		for (Object arg : args) {
-			newArgs.add(arg);
-		}
+        for (Object arg : args) {
+            newArgs.add( arg );
+        }
 
-		int additionalNulls = methodParamTypes.length - newArgs.size();
-		for (int i = 0; i < additionalNulls; ++i) {
-			newArgs.add(null);
-		}
+        int additionalNulls = methodParamTypes.length - newArgs.size();
+        for (int i = 0; i < additionalNulls; ++i) {
+            newArgs.add( null );
+        }
 
-		return newArgs;
-	}
+        return newArgs;
+    }
 
-	@Override
+    @Override
     public String[] getParameters() {
-		return this.args;
-	}
+        return this.args;
+    }
 
-	private Object object;
-	private Method method;
-	private MethodHandle handle;
-	private String[] args;
+    private Object object;
+    private Method method;
+    private MethodHandle handle;
+    private String[] args;
 
 }

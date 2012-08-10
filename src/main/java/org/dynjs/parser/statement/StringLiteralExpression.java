@@ -24,14 +24,16 @@ public class StringLiteralExpression extends AbstractExpression {
     private final String literal;
 
     public StringLiteralExpression(final Tree tree, String literal) {
-        super(tree);
+        super( tree );
         this.literal = literal;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock(){{
-            ldc(literal);
-        }};
+        return new CodeBlock() {
+            {
+                ldc( literal );
+            }
+        };
     }
 }

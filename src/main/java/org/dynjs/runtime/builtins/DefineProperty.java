@@ -25,8 +25,8 @@ public class DefineProperty implements Function {
             DynObject object = (DynObject) arguments[0];
             String name = (String) arguments[1];
             DynProperty property = new DynProperty();
-            property.setAttribute("value", arguments[2]);
-            object.setProperty(name, property);
+            property.setAttribute( "value", arguments[2] );
+            object.setProperty( name, property );
             return object;
         }
         return DynThreadContext.UNDEFINED;
@@ -34,7 +34,7 @@ public class DefineProperty implements Function {
 
     @Override
     public String[] getParameters() {
-        return new String[]{"object", "name", "desc"};
+        return new String[] { "object", "name", "desc" };
     }
 
 }

@@ -49,21 +49,21 @@ public class Repl {
     public void run() {
         ConsoleReader console = null;
         try {
-            console = new ConsoleReader(in, out);
-            console.println(WELCOME_MESSAGE);
+            console = new ConsoleReader( in, out );
+            console.println( WELCOME_MESSAGE );
             String statement = null;
-            while ((statement = console.readLine(PROMPT)) != null) {
-                if ("exit".equals(statement.trim())) {
+            while ((statement = console.readLine( PROMPT )) != null) {
+                if ("exit".equals( statement.trim() )) {
                     return;
                 } else {
                     try {
-                        dynJS.eval(context, statement);
+                        dynJS.eval( context, statement );
                     } catch (DynJSException e) {
-                        console.println(e.getClass().getSimpleName());
-                        console.println(e.getLocalizedMessage());
-                        console.println("Error parsing statement: " + statement.toString());
+                        console.println( e.getClass().getSimpleName() );
+                        console.println( e.getLocalizedMessage() );
+                        console.println( "Error parsing statement: " + statement.toString() );
                     } catch (Exception e) {
-                        e.printStackTrace(new PrintWriter(out));
+                        e.printStackTrace( new PrintWriter( out ) );
                     }
                 }
             }

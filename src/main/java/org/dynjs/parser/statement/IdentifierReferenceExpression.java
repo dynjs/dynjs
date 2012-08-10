@@ -22,10 +22,11 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
 
-
-/** An Identifier is evaluated by performing Identifier Resolution as specified in 10.3.1. 
- *  The result of evaluating an Identifier is always a value of type Reference.
- *  
+/**
+ * An Identifier is evaluated by performing Identifier Resolution as specified
+ * in 10.3.1.
+ * The result of evaluating an Identifier is always a value of type Reference.
+ * 
  * @see 11.1.2
  * @see 10.3.1
  * 
@@ -37,20 +38,22 @@ public class IdentifierReferenceExpression extends AbstractExpression {
     private final String identifier;
 
     public IdentifierReferenceExpression(final Tree tree, final String identifier) {
-        super(tree);
+        super( tree );
         this.identifier = identifier;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         // 10.3.1
-        return new CodeBlock() {{
-            aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-            // context
-            ldc( identifier );
-            // context identifier
-            invokevirtual( p(ExecutionContext.class), "resolve", sig( Object.class, String.class) );
-            // reference
-        }};
+        return new CodeBlock() {
+            {
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                ldc( identifier );
+                // context identifier
+                invokevirtual( p( ExecutionContext.class ), "resolve", sig( Object.class, String.class ) );
+                // reference
+            }
+        };
     }
 }
