@@ -17,13 +17,13 @@ package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
 
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.parser.Statement;
 
-public class EmptyStatement extends AbstractStatement implements Statement {
+public class EmptyStatement extends AbstractStatement {
 
-    public EmptyStatement() {
-        super( null );
+    public EmptyStatement(final Tree tree) {
+        super( tree );
     }
 
     @Override

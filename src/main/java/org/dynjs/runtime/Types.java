@@ -121,6 +121,50 @@ public class Types {
     static String toString(Object o) {
         return o.toString();
     }
+    
+    static String typeof(ExecutionContext context, Object o) {
+        // 11.4.3
+        Object val = o;
+        if ( o instanceof Reference ) {
+            Reference r = (Reference) o;
+            if ( r.isUnresolvableReference() ) {
+                return "undefined";
+            }
+            val = getValue( context, o );
+        }
+        
+        return type(o);
+    }
+    
+    static String type(Object o) {
+        // 11.4.3
+        if ( o == UNDEFINED ) {
+            return "undefined";
+        }
+        
+        if ( o == NULL ) {
+            return "object";
+        }
+        
+        if ( o instanceof Boolean ) {
+            return "boolean";
+        }
+        
+        if ( o instanceof Number ) {
+            return "number";
+        }
+        
+        if ( o instanceof JSFunction ) {
+            return "function";
+        }
+        
+        if ( o instanceof JSObject ) {
+            return "object";
+        }
+        
+        return o.getClass().getName();
+        
+    }
 
     // ----------------------------------------------------------------------
 

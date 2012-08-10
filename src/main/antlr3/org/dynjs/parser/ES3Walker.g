@@ -239,15 +239,15 @@ finallyClause returns [Statement value]
     { $value = executor.tryFinallyClause($FINALLY, $block.value); }
 	;
 
-expression returns [Statement value]
-@init { List<Statement> exprList = new ArrayList<Statement>(); }
+expression returns [Expression value]
+@init { List<Expression> exprList = new ArrayList<Expression>(); }
 	: expr
 	{ $value = $expr.value; }
 	| ^( CEXPR (expr {exprList.add($expr.value);})+ )
     { $value = executor.exprListStatement(exprList);   }
 	;
 
-expr returns [Statement value]
+expr returns [Expression value]
 	: leftHandSideExpression
 	{ $value = $leftHandSideExpression.value; }
 
@@ -381,9 +381,10 @@ leftHandSideExpression returns [Statement value]
 	{ $value = $memberExpression.value;  }
 	;
 
-newExpression returns [Statement value]
-	: ^( NEW leftHandSideExpression )
-	{ $value = executor.executeNew($NEW, $leftHandSideExpression.value); }
+newExpression returns [NewOperatorExpression value]
+@init { List<Expression> args = new ArrayList<Expression>(); }
+	: ^( NEW leftHandSideExpression ^( ARGS (expression { args.add($expression.value); }* ) )
+	{ $value = executor.newOperatorExpression($NEW, $leftHandSideExpression.value, args); }
 	;
 
 functionDeclaration returns [Statement value]
@@ -393,7 +394,7 @@ functionDeclaration returns [Statement value]
 	;
 
 callExpression returns [Expression value]
-@init { List<Statement> args = new ArrayList<Statement>(); }
+@init { List<Expression> args = new ArrayList<Expression>(); }
 	: ^( CALL leftHandSideExpression ^( ARGS (expr { args.add($expr.value); } )* ) )
 	{ $value = executor.resolveCallExpr($CALL, $leftHandSideExpression.value, args);  }
 	;

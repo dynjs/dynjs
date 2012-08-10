@@ -28,7 +28,7 @@ import org.dynjs.parser.statement.BreakStatement;
 import org.dynjs.parser.statement.CatchClause;
 import org.dynjs.parser.statement.CompoundAssignmentExpression;
 import org.dynjs.parser.statement.ContinueStatement;
-import org.dynjs.parser.statement.DeleteOpStatement;
+import org.dynjs.parser.statement.DeleteOpExpression;
 import org.dynjs.parser.statement.DoWhileStatement;
 import org.dynjs.parser.statement.EqualsOperationStatement;
 import org.dynjs.parser.statement.Expression;
@@ -62,11 +62,11 @@ import org.dynjs.parser.statement.StringLiteralExpression;
 import org.dynjs.parser.statement.ThisExpression;
 import org.dynjs.parser.statement.ThrowStatement;
 import org.dynjs.parser.statement.TryStatement;
-import org.dynjs.parser.statement.TypeOfOpExpressionStatement;
+import org.dynjs.parser.statement.TypeOfOpExpression;
 import org.dynjs.parser.statement.UnaryMinusStatement;
 import org.dynjs.parser.statement.VariableDeclarationExpression;
 import org.dynjs.parser.statement.VariableDeclarationStatement;
-import org.dynjs.parser.statement.VoidOpStatement;
+import org.dynjs.parser.statement.VoidOperatorExpression;
 import org.dynjs.parser.statement.WhileStatement;
 import org.dynjs.runtime.BlockManager;
 
@@ -158,15 +158,15 @@ public class Executor {
     }
 
     public Statement defineDeleteOp(final Tree tree, final Statement expression) {
-        return new DeleteOpStatement( tree, expression );
+        return new DeleteOpExpression( tree, expression );
     }
 
     public Statement defineVoidOp(final Tree tree, final Statement expression) {
-        return new VoidOpStatement( tree, expression );
+        return new VoidOperatorExpression( tree, expression );
     }
 
     public Statement defineTypeOfOp(final Tree tree, final Statement expression) {
-        return new TypeOfOpExpressionStatement( tree, expression );
+        return new TypeOfOpExpression( tree, expression );
     }
 
     public Statement defineIncOp(final Tree tree, Statement expression) {
@@ -337,8 +337,8 @@ public class Executor {
         return new ExpressionStatement( expr );
     }
 
-    public Statement executeNew(final Tree tree, final Statement statement) {
-        return new NewOperatorExpression( tree, statement );
+    public NewOperatorExpression newOperator(final Tree tree, final Expression expr, final List<Expression> argExprs) {
+        return new NewOperatorExpression( tree, expr, argExprs );
     }
 
     public Statement resolveByField(final Tree tree, final Statement lhs, final Tree treeField, final String field) {

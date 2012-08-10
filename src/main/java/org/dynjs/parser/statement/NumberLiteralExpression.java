@@ -15,7 +15,6 @@
  */
 package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -25,7 +24,7 @@ public class NumberLiteralExpression extends AbstractExpression {
     private final String value;
     private final int radix;
 
-    public NumberLiteralStatement(final Tree tree, final String value, final int radix) {
+    public NumberLiteralExpression(final Tree tree, final String value, final int radix) {
         super( tree );
         this.value = value;
         this.radix = radix;
@@ -35,23 +34,8 @@ public class NumberLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( DynJSCompiler.Arities.CONTEXT );
-                ldc( value );
-                invokevirtual( p( DynThreadContext.class ), getFactoryMethod(), sig( Number.class, String.class ) );
+                ldc( Integer.parseInt( value, radix ));
             }
         };
-    }
-
-    private String getFactoryMethod() {
-        switch (this.radix) {
-        case 8:
-            return "defineOctalLiteral";
-        case 10:
-            return "defineDecimalLiteral";
-        case 16:
-            return "defineHexaDecimalLiteral";
-        default:
-            throw new IllegalArgumentException( "unsupported radix" );
-        }
     }
 }

@@ -67,7 +67,8 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     LabelNode nonAbrupt = new LabelNode();
                     LabelNode bringForwardValue = new LabelNode();
                     LabelNode nextStatement = new LabelNode();
-
+                    
+                    line( statement.getPosition().getLine() );
                     append( statement.getCodeBlock() );
                     // completion(prev) completion(cur)
                     dup();
