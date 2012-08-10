@@ -16,38 +16,65 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
+import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.Completion;
 import org.objectweb.asm.tree.LabelNode;
 
-import java.util.Stack;
-
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
-public class DoWhileStatement extends BaseStatement implements Statement {
+public class DoWhileStatement extends AbstractCompilingStatement implements Statement {
 
     private final Statement vbool;
-    private final BlockStatement vloop;
+    private final Statement vloop;
 
-    public DoWhileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        super(tree);
+    public DoWhileStatement(final Tree tree, BlockManager blockManager, final Statement vbool, final Statement vloop) {
+        super(tree, blockManager);
         this.vbool = vbool;
-        this.vloop = (BlockStatement) vloop;
+        this.vloop = vloop;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            label(vloop.getBeginLabel());
-            append(vloop.getCodeBlock());
-            append(vbool.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-            iffalse(vloop.getEndLabel());
-            go_to(vloop.getBeginLabel());
-            label(vloop.getEndLabel());
+            LabelNode begin = new LabelNode();
+            LabelNode normalTarget = new LabelNode();
+            LabelNode breakTarget = new LabelNode();
+            LabelNode end = new LabelNode();
+            
+            label(begin);
+            append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Do", vloop, true ) );
+            // completion(block)
+            dup();
+            // completion(block) completion(block)
+            append( Completion.handle( normalTarget, breakTarget, normalTarget, end, end ) );
+            
+            // ----------------------------------------
+            // NORMAL
+            label( normalTarget );
+            // completion(block)
+            
+            append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "While", vbool, true ) );
+            // completion(block) completion(bool)
+            append( CodeBlockUtils.ifCompletionIsFalse( end ) );
+            // completion(block)
+            pop();
+            // <EMPTY>
+            go_to(begin);
+            
+            // ----------------------------------------
+            // BREAK
+            label(breakTarget);
+            // completion(block,BREAK)
+            append( Completion.convertToNormal() );
+            // completion(block,NORMAL)
+            
+            // ----------------------------------------
+            label( end );
+            // completion(block)
+            nop();
+            // completion(block) 
         }};
     }
 }

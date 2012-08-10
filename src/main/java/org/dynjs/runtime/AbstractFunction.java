@@ -1,22 +1,28 @@
 package org.dynjs.runtime;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dynjs.exception.TypeError;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.statement.FunctionDeclaration;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     private static final Statement[] EMPTY_STATEMENT_ARRAY = new Statement[0];
-    private Statement[] statements;
+    private BlockStatement body;
     private String[] formalParameters;
     private LexicalEnvironment scope;
     private boolean strict;
     
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String...formalParameters) {
-        this( EMPTY_STATEMENT_ARRAY, scope, strict, formalParameters);
+        this( null, scope, strict, formalParameters);
     }
 
-    public AbstractFunction(final Statement[] statements, final LexicalEnvironment scope, final boolean strict, final String...formalParameters) {
-        this.statements = statements;
+    public AbstractFunction(final BlockStatement body, final LexicalEnvironment scope, final boolean strict, final String...formalParameters) {
+        this.body = body;
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
@@ -43,21 +49,6 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         return this.formalParameters;
     }
     
-    @Override
-    public Object construct(ExecutionContext context, Object... args) {
-        // 13.2.2
-        DynObject obj = new DynObject();
-        obj.setClassName( "Object" );
-        obj.setExtensible( true );
-        JSObject proto = getPrototype();
-        obj.setPrototype( proto );
-        context.call( this, obj, args );
-        this.call( context, obj, args );
-        return obj;
-    }
-
-    
-
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
 
@@ -68,6 +59,20 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             throw new TypeError();
         }
         return super.get( context, name );
+    }
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        if ( this.body == null ) {
+            return Collections.emptyList();
+        }
+        
+    }
+
+    @Override
+    public List<VariableDeclarationStatement> getVariableDeclarations() {
+        // TODO Auto-generated method stub
+        return null;
     }
     
     

@@ -16,23 +16,27 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
+public class ExpressionStatement extends AbstractStatement {
 
-public class NullLiteralStatement extends BaseStatement implements Statement {
+    private final Expression expr;
 
-    public NullLiteralStatement(final Tree tree) {
-        super(tree);
+    public ExpressionStatement(final Tree tree, final Expression expr) {
+        super( tree );
+        this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            getstatic(p(DynThreadContext.class), "NULL", ci(Object.class));
-        }};
+        return new CodeBlock() {
+            {
+                append( expr.getCodeBlock() );
+                // value
+                append( normalCompletionWithValue() );
+                // Completion
+            }
+        };
     }
 }

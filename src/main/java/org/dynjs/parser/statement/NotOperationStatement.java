@@ -22,7 +22,7 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class NotOperationStatement extends BaseStatement implements Statement {
+public class NotOperationStatement extends AbstractStatement implements Statement {
 
     private final Statement s;
 

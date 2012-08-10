@@ -23,7 +23,7 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class OperationAssignmentStatement extends BaseStatement implements Statement {
+public class OperationAssignmentStatement extends AbstractStatement implements Statement {
 
     private final String operation;
     private final Statement l;
@@ -38,7 +38,7 @@ public class OperationAssignmentStatement extends BaseStatement implements State
 
     @Override
     public CodeBlock getCodeBlock() {
-        final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) l;
+        final IdentifierReferenceExpression resolvable = (IdentifierReferenceExpression) l;
         return new CodeBlock() {{
             append(l.getCodeBlock());
             append(r.getCodeBlock());

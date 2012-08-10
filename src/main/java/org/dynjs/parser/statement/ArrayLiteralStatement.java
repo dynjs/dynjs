@@ -25,7 +25,7 @@ import org.dynjs.runtime.DynArray;
 import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class ArrayLiteralStatement extends BaseStatement implements Statement {
+public class ArrayLiteralStatement extends AbstractStatement implements Statement {
 
     private final List<Statement> exprs;
 

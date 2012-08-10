@@ -21,7 +21,7 @@ import org.dynjs.parser.Statement;
 
 import static me.qmx.jitescript.CodeBlock.*;
 
-public class LdcStatement extends BaseStatement implements Statement {
+public class LdcStatement extends AbstractStatement implements Statement {
 
     private final CodeBlock codeBlock;
 

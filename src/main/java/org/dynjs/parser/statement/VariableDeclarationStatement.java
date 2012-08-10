@@ -15,23 +15,32 @@
  */
 package org.dynjs.parser.statement;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-public class StringLiteralStatement extends BaseStatement implements Statement {
+public class VariableDeclarationStatement extends AbstractStatement implements Statement {
 
-    private final String literal;
+    private List<VariableDeclarationExpression> declExprs;
 
-    public StringLiteralStatement(final Tree tree, String literal) {
+    public VariableDeclarationStatement(final Tree tree, final List<VariableDeclarationExpression> declExprs) {
         super(tree);
-        this.literal = literal;
+        this.declExprs = declExprs;
     }
-
+    
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock(){{
-            ldc(literal);
+        return new CodeBlock() {{
+            for ( VariableDeclarationExpression each : declExprs ) {
+                append( each.getCodeBlock() );
+                // identifier
+                pop();
+                // <EMPTY>
+            }
+            append( normalCompletion() );
         }};
     }
 }

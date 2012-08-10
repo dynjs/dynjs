@@ -20,16 +20,15 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 
-public class AssignmentOperationStatement extends BaseStatement implements Statement {
+public class AssignmentExpression extends AbstractExpression {
 
-    private final Statement lhs;
-    private final Statement rhs;
+    private final Expression lhs;
+    private final Expression rhs;
 
-    public AssignmentOperationStatement(final Tree tree, final Statement lhs, final Statement rhs) {
+    public AssignmentExpression(final Tree tree, final Expression lhs, final Expression rhs) {
         super( tree );
         this.lhs = lhs;
         this.rhs = rhs;
@@ -42,12 +41,17 @@ public class AssignmentOperationStatement extends BaseStatement implements State
                 append( lhs.getCodeBlock() );
                 // reference
                 append( rhs.getCodeBlock() );
+                // reference expr
+                append( jsGetValue() );
                 // reference value
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // reference value context
                 swap();
                 // reference context value
-                invokevirtual( p(Reference.class), "putValue", sig( void.class, ExecutionContext.class, Object.class) );
+                dup();
+                // reference context value value
+                invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
+                // value
             }
         };
     }

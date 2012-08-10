@@ -22,7 +22,7 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NamedValueStatement extends BaseStatement implements Statement {
+public class NamedValueStatement extends AbstractStatement implements Statement {
 
     private final Statement propertyName;
     private final Statement expr;

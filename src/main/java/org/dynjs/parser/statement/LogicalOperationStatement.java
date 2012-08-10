@@ -23,7 +23,7 @@ import org.dynjs.runtime.RT;
 import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class LogicalOperationStatement extends BaseStatement implements Statement {
+public class LogicalOperationStatement extends AbstractStatement implements Statement {
 
     private final String operator;
     private final Statement l;

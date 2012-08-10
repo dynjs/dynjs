@@ -15,32 +15,27 @@
  */
 package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.ExecutionContext;
 
-public class ResolveIdentifierStatement extends BaseStatement implements Statement {
+public class BooleanLiteralExpression extends AbstractExpression {
 
-    private final String identifier;
+    private final boolean value;
 
-    public ResolveIdentifierStatement(final Tree tree, final String identifier) {
+    public BooleanLiteralExpression(final Tree tree, final boolean value) {
         super(tree);
-        this.identifier = identifier;
+        this.value = value;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-            // context
-            ldc( identifier );
-            // context identifier
-            invokevirtual( p(ExecutionContext.class), "resolve", sig( void.class, String.class) );
-            // reference
+            if ( value ) {
+                iconst_1();
+            } else {
+                iconst_0();
+            }
         }};
     }
 }

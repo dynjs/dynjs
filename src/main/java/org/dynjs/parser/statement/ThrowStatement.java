@@ -17,13 +17,11 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
-public class ThrowStatement extends BaseStatement implements Statement {
+public class ThrowStatement extends AbstractStatement implements Statement {
 
     private final Statement expression;
 
@@ -36,7 +34,8 @@ public class ThrowStatement extends BaseStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
             append(expression.getCodeBlock());
-            invokedynamic("throw", sig(void.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
+            append( jsGetValue() );
+            append( throwCompletion() );
         }};
     }
 

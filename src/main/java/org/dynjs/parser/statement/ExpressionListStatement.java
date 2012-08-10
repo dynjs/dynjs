@@ -23,7 +23,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-public class ExpressionListStatement extends BaseStatement implements Statement {
+public class ExpressionListStatement extends AbstractStatement implements Statement {
 
     private final List<Statement> exprList;
 

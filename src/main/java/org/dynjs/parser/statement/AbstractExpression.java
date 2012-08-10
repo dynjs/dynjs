@@ -13,28 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.Position;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
+public abstract class AbstractExpression extends AbstractByteCodeEmitter implements Expression {
 
-public class BooleanLiteralStatement extends BaseStatement implements Statement {
+    private final Position position;
 
-    private final String value;
-
-    public BooleanLiteralStatement(final Tree tree, final String value) {
-        super(tree);
-        this.value = value;
+    AbstractExpression(final Tree tree) {
+        this.position = new Position(tree);
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            getstatic(p(Boolean.class), value, ci(Boolean.class));
-        }};
+    public Position getPosition() {
+        return position;
     }
 }
+    

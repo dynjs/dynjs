@@ -4,13 +4,13 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -25,10 +25,10 @@ public class FunctionCompiler extends AbstractCompiler {
         super( config, "Function" );
     }
 
-    public JSFunction compile(final ExecutionContext context, final boolean strict, final List<String> formalParameters, final Statement[] statements) {
+    public JSFunction compile(final ExecutionContext context, final boolean strict, final String[] formalParameters, final BlockStatement body) {
         JiteClass jiteClass = new JiteClass( nextClassName(), p( AbstractFunction.class ), new String[0] ) {
             {
-                defineMethod( "<init>", ACC_PUBLIC, sig( void.class, Statement[].class, LexicalEnvironment.class, String[].class ),
+                defineMethod( "<init>", ACC_PUBLIC, sig( void.class, BlockStatement.class, LexicalEnvironment.class, String[].class ),
                         new CodeBlock() {
                             {
                                 aload( 0 );
@@ -45,22 +45,14 @@ public class FunctionCompiler extends AbstractCompiler {
                                 voidreturn();
                             }
                         } );
-                defineMethod( "call", ACC_PUBLIC, CALL, new CodeBlock() {
-                    {
-                        for (Statement statement : statements) {
-                            CodeBlockUtils.injectLineNumber( this, statement );
-                            append( statement.getCodeBlock() );
-                        }
-                    }
-                } );
-
+                defineMethod( "call", ACC_PUBLIC, CALL, body.getCodeBlock() );
             }
         };
         
         Class<AbstractFunction> functionClass = (Class<AbstractFunction>) defineClass( jiteClass );
         try {
-            Constructor<AbstractFunction> ctor = functionClass.getDeclaredConstructor( Statement[].class, LexicalEnvironment.class, String[].class );
-            AbstractFunction function = ctor.newInstance( statements, context.getLexicalEnvironment(), formalParameters.toArray( new String[ formalParameters.size() ] ) );
+            Constructor<AbstractFunction> ctor = functionClass.getDeclaredConstructor( BlockStatement.class, LexicalEnvironment.class, String[].class );
+            AbstractFunction function = ctor.newInstance( body, context.getLexicalEnvironment(), formalParameters );
             return function;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException( e );

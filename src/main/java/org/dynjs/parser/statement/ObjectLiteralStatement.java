@@ -26,7 +26,7 @@ import java.util.List;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class ObjectLiteralStatement extends BaseStatement implements Statement {
+public class ObjectLiteralStatement extends AbstractStatement implements Statement {
 
     private final List<Statement> namedValues;
 

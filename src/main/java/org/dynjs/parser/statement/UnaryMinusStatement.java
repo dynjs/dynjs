@@ -7,7 +7,7 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-public class UnaryMinusStatement extends BaseStatement implements
+public class UnaryMinusStatement extends AbstractStatement implements
 		Statement {
 
 	private Statement expression;

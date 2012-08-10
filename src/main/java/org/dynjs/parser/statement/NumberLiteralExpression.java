@@ -15,16 +15,12 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
-
-import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
 
-public class NumberLiteralStatement extends BaseStatement implements Statement {
+import org.antlr.runtime.tree.Tree;
+
+public class NumberLiteralExpression extends AbstractExpression {
 
     private final String value;
     private final int radix;

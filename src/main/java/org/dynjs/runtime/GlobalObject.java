@@ -2,17 +2,17 @@ package org.dynjs.runtime;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.runtime.BlockStorage.Entry;
+import org.dynjs.runtime.BlockManager.Entry;
 
 
 public class GlobalObject extends DynObject {
     
     private JSCompiler compiler;
-    private BlockStorage blockStorage;
+    private BlockManager blockManager;
 
     public GlobalObject(Config config) {
         this.compiler = new JSCompiler( config );
-        this.blockStorage = new BlockStorage();
+        this.blockManager = new BlockManager();
         
         defineGlobalProperty( "undefined", Types.UNDEFINED );
         defineGlobalProperty( "NaN", Double.NaN );
@@ -46,8 +46,12 @@ public class GlobalObject extends DynObject {
         return this.compiler;
     }
     
+    public BlockManager getBlockManager() {
+        return this.blockManager;
+    }
+    
     public Entry retrieveBlockEntry(int statementNumber) {
-        return this.blockStorage.retrieve( statementNumber );
+        return this.blockManager.retrieve( statementNumber );
     }
     
     protected void defineGlobalProperty(final String name, final Object value) {

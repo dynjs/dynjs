@@ -24,7 +24,7 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public abstract class AbstractUnaryOperationStatement extends BaseStatement implements Statement {
+public abstract class AbstractUnaryOperationStatement extends AbstractStatement implements Statement {
 
     private final Statement expression;
 
@@ -37,7 +37,7 @@ public abstract class AbstractUnaryOperationStatement extends BaseStatement impl
 
     @Override
     public CodeBlock getCodeBlock() {
-        final ResolveIdentifierStatement resolvable = (ResolveIdentifierStatement) expression;
+        final IdentifierReferenceExpression resolvable = (IdentifierReferenceExpression) expression;
         return new CodeBlock() {{
             // relocate +1, since this statement uses astore(4)
             append(CodeBlockUtils.relocateLocalVars( expression.getCodeBlock(), 1 ) );

@@ -13,30 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.dynjs.parser.statement;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Position;
 
-public abstract class BaseStatement {
+public class StringLiteralExpression extends AbstractExpression {
 
-    private final static AtomicInteger counter = new AtomicInteger();
-    private final Position position;
-    private int number;
+    private final String literal;
 
-    BaseStatement(final Tree tree) {
-        this.position = new Position(tree);
-        this.number = counter.incrementAndGet();
+    public StringLiteralExpression(final Tree tree, String literal) {
+        super(tree);
+        this.literal = literal;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-    
-    public int getStatementNumber() {
-        return this.number;
+    @Override
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock(){{
+            ldc(literal);
+        }};
     }
 }

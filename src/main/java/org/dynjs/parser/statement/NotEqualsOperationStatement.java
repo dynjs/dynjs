@@ -23,7 +23,7 @@ import org.dynjs.runtime.RT;
 import static me.qmx.jitescript.CodeBlock.*;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class NotEqualsOperationStatement extends BaseStatement implements Statement {
+public class NotEqualsOperationStatement extends AbstractStatement implements Statement {
 
     private final Statement l;
     private final Statement r;

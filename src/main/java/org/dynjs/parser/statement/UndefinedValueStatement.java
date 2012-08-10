@@ -21,7 +21,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Types;
 
-public class UndefinedValueStatement extends BaseStatement implements Statement {
+public class UndefinedValueStatement extends AbstractStatement implements Statement {
 
     public UndefinedValueStatement() {
         super(null);

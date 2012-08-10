@@ -3,8 +3,8 @@ package org.dynjs.runtime;
 import java.util.Collections;
 import java.util.List;
 
-import org.dynjs.parser.statement.DeclareVarStatement;
-import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.statement.FunctionDeclaration;
 
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
@@ -13,12 +13,12 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     }
 
     @Override
-    public List<FunctionStatement> getFunctionDeclarations() {
+    public List<FunctionDeclaration> getFunctionDeclarations() {
         return Collections.emptyList();
     }
 
     @Override
-    public List<DeclareVarStatement> getVariableDeclarations() {
+    public List<VariableDeclarationStatement> getVariableDeclarations() {
         return Collections.emptyList();
     }
 

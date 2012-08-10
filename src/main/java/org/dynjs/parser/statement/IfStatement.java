@@ -18,16 +18,19 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.BlockManager;
+import org.objectweb.asm.tree.LabelNode;
 
-public class IfStatement extends BaseStatement implements Statement {
+public class IfStatement extends AbstractCompilingStatement implements Statement {
 
-    private final Statement vbool;
-    private final Statement vthen;
-    private final Statement velse;
+    private final Expression vbool;
+    private final BlockStatement vthen;
+    private final BlockStatement velse;
 
-    public IfStatement(final Tree tree, final Statement vbool, final Statement vthen, final Statement velse) {
-        super(tree);
+    public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final BlockStatement vthen, final BlockStatement velse) {
+        super( tree, blockManager );
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
@@ -35,26 +38,50 @@ public class IfStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            
-        }};
-        /*
-        final LabelNode elseBlock = new LabelNode();
-        final LabelNode outBlock = new LabelNode();
-        final CodeBlock elseCodeBlock = velse != null ? velse.getCodeBlock() : new CodeBlock();
+        return new CodeBlock() {
+            {
+                LabelNode elseBranch = new LabelNode();
+                LabelNode end = new LabelNode();
 
-        CodeBlock codeBlock = new CodeBlock() {{
-            append(vbool.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-            iffalse(elseBlock);
-            append(vthen.getCodeBlock());
-            go_to(outBlock);
-            label(elseBlock);
-            append(elseCodeBlock);
-            label(outBlock);
-        }};
-        return codeBlock;
-        */
+                append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "If", vbool, true ) );
+                // completion
+                
+                append( CodeBlockUtils.handleCompletion() );
+                // result
+
+                iffalse( elseBranch );
+                // <empty>
+                
+                // ----------------------------------------
+                // THEN
+                
+                append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Then", vthen, asExpression ) );
+                // completion
+
+                append( CodeBlockUtils.handleCompletion() );
+                // value
+                
+                if ( ! asExpression ) {
+                    pop();
+                }
+                
+                go_to( end );
+
+                // ----------------------------------------
+                // ELSE
+                label( elseBranch );
+                
+                append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Else", velse, asExpression ) );
+                // completion
+                append( CodeBlockUtils.handleCompletion() );
+                
+                // value
+                if (!asExpression) {
+                    pop();
+                }
+                label( end );
+                nop();
+            }
+        };
     }
 }

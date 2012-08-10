@@ -4,11 +4,11 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.qmx.jitescript.CodeBlock;
+import org.dynjs.parser.Statement;
 
-public class BlockStorage {
+public class BlockManager {
 
-    public BlockStorage() {
+    public BlockManager() {
 
     }
 
@@ -41,11 +41,11 @@ public class BlockStorage {
         }
         
         public String toString() {
-            return "[Entry: codeBlock=" + codeBlock + "; compiled=" + ( compiled == null ? null : compiled.get() ) + "]";
+            return "[Entry: statement=" + statement + "; compiled=" + ( compiled == null ? null : compiled.get() ) + "]";
         }
 
         public int statementNumber;
-        public CodeBlock codeBlock;
+        public Statement statement;
         private WeakReference<Object> compiled;
     }
 

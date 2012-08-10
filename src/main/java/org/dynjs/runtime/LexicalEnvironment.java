@@ -53,5 +53,6 @@ public class LexicalEnvironment {
         
         return outer.getIdentifierReference( context, name, strict );
     }
+    
 
 }

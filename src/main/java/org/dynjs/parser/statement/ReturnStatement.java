@@ -16,20 +16,31 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
 
-public class ReturnStatement extends BaseStatement implements Statement {
+public class ReturnStatement extends AbstractStatement {
 
-    private final Statement expr;
+    private final Expression expr;
 
-    public ReturnStatement(final Tree tree, final Statement expr) {
-        super(tree);
+    public ReturnStatement(final Tree tree, final Expression expr) {
+        super( tree );
         this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock(expr.getCodeBlock()).areturn();
+        return new CodeBlock() {
+            {
+                // 12.9
+                if (expr == null) {
+                    append( jsPushUndefined() );
+                } else {
+                    append( expr.getCodeBlock() );
+                    append( jsGetValue() );
+                }
+                append( returnCompletion() );
+            }
+        };
     }
 }

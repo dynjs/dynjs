@@ -9,12 +9,10 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.AbstractBasicBlock;
-import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.LexicalEnvironment;
 
 public class BasicBlockCompiler extends AbstractCompiler {
 
@@ -24,26 +22,25 @@ public class BasicBlockCompiler extends AbstractCompiler {
         super( config, "Block" );
     }
 
-    public BasicBlock compile(final String grist, final Statement[] statements) {
+    public BasicBlock compile(final String grist, final BlockStatement body) {
         JiteClass jiteClass = new JiteClass( nextClassName(grist), p( AbstractBasicBlock.class ), new String[0] ) {
             {
-                defineMethod( "<init>", ACC_PUBLIC, sig( void.class, Statement[].class ),
+                defineMethod( "<init>", ACC_PUBLIC, sig( void.class, BlockStatement.class ),
                         new CodeBlock() {
                             {
                                 aload( 0 );
                                 // this
                                 aload( 1 );
                                 // this statements
-                                invokespecial( p( AbstractBasicBlock.class ), "<init>", sig( void.class, Statement[].class ) );
+                                invokespecial( p( AbstractBasicBlock.class ), "<init>", sig( void.class, BlockStatement.class ) );
                                 voidreturn();
                             }
                         } );
-                defineMethod( "invoke", ACC_PUBLIC, INVOKE, new CodeBlock() {
+                defineMethod( "invoke", ACC_PUBLIC, INVOKE, 
+                        new CodeBlock() {
                     {
-                        for (Statement statement : statements) {
-                            CodeBlockUtils.injectLineNumber( this, statement );
-                            append( statement.getCodeBlock() );
-                        }
+                        append( body.getCodeBlock() );
+                        areturn();
                     }
                 } );
 
@@ -52,8 +49,8 @@ public class BasicBlockCompiler extends AbstractCompiler {
         
         Class<AbstractBasicBlock> blockClass = (Class<AbstractBasicBlock>) defineClass( jiteClass );
         try {
-            Constructor<AbstractBasicBlock> ctor = blockClass.getDeclaredConstructor( Statement[].class );
-            AbstractBasicBlock block = ctor.newInstance( statements );
+            Constructor<AbstractBasicBlock> ctor = blockClass.getDeclaredConstructor( BlockStatement.class );
+            AbstractBasicBlock block = ctor.newInstance( body );
             return block;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException( e );

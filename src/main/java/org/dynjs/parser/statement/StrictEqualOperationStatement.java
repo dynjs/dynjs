@@ -7,7 +7,7 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-public class StrictEqualOperationStatement extends BaseStatement implements Statement {
+public class StrictEqualOperationStatement extends AbstractStatement implements Statement {
 
 	private final Statement leftHandStatement;
 	private final Statement rightHandStatement;

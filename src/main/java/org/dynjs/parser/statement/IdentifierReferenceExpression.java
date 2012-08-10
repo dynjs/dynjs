@@ -22,37 +22,36 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
 
-public class DeclareVarStatement extends BaseStatement implements Statement {
 
-    private final Statement expr;
+/** An Identifier is evaluated by performing Identifier Resolution as specified in 10.3.1. 
+ *  The result of evaluating an Identifier is always a value of type Reference.
+ *  
+ * @see 11.1.2
+ * @see 10.3.1
+ * 
+ * @author Douglas Campos
+ * @author Bob McWhirter
+ */
+public class IdentifierReferenceExpression extends AbstractExpression {
+
     private final String identifier;
 
-    public DeclareVarStatement(final Tree tree, final Tree treeId, final Statement expr, final String identifier) {
+    public IdentifierReferenceExpression(final Tree tree, final String identifier) {
         super(tree);
-        this.expr = expr;
         this.identifier = identifier;
-    }
-    
-    public String getIdentifier() {
-        return this.identifier;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
+        // 10.3.1
         return new CodeBlock() {{
-            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+            aload(JSCompiler.Arities.EXECUTION_CONTEXT);
             // context
             ldc( identifier );
             // context identifier
-            invokevirtual( p(ExecutionContext.class), "resolve", sig(Reference.class, String.class) );
+            invokevirtual( p(ExecutionContext.class), "resolve", sig( Object.class, String.class) );
             // reference
-            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-            // reference context
-            append( expr.getCodeBlock() );
-            // reference context value
-            invokevirtual( p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
         }};
     }
 }

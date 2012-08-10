@@ -13,33 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.DynJSCompiler;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
-
 import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
 
-public class NewStatement extends BaseStatement implements Statement {
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.Types;
 
-    private final Statement statement;
+public class NullLiteralExpression extends AbstractExpression {
 
-    public NewStatement(final Tree tree, final Statement statement) {
+    public NullLiteralExpression(final Tree tree) {
         super(tree);
-        this.statement = statement;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {{
-            aload(DynJSCompiler.Arities.CONTEXT);
-            append(statement.getCodeBlock());
-            invokedynamic("new", sig(Object.class, DynThreadContext.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
+            getstatic(p(Types.class), "NULL", ci(Types.Null.class));
         }};
     }
 }

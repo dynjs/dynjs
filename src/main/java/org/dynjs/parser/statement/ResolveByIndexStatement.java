@@ -21,13 +21,13 @@ import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.RT;
 
-public class ResolveByIndexStatement extends BaseStatement implements Statement {
+public class ResolveByIndexStatement extends AbstractStatement implements Statement {
 
     private final Statement lhs;
     private final Statement index;
 
     public ResolveByIndexStatement(final Tree tree, final Statement lhs, final Tree treeIndex, final String index) {
-        this(tree, lhs, new StringLiteralStatement(treeIndex, index));
+        this(tree, lhs, new StringLiteralExpression(treeIndex, index));
 
     }
 

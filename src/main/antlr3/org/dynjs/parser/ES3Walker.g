@@ -78,7 +78,7 @@ statement returns [Statement value]
 	| variableDeclaration
 	    {  $value = $variableDeclaration.value;   }
 	| expression
-	    {  $value = $expression.value;   }
+	    {  $value = executor.expressionStatement( $BLOCK, $expression.value);   }
 	| printStatement
         { $value = $printStatement.value; }
 	| ifStatement
@@ -118,14 +118,15 @@ printStatement returns [Statement value]
 	{  $value = executor.printStatement($SK_PRINT, $expression.value);  }
 	;
 
-variableDeclaration returns [Statement value]
+variableDeclaration returns [VariableDeclarationStatement value]
+@init { List<VariableDeclarationExpression> decls = new ArrayList<VariableDeclarationExpression>(); }
 	: ^( VAR
 	      ( id=Identifier
-	{   $value = executor.declareVar($VAR, $id, $id.text);   }
+	{   decls.add( executor.variableDeclarationExpression($id, $id.text, null) );   }
 	      | ^( ASSIGN id=Identifier expr )
-	{   $value = executor.declareVar($VAR, $id, $id.text, $expr.value);   }
+	{   decls.add( executor.variableDeclarationExpression($id, $ASSIGN.text, $expr.value);   }
 	      )+
-	   )
+	   ) { $value = execute.variableDeclarationStatement( $VAR, decls ); }
 	;
 
 ifStatement returns [Statement value]
@@ -391,27 +392,27 @@ functionDeclaration returns [Statement value]
 	{ $value = executor.defineFunction($FUNCTION, $id.text, args, $block.value); }
 	;
 
-callExpression returns [Statement value]
+callExpression returns [Expression value]
 @init { List<Statement> args = new ArrayList<Statement>(); }
 	: ^( CALL leftHandSideExpression ^( ARGS (expr { args.add($expr.value); } )* ) )
 	{ $value = executor.resolveCallExpr($CALL, $leftHandSideExpression.value, args);  }
 	;
 	
-memberExpression returns [Statement value]
+memberExpression returns [Expression value]
 	: ^( BYINDEX leftHandSideExpression expression)
 	{ $value = executor.resolveByIndex($BYINDEX, $leftHandSideExpression.value, $expression.value); }
 	| ^( BYFIELD leftHandSideExpression Identifier )
 	{ $value = executor.resolveByField($BYFIELD, $leftHandSideExpression.value, $Identifier, $Identifier.text); }
 	;
 
-primaryExpression returns [Statement value]
+primaryExpression returns [Expression value]
 	: id=Identifier
 	{ $value = executor.resolveIdentifier($id, $id.text); }
 	| literal
 	{ $value = $literal.value;  }
 	;
 
-literal returns [Statement value]
+literal returns [Expression value]
 	: THIS
 	{ $value = executor.defineThisLiteral($THIS);  }
 	| NULL
@@ -430,14 +431,14 @@ literal returns [Statement value]
 	{ $value = $objectLiteral.value;  }
 	;
 
-booleanLiteral returns [Statement value]
+booleanLiteral returns [Expression value]
 	: TRUE
 	{ $value = executor.defineTrueLiteral($TRUE);  }
 	| FALSE
 	{ $value = executor.defineFalseLiteral($FALSE);  }
 	;
 
-numericLiteral returns [Statement value]
+numericLiteral returns [Expression value]
 	: DecimalLiteral
 	{ $value = executor.defineNumberLiteral($DecimalLiteral, $DecimalLiteral.text, 10);  }
 	| OctalIntegerLiteral
@@ -446,13 +447,13 @@ numericLiteral returns [Statement value]
 	{ $value = executor.defineNumberLiteral($HexIntegerLiteral, $HexIntegerLiteral.text, 16);  }
 	;
 
-arrayLiteral returns [Statement value]
+arrayLiteral returns [Expression value]
 @init { List<Statement> exprs = new ArrayList<Statement>(); }
 	: ^( ARRAY ( ^( ITEM expr? { exprs.add($expr.value); } ) )* )
 	{ $value = executor.arrayLiteral($ARRAY, exprs);  }
 	;
 
-objectLiteral returns [Statement value]
+objectLiteral returns [Expression value]
 @init { List<Statement> namedValues = new ArrayList<Statement>(); }
 	: ^( OBJECT
 	    ( ^( NAMEDVALUE propertyName expr

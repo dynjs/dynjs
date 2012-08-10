@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.statement.DeclareVarStatement;
-import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.statement.FunctionDeclaration;
 
 public abstract class AbstractCode implements JSCode {
     
@@ -26,11 +26,11 @@ public abstract class AbstractCode implements JSCode {
     }
 
     @Override
-    public List<FunctionStatement> getFunctionDeclarations() {
-        List<FunctionStatement> decls = new ArrayList<>();
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        List<FunctionDeclaration> decls = new ArrayList<>();
         for ( int i = 0 ; i < statements.length ; ++i ) {
-            if ( statements[i] instanceof FunctionStatement ) {
-                FunctionStatement fn = (FunctionStatement) statements[i];
+            if ( statements[i] instanceof FunctionDeclaration ) {
+                FunctionDeclaration fn = (FunctionDeclaration) statements[i];
                 if ( fn.getIdentifier() != null ) {
                     decls.add( fn );
                 }
@@ -39,11 +39,11 @@ public abstract class AbstractCode implements JSCode {
         return decls;
     }
     
-    public List<DeclareVarStatement> getVariableDeclarations() {
-        List<DeclareVarStatement> decls = new ArrayList<>();
+    public List<VariableDeclarationStatement> getVariableDeclarations() {
+        List<VariableDeclarationStatement> decls = new ArrayList<>();
         for ( int i = 0 ; i < statements.length ; ++i ) {
-            if ( statements[i] instanceof DeclareVarStatement ) {
-                DeclareVarStatement var = (DeclareVarStatement) statements[i];
+            if ( statements[i] instanceof VariableDeclarationStatement ) {
+                VariableDeclarationStatement var = (VariableDeclarationStatement) statements[i];
                 decls.add( var );
             }
         }

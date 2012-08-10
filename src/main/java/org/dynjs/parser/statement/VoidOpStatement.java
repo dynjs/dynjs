@@ -20,7 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-public class VoidOpStatement extends BaseStatement implements Statement {
+public class VoidOpStatement extends AbstractStatement implements Statement {
 
     private final Statement expression;
 

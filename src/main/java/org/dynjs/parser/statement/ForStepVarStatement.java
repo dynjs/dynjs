@@ -26,7 +26,7 @@ import java.util.Stack;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
-public class ForStepVarStatement extends BaseStatement implements Statement {
+public class ForStepVarStatement extends AbstractStatement implements Statement {
 
     private final Statement varDef;
     private final Statement test;

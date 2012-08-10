@@ -7,10 +7,16 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.RT;
 
-public class ThisStatement extends BaseStatement implements Statement {
-    public ThisStatement(Tree tree) {
+/** The <code>this</code> keyword evaluates to the value of the ThisBinding of the current execution context.
+ * 
+ * @see 11.1.1
+ * @author Douglas Campos
+ * @author Bob McWhirter
+ *
+ */
+public class ThisExpression extends AbstractExpression {
+    public ThisExpression(Tree tree) {
         super(tree);
     }
 

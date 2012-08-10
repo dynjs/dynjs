@@ -60,6 +60,7 @@ public class JSEngine {
         ES3Walker walker = new ES3Walker(treeNodeStream);
 
         Executor executor = new Executor();
+        executor.setBlockManager( context.getBlockManager() );
         walker.setExecutor(executor);
         walker.program();
         return walker.getResult();

@@ -2,11 +2,11 @@ package org.dynjs.runtime;
 
 import java.util.List;
 
-import org.dynjs.parser.statement.DeclareVarStatement;
-import org.dynjs.parser.statement.FunctionStatement;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.statement.FunctionDeclaration;
 
 public interface JSCode {
     boolean isStrict();
-    List<FunctionStatement> getFunctionDeclarations();
-    List<DeclareVarStatement> getVariableDeclarations();
+    List<FunctionDeclaration> getFunctionDeclarations();
+    List<VariableDeclarationStatement> getVariableDeclarations();
 }

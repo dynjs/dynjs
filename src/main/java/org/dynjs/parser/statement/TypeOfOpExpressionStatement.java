@@ -23,7 +23,7 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class TypeOfOpExpressionStatement extends BaseStatement implements Statement {
+public class TypeOfOpExpressionStatement extends AbstractStatement implements Statement {
 
     private final Statement expression;
 

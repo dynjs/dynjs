@@ -24,7 +24,7 @@ import org.dynjs.runtime.RT;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-public class InstanceOfRelOpStatement extends BaseStatement implements Statement {
+public class InstanceOfRelOpStatement extends AbstractStatement implements Statement {
 
     private final Statement l;
     private final Statement r;
