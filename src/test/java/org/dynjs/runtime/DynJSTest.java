@@ -435,5 +435,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     public void testStringEquality(){
         check("var result = \"house\" == \"house\" && 'house' == 'house' && \"\" == 0;");
     }
+
+    @Test
+    public void testRegExp() {
+    	check("var regex = /javascript/gi; var result = 'Javascript'.match(regex);");
+    }
 }
 
