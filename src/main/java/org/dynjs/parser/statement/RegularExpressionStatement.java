@@ -29,11 +29,7 @@ public class RegularExpressionStatement extends BaseStatement implements
 			return null;
 		}
 
-		private static Integer parseFlags(String flags) {
-			if (flags == null || flags.isEmpty()) {
-				return null;
-			}
-
+		private static int parseFlags(String flags) {
 			int result = 0;
 			for (char flag : flags.toCharArray()) {
 				result |= patternFlag(flag);
