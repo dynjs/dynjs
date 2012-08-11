@@ -8,19 +8,20 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.ParserException;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.DynRegExp;
 
 public class RegularExpressionStatement extends BaseStatement implements
 		Statement {
 
 	// TODO: Move the parsing logic to the parser
-	static class RegExp {
+	static class DynRegExpParser {
 		private static final String REG_EXP_PATTERN = "^\\/(.*)\\/([igm]{0,})$";
 
-		static RegExp parse(String text) {
+		static DynRegExp parse(String text) {
 			Pattern pattern = Pattern.compile(REG_EXP_PATTERN);
 			Matcher matcher = pattern.matcher(text);
 			if (matcher.matches()) {
-				return new RegExp(matcher.group(1),
+				return new DynRegExp(matcher.group(1),
 						convertFlags(matcher.group(2)),
 						needGlobalMatch(matcher.group(2)));
 			}
@@ -59,35 +60,13 @@ public class RegularExpressionStatement extends BaseStatement implements
 		private static boolean needGlobalMatch(String flags) {
 			return flags.contains("g");
 		}
-
-		private final String regex;
-		private final Integer flags;
-		private final boolean isGlobalMatch;
-
-		private RegExp(String regex, Integer flags, boolean isGlobalMatch) {
-			this.regex = regex;
-			this.flags = flags;
-			this.isGlobalMatch = isGlobalMatch;
-		}
-
-		String getRegex() {
-			return regex;
-		}
-
-		Integer getFlags() {
-			return flags;
-		}
-
-		boolean isGlobalMatch() {
-			return isGlobalMatch;
-		}
 	}
 
-	private final RegExp regExp;
+	private final DynRegExp regExp;
 
 	public RegularExpressionStatement(Tree tree) {
 		super(tree);
-		this.regExp = RegExp.parse(tree.getText());
+		this.regExp = DynRegExpParser.parse(tree.getText());
 		if (regExp == null) {
 			throw new ParserException("Invalid regular expression", tree);
 		}
