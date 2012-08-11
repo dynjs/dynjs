@@ -22,14 +22,14 @@ public class RegularExpressionStatement extends BaseStatement implements
 			Matcher matcher = pattern.matcher(text);
 			if (matcher.matches()) {
 				return new DynRegExp(matcher.group(1),
-						convertFlags(matcher.group(2)),
-						needGlobalMatch(matcher.group(2)));
+						parseFlags(matcher.group(2)),
+						parseGlobalMatchFlag(matcher.group(2)));
 			}
 
 			return null;
 		}
 
-		private static Integer convertFlags(String flags) {
+		private static Integer parseFlags(String flags) {
 			if (flags == null || flags.isEmpty()) {
 				return null;
 			}
@@ -53,7 +53,7 @@ public class RegularExpressionStatement extends BaseStatement implements
 			return 0;
 		}
 
-		private static boolean needGlobalMatch(String flags) {
+		private static boolean parseGlobalMatchFlag(String flags) {
 			return flags.contains("g");
 		}
 	}
