@@ -50,10 +50,6 @@ public class RegularExpressionStatement extends BaseStatement implements
 				return Pattern.MULTILINE;
 			}
 
-			if (c == 'g') {
-				return 0;
-			}
-
 			return 0;
 		}
 
