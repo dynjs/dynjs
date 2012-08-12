@@ -15,7 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import java.util.regex.Pattern;
+import static org.fest.assertions.Assertions.assertThat;
 
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
@@ -26,8 +26,6 @@ import org.dynjs.runtime.java.JavaRequireFunction;
 import org.dynjs.runtime.java.SayHiToJava;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
@@ -443,9 +441,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 		Object result = resultFor("var result = /javascript/gi");
 		assertThat(result).isInstanceOf(DynRegExp.class);
 		DynRegExp regExp = (DynRegExp) result;
-		assertThat(regExp.getRegex()).isEqualTo("javascript");
-		assertThat(regExp.getFlags()).isEqualTo(Pattern.CASE_INSENSITIVE);
-		assertThat(regExp.isGlobalMatch()).isTrue();
+		assertThat(regExp.getSource()).isEqualTo("javascript");
+		assertThat(regExp.isIgnoreCase()).isTrue();
+		assertThat(regExp.isMultiline()).isFalse();
+		assertThat(regExp.isGlobal()).isTrue();
 	}
 }
 
