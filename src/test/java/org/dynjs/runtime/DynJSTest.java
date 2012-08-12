@@ -15,6 +15,8 @@
  */
 package org.dynjs.runtime;
 
+import java.util.regex.Pattern;
+
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
@@ -436,9 +438,14 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var result = \"house\" == \"house\" && 'house' == 'house' && \"\" == 0;");
     }
 
-    @Test
-    public void testRegExp() {
-    	check("var regex = /javascript/gi; var result = 'Javascript'.match(regex);");
-    }
+	@Test
+	public void testRegExp() {
+		Object result = resultFor("var result = /javascript/gi");
+		assertThat(result).isInstanceOf(DynRegExp.class);
+		DynRegExp regExp = (DynRegExp) result;
+		assertThat(regExp.getRegex()).isEqualTo("javascript");
+		assertThat(regExp.getFlags()).isEqualTo(Pattern.CASE_INSENSITIVE);
+		assertThat(regExp.isGlobalMatch()).isTrue();
+	}
 }
 

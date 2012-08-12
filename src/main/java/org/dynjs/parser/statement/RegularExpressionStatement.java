@@ -1,5 +1,8 @@
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +69,16 @@ public class RegularExpressionStatement extends BaseStatement implements
 
 	@Override
 	public CodeBlock getCodeBlock() {
-		return null;
+		return new CodeBlock() {
+			{
+				newobj(p(DynRegExp.class));
+				dup();
+				ldc(regExp.getRegex());
+				pushInt(regExp.getFlags());
+				pushBoolean(regExp.isGlobalMatch());
+				invokespecial(p(DynRegExp.class), "<init>",
+						sig(void.class, String.class, int.class, boolean.class));
+			}
+		};
 	}
 }
