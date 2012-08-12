@@ -8,28 +8,40 @@ public class DynRegExpTest {
 	@Test
 	public void initWithNoFlag() {
 		DynRegExp regExp = new DynRegExp("\\d{2,4}", "");
-		assertThat(regExp.getSource()).isEqualTo("\\d{2,4}");
-		assertThat(regExp.isIgnoreCase()).isFalse();
-		assertThat(regExp.isMultiline()).isFalse();
-		assertThat(regExp.isGlobal()).isFalse();
+		assertThat(regExp.getProperty("source").getAttribute("value"))
+				.isEqualTo("\\d{2,4}");
+		assertThat(regExp.getProperty("ignoreCase").getAttribute("value"))
+				.isEqualTo(false);
+		assertThat(regExp.getProperty("multiline").getAttribute("value"))
+				.isEqualTo(false);
+		assertThat(regExp.getProperty("global").getAttribute("value"))
+				.isEqualTo(false);
 	}
 
 	@Test
 	public void initWithTwoFlags() {
 		DynRegExp regExp = new DynRegExp("\\d{2,4}", "im");
-		assertThat(regExp.getSource()).isEqualTo("\\d{2,4}");
-		assertThat(regExp.isIgnoreCase()).isTrue();
-		assertThat(regExp.isMultiline()).isTrue();
-		assertThat(regExp.isGlobal()).isFalse();
+		assertThat(regExp.getProperty("source").getAttribute("value"))
+				.isEqualTo("\\d{2,4}");
+		assertThat(regExp.getProperty("ignoreCase").getAttribute("value"))
+				.isEqualTo(true);
+		assertThat(regExp.getProperty("multiline").getAttribute("value"))
+				.isEqualTo(true);
+		assertThat(regExp.getProperty("global").getAttribute("value"))
+				.isEqualTo(false);
 	}
 
 	@Test
 	public void initWithMultipleFlags() {
 		DynRegExp regExp = new DynRegExp("\\d{2,4}", "img");
-		assertThat(regExp.getSource()).isEqualTo("\\d{2,4}");
-		assertThat(regExp.isIgnoreCase()).isTrue();
-		assertThat(regExp.isMultiline()).isTrue();
-		assertThat(regExp.isGlobal()).isTrue();
+		assertThat(regExp.getProperty("source").getAttribute("value"))
+				.isEqualTo("\\d{2,4}");
+		assertThat(regExp.getProperty("ignoreCase").getAttribute("value"))
+				.isEqualTo(true);
+		assertThat(regExp.getProperty("multiline").getAttribute("value"))
+				.isEqualTo(true);
+		assertThat(regExp.getProperty("global").getAttribute("value"))
+				.isEqualTo(true);
 	}
 
 }

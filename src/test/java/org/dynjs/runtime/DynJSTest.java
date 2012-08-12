@@ -441,10 +441,14 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 		Object result = resultFor("var result = /javascript/gi");
 		assertThat(result).isInstanceOf(DynRegExp.class);
 		DynRegExp regExp = (DynRegExp) result;
-		assertThat(regExp.getSource()).isEqualTo("javascript");
-		assertThat(regExp.isIgnoreCase()).isTrue();
-		assertThat(regExp.isMultiline()).isFalse();
-		assertThat(regExp.isGlobal()).isTrue();
+		assertThat(regExp.getProperty("source").getAttribute("value"))
+				.isEqualTo("javascript");
+		assertThat(regExp.getProperty("ignoreCase").getAttribute("value"))
+				.isEqualTo(true);
+		assertThat(regExp.getProperty("multiline").getAttribute("value"))
+				.isEqualTo(false);
+		assertThat(regExp.getProperty("global").getAttribute("value"))
+				.isEqualTo(true);
 	}
 }
 

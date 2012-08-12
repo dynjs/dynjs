@@ -1,47 +1,24 @@
 package org.dynjs.runtime;
 
 public class DynRegExp extends DynObject {
-	private String source;
-	private boolean global;
-	private boolean ignoreCase;
-
-	private boolean multiline;
-	private int lastIndex;
-
 	public DynRegExp(String source, String flags) {
-		this.source = source;
+		define("source", source);
+		define("ignoreCase", false);
+		define("multiline", false);
+		define("global", false);
+		define("lastIndex", 0);
 		parseFlags(flags);
 	}
 
 	private void parseFlags(String flags) {
 		for (char flag : flags.toCharArray()) {
 			if (flag == 'i') {
-				ignoreCase = true;
+				setProperty("ignoreCase", true);
 			} else if (flag == 'm') {
-				multiline = true;
+				setProperty("multiline", true);
 			} else if (flag == 'g') {
-				global = true;
+				setProperty("global", true);
 			}
 		}
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public boolean isGlobal() {
-		return global;
-	}
-
-	public boolean isIgnoreCase() {
-		return ignoreCase;
-	}
-
-	public boolean isMultiline() {
-		return multiline;
-	}
-
-	public int getLastIndex() {
-		return lastIndex;
 	}
 }
