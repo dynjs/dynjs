@@ -54,21 +54,19 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
 
                 append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Then", vthen ) );
                 // completion
-
-                append( CodeBlockUtils.handleCompletion() );
-                // value
-
                 go_to( end );
 
                 // ----------------------------------------
                 // ELSE
                 label( elseBranch );
+                // <empty>
 
                 append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Else", velse ) );
                 // completion
-                append( CodeBlockUtils.handleCompletion() );
 
                 label( end );
+                // completion
+                
                 nop();
             }
         };

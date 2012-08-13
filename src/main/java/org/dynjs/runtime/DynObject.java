@@ -81,7 +81,7 @@ public class DynObject implements JSObject {
         }
 
         JSFunction getter = (JSFunction) g;
-        return getter.call( context, this );
+        return context.call( getter, this );
     }
 
     @Override
@@ -149,7 +149,7 @@ public class DynObject implements JSObject {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             if (desc.isAccessorDescriptor()) {
                 JSFunction set = (JSFunction) desc.get( "Set" );
-                set.call( context, this, value );
+                context.call( set, this, value );
             } else {
 
             }

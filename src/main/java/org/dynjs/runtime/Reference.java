@@ -78,5 +78,14 @@ public class Reference {
             ((EnvironmentRecord) this.base).setMutableBinding( context, this.referencedName, value, this.strict );
         }
     }
+    
+    public boolean isValidForPrePostIncrementDecrement() {
+        if ( isStrictReference() && getBase() instanceof EnvironmentRecord ) {
+            if ( this.referencedName.equals( "eval") || this.referencedName.equals( "arguments" ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

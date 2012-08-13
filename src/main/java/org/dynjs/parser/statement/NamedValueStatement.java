@@ -20,7 +20,6 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
 
 public class NamedValueStatement extends AbstractStatement implements Statement {
 
@@ -37,9 +36,10 @@ public class NamedValueStatement extends AbstractStatement implements Statement 
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                //FIXME: What is this?
                 append( propertyName.getCodeBlock() );
                 append( expr.getCodeBlock() );
-                invokedynamic( "DefineOwnProperty", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS );
+                //invokedynamic( "DefineOwnProperty", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS );
             }
         };
     }

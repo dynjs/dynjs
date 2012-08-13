@@ -102,7 +102,7 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
-
+    
     public CodeBlock jsGetBase() {
         return new CodeBlock() {
             {

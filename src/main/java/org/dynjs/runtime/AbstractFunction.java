@@ -50,6 +50,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public String[] getFormalParameters() {
         return this.formalParameters;
     }
+    
+    protected void setFormalParamters(String[] formalParameters) {
+        this.formalParameters = formalParameters;
+    }
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------

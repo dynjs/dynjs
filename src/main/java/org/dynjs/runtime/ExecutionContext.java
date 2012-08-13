@@ -3,11 +3,11 @@ package org.dynjs.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.TypeError;
 import org.dynjs.parser.statement.FunctionDeclaration;
 import org.dynjs.parser.statement.VariableDeclaration;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.runtime.BlockManager.Entry;
 
 public class ExecutionContext {
@@ -76,7 +76,7 @@ public class ExecutionContext {
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
         ExecutionContext fnContext = createFunctionExecutionContext( function, self, args );
-        Object result = function.call( fnContext, args );
+        Object result = function.call( fnContext );
         if (result == null) {
             return Types.UNDEFINED;
         }
@@ -292,6 +292,10 @@ public class ExecutionContext {
                 env.setMutableBinding( this, identifier, Types.UNDEFINED, code.isStrict() );
             }
         }
+    }
+    
+    public Config getConfig() {
+        return getGlobalObject().getConfig();
     }
 
     public GlobalObject getGlobalObject() {

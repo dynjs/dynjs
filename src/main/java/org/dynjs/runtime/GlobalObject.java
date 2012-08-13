@@ -1,8 +1,12 @@
 package org.dynjs.runtime;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
 
@@ -47,8 +51,17 @@ public class GlobalObject extends DynObject {
          */
     }
     
+    public List<ModuleProvider> getModuleProviders() {
+        // TODO: wire me back up.
+        return Collections.emptyList();
+    }
+    
     public JSEngine getEngine() {
         return this.engine;
+    }
+    
+    public Config getConfig() {
+        return getEngine().getConfig();
     }
 
     public JSCompiler getCompiler() {

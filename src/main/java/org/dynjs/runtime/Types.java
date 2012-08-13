@@ -121,49 +121,148 @@ public class Types {
     static String toString(Object o) {
         return o.toString();
     }
-    
+
     static String typeof(ExecutionContext context, Object o) {
         // 11.4.3
         Object val = o;
-        if ( o instanceof Reference ) {
+        if (o instanceof Reference) {
             Reference r = (Reference) o;
-            if ( r.isUnresolvableReference() ) {
+            if (r.isUnresolvableReference()) {
                 return "undefined";
             }
             val = getValue( context, o );
         }
-        
-        return type(o);
+
+        return type( val );
     }
-    
+
+    static boolean compareEquality(Object lhs, Object rhs) {
+        // 11.9.3
+
+        String lhsType = type( lhs );
+        String rhsType = type( rhs );
+
+        if (lhsType.equals( rhsType )) {
+            if (lhs == Types.UNDEFINED) {
+                return true;
+            }
+            if (lhs == Types.NULL) {
+                return true;
+            }
+            if (lhs instanceof Number) {
+                if (((Number) lhs).doubleValue() == Double.NaN) {
+                    return false;
+                }
+                if (((Number) rhs).doubleValue() == Double.NaN) {
+                    return false;
+                }
+                if (lhs.equals( rhs )) {
+                    return true;
+                }
+                return false;
+            }
+            if (lhs instanceof String || lhs instanceof Boolean) {
+                return lhs.equals( rhs );
+            }
+        }
+
+        if (lhs == Types.UNDEFINED && rhs == Types.NULL) {
+            return true;
+        }
+
+        if (lhs == Types.NULL && rhs == Types.UNDEFINED) {
+            return true;
+        }
+
+        if (lhsType.equals( "number" ) && rhsType.equals( "string" )) {
+            return compareEquality( lhs, toNumber( rhs ) );
+        }
+
+        if (lhsType.equals( "string" ) && rhsType.equals( "number" )) {
+            return compareEquality( toNumber( lhs ), rhs );
+        }
+
+        if (lhsType.equals( "boolean" )) {
+            return compareEquality( toNumber( lhs ), rhs );
+        }
+
+        if (rhsType.equals( "boolean" )) {
+            return compareEquality( lhs, toNumber( rhs ) );
+        }
+
+        if ((lhsType.equals( "string" ) || lhsType.equals( "number" )) && rhsType.equals( "object" )) {
+            return compareEquality( lhs, toPrimitive( rhs, null ) );
+        }
+
+        if (lhsType.equals( "object" ) && (rhsType.equals( "string" ) || rhsType.equals( "number" ))) {
+            return compareEquality( toPrimitive( lhs, null ), rhs );
+        }
+
+        return false;
+    }
+
+    static boolean compareStrictEquality(Object lhs, Object rhs) {
+        // 11.9.6
+        String lhsType = type( lhs );
+        String rhsType = type( rhs );
+
+        if (!lhsType.equals( rhsType )) {
+            return false;
+        }
+
+        if (lhs == UNDEFINED) {
+            return true;
+        }
+
+        if (lhs == NULL) {
+            return true;
+        }
+
+        if (lhs instanceof Number) {
+            if (((Number) lhs).doubleValue() == Double.NaN) {
+                return false;
+            }
+            if (((Number) rhs).doubleValue() == Double.NaN) {
+                return false;
+            }
+            return lhs.equals( rhs );
+        }
+
+        if (lhs instanceof String || lhs instanceof Boolean) {
+            return lhs.equals( rhs );
+        }
+        
+        return lhs == rhs;
+    }
+
     static String type(Object o) {
         // 11.4.3
-        if ( o == UNDEFINED ) {
+        if (o == UNDEFINED) {
             return "undefined";
         }
-        
-        if ( o == NULL ) {
+
+        if (o == NULL) {
             return "object";
         }
-        
-        if ( o instanceof Boolean ) {
+
+        if (o instanceof Boolean) {
             return "boolean";
         }
-        
-        if ( o instanceof Number ) {
+
+        if (o instanceof Number) {
             return "number";
         }
-        
-        if ( o instanceof JSFunction ) {
+
+        if (o instanceof JSFunction) {
             return "function";
         }
-        
-        if ( o instanceof JSObject ) {
+
+        if (o instanceof JSObject) {
             return "object";
         }
-        
+
         return o.getClass().getName();
-        
+
     }
 
     // ----------------------------------------------------------------------

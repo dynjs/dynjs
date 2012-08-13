@@ -46,11 +46,12 @@ options
 @header {
 package org.dynjs.parser;
 
+import org.dynjs.parser.statement.*;
 }
 
 @members {
 
-    List<Statement> result = null;
+    BlockStatement result = null;
     Executor executor = null;
 
     public void setExecutor(Executor executor){
@@ -122,11 +123,11 @@ variableDeclaration returns [VariableDeclarationStatement value]
 @init { List<VariableDeclarationExpression> decls = new ArrayList<VariableDeclarationExpression>(); }
 	: ^( VAR
 	      ( id=Identifier
-	{   decls.add( executor.variableDeclarationExpression($id, $id.text, null) );   }
+	{   decls.add( executor.variableDeclaration($id, $id.text, null) ); }
 	      | ^( ASSIGN id=Identifier expr )
-	{   decls.add( executor.variableDeclarationExpression($id, $ASSIGN.text, $expr.value);   }
+	{   decls.add( executor.variableDeclaration($id, $ASSIGN.text, $expr.value) );   }
 	      )+
-	   ) { $value = execute.variableDeclarationStatement( $VAR, decls ); }
+	   ) { $value = executor.variableDeclarationStatement( $VAR, decls ); }
 	;
 
 ifStatement returns [Statement value]
@@ -349,9 +350,9 @@ expr returns [Expression value]
 	| ^( TYPEOF ex=expr )
     { $value = executor.defineTypeOfOp($TYPEOF, $ex.value); }
 	| ^( INC ex=expr )
-    { $value = executor.defineIncOp($INC, $ex.value); }
+    { $value = executor.definePreIncOp($INC, $ex.value); }
 	| ^( DEC ex=expr )
-    { $value = executor.defineDecOp($DEC, $ex.value); }
+    { $value = executor.definePreDecOp($DEC, $ex.value); }
 	| ^( POS ex=expr )
     { $value = executor.definePosOp($POS, $ex.value); }
 	| ^( NEG ex=expr )
@@ -363,9 +364,9 @@ expr returns [Expression value]
 
 	// Postfix operators
 	| ^( PINC ex=expr )
-    { $value = executor.definePIncOp($PINC, $ex.value); }
+    { $value = executor.definePostIncOp($PINC, $ex.value); }
 	| ^( PDEC ex=expr )
-    { $value = executor.definePDecOp($PDEC, $ex.value); }
+    { $value = executor.definePostDecOp($PDEC, $ex.value); }
 	;
 
 leftHandSideExpression returns [Statement value]
@@ -383,7 +384,7 @@ leftHandSideExpression returns [Statement value]
 
 newExpression returns [NewOperatorExpression value]
 @init { List<Expression> args = new ArrayList<Expression>(); }
-	: ^( NEW leftHandSideExpression ^( ARGS (expression { args.add($expression.value); }* ) )
+	: ^( NEW leftHandSideExpression ^( ARGS (expression { args.add($expression.value);})* ) )
 	{ $value = executor.newOperatorExpression($NEW, $leftHandSideExpression.value, args); }
 	;
 

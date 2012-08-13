@@ -19,30 +19,38 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
+import org.dynjs.runtime.Types;
+import org.objectweb.asm.tree.LabelNode;
 
-public class LogicalOperationStatement extends AbstractStatement implements Statement {
+public class NotOperatorExpression extends AbstractExpression {
 
-    private final String operator;
-    private final Statement l;
-    private final Statement r;
+    private final Expression expr;
 
-    public LogicalOperationStatement(final Tree tree, final String operator, final Statement l, final Statement r) {
+    public NotOperatorExpression(final Tree tree, final Expression expr) {
         super( tree );
-        this.operator = operator;
-        this.l = l;
-        this.r = r;
+        this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( l.getCodeBlock() );
-                append( r.getCodeBlock() );
-                invokedynamic( operator, sig( Boolean.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                LabelNode returnFalse = new LabelNode();
+                LabelNode end = new LabelNode();
+                
+                append( expr.getCodeBlock() );
+                // val
+                invokestatic( p(Types.class), "toBoolean", sig( boolean.class, Object.class ) );
+                // bool
+                iftrue( returnFalse );
+                iconst_1();
+                go_to(end);
+                label( returnFalse );
+                iconst_0();
+                label( end );
+                nop();
             }
         };
     }
+
 }

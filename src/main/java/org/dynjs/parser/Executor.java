@@ -30,7 +30,7 @@ import org.dynjs.parser.statement.CompoundAssignmentExpression;
 import org.dynjs.parser.statement.ContinueStatement;
 import org.dynjs.parser.statement.DeleteOpExpression;
 import org.dynjs.parser.statement.DoWhileStatement;
-import org.dynjs.parser.statement.EqualsOperationStatement;
+import org.dynjs.parser.statement.EqualityOperatorExpression;
 import org.dynjs.parser.statement.Expression;
 import org.dynjs.parser.statement.ExpressionListStatement;
 import org.dynjs.parser.statement.ExpressionStatement;
@@ -40,31 +40,28 @@ import org.dynjs.parser.statement.FunctionCallExpression;
 import org.dynjs.parser.statement.FunctionDeclaration;
 import org.dynjs.parser.statement.IdentifierReferenceExpression;
 import org.dynjs.parser.statement.IfStatement;
-import org.dynjs.parser.statement.InstanceOfRelOpStatement;
+import org.dynjs.parser.statement.InstanceofExpression;
 import org.dynjs.parser.statement.LogicalExpression;
 import org.dynjs.parser.statement.MultiplicativeExpression;
 import org.dynjs.parser.statement.NamedValueStatement;
 import org.dynjs.parser.statement.NewOperatorExpression;
-import org.dynjs.parser.statement.NotEqualsOperationStatement;
-import org.dynjs.parser.statement.NotOperationStatement;
+import org.dynjs.parser.statement.NotOperatorExpression;
 import org.dynjs.parser.statement.NullLiteralExpression;
 import org.dynjs.parser.statement.NumberLiteralExpression;
 import org.dynjs.parser.statement.ObjectLiteralStatement;
-import org.dynjs.parser.statement.PostDecrementStatement;
-import org.dynjs.parser.statement.PostIncrementStatement;
-import org.dynjs.parser.statement.PreDecrementStatement;
-import org.dynjs.parser.statement.PreIncrementStatement;
+import org.dynjs.parser.statement.PostOpExpression;
+import org.dynjs.parser.statement.PreOpExpression;
 import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
 import org.dynjs.parser.statement.ReturnStatement;
-import org.dynjs.parser.statement.StrictEqualOperationStatement;
+import org.dynjs.parser.statement.StrictEqualityOperatorExpression;
 import org.dynjs.parser.statement.StringLiteralExpression;
 import org.dynjs.parser.statement.TernaryExpression;
 import org.dynjs.parser.statement.ThisExpression;
 import org.dynjs.parser.statement.ThrowStatement;
 import org.dynjs.parser.statement.TryStatement;
 import org.dynjs.parser.statement.TypeOfOpExpression;
-import org.dynjs.parser.statement.UnaryMinusStatement;
+import org.dynjs.parser.statement.UnaryMinusExpression;
 import org.dynjs.parser.statement.VariableDeclaration;
 import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.parser.statement.VoidOperatorExpression;
@@ -106,7 +103,7 @@ public class Executor {
         return new VariableDeclarationStatement( tree, declExprs );
     }
 
-    public VariableDeclaration variableDeclarationExpression(final Tree tree, String identifier, Expression initializer) {
+    public VariableDeclaration variableDeclaration(final Tree tree, String identifier, Expression initializer) {
         return new VariableDeclaration( tree, identifier, initializer );
     }
 
@@ -170,36 +167,36 @@ public class Executor {
         return new TypeOfOpExpression( tree, expression );
     }
 
-    public Statement defineIncOp(final Tree tree, Statement expression) {
-        return new PreIncrementStatement( tree, expression );
+    public Expression definePreIncOp(final Tree tree, Expression expression) {
+        return new PreOpExpression( tree, expression, "++" );
     }
 
-    public Statement defineDecOp(final Tree tree, Statement expression) {
-        return new PreDecrementStatement( tree, expression );
+    public Expression definePreDecOp(final Tree tree, Expression expression) {
+        return new PreOpExpression( tree, expression, "--" );
     }
 
-    public Statement definePosOp(final Tree tree, Statement expression) {
+    public Expression definePosOp(final Tree tree, Expression expression) {
         throw new ParserException( "not implemented yet", tree );
     }
 
-    public Statement defineNegOp(final Tree tree, Statement expression) {
-        return new UnaryMinusStatement( tree, expression );
+    public Expression defineNegOp(final Tree tree, Expression expression) {
+        return new UnaryMinusExpression( tree, expression );
     }
 
     public Statement defineInvOp(final Tree tree, Statement expression) {
         throw new ParserException( "not implemented yet", tree );
     }
 
-    public Statement defineNotOp(final Tree tree, Statement expression) {
-        return new NotOperationStatement( tree, expression );
+    public Expression defineNotOp(final Tree tree, Expression expression) {
+        return new NotOperatorExpression( tree, expression );
     }
 
-    public Statement definePIncOp(final Tree tree, Statement expression) {
-        return new PostIncrementStatement( tree, expression );
+    public Expression definePostIncOp(final Tree tree, Expression expression) {
+        return new PostOpExpression( tree, expression, "++" );
     }
 
-    public Statement definePDecOp(final Tree tree, Statement expression) {
-        return new PostDecrementStatement( tree, expression );
+    public Expression definePostDecOp(final Tree tree, Expression expression) {
+        return new PostOpExpression( tree, expression, "--" );
     }
 
     public Statement defineLtRelOp(final Tree tree, Statement l, Statement r) {
@@ -219,7 +216,7 @@ public class Executor {
     }
 
     public Statement defineInstanceOfRelOp(final Tree tree, final Statement l, final Statement r) {
-        return new InstanceOfRelOpStatement( tree, l, r );
+        return new InstanceofExpression( tree, l, r );
     }
 
     public Statement defineInRelOp(final Tree tree, Statement l, Statement r) {
@@ -246,20 +243,20 @@ public class Executor {
         return new BitwiseExpression( tree, l, r, "^" );
     }
 
-    public Statement defineEqOp(final Tree tree, final Statement l, final Statement r) {
-        return new EqualsOperationStatement( tree, l, r );
+    public Expression defineEqOp(final Tree tree, final Expression l, final Expression r) {
+        return new EqualityOperatorExpression( tree, l, r, "==" );
     }
 
-    public Statement defineNEqOp(final Tree tree, final Statement l, final Statement r) {
-        return new NotEqualsOperationStatement( tree, l, r );
+    public Expression defineNEqOp(final Tree tree, final Expression l, final Expression r) {
+        return new EqualityOperatorExpression( tree, l, r, "!=" );
     }
 
-    public Statement defineSameOp(final Tree tree, Statement l, Statement r) {
-        return new StrictEqualOperationStatement( tree, l, r );
+    public Expression defineSameOp(final Tree tree, Expression l, Expression r) {
+        return new StrictEqualityOperatorExpression( tree, l, r, "===" );
     }
 
-    public Statement defineNSameOp(final Tree tree, Statement l, Statement r) {
-        return new NotEqualsOperationStatement( tree, l, r );
+    public Expression defineNSameOp(final Tree tree, Expression l, Expression r) {
+        return new StrictEqualityOperatorExpression( tree, l, r, "!==" );
     }
 
     public Expression defineAssOp(final Tree tree, final Expression l, final Expression r) {

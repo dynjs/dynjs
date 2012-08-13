@@ -18,7 +18,6 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.LexicalEnvironment;
-import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNativeFunction {
@@ -29,8 +28,7 @@ public class Eval extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Reference codeRef = context.resolve(  "code"  );
-        Object code = codeRef.getValue( context );
+        Object code = args[0];
         if ( code != Types.UNDEFINED ) {
             return context.getGlobalObject().getEngine().evaluate( code.toString() );
         }

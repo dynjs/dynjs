@@ -31,7 +31,7 @@ public class ObjectOperations {
      */
     public static Boolean eq(Object o1, Object o2) {
         if (RT.allArgsAreSameType( o1, o2 )) {
-            if (DynThreadContext.UNDEFINED == o1 || DynThreadContext.NULL == o1) {
+            if (Types.UNDEFINED == o1 || Types.NULL == o1) {
                 return true;
             }
 

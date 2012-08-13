@@ -6,13 +6,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dynjs.api.Function;
 import org.dynjs.exception.DynJSException;
+import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.ExecutionContext;
 
-public class JavaFunction implements Function {
+public class JavaFunction extends AbstractNativeFunction {
 
-    public JavaFunction(Object object, Method method)
-            throws IllegalAccessException {
+    public JavaFunction(Object object, Method method) throws IllegalAccessException {
+        super( null, false );
         this.object = object;
         this.method = method;
         this.handle = MethodHandles.lookup().unreflect( method ).bindTo( this.object );
@@ -20,9 +21,9 @@ public class JavaFunction implements Function {
         int trueNumberOfArgs = -1;
 
         Class<?>[] methodParamTypes = this.method.getParameterTypes();
-        if (methodParamTypes.length >= 2) {
-            if (methodParamTypes[1].equals( DynThreadContext.class )) {
-                trueNumberOfArgs = methodParamTypes.length - 2;
+        if (methodParamTypes.length >= 1) {
+            if (methodParamTypes[0].equals( ExecutionContext.class )) {
+                trueNumberOfArgs = methodParamTypes.length - 1;
             }
         }
 
@@ -30,16 +31,18 @@ public class JavaFunction implements Function {
             trueNumberOfArgs = methodParamTypes.length;
         }
 
-        this.args = new String[trueNumberOfArgs];
+        String[] formalParams = new String[trueNumberOfArgs];
 
         for (int i = 0; i < trueNumberOfArgs; ++i) {
-            this.args[i] = "arg" + i;
+            formalParams[i] = "arg" + i;
         }
+        
+        setFormalParamters( formalParams );
     }
 
     @Override
-    public Object call(Object self, DynThreadContext context, Object... arguments) {
-        List<Object> newArgs = buildArguments( self, context, arguments );
+    public Object call(ExecutionContext context, Object self, Object... arguments) {
+        List<Object> newArgs = buildArguments( context, self, arguments );
 
         try {
             return this.handle.invokeWithArguments( newArgs );
@@ -48,13 +51,12 @@ public class JavaFunction implements Function {
         }
     }
 
-    private List<Object> buildArguments(Object self, DynThreadContext context,
-            Object... args) {
+    private List<Object> buildArguments(ExecutionContext context, Object self, Object... args) {
         List<Object> newArgs = new ArrayList<Object>();
 
         Class<?>[] methodParamTypes = this.method.getParameterTypes();
         if (methodParamTypes.length >= 2) {
-            if (methodParamTypes[1].equals( DynThreadContext.class )) {
+            if (methodParamTypes[1].equals( ExecutionContext.class )) {
                 newArgs.add( self );
                 newArgs.add( context );
             }
@@ -72,14 +74,8 @@ public class JavaFunction implements Function {
         return newArgs;
     }
 
-    @Override
-    public String[] getParameters() {
-        return this.args;
-    }
-
     private Object object;
     private Method method;
     private MethodHandle handle;
-    private String[] args;
 
 }
