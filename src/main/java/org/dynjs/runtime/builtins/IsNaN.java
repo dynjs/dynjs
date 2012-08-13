@@ -1,25 +1,31 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.api.Function;
+import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
 
-public class IsNaN implements Function {
+public class IsNaN extends AbstractNativeFunction {
+    
+    public IsNaN(LexicalEnvironment scope, boolean strict) {
+        super( scope, strict, "o" );
+    }
+
     @Override
-    public Object call(Object self, DynThreadContext context, Object... arguments) {
-        if (arguments.length == 1) {
-            if (isNullOrBooleanOrWhiteSpace( arguments[0].toString().trim() )) {
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        Reference oRef = context.resolve( "o" );
+        Object o = oRef.getValue( context );
+        if ( o != Types.UNDEFINED ) {
+            if ( isNullOrBooleanOrWhiteSpace( o.toString()  ) ) {
                 return false;
             }
-            return (ParseInt.parseInt( arguments ).equals( Double.NaN ));
         }
-        return DynThreadContext.UNDEFINED;
+        return Types.UNDEFINED;
     }
-
-    @Override
-    public String[] getParameters() {
-        return new String[] { "a" };
-    }
-
+    
     private boolean isNullOrBooleanOrWhiteSpace(String value) {
         return (value.equals( "" ) || value.equals( "null" ) || value.equals( "true" ) || value.equals( "false" ));
     }
+
 }

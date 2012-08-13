@@ -13,8 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.api;
+package org.dynjs.parser.statement;
 
-public interface Callable {
-    Object call(DynThreadContext context, Object[] arguments);
+import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
+
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.Types;
+
+public class UndefinedValueExpression extends AbstractExpression {
+
+    public UndefinedValueExpression(final Tree tree) {
+        super( tree );
+    }
+
+    @Override
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock().getstatic( p( Types.class ), "UNDEFINED", ci( Object.class ) );
+    }
 }

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.statement.FunctionDeclaration;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.statement.VariableDeclaration;
 
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
@@ -18,7 +18,7 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     }
 
     @Override
-    public List<VariableDeclarationStatement> getVariableDeclarations() {
+    public List<VariableDeclaration> getVariableDeclarations() {
         return Collections.emptyList();
     }
 

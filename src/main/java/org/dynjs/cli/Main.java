@@ -17,12 +17,12 @@ package org.dynjs.cli;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 
+import org.dynjs.Config;
 import org.dynjs.DynJSVersion;
-import org.dynjs.api.Scope;
-import org.dynjs.runtime.DynJSConfig;
-import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.JSEngine;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -31,23 +31,22 @@ public class Main {
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
-    private DynThreadContext context;
+    private JSEngine engine;
     private PrintStream stream;
 
     public Main(PrintStream stream, String[] args) {
-        dynJsArguments = new Arguments();
-        parser = new CmdLineParser( dynJsArguments );
-        parser.setUsageWidth( 80 );
-        arguments = args;
-        context = new DynThreadContext();
+        this.dynJsArguments = new Arguments();
+        this.parser = new CmdLineParser( dynJsArguments );
+        this.parser.setUsageWidth( 80 );
+        this.arguments = args;
         this.stream = stream;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new Main( System.out, args ).run();
     }
 
-    void run() {
+    void run() throws IOException {
         try {
             parser.parseArgument( arguments );
 
@@ -68,10 +67,9 @@ public class Main {
         }
     }
 
-    private void executeFile(String filename) {
+    private void executeFile(String filename) throws IOException {
         try {
-            final DynJSConfig cfg = new DynJSConfig();
-            new DynJS( cfg ).eval( context, new FileInputStream( filename ), filename );
+            engine.execute( new FileInputStream( filename), filename );
         } catch (FileNotFoundException e) {
             stream.println( "File " + filename + " not found" );
         }
@@ -82,10 +80,9 @@ public class Main {
     }
 
     private void startRepl() {
-        final DynJSConfig cfg = dynJsArguments.getDynJSConfig();
-        Scope scope = new DynObject();
-        final DynJS environment = new DynJS( cfg );
-        Repl repl = new Repl( environment, context, scope, System.in, stream );
+        final Config config = dynJsArguments.getConfig();
+        final JSEngine engine = new JSEngine( config );
+        Repl repl = new Repl( engine, System.in, stream );
         repl.run();
     }
 

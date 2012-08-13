@@ -74,7 +74,7 @@ public class FunctionExpression extends AbstractCompilingStatement {
                 // entry
                 dup();
                 // entry entry
-                getfield( p( Entry.class ), "compiled", sig( Object.class ) );
+                getfield( p( Entry.class ), "compiled", ci( Object.class ) );
                 // entry function
                 ifnonnull( skipCompile );
                 // entry
@@ -107,17 +107,17 @@ public class FunctionExpression extends AbstractCompilingStatement {
                 invokevirtual( p( ExecutionContext.class ), "retrieveBlockEntry", sig( Entry.class, int.class ) );
                 // entry entry compiler context bool entry
 
-                getfield( p( Entry.class ), "statement", sig( Statement.class ) );
+                getfield( p( Entry.class ), "statement", ci( Statement.class ) );
                 // entry entry compiler context bool statement
                 invokevirtual( p( JSCompiler.class ), "compileFunction", sig( JSFunction.class, ExecutionContext.class, boolean.class, Statement.class ) );
                 // entry entry function
 
-                putfield( p( Entry.class ), "compiled", sig( Object.class ) );
+                putfield( p( Entry.class ), "compiled", ci( Object.class ) );
                 // entry
 
                 label( skipCompile );
                 // entry
-                getfield( p( Entry.class ), "compiled", sig( Object.class ) );
+                getfield( p( Entry.class ), "compiled", ci( Object.class ) );
                 // function
             }
         };

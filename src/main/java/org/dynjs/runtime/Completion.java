@@ -74,9 +74,9 @@ public class Completion {
                 // IN: completion
                 dup();
                 // completion completion
-                getstatic( p( Completion.Type.class ), "NORMAL", sig( Type.class ) );
+                getstatic( p( Completion.Type.class ), "NORMAL", ci( Type.class ) );
                 // completion completion NORMAL
-                putfield( p( Completion.class ), "type", sig( Type.class ) );
+                putfield( p( Completion.class ), "type", ci( Type.class ) );
                 // completion
             }
         };

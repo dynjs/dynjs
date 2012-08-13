@@ -48,6 +48,7 @@ import org.dynjs.parser.statement.NewOperatorExpression;
 import org.dynjs.parser.statement.NotEqualsOperationStatement;
 import org.dynjs.parser.statement.NotOperationStatement;
 import org.dynjs.parser.statement.NullLiteralExpression;
+import org.dynjs.parser.statement.NumberLiteralExpression;
 import org.dynjs.parser.statement.ObjectLiteralStatement;
 import org.dynjs.parser.statement.PostDecrementStatement;
 import org.dynjs.parser.statement.PostIncrementStatement;
@@ -55,16 +56,16 @@ import org.dynjs.parser.statement.PreDecrementStatement;
 import org.dynjs.parser.statement.PreIncrementStatement;
 import org.dynjs.parser.statement.PrintStatement;
 import org.dynjs.parser.statement.RelationalOperationStatement;
-import org.dynjs.parser.statement.ResolveByIndexStatement;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StrictEqualOperationStatement;
 import org.dynjs.parser.statement.StringLiteralExpression;
+import org.dynjs.parser.statement.TernaryExpression;
 import org.dynjs.parser.statement.ThisExpression;
 import org.dynjs.parser.statement.ThrowStatement;
 import org.dynjs.parser.statement.TryStatement;
 import org.dynjs.parser.statement.TypeOfOpExpression;
 import org.dynjs.parser.statement.UnaryMinusStatement;
-import org.dynjs.parser.statement.VariableDeclarationExpression;
+import org.dynjs.parser.statement.VariableDeclaration;
 import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.parser.statement.VoidOperatorExpression;
 import org.dynjs.parser.statement.WhileStatement;
@@ -85,8 +86,8 @@ public class Executor {
         return this.blockManager;
     }
 
-    public List<Statement> program(final List<Statement> blockContent) {
-        return blockContent;
+    public BlockStatement program(final List<Statement> blockContent) {
+        return new BlockStatement( null, blockContent );
     }
 
     public BlockStatement block(final Tree tree, final List<Statement> blockContent) {
@@ -101,12 +102,12 @@ public class Executor {
         return new ReturnStatement( tree, expr );
     }
 
-    public Statement variableDeclarationStatement(final Tree tree, List<VariableDeclarationExpression> declExprs) {
+    public Statement variableDeclarationStatement(final Tree tree, List<VariableDeclaration> declExprs) {
         return new VariableDeclarationStatement( tree, declExprs );
     }
 
-    public VariableDeclarationExpression variableDeclarationExpression(final Tree tree, String identifier, Expression initializer) {
-        return new VariableDeclarationExpression( tree, identifier, initializer );
+    public VariableDeclaration variableDeclarationExpression(final Tree tree, String identifier, Expression initializer) {
+        return new VariableDeclaration( tree, identifier, initializer );
     }
 
     public AdditiveExpression defineAddOp(final Tree tree, final Expression l, final Expression r) {
@@ -137,11 +138,11 @@ public class Executor {
         return new IdentifierReferenceExpression( tree, id );
     }
 
-    public Statement defineNumberLiteral(final Tree tree, String value, final int radix) {
-        return new NumberLiteralStatement( tree, value, radix );
+    public NumberLiteralExpression defineNumberLiteral(final Tree tree, String value, final int radix) {
+        return new NumberLiteralExpression( tree, value, radix );
     }
 
-    public Statement defineFunction(final Tree tree, final String identifier, final List<String> args, final Statement block) {
+    public FunctionDeclaration defineFunction(final Tree tree, final String identifier, final List<String> args, final BlockStatement block) {
         return new FunctionDeclaration( tree, identifier, args, block );
     }
 
@@ -157,15 +158,15 @@ public class Executor {
         return new BitwiseExpression( tree, l, r, ">>>" );
     }
 
-    public Statement defineDeleteOp(final Tree tree, final Statement expression) {
+    public DeleteOpExpression defineDeleteOp(final Tree tree, final Expression expression) {
         return new DeleteOpExpression( tree, expression );
     }
 
-    public Statement defineVoidOp(final Tree tree, final Statement expression) {
+    public VoidOperatorExpression defineVoidOp(final Tree tree, final Expression expression) {
         return new VoidOperatorExpression( tree, expression );
     }
 
-    public Statement defineTypeOfOp(final Tree tree, final Statement expression) {
+    public TypeOfOpExpression defineTypeOfOp(final Tree tree, final Expression expression) {
         return new TypeOfOpExpression( tree, expression );
     }
 
@@ -309,8 +310,8 @@ public class Executor {
         return new CompoundAssignmentExpression( tree, defineOrBitOp( tree, l, r ) );
     }
 
-    public Statement defineQueOp(final Tree tree, Statement ex1, Statement ex2, Statement ex3) {
-        return new IfStatement( tree, getBlockManager(), ex1, ex2, ex3 );
+    public TernaryExpression defineQueOp(final Tree tree, Expression vbool, Expression thenExpr, Expression elseExpr) {
+        return new TernaryExpression( tree, vbool, thenExpr, elseExpr );
     }
 
     public Expression defineThisLiteral(final Tree tree) {
@@ -341,24 +342,16 @@ public class Executor {
         return new NewOperatorExpression( tree, expr, argExprs );
     }
 
-    public Statement resolveByField(final Tree tree, final Statement lhs, final Tree treeField, final String field) {
-        return new ResolveByIndexStatement( tree, lhs, treeField, field );
+    public IfStatement ifStatement(final Tree tree, Expression vbool, BlockStatement vthen, BlockStatement velse) {
+        return new IfStatement( tree, getBlockManager(), vbool, vthen, velse );
     }
 
-    public Statement resolveByIndex(final Tree tree, final Statement lhs, final Statement index) {
-        return new ResolveByIndexStatement( tree, lhs, index );
+    public Statement doStatement(final Tree tree, final Expression vbool, final BlockStatement vloop) {
+        return new DoWhileStatement( tree, getBlockManager(), vbool, vloop );
     }
 
-    public Statement ifStatement(final Tree tree, Statement vbool, Statement vthen, Statement velse) {
-        return new IfStatement( tree, vbool, vthen, velse );
-    }
-
-    public Statement doStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new DoWhileStatement( tree, vbool, vloop );
-    }
-
-    public Statement whileStatement(final Tree tree, final Statement vbool, final Statement vloop) {
-        return new WhileStatement( tree, vbool, vloop );
+    public Statement whileStatement(final Tree tree, final Expression vbool, final BlockStatement vloop) {
+        return new WhileStatement( tree, getBlockManager(), vbool, vloop );
     }
 
     public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
@@ -409,16 +402,16 @@ public class Executor {
         return new ThrowStatement( tree, expression );
     }
 
-    public Statement tryStatement(final Tree tree, Statement tryBlock, Statement catchBlock, Statement finallyBlock) {
-        return new TryStatement( tree, tryBlock, catchBlock, finallyBlock );
+    public Statement tryStatement(final Tree tree, BlockStatement tryBlock, CatchClause catchBlock, BlockStatement finallyBlock) {
+        return new TryStatement( tree, getBlockManager(), tryBlock, catchBlock, finallyBlock );
     }
 
-    public Statement tryCatchClause(final Tree tree, String id, Statement block) {
+    public CatchClause tryCatchClause(final Tree tree, String id, BlockStatement block) {
         return new CatchClause( tree, id, block );
     }
 
-    public Statement tryFinallyClause(final Tree tree, Statement block) {
-        return new FinallyClause( tree, block );
+    public BlockStatement tryFinallyClause(final Tree tree, BlockStatement block) {
+        return block;
     }
 
     public Statement withStatement(final Tree tree, Statement expression, Statement statement) {
@@ -431,14 +424,6 @@ public class Executor {
 
     public Statement objectValue(final Tree tree, List<Statement> namedValues) {
         return new ObjectLiteralStatement( tree, namedValues );
-    }
-
-    public Statement propertyNameId(final Tree tree, final String id) {
-        return new StringLiteralExpression( tree, id );
-    }
-
-    public Statement propertyNameString(final Tree tree, final String string) {
-        return new StringLiteralExpression( tree, string );
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {

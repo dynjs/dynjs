@@ -1,7 +1,11 @@
 package org.dynjs.runtime;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -13,12 +17,13 @@ import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
-import org.dynjs.parser.Statement;
 import org.dynjs.parser.SyntaxError;
+import org.dynjs.parser.statement.BlockStatement;
 
 public class JSEngine {
 
     private Config config;
+    private ExecutionContext context;
 
     public JSEngine() {
         this( new Config() );
@@ -26,16 +31,37 @@ public class JSEngine {
 
     public JSEngine(Config config) {
         this.config = config;
+        this.context = ExecutionContext.createGlobalExecutionContext( this );
+    }
+    
+    public Config getConfig() {
+        return this.config;
+    }
+    
+    public ExecutionContext getExecutionContext() {
+        return this.context;
+    }
+    
+    public Completion execute(FileInputStream program, String filename) throws IOException {
+        JSCompiler compiler = this.context.getCompiler();
+        BlockStatement statements = parseSourceCode( this.context, program, filename );
+        JSProgram programObj = compiler.compileProgram( statements );
+        return programObj.execute( this.context ); 
     }
 
-    public void execute(String program, String filename, int lineNumber) {
-        ExecutionContext context = ExecutionContext.createGlobalExecutionContext( this.config );
-        JSCompiler compiler = context.getCompiler();
-        List<Statement> statements = parseSourceCode( context, program, filename );
-        compiler.compileProgram( statements.toArray( new Statement[statements.size()] ) );
+    public Completion execute(String program, String filename, int lineNumber) {
+        JSCompiler compiler = this.context.getCompiler();
+        BlockStatement statements = parseSourceCode( this.context, program, filename );
+        JSProgram programObj = compiler.compileProgram( statements );
+        return programObj.execute( this.context ); 
+    }
+    
+    public Object evaluate(String code) {
+        Completion completion = execute( code, null, 0 );
+        return completion.value;
     }
 
-    private List<Statement> parseSourceCode(ExecutionContext context, String code, String filename) {
+    private BlockStatement parseSourceCode(ExecutionContext context, String code, String filename) {
         try {
             final ANTLRStringStream stream = new ANTLRStringStream( code );
             stream.name = filename;
@@ -45,8 +71,19 @@ public class JSEngine {
             throw new SyntaxError( e );
         }
     }
+    
+    private BlockStatement parseSourceCode(ExecutionContext context, InputStream code, String filename) throws IOException {
+        try {
+            final ANTLRStringStream stream = new ANTLRInputStream( code );
+            stream.name = filename;
+            ES3Lexer lexer = new ES3Lexer( stream );
+            return parseSourceCode( context, lexer );
+        } catch (RecognitionException e) {
+            throw new SyntaxError( e );
+        }
+    }
 
-    private List<Statement> parseSourceCode(ExecutionContext context, ES3Lexer lexer) throws RecognitionException, SyntaxError {
+    private BlockStatement parseSourceCode(ExecutionContext context, ES3Lexer lexer) throws RecognitionException, SyntaxError {
         CommonTokenStream stream = new CommonTokenStream( lexer );
         ES3Parser parser = new ES3Parser( stream );
         ES3Parser.program_return program = parser.program();

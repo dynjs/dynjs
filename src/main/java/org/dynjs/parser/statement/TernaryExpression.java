@@ -18,19 +18,16 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BlockManager;
 import org.objectweb.asm.tree.LabelNode;
 
-public class IfStatement extends AbstractCompilingStatement implements Statement {
+public class TernaryExpression extends AbstractExpression {
 
     private final Expression vbool;
-    private final BlockStatement vthen;
-    private final BlockStatement velse;
+    private final Expression vthen;
+    private final Expression velse;
 
-    public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final BlockStatement vthen, final BlockStatement velse) {
-        super( tree, blockManager );
+    public TernaryExpression(final Tree tree, final Expression vbool, final Expression vthen, final Expression velse) {
+        super( tree );
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
@@ -44,32 +41,11 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
                 LabelNode end = new LabelNode();
 
                 append( vbool.getCodeBlock() );
-                // value
-
                 iffalse( elseBranch );
-                // <empty>
-
-                // ----------------------------------------
-                // THEN
-
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Then", vthen ) );
-                // completion
-
-                append( CodeBlockUtils.handleCompletion() );
-                // value
-
-                go_to( end );
-
-                // ----------------------------------------
-                // ELSE
+                append( vthen.getCodeBlock() );
                 label( elseBranch );
-
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Else", velse ) );
-                // completion
-                append( CodeBlockUtils.handleCompletion() );
-
+                append( velse.getCodeBlock() );
                 label( end );
-                nop();
             }
         };
     }

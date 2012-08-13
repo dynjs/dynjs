@@ -17,9 +17,14 @@ public class CatchClause extends AbstractStatement {
     public String getIdentifier() {
         return this.identifier;
     }
+    
+    public BlockStatement getBlock() {
+        return this.block;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {
         return this.block.getCodeBlock();
     }
+
 }

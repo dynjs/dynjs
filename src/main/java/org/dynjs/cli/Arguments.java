@@ -18,7 +18,7 @@ package org.dynjs.cli;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dynjs.runtime.DynJSConfig;
+import org.dynjs.Config;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
@@ -44,12 +44,12 @@ public class Arguments {
     @Argument(usage = "File to be executed by dynjs", required = false, metaVar = "FILE")
     private List<String> arguments = new ArrayList<>();
 
-    public DynJSConfig getDynJSConfig() {
-        DynJSConfig cfg = new DynJSConfig();
+    public Config getConfig() {
+        Config config = new Config();
         if (this.isDebug()) {
-            cfg.enableDebug();
+            config.setDebug(true);
         }
-        return cfg;
+        return config;
     }
 
     public boolean isEmpty() {

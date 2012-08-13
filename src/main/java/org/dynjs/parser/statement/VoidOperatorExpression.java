@@ -13,8 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.api;
 
-public interface Resolver {
-    Object resolve(String name);
+package org.dynjs.parser.statement;
+
+import me.qmx.jitescript.CodeBlock;
+
+import org.antlr.runtime.tree.Tree;
+
+public class VoidOperatorExpression extends AbstractExpression {
+
+    private final Expression expr;
+
+    public VoidOperatorExpression(final Tree tree, final Expression expr) {
+        super( tree );
+        this.expr = expr;
+    }
+
+    @Override
+    public CodeBlock getCodeBlock() {
+        return new CodeBlock() {
+            {
+                append( expr.getCodeBlock() );
+                append( jsGetValue() );
+                pop();
+                append( jsPushUndefined() );
+            }
+        };
+    }
+
 }

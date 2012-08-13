@@ -12,8 +12,8 @@ public class LexicalEnvironment {
         return new LexicalEnvironment( new ObjectEnvironmentRecord( object, provideThis ), outer );
     }
 
-    public static LexicalEnvironment newGlobalEnvironment(Config config) {
-        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject( config ), false ), null );
+    public static LexicalEnvironment newGlobalEnvironment(JSEngine engine) {
+        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject( engine ), false ), null );
     }
 
     private LexicalEnvironment outer;

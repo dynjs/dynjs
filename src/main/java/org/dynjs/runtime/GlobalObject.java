@@ -6,11 +6,13 @@ import org.dynjs.runtime.BlockManager.Entry;
 
 public class GlobalObject extends DynObject {
 
+    private JSEngine engine;
     private JSCompiler compiler;
     private BlockManager blockManager;
 
-    public GlobalObject(Config config) {
-        this.compiler = new JSCompiler( config );
+    public GlobalObject(JSEngine engine) {
+        this.engine = engine;
+        this.compiler = new JSCompiler( engine.getConfig() );
         this.blockManager = new BlockManager();
 
         defineGlobalProperty( "undefined", Types.UNDEFINED );
@@ -43,6 +45,10 @@ public class GlobalObject extends DynObject {
          * IsNaN()));
          * put("Math", new DynObject());
          */
+    }
+    
+    public JSEngine getEngine() {
+        return this.engine;
     }
 
     public JSCompiler getCompiler() {

@@ -24,14 +24,21 @@ import org.antlr.runtime.tree.Tree;
 public class FunctionDeclaration extends AbstractStatement {
 
     private final String identifier;
-    private final List<String> formalParameters;
+    private final String[] formalParameters;
     private BlockStatement block;
 
     public FunctionDeclaration(final Tree tree, final List<String> formalParameters, final BlockStatement block) {
         this( tree, null, formalParameters, block );
     }
+    
+    public FunctionDeclaration(final Tree tree, final String[] formalParameters, final BlockStatement block) {
+        this( tree, null, formalParameters, block );
+    }
 
     public FunctionDeclaration(final Tree tree, final String identifier, final List<String> formalParameters, final BlockStatement block) {
+        this( tree, null, formalParameters.toArray(new String[ formalParameters.size() ]), block );
+    }
+    public FunctionDeclaration(final Tree tree, final String identifier, final String[] formalParameters, final BlockStatement block) {
         super( tree );
         this.identifier = identifier;
         this.formalParameters = formalParameters;
@@ -42,7 +49,7 @@ public class FunctionDeclaration extends AbstractStatement {
         return this.identifier;
     }
 
-    public List<String> getFormalParameters() {
+    public String[] getFormalParameters() {
         return this.formalParameters;
     }
 

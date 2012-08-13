@@ -13,40 +13,38 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.dynjs.parser.statement;
 
-import java.util.List;
-
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
 
-public class VariableDeclarationStatement extends AbstractStatement implements Statement {
+public class TypeOfOpExpression extends AbstractExpression {
 
-    private List<VariableDeclaration> declExprs;
+    private final Expression expr;
 
-    public VariableDeclarationStatement(final Tree tree, final List<VariableDeclaration> declExprs) {
+    public TypeOfOpExpression(final Tree tree, final Expression expr) {
         super( tree );
-        this.declExprs = declExprs;
-    }
-    
-    public List<VariableDeclaration> getVariableDeclarations() {
-        return this.declExprs;
+        this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                for (VariableDeclaration each : declExprs) {
-                    append( each.getCodeBlock() );
-                    // identifier
-                    pop();
-                    // <EMPTY>
-                }
-                append( normalCompletion() );
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                append( expr.getCodeBlock() );
+                // context obj
+                invokestatic( p(Types.class), "typeof", sig( String.class, ExecutionContext.class, Object.class ) );
+                // string
             }
         };
     }
+
 }

@@ -48,54 +48,10 @@ public class CodeBlockUtils {
         }
     }
 
-    public static CodeBlock handleCompletion() {
+    public static CodeBlock invokeCompiledStatementBlock(final BlockManager blockManager, final String grist, final BlockStatement block) {
         return new CodeBlock() {
             {
-                LabelNode completeReturn = new LabelNode();
-                LabelNode completeNormal = new LabelNode();
-
-                // INCOMING
-                // completion
-
-                dup();
-                // completion completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // completion type
-                getstatic( p( Type.class ), "NORMAL", sig( Type.class ) );
-                // completion type NORMAL
-                ifeq( completeNormal );
-                // completion
-
-                dup();
-                // completion completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // completion type
-                getstatic( p( Type.class ), "RETURN", sig( Type.class ) );
-                // completion type NORMAL
-                ifeq( completeReturn );
-                // completion
-
-                // ----------------------------------------
-                // RETURN
-                label( completeReturn );
-                // completion
-                areturn();
-
-                // ----------------------------------------
-                // NORMAL
-                label( completeNormal );
-                // completion
-                getfield( p( Completion.class ), "value", sig( Object.class ) );
-                // value
-
-            }
-        };
-    }
-
-    public static CodeBlock invokeCompiledBasicBlock(final BlockManager blockManager, final String grist, final BlockStatement block, final boolean forceReturn) {
-        return new CodeBlock() {
-            {
-                append( compiledBasicBlock( blockManager, grist, block, forceReturn ) );
+                append( compiledStatementBlock( blockManager, grist, block ) );
                 // basic-block
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // basic-block context
@@ -107,7 +63,7 @@ public class CodeBlockUtils {
         };
     }
 
-    public static CodeBlock compiledBasicBlock(final BlockManager blockManager, final String grist, final BlockStatement block, final boolean forceReturn) {
+    public static CodeBlock compiledStatementBlock(final BlockManager blockManager, final String grist, final BlockStatement block ) {
         return new CodeBlock() {
             {
                 LabelNode skipCompile = new LabelNode();
@@ -194,108 +150,4 @@ public class CodeBlockUtils {
         };
 
     }
-
-    public static CodeBlock normalCompletion() {
-        return new CodeBlock() {
-            {
-                invokestatic( p( Completion.class ), "createNormal", sig( Completion.class ) );
-                areturn();
-            }
-        };
-    }
-
-    public static CodeBlock normalCompletionWithValue() {
-        return new CodeBlock() {
-            {
-                invokestatic( p( Completion.class ), "createNormal", sig( Completion.class, Object.class ) );
-                areturn();
-            }
-        };
-    }
-
-    public static CodeBlock ifCompletionIsNormal(final LabelNode jumpTarget) {
-        return new CodeBlock() {
-            {
-                // IN
-                // completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // type
-                getstatic( p( Type.class ), "NORMAL", sig( Type.class ) );
-                if_acmpeq( jumpTarget );
-
-            }
-        };
-    }
-
-    public static CodeBlock ifCompletionIsBreak(final LabelNode jumpTarget) {
-        return new CodeBlock() {
-            {
-                // IN
-                // completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // type
-                getstatic( p( Type.class ), "BREAK", sig( Type.class ) );
-                if_acmpeq( jumpTarget );
-
-            }
-        };
-    }
-
-    public static CodeBlock ifCompletionIsContinue(final LabelNode jumpTarget) {
-        return new CodeBlock() {
-            {
-                // IN
-                // completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // type
-                getstatic( p( Type.class ), "CONTINUE", sig( Type.class ) );
-                if_acmpeq( jumpTarget );
-            }
-        };
-    }
-
-    public static CodeBlock ifCompletionIsTrue(final LabelNode jumpTarget) {
-        return new CodeBlock() {
-            {
-                LabelNode abrupt = new LabelNode();
-                // IN
-                // completion
-                dup();
-                // completion completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // completion type
-                getstatic( p( Type.class ), "NORMAL", sig( Type.class ) );
-                // completion type NORMAL
-                if_acmpne( abrupt );
-                // completion
-                getfield( p( Completion.class ), "value", sig( Type.class ) );
-                // value
-                iftrue( jumpTarget );
-                label( abrupt );
-            }
-        };
-    }
-
-    public static CodeBlock ifCompletionIsFalse(final LabelNode jumpTarget) {
-        return new CodeBlock() {
-            {
-                LabelNode abrupt = new LabelNode();
-                // IN
-                // completion
-                dup();
-                // completion completion
-                getfield( p( Completion.class ), "type", sig( Type.class ) );
-                // completion type
-                getstatic( p( Type.class ), "NORMAL", sig( Type.class ) );
-                // completion type NORMAL
-                if_acmpne( abrupt );
-                // completion
-                getfield( p( Completion.class ), "value", sig( Type.class ) );
-                // value
-                iffalse( jumpTarget );
-                label( abrupt );
-            }
-        };
-    }
-
 }

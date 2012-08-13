@@ -27,10 +27,10 @@ import org.objectweb.asm.tree.LabelNode;
 
 public class WhileStatement extends AbstractCompilingStatement implements Statement {
 
-    private final Statement vbool;
-    private final Statement vloop;
+    private final Expression vbool;
+    private final BlockStatement vloop;
 
-    public WhileStatement(final Tree tree, BlockManager blockManager, Statement vbool, Statement vloop) {
+    public WhileStatement(final Tree tree, BlockManager blockManager, Expression vbool, BlockStatement vloop) {
         super( tree, blockManager );
         this.vbool = vbool;
         this.vloop = vloop;
@@ -45,17 +45,17 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 LabelNode breakTarget = new LabelNode();
                 LabelNode begin = new LabelNode();
 
-                getstatic( p( Completion.class ), "NORMAL_COMPLETION", sig( Completion.class ) );
+                getstatic( p( Completion.class ), "NORMAL_COMPLETION", ci( Completion.class ) );
                 // completion(block)
 
                 label( begin );
-                append( CodeBlockUtils.compiledBasicBlock( getBlockManager(), "While", vbool, true ) );
-                // completion(block) completion(bool)
+                append( vbool.getCodeBlock() );
+                // completion(block) bool
 
-                append( CodeBlockUtils.ifCompletionIsFalse( end ) );
+                iffalse( end );
                 // completion(block)
 
-                append( CodeBlockUtils.compiledBasicBlock( getBlockManager(), "Do", vloop, true ) );
+                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Do", vloop ) );
                 // completion(block,prev) completion(block,cur)
                 swap();
                 // completion(block,cur) completion(block,prev)

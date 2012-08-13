@@ -8,15 +8,19 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 
-public class VariableDeclarationExpression extends AbstractExpression {
+public class VariableDeclaration extends AbstractExpression {
 
     private String identifier;
     private Expression initializer;
 
-    public VariableDeclarationExpression(Tree tree, String identifier, Expression initializer) {
+    public VariableDeclaration(Tree tree, String identifier, Expression initializer) {
         super( tree );
         this.identifier = identifier;
         this.initializer = initializer;
+    }
+    
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     @Override

@@ -142,7 +142,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN completion
-                getfield( p( Completion.class ), "value", sig( Object.class ) );
+                getfield( p( Completion.class ), "value", ci( Object.class ) );
                 // value
             }
         };

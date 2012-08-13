@@ -51,6 +51,17 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
         return decls;
     }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        List<VariableDeclaration> decls = new ArrayList();
+        for ( Statement each : this.blockContent ) {
+            if ( each instanceof VariableDeclarationStatement ) {
+                VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
+                decls.addAll( statement.getVariableDeclarations() );
+            }
+        }
+        return decls;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

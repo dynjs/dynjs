@@ -3,25 +3,25 @@ package org.dynjs.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.TypeError;
 import org.dynjs.parser.statement.FunctionDeclaration;
+import org.dynjs.parser.statement.VariableDeclaration;
 import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.runtime.BlockManager.Entry;
 
 public class ExecutionContext {
 
-    public static ExecutionContext createGlobalExecutionContext(Config config) {
+    public static ExecutionContext createGlobalExecutionContext(JSEngine engine) {
         // 10.4.1.1
-        LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment( config );
+        LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment( engine );
         ExecutionContext context = new ExecutionContext( env, env, env.getGlobalObject(), false );
         return context;
     }
 
-    public static ExecutionContext createEvalExecutionContext(Config config) {
+    public static ExecutionContext createEvalExecutionContext(JSEngine engine) {
         // 10.4.2 (no caller)
-        return createGlobalExecutionContext( config );
+        return createGlobalExecutionContext( engine );
     }
 
     private LexicalEnvironment lexicalEnvironment;
@@ -282,11 +282,11 @@ public class ExecutionContext {
     }
 
     private void performVariableDeclarationBindings(final JSCode code, final boolean configurableBindings) {
-        List<VariableDeclarationStatement> decls = code.getVariableDeclarations();
+        List<VariableDeclaration> decls = code.getVariableDeclarations();
 
         EnvironmentRecord env = this.variableEnvironment.getRecord();
-        for (VariableDeclarationStatement each : decls) {
-            String identifier = each.getIdentifier();
+        for (VariableDeclaration decl : decls ) {
+            String identifier = decl.getIdentifier();
             if (!env.hasBinding( this, identifier )) {
                 env.createMutableBinding( this, identifier, configurableBindings );
                 env.setMutableBinding( this, identifier, Types.UNDEFINED, code.isStrict() );

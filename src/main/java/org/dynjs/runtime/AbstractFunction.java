@@ -7,7 +7,7 @@ import org.dynjs.exception.TypeError;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.FunctionDeclaration;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.statement.VariableDeclaration;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
@@ -68,13 +68,16 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         if (this.body == null) {
             return Collections.emptyList();
         }
-
+        return this.body.getFunctionDeclarations();
     }
 
     @Override
-    public List<VariableDeclarationStatement> getVariableDeclarations() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<VariableDeclaration> getVariableDeclarations() {
+        if ( this.body == null ) {
+            return Collections.emptyList();
+        }
+        
+        return this.body.getVariableDeclarations();
     }
 
 }

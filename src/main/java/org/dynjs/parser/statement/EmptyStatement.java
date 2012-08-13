@@ -18,7 +18,6 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
 
 public class EmptyStatement extends AbstractStatement {
 
@@ -28,6 +27,6 @@ public class EmptyStatement extends AbstractStatement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        return CodeBlockUtils.normalCompletion();
+        return normalCompletion();
     }
 }

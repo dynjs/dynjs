@@ -29,13 +29,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
-    @Override
-    public DynJSConfig getConfig() {
-        final DynJSConfig config = super.getConfig();
-        //config.enableDebug();
-        return config;
-    }
-    
     @Test(expected=ParserException.class)
     public void testSyntaxErrorThrows() {
         getDynJS().eval( getContext(), "var f ( {;");
@@ -43,10 +36,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     
     @Test
     public void evalLines() {
-        getDynJS().evalLines(getContext(),
+        getEngine().evalLines(getContext(),
                 "var x = 'test'",
                 "var y = x");
-        assertThat(getContext().getScope().resolve("y"))
+        assertThat(getContext().resolve("y"))
                 .isNotNull()
                 .isInstanceOf(String.class)
                 .isEqualTo("test");

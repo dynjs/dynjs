@@ -57,7 +57,7 @@ package org.dynjs.parser;
         this.executor = executor;
     }
     
-    public List<Statement> getResult(){
+    public BlockStatement getResult(){
         return result;
     }
 }

@@ -33,7 +33,7 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                 LabelNode throwTarget = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Try", tryBlock, false ) );
+                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Try", tryBlock ) );
                 // completion(try)
 
                 dup();
@@ -51,7 +51,7 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                     // completion(try) context
                     swap();
                     // context completion(try)
-                    append( CodeBlockUtils.compiledBasicBlock( getBlockManager(), "Catch", catchClause, false ) );
+                    append( CodeBlockUtils.compiledStatementBlock( getBlockManager(), "Catch", catchClause.getBlock() ) );
                     // context completion(try) block(catch)
                     swap();
                     // context block(catch) completion(try)
@@ -59,7 +59,7 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                     // context block(catch) completion(try) identifier
                     swap();
                     // context block(catch) identifier completion(try)
-                    getfield( p( Completion.class ), "value", sig( Object.class ) );
+                    getfield( p( Completion.class ), "value", ci( Object.class ) );
                     // context block(catch) identifier thrown
                     invokevirtual( p( ExecutionContext.class ), "invokeCatch", sig( Completion.class, BasicBlock.class, String.class, Object.class ) );
                     // completion(catch)
@@ -74,7 +74,7 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                 // completion(try)
 
                 if (finallyBlock != null) {
-                    append( CodeBlockUtils.invokeCompiledBasicBlock( getBlockManager(), "Finally", finallyBlock, false ) );
+                    append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Finally", finallyBlock ) );
                     // completion(try) completion(finally)
                     append( CodeBlockUtils.ifCompletionIsNormal( end ) );
                     // completion(try)

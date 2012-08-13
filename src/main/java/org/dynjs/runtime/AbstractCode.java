@@ -1,23 +1,22 @@
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.FunctionDeclaration;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.statement.VariableDeclaration;
 
 public abstract class AbstractCode implements JSCode {
 
-    private Statement[] statements;
+    private BlockStatement block;
     private boolean strict;
 
-    public AbstractCode(Statement[] statements) {
-        this( statements, false );
+    public AbstractCode(BlockStatement block) {
+        this( block, false );
     }
 
-    public AbstractCode(Statement[] statements, boolean strict) {
-        this.statements = statements;
+    public AbstractCode(BlockStatement block, boolean strict) {
+        this.block = block;
         this.strict = strict;
     }
 
@@ -27,28 +26,11 @@ public abstract class AbstractCode implements JSCode {
 
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        List<FunctionDeclaration> decls = new ArrayList<>();
-        for (int i = 0; i < statements.length; ++i) {
-            if (statements[i] instanceof FunctionDeclaration) {
-                FunctionDeclaration fn = (FunctionDeclaration) statements[i];
-                if (fn.getIdentifier() != null) {
-                    decls.add( fn );
-                }
-            }
-        }
-        return decls;
+        return block.getFunctionDeclarations();
     }
 
-    public List<VariableDeclarationStatement> getVariableDeclarations() {
-        List<VariableDeclarationStatement> decls = new ArrayList<>();
-        for (int i = 0; i < statements.length; ++i) {
-            if (statements[i] instanceof VariableDeclarationStatement) {
-                VariableDeclarationStatement var = (VariableDeclarationStatement) statements[i];
-                decls.add( var );
-            }
-        }
-        return decls;
-
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return block.getVariableDeclarations();
     }
 
 }

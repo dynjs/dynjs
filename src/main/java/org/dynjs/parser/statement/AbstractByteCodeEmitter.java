@@ -29,7 +29,7 @@ public class AbstractByteCodeEmitter {
     public CodeBlock jsPushUndefined() {
         return new CodeBlock() {
             {
-                getstatic( p( Types.class ), "UNDEFINED", sig( Types.Undefined.class ) );
+                getstatic( p( Types.class ), "UNDEFINED", ci( Types.Undefined.class ) );
             }
         };
     }
