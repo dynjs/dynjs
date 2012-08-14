@@ -178,7 +178,7 @@ public class DynObject implements JSObject {
                 }
                 return true;
             } else {
-                return (boolean) desc.get( "Writable" );
+                return (Boolean) desc.get( "Writable" );
             }
         }
 
@@ -196,7 +196,7 @@ public class DynObject implements JSObject {
 
         PropertyDescriptor desc = (PropertyDescriptor) d;
 
-        if ((boolean) desc.get( "Configurable" )) {
+        if ((Boolean) desc.get( "Configurable" )) {
             this.properties.remove( name );
             return true;
         }

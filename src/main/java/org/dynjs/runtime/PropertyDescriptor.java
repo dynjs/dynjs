@@ -56,7 +56,7 @@ public class PropertyDescriptor {
         if (v == null) {
             return false;
         }
-        return (boolean) v;
+        return (Boolean) v;
     }
 
     public void setWritable(boolean writable) {
@@ -73,7 +73,7 @@ public class PropertyDescriptor {
             return true;
         }
 
-        return (boolean) v;
+        return (Boolean) v;
     }
 
     public void setConfigurable(boolean configurable) {
@@ -86,7 +86,7 @@ public class PropertyDescriptor {
             return false;
         }
 
-        return (boolean) v;
+        return (Boolean) v;
     }
 
     public void setEnumerable(boolean enumerable) {
