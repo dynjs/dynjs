@@ -58,7 +58,9 @@ public class ExecutionContext {
     }
 
     public Reference resolve(String name) {
-        return this.lexicalEnvironment.getIdentifierReference( this, name, isStrict() );
+        Reference ref = this.lexicalEnvironment.getIdentifierReference( this, name, isStrict() );
+        System.err.println( "resolve: " + name + " -> " + ref );
+        return ref;
     }
 
     // ----------------------------------------------------------------------

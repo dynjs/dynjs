@@ -217,9 +217,12 @@ public class DynObject implements JSObject {
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 8.12.9
+        System.err.println( this + ".defineOwnProp: " + name + " // " + desc );
+        System.err.println( "*A" );
         Object c = getOwnProperty( context, name );
 
         if (c == Types.UNDEFINED) {
+            System.err.println( "*B" );
             if (!isExtensible()) {
                 return reject( shouldThrow );
             } else {
@@ -234,20 +237,26 @@ public class DynObject implements JSObject {
             }
         }
 
+        System.err.println( "*C" );
         if (desc.isEmpty()) {
             return true;
         }
 
+        System.err.println( "*D" );
         PropertyDescriptor current = (PropertyDescriptor) c;
 
         if (!current.isConfigurable()) {
+            System.err.println( "*E" );
             if (desc.isConfigurable()) {
+                System.err.println( "*F" );
                 return reject( shouldThrow );
             }
             if (current.isEnumerable() != desc.isEnumerable()) {
+                System.err.println( "*G" );
                 return reject( shouldThrow );
             }
         }
+        System.err.println( "*H" );
 
         PropertyDescriptor newDesc = null;
 
@@ -294,6 +303,7 @@ public class DynObject implements JSObject {
             }
 
             newDesc.copyAll( desc );
+            System.err.println( "PUT: " + name + " -> " + desc );
             this.properties.put( name, newDesc );
         }
 
@@ -310,9 +320,9 @@ public class DynObject implements JSObject {
     @Override
     public NameEnumerator getEnumerablePropertyNames() {
         ArrayList<String> names = new ArrayList<String>();
-        for ( String name : this.properties.keySet() ) {
+        for (String name : this.properties.keySet()) {
             PropertyDescriptor desc = this.properties.get( name );
-            if ( desc.isEnumerable() ) {
+            if (desc.isEnumerable()) {
                 names.add( name );
             }
         }

@@ -46,6 +46,10 @@ public class PropertyDescriptor {
 
     public PropertyDescriptor() {
     }
+    
+    public String toString() {
+        return "[PropertyDescriptor: attributes=" + this.attributes + "]";
+    }
 
     public boolean isWritable() {
         Object v = get( "Writable" );
@@ -66,7 +70,7 @@ public class PropertyDescriptor {
         }
         
         if ( v == Types.UNDEFINED ) {
-            return (boolean) DEFAULTS.get(  "Configurable" );
+            return true;
         }
 
         return (boolean) v;
