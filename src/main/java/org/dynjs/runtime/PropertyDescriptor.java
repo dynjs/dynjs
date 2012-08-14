@@ -64,6 +64,10 @@ public class PropertyDescriptor {
         if (v == null) {
             return false;
         }
+        
+        if ( v == Types.UNDEFINED ) {
+            return (boolean) DEFAULTS.get(  "Configurable" );
+        }
 
         return (boolean) v;
     }

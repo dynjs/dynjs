@@ -63,10 +63,10 @@ public class ExecutionContext {
 
     // ----------------------------------------------------------------------
 
-    public void execute(JSProgram program) {
+    public Completion execute(JSProgram program) {
         setStrict( program.isStrict() );
         performDeclarationBindingInstantiation( program );
-        program.execute( this );
+        return program.execute( this );
     }
 
     public Object eval(JSEval eval) {
@@ -143,6 +143,7 @@ public class ExecutionContext {
     }
 
     private void performDeclarationBindingInstantiation(JSProgram program) {
+        System.err.println( "performDecls: " + program );
         performFunctionDeclarationBindings( program, false );
         performVariableDeclarationBindings( program, false );
     }
@@ -254,10 +255,13 @@ public class ExecutionContext {
     private void performFunctionDeclarationBindings(final JSCode code, final boolean configurableBindings) {
         // 10.5 Function Declaration Binding
         List<FunctionDeclaration> decls = code.getFunctionDeclarations();
+        System.err.println( "function decls: " + decls );
 
         EnvironmentRecord env = this.variableEnvironment.getRecord();
         for (FunctionDeclaration each : decls) {
+            System.err.println( "Func Decl: " + each );
             String identifier = each.getIdentifier();
+            System.err.println( "id: " + identifier );
             if (!env.hasBinding( this, identifier )) {
                 env.createMutableBinding( this, identifier, configurableBindings );
             } else if (env.isGlobal()) {

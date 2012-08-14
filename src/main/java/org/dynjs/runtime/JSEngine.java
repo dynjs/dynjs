@@ -47,7 +47,7 @@ public class JSEngine {
         JSCompiler compiler = this.context.getCompiler();
         BlockStatement statements = parseSourceCode( this.context, program, filename );
         JSProgram programObj = compiler.compileProgram( statements );
-        Completion completion = programObj.execute( this.context ); 
+        Completion completion = this.context.execute( programObj );
         if ( completion.type == Completion.Type.THROW ) {
             throw (DynJSException) completion.value;
         }
@@ -58,7 +58,7 @@ public class JSEngine {
         JSCompiler compiler = this.context.getCompiler();
         BlockStatement statements = parseSourceCode( this.context, program, filename );
         JSProgram programObj = compiler.compileProgram( statements );
-        Completion completion = programObj.execute( this.context ); 
+        Completion completion = this.context.execute( programObj );
         System.err.println( "completion: " + completion );
         if ( completion.type == Completion.Type.THROW ) {
             throw (DynJSException) completion.value;

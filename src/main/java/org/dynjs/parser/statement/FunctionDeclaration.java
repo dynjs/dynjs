@@ -37,7 +37,7 @@ public class FunctionDeclaration extends AbstractStatement {
     }
 
     public FunctionDeclaration(final Tree tree, final String identifier, final List<String> formalParameters, final Statement block) {
-        this( tree, null, formalParameters.toArray(new String[ formalParameters.size() ]), block );
+        this( tree, identifier, formalParameters.toArray(new String[ formalParameters.size() ]), block );
     }
     
     public FunctionDeclaration(final Tree tree, final String identifier, final String[] formalParameters, final Statement block) {
@@ -62,5 +62,9 @@ public class FunctionDeclaration extends AbstractStatement {
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock();
+    }
+    
+    public String toString() {
+        return "fuction " + this.identifier + "(...){...}";
     }
 }

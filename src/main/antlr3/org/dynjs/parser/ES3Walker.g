@@ -78,6 +78,8 @@ statement returns [Statement value]
         {  $value = $block.value;   }
 	| variableDeclaration
 	    {  $value = $variableDeclaration.value;   }
+	| functionDeclaration
+	    {  $value = $functionDeclaration.value;   }
 	| expression
 	    {  $value = executor.expressionStatement( $expression.value);   }
 	| printStatement

@@ -38,12 +38,16 @@ public class BlockStatement extends AbstractStatement implements Statement {
     }
 
     public List<FunctionDeclaration> getFunctionDeclarations() {
+        System.err.println( "blockContent=" + this.blockContent );
         if (this.blockContent == null) {
+            System.err.println( "empty!" );
             return Collections.emptyList();
         }
 
         List<FunctionDeclaration> decls = new ArrayList<>();
+        
         for (Statement each : this.blockContent) {
+            System.err.println( "each=" + each );
             if (each instanceof FunctionDeclaration) {
                 decls.add( (FunctionDeclaration) each );
             }

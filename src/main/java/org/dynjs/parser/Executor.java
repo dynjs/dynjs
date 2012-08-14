@@ -144,6 +144,7 @@ public class Executor {
     }
 
     public FunctionDeclaration defineFunction(final Tree tree, final String identifier, final List<String> args, final Statement block) {
+        System.err.println( "fn: " + identifier );
         return new FunctionDeclaration( tree, identifier, args, block );
     }
 

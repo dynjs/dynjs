@@ -39,6 +39,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
         // 10.2.1.2.3
+        System.err.println( "setMutableBinding: " + name );
         this.object.put( context, name, value, strict );
     }
 

@@ -8,11 +8,12 @@ import org.dynjs.parser.Statement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.FunctionDeclaration;
 import org.dynjs.parser.statement.VariableDeclaration;
+import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     private static final Statement[] EMPTY_STATEMENT_ARRAY = new Statement[0];
-    private BlockStatement body;
+    private Statement body;
     private String[] formalParameters;
     private LexicalEnvironment scope;
     private boolean strict;
@@ -21,7 +22,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this( null, scope, strict, formalParameters );
     }
 
-    public AbstractFunction(final BlockStatement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+    public AbstractFunction(final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         this.body = body;
         this.formalParameters = formalParameters;
         this.scope = scope;
@@ -69,19 +70,26 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        if (this.body == null) {
-            return Collections.emptyList();
+        if (this.body instanceof BlockStatement) {
+            return ((BlockStatement) this.body).getFunctionDeclarations();
         }
-        return this.body.getFunctionDeclarations();
+
+        if (this.body instanceof FunctionDeclaration) {
+            return Collections.singletonList( (FunctionDeclaration) this.body );
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
-        if (this.body == null) {
-            return Collections.emptyList();
+        if (this.body instanceof BlockStatement) {
+            return ((BlockStatement) this.body).getVariableDeclarations();
         }
 
-        return this.body.getVariableDeclarations();
+        if (this.body instanceof VariableDeclarationStatement) {
+            return ((VariableDeclarationStatement) this.body).getVariableDeclarations();
+        }
+        return Collections.emptyList();
     }
 
     @Override

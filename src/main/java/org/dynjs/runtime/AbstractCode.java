@@ -29,12 +29,13 @@ public abstract class AbstractCode implements JSCode {
 
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        if (block instanceof BlockStatement) {
-            return ((BlockStatement) block).getFunctionDeclarations();
+        System.err.println( "block=" + this.block );
+        if (this.block instanceof BlockStatement) {
+            return ((BlockStatement) this.block).getFunctionDeclarations();
         }
         
-        if ( block instanceof FunctionDeclaration ) {
-            return Collections.singletonList( (FunctionDeclaration) block );
+        if ( this.block instanceof FunctionDeclaration ) {
+            return Collections.singletonList( (FunctionDeclaration) this.block );
         }
         
         return Collections.emptyList();
