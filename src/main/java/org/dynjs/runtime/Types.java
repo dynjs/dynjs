@@ -24,21 +24,21 @@ public class Types {
         return left.equals( right );
     }
 
-    static JSObject toObject(Object o) {
+    public static JSObject toObject(Object o) {
         if (o instanceof JSObject) {
             return (JSObject) o;
         }
         throw new DynJSException( "not implemented" );
     }
 
-    static Object toPrimitive(Object o, String preferredType) {
+    public static Object toPrimitive(Object o, String preferredType) {
         if (o instanceof JSObject) {
             return ((JSObject) o).defaultValue( preferredType );
         }
         return o;
     }
 
-    static Double toNumber(Object o) {
+    public static Double toNumber(Object o) {
         // 9.3
         if (o instanceof JSObject) {
             return toNumber( toPrimitive( o, "Number" ) );
@@ -63,7 +63,7 @@ public class Types {
         }
     }
 
-    static Boolean toBoolean(Object o) {
+    public static Boolean toBoolean(Object o) {
         // 9.2
         if (o instanceof Boolean) {
             return (Boolean) o;
@@ -85,7 +85,7 @@ public class Types {
         return true;
     }
 
-    static Double toUint32(Object o) {
+    public static Double toUint32(Object o) {
         // 9.5
         Double n = toNumber( o );
         if (n == Double.POSITIVE_INFINITY || n == Double.NEGATIVE_INFINITY || n == Double.NaN) {
@@ -99,7 +99,7 @@ public class Types {
         return int32bit;
     }
 
-    static Double toInt32(Object o) {
+    public static Double toInt32(Object o) {
         double int32bit = toUint32( o );
         if (int32bit > Math.pow( 2, 31 )) {
             return int32bit - Math.pow( 2, 32 );
@@ -107,22 +107,22 @@ public class Types {
         return int32bit;
     }
 
-    static boolean isCallable(Object o) {
+    public static boolean isCallable(Object o) {
         return (o instanceof JSCallable);
     }
 
-    static Object getValue(ExecutionContext context, Object o) {
+    public static Object getValue(ExecutionContext context, Object o) {
         if (o instanceof Reference) {
             return ((Reference) o).getValue( context );
         }
         return o;
     }
 
-    static String toString(Object o) {
+    public static String toString(Object o) {
         return o.toString();
     }
 
-    static String typeof(ExecutionContext context, Object o) {
+    public static String typeof(ExecutionContext context, Object o) {
         // 11.4.3
         Object val = o;
         if (o instanceof Reference) {
@@ -136,7 +136,7 @@ public class Types {
         return type( val );
     }
 
-    static boolean compareEquality(Object lhs, Object rhs) {
+    public static boolean compareEquality(Object lhs, Object rhs) {
         // 11.9.3
 
         String lhsType = type( lhs );
@@ -201,7 +201,7 @@ public class Types {
         return false;
     }
 
-    static boolean compareStrictEquality(Object lhs, Object rhs) {
+    public static boolean compareStrictEquality(Object lhs, Object rhs) {
         // 11.9.6
         String lhsType = type( lhs );
         String rhsType = type( rhs );
@@ -235,7 +235,7 @@ public class Types {
         return lhs == rhs;
     }
 
-    static String type(Object o) {
+    public static String type(Object o) {
         // 11.4.3
         if (o == UNDEFINED) {
             return "undefined";

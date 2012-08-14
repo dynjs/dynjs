@@ -21,6 +21,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
 
 /**
  * An Identifier is evaluated by performing Identifier Resolution as specified
@@ -51,7 +52,7 @@ public class IdentifierReferenceExpression extends AbstractExpression {
                 // context
                 ldc( identifier );
                 // context identifier
-                invokevirtual( p( ExecutionContext.class ), "resolve", sig( Object.class, String.class ) );
+                invokevirtual( p( ExecutionContext.class ), "resolve", sig( Reference.class, String.class ) );
                 // reference
             }
         };

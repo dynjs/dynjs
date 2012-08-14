@@ -41,14 +41,9 @@ public class ObjectLiteralExpression extends AbstractExpression {
                 // obj
                 dup();
                 // obj obj
-                invokespecial( p( DynObject.class ), "<init>", sig( void.class ) );
+                invokespecial(p(DynObject.class), "<init>", sig(void.class));
                 // obj
-                for (NamedValue namedValue : namedValues) {
-                    dup();
-                    // obj obj
-                    //append( CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 1 ) );
-                }
-                aload( 4 );
+                
             }
         };
     }

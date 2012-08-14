@@ -125,7 +125,7 @@ variableDeclaration returns [VariableDeclarationStatement value]
 	      ( id=Identifier
 	{   decls.add( executor.variableDeclaration($id, $id.text, null) ); }
 	      | ^( ASSIGN id=Identifier expr )
-	{   decls.add( executor.variableDeclaration($id, $ASSIGN.text, $expr.value) );   }
+	{   decls.add( executor.variableDeclaration($id, $id.text, $expr.value) );   }
 	      )+
 	   ) { $value = executor.variableDeclarationStatement( $VAR, decls ); }
 	;

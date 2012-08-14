@@ -1,14 +1,14 @@
 package org.dynjs.runtime;
 
-import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.Statement;
 
 public abstract class BaseProgram extends AbstractCode implements JSProgram {
 
-    public BaseProgram(BlockStatement block) {
+    public BaseProgram(Statement block) {
         super( block );
     }
 
-    public BaseProgram(BlockStatement block, boolean strict) {
+    public BaseProgram(Statement block, boolean strict) {
         super( block, strict );
     }
 

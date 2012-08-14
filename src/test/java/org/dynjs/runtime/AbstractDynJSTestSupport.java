@@ -12,6 +12,7 @@ public abstract class AbstractDynJSTestSupport {
     @Before
     public void setUp() {
         this.config = new Config();
+        this.config.setDebug( true );
         this.engine = new JSEngine( this.config );
     }
     

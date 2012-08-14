@@ -16,6 +16,7 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
 
@@ -38,7 +39,9 @@ public class NumberLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                ldc( Integer.parseInt( text, radix ));
+                ldc(text);
+                bipush(radix);
+                invokestatic( p(Integer.class), "valueOf", sig(Integer.class, String.class, int.class));
             }
         };
     }

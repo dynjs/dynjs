@@ -51,11 +51,11 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
         return decls;
     }
-    
+
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList();
-        for ( Statement each : this.blockContent ) {
-            if ( each instanceof VariableDeclarationStatement ) {
+        for (Statement each : this.blockContent) {
+            if (each instanceof VariableDeclarationStatement) {
                 VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
                 decls.addAll( statement.getVariableDeclarations() );
             }
@@ -65,6 +65,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( "Block(" + this + ") - getCodeBlock - " + blockContent );
         return new CodeBlock() {
             {
                 // 12.1
@@ -78,8 +79,9 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     LabelNode nonAbrupt = new LabelNode();
                     LabelNode bringForwardValue = new LabelNode();
                     LabelNode nextStatement = new LabelNode();
-                    
+
                     line( statement.getPosition().getLine() );
+                    System.err.println( statement + " // " + statement.getClass().getName() );
                     append( statement.getCodeBlock() );
                     // completion(prev) completion(cur)
                     dup();
@@ -108,7 +110,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     // completion(cur) completion(cur) completion(prev)
                     append( jsCompletionValue() );
                     // completion(cur) val(prev)
-                    putfield( p( Completion.class ), "value", sig( Object.class ) );
+                    putfield( p( Completion.class ), "value", ci( Object.class ) );
                     // completion(cur)
                     label( nextStatement );
                     // completion(cur)

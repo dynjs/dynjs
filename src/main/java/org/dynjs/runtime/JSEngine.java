@@ -59,6 +59,7 @@ public class JSEngine {
         BlockStatement statements = parseSourceCode( this.context, program, filename );
         JSProgram programObj = compiler.compileProgram( statements );
         Completion completion = programObj.execute( this.context ); 
+        System.err.println( "completion: " + completion );
         if ( completion.type == Completion.Type.THROW ) {
             throw (DynJSException) completion.value;
         }

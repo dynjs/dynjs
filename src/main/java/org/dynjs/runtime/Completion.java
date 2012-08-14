@@ -1,9 +1,5 @@
 package org.dynjs.runtime;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-import me.qmx.jitescript.CodeBlock;
-
-import org.objectweb.asm.tree.LabelNode;
 
 public class Completion {
 
@@ -53,6 +49,10 @@ public class Completion {
 
     public static Completion createThrow(Object value) {
         return new Completion( Type.THROW, value, null );
+    }
+    
+    public String toString() {
+        return "(" + this.type + ", " + this.value + ", " + this.target + ")";
     }
 
 

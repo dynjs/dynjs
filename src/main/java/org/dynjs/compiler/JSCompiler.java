@@ -12,8 +12,8 @@ public class JSCompiler {
 
     public static interface Arities {
         int THIS = 0;
-        int SELF = 1;
-        int EXECUTION_CONTEXT = 2;
+        int EXECUTION_CONTEXT = 1;
+        int SELF = 2;
         int ARGS = 3;
     }
 
@@ -29,8 +29,8 @@ public class JSCompiler {
         this.basicBlockCompiler = new BasicBlockCompiler( this.config );
     }
 
-    public JSProgram compileProgram(Statement... statements) {
-        return this.programCompiler.compile( statements );
+    public JSProgram compileProgram(Statement statement) {
+        return this.programCompiler.compile( statement );
     }
 
     public JSFunction compileFunction(ExecutionContext context, boolean strict, String[] formalParameters, Statement body) {

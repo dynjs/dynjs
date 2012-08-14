@@ -64,6 +64,10 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
     public CodeBlock normalCompletionWithValue() {
         return new CodeBlock() {
             {
+                // IN: val
+                dup();
+                aprintln();
+                
                 invokestatic( p( Completion.class ), "createNormal", sig( Completion.class, Object.class ) );
             }
         };
@@ -130,6 +134,9 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN: completion
+                dup();
+                aprintln();
+                append( jsCompletionType() );
                 lookupswitch( normalTarget,
                         new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal(), Type.THROW.ordinal() },
                         new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget, throwTarget } );
@@ -137,7 +144,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             }
         };
     }
-    
+
     public CodeBlock convertToNormal() {
         return new CodeBlock() {
             {
@@ -158,6 +165,17 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
                 // IN completion
                 getfield( p( Completion.class ), "value", ci( Object.class ) );
                 // value
+            }
+        };
+    }
+
+    public CodeBlock jsCompletionType() {
+        return new CodeBlock() {
+            {
+                // IN completion
+                getfield( p( Completion.class ), "type", ci( Completion.Type.class ) );
+                // type
+                invokevirtual( p( Completion.Type.class ), "ordinal", sig( int.class ) );
             }
         };
     }

@@ -25,6 +25,7 @@ public class VariableDeclaration extends AbstractExpression {
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( "DECL: " + this.identifier + " == " + this.initializer );
         return new CodeBlock() {
             {
                 // 12.2

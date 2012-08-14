@@ -88,7 +88,7 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 // completion(cur) completion(prev)
                 append( jsCompletionValue() );
                 // completion(cur) val(prev)
-                putfield( p( Completion.class ), "value", sig( Object.class ) );
+                putfield( p( Completion.class ), "value", ci( Object.class ) );
                 // completion(cur)
                 go_to( checkCompletion );
                 
