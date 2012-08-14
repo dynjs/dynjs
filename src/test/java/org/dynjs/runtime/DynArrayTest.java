@@ -18,7 +18,6 @@ package org.dynjs.runtime;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.dynjs.runtime.DynThreadContext.UNDEFINED;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class DynArrayTest {
@@ -32,8 +31,8 @@ public class DynArrayTest {
 
     @Test
     public void undefinedByDefault() {
-        assertThat(array.get(11)).isEqualTo(UNDEFINED);
-        assertThat(array.get(550)).isEqualTo(UNDEFINED);
+        assertThat(array.get(11)).isEqualTo(Types.UNDEFINED);
+        assertThat(array.get(550)).isEqualTo(Types.UNDEFINED);
     }
 
     @Test
