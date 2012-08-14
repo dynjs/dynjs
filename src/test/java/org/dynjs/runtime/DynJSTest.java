@@ -20,9 +20,6 @@ import static org.fest.assertions.Assertions.*;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.parser.ParserException;
-import org.dynjs.runtime.fixtures.BypassFunction;
-import org.dynjs.runtime.java.SayHiToJava;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
