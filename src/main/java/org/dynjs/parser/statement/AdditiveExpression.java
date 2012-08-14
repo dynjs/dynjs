@@ -59,14 +59,18 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 // ----------------------------------------
                 // Numbers
                 // val(lhs) val(rhs)
+                checkcast( p(Number.class) );
                 swap();
-                // val(rhs) val(lhs);
+                checkcast( p(Number.class) );
+                // num(rhs) num(lhs);
                 invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
                 // val(rhs) num(lhs)
-                swap();
+                dup2_x1();
+                pop2();
                 // num(lhs) val(rhs)
                 invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
                 // num(lhs) num(rhs)
+                swap2();
                 dadd();
                 // num(total)
                 invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
@@ -89,7 +93,14 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 // ----------------------------------------
                 // Strings
                 label( stringConcat );
-                // val(lhs) val(rhs);
+                // val(lhs) val(rhs)
+                checkcast( p(String.class) );
+                swap();
+                // str(rhs) val(lhs)
+                checkcast( p(String.class) );
+                // str(rhs) str(lhs)
+                swap();
+                // str(lhs) str(rhs)
                 invokevirtual( p( String.class ), "concat", sig( String.class, String.class ) );
                 // obj(concat)
 
