@@ -15,6 +15,7 @@
  */
 package org.dynjs.runtime;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -304,6 +305,18 @@ public class DynObject implements JSObject {
             throw new TypeError();
         }
         return false;
+    }
+
+    @Override
+    public NameEnumerator getEnumerablePropertyNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        for ( String name : this.properties.keySet() ) {
+            PropertyDescriptor desc = this.properties.get( name );
+            if ( desc.isEnumerable() ) {
+                names.add( name );
+            }
+        }
+        return new NameEnumerator( names );
     }
 
 }

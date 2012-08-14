@@ -15,34 +15,38 @@
  */
 package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
+import org.objectweb.asm.tree.LabelNode;
 
-public class RelationalOperationStatement extends AbstractStatement implements Statement {
+public class BitwiseInversionOperatorExpression extends AbstractExpression {
 
-    private final String operator;
-    private final Statement l;
-    private final Statement r;
+    private final Expression expr;
 
-    public RelationalOperationStatement(final Tree tree, final String operator, final Statement l, final Statement r) {
+    public BitwiseInversionOperatorExpression(final Tree tree, final Expression expr) {
         super( tree );
-        this.operator = operator;
-        this.l = l;
-        this.r = r;
+        this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( l.getCodeBlock() );
-                append( r.getCodeBlock() );
-                invokedynamic( operator, sig( Boolean.class, Object.class, Object.class ), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS );
+                LabelNode returnFalse = new LabelNode();
+                LabelNode end = new LabelNode();
+                
+                append( expr.getCodeBlock() );
+                // obj
+                append( jsGetValue() );
+                // val
+                append( jsToInt32() );
+                // int
+                iconst_m1();
+                // int -1
+                ixor();
             }
         };
     }
+
 }

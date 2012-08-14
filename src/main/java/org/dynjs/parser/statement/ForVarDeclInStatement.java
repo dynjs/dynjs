@@ -18,28 +18,21 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.BlockManager;
 
-public class NumberLiteralExpression extends AbstractExpression {
+public class ForVarDeclInStatement extends AbstractForInStatement {
 
-    private final String text;
-    private final int radix;
+    private final VariableDeclarationStatement decl;
 
-    public NumberLiteralExpression(final Tree tree, final String text, final int radix) {
-        super( tree );
-        this.text = text;
-        this.radix = radix;
-    }
-    
-    public String getText() {
-        return this.text;
+    public ForVarDeclInStatement(final Tree tree, final BlockManager blockManager, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
+        super( tree, blockManager, rhs, block );
+        this.decl = decl;
     }
 
     @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                ldc( Integer.parseInt( text, radix ));
-            }
-        };
+    public CodeBlock getFirstChunkCodeBlock() {
+        return decl.getCodeBlock();
     }
+
 }

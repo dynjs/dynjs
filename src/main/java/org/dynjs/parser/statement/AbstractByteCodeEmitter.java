@@ -5,6 +5,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
@@ -83,6 +84,16 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
+    
+    public CodeBlock jsToObject() {
+        return new CodeBlock() {
+            {
+                // IN obj
+                invokestatic( p( Types.class ), "toObject", sig( JSObject.class, Object.class ) );
+                // obj
+            }
+        };
+    }
 
     public CodeBlock jsGetValue() {
         return jsGetValue( null );
@@ -102,7 +113,7 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
-    
+
     public CodeBlock jsGetBase() {
         return new CodeBlock() {
             {
@@ -133,4 +144,20 @@ public class AbstractByteCodeEmitter {
         };
     }
 
+    public CodeBlock jsThrowTypeError() {
+        return new CodeBlock() {
+            {
+                invokestatic( p(ExecutionContext.class), "throwTypeError", sig(void.class) );
+            }
+        };
+    }
+    
+    public CodeBlock jsThrowReferenceError(final String ref) {
+        return new CodeBlock() {
+            {
+                ldc( ref );
+                invokestatic( p(ExecutionContext.class), "throwReferenceError", sig(void.class) );
+            }
+        };
+    }
 }

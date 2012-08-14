@@ -20,25 +20,27 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.Statement;
 
 public class FunctionDeclaration extends AbstractStatement {
 
     private final String identifier;
     private final String[] formalParameters;
-    private BlockStatement block;
+    private Statement block;
 
-    public FunctionDeclaration(final Tree tree, final List<String> formalParameters, final BlockStatement block) {
+    public FunctionDeclaration(final Tree tree, final List<String> formalParameters, final Statement block) {
         this( tree, null, formalParameters, block );
     }
     
-    public FunctionDeclaration(final Tree tree, final String[] formalParameters, final BlockStatement block) {
+    public FunctionDeclaration(final Tree tree, final String[] formalParameters, final Statement block) {
         this( tree, null, formalParameters, block );
     }
 
-    public FunctionDeclaration(final Tree tree, final String identifier, final List<String> formalParameters, final BlockStatement block) {
+    public FunctionDeclaration(final Tree tree, final String identifier, final List<String> formalParameters, final Statement block) {
         this( tree, null, formalParameters.toArray(new String[ formalParameters.size() ]), block );
     }
-    public FunctionDeclaration(final Tree tree, final String identifier, final String[] formalParameters, final BlockStatement block) {
+    
+    public FunctionDeclaration(final Tree tree, final String identifier, final String[] formalParameters, final Statement block) {
         super( tree );
         this.identifier = identifier;
         this.formalParameters = formalParameters;
@@ -53,7 +55,7 @@ public class FunctionDeclaration extends AbstractStatement {
         return this.formalParameters;
     }
 
-    public BlockStatement getBlock() {
+    public Statement getBlock() {
         return this.block;
     }
 

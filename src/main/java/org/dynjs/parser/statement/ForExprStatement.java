@@ -13,34 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.dynjs.parser.statement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.BlockManager;
 
-public class ExpressionListStatement extends AbstractStatement implements Statement {
+public class ForExprStatement extends AbstractForStatement {
 
-    private final List<Statement> exprList;
+    private final Expression initialize;
 
-    public ExpressionListStatement(final Tree tree, final List<Statement> exprList) {
-        super( tree );
-        this.exprList = new ArrayList<Statement>( exprList );
+    public ForExprStatement(final Tree tree, final BlockManager blockManager, final Expression initialize, final Expression test, final Expression increment, final Statement block) {
+        super( tree, blockManager, test, increment, block );
+        this.initialize = initialize;
     }
 
     @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                for (Statement statement : exprList) {
-                    append( statement.getCodeBlock() );
-                }
-            }
-        };
+    public CodeBlock getFirstChunkCodeBlock() {
+        return this.initialize.getCodeBlock();
     }
+
 }

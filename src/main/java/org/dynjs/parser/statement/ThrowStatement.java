@@ -19,13 +19,12 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
 
-public class ThrowStatement extends AbstractStatement implements Statement {
+public class ThrowStatement extends AbstractStatement {
 
-    private final Statement expression;
+    private final Expression expression;
 
-    public ThrowStatement(final Tree tree, Statement expression) {
+    public ThrowStatement(final Tree tree, Expression expression) {
         super( tree );
         this.expression = expression;
     }

@@ -16,41 +16,40 @@
 package org.dynjs.parser.statement;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.runtime.Types;
-import org.objectweb.asm.tree.LabelNode;
+import org.dynjs.runtime.DynObject;
 
-public class NotOperatorExpression extends AbstractExpression {
+public class ObjectLiteralExpression extends AbstractExpression {
 
-    private final Expression expr;
+    private final List<NamedValue> namedValues;
 
-    public NotOperatorExpression(final Tree tree, final Expression expr) {
+    public ObjectLiteralExpression(final Tree tree, final List<NamedValue> namedValues) {
         super( tree );
-        this.expr = expr;
+        this.namedValues = namedValues;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                LabelNode returnFalse = new LabelNode();
-                LabelNode end = new LabelNode();
-                
-                append( expr.getCodeBlock() );
-                // val
-                invokestatic( p(Types.class), "toBoolean", sig( boolean.class, Object.class ) );
-                // bool
-                iftrue( returnFalse );
-                iconst_1();
-                go_to(end);
-                label( returnFalse );
-                iconst_0();
-                label( end );
-                nop();
+                newobj( p( DynObject.class ) );
+                // obj
+                dup();
+                // obj obj
+                invokespecial( p( DynObject.class ), "<init>", sig( void.class ) );
+                // obj
+                for (NamedValue namedValue : namedValues) {
+                    dup();
+                    // obj obj
+                    //append( CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 1 ) );
+                }
+                aload( 4 );
             }
         };
     }
-
 }

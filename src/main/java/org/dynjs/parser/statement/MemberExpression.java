@@ -28,12 +28,12 @@ import org.dynjs.compiler.JSCompiler;
  * @author Douglas Campos
  * @author Bob McWhirter
  */
-public class PropertyAccessorExpression extends AbstractExpression {
+public class MemberExpression extends AbstractExpression {
 
     private Expression memberExpr;
     private Expression identifierExpr;
 
-    public PropertyAccessorExpression(final Tree tree, final Expression memberExpr, final Expression identifierExpr) {
+    public MemberExpression(final Tree tree, final Expression memberExpr, final Expression identifierExpr) {
         super( tree );
         this.memberExpr = memberExpr;
         this.identifierExpr = identifierExpr;

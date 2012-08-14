@@ -19,9 +19,10 @@ import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.statement.AdditiveExpression;
-import org.dynjs.parser.statement.ArrayLiteralStatement;
+import org.dynjs.parser.statement.ArrayLiteralExpression;
 import org.dynjs.parser.statement.AssignmentExpression;
 import org.dynjs.parser.statement.BitwiseExpression;
+import org.dynjs.parser.statement.BitwiseInversionOperatorExpression;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.parser.statement.BooleanLiteralExpression;
 import org.dynjs.parser.statement.BreakStatement;
@@ -32,27 +33,30 @@ import org.dynjs.parser.statement.DeleteOpExpression;
 import org.dynjs.parser.statement.DoWhileStatement;
 import org.dynjs.parser.statement.EqualityOperatorExpression;
 import org.dynjs.parser.statement.Expression;
-import org.dynjs.parser.statement.ExpressionListStatement;
+import org.dynjs.parser.statement.ExpressionList;
 import org.dynjs.parser.statement.ExpressionStatement;
-import org.dynjs.parser.statement.ForStepExprStatement;
-import org.dynjs.parser.statement.ForStepVarStatement;
+import org.dynjs.parser.statement.ForExprInStatement;
+import org.dynjs.parser.statement.ForExprStatement;
+import org.dynjs.parser.statement.ForVarDeclInStatement;
+import org.dynjs.parser.statement.ForVarDeclStatement;
 import org.dynjs.parser.statement.FunctionCallExpression;
 import org.dynjs.parser.statement.FunctionDeclaration;
 import org.dynjs.parser.statement.IdentifierReferenceExpression;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.InstanceofExpression;
 import org.dynjs.parser.statement.LogicalExpression;
+import org.dynjs.parser.statement.LogicalNotOperatorExpression;
+import org.dynjs.parser.statement.MemberExpression;
 import org.dynjs.parser.statement.MultiplicativeExpression;
-import org.dynjs.parser.statement.NamedValueStatement;
+import org.dynjs.parser.statement.NamedValue;
 import org.dynjs.parser.statement.NewOperatorExpression;
-import org.dynjs.parser.statement.NotOperatorExpression;
 import org.dynjs.parser.statement.NullLiteralExpression;
 import org.dynjs.parser.statement.NumberLiteralExpression;
-import org.dynjs.parser.statement.ObjectLiteralStatement;
+import org.dynjs.parser.statement.ObjectLiteralExpression;
 import org.dynjs.parser.statement.PostOpExpression;
 import org.dynjs.parser.statement.PreOpExpression;
 import org.dynjs.parser.statement.PrintStatement;
-import org.dynjs.parser.statement.RelationalOperationStatement;
+import org.dynjs.parser.statement.RelationalExpression;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StrictEqualityOperatorExpression;
 import org.dynjs.parser.statement.StringLiteralExpression;
@@ -91,7 +95,7 @@ public class Executor {
         return new BlockStatement( tree, blockContent );
     }
 
-    public PrintStatement printStatement(final Tree tree, final Statement expr) {
+    public PrintStatement printStatement(final Tree tree, final Expression expr) {
         return new PrintStatement( tree, expr );
     }
 
@@ -99,7 +103,7 @@ public class Executor {
         return new ReturnStatement( tree, expr );
     }
 
-    public Statement variableDeclarationStatement(final Tree tree, List<VariableDeclaration> declExprs) {
+    public VariableDeclarationStatement variableDeclarationStatement(final Tree tree, List<VariableDeclaration> declExprs) {
         return new VariableDeclarationStatement( tree, declExprs );
     }
 
@@ -139,7 +143,7 @@ public class Executor {
         return new NumberLiteralExpression( tree, value, radix );
     }
 
-    public FunctionDeclaration defineFunction(final Tree tree, final String identifier, final List<String> args, final BlockStatement block) {
+    public FunctionDeclaration defineFunction(final Tree tree, final String identifier, final List<String> args, final Statement block) {
         return new FunctionDeclaration( tree, identifier, args, block );
     }
 
@@ -183,12 +187,12 @@ public class Executor {
         return new UnaryMinusExpression( tree, expression );
     }
 
-    public Statement defineInvOp(final Tree tree, Statement expression) {
-        throw new ParserException( "not implemented yet", tree );
+    public Expression defineInvOp(final Tree tree, Expression expression) {
+        return new BitwiseInversionOperatorExpression( tree, expression );
     }
 
     public Expression defineNotOp(final Tree tree, Expression expression) {
-        return new NotOperatorExpression( tree, expression );
+        return new LogicalNotOperatorExpression( tree, expression );
     }
 
     public Expression definePostIncOp(final Tree tree, Expression expression) {
@@ -199,27 +203,27 @@ public class Executor {
         return new PostOpExpression( tree, expression, "--" );
     }
 
-    public Statement defineLtRelOp(final Tree tree, Statement l, Statement r) {
-        return new RelationalOperationStatement( tree, "lt", l, r );
+    public Expression defineLtRelOp(final Tree tree, Expression l, Expression r) {
+        return new RelationalExpression( tree, l, r, "<" );
     }
 
-    public Statement defineGtRelOp(final Tree tree, final Statement l, final Statement r) {
-        return new RelationalOperationStatement( tree, "gt", l, r );
+    public Expression defineGtRelOp(final Tree tree, final Expression l, final Expression r) {
+        return new RelationalExpression( tree, l, r, ">" );
     }
 
-    public Statement defineLteRelOp(final Tree tree, Statement l, Statement r) {
-        return new RelationalOperationStatement( tree, "le", l, r );
+    public Expression defineLteRelOp(final Tree tree, Expression l, Expression r) {
+        return new RelationalExpression( tree, l, r, "<=" );
     }
 
-    public Statement defineGteRelOp(final Tree tree, Statement l, Statement r) {
-        return new RelationalOperationStatement( tree, "ge", l, r );
+    public Expression defineGteRelOp(final Tree tree, Expression l, Expression r) {
+        return new RelationalExpression( tree, l, r, ">=" );
     }
 
-    public Statement defineInstanceOfRelOp(final Tree tree, final Statement l, final Statement r) {
+    public Expression defineInstanceOfRelOp(final Tree tree, final Expression l, final Expression r) {
         return new InstanceofExpression( tree, l, r );
     }
 
-    public Statement defineInRelOp(final Tree tree, Statement l, Statement r) {
+    public Expression defineInRelOp(final Tree tree, Expression l, Expression r) {
         throw new ParserException( "not implemented yet", tree );
     }
 
@@ -319,7 +323,7 @@ public class Executor {
         return new NullLiteralExpression( tree );
     }
 
-    public Statement defineRegExLiteral(final Tree tree) {
+    public Expression defineRegExLiteral(final Tree tree) {
         throw new ParserException( "not implemented yet", tree );
     }
 
@@ -335,36 +339,36 @@ public class Executor {
         return new ExpressionStatement( expr );
     }
 
-    public NewOperatorExpression newOperator(final Tree tree, final Expression expr, final List<Expression> argExprs) {
+    public NewOperatorExpression newOperatorExpression(final Tree tree, final Expression expr, final List<Expression> argExprs) {
         return new NewOperatorExpression( tree, expr, argExprs );
     }
 
-    public IfStatement ifStatement(final Tree tree, Expression vbool, BlockStatement vthen, BlockStatement velse) {
+    public IfStatement ifStatement(final Tree tree, Expression vbool, Statement vthen, Statement velse) {
         return new IfStatement( tree, getBlockManager(), vbool, vthen, velse );
     }
 
-    public Statement doStatement(final Tree tree, final Expression vbool, final BlockStatement vloop) {
+    public Statement doStatement(final Tree tree, final Expression vbool, final Statement vloop) {
         return new DoWhileStatement( tree, getBlockManager(), vbool, vloop );
     }
 
-    public Statement whileStatement(final Tree tree, final Expression vbool, final BlockStatement vloop) {
+    public Statement whileStatement(final Tree tree, final Expression vbool, final Statement vloop) {
         return new WhileStatement( tree, getBlockManager(), vbool, vloop );
     }
 
-    public Statement forStepVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement expr2, Statement statement) {
-        return new ForStepVarStatement( tree, varDef, expr1, expr2, statement );
+    public Statement forStepVar(final Tree tree, final VariableDeclarationStatement varDef, final Expression test, final Expression incr, Statement block) {
+        return new ForVarDeclStatement( tree, getBlockManager(), varDef, test, incr, block );
     }
 
-    public Statement forStepExpr(final Tree tree, final Statement initialize, final Statement test, final Statement increment, Statement statement) {
-        return new ForStepExprStatement( tree, initialize, test, increment, statement );
+    public Statement forStepExpr(final Tree tree, final Expression init, final Expression test, final Expression incr, final Statement block) {
+        return new ForExprStatement( tree, getBlockManager(), init, test, incr, block );
     }
 
-    public Statement forIterVar(final Tree tree, final Statement varDef, final Statement expr1, final Statement statement) {
-        throw new ParserException( "not implemented yet", tree );
+    public Statement forIterVar(final Tree tree, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
+        return new ForVarDeclInStatement( tree, getBlockManager(), decl, rhs, block );
     }
 
-    public Statement forIterExpr(final Tree tree, final Statement expr1, final Statement expr2, final Statement statement) {
-        throw new ParserException( "not implemented yet", tree );
+    public Statement forIterExpr(final Tree tree, final Expression init, final Expression rhs, final Statement block) {
+        return new ForExprInStatement( tree, getBlockManager(), init, rhs, block );
     }
 
     public Statement continueStatement(final Tree tree, String id) {
@@ -375,19 +379,23 @@ public class Executor {
         return new BreakStatement( tree, id );
     }
 
-    public Statement exprListStatement(final List<Statement> exprList) {
-        return new ExpressionListStatement( null, exprList );
+    public Expression exprList(final List<Expression> exprList) {
+        return new ExpressionList( null, exprList );
+    }
+    
+    public MemberExpression memberExpression(final Tree tree, Expression memberExpr, Expression identifierExpr) {
+        return new MemberExpression( tree, memberExpr, identifierExpr );
     }
 
     public Expression resolveCallExpr(final Tree tree, Expression lhs, List<Expression> args) {
         return new FunctionCallExpression( tree, lhs, args );
     }
 
-    public Statement switchStatement(final Tree tree, Statement expr, Statement _default, List<Statement> cases) {
+    public Statement switchStatement(final Tree tree, Expression expr, Statement _default, List<Statement> cases) {
         throw new ParserException( "not implemented yet", tree );
     }
 
-    public Statement switchCaseClause(final Tree tree, Statement expr, List<Statement> statements) {
+    public Statement switchCaseClause(final Tree tree, Expression expr, List<Statement> statements) {
         throw new ParserException( "not implemented yet", tree );
     }
 
@@ -395,23 +403,23 @@ public class Executor {
         throw new ParserException( "not implemented yet", tree );
     }
 
-    public Statement throwStatement(final Tree tree, final Statement expression) {
+    public Statement throwStatement(final Tree tree, final Expression expression) {
         return new ThrowStatement( tree, expression );
     }
 
-    public Statement tryStatement(final Tree tree, BlockStatement tryBlock, CatchClause catchBlock, BlockStatement finallyBlock) {
+    public TryStatement tryStatement(final Tree tree, Statement tryBlock, CatchClause catchBlock, Statement finallyBlock) {
         return new TryStatement( tree, getBlockManager(), tryBlock, catchBlock, finallyBlock );
     }
 
-    public CatchClause tryCatchClause(final Tree tree, String id, BlockStatement block) {
+    public CatchClause tryCatchClause(final Tree tree, String id, Statement block) {
         return new CatchClause( tree, id, block );
     }
 
-    public BlockStatement tryFinallyClause(final Tree tree, BlockStatement block) {
+    public Statement tryFinallyClause(final Tree tree, Statement block) {
         return block;
     }
 
-    public Statement withStatement(final Tree tree, Statement expression, Statement statement) {
+    public Statement withStatement(final Tree tree, Expression expression, Statement statement) {
         throw new ParserException( "not implemented yet", tree );
     }
 
@@ -419,20 +427,20 @@ public class Executor {
         throw new ParserException( "not implemented yet", tree );
     }
 
-    public Statement objectValue(final Tree tree, List<Statement> namedValues) {
-        return new ObjectLiteralStatement( tree, namedValues );
+    public Expression objectValue(final Tree tree, List<NamedValue> namedValues) {
+        return new ObjectLiteralExpression( tree, namedValues );
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {
         throw new ParserException( "not implemented yet", numericLiteral.getPosition() );
     }
 
-    public Statement namedValue(final Tree tree, final Statement propertyName, final Statement expr) {
-        return new NamedValueStatement( tree, propertyName, expr );
+    public NamedValue namedValue(final Tree tree, final String name, final Expression expr) {
+        return new NamedValue( name, expr );
     }
 
-    public Statement arrayLiteral(final Tree tree, final List<Statement> exprs) {
-        return new ArrayLiteralStatement( tree, exprs );
+    public Expression arrayLiteral(final Tree tree, final List<Expression> exprs) {
+        return new ArrayLiteralExpression( tree, exprs );
     }
 
 }

@@ -37,7 +37,7 @@ public class Converters {
             Guards.isInstance( Object.class, methodType( Boolean.class, Object.class ) ) );
 
     public static Boolean toBoolean(Object value) {
-        return DynObject.toBoolean( value );
+        return Types.toBoolean( value );
     }
 
     public static Integer toInteger(Double value) {

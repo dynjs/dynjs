@@ -33,11 +33,11 @@ public class JSCompiler {
         return this.programCompiler.compile( statements );
     }
 
-    public JSFunction compileFunction(ExecutionContext context, boolean strict, String[] formalParameters, BlockStatement body) {
+    public JSFunction compileFunction(ExecutionContext context, boolean strict, String[] formalParameters, Statement body) {
         return this.functionCompiler.compile( context, strict, formalParameters, body );
     }
 
-    public BasicBlock compileBasicBlock(String grist, BlockStatement body) {
+    public BasicBlock compileBasicBlock(String grist, Statement body) {
         return this.basicBlockCompiler.compile( grist, body );
     }
 

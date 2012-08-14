@@ -15,31 +15,44 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.Types;
+import org.objectweb.asm.tree.LabelNode;
 
-public class NumberLiteralExpression extends AbstractExpression {
+public class LogicalNotOperatorExpression extends AbstractExpression {
 
-    private final String text;
-    private final int radix;
+    private final Expression expr;
 
-    public NumberLiteralExpression(final Tree tree, final String text, final int radix) {
+    public LogicalNotOperatorExpression(final Tree tree, final Expression expr) {
         super( tree );
-        this.text = text;
-        this.radix = radix;
-    }
-    
-    public String getText() {
-        return this.text;
+        this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                ldc( Integer.parseInt( text, radix ));
+                LabelNode returnFalse = new LabelNode();
+                LabelNode end = new LabelNode();
+                
+                append( expr.getCodeBlock() );
+                // obj
+                append( jsGetValue() );
+                // val
+                append( jsToBoolean() );
+                // bool
+                iftrue( returnFalse );
+                iconst_1();
+                go_to(end);
+                label( returnFalse );
+                iconst_0();
+                label( end );
+                nop();
             }
         };
     }
+
 }

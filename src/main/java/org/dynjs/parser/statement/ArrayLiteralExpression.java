@@ -25,11 +25,11 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.DynArray;
 
-public class ArrayLiteralStatement extends AbstractStatement implements Statement {
+public class ArrayLiteralExpression extends AbstractExpression {
 
-    private final List<Statement> exprs;
+    private final List<Expression> exprs;
 
-    public ArrayLiteralStatement(final Tree tree, final List<Statement> exprs) {
+    public ArrayLiteralExpression(final Tree tree, final List<Expression> exprs) {
         super( tree );
         this.exprs = exprs;
     }

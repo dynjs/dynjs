@@ -24,7 +24,7 @@ public class FunctionCompiler extends AbstractCompiler {
         super( config, "Function" );
     }
 
-    public JSFunction compile(final ExecutionContext context, final boolean strict, final String[] formalParameters, final BlockStatement body) {
+    public JSFunction compile(final ExecutionContext context, final boolean strict, final String[] formalParameters, final Statement body) {
         JiteClass jiteClass = new JiteClass( nextClassName(), p( AbstractFunction.class ), new String[0] ) {
             {
                 defineMethod( "<init>", ACC_PUBLIC, sig( void.class, BlockStatement.class, LexicalEnvironment.class, String[].class ),

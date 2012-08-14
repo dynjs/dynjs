@@ -55,31 +55,6 @@ public class Completion {
         return new Completion( Type.THROW, value, null );
     }
 
-    public static CodeBlock handle(final LabelNode normalTarget, final LabelNode breakTarget, final LabelNode continueTarget, final LabelNode returnTarget,
-            final LabelNode throwTarget) {
-        return new CodeBlock() {
-            {
-                // IN: completion
-                lookupswitch( normalTarget,
-                        new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal(), Type.THROW.ordinal() },
-                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget, throwTarget } );
 
-            }
-        };
-    }
-
-    public static CodeBlock convertToNormal() {
-        return new CodeBlock() {
-            {
-                // IN: completion
-                dup();
-                // completion completion
-                getstatic( p( Completion.Type.class ), "NORMAL", ci( Type.class ) );
-                // completion completion NORMAL
-                putfield( p( Completion.class ), "type", ci( Type.class ) );
-                // completion
-            }
-        };
-    }
 
 }

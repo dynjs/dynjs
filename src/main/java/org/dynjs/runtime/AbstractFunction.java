@@ -50,7 +50,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public String[] getFormalParameters() {
         return this.formalParameters;
     }
-    
+
     protected void setFormalParamters(String[] formalParameters) {
         this.formalParameters = formalParameters;
     }
@@ -77,11 +77,33 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
-        if ( this.body == null ) {
+        if (this.body == null) {
             return Collections.emptyList();
         }
-        
+
         return this.body.getVariableDeclarations();
     }
 
+    @Override
+    public boolean hasInstance(Object v) {
+        if (!(v instanceof JSObject)) {
+            return false;
+        }
+
+        JSObject proto = getPrototype();
+
+        if (proto == null) {
+            return false;
+        }
+
+        while (true) {
+            v = ((JSObject) v).getPrototype();
+            if (v == null) {
+                return false;
+            }
+            if (v == proto) {
+                return true;
+            }
+        }
+    }
 }

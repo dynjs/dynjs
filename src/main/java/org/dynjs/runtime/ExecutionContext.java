@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.ReferenceError;
 import org.dynjs.exception.TypeError;
 import org.dynjs.parser.statement.FunctionDeclaration;
 import org.dynjs.parser.statement.VariableDeclaration;
@@ -316,6 +317,14 @@ public class ExecutionContext {
 
     public Entry retrieveBlockEntry(int statementNumber) {
         return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry( statementNumber );
+    }
+    
+    public static void throwTypeError() {
+        throw new TypeError();
+    }
+    
+    public static void throwReferenceError(String ref) {
+        throw new ReferenceError( ref );
     }
 
 }

@@ -20,9 +20,8 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
 
-public class VariableDeclarationStatement extends AbstractStatement implements Statement {
+public class VariableDeclarationStatement extends AbstractStatement {
 
     private List<VariableDeclaration> declExprs;
 

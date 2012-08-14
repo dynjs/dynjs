@@ -28,9 +28,9 @@ import org.objectweb.asm.tree.LabelNode;
 public class WhileStatement extends AbstractCompilingStatement implements Statement {
 
     private final Expression vbool;
-    private final BlockStatement vloop;
+    private final Statement vloop;
 
-    public WhileStatement(final Tree tree, BlockManager blockManager, Expression vbool, BlockStatement vloop) {
+    public WhileStatement(final Tree tree, BlockManager blockManager, Expression vbool, Statement vloop) {
         super( tree, blockManager );
         this.vbool = vbool;
         this.vloop = vloop;
@@ -64,7 +64,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
 
                 dup();
                 // completion(block) completion(block)
-                append( Completion.handle( normalTarget, breakTarget, normalTarget, end, end ) );
+                append( handleCompletion( normalTarget, breakTarget, normalTarget, end, end ) );
 
                 label( normalTarget );
                 // completion(block)
@@ -74,7 +74,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 label( breakTarget );
                 // completion(block,BREAK)
 
-                append( Completion.convertToNormal() );
+                append( convertToNormal() );
                 // completion(block,NORMAL)
 
                 // ----------------------------------------

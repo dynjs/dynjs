@@ -137,6 +137,20 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             }
         };
     }
+    
+    public CodeBlock convertToNormal() {
+        return new CodeBlock() {
+            {
+                // IN: completion
+                dup();
+                // completion completion
+                getstatic( p( Completion.Type.class ), "NORMAL", ci( Type.class ) );
+                // completion completion NORMAL
+                putfield( p( Completion.class ), "type", ci( Type.class ) );
+                // completion
+            }
+        };
+    }
 
     public CodeBlock jsCompletionValue() {
         return new CodeBlock() {

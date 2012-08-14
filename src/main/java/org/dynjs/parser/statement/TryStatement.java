@@ -14,11 +14,11 @@ import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class TryStatement extends AbstractCompilingStatement implements Statement {
-    private final BlockStatement tryBlock;
+    private final Statement tryBlock;
     private final CatchClause catchClause;
-    private final BlockStatement finallyBlock;
+    private final Statement finallyBlock;
 
-    public TryStatement(Tree tree, BlockManager blockManager, BlockStatement tryBlock, CatchClause catchClause, BlockStatement finallyBlock) {
+    public TryStatement(Tree tree, BlockManager blockManager, Statement tryBlock, CatchClause catchClause, Statement finallyBlock) {
         super( tree, blockManager );
         this.tryBlock = tryBlock;
         this.catchClause = catchClause;
@@ -39,7 +39,7 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                 dup();
                 // completion(try) completion(try)
 
-                Completion.handle( normalTarget, normalTarget, normalTarget, normalTarget, throwTarget );
+                handleCompletion( normalTarget, normalTarget, normalTarget, normalTarget, throwTarget );
 
                 // ----------------------------------------
                 // THROW
@@ -76,12 +76,12 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                 if (finallyBlock != null) {
                     append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Finally", finallyBlock ) );
                     // completion(try) completion(finally)
-                    append( CodeBlockUtils.ifCompletionIsNormal( end ) );
+                    //append( CodeBlockUtils.ifCompletionIsNormal( end ) );
                     // completion(try)
                 }
 
                 label( end );
-                // completion(try) completion(finally)
+                // completion(try) 
             }
 
         };

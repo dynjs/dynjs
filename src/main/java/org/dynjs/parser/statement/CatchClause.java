@@ -3,12 +3,13 @@ package org.dynjs.parser.statement;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.Statement;
 
 public class CatchClause extends AbstractStatement {
     private final String identifier;
-    private final BlockStatement block;
+    private final Statement block;
 
-    public CatchClause(Tree tree, String identifier, BlockStatement block) {
+    public CatchClause(Tree tree, String identifier, Statement block) {
         super( tree );
         this.identifier = identifier;
         this.block = block;
@@ -18,7 +19,7 @@ public class CatchClause extends AbstractStatement {
         return this.identifier;
     }
     
-    public BlockStatement getBlock() {
+    public Statement getBlock() {
         return this.block;
     }
 

@@ -33,6 +33,10 @@ import org.dynjs.runtime.modules.ModuleProvider;
  */
 public class Require extends AbstractNativeFunction {
 
+    public Require() {
+        super( null, true, "name" );
+    }
+
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
         DynObject exports = null;

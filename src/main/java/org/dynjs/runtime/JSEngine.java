@@ -13,6 +13,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
@@ -42,23 +43,40 @@ public class JSEngine {
         return this.context;
     }
     
-    public Completion execute(FileInputStream program, String filename) throws IOException {
+    public Object execute(FileInputStream program, String filename) throws IOException {
         JSCompiler compiler = this.context.getCompiler();
         BlockStatement statements = parseSourceCode( this.context, program, filename );
         JSProgram programObj = compiler.compileProgram( statements );
-        return programObj.execute( this.context ); 
+        Completion completion = programObj.execute( this.context ); 
+        if ( completion.type == Completion.Type.THROW ) {
+            throw (DynJSException) completion.value;
+        }
+        return completion.value;
     }
 
-    public Completion execute(String program, String filename, int lineNumber) {
+    public Object execute(String program, String filename, int lineNumber) {
         JSCompiler compiler = this.context.getCompiler();
         BlockStatement statements = parseSourceCode( this.context, program, filename );
         JSProgram programObj = compiler.compileProgram( statements );
-        return programObj.execute( this.context ); 
+        Completion completion = programObj.execute( this.context ); 
+        if ( completion.type == Completion.Type.THROW ) {
+            throw (DynJSException) completion.value;
+        }
+        return completion.value;
     }
     
-    public Object evaluate(String code) {
-        Completion completion = execute( code, null, 0 );
-        return completion.value;
+    public Object execute(String program) {
+        return execute( program, null, 0);
+    }
+    
+    public Object evaluate(String...code) {
+        StringBuffer fullCode = new StringBuffer();
+        
+        for ( int i = 0 ; i < code.length ; ++i ) {
+            fullCode.append( code[i] );
+            fullCode.append( "\n" );
+        }
+        return execute( fullCode.toString(), null, 0 );
     }
 
     private BlockStatement parseSourceCode(ExecutionContext context, String code, String filename) {

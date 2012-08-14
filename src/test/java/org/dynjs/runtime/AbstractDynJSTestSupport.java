@@ -14,6 +14,10 @@ public abstract class AbstractDynJSTestSupport {
         this.config = new Config();
         this.engine = new JSEngine( this.config );
     }
+    
+    protected Object eval(String...lines) {
+        return getEngine().evaluate( lines );
+    }
 
     protected void check(String scriptlet) {
         check(scriptlet, true);

@@ -27,9 +27,9 @@ import org.objectweb.asm.tree.LabelNode;
 public class DoWhileStatement extends AbstractCompilingStatement implements Statement {
 
     private final Expression vbool;
-    private final BlockStatement vloop;
+    private final Statement vloop;
 
-    public DoWhileStatement(final Tree tree, BlockManager blockManager, final Expression vbool, final BlockStatement vloop) {
+    public DoWhileStatement(final Tree tree, BlockManager blockManager, final Expression vbool, final Statement vloop) {
         super( tree, blockManager );
         this.vbool = vbool;
         this.vloop = vloop;
@@ -49,7 +49,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 // completion(block)
                 dup();
                 // completion(block) completion(block)
-                append( Completion.handle( normalTarget, breakTarget, normalTarget, end, end ) );
+                append( handleCompletion( normalTarget, breakTarget, normalTarget, end, end ) );
 
                 // ----------------------------------------
                 // NORMAL
@@ -67,7 +67,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 // BREAK
                 label( breakTarget );
                 // completion(block,BREAK)
-                append( Completion.convertToNormal() );
+                append( convertToNormal() );
                 // completion(block,NORMAL)
 
                 // ----------------------------------------

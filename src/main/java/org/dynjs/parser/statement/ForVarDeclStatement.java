@@ -15,32 +15,28 @@
  */
 package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.BlockManager;
 
-public class NamedValueStatement extends AbstractStatement implements Statement {
+public class ForVarDeclStatement extends AbstractForStatement {
 
-    private final Statement propertyName;
-    private final Statement expr;
+    private final VariableDeclarationStatement declList;
 
-    public NamedValueStatement(final Tree tree, final Statement propertyName, final Statement expr) {
-        super( tree );
-        this.propertyName = propertyName;
-        this.expr = expr;
+    public ForVarDeclStatement(final Tree tree, final BlockManager blockManager, final VariableDeclarationStatement declList, final Expression test, final Expression increment, final Statement block) {
+        super( tree, blockManager, test, increment, block );
+        this.declList = declList;
     }
 
     @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                //FIXME: What is this?
-                append( propertyName.getCodeBlock() );
-                append( expr.getCodeBlock() );
-                //invokedynamic( "DefineOwnProperty", sig( void.class, Object.class, Object.class, Object.class ), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS );
-            }
-        };
+    public CodeBlock getFirstChunkCodeBlock() {
+        return new CodeBlock() {{
+                for ( VariableDeclaration decl : declList.getVariableDeclarations() ) {
+                    append( decl.getCodeBlock() );
+                }
+        }};
     }
+
 }

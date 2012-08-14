@@ -102,8 +102,10 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                     label( bringForwardValue );
                     // completion(prev) completion(cur)
+                    dup_x1();
+                    // completion(cur) completion(prev) completion(cur)
                     swap();
-                    // completion(cur) completion(prev)
+                    // completion(cur) completion(cur) completion(prev)
                     append( jsCompletionValue() );
                     // completion(cur) val(prev)
                     putfield( p( Completion.class ), "value", sig( Object.class ) );

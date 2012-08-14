@@ -48,7 +48,7 @@ public class CodeBlockUtils {
         }
     }
 
-    public static CodeBlock invokeCompiledStatementBlock(final BlockManager blockManager, final String grist, final BlockStatement block) {
+    public static CodeBlock invokeCompiledStatementBlock(final BlockManager blockManager, final String grist, final Statement block) {
         return new CodeBlock() {
             {
                 append( compiledStatementBlock( blockManager, grist, block ) );
@@ -63,7 +63,7 @@ public class CodeBlockUtils {
         };
     }
 
-    public static CodeBlock compiledStatementBlock(final BlockManager blockManager, final String grist, final BlockStatement block ) {
+    public static CodeBlock compiledStatementBlock(final BlockManager blockManager, final String grist, final Statement block ) {
         return new CodeBlock() {
             {
                 LabelNode skipCompile = new LabelNode();

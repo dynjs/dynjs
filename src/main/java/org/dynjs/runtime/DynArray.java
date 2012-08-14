@@ -25,7 +25,7 @@ public class DynArray {
     static {
         Object[] prefilledArray = new Object[DEFAULT_ARRAY_SIZE * 8];
         for (int i = 0; i < prefilledArray.length; i++) {
-            prefilledArray[i] = UNDEFINED;
+            prefilledArray[i] = Types.UNDEFINED;
         }
         UNDEFINED_PREFILLED_ARRAY = prefilledArray;
     }
@@ -67,7 +67,7 @@ public class DynArray {
         if (checkBounds( index )) {
             return array[index];
         }
-        return UNDEFINED;
+        return Types.UNDEFINED;
     }
 
     private boolean checkBounds(int index) {

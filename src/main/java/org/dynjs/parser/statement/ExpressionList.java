@@ -13,42 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser.statement;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+package org.dynjs.parser.statement;
 
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynObject;
 
-public class ObjectLiteralStatement extends AbstractStatement implements Statement {
+public class ExpressionList extends AbstractExpression {
 
-    private final List<Statement> namedValues;
+    private final List<Expression> exprList;
 
-    public ObjectLiteralStatement(final Tree tree, final List<Statement> namedValues) {
+    public ExpressionList(final Tree tree, final List<Expression> exprList) {
         super( tree );
-        this.namedValues = namedValues;
+        this.exprList = exprList;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                newobj( p( DynObject.class ) );
-                dup();
-                invokespecial( p( DynObject.class ), "<init>", sig( void.class ) );
-                dup();
-                astore( 4 );
-                for (Statement namedValue : namedValues) {
-                    aload( 4 );
-                    append( CodeBlockUtils.relocateLocalVars( namedValue.getCodeBlock(), 1 ) );
+                for (Expression statement : exprList) {
+                    append( statement.getCodeBlock() );
                 }
-                aload( 4 );
             }
         };
     }

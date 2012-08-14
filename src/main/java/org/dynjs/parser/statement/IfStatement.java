@@ -26,10 +26,10 @@ import org.objectweb.asm.tree.LabelNode;
 public class IfStatement extends AbstractCompilingStatement implements Statement {
 
     private final Expression vbool;
-    private final BlockStatement vthen;
-    private final BlockStatement velse;
+    private final Statement vthen;
+    private final Statement velse;
 
-    public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final BlockStatement vthen, final BlockStatement velse) {
+    public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final Statement vthen, final Statement velse) {
         super( tree, blockManager );
         this.vbool = vbool;
         this.vthen = vthen;

@@ -120,7 +120,7 @@ printStatement returns [Statement value]
 	;
 
 variableDeclaration returns [VariableDeclarationStatement value]
-@init { List<VariableDeclarationExpression> decls = new ArrayList<VariableDeclarationExpression>(); }
+@init { List<VariableDeclaration> decls = new ArrayList<VariableDeclaration>(); }
 	: ^( VAR
 	      ( id=Identifier
 	{   decls.add( executor.variableDeclaration($id, $id.text, null) ); }
@@ -167,12 +167,12 @@ forStatement returns [Statement value]
     }
     ;
 
-exprOptClause returns [Statement value]
+exprOptClause returns [Expression value]
 	: ^( EXPR expression? )
 	{ $value = $expression.value; }
 	;
 
-exprClause returns [Statement value]
+exprClause returns [Expression value]
 	: ^( EXPR expression )
 	{ $value = $expression.value; }
 	;
@@ -225,12 +225,12 @@ throwStatement returns [Statement value]
     { $value = executor.throwStatement($THROW, $expression.value); }
 	;
 
-tryStatement returns [Statement value]
+tryStatement returns [TryStatement value]
 	: ^( TRY block catchClause? finallyClause? )
     { $value = executor.tryStatement($TRY, $block.value, $catchClause.value, $finallyClause.value); }
 	;
 	
-catchClause returns [Statement value]
+catchClause returns [CatchClause value]
 	: ^( CATCH Identifier block )
     { $value = executor.tryCatchClause($CATCH, $Identifier.text, $block.value); }
 	;
@@ -245,7 +245,7 @@ expression returns [Expression value]
 	: expr
 	{ $value = $expr.value; }
 	| ^( CEXPR (expr {exprList.add($expr.value);})+ )
-    { $value = executor.exprListStatement(exprList);   }
+    { $value = executor.exprList(exprList);   }
 	;
 
 expr returns [Expression value]
@@ -369,13 +369,15 @@ expr returns [Expression value]
     { $value = executor.definePostDecOp($PDEC, $ex.value); }
 	;
 
-leftHandSideExpression returns [Statement value]
+leftHandSideExpression returns [Expression value]
 	: primaryExpression
 	{ $value = $primaryExpression.value;  }
 	| newExpression
 	{ $value = $newExpression.value;  }
+	/*
 	| functionDeclaration
 	{ $value = $functionDeclaration.value;  }
+	*/
 	| callExpression
 	{ $value = $callExpression.value;  }
 	| memberExpression
@@ -402,9 +404,9 @@ callExpression returns [Expression value]
 	
 memberExpression returns [Expression value]
 	: ^( BYINDEX leftHandSideExpression expression)
-	{ $value = executor.resolveByIndex($BYINDEX, $leftHandSideExpression.value, $expression.value); }
+	{ $value = executor.memberExpression($BYINDEX, $leftHandSideExpression.value, $expression.value); }
 	| ^( BYFIELD leftHandSideExpression Identifier )
-	{ $value = executor.resolveByField($BYFIELD, $leftHandSideExpression.value, $Identifier, $Identifier.text); }
+	{ $value = executor.memberExpression($BYFIELD, $leftHandSideExpression.value, executor.defineStringLiteral( $Identifier, $Identifier.text ) ); }
 	;
 
 primaryExpression returns [Expression value]
@@ -450,25 +452,25 @@ numericLiteral returns [Expression value]
 	;
 
 arrayLiteral returns [Expression value]
-@init { List<Statement> exprs = new ArrayList<Statement>(); }
+@init { List<Expression> exprs = new ArrayList<Expression>(); }
 	: ^( ARRAY ( ^( ITEM expr? { exprs.add($expr.value); } ) )* )
 	{ $value = executor.arrayLiteral($ARRAY, exprs);  }
 	;
 
 objectLiteral returns [Expression value]
-@init { List<Statement> namedValues = new ArrayList<Statement>(); }
+@init { List<NamedValue> namedValues = new ArrayList<NamedValue>(); }
 	: ^( OBJECT
 	    ( ^( NAMEDVALUE propertyName expr
-	       { final Statement st = executor.namedValue($NAMEDVALUE, $propertyName.value, $expr.value); namedValues.add(st); }
+	       { final NamedValue st = executor.namedValue($NAMEDVALUE, $propertyName.value, $expr.value); namedValues.add(st); }
 	       ) )* )
 	{ $value = executor.objectValue($OBJECT, namedValues);  }
 	;
 
-propertyName returns [Statement value]
+propertyName returns [String value]
 	: Identifier
-	{ $value = executor.propertyNameId($Identifier, $Identifier.text);  }
+	{ $value = $Identifier.text;  }
 	| StringLiteral
-	{ $value = executor.propertyNameString($StringLiteral, $StringLiteral.text);  }
+	{ $value = $StringLiteral.text;  }
 	| numericLiteral
-	{ $value = executor.propertyNameNumeric($numericLiteral.value);  }
+	{ $value = ((NumberLiteralExpression)$numericLiteral.value).getText();  }
 	;
