@@ -45,5 +45,11 @@ public class VariableDeclarationTest extends AbstractDynJSTestSupport {
         assertThat( y.isUnresolvableReference() ).isFalse();
         assertThat( y.getValue( getContext() ) ).isEqualTo( 84 );
     }
+    
+    @Test
+    public void testMultipleDeclarationStatements() {
+        //eval( "var x;" );
+        eval( "var x; var y;" );
+    }
 
 }

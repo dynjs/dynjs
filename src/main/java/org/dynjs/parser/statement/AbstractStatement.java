@@ -134,8 +134,6 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN: completion
-                dup();
-                aprintln();
                 append( jsCompletionType() );
                 lookupswitch( normalTarget,
                         new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal(), Type.THROW.ordinal() },

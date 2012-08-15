@@ -30,6 +30,7 @@ public class VariableDeclaration extends AbstractExpression {
                 // 12.2
                 if (initializer == null) {
                     ldc( identifier );
+                    // str
                 } else {
                     append( jsResolve( identifier ) );
                     // reference
@@ -40,7 +41,9 @@ public class VariableDeclaration extends AbstractExpression {
                     append( jsGetValue() );
                     // reference context val
                     invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
+                    // reference 
                     ldc( identifier );
+                    // str
                 }
             }
         };

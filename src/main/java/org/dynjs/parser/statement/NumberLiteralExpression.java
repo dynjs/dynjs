@@ -39,9 +39,20 @@ public class NumberLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                ldc(text);
+                String realText = text;
+                if ( text.startsWith( "0x" ) || text.startsWith( "0X" ) ) {
+                    realText = text.substring(2);
+                }
+                ldc(realText);
                 bipush(radix);
                 invokestatic( p(Integer.class), "valueOf", sig(Integer.class, String.class, int.class));
+                // Integer
+                invokevirtual( p(Integer.class), "intValue", sig( int.class)  );
+                // int
+                i2d();
+                // double
+                invokestatic( p(Double.class), "valueOf", sig(Double.class, double.class));
+                // Double
             }
         };
     }
