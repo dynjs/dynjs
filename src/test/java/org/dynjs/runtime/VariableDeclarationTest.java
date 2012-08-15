@@ -13,7 +13,7 @@ public class VariableDeclarationTest extends AbstractDynJSTestSupport {
         assertThat( result ).isNotNull();
         assertThat( result.getReferencedName() ).isEqualTo( "x" );
         assertThat( result.isPropertyReference() ).isFalse();
-        assertThat( result.isUnresolvableReference() ).isTrue();
+        assertThat( result.isUnresolvableReference() ).isFalse();
     }
     
     @Test
