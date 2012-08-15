@@ -17,8 +17,11 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
             {
                 append( getLhs().getCodeBlock() );
                 // val(lhs)
+                
+                append( jsGetValue() );
                 append( getRhs().getCodeBlock() );
                 // val(rhs)
+                append( jsGetValue() );
                 
                 checkcast( p(Number.class) );
                 swap();

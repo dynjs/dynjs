@@ -115,9 +115,13 @@ public class AdditiveExpression extends AbstractBinaryExpression {
         return new CodeBlock() {
             {
                 append( getLhs().getCodeBlock() );
-                // val(lhs)
+                // obj(lhs)
+                append( jsGetValue() );
+                // val(lhs) 
                 append( getRhs().getCodeBlock() );
-                // val(rhs)
+                // val(lhs) obj(rhs)
+                append( jsGetValue() );
+                // val(lhs) val(rhs)
                 
                 checkcast( p(Number.class) );
                 swap();

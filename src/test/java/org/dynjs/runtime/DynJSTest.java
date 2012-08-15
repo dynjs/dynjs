@@ -131,9 +131,9 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     public void testMathOperations() {
         check("var x = 1 + 1;var result = x == 2");
         check("var x = 1 - 1;var result = x == 0");
-        //check("var x = 3 * 7;var result = x == 21");
-        //check("var x = 3 / 2;var result = x == 1.5");
-        //check("var x = 3 % 2;var result = x == 1");
+        check("var x = 3 * 7;var result = x == 21");
+        check("var x = 3 / 2;var result = x == 1.5");
+        check("var x = 3 % 2;var result = x == 1");
     }
 
     @Test
