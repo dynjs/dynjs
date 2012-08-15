@@ -21,6 +21,7 @@ import java.util.List;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 /**
@@ -33,8 +34,8 @@ import org.dynjs.runtime.modules.ModuleProvider;
  */
 public class Require extends AbstractNativeFunction {
 
-    public Require() {
-        super( null, true, "name" );
+    public Require(GlobalObject globalObject) {
+        super( globalObject, "name" );
     }
 
     @Override

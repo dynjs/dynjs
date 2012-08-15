@@ -234,8 +234,8 @@ public class ExecutionContext {
 
                         desc = new PropertyDescriptor() {
                             {
-                                set( "Set", new ArgSetter( env, name ) );
-                                set( "Get", new ArgGetter( env, name ) );
+                                set( "Set", new ArgSetter( getGlobalObject(), name ) );
+                                set( "Get", new ArgGetter( getGlobalObject(), name ) );
                                 set( "Configurable", true );
                             }
                         };

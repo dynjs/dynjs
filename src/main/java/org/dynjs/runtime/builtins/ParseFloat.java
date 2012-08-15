@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class ParseFloat extends AbstractNativeFunction {
     
-    public ParseFloat(LexicalEnvironment scope, boolean strict) {
-        super( scope, strict, "f" );
+    public ParseFloat(GlobalObject globalObject) {
+        super( globalObject, "f" );
     }
     
     @Override

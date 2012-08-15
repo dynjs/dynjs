@@ -188,7 +188,11 @@ public class DynObject implements JSObject {
                 }
                 return true;
             } else {
-                return (Boolean) desc.get( "Writable" );
+                Object writable = desc.get( "Writable" );
+                if ( writable == Types.UNDEFINED ) {
+                    return true;
+                }
+                return (Boolean) writable;
             }
         }
 
@@ -279,7 +283,8 @@ public class DynObject implements JSObject {
                 newDesc.setEnumerable( current.isEnumerable() );
             } else if (current.isDataDescriptor() && desc.isDataDescriptor()) {
                 if (!current.isConfigurable()) {
-                    if (!current.isWritable()) {
+                    Object currentWritable = current.get( "Writable" );
+                    if ((currentWritable != Types.UNDEFINED) && !current.isWritable()) {
                         if (desc.isWritable()) {
                             return reject( shouldThrow );
                         }

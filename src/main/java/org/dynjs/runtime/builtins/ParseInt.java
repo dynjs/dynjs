@@ -17,24 +17,24 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class ParseInt extends AbstractNativeFunction {
 
-    public ParseInt(LexicalEnvironment scope, boolean strict, String[] formalParameters) {
-        super( scope, strict, "text", "radix" );
+    public ParseInt(GlobalObject globalObject) {
+        super( globalObject, "text", "radix" );
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        String text = (String) arguments[0];
+        String text = ((String) arguments[0]).trim();
         Object radixArg = arguments[1];
 
         int radix = 10;
 
         if (radixArg != Types.UNDEFINED) {
-            radix = ((Double) radixArg).intValue();
+            radix = ((Number) radixArg).intValue();
         } else {
             if (text.startsWith( "0x" )) {
                 text = text.substring( 2 );
@@ -44,6 +44,14 @@ public class ParseInt extends AbstractNativeFunction {
                 radix = 8;
             }
         }
+        
+        if ( radix == 16 ) {
+            if ( text.startsWith( "0x" ) || text.startsWith( "0X"  ) ) {
+                text = text.substring(2);
+            }
+        } else if ( radix == 0 ) {
+            radix = 10;
+        }
 
         int dotLoc = text.indexOf( '.' );
         if (dotLoc >= 0) {
@@ -51,11 +59,13 @@ public class ParseInt extends AbstractNativeFunction {
         }
 
         try {
+            System.err.println( "text: " + text );
+            System.err.println( "radix: " + radix );
             return Integer.parseInt( text, radix );
         } catch (NumberFormatException e) {
 
         }
-        return Types.UNDEFINED;
+        return Double.NaN;
     }
 
 }

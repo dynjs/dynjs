@@ -8,8 +8,8 @@ import org.dynjs.parser.statement.VariableDeclaration;
 
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
-    public AbstractNativeFunction(LexicalEnvironment scope, boolean strict, String... formalParameters) {
-        super( scope, strict, formalParameters );
+    public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
+        super( LexicalEnvironment.newObjectEnvironment( globalObject, false, null ), false, formalParameters );
     }
 
     @Override
@@ -28,7 +28,7 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
         Reference selfRef = context.resolve( "this" );
         Object self = Types.UNDEFINED;
         
-        if ( selfRef != null ) {
+        if ( selfRef != null && ! selfRef.isUnresolvableReference() ) {
             self = selfRef.getValue( context );
         }
         

@@ -28,7 +28,7 @@ public class Types {
         if (o instanceof JSObject) {
             return (JSObject) o;
         }
-        throw new DynJSException( "not implemented" );
+        return new PrimitiveDynObject( o );
     }
 
     public static Object toPrimitive(Object o, String preferredType) {
@@ -231,7 +231,7 @@ public class Types {
         if (lhs instanceof String || lhs instanceof Boolean) {
             return lhs.equals( rhs );
         }
-        
+
         return lhs == rhs;
     }
 

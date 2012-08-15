@@ -6,6 +6,8 @@ import java.util.List;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.builtins.ParseFloat;
+import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -20,11 +22,11 @@ public class GlobalObject extends DynObject {
         this.blockManager = new BlockManager();
 
         defineGlobalProperty( "undefined", Types.UNDEFINED );
-        /*
         defineGlobalProperty( "NaN", Double.NaN );
         defineGlobalProperty( "Infinity", Double.POSITIVE_INFINITY );
         defineGlobalProperty( "-Infinite", Double.NEGATIVE_INFINITY );
-        */
+        defineGlobalProperty( "parseFloat", new ParseFloat( this ) );
+        defineGlobalProperty( "parseInt", new ParseInt( this ) );
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

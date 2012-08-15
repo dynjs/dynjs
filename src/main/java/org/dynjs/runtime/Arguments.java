@@ -8,6 +8,7 @@ public class Arguments extends DynObject {
 
     public Arguments() {
         setClassName( "Arguments" );
+        this.map = new DynObject();
     }
 
     public void setParameterMap(JSObject map) {

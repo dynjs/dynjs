@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class IsNaN extends AbstractNativeFunction {
     
-    public IsNaN(LexicalEnvironment scope, boolean strict) {
-        super( scope, strict, "o" );
+    public IsNaN(GlobalObject globalObject, boolean strict) {
+        super( globalObject, "o" );
     }
 
     @Override

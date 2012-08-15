@@ -8,6 +8,7 @@ import org.dynjs.exception.InvalidModuleException;
 import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
 
 public class JavaClassModuleProvider implements ModuleProvider {
@@ -61,7 +62,7 @@ public class JavaClassModuleProvider implements ModuleProvider {
                 exportName = method.getName();
             }
 
-            final DynObject function = buildFunction( javaModule, method );
+            final DynObject function = buildFunction( context.getGlobalObject(), javaModule, method );
             PropertyDescriptor desc = new PropertyDescriptor() {{
                 set( "Value", function );
             }};
@@ -70,8 +71,8 @@ public class JavaClassModuleProvider implements ModuleProvider {
         return exports;
     }
 
-    private DynObject buildFunction(Object module, Method method) throws IllegalAccessException {
-        return new JavaFunction( module, method );
+    private DynObject buildFunction(GlobalObject globalObject, Object module, Method method) throws IllegalAccessException {
+        return new JavaFunction( globalObject, module, method );
     }
 
     private Map<String, Object> modules = new HashMap<String, Object>();

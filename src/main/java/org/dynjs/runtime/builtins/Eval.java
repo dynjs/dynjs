@@ -17,13 +17,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNativeFunction {
 
-    public Eval(LexicalEnvironment scope, boolean strict) {
-        super( scope, strict, "code" );
+    public Eval(GlobalObject globalObject, boolean strict) {
+        super( globalObject, "code" );
     }
 
     @Override
