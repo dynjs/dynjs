@@ -13,16 +13,16 @@ import org.dynjs.runtime.BlockManager.Entry;
 
 public class ExecutionContext {
 
-    public static ExecutionContext createGlobalExecutionContext(JSEngine engine) {
+    public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
-        LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment( engine );
+        LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
         ExecutionContext context = new ExecutionContext( env, env, env.getGlobalObject(), false );
         return context;
     }
 
-    public static ExecutionContext createEvalExecutionContext(JSEngine engine) {
+    public static ExecutionContext createEvalExecutionContext(DynJS runtime) {
         // 10.4.2 (no caller)
-        return createGlobalExecutionContext( engine );
+        return createGlobalExecutionContext(runtime);
     }
 
     private LexicalEnvironment lexicalEnvironment;

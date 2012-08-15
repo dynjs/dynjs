@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 import jline.console.ConsoleReader;
 
 import org.dynjs.exception.DynJSException;
-import org.dynjs.runtime.JSEngine;
+import org.dynjs.runtime.DynJS;
 
 public class Repl {
 
@@ -32,12 +32,12 @@ public class Repl {
             + "Type exit and press ENTER to leave."
             + System.lineSeparator();
     public static final String PROMPT = "dynjs> ";
-    private final JSEngine engine;
+    private final DynJS runtime;
     private final InputStream in;
     private final OutputStream out;
 
-    public Repl(JSEngine engine, InputStream in, OutputStream out) {
-        this.engine = engine;
+    public Repl(DynJS runtime, InputStream in, OutputStream out) {
+        this.runtime = runtime;
         this.in = in;
         this.out = out;
     }
@@ -53,7 +53,7 @@ public class Repl {
                     return;
                 } else {
                     try {
-                        engine.evaluate( statement );
+                        runtime.evaluate( statement );
                     } catch (DynJSException e) {
                         console.println( e.getClass().getSimpleName() );
                         console.println( e.getLocalizedMessage() );

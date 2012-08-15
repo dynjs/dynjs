@@ -26,12 +26,12 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test(expected=ParserException.class)
     public void testSyntaxErrorThrows() {
-        getEngine().execute( "var f ( {;");
+        getRuntime().execute( "var f ( {;");
     }
     
     @Test
     public void evalLines() {
-        getEngine().evaluate(
+        getRuntime().evaluate(
                 "var x = 'test'",
                 "var y = x");
         Reference y = getContext().resolve( "y" );

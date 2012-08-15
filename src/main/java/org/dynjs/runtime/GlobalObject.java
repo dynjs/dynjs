@@ -12,13 +12,13 @@ import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
 
-    private JSEngine engine;
+    private DynJS runtime;
     private JSCompiler compiler;
     private BlockManager blockManager;
 
-    public GlobalObject(JSEngine engine) {
-        this.engine = engine;
-        this.compiler = new JSCompiler( engine.getConfig() );
+    public GlobalObject(DynJS runtime) {
+        this.runtime = runtime;
+        this.compiler = new JSCompiler( runtime.getConfig() );
         this.blockManager = new BlockManager();
 
         defineGlobalProperty( "undefined", Types.UNDEFINED );
@@ -60,12 +60,12 @@ public class GlobalObject extends DynObject {
         return Collections.emptyList();
     }
     
-    public JSEngine getEngine() {
-        return this.engine;
+    public DynJS getRuntime() {
+        return this.runtime;
     }
     
     public Config getConfig() {
-        return getEngine().getConfig();
+        return getRuntime().getConfig();
     }
 
     public JSCompiler getCompiler() {

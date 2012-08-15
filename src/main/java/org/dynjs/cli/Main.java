@@ -22,7 +22,7 @@ import java.io.PrintStream;
 
 import org.dynjs.Config;
 import org.dynjs.DynJSVersion;
-import org.dynjs.runtime.JSEngine;
+import org.dynjs.runtime.DynJS;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -31,7 +31,7 @@ public class Main {
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
-    private JSEngine engine;
+    private DynJS runtime;
     private PrintStream stream;
 
     public Main(PrintStream stream, String[] args) {
@@ -69,7 +69,7 @@ public class Main {
 
     private void executeFile(String filename) throws IOException {
         try {
-            engine.execute( new FileInputStream( filename), filename );
+            runtime.execute( new FileInputStream( filename), filename );
         } catch (FileNotFoundException e) {
             stream.println( "File " + filename + " not found" );
         }
@@ -81,8 +81,8 @@ public class Main {
 
     private void startRepl() {
         final Config config = dynJsArguments.getConfig();
-        final JSEngine engine = new JSEngine( config );
-        Repl repl = new Repl( engine, System.in, stream );
+        final DynJS runtime = new DynJS( config );
+        Repl repl = new Repl(runtime, System.in, stream );
         repl.run();
     }
 

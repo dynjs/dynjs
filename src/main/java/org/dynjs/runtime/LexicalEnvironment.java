@@ -1,7 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.Config;
-
 public class LexicalEnvironment {
 
     public static LexicalEnvironment newDeclarativeEnvironment(LexicalEnvironment outer) {
@@ -12,8 +10,8 @@ public class LexicalEnvironment {
         return new LexicalEnvironment( new ObjectEnvironmentRecord( object, provideThis ), outer );
     }
 
-    public static LexicalEnvironment newGlobalEnvironment(JSEngine engine) {
-        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject( engine ), false ), null );
+    public static LexicalEnvironment newGlobalEnvironment(DynJS runtime) {
+        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject(runtime), false ), null );
     }
 
     private LexicalEnvironment outer;

@@ -21,16 +21,16 @@ import org.dynjs.parser.Executor;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.statement.BlockStatement;
 
-public class JSEngine {
+public class DynJS {
 
     private Config config;
     private ExecutionContext context;
 
-    public JSEngine() {
+    public DynJS() {
         this( new Config() );
     }
 
-    public JSEngine(Config config) {
+    public DynJS(Config config) {
         this.config = config;
         this.context = ExecutionContext.createGlobalExecutionContext( this );
     }

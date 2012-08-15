@@ -7,17 +7,17 @@ import org.junit.Before;
 
 public abstract class AbstractDynJSTestSupport {
     protected Config config;
-    protected JSEngine engine;
+    protected DynJS runtime;
 
     @Before
     public void setUp() {
         this.config = new Config();
         this.config.setDebug( true );
-        this.engine = new JSEngine( this.config );
+        this.runtime = new DynJS( this.config );
     }
     
     protected Object eval(String...lines) {
-        return getEngine().evaluate( lines );
+        return getRuntime().evaluate( lines );
     }
 
     protected void check(String scriptlet) {
@@ -25,33 +25,33 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     protected void check(String scriptlet, Boolean expected) {
-        this.engine.execute( scriptlet, null, 0 );
-        Reference result = this.engine.getExecutionContext().resolve( "result" );
+        this.runtime.execute( scriptlet, null, 0 );
+        Reference result = this.runtime.getExecutionContext().resolve( "result" );
         Object value = result.getValue( getContext() );
         assertThat(value).isEqualTo(expected);
     }
 
     protected void check(String scriptlet, Object expected) {
-        this.engine.execute( scriptlet, null, 0 );
-        Reference result = this.engine.getExecutionContext().resolve( "result" );
+        this.runtime.execute( scriptlet, null, 0 );
+        Reference result = this.runtime.getExecutionContext().resolve( "result" );
         Object value = result.getValue( getContext() );
         assertThat(value).isEqualTo(expected);
     }
 
-    public JSEngine getEngine() {
-        return this.engine;
+    public DynJS getRuntime() {
+        return this.runtime;
     }
 
     public ExecutionContext getContext() {
-        return this.engine.getExecutionContext();
+        return this.runtime.getExecutionContext();
     }
 
     public Config getConfig() {
-        return this.engine.getConfig();
+        return this.runtime.getConfig();
     }
 
     protected Object resultFor(String expression) {
-        this.engine.execute( expression, null, 0 );
+        this.runtime.execute( expression, null, 0 );
         return getContext().resolve("result");
     }
 }
