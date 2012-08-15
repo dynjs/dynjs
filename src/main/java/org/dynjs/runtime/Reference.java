@@ -42,7 +42,6 @@ public class Reference {
     }
 
     public Object getValue(ExecutionContext context) {
-        System.err.println( "getValue() ");
         // 8.7.1
         Object value = null;
         if (isUnresolvableReference()) {
@@ -50,14 +49,12 @@ public class Reference {
         }
 
         if (isPropertyReference()) {
-            System.err.println( "isProp" );
             if (!hasPrimitiveBase()) {
                 value = ((JSObject) this.base).get( context, this.referencedName );
             } else {
                 // TODO: handle primitives (8.7.1 special case)
             }
         } else {
-            System.err.println( "is not prop" );
             value = ((EnvironmentRecord) this.base).getBindingValue( context, this.referencedName, this.strict );
         }
         return value;

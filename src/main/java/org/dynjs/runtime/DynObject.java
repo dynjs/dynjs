@@ -95,11 +95,14 @@ public class DynObject implements JSObject {
             return Types.UNDEFINED;
         }
 
+        PropertyDescriptor dup = null;
         if (x.isDataDescriptor()) {
-            return x.duplicate( "Value", "Writable" );
+            dup = x.duplicate( "Value", "Writable", "Enumerable", "Configurable" );
         } else {
-            return x.duplicate( "Get", "Set" );
+            dup = x.duplicate( "Get", "Set", "Enumerable", "Configurable" );
         }
+
+        return dup;
     }
 
     @Override
@@ -134,9 +137,24 @@ public class DynObject implements JSObject {
             return;
         }
 
-        Object d = getOwnProperty( context, name );
+        Object ownDesc = getOwnProperty( context, name );
 
-        if (d == Types.UNDEFINED || ((PropertyDescriptor) d).isDataDescriptor()) {
+        if ((ownDesc != Types.UNDEFINED) && ((PropertyDescriptor) ownDesc).isDataDescriptor()) {
+            PropertyDescriptor newDesc = new PropertyDescriptor() {
+                {
+                    set( "Value", value );
+                }
+            };
+            defineOwnProperty( context, name, newDesc, shouldThrow );
+            return;
+        }
+
+        Object desc = getProperty( context, name );
+
+        if ((desc != Types.UNDEFINED) && ((PropertyDescriptor) desc).isAccessorDescriptor()) {
+            JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get( "Set" );
+            context.call( setter, this, value );
+        } else {
             PropertyDescriptor newDesc = new PropertyDescriptor() {
                 {
                     set( "Value", value );
@@ -146,14 +164,6 @@ public class DynObject implements JSObject {
                 }
             };
             defineOwnProperty( context, name, newDesc, shouldThrow );
-        } else {
-            PropertyDescriptor desc = (PropertyDescriptor) d;
-            if (desc.isAccessorDescriptor()) {
-                JSFunction set = (JSFunction) desc.get( "Set" );
-                context.call( set, this, value );
-            } else {
-
-            }
         }
     }
 
@@ -217,12 +227,9 @@ public class DynObject implements JSObject {
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 8.12.9
-        System.err.println( this + ".defineOwnProp: " + name + " // " + desc );
-        System.err.println( "*A" );
         Object c = getOwnProperty( context, name );
 
         if (c == Types.UNDEFINED) {
-            System.err.println( "*B" );
             if (!isExtensible()) {
                 return reject( shouldThrow );
             } else {
@@ -237,26 +244,23 @@ public class DynObject implements JSObject {
             }
         }
 
-        System.err.println( "*C" );
         if (desc.isEmpty()) {
             return true;
         }
 
-        System.err.println( "*D" );
         PropertyDescriptor current = (PropertyDescriptor) c;
 
-        if (!current.isConfigurable()) {
-            System.err.println( "*E" );
-            if (desc.isConfigurable()) {
-                System.err.println( "*F" );
+        if (current.hasConfigurable() && !current.isConfigurable()) {
+            if (desc.hasConfigurable() && desc.isConfigurable()) {
                 return reject( shouldThrow );
             }
-            if (current.isEnumerable() != desc.isEnumerable()) {
-                System.err.println( "*G" );
+            Object currentEnumerable = current.get( "Enumerable"  );
+            Object descEnumerable = desc.get( "Enumerable"  );
+            
+            if ( ( currentEnumerable != Types.UNDEFINED && descEnumerable != Types.UNDEFINED ) && ( currentEnumerable != descEnumerable ) ) {
                 return reject( shouldThrow );
             }
         }
-        System.err.println( "*H" );
 
         PropertyDescriptor newDesc = null;
 
@@ -303,7 +307,6 @@ public class DynObject implements JSObject {
             }
 
             newDesc.copyAll( desc );
-            System.err.println( "PUT: " + name + " -> " + desc );
             this.properties.put( name, newDesc );
         }
 

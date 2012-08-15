@@ -38,16 +38,13 @@ public class BlockStatement extends AbstractStatement implements Statement {
     }
 
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        System.err.println( "blockContent=" + this.blockContent );
         if (this.blockContent == null) {
-            System.err.println( "empty!" );
             return Collections.emptyList();
         }
 
         List<FunctionDeclaration> decls = new ArrayList<>();
         
         for (Statement each : this.blockContent) {
-            System.err.println( "each=" + each );
             if (each instanceof FunctionDeclaration) {
                 decls.add( (FunctionDeclaration) each );
             }
@@ -57,7 +54,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
-        List<VariableDeclaration> decls = new ArrayList();
+        List<VariableDeclaration> decls = new ArrayList<>();
         for (Statement each : this.blockContent) {
             if (each instanceof VariableDeclarationStatement) {
                 VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
@@ -69,7 +66,6 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        System.err.println( "Block(" + this + ") - getCodeBlock - " + blockContent );
         return new CodeBlock() {
             {
                 // 12.1
@@ -85,7 +81,6 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     LabelNode nextStatement = new LabelNode();
 
                     line( statement.getPosition().getLine() );
-                    System.err.println( statement + " // " + statement.getClass().getName() );
                     append( statement.getCodeBlock() );
                     // completion(prev) completion(cur)
                     dup();

@@ -20,9 +20,11 @@ public class GlobalObject extends DynObject {
         this.blockManager = new BlockManager();
 
         defineGlobalProperty( "undefined", Types.UNDEFINED );
+        /*
         defineGlobalProperty( "NaN", Double.NaN );
         defineGlobalProperty( "Infinity", Double.POSITIVE_INFINITY );
         defineGlobalProperty( "-Infinite", Double.NEGATIVE_INFINITY );
+        */
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

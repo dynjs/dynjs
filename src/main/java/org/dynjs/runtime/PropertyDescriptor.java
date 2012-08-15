@@ -70,10 +70,14 @@ public class PropertyDescriptor {
         }
         
         if ( v == Types.UNDEFINED ) {
-            return true;
+            return false;
         }
 
         return (Boolean) v;
+    }
+    
+    public boolean hasConfigurable() {
+        return ( get( "Configurable" ) != null );
     }
 
     public void setConfigurable(boolean configurable) {
@@ -91,6 +95,10 @@ public class PropertyDescriptor {
 
     public void setEnumerable(boolean enumerable) {
         set( "Enumerable", enumerable );
+    }
+    
+    public boolean hasEnumerable() {
+        return ( get( "Enumerable" ) != null );
     }
 
     public Object getValue() {
