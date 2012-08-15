@@ -15,47 +15,73 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
+import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.Completion;
 import org.objectweb.asm.tree.LabelNode;
 
-import java.util.Stack;
+public class WhileStatement extends AbstractCompilingStatement implements Statement {
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+    private final Expression vbool;
+    private final Statement vloop;
 
-public class WhileStatement extends BaseStatement implements Statement {
-
-    private final Stack<LabelNode> labelStack;
-    private final Stack<LabelNode> breakStack;
-    private final Statement vbool;
-    private final BlockStatement vloop;
-
-    public WhileStatement(Stack<LabelNode> labelStack, Stack<LabelNode> breakStack, final Tree tree, Statement vbool, Statement vloop) {
-        super(tree);
-        this.labelStack = labelStack;
-		this.breakStack = breakStack;
+    public WhileStatement(final Tree tree, BlockManager blockManager, Expression vbool, Statement vloop) {
+        super( tree, blockManager );
         this.vbool = vbool;
-        this.vloop = (BlockStatement) vloop;
+        this.vloop = vloop;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            labelStack.push(vloop.getBeginLabel());
-            breakStack.push(vloop.getEndLabel());
-            label(vloop.getBeginLabel());
-            append(vbool.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-            iffalse(vloop.getEndLabel());
-            append(vloop.getCodeBlock());
-            go_to(vloop.getBeginLabel());
-            label(vloop.getEndLabel());
-            labelStack.pop();
-            breakStack.pop();
-        }};
+        return new CodeBlock() {
+            {
+                LabelNode end = new LabelNode();
+                LabelNode normalTarget = new LabelNode();
+                LabelNode breakTarget = new LabelNode();
+                LabelNode begin = new LabelNode();
+
+                getstatic( p( Completion.class ), "NORMAL_COMPLETION", ci( Completion.class ) );
+                // completion(block)
+
+                label( begin );
+                append( vbool.getCodeBlock() );
+                // completion(block) bool
+
+                iffalse( end );
+                // completion(block)
+
+                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Do", vloop ) );
+                // completion(block,prev) completion(block,cur)
+                swap();
+                // completion(block,cur) completion(block,prev)
+                pop();
+                // completion(block,cur)
+
+                dup();
+                // completion(block) completion(block)
+                append( handleCompletion( normalTarget, breakTarget, normalTarget, end, end ) );
+
+                label( normalTarget );
+                // completion(block)
+
+                // ----------------------------------------
+                // BREAK
+                label( breakTarget );
+                // completion(block,BREAK)
+
+                append( convertToNormal() );
+                // completion(block,NORMAL)
+
+                // ----------------------------------------
+                label( end );
+                // completion(block)
+                nop();
+            }
+        };
     }
 }

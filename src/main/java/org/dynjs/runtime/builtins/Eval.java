@@ -15,24 +15,25 @@
  */
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.api.Function;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 
-public class Eval implements Function {
+public class Eval extends AbstractNativeFunction {
+
+    public Eval(GlobalObject globalObject, boolean strict) {
+        super( globalObject, "code" );
+    }
 
     @Override
-    public Object call(Object self, DynThreadContext context, Object[] arguments) {
-        if (arguments.length == 1 && arguments[0] instanceof String) {
-            DynJS runtime = context.getRuntime();
-            runtime.eval(context, (String) arguments[0]);
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        Object code = args[0];
+        if ( code != Types.UNDEFINED ) {
+            return context.getGlobalObject().getEngine().evaluate( code.toString() );
         }
-        return DynThreadContext.UNDEFINED;
+        return Types.UNDEFINED;
     }
 
-    @Override
-    public String[] getParameters() {
-        return new String[]{"x"};
-    }
 
 }

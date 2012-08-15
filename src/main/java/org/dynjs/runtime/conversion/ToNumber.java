@@ -1,18 +1,18 @@
 package org.dynjs.runtime.conversion;
 
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext.Null;
-import org.dynjs.runtime.DynThreadContext.Undefined;
+import org.dynjs.runtime.Types;
+
 import static org.dynjs.runtime.conversion.ToPrimitive.toPrimitive;
 
 public class ToNumber {
 	public static Double toNumber(Object o) {
-		if (o instanceof Undefined) {
-			return toNumber((Undefined) o);
+		if (o instanceof Types.Undefined) {
+			return toNumber((Types.Undefined) o);
 		}
 
-		if (o instanceof Null) {
-			return toNumber((Null) o);
+		if (o instanceof Types.Null) {
+			return toNumber((Types.Null) o);
 		}
 
 		if (o instanceof Boolean) {
@@ -34,11 +34,11 @@ public class ToNumber {
 		return null;
 	}
 
-	public static Double toNumber(Undefined u) {
+	public static Double toNumber(Types.Undefined u) {
 		return Double.NaN;
 	}
 
-	public static Double toNumber(Null n) {
+	public static Double toNumber(Types.Null n) {
 		return 0.0;
 	}
 
@@ -67,4 +67,5 @@ public class ToNumber {
 
 		return toNumber(primValue);
 	}
+
 }

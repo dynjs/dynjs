@@ -1,19 +1,23 @@
 package org.dynjs.runtime;
 
+import static org.fest.assertions.Assertions.*;
+
+import org.dynjs.Config;
 import org.junit.Before;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 public abstract class AbstractDynJSTestSupport {
-    protected DynJS dynJS;
-    protected DynThreadContext context;
-    protected DynJSConfig config;
+    protected Config config;
+    protected JSEngine engine;
 
     @Before
     public void setUp() {
-        config = new DynJSConfig();
-        dynJS = new DynJS(getConfig());
-        context = new DynThreadContext();
+        this.config = new Config();
+        this.config.setDebug( true );
+        this.engine = new JSEngine( this.config );
+    }
+    
+    protected Object eval(String...lines) {
+        return getEngine().evaluate( lines );
     }
 
     protected void check(String scriptlet) {
@@ -21,31 +25,32 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     protected void check(String scriptlet, Boolean expected) {
-        getDynJS().eval(getContext(), scriptlet);
-        Object result = getContext().getScope().resolve("result");
+        this.engine.execute( scriptlet, null, 0 );
+        Object result = this.engine.getExecutionContext().resolve( "result" );
         assertThat(result).isEqualTo(expected);
     }
 
     protected void check(String scriptlet, Object expected) {
-        getDynJS().eval(getContext(), scriptlet);
-        Object result = getContext().getScope().resolve("result");
-        assertThat(result).isEqualTo(expected);
+        this.engine.execute( scriptlet, null, 0 );
+        Reference result = this.engine.getExecutionContext().resolve( "result" );
+        Object value = result.getValue( getContext() );
+        assertThat(value).isEqualTo(expected);
     }
 
-    public DynJS getDynJS() {
-        return dynJS;
+    public JSEngine getEngine() {
+        return this.engine;
     }
 
-    public DynThreadContext getContext() {
-        return context;
+    public ExecutionContext getContext() {
+        return this.engine.getExecutionContext();
     }
 
-    public DynJSConfig getConfig() {
-        return config;
+    public Config getConfig() {
+        return this.engine.getConfig();
     }
 
     protected Object resultFor(String expression) {
-        getDynJS().eval(getContext(), expression);
-        return getContext().getScope().resolve("result");
+        this.engine.execute( expression, null, 0 );
+        return getContext().resolve("result");
     }
 }

@@ -16,15 +16,15 @@
 package org.dynjs.exception;
 
 public class DynJSException extends RuntimeException {
-    public DynJSException(){
+    public DynJSException() {
         super();
     }
 
     public DynJSException(Throwable e) {
-        super(e);
+        super( e );
     }
 
     public DynJSException(String message) {
-        super(message);
+        super( message );
     }
 }

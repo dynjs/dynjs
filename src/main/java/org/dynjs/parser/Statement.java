@@ -22,6 +22,6 @@ public interface Statement {
     CodeBlock getCodeBlock();
 
     Position getPosition();
-    
+
     int getStatementNumber();
 }

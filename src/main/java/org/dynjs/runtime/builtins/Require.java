@@ -18,9 +18,10 @@ package org.dynjs.runtime.builtins;
 
 import java.util.List;
 
-import org.dynjs.api.Function;
+import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 /**
@@ -31,10 +32,14 @@ import org.dynjs.runtime.modules.ModuleProvider;
  * 
  * @see ModuleProvider
  */
-public class Require implements Function {
+public class Require extends AbstractNativeFunction {
+
+    public Require(GlobalObject globalObject) {
+        super( globalObject, "name" );
+    }
 
     @Override
-    public Object call(Object self, DynThreadContext context, Object... arguments) {
+    public Object call(ExecutionContext context, Object self, Object... arguments) {
         DynObject exports = null;
 
         if (arguments.length != 1) {
@@ -43,7 +48,7 @@ public class Require implements Function {
 
         String moduleName = (String) arguments[0];
 
-        List<ModuleProvider> moduleProviders = context.getModuleProviders();
+        List<ModuleProvider> moduleProviders = context.getGlobalObject().getModuleProviders();
 
         for (ModuleProvider provider : moduleProviders) {
             exports = provider.load( context, moduleName );
@@ -58,10 +63,4 @@ public class Require implements Function {
 
         return exports;
     }
-
-    @Override
-    public String[] getParameters() {
-        return new String[] { "moduleName" };
-    }
-
 }

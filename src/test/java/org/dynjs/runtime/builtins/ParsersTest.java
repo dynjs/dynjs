@@ -1,7 +1,7 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.Types;
 import org.junit.Test;
 
 public class ParsersTest extends AbstractDynJSTestSupport {
@@ -72,8 +72,8 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void parseIntReturnsUndefinedForMoreThanTwoParameters() {
-        check( "var result = parseInt('123', 10, 20);", DynThreadContext.UNDEFINED );
+    public void parseIntIgnoresMoreThanTwoParameters() {
+        check( "var result = parseInt('123', 10, 20);", 123 );
     }
     
     @Test

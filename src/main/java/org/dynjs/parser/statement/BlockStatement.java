@@ -15,38 +15,124 @@
  */
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
-import org.objectweb.asm.tree.LabelNode;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class BlockStatement extends BaseStatement implements Statement {
+import me.qmx.jitescript.CodeBlock;
 
-    private LabelNode beginLabel = new LabelNode();
-    private LabelNode endLabel = new LabelNode();
+import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.Statement;
+import org.dynjs.runtime.Completion;
+import org.objectweb.asm.tree.LabelNode;
+
+public class BlockStatement extends AbstractStatement implements Statement {
+
     private final List<Statement> blockContent;
 
     public BlockStatement(final Tree tree, final List<Statement> blockContent) {
-        super(tree);
+        super( tree );
         this.blockContent = blockContent;
+    }
+
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        if (this.blockContent == null) {
+            return Collections.emptyList();
+        }
+
+        List<FunctionDeclaration> decls = new ArrayList<>();
+        
+        for (Statement each : this.blockContent) {
+            if (each instanceof FunctionDeclaration) {
+                decls.add( (FunctionDeclaration) each );
+            }
+        }
+
+        return decls;
+    }
+
+    public List<VariableDeclaration> getVariableDeclarations() {
+        List<VariableDeclaration> decls = new ArrayList<>();
+        for (Statement each : this.blockContent) {
+            if (each instanceof VariableDeclarationStatement) {
+                VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
+                decls.addAll( statement.getVariableDeclarations() );
+            }
+        }
+        return decls;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            for (Statement statement : blockContent) {
-                append(statement.getCodeBlock());
+        return new CodeBlock() {
+            {
+                // 12.1
+                LabelNode abrupt = new LabelNode();
+                LabelNode end = new LabelNode();
+
+                append( normalCompletion() );
+                // completion
+
+                for (Statement statement : blockContent) {
+                    LabelNode nonAbrupt = new LabelNode();
+                    LabelNode bringForwardValue = new LabelNode();
+                    LabelNode nextStatement = new LabelNode();
+
+                    line( statement.getPosition().getLine() );
+                    append( statement.getCodeBlock() );
+                    // completion(prev) completion(cur)
+                    dup();
+                    // completion(prev) completion(cur) completion(cur)
+                    append( handleCompletion( nonAbrupt, nonAbrupt, abrupt, abrupt, abrupt ) );
+                    label( nonAbrupt );
+                    // completion(prev) completion(cur);
+
+                    dup();
+                    // completion(prev) completion(cur) completion(cur)
+                    append( jsCompletionValue() );
+                    // completion(prev) completion(cur) value
+                    ifnull( bringForwardValue );
+                    // completion(prev) completion(cur)
+                    swap();
+                    // completion(cur) completion(prev)
+                    pop();
+                    // completion(cur)
+                    go_to( nextStatement );
+
+                    label( bringForwardValue );
+                    // completion(prev) completion(cur)
+                    dup_x1();
+                    // completion(cur) completion(prev) completion(cur)
+                    swap();
+                    // completion(cur) completion(cur) completion(prev)
+                    append( jsCompletionValue() );
+                    // completion(cur) val(prev)
+                    putfield( p( Completion.class ), "value", ci( Object.class ) );
+                    // completion(cur)
+                    label( nextStatement );
+                    // completion(cur)
+                }
+
+                go_to( end );
+
+                // ----------------------------------------
+                // ABRUPT
+
+                label( abrupt );
+                // completion(prev) completion(cur)
+                swap();
+                // completion(cur) completion(prev)
+                pop();
+                // completion(cur)
+
+                // ----------------------------------------
+                // END
+                label( end );
+                // completion
+                nop();
             }
-        }};
-    }
-
-    public LabelNode getBeginLabel() {
-        return beginLabel;
-    }
-
-    public LabelNode getEndLabel() {
-        return endLabel;
+        };
     }
 }

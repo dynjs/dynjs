@@ -17,27 +17,27 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.RT;
 
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+public class ThrowStatement extends AbstractStatement {
 
-public class ThrowStatement extends BaseStatement implements Statement {
+    private final Expression expression;
 
-    private final Statement expression;
-
-    public ThrowStatement(final Tree tree, Statement expression) {
-        super(tree);
+    public ThrowStatement(final Tree tree, Expression expression) {
+        super( tree );
         this.expression = expression;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append(expression.getCodeBlock());
-            invokedynamic("throw", sig(void.class, Object.class), RT.BOOTSTRAP_2, RT.BOOTSTRAP_ARGS);
-        }};
+        return new CodeBlock() {
+            {
+                append( expression.getCodeBlock() );
+                append( jsGetValue() );
+                append( throwCompletion() );
+            }
+        };
     }
 
 }

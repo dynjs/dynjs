@@ -1,14 +1,9 @@
 package org.dynjs.runtime.modules;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Iterator;
 
-import org.dynjs.exception.ModuleLoadException;
-import org.dynjs.exception.ReferenceError;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.ExecutionContext;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the
@@ -20,7 +15,7 @@ import org.dynjs.runtime.DynThreadContext;
 public class FilesystemModuleProvider implements ModuleProvider {
 
     @Override
-    public DynObject load(DynThreadContext context, String moduleName) {
+    public DynObject load(ExecutionContext context, String moduleName) {
         DynObject exports = null;
         String filename = normalizeFileName( moduleName );
         File file = findFile( context, filename );
@@ -28,41 +23,48 @@ public class FilesystemModuleProvider implements ModuleProvider {
             file = findFile( context, moduleName + "/index.js" );
         }
         if (file != null) {
-            try {
-                DynThreadContext evalContext = new DynThreadContext( context );
-                // System.err.println("ADDING LOAD PATH: " + file.getParent());
-                evalContext.addLoadPath( file.getParent() + "/" );
-                context.getRuntime().eval( evalContext, "var module  = {};" );
-                context.getRuntime().eval( evalContext, "var exports = {};" );
-                context.getRuntime().eval( evalContext, "module.exports = exports;" );
-                context.getRuntime().eval( evalContext,
-                        new FileInputStream( file ), filename );
-                try {
-                    exports = (DynObject) evalContext.getScope().resolve( "exports" );
-                } catch (ReferenceError error) {
-                    System.err.println( error.getLocalizedMessage() );
-                }
-            } catch (FileNotFoundException e) {
-                throw new ModuleLoadException( moduleName, e );
-            }
+            // TODO: FIXME: Fix this
+            /*
+             * try {
+             * DynThreadContext evalContext = new DynThreadContext( context );
+             * // System.err.println("ADDING LOAD PATH: " + file.getParent());
+             * evalContext.addLoadPath( file.getParent() + "/" );
+             * context.getRuntime().eval( evalContext, "var module  = {};" );
+             * context.getRuntime().eval( evalContext, "var exports = {};" );
+             * context.getRuntime().eval( evalContext,
+             * "module.exports = exports;" );
+             * context.getRuntime().eval( evalContext,
+             * new FileInputStream( file ), filename );
+             * try {
+             * exports = (DynObject) evalContext.getScope().resolve( "exports"
+             * );
+             * } catch (ReferenceError error) {
+             * System.err.println( error.getLocalizedMessage() );
+             * }
+             * } catch (FileNotFoundException e) {
+             * throw new ModuleLoadException( moduleName, e );
+             * }
+             */
         }
         return exports;
     }
 
-    private File findFile(DynThreadContext context, String fileName) {
+    private File findFile(ExecutionContext context, String fileName) {
         File file = null;
-        Iterator<String> iterator = context.getLoadPaths().iterator();
-        while (iterator.hasNext()) {
-            String path = iterator.next();
-            file = new File( path + fileName );
-            // System.err.println("Looking for file: " +
-            // file.getAbsolutePath());
-            if (file.exists()) {
-                break;
-            } else {
-                file = null;
-            }
-        }
+        /*
+         * Iterator<String> iterator = context.getLoadPaths().iterator();
+         * while (iterator.hasNext()) {
+         * String path = iterator.next();
+         * file = new File( path + fileName );
+         * // System.err.println("Looking for file: " +
+         * // file.getAbsolutePath());
+         * if (file.exists()) {
+         * break;
+         * } else {
+         * file = null;
+         * }
+         * }
+         */
         return file;
     }
 

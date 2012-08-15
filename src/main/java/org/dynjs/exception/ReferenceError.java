@@ -25,6 +25,6 @@ public class ReferenceError extends DynJSException {
 
     @Override
     public String getMessage() {
-        return String.format("%s not found", this.name);
+        return String.format( "%s not found", this.name );
     }
 }

@@ -16,18 +16,17 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
-import org.dynjs.parser.Statement;
 
-import static me.qmx.jitescript.CodeBlock.*;
+import org.antlr.runtime.tree.Tree;
 
-public class EmptyStatement extends BaseStatement implements Statement {
+public class EmptyStatement extends AbstractStatement {
 
-    public EmptyStatement() {
-        super(null);
+    public EmptyStatement(final Tree tree) {
+        super( tree );
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock();
+        return normalCompletion();
     }
 }

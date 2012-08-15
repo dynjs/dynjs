@@ -15,71 +15,57 @@
  */
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.api.Function;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 
-public class ParseInt implements Function {
-    @Override
-    public Object call(Object self, DynThreadContext context, Object... arguments) {
-        return parseInt( arguments );
-    }
+public class ParseInt extends AbstractNativeFunction {
 
-    protected static Object parseInt(Object... arguments) {
-        if (isDefinedCall( arguments )) {
-            int radix = determineRadix( arguments );
-            try {
-                String value = arguments[0].toString().trim();
-                if (isHexValue( value )) {
-                    value = value.substring( 2 );
-                }
-                value = removeDecimal( value );
-                return Integer.parseInt( value, radix );
-            } catch (NumberFormatException e) {
-                return Double.NaN;
-            }
-        }
-        return DynThreadContext.UNDEFINED;
+    public ParseInt(GlobalObject globalObject) {
+        super( globalObject, "text", "radix" );
     }
 
     @Override
-    public String[] getParameters() {
-        return new String[] { "a", "b" }; // what is this for?
-    }
-    
-    private static String removeDecimal( String value ) {
-        int i = value.indexOf( '.' );
-        if (i == -1) { return value; }
-        return value.substring(0, i);
-    }
+    public Object call(ExecutionContext context, Object self, Object... arguments) {
+        String text = ((String) arguments[0]).trim();
+        Object radixArg = arguments[1];
 
-    private static int determineRadix(Object[] arguments) {
         int radix = 10;
-        if (arguments.length == 2) {
-            radix = (int) Double.parseDouble( arguments[1].toString() );
-            if (radix == 0) {
-                radix = 10;
-            }
-        }
-        if (radix < 2 || radix > 36) {
-            radix = -1;
-        }
-        return radix;
-    }
 
-    private static boolean isHexValue(String string) {
-        final String value = string.trim();
-        return (value.startsWith( "0x" ) || value.startsWith( "0X" ));
-    }
-
-    private static boolean isDefinedCall(Object[] args) {
-        boolean valid = true;
-        if (args.length > 0 && args.length < 3) {
-            if (args[0] == null) {
-                valid = false;
-            }
+        if (radixArg != Types.UNDEFINED) {
+            radix = ((Number) radixArg).intValue();
         } else {
-            valid = false;
+            if (text.startsWith( "0x" )) {
+                text = text.substring( 2 );
+                radix = 16;
+            } else if (text.startsWith( "0" )) {
+                text = text.substring( 1 );
+                radix = 8;
+            }
         }
-        return valid;
+        
+        if ( radix == 16 ) {
+            if ( text.startsWith( "0x" ) || text.startsWith( "0X"  ) ) {
+                text = text.substring(2);
+            }
+        } else if ( radix == 0 ) {
+            radix = 10;
+        }
+
+        int dotLoc = text.indexOf( '.' );
+        if (dotLoc >= 0) {
+            text = text.substring( 0, dotLoc );
+        }
+
+        try {
+            System.err.println( "text: " + text );
+            System.err.println( "radix: " + radix );
+            return Integer.parseInt( text, radix );
+        } catch (NumberFormatException e) {
+
+        }
+        return Double.NaN;
     }
+
 }

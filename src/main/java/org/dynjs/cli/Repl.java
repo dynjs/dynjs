@@ -15,16 +15,15 @@
  */
 package org.dynjs.cli;
 
-import jline.console.ConsoleReader;
-import org.dynjs.api.Scope;
-import org.dynjs.exception.DynJSException;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynThreadContext;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+
+import jline.console.ConsoleReader;
+
+import org.dynjs.exception.DynJSException;
+import org.dynjs.runtime.JSEngine;
 
 public class Repl {
 
@@ -33,16 +32,12 @@ public class Repl {
             + "Type exit and press ENTER to leave."
             + System.lineSeparator();
     public static final String PROMPT = "dynjs> ";
-    private final DynJS dynJS;
-    private final DynThreadContext context;
-    private final Scope scope;
+    private final JSEngine engine;
     private final InputStream in;
     private final OutputStream out;
 
-    public Repl(DynJS dynJS, DynThreadContext context, Scope scope, InputStream in, OutputStream out) {
-        this.dynJS = dynJS;
-        this.context = context;
-        this.scope = scope;
+    public Repl(JSEngine engine, InputStream in, OutputStream out) {
+        this.engine = engine;
         this.in = in;
         this.out = out;
     }
@@ -50,21 +45,21 @@ public class Repl {
     public void run() {
         ConsoleReader console = null;
         try {
-            console = new ConsoleReader(in, out);
-            console.println(WELCOME_MESSAGE);
+            console = new ConsoleReader( in, out );
+            console.println( WELCOME_MESSAGE );
             String statement = null;
-            while ((statement = console.readLine(PROMPT)) != null) {
-                if ("exit".equals(statement.trim())) {
+            while ((statement = console.readLine( PROMPT )) != null) {
+                if ("exit".equals( statement.trim() )) {
                     return;
                 } else {
                     try {
-                        dynJS.eval(context, statement);
+                        engine.evaluate( statement );
                     } catch (DynJSException e) {
-                        console.println(e.getClass().getSimpleName());
-                        console.println(e.getLocalizedMessage());
-                        console.println("Error parsing statement: " + statement.toString());
+                        console.println( e.getClass().getSimpleName() );
+                        console.println( e.getLocalizedMessage() );
+                        console.println( "Error parsing statement: " + statement.toString() );
                     } catch (Exception e) {
-                        e.printStackTrace(new PrintWriter(out));
+                        e.printStackTrace( new PrintWriter( out ) );
                     }
                 }
             }

@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
 
@@ -32,23 +33,23 @@ public class MainTest {
     }
 
     @Test
-    public void callMainWithNoArguments() {
+    public void callMainWithNoArguments() throws IOException {
         new Main(stream, new String[]{}).run();
     }
 
     @Test
-    public void callMainWithInvalidFile() {
+    public void callMainWithInvalidFile() throws IOException {
         new Main(stream, new String[]{"meh.js"}).run();
     }
 
     @Test
-    public void callMainWithValidFile() {
+    public void callMainWithValidFile() throws IOException {
         URL url = this.getClass().getResource("valid.js");
         new Main(stream, new String[]{url.getPath()}).run();
     }
 
     @Test
-    public void callMainWithInvalidArguments() {
+    public void callMainWithInvalidArguments() throws IOException {
         new Main(stream, new String[]{"--invalid"}).run();
     }
 }

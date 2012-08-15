@@ -16,25 +16,21 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.DynThreadContext;
-import org.dynjs.runtime.RT;
+import org.dynjs.runtime.BlockManager;
 import org.objectweb.asm.tree.LabelNode;
 
-import static me.qmx.jitescript.CodeBlock.*;
-import static me.qmx.jitescript.util.CodegenUtils.*;
+public class IfStatement extends AbstractCompilingStatement implements Statement {
 
-public class IfStatement extends BaseStatement implements Statement {
-
-    private final DynThreadContext context;
-    private final Statement vbool;
+    private final Expression vbool;
     private final Statement vthen;
     private final Statement velse;
 
-    public IfStatement(final Tree tree, final DynThreadContext context, final Statement vbool, final Statement vthen, final Statement velse) {
-        super(tree);
-        this.context = context;
+    public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final Statement vthen, final Statement velse) {
+        super( tree, blockManager );
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
@@ -42,21 +38,37 @@ public class IfStatement extends BaseStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        final LabelNode elseBlock = new LabelNode();
-        final LabelNode outBlock = new LabelNode();
-        final CodeBlock elseCodeBlock = velse != null ? velse.getCodeBlock() : new CodeBlock();
+        return new CodeBlock() {
+            {
+                LabelNode elseBranch = new LabelNode();
+                LabelNode end = new LabelNode();
 
-        CodeBlock codeBlock = new CodeBlock() {{
-            append(vbool.getCodeBlock());
-            invokedynamic("dynjs:convert:to_boolean", sig(Boolean.class, Object.class), RT.BOOTSTRAP, RT.BOOTSTRAP_ARGS);
-            invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-            iffalse(elseBlock);
-            append(vthen.getCodeBlock());
-            go_to(outBlock);
-            label(elseBlock);
-            append(elseCodeBlock);
-            label(outBlock);
-        }};
-        return codeBlock;
+                append( vbool.getCodeBlock() );
+                // value
+
+                iffalse( elseBranch );
+                // <empty>
+
+                // ----------------------------------------
+                // THEN
+
+                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Then", vthen ) );
+                // completion
+                go_to( end );
+
+                // ----------------------------------------
+                // ELSE
+                label( elseBranch );
+                // <empty>
+
+                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Else", velse ) );
+                // completion
+
+                label( end );
+                // completion
+                
+                nop();
+            }
+        };
     }
 }

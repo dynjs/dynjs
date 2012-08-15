@@ -1,19 +1,27 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.api.Function;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 
-public class ParseFloat implements Function {
+public class ParseFloat extends AbstractNativeFunction {
+    
+    public ParseFloat(GlobalObject globalObject) {
+        super( globalObject, "f" );
+    }
+    
     @Override
-    public Object call(Object self, DynThreadContext context, Object... arguments) {
-        if (arguments.length == 1 && arguments[0] != null) {
-            return Double.parseDouble(arguments[0].toString());
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        Object f = args[0];
+        if ( f != Types.UNDEFINED ) {
+            try {
+                return Double.parseDouble( f.toString() );
+            } catch (NumberFormatException e) {
+                // ignore
+            }
         }
-        return DynThreadContext.UNDEFINED;
+        return Types.UNDEFINED;
     }
 
-    @Override
-    public String[] getParameters() {
-        return new String[]{"a"};
-    }
 }

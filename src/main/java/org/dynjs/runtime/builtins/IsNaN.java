@@ -1,24 +1,29 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.api.Function;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 
-public class IsNaN implements Function {
-    @Override
-    public Object call(Object self, DynThreadContext context, Object... arguments) {
-        if (arguments.length == 1) {
-            if (isNullOrBooleanOrWhiteSpace(arguments[0].toString().trim())) { return false; }
-            return (ParseInt.parseInt( arguments ).equals(Double.NaN));
-        }
-        return DynThreadContext.UNDEFINED;
+public class IsNaN extends AbstractNativeFunction {
+    
+    public IsNaN(GlobalObject globalObject, boolean strict) {
+        super( globalObject, "o" );
     }
 
     @Override
-    public String[] getParameters() {
-        return new String[]{"a"};
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        Object o = args[0];
+        if ( o != Types.UNDEFINED ) {
+            if ( isNullOrBooleanOrWhiteSpace( o.toString()  ) ) {
+                return false;
+            }
+        }
+        return Types.UNDEFINED;
     }
     
     private boolean isNullOrBooleanOrWhiteSpace(String value) {
-        return (value.equals( "" ) || value.equals("null") || value.equals( "true" ) || value.equals( "false" ) );
+        return (value.equals( "" ) || value.equals( "null" ) || value.equals( "true" ) || value.equals( "false" ));
     }
+
 }

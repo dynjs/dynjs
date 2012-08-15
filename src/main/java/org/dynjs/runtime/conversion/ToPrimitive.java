@@ -1,17 +1,16 @@
 package org.dynjs.runtime.conversion;
 
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext.Null;
-import org.dynjs.runtime.DynThreadContext.Undefined;
+import org.dynjs.runtime.Types;
 
 public class ToPrimitive {
 	public static Object toPrimitive(Object o) {
-		if (o instanceof Undefined) {
-			return toPrimitive((Undefined) o);
+		if (o instanceof Types.Undefined) {
+			return toPrimitive((Types.Undefined) o);
 		}
 
-		if (o instanceof Null) {
-			return toPrimitive((Null) o);
+		if (o instanceof Types.Null) {
+			return toPrimitive((Types.Null) o);
 		}
 
 		if (o instanceof Boolean) {
@@ -33,11 +32,11 @@ public class ToPrimitive {
 		return null;
 	}
 
-	public static Object toPrimitive(Undefined undefined) {
+	public static Object toPrimitive(Types.Undefined undefined) {
 		return undefined;
 	}
 
-	public static Object toPrimitive(Null nil) {
+	public static Object toPrimitive(Types.Null nil) {
 		return nil;
 	}
 
@@ -53,7 +52,7 @@ public class ToPrimitive {
 		return s;
 	}
 
-	public static Object toPrimitive(DynObject o) {
-		return o.resolve("DefaultValue");
-	}
+    public static Object toPrimitive(DynObject object) {
+        return object;
+    }
 }

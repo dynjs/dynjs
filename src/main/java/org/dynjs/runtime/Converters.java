@@ -15,13 +15,13 @@
  */
 package org.dynjs.runtime;
 
-import org.dynalang.dynalink.linker.GuardedInvocation;
-import org.dynalang.dynalink.support.Guards;
-import org.dynalang.dynalink.support.Lookup;
+import static java.lang.invoke.MethodType.*;
 
 import java.lang.invoke.MethodHandle;
 
-import static java.lang.invoke.MethodType.methodType;
+import org.dynalang.dynalink.linker.GuardedInvocation;
+import org.dynalang.dynalink.support.Guards;
+import org.dynalang.dynalink.support.Lookup;
 
 public class Converters {
 
@@ -29,15 +29,15 @@ public class Converters {
     public static final MethodHandle toInteger;
 
     static {
-        toBoolean = Lookup.PUBLIC.findStatic(Converters.class, "toBoolean", methodType(Boolean.class, Object.class));
-        toInteger = Lookup.PUBLIC.findStatic(Converters.class, "toInteger", methodType(Integer.class, Double.class));
+        toBoolean = Lookup.PUBLIC.findStatic( Converters.class, "toBoolean", methodType( Boolean.class, Object.class ) );
+        toInteger = Lookup.PUBLIC.findStatic( Converters.class, "toInteger", methodType( Integer.class, Double.class ) );
     }
 
-    public static final GuardedInvocation Guarded_toBoolean = new GuardedInvocation(toBoolean,
-            Guards.isInstance(Object.class, methodType(Boolean.class, Object.class)));
+    public static final GuardedInvocation Guarded_toBoolean = new GuardedInvocation( toBoolean,
+            Guards.isInstance( Object.class, methodType( Boolean.class, Object.class ) ) );
 
     public static Boolean toBoolean(Object value) {
-        return DynObject.toBoolean(value);
+        return Types.toBoolean( value );
     }
 
     public static Integer toInteger(Double value) {

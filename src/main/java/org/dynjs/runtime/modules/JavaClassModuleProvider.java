@@ -4,11 +4,12 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.InvalidModuleException;
 import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynThreadContext;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.PropertyDescriptor;
 
 public class JavaClassModuleProvider implements ModuleProvider {
 
@@ -29,46 +30,49 @@ public class JavaClassModuleProvider implements ModuleProvider {
     }
 
     @Override
-    public DynObject load(DynThreadContext context, String moduleName) {
+    public DynObject load(ExecutionContext context, String moduleName) {
         Object javaModule = modules.get( moduleName );
-        
-        if ( javaModule == null ) {
+
+        if (javaModule == null) {
             return null;
         }
-        
+
         try {
             return buildExports( context, javaModule );
         } catch (IllegalAccessException e) {
             throw new ModuleLoadException( moduleName, e );
         }
     }
-    
-    private DynObject buildExports(DynThreadContext context, Object javaModule) throws IllegalAccessException {
+
+    private DynObject buildExports(ExecutionContext context, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
-        
+
         DynObject exports = new DynObject();
-        
-        for ( Method method : methods ) {
+
+        for (Method method : methods) {
             Export exportAnno = method.getAnnotation( Export.class );
-            
-            if ( exportAnno == null ) {
+
+            if (exportAnno == null) {
                 continue;
             }
-            
+
             String exportName = exportAnno.name();
-            
-            if ( "".equals( exportName ) ) {
+
+            if ("".equals( exportName )) {
                 exportName = method.getName();
             }
-            
-            DynObject function = buildFunction(context, javaModule, method);
-            exports.setProperty( exportName, function );
+
+            final DynObject function = buildFunction( context.getGlobalObject(), javaModule, method );
+            PropertyDescriptor desc = new PropertyDescriptor() {{
+                set( "Value", function );
+            }};
+            exports.defineOwnProperty( context, exportName, desc, false);
         }
         return exports;
     }
-    
-    private DynObject buildFunction(DynThreadContext context, Object module, Method method) throws IllegalAccessException {
-        return DynJSCompiler.wrapFunction( context, new JavaFunction( module, method )  );
+
+    private DynObject buildFunction(GlobalObject globalObject, Object module, Method method) throws IllegalAccessException {
+        return new JavaFunction( globalObject, module, method );
     }
 
     private Map<String, Object> modules = new HashMap<String, Object>();

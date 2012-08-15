@@ -41,45 +41,45 @@ public class NumberOperations {
     }
 
     public static Double and(Double a, Double b) {
-    	return (double) (a.intValue() & b.intValue());
+        return (double) (a.intValue() & b.intValue());
     }
 
     public static Double or(Double a, Double b) {
-    	return (double) (a.intValue() | b.intValue());
+        return (double) (a.intValue() | b.intValue());
     }
 
     public static Double xor(Double a, Double b) {
-    	return (double) (a.intValue() ^ b.intValue());
+        return (double) (a.intValue() ^ b.intValue());
     }
 
     public static Double lshift(Double a, Double b) {
-    	return (double) (a.intValue() << b.intValue());
+        return (double) (a.intValue() << b.intValue());
     }
 
     public static Double rshift(Double a, Double b) {
-    	return (double) (a.intValue() >> b.intValue());
+        return (double) (a.intValue() >> b.intValue());
     }
 
     public static Double urshift(Double a, Double b) {
-    	return (double) (a.intValue() >>> b.intValue());
+        return (double) (a.intValue() >>> b.intValue());
     }
 
-	public static Double unary_minus(Double number) {
-		return -number;
-	}
+    public static Double unary_minus(Double number) {
+        return -number;
+    }
 
     public static Boolean eq(Double a, Double b) {
         if (a.isNaN() || b.isNaN()) {
             return false;
         }
-        if (a.equals(b)) {
+        if (a.equals( b )) {
             return true;
         }
         return false;
     }
 
     public static Boolean neq(Double a, Double b) {
-        return !eq(a, b);
+        return !eq( a, b );
     }
 
     public static Boolean lt(Double a, Double b) {

@@ -16,20 +16,25 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-public class PrintStatement extends BaseStatement implements Statement {
+public class PrintStatement extends AbstractStatement implements Statement {
 
-    private final Statement expr;
+    private final Expression expr;
 
-    public PrintStatement(final Tree tree, final Statement expr) {
-        super(tree);
+    public PrintStatement(final Tree tree, final Expression expr) {
+        super( tree );
         this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock(expr.getCodeBlock()).aprintln();
+        return new CodeBlock() {{
+            append( expr.getCodeBlock() );
+            aprintln();
+            normalCompletion();
+        }};
     }
 }
