@@ -1,5 +1,6 @@
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -15,12 +16,21 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
         return new CodeBlock() {
             {
                 append( getLhs().getCodeBlock() );
-                append( jsGetValue() );
-                append( jsToNumber() );
+                // val(lhs)
                 append( getRhs().getCodeBlock() );
-                append( jsGetValue() );
-                append( jsToNumber() );
-                // lhs rhs
+                // val(rhs)
+                
+                checkcast( p(Number.class) );
+                swap();
+                checkcast( p(Number.class) );
+                // num(rhs) num(lhs);
+                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                // val(rhs) num(lhs)
+                dup2_x1();
+                pop2();
+                // num(lhs) val(rhs)
+                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                // num(lhs) num(rhs)
 
                 if (getOp().equals( "*" )) {
                     dmul();
@@ -29,6 +39,8 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                 } else if (getOp().equals( "%" )) {
                     drem();
                 }
+                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
+                // obj(total)
             }
         };
     }

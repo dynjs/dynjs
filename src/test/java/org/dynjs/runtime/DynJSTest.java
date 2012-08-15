@@ -51,7 +51,9 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void defineUnInitializedGlobalVariables() {
         eval("var x;");
-        assertThat(getContext().resolve("x"))
+        Reference x = getContext().resolve( "x" );
+        Object val = x.getValue( getContext() );
+        assertThat(val)
                 .isNotNull()
                 .isEqualTo(Types.UNDEFINED);
     }

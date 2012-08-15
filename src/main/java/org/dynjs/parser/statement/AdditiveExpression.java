@@ -70,7 +70,6 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 // num(lhs) val(rhs)
                 invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
                 // num(lhs) num(rhs)
-                swap2();
                 dadd();
                 // num(total)
                 invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
@@ -131,7 +130,6 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 // num(lhs) val(rhs)
                 invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
                 // num(lhs) num(rhs)
-                swap2();
                 dsub();
                 // num(total)
                 invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
