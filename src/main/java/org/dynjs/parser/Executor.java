@@ -39,7 +39,6 @@ import org.dynjs.parser.statement.FunctionStatement;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.InstanceOfRelOpStatement;
 import org.dynjs.parser.statement.LogicalOperationStatement;
-import org.dynjs.parser.statement.RegularExpressionStatement;
 import org.dynjs.parser.statement.StrictEqualOperationStatement;
 import org.dynjs.parser.statement.UnaryMinusStatement;
 import org.dynjs.parser.statement.NamedValueStatement;
@@ -328,7 +327,7 @@ public class Executor {
     }
 
     public Statement defineRegExLiteral(final Tree tree) {
-    	return new RegularExpressionStatement(tree);
+        throw new ParserException("not implemented yet", tree);
     }
 
     public Statement defineTrueLiteral(final Tree tree) {

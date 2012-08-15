@@ -15,8 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import org.dynjs.compiler.DynJSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ReferenceError;
@@ -26,6 +24,8 @@ import org.dynjs.runtime.java.JavaRequireFunction;
 import org.dynjs.runtime.java.SayHiToJava;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
@@ -435,20 +435,5 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     public void testStringEquality(){
         check("var result = \"house\" == \"house\" && 'house' == 'house' && \"\" == 0;");
     }
-
-	@Test
-	public void testRegExp() {
-		Object result = resultFor("var result = /javascript/gi");
-		assertThat(result).isInstanceOf(DynRegExp.class);
-		DynRegExp regExp = (DynRegExp) result;
-		assertThat(regExp.getProperty("source").getAttribute("value"))
-				.isEqualTo("javascript");
-		assertThat(regExp.getProperty("ignoreCase").getAttribute("value"))
-				.isEqualTo(true);
-		assertThat(regExp.getProperty("multiline").getAttribute("value"))
-				.isEqualTo(false);
-		assertThat(regExp.getProperty("global").getAttribute("value"))
-				.isEqualTo(true);
-	}
 }
 
