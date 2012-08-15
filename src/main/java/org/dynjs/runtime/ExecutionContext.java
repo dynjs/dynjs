@@ -137,7 +137,7 @@ public class ExecutionContext {
         catchEnv.getRecord().setMutableBinding( this, identifier, thrown, false );
         this.lexicalEnvironment = catchEnv;
         try {
-            return block.invoke( this );
+            return block.call( this );
         } finally {
             this.lexicalEnvironment = oldEnv;
         }
@@ -280,7 +280,7 @@ public class ExecutionContext {
                     throw new TypeError();
                 }
             }
-            JSFunction function = getCompiler().compileFunction( this, code.isStrict(), each.getFormalParameters(), each.getBlock() );
+            JSFunction function = getCompiler().compileFunction( this, each.getFormalParameters(), each.getBlock() );
             env.setMutableBinding( this, identifier, function, code.isStrict() );
         }
     }

@@ -24,7 +24,8 @@ public class FunctionCompiler extends AbstractCompiler {
         super( config, "Function" );
     }
 
-    public JSFunction compile(final ExecutionContext context, final boolean strict, final String[] formalParameters, final Statement body) {
+    public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body) {
+        System.err.println( "compiling: " + body );
         JiteClass jiteClass = new JiteClass( nextClassName(), p( AbstractFunction.class ), new String[0] ) {
             {
                 defineMethod( "<init>", ACC_PUBLIC, sig( void.class, Statement.class, LexicalEnvironment.class, String[].class ),
@@ -36,11 +37,10 @@ public class FunctionCompiler extends AbstractCompiler {
                                 // this statements
                                 aload( 2 );
                                 // this statements scope
-                                pushBoolean( strict );
+                                pushBoolean( context.isStrict() );
                                 // this statements scope strict
                                 aload( 3 );
-                                // this statements scope strict
-                                // formal-parameters
+                                // this statements scope strict formal-parameters
                                 invokespecial( p( AbstractFunction.class ), "<init>",
                                         sig( void.class, Statement.class, LexicalEnvironment.class, boolean.class, String[].class ) );
                                 voidreturn();

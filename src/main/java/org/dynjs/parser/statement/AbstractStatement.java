@@ -174,5 +174,9 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             }
         };
     }
+    
+    public String dump(String indent) {
+        return indent + getClass().getName() + "\n";
+    }
 
 }

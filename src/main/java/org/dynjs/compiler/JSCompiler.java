@@ -2,7 +2,6 @@ package org.dynjs.compiler;
 
 import org.dynjs.Config;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -33,8 +32,8 @@ public class JSCompiler {
         return this.programCompiler.compile( statement );
     }
 
-    public JSFunction compileFunction(ExecutionContext context, boolean strict, String[] formalParameters, Statement body) {
-        return this.functionCompiler.compile( context, strict, formalParameters, body );
+    public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body) {
+        return this.functionCompiler.compile( context, formalParameters, body );
     }
 
     public BasicBlock compileBasicBlock(String grist, Statement body) {

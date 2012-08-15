@@ -17,7 +17,7 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class BasicBlockCompiler extends AbstractCompiler {
 
-    private final String INVOKE = sig( Object.class, ExecutionContext.class, Object.class, Object[].class );
+    private final String INVOKE = sig( Object.class, ExecutionContext.class );
 
     public BasicBlockCompiler(Config config) {
         super( config, "Block" );
@@ -37,7 +37,7 @@ public class BasicBlockCompiler extends AbstractCompiler {
                                 voidreturn();
                             }
                         } );
-                defineMethod( "invoke", ACC_PUBLIC, INVOKE,
+                defineMethod( "call", ACC_PUBLIC, INVOKE,
                         new CodeBlock() {
                             {
                                 append( body.getCodeBlock() );

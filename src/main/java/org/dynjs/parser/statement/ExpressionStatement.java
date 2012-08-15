@@ -26,9 +26,16 @@ public class ExpressionStatement extends AbstractStatement {
         this.expr = expr;
     }
 
+    public Expression getExpr() {
+        return this.expr;
+    }
+
     @Override
     public CodeBlock getCodeBlock() {
         System.err.println( expr );
+        if ( expr instanceof FunctionDeclaration ) {
+            return normalCompletion();
+        }
         return new CodeBlock() {
             {
                 append( expr.getCodeBlock() );

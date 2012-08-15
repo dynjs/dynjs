@@ -41,6 +41,8 @@ import org.dynjs.parser.statement.ForVarDeclInStatement;
 import org.dynjs.parser.statement.ForVarDeclStatement;
 import org.dynjs.parser.statement.FunctionCallExpression;
 import org.dynjs.parser.statement.FunctionDeclaration;
+import org.dynjs.parser.statement.FunctionDescriptor;
+import org.dynjs.parser.statement.FunctionExpression;
 import org.dynjs.parser.statement.IdentifierReferenceExpression;
 import org.dynjs.parser.statement.IfStatement;
 import org.dynjs.parser.statement.InstanceofExpression;
@@ -143,10 +145,8 @@ public class Executor {
         return new NumberLiteralExpression( tree, value, radix );
     }
 
-    public FunctionDeclaration defineFunction(final Tree tree, final String identifier, final List<String> args, final Statement block) {
-        return new FunctionDeclaration( tree, identifier, args, block );
-    }
 
+    
     public BitwiseExpression defineShlOp(final Tree tree, Expression l, Expression r) {
         return new BitwiseExpression( tree, l, r, "<<" );
     }
@@ -335,8 +335,19 @@ public class Executor {
         return new BooleanLiteralExpression( tree, false );
     }
 
-    public ExpressionStatement expressionStatement(Expression expr) {
+    public Statement expressionStatement(Expression expr) {
+        if ( expr instanceof FunctionExpression ) {
+            return new FunctionDeclaration( ((FunctionExpression)expr).getDescriptor() );
+        }
         return new ExpressionStatement( expr );
+    }
+    
+    public FunctionDescriptor functionDescriptor(final Tree tree, String identifier, final List<String> formalParameters, final Statement block) {
+        return new FunctionDescriptor( tree, identifier, formalParameters.toArray( new String[formalParameters.size()] ), block );
+    }
+    
+    public FunctionExpression functionExpression(FunctionDescriptor descriptor) {
+        return new FunctionExpression( getBlockManager(), descriptor );
     }
 
     public NewOperatorExpression newOperatorExpression(final Tree tree, final Expression expr, final List<Expression> argExprs) {

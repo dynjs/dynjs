@@ -8,7 +8,7 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testFunctionDeclaration() {
-        eval( "function foo() { 42 };" );
+        eval( "function foo() { 42.0 };" );
         Reference foo = getContext().resolve( "foo" );
         assertThat( foo ).isNotNull();
         assertThat( foo.isUnresolvableReference() ).isFalse();
@@ -16,7 +16,7 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         assertThat( fn ).isNotNull();
         
         Object result = fn.call(getContext() );
-        assertThat( result ).isEqualTo( 42 );
+        assertThat( result ).isEqualTo( 42.0 );
     }
 
 }

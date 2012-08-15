@@ -63,6 +63,7 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context function ref isref?
                 iffalse( noSelf );
                 // context function ref
+                checkcast( p(Reference.class)  );
                 append( jsGetBase() );
                 // context function self
                 go_to( doCall );

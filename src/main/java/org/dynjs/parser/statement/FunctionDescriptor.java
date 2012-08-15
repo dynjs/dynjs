@@ -15,38 +15,44 @@
  */
 package org.dynjs.parser.statement;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
+import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
-public class FunctionDeclaration extends AbstractStatement {
+public class FunctionDescriptor {
 
-    private FunctionDescriptor descriptor;
+    private Tree tree;
+    private final String identifier;
+    private final String[] formalParameters;
+    private Statement block;
 
-    public FunctionDeclaration(FunctionDescriptor descriptor) {
-        super( descriptor.getTree() );
-        this.descriptor = descriptor;
+    public FunctionDescriptor(final Tree tree, final String identifier, final String[] formalParameters, final Statement block) {
+        this.tree = tree;
+        this.identifier = identifier;
+        this.formalParameters = formalParameters;
+        this.block = block;
+    }
+    
+    public Tree getTree() {
+        return this.tree;
     }
 
     public String getIdentifier() {
-        return this.descriptor.getIdentifier();
+        return this.identifier;
     }
 
     public String[] getFormalParameters() {
-        return this.descriptor.getFormalParameters();
+        return this.formalParameters;
     }
 
     public Statement getBlock() {
-        return this.descriptor.getBlock();
+        return this.block;
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        // decl, no generated code here.
-        return normalCompletion();
-    }
-    
     public String toString() {
-        return "fuction " + getIdentifier() + "(...){...}";
+        return "fuction " + this.identifier + "(...){...}";
     }
 }

@@ -8,12 +8,11 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.BlockManager.Entry;
-import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LabelNode;
@@ -55,9 +54,7 @@ public class CodeBlockUtils {
                 // basic-block
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // basic-block context
-                aload( JSCompiler.Arities.SELF );
-                // basic-block context self
-                invokevirtual( p( BasicBlock.class ), "invoke", sig( Object.class, ExecutionContext.class, Object.class ) );
+                invokevirtual( p( BasicBlock.class ), "call", sig( Completion.class, ExecutionContext.class ) );
                 // completion
             }
         };
@@ -146,6 +143,108 @@ public class CodeBlockUtils {
                 label( end );
                 // basic-block
 
+            }
+        };
+
+    }
+    
+    public static CodeBlock compiledFunction(final BlockManager blockManager, final String[] formalParams, final Statement block ) {
+        return new CodeBlock() {
+            {
+                LabelNode skipCompile = new LabelNode();
+                LabelNode end = new LabelNode();
+
+                int statementNumber = block.getStatementNumber();
+                Entry entry = blockManager.retrieve( statementNumber );
+
+                // Stash statement if required
+                if (entry.statement == null) {
+                    entry.statement = block;
+                }
+
+                // ----------------------------------------
+                // ----------------------------------------
+
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                ldc( statementNumber );
+                invokevirtual( p( ExecutionContext.class ), "retrieveBlockEntry", sig( Entry.class, int.class ) );
+                dup();
+                // entry entry
+                invokevirtual( p( Entry.class ), "getCompiled", sig( Object.class ) );
+                // entry object
+                dup();
+                // entry object object
+
+                ifnonnull( skipCompile );
+                // entry object
+                
+                pop();
+                // entry
+
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // entry context
+
+                invokevirtual( p( ExecutionContext.class ), "getCompiler", sig( JSCompiler.class ) );
+                // entry compiler
+
+                swap();
+                // compiler entry
+                
+                getfield( p( Entry.class ), "statement", ci( Statement.class ) );
+                // compiler statement
+                
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT);
+                // compiler statement context
+                swap();
+                // compiler context statement
+                
+                bipush( formalParams.length );
+                // compiler context statement params-en
+                anewarray( p(String.class) );
+                // compiler context statement params
+                
+                for ( int i = 0 ; i < formalParams.length ; ++i ) {
+                    dup();
+                    bipush(i);
+                    ldc( formalParams[i] );
+                    aastore();
+                }
+                // compiler context statement params
+                swap();
+                // compiler context statement params
+
+                invokevirtual( p( JSCompiler.class ), "compileFunction", sig( JSFunction.class, ExecutionContext.class, String[].class, Statement.class ) );
+                // fn
+
+                dup();
+                // fn fn
+
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // fn fn context
+
+                ldc( statementNumber );
+                // fn fn context statement-number
+
+                invokevirtual( p( ExecutionContext.class ), "retrieveBlockEntry", sig( Entry.class, int.class ) );
+                // fn fn context entry
+
+                swap();
+                // fn entry fn
+
+                invokevirtual( p( Entry.class ), "setCompiled", sig( void.class, Object.class ) );
+                // fn
+
+                go_to( end );
+
+                label( skipCompile );
+                // entry fn
+                swap();
+                // fn entry
+                pop();
+                // fn
+
+                label( end );
+                // fn
             }
         };
 

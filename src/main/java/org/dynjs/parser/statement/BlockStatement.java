@@ -43,7 +43,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
         }
 
         List<FunctionDeclaration> decls = new ArrayList<>();
-        
+
         for (Statement each : this.blockContent) {
             if (each instanceof FunctionDeclaration) {
                 decls.add( (FunctionDeclaration) each );
@@ -66,9 +66,6 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        for ( Statement each : this.blockContent ) {
-           System.err.println( each ); 
-        }
         return new CodeBlock() {
             {
                 // 12.1
@@ -79,11 +76,17 @@ public class BlockStatement extends AbstractStatement implements Statement {
                 // completion
 
                 for (Statement statement : blockContent) {
+                    if (statement == null) {
+                        System.err.println( "NULL!" );
+                        continue;
+                    }
                     LabelNode nonAbrupt = new LabelNode();
                     LabelNode bringForwardValue = new LabelNode();
                     LabelNode nextStatement = new LabelNode();
 
-                    line( statement.getPosition().getLine() );
+                    if (statement.getPosition() != null) {
+                        line( statement.getPosition().getLine() );
+                    }
                     append( statement.getCodeBlock() );
                     // completion(prev) completion(cur)
                     dup();
@@ -137,5 +140,16 @@ public class BlockStatement extends AbstractStatement implements Statement {
                 nop();
             }
         };
+    }
+    
+    public String dump(String indent) {
+        StringBuffer buffer = new StringBuffer();
+        
+        buffer.append( super.dump( indent ) );
+        for ( Statement each : this.blockContent ) {
+            buffer.append( each.dump( indent + "  " ) );
+        }
+        
+        return buffer.toString();
     }
 }

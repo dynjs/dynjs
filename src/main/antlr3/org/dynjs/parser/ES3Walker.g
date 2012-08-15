@@ -78,8 +78,10 @@ statement returns [Statement value]
         {  $value = $block.value;   }
 	| variableDeclaration
 	    {  $value = $variableDeclaration.value;   }
+	    /*
 	| functionDeclaration
-	    {  $value = $functionDeclaration.value;   }
+	    {  $value = executor.expressionStatement( $functionDeclaration.value );   }
+	    */
 	| expression
 	    {  $value = executor.expressionStatement( $expression.value);   }
 	| printStatement
@@ -376,10 +378,8 @@ leftHandSideExpression returns [Expression value]
 	{ $value = $primaryExpression.value;  }
 	| newExpression
 	{ $value = $newExpression.value;  }
-	/*
-	| functionDeclaration
-	{ $value = $functionDeclaration.value;  }
-	*/
+	| functionDescriptor
+	{ $value = executor.functionExpression( $functionDescriptor.value );  }
 	| callExpression
 	{ $value = $callExpression.value;  }
 	| memberExpression
@@ -392,10 +392,10 @@ newExpression returns [NewOperatorExpression value]
 	{ $value = executor.newOperatorExpression($NEW, $leftHandSideExpression.value, args); }
 	;
 
-functionDeclaration returns [Statement value]
+functionDescriptor returns [FunctionDescriptor value]
 @init { List<String> args = new ArrayList<String>(); }
 	: ^( FUNCTION id=Identifier? ^( ARGS (ai=Identifier {args.add($ai.text);})* ) block)
-	{ $value = executor.defineFunction($FUNCTION, $id.text, args, $block.value); }
+	{ $value = executor.functionDescriptor($FUNCTION, $id.text, args, $block.value); }
 	;
 
 callExpression returns [Expression value]

@@ -85,17 +85,17 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void assignsNamedEmptyFunction() {
-        check("function x(){}; var result = x();", null);
+        check("function x(){}; var result = x();", Types.UNDEFINED );
     }
 
     @Test
     public void assignsAnonymousEmptyFunction() {
-        check("var x = function(a,b,c){}; var result = x();", null);
+        check("var x = function(a,b,c){}; var result = x();", Types.UNDEFINED );
     }
 
     @Test
     public void buildFunctionWithBody() {
-        check("var result = (function(a,b){var w = (1 + 2) * 3;})();", null);
+        check("var result = (function(a,b){var w = (1 + 2) * 3;})();", Types.UNDEFINED);
     }
 
     @Test
