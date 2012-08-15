@@ -226,20 +226,22 @@ public class ExecutionContext {
 
             obj.defineOwnProperty( this, "" + i, desc, false );
 
-            if (!function.isStrict()) {
-                final String name = names[i];
-                if (i < names.length) {
-                    if (!mappedNames.contains( name )) {
-                        mappedNames.add( name );
+            if (i < names.length) {
+                if (!function.isStrict()) {
+                    final String name = names[i];
+                    if (i < names.length) {
+                        if (!mappedNames.contains( name )) {
+                            mappedNames.add( name );
 
-                        desc = new PropertyDescriptor() {
-                            {
-                                set( "Set", new ArgSetter( getGlobalObject(), name ) );
-                                set( "Get", new ArgGetter( getGlobalObject(), name ) );
-                                set( "Configurable", true );
-                            }
-                        };
-                        map.defineOwnProperty( this, "" + i, desc, false );
+                            desc = new PropertyDescriptor() {
+                                {
+                                    set( "Set", new ArgSetter( getGlobalObject(), name ) );
+                                    set( "Get", new ArgGetter( getGlobalObject(), name ) );
+                                    set( "Configurable", true );
+                                }
+                            };
+                            map.defineOwnProperty( this, "" + i, desc, false );
+                        }
                     }
                 }
             }
@@ -287,7 +289,7 @@ public class ExecutionContext {
         List<VariableDeclaration> decls = code.getVariableDeclarations();
 
         EnvironmentRecord env = this.variableEnvironment.getRecord();
-        for (VariableDeclaration decl : decls ) {
+        for (VariableDeclaration decl : decls) {
             String identifier = decl.getIdentifier();
             if (!env.hasBinding( this, identifier )) {
                 env.createMutableBinding( this, identifier, configurableBindings );
@@ -295,7 +297,7 @@ public class ExecutionContext {
             }
         }
     }
-    
+
     public Config getConfig() {
         return getGlobalObject().getConfig();
     }
@@ -319,11 +321,11 @@ public class ExecutionContext {
     public Entry retrieveBlockEntry(int statementNumber) {
         return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry( statementNumber );
     }
-    
+
     public static void throwTypeError() {
         throw new TypeError();
     }
-    
+
     public static void throwReferenceError(String ref) {
         throw new ReferenceError( ref );
     }

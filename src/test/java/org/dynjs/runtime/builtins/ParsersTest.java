@@ -72,8 +72,8 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void parseIntReturnsUndefinedForMoreThanTwoParameters() {
-        check( "var result = parseInt('123', 10, 20);", Types.UNDEFINED );
+    public void parseIntIgnoresMoreThanTwoParameters() {
+        check( "var result = parseInt('123', 10, 20);", 123 );
     }
     
     @Test
