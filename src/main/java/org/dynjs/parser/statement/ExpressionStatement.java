@@ -28,6 +28,7 @@ public class ExpressionStatement extends AbstractStatement {
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( expr );
         return new CodeBlock() {
             {
                 append( expr.getCodeBlock() );

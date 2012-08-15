@@ -34,10 +34,12 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         getEngine().evaluate(
                 "var x = 'test'",
                 "var y = x");
-        assertThat(getContext().resolve("y"))
+        Reference y = getContext().resolve( "y" );
+        assertThat(y)
                 .isNotNull()
-                .isInstanceOf(String.class)
-                .isEqualTo("test");
+                .isInstanceOf(Reference.class);
+        assertThat( y.getValue( getContext() ))
+                .isEqualTo( "test" );
     }
 
     @Test

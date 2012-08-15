@@ -65,9 +65,6 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN: val
-                dup();
-                aprintln();
-                
                 invokestatic( p( Completion.class ), "createNormal", sig( Completion.class, Object.class ) );
             }
         };

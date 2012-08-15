@@ -36,6 +36,8 @@ public class AssignmentExpression extends AbstractExpression {
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( "lhs=" + lhs );
+        System.err.println( "rhs=" + lhs );
         return new CodeBlock() {
             {
                 append( lhs.getCodeBlock() );
@@ -44,12 +46,12 @@ public class AssignmentExpression extends AbstractExpression {
                 // reference expr
                 append( jsGetValue() );
                 // reference value
+                dup_x1();
+                // value reference value
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                // reference value context
+                // value reference value context
                 swap();
-                // reference context value
-                dup();
-                // reference context value value
+                // value reference context value
                 invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
                 // value
             }
