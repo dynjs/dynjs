@@ -26,8 +26,9 @@ public abstract class AbstractDynJSTestSupport {
 
     protected void check(String scriptlet, Boolean expected) {
         this.engine.execute( scriptlet, null, 0 );
-        Object result = this.engine.getExecutionContext().resolve( "result" );
-        assertThat(result).isEqualTo(expected);
+        Reference result = this.engine.getExecutionContext().resolve( "result" );
+        Object value = result.getValue( getContext() );
+        assertThat(value).isEqualTo(expected);
     }
 
     protected void check(String scriptlet, Object expected) {
