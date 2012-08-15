@@ -57,11 +57,11 @@ public class EqualityOperatorExpression extends AbstractBinaryExpression {
                 }
                 
                 label(returnTrue);
-                iconst_1();
+                getstatic( p(Boolean.class), "TRUE", ci(Boolean.class) );
                 go_to(end);
                 
                 label(returnFalse);
-                iconst_0();
+                getstatic( p(Boolean.class), "FALSE", ci(Boolean.class) );
                 
                 label(end);
                 nop();
