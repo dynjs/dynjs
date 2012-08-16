@@ -188,6 +188,30 @@ public class AbstractByteCodeEmitter {
         }};
     }
     
+    public CodeBlock ifBothAreString(final LabelNode target) {
+        return new CodeBlock() {{
+            LabelNode end = new LabelNode();
+            // IN: obj(lhs) obj(rhs)
+            dup();
+            // obj(lhs) obj(rhs) obj(rhs)
+            instance_of( p(String.class) );
+            // obj(lhs) obj(rhs) bool(rhs)
+            iffalse( end );
+            // obj(lhs) obj(rhs)
+            swap();
+            // obj(rhs) obj(lhs)
+            dup_x1();
+            // obj(lhs) obj(rhs) obj(lhs)
+            instance_of( p(String.class) );
+            // obj(lhs) obj(rhs) bool(lhs)
+            iftrue( target );
+            // obj(lhs) obj(rhs)
+            label(end);
+            // obj(lhs) obj(rhs)
+            
+        }};
+    }
+    
     public CodeBlock convertTopTwoToPrimitiveInts() {
         return new CodeBlock() {{
             // IN: Number Number

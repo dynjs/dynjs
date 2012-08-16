@@ -93,11 +93,11 @@ public class Types {
     public static Integer toUint32(Object o) {
         // 9.5
         Number n = toNumber( o );
-        
-        if ( n instanceof Integer ) {
-            return ((Integer)n).intValue();
+
+        if (n instanceof Integer) {
+            return ((Integer) n).intValue();
         }
-        
+
         double d = n.doubleValue();
         if (d == Double.POSITIVE_INFINITY || d == Double.NEGATIVE_INFINITY || d == Double.NaN) {
             return 0;
@@ -145,6 +145,67 @@ public class Types {
         }
 
         return type( val );
+    }
+
+    public static Object compareRelational(Object x, Object y, boolean leftFirst) {
+        // 11.8.5
+        System.err.println( "compareRelational(" + x + ", " + y + ", " + leftFirst + ")" );
+        
+        Object px = null;
+        Object py = null;
+        
+        if ( leftFirst ) {
+            px = toPrimitive( x, "Number" );
+            py = toPrimitive( y, "Number" );
+        } else {
+            py = toPrimitive( y, "Number" );
+            px = toPrimitive( x, "Number" );
+        }
+        
+        if ( px instanceof String && py instanceof String ) {
+            String sx = (String) px;
+            String sy = (String) py;
+            
+            if ( sx.compareTo( sy ) < 0 ) {
+                return true;
+            }
+            
+            return false;
+        } else {
+            Number nx = toNumber( px );
+            Number ny = toNumber( py );
+            
+            if ( nx.doubleValue() == Double.NaN || ny.doubleValue() == Double.NaN) {
+                return Types.UNDEFINED;
+            }
+            
+            if ( nx.equals( ny ) ) {
+                return false;
+            }
+            
+            if ( nx.doubleValue() == Double.POSITIVE_INFINITY ) {
+                return false;
+            }
+            
+            if ( ny.doubleValue() == Double.POSITIVE_INFINITY ) {
+                return true;
+            }
+            
+            if ( ny.doubleValue() == Double.NEGATIVE_INFINITY ) {
+                return false;
+            }
+            
+            if ( nx.doubleValue() == Double.NEGATIVE_INFINITY ) {
+                return true;
+            }
+            
+            if ( nx.doubleValue() < ny.doubleValue() ) {
+                return true;
+            }
+            
+            return false;
+        }
+        
     }
 
     public static boolean compareEquality(Object lhs, Object rhs) {
