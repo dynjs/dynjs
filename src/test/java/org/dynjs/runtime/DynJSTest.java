@@ -368,7 +368,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMath(){
-        check("var x = 10; var result = (x + 5 == 15) && (x - 1 == 9) && (x * 3 == 30) && (x / 2 == 5) && (x % 3 == 1);");
+        check("var x = 10; var result = (x + 5 == 15) && (x - 1 == 9) && (x * 3 == 30) && (x / 2 == 5.0) && (x % 3 == 1);");
     }
 
     @Test
