@@ -60,6 +60,7 @@ public class CodeBlockUtils {
     }
 
     public static CodeBlock compiledStatementBlock(final BlockManager blockManager, final String grist, final Statement block ) {
+        System.err.println( "compiled statement block: " + grist + " // " + block );
         return new CodeBlock() {
             {
                 LabelNode skipCompile = new LabelNode();

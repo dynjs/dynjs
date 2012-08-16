@@ -91,7 +91,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     // completion(prev) completion(cur)
                     dup();
                     // completion(prev) completion(cur) completion(cur)
-                    append( handleCompletion( nonAbrupt, nonAbrupt, abrupt, abrupt, abrupt ) );
+                    append( handleCompletion( nonAbrupt, abrupt, abrupt, abrupt, abrupt ) );
                     label( nonAbrupt );
                     // completion(prev) completion(cur);
 

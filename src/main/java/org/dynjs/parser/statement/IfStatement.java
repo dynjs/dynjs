@@ -42,15 +42,22 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
         return new CodeBlock() {
             {
                 LabelNode elseBranch = new LabelNode();
+                LabelNode noElseBranch = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 append( vbool.getCodeBlock() );
                 // value
                 append( jsToBoolean() );
                 // Boolean
-                invokevirtual( p(Boolean.class), "booleanValue", sig( boolean.class) );
+                invokevirtual( p( Boolean.class ), "booleanValue", sig( boolean.class ) );
+                // bool
 
-                iffalse( elseBranch );
+                if (velse == null) {
+                    // completion bool
+                    iffalse( noElseBranch );
+                } else {
+                    iffalse( elseBranch );
+                }
                 // <empty>
 
                 // ----------------------------------------
@@ -62,15 +69,19 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
 
                 // ----------------------------------------
                 // ELSE
-                label( elseBranch );
-                // <empty>
-
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Else", velse ) );
-                // completion
+                if ( velse == null ) {
+                    label( noElseBranch );
+                    append( normalCompletion() );
+                } else {
+                    label( elseBranch );
+                    // <empty>
+                    append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Else", velse ) );
+                    // completion
+                }
 
                 label( end );
                 // completion
-                
+
                 nop();
             }
         };
