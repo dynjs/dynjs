@@ -184,8 +184,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNullLiteral() {
-        Object result = resultFor("var result = null");
-        assertThat(result).isEqualTo(Types.NULL);
+        Object result = eval( "null" );
+        assertThat( result ).isEqualTo( Types.NULL );
     }
 
     @Test
