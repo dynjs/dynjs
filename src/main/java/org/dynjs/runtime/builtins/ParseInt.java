@@ -35,24 +35,34 @@ public class ParseInt extends AbstractNativeFunction {
 
         if (radixArg != Types.UNDEFINED) {
             radix = ((Number) radixArg).intValue();
+            if (radix == 0) { radix = 10; }
         } else {
-            if (text.startsWith( "0x" )) {
-                text = text.substring( 2 );
-                radix = 16;
-            } else if (text.startsWith( "0" )) {
-                text = text.substring( 1 );
-                radix = 8;
-            }
+            radix = extractRadix( text );
         }
-        
-        if ( radix == 16 ) {
-            if ( text.startsWith( "0x" ) || text.startsWith( "0X"  ) ) {
-                text = text.substring(2);
+        text = cleanText(text, radix);
+        return parseInt( text, radix );
+    }
+    
+    static String cleanText(String text, int radix) {
+        if (radix == 16) {
+            if (text.startsWith( "0x" ) || text.startsWith( "0X" )) {
+                return text.substring( 2 );
             }
-        } else if ( radix == 0 ) {
-            radix = 10;
-        }
+        } 
+        return text;        
+    }
 
+    static int extractRadix(String text) {
+        int radix = 10;
+        if (text.startsWith( "0x" )) {
+            radix = 16;
+        } else if (text.startsWith( "0" )) {
+            radix = 8;
+        }
+        return radix;
+    }
+
+    static Object parseInt(String text, int radix) {
         int dotLoc = text.indexOf( '.' );
         if (dotLoc >= 0) {
             text = text.substring( 0, dotLoc );
@@ -63,7 +73,8 @@ public class ParseInt extends AbstractNativeFunction {
             System.err.println( "radix: " + radix );
             return Integer.parseInt( text, radix );
         } catch (NumberFormatException e) {
-
+            System.err.println(e.getLocalizedMessage());
+            e.printStackTrace();
         }
         return Double.NaN;
     }

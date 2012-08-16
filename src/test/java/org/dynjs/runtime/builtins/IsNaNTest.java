@@ -9,17 +9,17 @@ public class IsNaNTest extends AbstractDynJSTestSupport {
     public void isNaNReturnsFalseForNull() {
         check( "var result = isNaN(null);", false );
     }
-    
+
     @Test
     public void isNaNReturnsFalseForBooleanTrue() {
         check( "var result = isNaN(true);", false );
     }
-    
+
     @Test
     public void isNaNReturnsFalseForBooleanFalse() {
         check( "var result = isNaN(false);", false );
     }
-    
+
     @Test
     public void isNaNReturnsFalseForEmptyString() {
         check( "var result = isNaN('');", false );
