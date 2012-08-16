@@ -15,13 +15,13 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.Completion;
 import org.objectweb.asm.tree.LabelNode;
 
 public class DoWhileStatement extends AbstractCompilingStatement implements Statement {
@@ -57,7 +57,11 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 // completion(block)
 
                 append( vbool.getCodeBlock() );
-                // completion(block) bool
+                // completion(block) result
+                append( jsToBoolean() );
+                // completion(blokc) Boolean
+                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
+                // completion(blokc) bool
                 iffalse( end );
                 pop();
                 // <EMPTY>

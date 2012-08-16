@@ -50,6 +50,10 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
 
                 label( begin );
                 append( vbool.getCodeBlock() );
+                // completion(block) result
+                append( jsToBoolean() );
+                // completion(block) Boolean
+                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
                 // completion(block) bool
 
                 iffalse( end );
