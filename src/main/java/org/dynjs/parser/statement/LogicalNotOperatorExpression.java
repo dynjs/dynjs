@@ -43,6 +43,8 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
                 append( jsGetValue() );
                 // val
                 append( jsToBoolean() );
+                // Boolean
+                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
                 // bool
                 iftrue( returnFalse );
                 iconst_1();
@@ -50,6 +52,7 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
                 label( returnFalse );
                 iconst_0();
                 label( end );
+                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
                 nop();
             }
         };

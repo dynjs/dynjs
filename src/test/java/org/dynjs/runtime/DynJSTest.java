@@ -422,7 +422,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDivision(){
-        check("var x = 10; var result = x / 2 == 5;");
+        check("var x = 10; var result = x / 2 == 5.0;");
     }
 
     @Test
