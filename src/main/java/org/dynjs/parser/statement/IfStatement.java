@@ -16,6 +16,7 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
@@ -45,6 +46,9 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
 
                 append( vbool.getCodeBlock() );
                 // value
+                append( jsToBoolean() );
+                // Boolean
+                invokevirtual( p(Boolean.class), "booleanValue", sig( boolean.class) );
 
                 iffalse( elseBranch );
                 // <empty>

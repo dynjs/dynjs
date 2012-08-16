@@ -13,11 +13,12 @@ import org.dynjs.parser.Statement;
 import org.dynjs.parser.statement.BlockStatement;
 import org.dynjs.runtime.AbstractBasicBlock;
 import org.dynjs.runtime.BasicBlock;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public class BasicBlockCompiler extends AbstractCompiler {
 
-    private final String INVOKE = sig( Object.class, ExecutionContext.class );
+    private final String INVOKE = sig( Completion.class, ExecutionContext.class );
 
     public BasicBlockCompiler(Config config) {
         super( config, "Block" );

@@ -1,9 +1,6 @@
 package org.dynjs.compiler;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import javax.annotation.processing.Completion;
-
 import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.parser.Position;
@@ -11,6 +8,7 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -54,7 +52,8 @@ public class CodeBlockUtils {
                 // basic-block
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // basic-block context
-                invokevirtual( p( BasicBlock.class ), "call", sig( Completion.class, ExecutionContext.class ) );
+                //invokevirtual( p( BasicBlock.class ), "call", sig( Completion.class, ExecutionContext.class ) );
+                invokeinterface( p( BasicBlock.class ), "call", sig( Completion.class, ExecutionContext.class ) );
                 // completion
             }
         };
@@ -79,7 +78,7 @@ public class CodeBlockUtils {
 
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 ldc( statementNumber );
-                invokevirtual( p( ExecutionContext.class ), "retrieveBasicBlock", sig( Entry.class, int.class ) );
+                invokevirtual( p( ExecutionContext.class ), "retrieveBlockEntry", sig( Entry.class, int.class ) );
                 dup();
                 // entry entry
                 invokevirtual( p( Entry.class ), "getCompiled", sig( Object.class ) );
@@ -122,7 +121,7 @@ public class CodeBlockUtils {
                 ldc( statementNumber );
                 // basic-block basic-block context statement-number
 
-                invokevirtual( p( ExecutionContext.class ), "retrieveBasicBlock", sig( Entry.class, int.class ) );
+                invokevirtual( p( ExecutionContext.class ), "retrieveBlockEntry", sig( Entry.class, int.class ) );
                 // basic-block basic-block entry
 
                 swap();
