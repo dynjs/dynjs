@@ -17,7 +17,7 @@ package org.dynjs.runtime;
 
 import java.util.Arrays;
 
-public class DynArray {
+public class DynArray extends DynObject {
 
     public static final int DEFAULT_ARRAY_SIZE = 16;
     public static final Object[] UNDEFINED_PREFILLED_ARRAY;
