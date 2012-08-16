@@ -163,7 +163,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var x = 1;x += 1; var result = x == 2;");
         check("var x = 1;x -= 1; var result = x == 0;");
         check("var x = 1;x *= 3; var result = x == 3;");
-        check("var x = 1;x /= 1; var result = x == 1;");
+        check("var x = 1;x /= 1; var result = x == 1.0;");
         check("var x = 2;x %= 1; var result = x == 0;");
     }
 
