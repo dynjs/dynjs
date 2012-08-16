@@ -45,6 +45,7 @@ public class Reference {
         // 8.7.1
         Object value = null;
         if (isUnresolvableReference()) {
+            System.err.println("Cannot resolve type: " + this.referencedName);
             throw new TypeError();
         }
 

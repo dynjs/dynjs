@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-
 public class Types {
 
     public static final Undefined UNDEFINED = new Undefined();
@@ -54,18 +53,18 @@ public class Types {
         if (o == Types.NULL) {
             return Double.valueOf( 0 );
         }
-        
-        if ( o instanceof Boolean ) {
-            if ( o == Boolean.TRUE ) {
+
+        if (o instanceof Boolean) {
+            if (o == Boolean.TRUE) {
                 return 1;
             }
-            
+
             return 0;
         }
 
         try {
             String str = o.toString();
-            if ( str.trim().equals( "" ) ) {
+            if (str.trim().equals( "" )) {
                 return 0;
             }
             if (str.indexOf( "." ) > 0) {
@@ -238,13 +237,13 @@ public class Types {
                 return true;
             }
             if (lhs instanceof Number) {
-                if ( lhs instanceof Double ) {
-                    if ( ((Double)lhs).isNaN() ) {
+                if (lhs instanceof Double) {
+                    if (((Double) lhs).isNaN()) {
                         return false;
                     }
                 }
-                if ( rhs instanceof Double ) {
-                    if ( ((Double)rhs).isNaN() ) {
+                if (rhs instanceof Double) {
+                    if (((Double) rhs).isNaN()) {
                         return false;
                     }
                 }
@@ -270,7 +269,7 @@ public class Types {
 
         System.err.println( "lhsType=" + lhsType );
         System.err.println( "rhsType=" + rhsType );
-        
+
         if (lhsType.equals( "number" ) && rhsType.equals( "string" )) {
             return compareEquality( lhs, toNumber( rhs ) );
         }
@@ -357,8 +356,8 @@ public class Types {
         if (o instanceof JSObject) {
             return "object";
         }
-        
-        if ( o instanceof String ) {
+
+        if (o instanceof String) {
             return "string";
         }
 
@@ -397,4 +396,23 @@ public class Types {
         }
     }
 
+    public static class JSNumber extends PrimitiveDynObject {
+
+        public static final Number POSITIVE_INFINITY = Double.POSITIVE_INFINITY;
+        public static final Number NEGATIVE_INFINITY = Double.NEGATIVE_INFINITY;
+
+        public JSNumber() {
+            this( 0 );
+        }
+
+        public JSNumber(Object value) {
+            super( value );
+            final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor( true );
+            positiveInfinity.setValue( POSITIVE_INFINITY );
+            this.defineOwnProperty( null, "POSITIVE_INFINITY", positiveInfinity, true );
+            final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor( true );
+            negativeInfinity.setValue( NEGATIVE_INFINITY );
+            this.defineOwnProperty( null, "NEGATIVE_INFINITY", negativeInfinity, true );
+        }
+    }
 }

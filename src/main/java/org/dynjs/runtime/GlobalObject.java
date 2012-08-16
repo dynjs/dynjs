@@ -27,20 +27,19 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty( "undefined", Types.UNDEFINED );
         defineGlobalProperty( "NaN", Double.NaN );
         defineGlobalProperty( "Infinity", Double.POSITIVE_INFINITY );
-        defineGlobalProperty( "-Infinite", Double.NEGATIVE_INFINITY );
+        defineGlobalProperty( "-Infinity", Double.NEGATIVE_INFINITY );
         defineGlobalProperty( "parseFloat", new ParseFloat( this ) );
         defineGlobalProperty( "parseInt", new ParseInt( this ) );
         defineGlobalProperty( "eval", new Eval( this ) );
         defineGlobalProperty( "isNaN", new IsNaN( this ) );
         defineGlobalProperty( "isFinite", new IsFinite( this ) );
-//        defineGlobalProperty( "Number",  );
+        defineGlobalProperty( "Number", new Types.JSNumber() );
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
          * put("Object", new DynObject() {{
          * setProperty("defineProperty", new DefineProperty());
          * }});
-         * put("Number", new DynObject());
          * put("Array", new DynObject());
          * put("Date", new DynObject());
          * put("String", new DynObject());

@@ -2,7 +2,6 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IsFiniteTest extends AbstractDynJSTestSupport {
@@ -37,9 +36,8 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
         check( "var result = isFinite(12);", true );
     }
 
-    @Ignore
+    @Test
     public void returnsTrueNegativeInteger() {
-    	// Until DYNJS-78 is implemented
         check( "var result = isFinite(-12);", true );
     }
 
@@ -48,9 +46,8 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
         check( "var result = isFinite(12.123);", true );
     }
 
-    @Ignore
+    @Test
     public void returnsTrueForHexValue() {
-    	// Until DYNJS-77 is implemented
         check( "var result = isFinite(0x16);", true );
     }
 
@@ -69,25 +66,29 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
         check( "var result = isFinite();", Types.UNDEFINED );
     }
 
-    @Ignore
+    @Test
     public void returnsFalseWhenCalledWithNumberPositiveInfinity() {
         check( "var result = isFinite(Number.POSITIVE_INFINITY);", false );
     }
 
-    @Ignore
+    @Test
     public void returnsFalseWhenCalledWithPositiveInfinity() {
         check( "var result = isFinite(Infinity);", false );
     }
 
-    @Ignore
+    @Test
     public void returnsFalseWhenCalledWithNumberNegativeInfinity() {
         check( "var result = isFinite(Number.NEGATIVE_INFINITY);", false );
     }
 
-    @Ignore
+    @Test
     public void returnsFalseWhenCalledWithNegativeInfinity() {
-    	// Until DYNJS-78 is implemented
         check( "var result = isFinite(-Infinity);", false );
+    }
+    
+    @Test
+    public void testNegativeInfinity() {
+        check( "var result = -Infinity;", Double.NEGATIVE_INFINITY );
     }
     
 }

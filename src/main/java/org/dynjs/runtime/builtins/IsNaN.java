@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
 public class IsNaN extends AbstractNativeFunction {
@@ -15,18 +16,19 @@ public class IsNaN extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         Object o = args[0];
         if (o != Types.UNDEFINED) {
-            return isNaN( args );
+            return isNaN( context, args );
         } else {
             return Types.UNDEFINED;
         }
     }
 
-    static boolean isNaN(Object... args) {
+    static boolean isNaN(ExecutionContext context, Object... args) {
         Object arg = args[0];
-        if (arg.equals( Double.NaN )) {
-            return true;
-        } else if (isNullOrBooleanOrWhiteSpace( arg )) {
+        if (isNullOrBooleanOrWhiteSpace( arg )) {
             return false;
+        } else if (arg instanceof Reference ) {
+            Object value = ((Reference)arg).getValue(context);
+            return value.equals( Double.POSITIVE_INFINITY ) || value.equals( Double.NEGATIVE_INFINITY );
         }
         int radix = ParseInt.extractRadix( (String) arg );
         String text = ParseInt.cleanText( (String) arg, radix );
