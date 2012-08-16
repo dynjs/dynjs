@@ -68,6 +68,7 @@ public class Main {
     }
 
     private void executeFile(String filename) throws IOException {
+        runtime = new DynJS();
         try {
             runtime.execute( new FileInputStream( filename), filename );
         } catch (FileNotFoundException e) {
