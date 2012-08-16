@@ -55,9 +55,20 @@ public class Types {
         if (o == Types.NULL) {
             return Double.valueOf( 0 );
         }
+        
+        if ( o instanceof Boolean ) {
+            if ( o == Boolean.TRUE ) {
+                return 1;
+            }
+            
+            return 0;
+        }
 
         try {
             String str = o.toString();
+            if ( str.trim().equals( "" ) ) {
+                return 0;
+            }
             if (str.indexOf( "." ) > 0) {
                 return Double.valueOf( str );
             } else {
@@ -150,85 +161,96 @@ public class Types {
     public static Object compareRelational(Object x, Object y, boolean leftFirst) {
         // 11.8.5
         System.err.println( "compareRelational(" + x + ", " + y + ", " + leftFirst + ")" );
-        
+
         Object px = null;
         Object py = null;
-        
-        if ( leftFirst ) {
+
+        if (leftFirst) {
             px = toPrimitive( x, "Number" );
             py = toPrimitive( y, "Number" );
         } else {
             py = toPrimitive( y, "Number" );
             px = toPrimitive( x, "Number" );
         }
-        
-        if ( px instanceof String && py instanceof String ) {
+
+        if (px instanceof String && py instanceof String) {
             String sx = (String) px;
             String sy = (String) py;
-            
-            if ( sx.compareTo( sy ) < 0 ) {
+
+            if (sx.compareTo( sy ) < 0) {
                 return true;
             }
-            
+
             return false;
         } else {
             Number nx = toNumber( px );
             Number ny = toNumber( py );
-            
-            if ( nx.doubleValue() == Double.NaN || ny.doubleValue() == Double.NaN) {
+
+            if (nx.doubleValue() == Double.NaN || ny.doubleValue() == Double.NaN) {
                 return Types.UNDEFINED;
             }
-            
-            if ( nx.equals( ny ) ) {
+
+            if (nx.equals( ny )) {
                 return false;
             }
-            
-            if ( nx.doubleValue() == Double.POSITIVE_INFINITY ) {
+
+            if (nx.doubleValue() == Double.POSITIVE_INFINITY) {
                 return false;
             }
-            
-            if ( ny.doubleValue() == Double.POSITIVE_INFINITY ) {
+
+            if (ny.doubleValue() == Double.POSITIVE_INFINITY) {
                 return true;
             }
-            
-            if ( ny.doubleValue() == Double.NEGATIVE_INFINITY ) {
+
+            if (ny.doubleValue() == Double.NEGATIVE_INFINITY) {
                 return false;
             }
-            
-            if ( nx.doubleValue() == Double.NEGATIVE_INFINITY ) {
+
+            if (nx.doubleValue() == Double.NEGATIVE_INFINITY) {
                 return true;
             }
-            
-            if ( nx.doubleValue() < ny.doubleValue() ) {
+
+            if (nx.doubleValue() < ny.doubleValue()) {
                 return true;
             }
-            
+
             return false;
         }
-        
+
     }
 
     public static boolean compareEquality(Object lhs, Object rhs) {
         // 11.9.3
 
+        System.err.println( "compareEquality(" + lhs + "/" + lhs.getClass() + ", " + rhs + "/" + rhs.getClass() + ")" );
+
         String lhsType = type( lhs );
         String rhsType = type( rhs );
 
         if (lhsType.equals( rhsType )) {
+            System.err.println( "A" );
             if (lhs == Types.UNDEFINED) {
+                System.err.println( "A1" );
+
                 return true;
             }
             if (lhs == Types.NULL) {
+                System.err.println( "A2" );
                 return true;
             }
             if (lhs instanceof Number) {
-                if (((Number) lhs).doubleValue() == Double.NaN) {
-                    return false;
+                if ( lhs instanceof Double ) {
+                    if ( ((Double)lhs).isNaN() ) {
+                        return false;
+                    }
                 }
-                if (((Number) rhs).doubleValue() == Double.NaN) {
-                    return false;
+                if ( rhs instanceof Double ) {
+                    if ( ((Double)rhs).isNaN() ) {
+                        return false;
+                    }
                 }
                 if (lhs.equals( rhs )) {
+                    System.err.println( "A3-c" );
                     return true;
                 }
                 return false;
@@ -239,6 +261,7 @@ public class Types {
         }
 
         if (lhs == Types.UNDEFINED && rhs == Types.NULL) {
+            System.err.println( "B" );
             return true;
         }
 
@@ -246,6 +269,9 @@ public class Types {
             return true;
         }
 
+        System.err.println( "lhsType=" + lhsType );
+        System.err.println( "rhsType=" + rhsType );
+        
         if (lhsType.equals( "number" ) && rhsType.equals( "string" )) {
             return compareEquality( lhs, toNumber( rhs ) );
         }
@@ -331,6 +357,10 @@ public class Types {
 
         if (o instanceof JSObject) {
             return "object";
+        }
+        
+        if ( o instanceof String ) {
+            return "string";
         }
 
         return o.getClass().getName();
