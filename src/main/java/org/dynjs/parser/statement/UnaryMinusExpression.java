@@ -21,6 +21,8 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 
                 append( getExpr().getCodeBlock() );
                 // val
+                append( jsGetValue() );
+                // val
                 append( jsToNumber() );
                 // num
                 dup();

@@ -52,6 +52,6 @@ public abstract class AbstractDynJSTestSupport {
 
     protected Object resultFor(String expression) {
         this.runtime.execute( expression, null, 0 );
-        return getContext().resolve("result");
+        return getContext().resolve("result").getValue( getContext() );
     }
 }

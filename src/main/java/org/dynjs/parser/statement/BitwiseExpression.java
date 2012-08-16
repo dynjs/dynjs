@@ -51,11 +51,8 @@ public class BitwiseExpression extends AbstractBinaryExpression {
                 }
                 // int
 
-                i2d();
-                // double
-
-                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
-                // Double
+                append( convertTopToInteger() );
+                // Integer
             }
         };
     }

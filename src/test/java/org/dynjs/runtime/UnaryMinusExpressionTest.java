@@ -18,6 +18,12 @@ public class UnaryMinusExpressionTest extends AbstractDynJSTestSupport {
         assertThat( result ).isEqualTo( -42.2 );
     }
     
+    @Test
+    public void testUnaryMinusOnVar() {
+        Object result = eval( "var x = 1; -x;");
+        System.err.println( result );
+    }
+    
     
 
 }

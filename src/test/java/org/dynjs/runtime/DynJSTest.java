@@ -100,7 +100,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void buildFunctionWithMultipleStatementBody() {
-        check("var result = (function(){var a = 1;var b = 2; var c = a + b;})()", null);
+        check("var result = (function(){var a = 1;var b = 2; var c = a + b;})()", Types.UNDEFINED);
     }
 
     @Test
@@ -138,24 +138,24 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testHexValue() {
-    	check("var result = 0x16", 22.0);
+    	check("var result = 0x16", 22);
     }
 
     @Test
     public void testBitwise() {
-    	check("var result = 0x000F & 0x2222", 2.0);
-    	check("var result = 0x000F | 0x2222", 8751.0);
-    	check("var result = 0x000F ^ 0x2222", 8749.0);
-    	check("var result = 0x000F; result &= 0x2222", 2.0);
-    	check("var result = 0x000F; result |= 0x2222", 8751.0);
-    	check("var result = 0x000F; result ^= 0x2222", 8749.0);
+    	check("var result = 0x000F & 0x2222", 2);
+    	check("var result = 0x000F | 0x2222", 8751);
+    	check("var result = 0x000F ^ 0x2222", 8749);
+    	check("var result = 0x000F; result &= 0x2222", 2);
+    	check("var result = 0x000F; result |= 0x2222", 8751);
+    	check("var result = 0x000F; result ^= 0x2222", 8749);
     	
-    	check("var result = 9 << 2", 36.0);
-    	check("var result = 9 >> 2", 2.0);
-    	check("var result = -1 >>> 2", 1.073741823E9);
-    	check("var result = 9; result <<= 2", 36.0);
-    	check("var result = 9; result >>= 2", 2.0);
-    	check("var result = -1; result >>>= 2", 1.073741823E9);
+    	check("var result = 9 << 2", 36);
+    	check("var result = 9 >> 2", 2);
+    	check("var result = -1 >>> 2", 1073741823);
+    	check("var result = 9; result <<= 2", 36);
+    	check("var result = 9; result >>= 2", 2);
+    	check("var result = -1; result >>>= 2", 1073741823);
     }
 
     @Test
@@ -208,7 +208,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         final Object result = resultFor("var result = {};");
         assertThat(result)
                 .isNotNull()
-                .isInstanceOf(DynObject.class);
+                .isInstanceOf(JSObject.class);
     }
 
     /*
@@ -330,8 +330,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testUnaryMinusOper() {
-    	check("var result = -1 + 1", 0.0);
-    	check("var result = -1", -1.0);
+    	check("var result = -1 + 1", 0);
+    	check("var result = -1", -1);
     	check("var x = 1; var result = -x == -1");
     }
 
