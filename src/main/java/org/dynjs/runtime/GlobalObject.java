@@ -6,11 +6,8 @@ import java.util.List;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.BlockManager.Entry;
-<<<<<<< HEAD
 import org.dynjs.runtime.builtins.Eval;
-=======
 import org.dynjs.runtime.builtins.IsNaN;
->>>>>>> Add IsNaN implementation and specs.
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.modules.ModuleProvider;
