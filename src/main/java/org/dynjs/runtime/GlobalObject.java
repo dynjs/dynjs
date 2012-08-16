@@ -7,6 +7,7 @@ import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.builtins.Eval;
+import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
@@ -31,6 +32,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty( "parseInt", new ParseInt( this ) );
         defineGlobalProperty( "eval", new Eval( this ) );
         defineGlobalProperty( "isNaN", new IsNaN( this ) );
+        defineGlobalProperty( "isFinite", new IsFinite( this ) );
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
