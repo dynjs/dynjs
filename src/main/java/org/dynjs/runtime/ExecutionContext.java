@@ -1,12 +1,14 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.exception.TypeError;
+import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.statement.FunctionDeclaration;
 import org.dynjs.parser.statement.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -328,6 +330,10 @@ public class ExecutionContext {
 
     public static void throwReferenceError(String ref) {
         throw new ReferenceError( ref );
+    }
+    
+    public static void throwSyntaxError() {
+        throw new SyntaxError( new ArrayList<String>() );
     }
 
 }

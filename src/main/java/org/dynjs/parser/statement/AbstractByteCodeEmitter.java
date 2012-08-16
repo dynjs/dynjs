@@ -85,7 +85,7 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
-    
+
     public CodeBlock jsToObject() {
         return new CodeBlock() {
             {
@@ -148,115 +148,135 @@ public class AbstractByteCodeEmitter {
     public CodeBlock jsThrowTypeError() {
         return new CodeBlock() {
             {
-                invokestatic( p(ExecutionContext.class), "throwTypeError", sig(void.class) );
+                invokestatic( p( ExecutionContext.class ), "throwTypeError", sig( void.class ) );
             }
         };
     }
-    
+
     public CodeBlock jsThrowReferenceError(final String ref) {
         return new CodeBlock() {
             {
                 ldc( ref );
-                invokestatic( p(ExecutionContext.class), "throwReferenceError", sig(void.class) );
+                invokestatic( p( ExecutionContext.class ), "throwReferenceError", sig( void.class ) );
             }
         };
     }
-    
+
+    public CodeBlock jsThrowSyntaxError() {
+        return new CodeBlock() {
+            {
+                invokestatic( p( ExecutionContext.class ), "throwSyntaxError", sig( void.class ) );
+            }
+        };
+    }
+
     public CodeBlock ifEitherIsDouble(final LabelNode target) {
         // IN: Number Number
-        return new CodeBlock() {{
-            checkcast( p(Number.class) );
-            swap();
-            // val(rhs) Number(lhs)
-            checkcast( p(Number.class) );
-            swap();
-            // Number(lhs) Number(rhs)
-            dup();
-            // Number(lhs) Number(rhs) Number(rhs)
-            instance_of( p(Double.class) );
-            // Number(lhs) Number(rhs) bool
-            iftrue( target );
-            // Number(lhs) Number(rhs)
-            swap();
-            // Number(rhs) Number(lhs)
-            dup_x1();
-            // Number(lhs) Number(rhs) Number(lhs)
-            instance_of( p(Double.class) );
-            // Number(lhs) Number(rhs) bool
-            iftrue( target );
-            // Number(lhs) Number(rhs)
-        }};
+        return new CodeBlock() {
+            {
+                checkcast( p( Number.class ) );
+                swap();
+                // val(rhs) Number(lhs)
+                checkcast( p( Number.class ) );
+                swap();
+                // Number(lhs) Number(rhs)
+                dup();
+                // Number(lhs) Number(rhs) Number(rhs)
+                instance_of( p( Double.class ) );
+                // Number(lhs) Number(rhs) bool
+                iftrue( target );
+                // Number(lhs) Number(rhs)
+                swap();
+                // Number(rhs) Number(lhs)
+                dup_x1();
+                // Number(lhs) Number(rhs) Number(lhs)
+                instance_of( p( Double.class ) );
+                // Number(lhs) Number(rhs) bool
+                iftrue( target );
+                // Number(lhs) Number(rhs)
+            }
+        };
     }
-    
+
     public CodeBlock ifBothAreString(final LabelNode target) {
-        return new CodeBlock() {{
-            LabelNode end = new LabelNode();
-            // IN: obj(lhs) obj(rhs)
-            dup();
-            // obj(lhs) obj(rhs) obj(rhs)
-            instance_of( p(String.class) );
-            // obj(lhs) obj(rhs) bool(rhs)
-            iffalse( end );
-            // obj(lhs) obj(rhs)
-            swap();
-            // obj(rhs) obj(lhs)
-            dup_x1();
-            // obj(lhs) obj(rhs) obj(lhs)
-            instance_of( p(String.class) );
-            // obj(lhs) obj(rhs) bool(lhs)
-            iftrue( target );
-            // obj(lhs) obj(rhs)
-            label(end);
-            // obj(lhs) obj(rhs)
-            
-        }};
+        return new CodeBlock() {
+            {
+                LabelNode end = new LabelNode();
+                // IN: obj(lhs) obj(rhs)
+                dup();
+                // obj(lhs) obj(rhs) obj(rhs)
+                instance_of( p( String.class ) );
+                // obj(lhs) obj(rhs) bool(rhs)
+                iffalse( end );
+                // obj(lhs) obj(rhs)
+                swap();
+                // obj(rhs) obj(lhs)
+                dup_x1();
+                // obj(lhs) obj(rhs) obj(lhs)
+                instance_of( p( String.class ) );
+                // obj(lhs) obj(rhs) bool(lhs)
+                iftrue( target );
+                // obj(lhs) obj(rhs)
+                label( end );
+                // obj(lhs) obj(rhs)
+
+            }
+        };
     }
-    
+
     public CodeBlock convertTopTwoToPrimitiveInts() {
-        return new CodeBlock() {{
-            // IN: Number Number
-            invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
-            // Number(lhs) int(rhs)
-            swap();
-            // int(rhs) Number(rhs)
-            invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
-            // int(rhs) int(lhs)
-            swap();
-            // int(lhs) int(rhs);
-        }};
+        return new CodeBlock() {
+            {
+                // IN: Number Number
+                invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+                // Number(lhs) int(rhs)
+                swap();
+                // int(rhs) Number(rhs)
+                invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+                // int(rhs) int(lhs)
+                swap();
+                // int(lhs) int(rhs);
+            }
+        };
     }
-    
+
     public CodeBlock convertTopToInteger() {
-        return new CodeBlock() {{
-            // IN: int
-            invokestatic( p(Integer.class), "valueOf", sig(Integer.class, int.class)  );
-        }};
+        return new CodeBlock() {
+            {
+                // IN: int
+                invokestatic( p( Integer.class ), "valueOf", sig( Integer.class, int.class ) );
+            }
+        };
     }
-    
+
     public CodeBlock convertTopTwoToPrimitiveDoubles() {
-        return new CodeBlock() {{
-            // IN Number Number
-            checkcast( p(Number.class)  );
-            swap();
-            checkcast( p(Number.class)  );
-            swap();
-            invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-            // Number(lhs) double(rhs)
-            dup2_x1();
-            // double(rhs) Number(lhs) double(rhs);
-            pop2();
-            // double(rhs) Number(lhs)
-            invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-            // double(rhs) double(lhs)
-            swap2();
-            // OUT double double
-        }};
+        return new CodeBlock() {
+            {
+                // IN Number Number
+                checkcast( p( Number.class ) );
+                swap();
+                checkcast( p( Number.class ) );
+                swap();
+                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                // Number(lhs) double(rhs)
+                dup2_x1();
+                // double(rhs) Number(lhs) double(rhs);
+                pop2();
+                // double(rhs) Number(lhs)
+                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                // double(rhs) double(lhs)
+                swap2();
+                // OUT double double
+            }
+        };
     }
-    
+
     public CodeBlock convertTopToDouble() {
-        return new CodeBlock() {{
-            // IN: int
-            invokestatic( p(Double.class), "valueOf", sig(Double.class, double.class)  );
-        }};
+        return new CodeBlock() {
+            {
+                // IN: int
+                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
+            }
+        };
     }
 }

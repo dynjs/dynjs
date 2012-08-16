@@ -34,6 +34,7 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                LabelNode doubleNum = new LabelNode();
                 LabelNode invalid = new LabelNode();
                 LabelNode end = new LabelNode();
 
@@ -44,6 +45,9 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
                 instance_of( p( Reference.class ) );
                 // ref bool
                 iffalse( invalid );
+                // ref
+                dup();
+                // ref ref
                 invokevirtual( p( Reference.class ), "isValidForPrePostIncrementDecrement", sig( boolean.class ) );
                 // ref bool
                 iffalse( invalid );
@@ -54,37 +58,86 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
                 // ref value
                 append( jsToNumber() );
                 // ref number
+                dup();
+                // ref number number
+                instance_of( p(Double.class) );
+                // ref number bool
+                iftrue( doubleNum );
+                
+                // ----------------------------------------
+                // Integer
+                
+                // ref number
                 dup2();
-                // ref number ref number
+                // ref Integer ref Integer
+                invokevirtual( p(Number.class), "intValue", sig(int.class) ) ;
+                // ref Integer ref int
                 iconst_1();
-                // ref number ref number 1
+                // ref Integer ref int 1
                 if (getOp().equals( "++" )) {
                     iadd();
                 } else {
                     isub();
                 }
-                // ref number(orig) ref number(new)
+                // ref Integer(orig) ref int(new)
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                // ref number(orig) ref number(new) context
+                // ref Integer(orig) ref int(new) context
                 swap();
-                // ref number(orig) ref context number(new)
+                // ref Integer(orig) ref context int(new)
+                invokestatic( p(Integer.class), "valueOf", sig( Integer.class, int.class)  );
+                // ref Integer(orig) ref context Integer(new)
                 invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
-                // ref number(orig)
+                // ref Integer(orig)
                 swap();
-                // number(orig) ref
+                // Integer(orig) ref
                 pop();
-                // number(orig)
+                // Integer(orig)
                 go_to( end );
+                
+                // ----------------------------------------
+                // Double
+                
+                label( doubleNum );
+                
+                // ref number
+                dup2();
+                // ref Double ref Double
+                invokevirtual( p(Number.class), "doubleValue", sig(double.class) );
+                // ref Double ref double
+                iconst_1();
+                // ref Double ref double 1
+                i2d();
+                // ref Double ref double 1.0
+                if (getOp().equals( "++" )) {
+                    dadd();
+                } else {
+                    dsub();
+                }
+                // ref Double(orig) ref double(new)
+                invokestatic( p(Double.class), "valueOf", sig( Double.class, double.class)  );
+                // ref Double(orig) ref Double(new)
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // ref Double(orig) ref Double(new) context
+                swap();
+                // ref Double(orig) ref context Double(new)
+                invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
+                // ref Double(orig)
+                swap();
+                // Double(orig) ref
+                pop();
+                // Double(orig)
+                go_to(end);
 
+                // ----------------------------------------
+                // Invalid
                 label( invalid );
                 // ref
-                pop();
-                // empty
-                // TODO: throw?
+                append( jsThrowSyntaxError() );
+                
                 label( end );
+                nop();
 
             }
         };
     }
-
 }

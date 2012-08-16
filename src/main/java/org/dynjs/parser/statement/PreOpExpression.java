@@ -34,6 +34,8 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                LabelNode storeNewValue = new LabelNode();
+                LabelNode doubleNum = new LabelNode();
                 LabelNode invalid = new LabelNode();
                 LabelNode end = new LabelNode();
 
@@ -44,6 +46,9 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
                 instance_of( p( Reference.class ) );
                 // ref bool
                 iffalse( invalid );
+                // ref
+                dup();
+                // ref ref
                 invokevirtual( p( Reference.class ), "isValidForPrePostIncrementDecrement", sig( boolean.class ) );
                 // ref bool
                 iffalse( invalid );
@@ -56,13 +61,53 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
                 // ref ref value
                 append( jsToNumber() );
                 // ref ref number
+
+                dup();
+                // ref ref number number
+                instance_of( p( Double.class ) );
+                // ref ref number bool
+                iftrue( doubleNum );
+                // ref ref number
+
+                // ----------------------------------------
+                // Integer
+
+                // ref ref number
+                invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+                // ref ref int
                 iconst_1();
-                // ref ref number 1
+                // ref ref int 1
                 if (getOp().equals( "++" )) {
                     iadd();
                 } else {
                     isub();
                 }
+                // ref ref int
+                invokestatic( p( Integer.class ), "valueOf", sig( Integer.class, int.class ) );
+                // ref ref Integer
+                go_to( storeNewValue );
+
+                // ----------------------------------------
+                // Double
+
+                label( doubleNum );
+                // ref ref number
+                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                // ref ref double
+                iconst_1();
+                // ref ref double 1
+                i2d();
+                // ref ref double 1.0
+                if (getOp().equals( "++" )) {
+                    dadd();
+                } else {
+                    dsub();
+                }
+                // ref ref double
+                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
+                // ref ref Double
+
+                label( storeNewValue );
                 // ref ref newval
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // ref ref newval context
@@ -76,10 +121,9 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
 
                 label( invalid );
                 // ref
-                pop();
-                // empty
-                // TODO: throw?
+                append( jsThrowSyntaxError() );
                 label( end );
+                nop();
 
             }
         };
