@@ -16,6 +16,7 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
 import org.objectweb.asm.tree.LabelNode;
@@ -41,11 +42,22 @@ public class TernaryExpression extends AbstractExpression {
                 LabelNode end = new LabelNode();
 
                 append( vbool.getCodeBlock() );
+                // val
+                append( jsToBoolean() );
+                // Boolean
+                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
+                // bool
                 iffalse( elseBranch );
+                // <empty>
                 append( vthen.getCodeBlock() );
+                // thenval
+                go_to(end);
+                
                 label( elseBranch );
                 append( velse.getCodeBlock() );
+                // elseval
                 label( end );
+                nop();
             }
         };
     }
