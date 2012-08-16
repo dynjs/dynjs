@@ -38,14 +38,14 @@ public class Types {
         return o;
     }
 
-    public static Double toNumber(Object o) {
+    public static Number toNumber(Object o) {
         // 9.3
         if (o instanceof JSObject) {
             return toNumber( toPrimitive( o, "Number" ) );
         }
 
-        if (o instanceof Double) {
-            return (Double) o;
+        if (o instanceof Number) {
+            return (Number) o;
         }
 
         if (o == Types.UNDEFINED) {
@@ -57,7 +57,12 @@ public class Types {
         }
 
         try {
-            return Double.valueOf( o.toString() );
+            String str = o.toString();
+            if (str.indexOf( "." ) > 0) {
+                return Double.valueOf( str );
+            } else {
+                return Integer.valueOf( str );
+            }
         } catch (NumberFormatException e) {
             return Double.NaN;
         }
@@ -85,24 +90,30 @@ public class Types {
         return true;
     }
 
-    public static Double toUint32(Object o) {
+    public static Integer toUint32(Object o) {
         // 9.5
-        Double n = toNumber( o );
-        if (n == Double.POSITIVE_INFINITY || n == Double.NEGATIVE_INFINITY || n == Double.NaN) {
-            return 0.0;
+        Number n = toNumber( o );
+        
+        if ( n instanceof Integer ) {
+            return ((Integer)n).intValue();
+        }
+        
+        double d = n.doubleValue();
+        if (d == Double.POSITIVE_INFINITY || d == Double.NEGATIVE_INFINITY || d == Double.NaN) {
+            return 0;
         }
 
-        double posInt = (n < 0 ? -1 : 1) * Math.floor( Math.abs( n ) );
+        double posInt = (d < 0 ? -1 : 1) * Math.floor( Math.abs( d ) );
 
         double int32bit = posInt % Math.pow( 2, 32 );
 
-        return int32bit;
+        return (int) int32bit;
     }
 
-    public static Double toInt32(Object o) {
-        double int32bit = toUint32( o );
+    public static Integer toInt32(Object o) {
+        int int32bit = toUint32( o );
         if (int32bit > Math.pow( 2, 31 )) {
-            return int32bit - Math.pow( 2, 32 );
+            return (int) (int32bit - Math.pow( 2, 32 ));
         }
         return int32bit;
     }

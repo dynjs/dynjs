@@ -8,6 +8,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
+import org.objectweb.asm.tree.LabelNode;
 
 public class AbstractByteCodeEmitter {
 
@@ -49,7 +50,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toNumber", sig( Double.class, Object.class ) );
+                invokestatic( p( Types.class ), "toNumber", sig( Number.class, Object.class ) );
                 // obj
             }
         };
@@ -69,7 +70,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toInt32", sig( Double.class, Object.class ) );
+                invokestatic( p( Types.class ), "toInt32", sig( Integer.class, Object.class ) );
                 // obj
             }
         };
@@ -79,7 +80,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toUint32", sig( Double.class, Object.class ) );
+                invokestatic( p( Types.class ), "toUint32", sig( Integer.class, Object.class ) );
                 // obj
             }
         };
@@ -159,5 +160,79 @@ public class AbstractByteCodeEmitter {
                 invokestatic( p(ExecutionContext.class), "throwReferenceError", sig(void.class) );
             }
         };
+    }
+    
+    public CodeBlock ifEitherIsDouble(final LabelNode target) {
+        // IN: Number Number
+        return new CodeBlock() {{
+            checkcast( p(Number.class) );
+            swap();
+            // val(rhs) Number(lhs)
+            checkcast( p(Number.class) );
+            swap();
+            // Number(lhs) Number(rhs)
+            dup();
+            // Number(lhs) Number(rhs) Number(rhs)
+            instance_of( p(Double.class) );
+            // Number(lhs) Number(rhs) bool
+            iftrue( target );
+            // Number(lhs) Number(rhs)
+            swap();
+            // Number(rhs) Number(lhs)
+            dup_x1();
+            // Number(lhs) Number(rhs) Number(lhs)
+            instance_of( p(Double.class) );
+            // Number(lhs) Number(rhs) bool
+            iftrue( target );
+            // Number(lhs) Number(rhs)
+        }};
+    }
+    
+    public CodeBlock convertTopTwoToPrimitiveInts() {
+        return new CodeBlock() {{
+            // IN: Number Number
+            invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+            // Number(lhs) int(rhs)
+            swap();
+            // int(rhs) Number(rhs)
+            invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+            // int(rhs) int(lhs)
+            swap();
+            // int(lhs) int(rhs);
+        }};
+    }
+    
+    public CodeBlock convertTopToInteger() {
+        return new CodeBlock() {{
+            // IN: int
+            invokestatic( p(Integer.class), "valueOf", sig(Integer.class, int.class)  );
+        }};
+    }
+    
+    public CodeBlock convertTopTwoToPrimitiveDoubles() {
+        return new CodeBlock() {{
+            // IN Number Number
+            checkcast( p(Number.class)  );
+            swap();
+            checkcast( p(Number.class)  );
+            swap();
+            invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+            // Number(lhs) double(rhs)
+            dup2_x1();
+            // double(rhs) Number(lhs) double(rhs);
+            pop2();
+            // double(rhs) Number(lhs)
+            invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+            // double(rhs) double(lhs)
+            swap2();
+            // OUT double double
+        }};
+    }
+    
+    public CodeBlock convertTopToDouble() {
+        return new CodeBlock() {{
+            // IN: int
+            invokestatic( p(Double.class), "valueOf", sig(Double.class, double.class)  );
+        }};
     }
 }

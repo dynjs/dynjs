@@ -22,7 +22,7 @@ import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNativeFunction {
 
-    public Eval(GlobalObject globalObject, boolean strict) {
+    public Eval(GlobalObject globalObject) {
         super( globalObject, "code" );
     }
 

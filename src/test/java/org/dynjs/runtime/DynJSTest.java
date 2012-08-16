@@ -149,7 +149,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     	check("var result = 0x000F; result &= 0x2222", 2.0);
     	check("var result = 0x000F; result |= 0x2222", 8751.0);
     	check("var result = 0x000F; result ^= 0x2222", 8749.0);
-
+    	
     	check("var result = 9 << 2", 36.0);
     	check("var result = 9 >> 2", 2.0);
     	check("var result = -1 >>> 2", 1.073741823E9);
@@ -253,7 +253,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testEval() {
-        check("eval('var result = true');");
+        Object result = eval( "eval('4+2')" );
+        assertThat( result ).isEqualTo( 6 );
     }
 
     @Test

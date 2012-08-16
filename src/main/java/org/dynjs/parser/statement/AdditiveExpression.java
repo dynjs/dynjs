@@ -24,6 +24,9 @@ public class AdditiveExpression extends AbstractBinaryExpression {
     public CodeBlock getCodeBlockForPlus() {
         return new CodeBlock() {
             {
+                LabelNode intNums = new LabelNode();
+                LabelNode doubleNums = new LabelNode();
+                
                 LabelNode stringConcatByLeft = new LabelNode();
                 LabelNode stringConcat = new LabelNode();
                 LabelNode end = new LabelNode();
@@ -58,24 +61,35 @@ public class AdditiveExpression extends AbstractBinaryExpression {
 
                 // ----------------------------------------
                 // Numbers
-                // val(lhs) val(rhs)
-                checkcast( p(Number.class) );
-                swap();
-                checkcast( p(Number.class) );
-                // num(rhs) num(lhs);
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-                // val(rhs) num(lhs)
-                dup2_x1();
-                pop2();
-                // num(lhs) val(rhs)
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-                // num(lhs) num(rhs)
+                
+                // Number(lhs) Number(rhs)
+                append( ifEitherIsDouble( doubleNums ) );
+                
+                // ----------------------------------------------
+                // Integer
+                
+                append( convertTopTwoToPrimitiveInts() );
+                // int(lhs) int(rhs)
+                iadd();
+                // num(total)
+                append( convertTopToInteger() );
+                // Integer(total)
+                go_to( end );
+                
+                // ----------------------------------------------
+                // Double
+                
+                label(doubleNums);
+                // (doubles) Number(lhs) Number(rhs)
+                append( convertTopTwoToPrimitiveDoubles() );
+                // double(lhs) double(rhs)
                 dadd();
                 // num(total)
-                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
-                // obj(total)
+                append( convertTopToDouble() );
+                // Double(total)
                 go_to( end );
-
+                
+                
                 // ----------------------------------------
                 // Strings forced by LHS
                 label( stringConcatByLeft );
@@ -114,6 +128,9 @@ public class AdditiveExpression extends AbstractBinaryExpression {
     public CodeBlock getCodeBlockForMinus() {
         return new CodeBlock() {
             {
+                LabelNode doubleNums = new LabelNode();
+                LabelNode end = new LabelNode();
+                
                 append( getLhs().getCodeBlock() );
                 // obj(lhs)
                 append( jsGetValue() );
@@ -123,21 +140,26 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 append( jsGetValue() );
                 // val(lhs) val(rhs)
                 
-                checkcast( p(Number.class) );
-                swap();
-                checkcast( p(Number.class) );
-                // num(rhs) num(lhs);
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-                // val(rhs) num(lhs)
-                dup2_x1();
-                pop2();
-                // num(lhs) val(rhs)
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-                // num(lhs) num(rhs)
+                append( ifEitherIsDouble( doubleNums ) );
+                
+                // -------------------------------------
+                // Integer
+                
+                append( convertTopTwoToPrimitiveInts() );
+                isub();
+                append( convertTopToInteger() );
+                go_to( end );
+                
+                // -------------------------------------
+                // Double
+                
+                label( doubleNums );
+                append( convertTopTwoToPrimitiveDoubles() );
                 dsub();
-                // num(total)
-                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
-                // obj(total)
+                append( convertTopToDouble() );
+                
+                label( end );
+                
 
             }
         };

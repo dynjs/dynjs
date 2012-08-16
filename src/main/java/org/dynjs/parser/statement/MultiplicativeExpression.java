@@ -4,6 +4,7 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.objectweb.asm.tree.LabelNode;
 
 public class MultiplicativeExpression extends AbstractBinaryExpression {
 
@@ -15,25 +16,33 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                LabelNode doubleNums = new LabelNode();
+                LabelNode end = new LabelNode();
+
                 append( getLhs().getCodeBlock() );
                 // val(lhs)
-                
                 append( jsGetValue() );
                 append( getRhs().getCodeBlock() );
                 // val(rhs)
                 append( jsGetValue() );
-                
-                checkcast( p(Number.class) );
-                swap();
-                checkcast( p(Number.class) );
-                // num(rhs) num(lhs);
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-                // val(rhs) num(lhs)
-                dup2_x1();
-                pop2();
-                // num(lhs) val(rhs)
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
-                // num(lhs) num(rhs)
+
+                if (!getOp().equals( "/" )) {
+                    append( ifEitherIsDouble( doubleNums ) );
+
+                    append( convertTopTwoToPrimitiveInts() );
+                    if (getOp().equals( "*" )) {
+                        imul();
+                    } else if (getOp().equals( "/" )) {
+                        idiv();
+                    } else if (getOp().equals( "%" )) {
+                        irem();
+                    }
+                    append( convertTopToInteger() );
+                    go_to( end );
+
+                    label( doubleNums );
+                }
+                append( convertTopTwoToPrimitiveDoubles() );
 
                 if (getOp().equals( "*" )) {
                     dmul();
@@ -42,8 +51,10 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                 } else if (getOp().equals( "%" )) {
                     drem();
                 }
-                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
-                // obj(total)
+                append( convertTopToDouble() );
+
+                label( end );
+                nop();
             }
         };
     }

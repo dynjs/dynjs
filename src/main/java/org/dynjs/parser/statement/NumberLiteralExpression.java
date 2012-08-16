@@ -54,10 +54,8 @@ public class NumberLiteralExpression extends AbstractExpression {
                     // Integer
                     invokevirtual( p( Integer.class ), "intValue", sig( int.class ) );
                     // int
-                    i2d();
-                    // double
-                    invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
-                    // Double
+                    invokestatic( p( Integer.class ), "valueOf", sig( Integer.class, int.class ) );
+                    // Integer
                 }
             }
         };
