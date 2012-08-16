@@ -45,15 +45,15 @@ public class ArrayLiteralExpression extends AbstractExpression {
                 astore( 4 );
             }
         };
-        Statement[] statements = exprs.toArray( new Statement[] {} );
-        for (int i = 0; i < statements.length; i++) {
-            Statement statement = statements[i];
+        Expression[] expressions = exprs.toArray( new Expression[] {} );
+        for (int i = 0; i < expressions.length; i++) {
+            Expression statement = expressions[i];
             codeBlock = retrieveArrayReference( i, statement, codeBlock );
         }
         return codeBlock.aload( 4 );
     }
 
-    private CodeBlock retrieveArrayReference(final int stackReference, final Statement statement,
+    private CodeBlock retrieveArrayReference(final int stackReference, final Expression statement,
             final CodeBlock codeBlock) {
         return new CodeBlock() {
             {
