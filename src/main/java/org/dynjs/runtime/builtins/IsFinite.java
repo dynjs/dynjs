@@ -15,7 +15,7 @@ public class IsFinite extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         Object o = args[0];
         if (o != Types.UNDEFINED) {
-            if (o.getClass() == Integer.class || o.getClass() == Double.class) { return true; }
+            if (o instanceof Number) { return true; }
             return IsNaN.isNaN( args ) ? false : true;
         } else {
             return Types.UNDEFINED;

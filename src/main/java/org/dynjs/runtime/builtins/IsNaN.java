@@ -34,9 +34,9 @@ public class IsNaN extends AbstractNativeFunction {
     }
 
     static boolean isNullOrBooleanOrWhiteSpace(Object arg) {
-        if (arg == Types.NULL || arg.getClass() == Boolean.class) {
+        if (arg == Types.NULL || arg instanceof Boolean) {
             return true;
-        } else if (arg.getClass() == String.class) {
+        } else if (arg instanceof String) {
             String value = ((String) arg).trim();
             return value.equals( "" );
         }

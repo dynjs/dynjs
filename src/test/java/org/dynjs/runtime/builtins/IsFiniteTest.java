@@ -60,7 +60,7 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void ignoresThanOneParameter() {
+    public void ignoresMoreThanOneParameter() {
         check( "var result = isFinite('abc', 234);", false );
     }
 

@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.exception.DynJSException;
 
 public class Types {
 
