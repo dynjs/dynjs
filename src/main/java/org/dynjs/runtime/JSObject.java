@@ -25,7 +25,7 @@ public interface JSObject {
     Object defaultValue(String hint);
 
     boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow);
-    
+
     NameEnumerator getEnumerablePropertyNames();
 
 }

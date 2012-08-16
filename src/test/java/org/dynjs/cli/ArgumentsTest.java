@@ -36,20 +36,20 @@ public class ArgumentsTest {
     }
 
     @Test
-    public void usageCannotBeEmpty(){
+    public void usageCannotBeEmpty() {
         assertThat(parser.printExample(ExampleMode.ALL)).isNotEmpty();
     }
 
     @Test
     public void callWithNoArgument() throws CmdLineException {
-        parser.parseArgument(new String[]{});
+        parser.parseArgument(new String[] {});
 
         assertThat(arguments.isEmpty()).isTrue();
     }
 
     @Test
     public void callWithConsoleArgument() throws CmdLineException {
-        parser.parseArgument(new String[]{CONSOLE});
+        parser.parseArgument(new String[] { CONSOLE });
 
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isConsole()).isTrue();
@@ -57,7 +57,7 @@ public class ArgumentsTest {
 
     @Test
     public void callWithDebugArgument() throws CmdLineException {
-        parser.parseArgument(new String[]{DEBUG});
+        parser.parseArgument(new String[] { DEBUG });
 
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isDebug()).isTrue();
@@ -65,7 +65,7 @@ public class ArgumentsTest {
 
     @Test
     public void callWithHelpArgument() throws CmdLineException {
-        parser.parseArgument(new String[]{HELP});
+        parser.parseArgument(new String[] { HELP });
 
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isHelp()).isTrue();
@@ -73,7 +73,7 @@ public class ArgumentsTest {
 
     @Test
     public void callWithVersionArgument() throws CmdLineException {
-        parser.parseArgument(new String[]{VERSION});
+        parser.parseArgument(new String[] { VERSION });
 
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isVersion()).isTrue();
@@ -82,7 +82,7 @@ public class ArgumentsTest {
     @Test
     public void callWithFilenameArgument() throws CmdLineException {
         final String filename = "meh.js";
-        parser.parseArgument(new String[]{filename});
+        parser.parseArgument(new String[] { filename });
 
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.getFilename()).isNotEmpty();
@@ -91,11 +91,11 @@ public class ArgumentsTest {
 
     @Test(expected = CmdLineException.class)
     public void callWithUnexpectedArgument() throws CmdLineException {
-        parser.parseArgument(new String[]{"--whatever"});
+        parser.parseArgument(new String[] { "--whatever" });
     }
 
     @Test
     public void callWithUnexpectedArgumentOrder() throws CmdLineException {
-        parser.parseArgument(new String[]{"meh.js", HELP});
+        parser.parseArgument(new String[] { "meh.js", HELP });
     }
 }

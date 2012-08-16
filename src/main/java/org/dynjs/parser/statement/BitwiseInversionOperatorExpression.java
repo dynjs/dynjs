@@ -25,7 +25,7 @@ public class BitwiseInversionOperatorExpression extends AbstractExpression {
     private final Expression expr;
 
     public BitwiseInversionOperatorExpression(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
@@ -35,12 +35,12 @@ public class BitwiseInversionOperatorExpression extends AbstractExpression {
             {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( expr.getCodeBlock() );
+
+                append(expr.getCodeBlock());
                 // obj
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val
-                append( jsToInt32() );
+                append(jsToInt32());
                 // int
                 iconst_m1();
                 // int -1

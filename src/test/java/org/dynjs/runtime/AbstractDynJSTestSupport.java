@@ -12,12 +12,12 @@ public abstract class AbstractDynJSTestSupport {
     @Before
     public void setUp() {
         this.config = new Config();
-        this.config.setDebug( true );
-        this.runtime = new DynJS( this.config );
+        this.config.setDebug(true);
+        this.runtime = new DynJS(this.config);
     }
-    
-    protected Object eval(String...lines) {
-        return getRuntime().evaluate( lines );
+
+    protected Object eval(String... lines) {
+        return getRuntime().evaluate(lines);
     }
 
     protected void check(String scriptlet) {
@@ -25,16 +25,16 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     protected void check(String scriptlet, Boolean expected) {
-        this.runtime.execute( scriptlet, null, 0 );
-        Reference result = this.runtime.getExecutionContext().resolve( "result" );
-        Object value = result.getValue( getContext() );
+        this.runtime.execute(scriptlet, null, 0);
+        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
 
     protected void check(String scriptlet, Object expected) {
-        this.runtime.execute( scriptlet, null, 0 );
-        Reference result = this.runtime.getExecutionContext().resolve( "result" );
-        Object value = result.getValue( getContext() );
+        this.runtime.execute(scriptlet, null, 0);
+        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
 
@@ -51,7 +51,7 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     protected Object resultFor(String expression) {
-        this.runtime.execute( expression, null, 0 );
-        return getContext().resolve("result").getValue( getContext() );
+        this.runtime.execute(expression, null, 0);
+        return getContext().resolve("result").getValue(getContext());
     }
 }

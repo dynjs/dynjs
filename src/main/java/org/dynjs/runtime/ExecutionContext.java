@@ -18,7 +18,7 @@ public class ExecutionContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        ExecutionContext context = new ExecutionContext( env, env, env.getGlobalObject(), false );
+        ExecutionContext context = new ExecutionContext(env, env, env.getGlobalObject(), false);
         return context;
     }
 
@@ -60,27 +60,27 @@ public class ExecutionContext {
     }
 
     public Reference resolve(String name) {
-        Reference ref = this.lexicalEnvironment.getIdentifierReference( this, name, isStrict() );
+        Reference ref = this.lexicalEnvironment.getIdentifierReference(this, name, isStrict());
         return ref;
     }
 
     // ----------------------------------------------------------------------
 
     public Completion execute(JSProgram program) {
-        setStrict( program.isStrict() );
-        performDeclarationBindingInstantiation( program );
-        return program.execute( this );
+        setStrict(program.isStrict());
+        performDeclarationBindingInstantiation(program);
+        return program.execute(this);
     }
 
     public Object eval(JSEval eval) {
-        ExecutionContext evalContext = createEvalExecutionContext( eval );
-        return eval.evaluate( evalContext );
+        ExecutionContext evalContext = createEvalExecutionContext(eval);
+        return eval.evaluate(evalContext);
     }
 
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
-        ExecutionContext fnContext = createFunctionExecutionContext( function, self, args );
-        Object result = function.call( fnContext );
+        ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
+        Object result = function.call(fnContext);
         if (result == null) {
             return Types.UNDEFINED;
         }
@@ -91,11 +91,11 @@ public class ExecutionContext {
     public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
         DynObject obj = new DynObject();
-        obj.setClassName( "Object" );
-        obj.setExtensible( true );
+        obj.setClassName("Object");
+        obj.setExtensible(true);
         JSObject proto = function.getPrototype();
-        obj.setPrototype( proto );
-        call( function, obj, args );
+        obj.setPrototype(proto);
+        call(function, obj, args);
         return obj;
     }
 
@@ -105,13 +105,13 @@ public class ExecutionContext {
         // 10.4.2 (with caller)
         ExecutionContext context = null;
         if (!eval.isStrict()) {
-            context = new ExecutionContext( this.getLexicalEnvironment(), this.getVariableEnvironment(), this.getThisBinding(), false );
+            context = new ExecutionContext(this.getLexicalEnvironment(), this.getVariableEnvironment(), this.getThisBinding(), false);
         } else {
-            LexicalEnvironment strictVarEnv = LexicalEnvironment.newDeclarativeEnvironment( this.getLexicalEnvironment() );
-            context = new ExecutionContext( strictVarEnv, strictVarEnv, this.getThisBinding(), true );
+            LexicalEnvironment strictVarEnv = LexicalEnvironment.newDeclarativeEnvironment(this.getLexicalEnvironment());
+            context = new ExecutionContext(strictVarEnv, strictVarEnv, this.getThisBinding(), true);
         }
-        context.performFunctionDeclarationBindings( eval, true );
-        context.performVariableDeclarationBindings( eval, true );
+        context.performFunctionDeclarationBindings(eval, true);
+        context.performVariableDeclarationBindings(eval, true);
         return context;
     }
 
@@ -121,33 +121,33 @@ public class ExecutionContext {
             thisArg = this.getLexicalEnvironment().getGlobalObject();
         }
 
-        JSObject thisBinding = Types.toObject( thisArg );
+        JSObject thisBinding = Types.toObject(thisArg);
 
         LexicalEnvironment scope = function.getScope();
-        LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment( scope );
+        LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
-        ExecutionContext context = new ExecutionContext( localEnv, localEnv, thisBinding, function.isStrict() );
-        context.performDeclarationBindingInstantiation( function, arguments );
+        ExecutionContext context = new ExecutionContext(localEnv, localEnv, thisBinding, function.isStrict());
+        context.performDeclarationBindingInstantiation(function, arguments);
         return context;
     }
 
     public Completion executeCatch(BasicBlock block, String identifier, Object thrown) {
         // 12.14
         LexicalEnvironment oldEnv = this.lexicalEnvironment;
-        LexicalEnvironment catchEnv = LexicalEnvironment.newDeclarativeEnvironment( oldEnv );
-        catchEnv.getRecord().createMutableBinding( this, identifier, false );
-        catchEnv.getRecord().setMutableBinding( this, identifier, thrown, false );
+        LexicalEnvironment catchEnv = LexicalEnvironment.newDeclarativeEnvironment(oldEnv);
+        catchEnv.getRecord().createMutableBinding(this, identifier, false);
+        catchEnv.getRecord().setMutableBinding(this, identifier, thrown, false);
         this.lexicalEnvironment = catchEnv;
         try {
-            return block.call( this );
+            return block.call(this);
         } finally {
             this.lexicalEnvironment = oldEnv;
         }
     }
 
     private void performDeclarationBindingInstantiation(JSProgram program) {
-        performFunctionDeclarationBindings( program, false );
-        performVariableDeclarationBindings( program, false );
+        performFunctionDeclarationBindings(program, false);
+        performVariableDeclarationBindings(program, false);
     }
 
     private void performDeclarationBindingInstantiation(JSFunction function, Object[] arguments) {
@@ -166,32 +166,32 @@ public class ExecutionContext {
                 v = arguments[i];
             }
 
-            if (!env.hasBinding( this, names[i] )) {
-                env.createMutableBinding( this, names[i], false );
+            if (!env.hasBinding(this, names[i])) {
+                env.createMutableBinding(this, names[i], false);
             }
 
-            env.setMutableBinding( this, names[i], v, function.isStrict() );
+            env.setMutableBinding(this, names[i], v, function.isStrict());
         }
 
         // * 5
-        performFunctionDeclarationBindings( function, false );
+        performFunctionDeclarationBindings(function, false);
 
         // * 6
-        if (!env.hasBinding( this, "arguments" )) {
+        if (!env.hasBinding(this, "arguments")) {
             // * 7
-            Arguments argsObj = createArgumentsObject( function, arguments );
+            Arguments argsObj = createArgumentsObject(function, arguments);
 
             if (function.isStrict()) {
-                env.createImmutableBinding( "arguments" );
-                env.initializeImmutableBinding( "arguments", argsObj );
+                env.createImmutableBinding("arguments");
+                env.initializeImmutableBinding("arguments", argsObj);
             } else {
-                env.createMutableBinding( this, "arguments", false );
-                env.setMutableBinding( this, "arguments", argsObj, false );
+                env.createMutableBinding(this, "arguments", false);
+                env.setMutableBinding(this, "arguments", argsObj, false);
             }
         }
 
         // * 8
-        performVariableDeclarationBindings( function, false );
+        performVariableDeclarationBindings(function, false);
     }
 
     private Arguments createArgumentsObject(final JSFunction function, final Object[] arguments) {
@@ -263,27 +263,27 @@ public class ExecutionContext {
         EnvironmentRecord env = this.variableEnvironment.getRecord();
         for (FunctionDeclaration each : decls) {
             String identifier = each.getIdentifier();
-            if (!env.hasBinding( this, identifier )) {
-                env.createMutableBinding( this, identifier, configurableBindings );
+            if (!env.hasBinding(this, identifier)) {
+                env.createMutableBinding(this, identifier, configurableBindings);
             } else if (env.isGlobal()) {
                 JSObject globalObject = ((ObjectEnvironmentRecord) env).getBindingObject();
-                PropertyDescriptor existingProp = (PropertyDescriptor) globalObject.getProperty( this, identifier );
+                PropertyDescriptor existingProp = (PropertyDescriptor) globalObject.getProperty(this, identifier);
                 if (existingProp.isConfigurable()) {
                     PropertyDescriptor newProp = new PropertyDescriptor() {
                         {
-                            set( "Value", Types.UNDEFINED );
-                            set( "Writable", true );
-                            set( "Enumerable", true );
-                            set( "Configurable", configurableBindings );
+                            set("Value", Types.UNDEFINED);
+                            set("Writable", true);
+                            set("Enumerable", true);
+                            set("Configurable", configurableBindings);
                         }
                     };
-                    globalObject.defineOwnProperty( this, identifier, newProp, true );
+                    globalObject.defineOwnProperty(this, identifier, newProp, true);
                 } else if (existingProp.isAccessorDescriptor() || (!existingProp.isWritable() && !existingProp.isEnumerable())) {
                     throw new TypeError();
                 }
             }
-            JSFunction function = getCompiler().compileFunction( this, each.getFormalParameters(), each.getBlock() );
-            env.setMutableBinding( this, identifier, function, code.isStrict() );
+            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock());
+            env.setMutableBinding(this, identifier, function, code.isStrict());
         }
     }
 
@@ -293,9 +293,9 @@ public class ExecutionContext {
         EnvironmentRecord env = this.variableEnvironment.getRecord();
         for (VariableDeclaration decl : decls) {
             String identifier = decl.getIdentifier();
-            if (!env.hasBinding( this, identifier )) {
-                env.createMutableBinding( this, identifier, configurableBindings );
-                env.setMutableBinding( this, identifier, Types.UNDEFINED, code.isStrict() );
+            if (!env.hasBinding(this, identifier)) {
+                env.createMutableBinding(this, identifier, configurableBindings);
+                env.setMutableBinding(this, identifier, Types.UNDEFINED, code.isStrict());
             }
         }
     }
@@ -317,11 +317,11 @@ public class ExecutionContext {
     }
 
     public Reference createPropertyReference(Object base, String propertyName) {
-        return new Reference( getGlobalObject(), propertyName, base, isStrict() );
+        return new Reference(getGlobalObject(), propertyName, base, isStrict());
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {
-        return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry( statementNumber );
+        return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry(statementNumber);
     }
 
     public static void throwTypeError() {
@@ -329,11 +329,11 @@ public class ExecutionContext {
     }
 
     public static void throwReferenceError(String ref) {
-        throw new ReferenceError( ref );
+        throw new ReferenceError(ref);
     }
-    
+
     public static void throwSyntaxError() {
-        throw new SyntaxError( new ArrayList<String>() );
+        throw new SyntaxError(new ArrayList<String>());
     }
 
 }

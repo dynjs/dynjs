@@ -23,7 +23,7 @@ import org.dynjs.runtime.Types;
 public class ParseInt extends AbstractNativeFunction {
 
     public ParseInt(GlobalObject globalObject) {
-        super( globalObject, "text", "radix" );
+        super(globalObject, "text", "radix");
     }
 
     @Override
@@ -35,43 +35,45 @@ public class ParseInt extends AbstractNativeFunction {
 
         if (radixArg != Types.UNDEFINED) {
             radix = ((Number) radixArg).intValue();
-            if (radix == 0) { radix = 10; }
+            if (radix == 0) {
+                radix = 10;
+            }
         } else {
-            radix = extractRadix( text );
+            radix = extractRadix(text);
         }
         text = cleanText(text, radix);
-        return parseInt( text, radix );
+        return parseInt(text, radix);
     }
-    
+
     static String cleanText(String text, int radix) {
         if (radix == 16) {
-            if (text.startsWith( "0x" ) || text.startsWith( "0X" )) {
-                return text.substring( 2 );
+            if (text.startsWith("0x") || text.startsWith("0X")) {
+                return text.substring(2);
             }
-        } 
-        return text;        
+        }
+        return text;
     }
 
     static int extractRadix(String text) {
         int radix = 10;
-        if (text.startsWith( "0x" )) {
+        if (text.startsWith("0x")) {
             radix = 16;
-        } else if (text.startsWith( "0" )) {
+        } else if (text.startsWith("0")) {
             radix = 8;
         }
         return radix;
     }
 
     static Object parseInt(String text, int radix) {
-        int dotLoc = text.indexOf( '.' );
+        int dotLoc = text.indexOf('.');
         if (dotLoc >= 0) {
-            text = text.substring( 0, dotLoc );
+            text = text.substring(0, dotLoc);
         }
 
         try {
-            System.err.println( "text: " + text );
-            System.err.println( "radix: " + radix );
-            return Integer.parseInt( text, radix );
+            System.err.println("text: " + text);
+            System.err.println("radix: " + radix);
+            return Integer.parseInt(text, radix);
         } catch (NumberFormatException e) {
             System.err.println(e.getLocalizedMessage());
             e.printStackTrace();

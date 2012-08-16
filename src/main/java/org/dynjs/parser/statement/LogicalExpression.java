@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class LogicalExpression extends AbstractBinaryExpression {
 
     public LogicalExpression(Tree tree, Expression lhs, Expression rhs, String op) {
-        super( tree, lhs, rhs, op );
+        super(tree, lhs, rhs, op);
     }
 
     @Override
@@ -20,24 +20,24 @@ public class LogicalExpression extends AbstractBinaryExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( getLhs().getCodeBlock() );
-                append( jsGetValue() );
-                append( jsToBoolean() );
-                invokevirtual( p( Boolean.class ), "booleanValue", sig( boolean.class ) );
+                append(getLhs().getCodeBlock());
+                append(jsGetValue());
+                append(jsToBoolean());
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // bool(lhs)
                 dup();
                 // bool(lhs) bool(lhs)
 
-                if (getOp().equals( "&&" )) {
-                    iffalse( returnFalse );
-                } else if (getOp().equals( "||" )) {
-                    iftrue( returnTrue );
+                if (getOp().equals("&&")) {
+                    iffalse(returnFalse);
+                } else if (getOp().equals("||")) {
+                    iftrue(returnTrue);
                 }
 
-                append( getRhs().getCodeBlock() );
-                append( jsGetValue() );
-                append( jsToBoolean() );
-                invokevirtual( p( Boolean.class ), "booleanValue", sig( boolean.class ) );
+                append(getRhs().getCodeBlock());
+                append(jsGetValue());
+                append(jsToBoolean());
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // bool(lhs) bool(rhs)
                 swap();
                 // bool(rhs) bool(lhs)
@@ -45,27 +45,27 @@ public class LogicalExpression extends AbstractBinaryExpression {
                 // bool(rhs)
                 dup();
                 // bool(rhs) bool(rhs)
-                iftrue( returnTrue );
-                go_to( returnFalse );
-                
+                iftrue(returnTrue);
+                go_to(returnFalse);
+
                 // ----------------------------------------
                 // TRUE
                 // bool
-                label( returnTrue );
+                label(returnTrue);
                 pop();
-                getstatic( p(Boolean.class), "TRUE", ci(Boolean.class) ); 
+                getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
                 go_to(end);
-                
-                // ----------------------------------------
-                // FALSE
-                label( returnFalse );
-                pop();
-                getstatic( p(Boolean.class), "FALSE", ci(Boolean.class) ); 
 
                 // ----------------------------------------
-                label( end );
+                // FALSE
+                label(returnFalse);
+                pop();
+                getstatic(p(Boolean.class), "FALSE", ci(Boolean.class));
+
+                // ----------------------------------------
+                label(end);
                 // bool
-                
+
                 nop();
             }
         };

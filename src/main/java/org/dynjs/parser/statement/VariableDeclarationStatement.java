@@ -26,10 +26,10 @@ public class VariableDeclarationStatement extends AbstractStatement {
     private List<VariableDeclaration> declExprs;
 
     public VariableDeclarationStatement(final Tree tree, final List<VariableDeclaration> declExprs) {
-        super( tree );
+        super(tree);
         this.declExprs = declExprs;
     }
-    
+
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.declExprs;
     }
@@ -39,12 +39,12 @@ public class VariableDeclarationStatement extends AbstractStatement {
         return new CodeBlock() {
             {
                 for (VariableDeclaration each : declExprs) {
-                    append( each.getCodeBlock() );
+                    append(each.getCodeBlock());
                     // identifier
                     pop();
                     // <EMPTY>
                 }
-                append( normalCompletion() );
+                append(normalCompletion());
             }
         };
     }

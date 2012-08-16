@@ -34,7 +34,7 @@ public class FunctionCallExpression extends AbstractExpression {
     private final List<Expression> argExprs;
 
     public FunctionCallExpression(final Tree tree, final Expression memberExpr, final List<Expression> argExprs) {
-        super( tree );
+        super(tree);
         this.memberExpr = memberExpr;
         this.argExprs = argExprs;
     }
@@ -47,55 +47,55 @@ public class FunctionCallExpression extends AbstractExpression {
                 LabelNode noSelf = new LabelNode();
                 LabelNode doCall = new LabelNode();
                 // 11.2.3
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append( memberExpr.getCodeBlock() );
+                append(memberExpr.getCodeBlock());
                 // context ref
                 dup();
                 // context ref ref
-                append( jsGetValue() );
+                append(jsGetValue());
                 // context ref function
                 swap();
                 // context function ref
                 dup();
                 // context function ref ref
-                instance_of( p( Reference.class ) );
+                instance_of(p(Reference.class));
                 // context function ref isref?
-                iffalse( noSelf );
+                iffalse(noSelf);
                 // context function ref
-                checkcast( p(Reference.class)  );
-                append( jsGetBase() );
+                checkcast(p(Reference.class));
+                append(jsGetBase());
                 // context function self
-                go_to( doCall );
+                go_to(doCall);
 
                 // ------------------------------------------
                 // No self
-                label( noSelf );
+                label(noSelf);
                 // context function ref
                 pop();
                 // context function
-                append( jsPushUndefined() );
+                append(jsPushUndefined());
                 // context function UNDEFINED
 
                 // ------------------------------------------
                 // call()
 
-                label( doCall );
+                label(doCall);
                 // context function self
 
                 int numArgs = argExprs.size();
-                bipush( numArgs );
-                anewarray( p( Object.class ) );
+                bipush(numArgs);
+                anewarray(p(Object.class));
                 // context function self array
                 for (int i = 0; i < numArgs; ++i) {
                     dup();
-                    bipush( i );
-                    append( argExprs.get( i ).getCodeBlock() );
+                    bipush(i);
+                    append(argExprs.get(i).getCodeBlock());
                     aastore();
                 }
                 // context function self array
                 // call ExecutionContext#call(fn, self, args) -> Object
-                invokevirtual( p( ExecutionContext.class ), "call", sig( Object.class, JSFunction.class, Object.class, Object[].class ) );
+                invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, JSFunction.class, Object.class, Object[].class));
                 // obj
             }
         };

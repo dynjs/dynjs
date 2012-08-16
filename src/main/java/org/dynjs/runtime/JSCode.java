@@ -9,5 +9,6 @@ public interface JSCode {
     boolean isStrict();
 
     List<FunctionDeclaration> getFunctionDeclarations();
+
     List<VariableDeclaration> getVariableDeclarations();
 }

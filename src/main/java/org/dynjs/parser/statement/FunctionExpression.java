@@ -24,19 +24,19 @@ public class FunctionExpression extends AbstractExpression {
 
     private BlockManager blockManager;
     private FunctionDescriptor descriptor;
-    
+
     public FunctionExpression(BlockManager blockManager, FunctionDescriptor descriptor) {
-        super( descriptor.getTree() );
+        super(descriptor.getTree());
         this.blockManager = blockManager;
         this.descriptor = descriptor;
     }
-    
+
     public FunctionDescriptor getDescriptor() {
         return this.descriptor;
     }
-    
+
     public CodeBlock getCodeBlock() {
-        return CodeBlockUtils.compiledFunction( blockManager, descriptor.getFormalParameters(), descriptor.getBlock() );
+        return CodeBlockUtils.compiledFunction(blockManager, descriptor.getFormalParameters(), descriptor.getBlock());
     }
 
 }

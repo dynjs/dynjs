@@ -30,7 +30,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
     private final Statement vloop;
 
     public DoWhileStatement(final Tree tree, BlockManager blockManager, final Expression vbool, final Statement vloop) {
-        super( tree, blockManager );
+        super(tree, blockManager);
         this.vbool = vbool;
         this.vloop = vloop;
     }
@@ -44,38 +44,38 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 LabelNode breakTarget = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                label( begin );
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Do", vloop ) );
+                label(begin);
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", vloop));
                 // completion(block)
                 dup();
                 // completion(block) completion(block)
-                append( handleCompletion( normalTarget, breakTarget, normalTarget, end, end ) );
+                append(handleCompletion(normalTarget, breakTarget, normalTarget, end, end));
 
                 // ----------------------------------------
                 // NORMAL
-                label( normalTarget );
+                label(normalTarget);
                 // completion(block)
 
-                append( vbool.getCodeBlock() );
+                append(vbool.getCodeBlock());
                 // completion(block) result
-                append( jsToBoolean() );
+                append(jsToBoolean());
                 // completion(blokc) Boolean
-                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // completion(blokc) bool
-                iffalse( end );
+                iffalse(end);
                 pop();
                 // <EMPTY>
-                go_to( begin );
+                go_to(begin);
 
                 // ----------------------------------------
                 // BREAK
-                label( breakTarget );
+                label(breakTarget);
                 // completion(block,BREAK)
-                append( convertToNormal() );
+                append(convertToNormal());
                 // completion(block,NORMAL)
 
                 // ----------------------------------------
-                label( end );
+                label(end);
                 // completion(block)
                 nop();
                 // completion(block)

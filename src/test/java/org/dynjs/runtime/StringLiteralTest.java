@@ -8,21 +8,21 @@ public class StringLiteralTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testEvalStringLiteral() {
-        Object result = eval( "'howdy'" );
-        assertThat( result ).isEqualTo( "howdy" );
+        Object result = eval("'howdy'");
+        assertThat(result).isEqualTo("howdy");
     }
-    
+
     @Test
     public void testStringConcatentation() {
-        Object result = eval( "'howdy' + ' ' + 'dude'");
-        assertThat( result ).isEqualTo( "howdy dude" );
+        Object result = eval("'howdy' + ' ' + 'dude'");
+        assertThat(result).isEqualTo("howdy dude");
     }
-    
+
     @Test
     public void testStringLiteralInitializer() {
-        eval( "var x = 'howdy';" );
-        Reference x = getContext().resolve( "x" );
-        assertThat( x ).isNotNull();
-        assertThat( x.getValue( getContext() ) ).isEqualTo( "howdy" );
+        eval("var x = 'howdy';");
+        Reference x = getContext().resolve("x");
+        assertThat(x).isNotNull();
+        assertThat(x.getValue(getContext())).isEqualTo("howdy");
     }
 }

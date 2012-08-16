@@ -25,16 +25,18 @@ public class PrintStatement extends AbstractStatement implements Statement {
     private final Expression expr;
 
     public PrintStatement(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock() {{
-            append( expr.getCodeBlock() );
-            aprintln();
-            normalCompletion();
-        }};
+        return new CodeBlock() {
+            {
+                append(expr.getCodeBlock());
+                aprintln();
+                normalCompletion();
+            }
+        };
     }
 }

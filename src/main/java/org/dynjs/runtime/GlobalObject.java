@@ -21,19 +21,19 @@ public class GlobalObject extends DynObject {
 
     public GlobalObject(DynJS runtime) {
         this.runtime = runtime;
-        this.compiler = new JSCompiler( runtime.getConfig() );
+        this.compiler = new JSCompiler(runtime.getConfig());
         this.blockManager = new BlockManager();
 
-        defineGlobalProperty( "undefined", Types.UNDEFINED );
-        defineGlobalProperty( "NaN", Double.NaN );
-        defineGlobalProperty( "Infinity", Double.POSITIVE_INFINITY );
-        defineGlobalProperty( "-Infinity", Double.NEGATIVE_INFINITY );
-        defineGlobalProperty( "parseFloat", new ParseFloat( this ) );
-        defineGlobalProperty( "parseInt", new ParseInt( this ) );
-        defineGlobalProperty( "eval", new Eval( this ) );
-        defineGlobalProperty( "isNaN", new IsNaN( this ) );
-        defineGlobalProperty( "isFinite", new IsFinite( this ) );
-        defineGlobalProperty( "Number", new Types.JSNumber() );
+        defineGlobalProperty("undefined", Types.UNDEFINED);
+        defineGlobalProperty("NaN", Double.NaN);
+        defineGlobalProperty("Infinity", Double.POSITIVE_INFINITY);
+        defineGlobalProperty("-Infinity", Double.NEGATIVE_INFINITY);
+        defineGlobalProperty("parseFloat", new ParseFloat(this));
+        defineGlobalProperty("parseInt", new ParseInt(this));
+        defineGlobalProperty("eval", new Eval(this));
+        defineGlobalProperty("isNaN", new IsNaN(this));
+        defineGlobalProperty("isFinite", new IsFinite(this));
+        defineGlobalProperty("Number", new Types.JSNumber());
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
@@ -53,16 +53,16 @@ public class GlobalObject extends DynObject {
          * put("Math", new DynObject());
          */
     }
-    
+
     public List<ModuleProvider> getModuleProviders() {
         // TODO: wire me back up.
         return Collections.emptyList();
     }
-    
+
     public DynJS getRuntime() {
         return this.runtime;
     }
-    
+
     public Config getConfig() {
         return getRuntime().getConfig();
     }
@@ -76,19 +76,19 @@ public class GlobalObject extends DynObject {
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {
-        return this.blockManager.retrieve( statementNumber );
+        return this.blockManager.retrieve(statementNumber);
     }
 
     protected void defineGlobalProperty(final String name, final Object value) {
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set( "Value", value );
-                set( "Writable", true );
-                set( "Configurable", true );
-                set( "Enumerable", true );
+                set("Value", value);
+                set("Writable", true);
+                set("Configurable", true);
+                set("Enumerable", true);
             }
         };
-        defineOwnProperty( null, name, desc, false );
+        defineOwnProperty(null, name, desc, false);
     }
 
 }

@@ -10,7 +10,7 @@ public class CatchClause extends AbstractStatement {
     private final Statement block;
 
     public CatchClause(Tree tree, String identifier, Statement block) {
-        super( tree );
+        super(tree);
         this.identifier = identifier;
         this.block = block;
     }
@@ -18,7 +18,7 @@ public class CatchClause extends AbstractStatement {
     public String getIdentifier() {
         return this.identifier;
     }
-    
+
     public Statement getBlock() {
         return this.block;
     }

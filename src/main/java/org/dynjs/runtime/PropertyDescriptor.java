@@ -7,12 +7,12 @@ public class PropertyDescriptor {
 
     private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>() {
         {
-            put( "Value", Types.UNDEFINED );
-            put( "Set", Types.UNDEFINED );
-            put( "Get", Types.UNDEFINED );
-            put( "Writable", false );
-            put( "Configurable", false );
-            put( "Enumerable", false );
+            put("Value", Types.UNDEFINED);
+            put("Set", Types.UNDEFINED);
+            put("Get", Types.UNDEFINED);
+            put("Writable", false);
+            put("Configurable", false);
+            put("Enumerable", false);
         }
     };
 
@@ -22,10 +22,10 @@ public class PropertyDescriptor {
         return new PropertyDescriptor() {
             {
                 if (withDefaults) {
-                    set( "Value", DEFAULTS.get( "Value" ) );
-                    set( "Writable", DEFAULTS.get( "Writable" ) );
-                    set( "Configurable", DEFAULTS.get( "Configurable" ) );
-                    set( "Enumerable", DEFAULTS.get( "Enumerable" ) );
+                    set("Value", DEFAULTS.get("Value"));
+                    set("Writable", DEFAULTS.get("Writable"));
+                    set("Configurable", DEFAULTS.get("Configurable"));
+                    set("Enumerable", DEFAULTS.get("Enumerable"));
                 }
             }
         };
@@ -35,10 +35,10 @@ public class PropertyDescriptor {
         return new PropertyDescriptor() {
             {
                 if (withDefaults) {
-                    set( "Set", DEFAULTS.get( "Set" ) );
-                    set( "Get", DEFAULTS.get( "Get" ) );
-                    set( "Configurable", DEFAULTS.get( "Configurable" ) );
-                    set( "Enumerable", DEFAULTS.get( "Enumerable" ) );
+                    set("Set", DEFAULTS.get("Set"));
+                    set("Get", DEFAULTS.get("Get"));
+                    set("Configurable", DEFAULTS.get("Configurable"));
+                    set("Enumerable", DEFAULTS.get("Enumerable"));
                 }
             }
         };
@@ -46,13 +46,13 @@ public class PropertyDescriptor {
 
     public PropertyDescriptor() {
     }
-    
+
     public String toString() {
         return "[PropertyDescriptor: attributes=" + this.attributes + "]";
     }
 
     public boolean isWritable() {
-        Object v = get( "Writable" );
+        Object v = get("Writable");
         if (v == null) {
             return false;
         }
@@ -60,32 +60,32 @@ public class PropertyDescriptor {
     }
 
     public void setWritable(boolean writable) {
-        set( "Writable", writable );
+        set("Writable", writable);
     }
 
     public boolean isConfigurable() {
-        Object v = get( "Configurable" );
+        Object v = get("Configurable");
         if (v == null) {
             return false;
         }
-        
-        if ( v == Types.UNDEFINED ) {
+
+        if (v == Types.UNDEFINED) {
             return false;
         }
 
         return (Boolean) v;
     }
-    
+
     public boolean hasConfigurable() {
-        return ( get( "Configurable" ) != null );
+        return (get("Configurable") != null);
     }
 
     public void setConfigurable(boolean configurable) {
-        set( "Configurable", configurable );
+        set("Configurable", configurable);
     }
 
     public boolean isEnumerable() {
-        Object v = get( "Enumerable" );
+        Object v = get("Enumerable");
         if (v == null) {
             return false;
         }
@@ -94,35 +94,35 @@ public class PropertyDescriptor {
     }
 
     public void setEnumerable(boolean enumerable) {
-        set( "Enumerable", enumerable );
+        set("Enumerable", enumerable);
     }
-    
+
     public boolean hasEnumerable() {
-        return ( get( "Enumerable" ) != null );
+        return (get("Enumerable") != null);
     }
 
     public Object getValue() {
-        return get( "Value" );
+        return get("Value");
     }
 
     public void setValue(Object value) {
-        set( "Value", value );
+        set("Value", value);
     }
 
     public Object getSetter() {
-        return get( "Set" );
+        return get("Set");
     }
 
     public void setSetter(JSFunction setter) {
-        set( "Set", setter );
+        set("Set", setter);
     }
 
     public Object getGetter() {
-        return get( "Get" );
+        return get("Get");
     }
 
     public void setGetter(JSFunction getter) {
-        set( "Get", getter );
+        set("Get", getter);
     }
 
     public boolean isEmpty() {
@@ -130,11 +130,11 @@ public class PropertyDescriptor {
     }
 
     public void set(String name, Object value) {
-        this.attributes.put( name, value );
+        this.attributes.put(name, value);
     }
 
     public Object get(String name) {
-        Object v = this.attributes.get( name );
+        Object v = this.attributes.get(name);
         if (v == null) {
             return Types.UNDEFINED;
         }
@@ -143,13 +143,13 @@ public class PropertyDescriptor {
     }
 
     public boolean isPresent(String name) {
-        return this.attributes.containsKey( name );
+        return this.attributes.containsKey(name);
     }
 
     public Object getWithDefault(String name) {
-        Object v = this.attributes.get( name );
+        Object v = this.attributes.get(name);
         if (v == null) {
-            return DEFAULTS.get( name );
+            return DEFAULTS.get(name);
         }
 
         return v;
@@ -158,7 +158,7 @@ public class PropertyDescriptor {
     public PropertyDescriptor duplicate(String... attributes) {
         PropertyDescriptor d = new PropertyDescriptor();
         for (int i = 0; i < attributes.length; ++i) {
-            d.set( attributes[i], get( attributes[i] ) );
+            d.set(attributes[i], get(attributes[i]));
         }
         return d;
     }
@@ -166,18 +166,18 @@ public class PropertyDescriptor {
     public PropertyDescriptor duplicateWithDefaults(String... attributes) {
         PropertyDescriptor d = new PropertyDescriptor();
         for (int i = 0; i < attributes.length; ++i) {
-            d.set( attributes[i], getWithDefault( attributes[i] ) );
+            d.set(attributes[i], getWithDefault(attributes[i]));
         }
         return d;
     }
 
     public void copyAll(PropertyDescriptor from) {
-        attributes.putAll( from.attributes );
+        attributes.putAll(from.attributes);
     }
 
     public boolean isAccessorDescriptor() {
         // 8.10.1
-        if (attributes.get( "Get" ) == null && attributes.get( "Set" ) == null) {
+        if (attributes.get("Get") == null && attributes.get("Set") == null) {
             return false;
         }
 
@@ -186,7 +186,7 @@ public class PropertyDescriptor {
 
     public boolean isDataDescriptor() {
         // 8.10.2
-        if (attributes.get( "Value" ) == null && attributes.get( "Writable" ) == null) {
+        if (attributes.get("Value") == null && attributes.get("Writable") == null) {
             return false;
         }
 

@@ -25,8 +25,9 @@ public class ForExprStatement extends AbstractForStatement {
 
     private final Expression initialize;
 
-    public ForExprStatement(final Tree tree, final BlockManager blockManager, final Expression initialize, final Expression test, final Expression increment, final Statement block) {
-        super( tree, blockManager, test, increment, block );
+    public ForExprStatement(final Tree tree, final BlockManager blockManager, final Expression initialize, final Expression test, final Expression increment,
+            final Statement block) {
+        super(tree, blockManager, test, increment, block);
         this.initialize = initialize;
     }
 

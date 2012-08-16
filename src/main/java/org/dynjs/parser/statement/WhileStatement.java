@@ -31,7 +31,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
     private final Statement vloop;
 
     public WhileStatement(final Tree tree, BlockManager blockManager, Expression vbool, Statement vloop) {
-        super( tree, blockManager );
+        super(tree, blockManager);
         this.vbool = vbool;
         this.vloop = vloop;
     }
@@ -45,21 +45,21 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 LabelNode breakTarget = new LabelNode();
                 LabelNode begin = new LabelNode();
 
-                getstatic( p( Completion.class ), "NORMAL_COMPLETION", ci( Completion.class ) );
+                getstatic(p(Completion.class), "NORMAL_COMPLETION", ci(Completion.class));
                 // completion(block)
 
-                label( begin );
-                append( vbool.getCodeBlock() );
+                label(begin);
+                append(vbool.getCodeBlock());
                 // completion(block) result
-                append( jsToBoolean() );
+                append(jsToBoolean());
                 // completion(block) Boolean
-                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // completion(block) bool
 
-                iffalse( end );
+                iffalse(end);
                 // completion(block)
 
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Do", vloop ) );
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", vloop));
                 // completion(block,prev) completion(block,cur)
                 swap();
                 // completion(block,cur) completion(block,prev)
@@ -68,20 +68,20 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
 
                 dup();
                 // completion(block) completion(block)
-                append( handleCompletion( begin, breakTarget, begin, end, end ) );
+                append(handleCompletion(begin, breakTarget, begin, end, end));
 
                 // completion(block)
 
                 // ----------------------------------------
                 // BREAK
-                label( breakTarget );
+                label(breakTarget);
                 // completion(block,BREAK)
 
-                append( convertToNormal() );
+                append(convertToNormal());
                 // completion(block,NORMAL)
 
                 // ----------------------------------------
-                label( end );
+                label(end);
                 // completion(block)
                 nop();
             }

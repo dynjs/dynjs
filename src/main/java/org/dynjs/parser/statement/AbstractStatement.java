@@ -36,7 +36,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
     private int number;
 
     AbstractStatement(final Tree tree) {
-        this.position = new Position( tree );
+        this.position = new Position(tree);
         this.number = counter.incrementAndGet();
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
     public CodeBlock normalCompletion() {
         return new CodeBlock() {
             {
-                invokestatic( p( Completion.class ), "createNormal", sig( Completion.class ) );
+                invokestatic(p(Completion.class), "createNormal", sig(Completion.class));
             }
         };
     }
@@ -65,7 +65,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN: val
-                invokestatic( p( Completion.class ), "createNormal", sig( Completion.class, Object.class ) );
+                invokestatic(p(Completion.class), "createNormal", sig(Completion.class, Object.class));
             }
         };
     }
@@ -74,7 +74,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN value
-                invokestatic( p( Completion.class ), "createReturn", sig( Completion.class, Object.class ) );
+                invokestatic(p(Completion.class), "createReturn", sig(Completion.class, Object.class));
                 // completion
             }
         };
@@ -87,10 +87,10 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
                 if (target == null) {
                     aconst_null();
                 } else {
-                    ldc( target );
+                    ldc(target);
                 }
                 // target
-                invokestatic( p( Completion.class ), "createContinue", sig( Completion.class, String.class ) );
+                invokestatic(p(Completion.class), "createContinue", sig(Completion.class, String.class));
                 // completion
             }
         };
@@ -103,10 +103,10 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
                 if (target == null) {
                     aconst_null();
                 } else {
-                    ldc( target );
+                    ldc(target);
                 }
                 // target
-                invokestatic( p( Completion.class ), "createBreak", sig( Completion.class, String.class ) );
+                invokestatic(p(Completion.class), "createBreak", sig(Completion.class, String.class));
                 // completion
             }
         };
@@ -116,7 +116,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN value
-                invokestatic( p( Completion.class ), "createThrow", sig( Completion.class, Object.class ) );
+                invokestatic(p(Completion.class), "createThrow", sig(Completion.class, Object.class));
                 // completion
             }
         };
@@ -131,10 +131,10 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN: completion
-                append( jsCompletionType() );
-                lookupswitch( normalTarget,
+                append(jsCompletionType());
+                lookupswitch(normalTarget,
                         new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal(), Type.THROW.ordinal() },
-                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget, throwTarget } );
+                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget, throwTarget });
 
             }
         };
@@ -146,9 +146,9 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
                 // IN: completion
                 dup();
                 // completion completion
-                getstatic( p( Completion.Type.class ), "NORMAL", ci( Type.class ) );
+                getstatic(p(Completion.Type.class), "NORMAL", ci(Type.class));
                 // completion completion NORMAL
-                putfield( p( Completion.class ), "type", ci( Type.class ) );
+                putfield(p(Completion.class), "type", ci(Type.class));
                 // completion
             }
         };
@@ -158,7 +158,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN completion
-                getfield( p( Completion.class ), "value", ci( Object.class ) );
+                getfield(p(Completion.class), "value", ci(Object.class));
                 // value
             }
         };
@@ -168,13 +168,13 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return new CodeBlock() {
             {
                 // IN completion
-                getfield( p( Completion.class ), "type", ci( Completion.Type.class ) );
+                getfield(p(Completion.class), "type", ci(Completion.Type.class));
                 // type
-                invokevirtual( p( Completion.Type.class ), "ordinal", sig( int.class ) );
+                invokevirtual(p(Completion.Type.class), "ordinal", sig(int.class));
             }
         };
     }
-    
+
     public String dump(String indent) {
         return indent + getClass().getName() + "\n";
     }

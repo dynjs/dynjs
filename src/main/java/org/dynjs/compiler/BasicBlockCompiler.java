@@ -18,10 +18,10 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class BasicBlockCompiler extends AbstractCompiler {
 
-    private final String INVOKE = sig( Completion.class, ExecutionContext.class );
+    private final String INVOKE = sig(Completion.class, ExecutionContext.class);
 
     public BasicBlockCompiler(Config config) {
-        super( config, "Block" );
+        super(config, "Block");
     }
 
     public BasicBlock compile(final String grist, final Statement body) {
@@ -58,5 +58,4 @@ public class BasicBlockCompiler extends AbstractCompiler {
             throw new IllegalStateException( e );
         }
     }
-
 }

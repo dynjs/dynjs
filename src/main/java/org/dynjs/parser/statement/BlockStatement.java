@@ -33,7 +33,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
     private final List<Statement> blockContent;
 
     public BlockStatement(final Tree tree, final List<Statement> blockContent) {
-        super( tree );
+        super(tree);
         this.blockContent = blockContent;
     }
 
@@ -72,12 +72,12 @@ public class BlockStatement extends AbstractStatement implements Statement {
                 LabelNode abrupt = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( normalCompletion() );
+                append(normalCompletion());
                 // completion
 
                 for (Statement statement : blockContent) {
                     if (statement == null) {
-                        System.err.println( "NULL!" );
+                        System.err.println("NULL!");
                         continue;
                     }
                     LabelNode nonAbrupt = new LabelNode();
@@ -85,48 +85,48 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     LabelNode nextStatement = new LabelNode();
 
                     if (statement.getPosition() != null) {
-                        line( statement.getPosition().getLine() );
+                        line(statement.getPosition().getLine());
                     }
-                    append( statement.getCodeBlock() );
+                    append(statement.getCodeBlock());
                     // completion(prev) completion(cur)
                     dup();
                     // completion(prev) completion(cur) completion(cur)
-                    append( handleCompletion( nonAbrupt, abrupt, abrupt, abrupt, abrupt ) );
-                    label( nonAbrupt );
+                    append(handleCompletion(nonAbrupt, abrupt, abrupt, abrupt, abrupt));
+                    label(nonAbrupt);
                     // completion(prev) completion(cur);
 
                     dup();
                     // completion(prev) completion(cur) completion(cur)
-                    append( jsCompletionValue() );
+                    append(jsCompletionValue());
                     // completion(prev) completion(cur) value
-                    ifnull( bringForwardValue );
+                    ifnull(bringForwardValue);
                     // completion(prev) completion(cur)
                     swap();
                     // completion(cur) completion(prev)
                     pop();
                     // completion(cur)
-                    go_to( nextStatement );
+                    go_to(nextStatement);
 
-                    label( bringForwardValue );
+                    label(bringForwardValue);
                     // completion(prev) completion(cur)
                     dup_x1();
                     // completion(cur) completion(prev) completion(cur)
                     swap();
                     // completion(cur) completion(cur) completion(prev)
-                    append( jsCompletionValue() );
+                    append(jsCompletionValue());
                     // completion(cur) val(prev)
-                    putfield( p( Completion.class ), "value", ci( Object.class ) );
+                    putfield(p(Completion.class), "value", ci(Object.class));
                     // completion(cur)
-                    label( nextStatement );
+                    label(nextStatement);
                     // completion(cur)
                 }
 
-                go_to( end );
+                go_to(end);
 
                 // ----------------------------------------
                 // ABRUPT
 
-                label( abrupt );
+                label(abrupt);
                 // completion(prev) completion(cur)
                 swap();
                 // completion(cur) completion(prev)
@@ -135,21 +135,21 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                 // ----------------------------------------
                 // END
-                label( end );
+                label(end);
                 // completion
                 nop();
             }
         };
     }
-    
+
     public String dump(String indent) {
         StringBuffer buffer = new StringBuffer();
-        
-        buffer.append( super.dump( indent ) );
-        for ( Statement each : this.blockContent ) {
-            buffer.append( each.dump( indent + "  " ) );
+
+        buffer.append(super.dump(indent));
+        for (Statement each : this.blockContent) {
+            buffer.append(each.dump(indent + "  "));
         }
-        
+
         return buffer.toString();
     }
 }

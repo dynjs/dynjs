@@ -28,7 +28,7 @@ public class DeleteOpExpression extends AbstractExpression {
     private final Expression expr;
 
     public DeleteOpExpression(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
@@ -38,38 +38,36 @@ public class DeleteOpExpression extends AbstractExpression {
             {
                 LabelNode doNothing = new LabelNode();
                 LabelNode testStrict = new LabelNode();
-                append( expr.getCodeBlock() );
+                append(expr.getCodeBlock());
                 // obj
                 dup();
                 // obj obj
-                instance_of( p(Reference.class)  );
+                instance_of(p(Reference.class));
                 // obj bool
-                iffalse( doNothing );
+                iffalse(doNothing);
                 // ref
                 dup();
                 // ref ref
-                invokevirtual( p(Reference.class), "isUnresolvableReference", sig( boolean.class ) );
+                invokevirtual(p(Reference.class), "isUnresolvableReference", sig(boolean.class));
                 // ref bool
-                iftrue( testStrict );
+                iftrue(testStrict);
                 // ref
                 dup();
                 // ref ref
-                invokevirtual( p(Reference.class), "isPropertyReference", sig( boolean.class ) );
-                
-                
+                invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
 
                 // --------------------------------------
                 // UNRESOLVABLE
-                label( testStrict );
+                label(testStrict);
                 // ref
                 dup();
                 // ref ref
-                invokevirtual( p(Reference.class), "isStrictReference", sig( boolean.class ) );
+                invokevirtual(p(Reference.class), "isStrictReference", sig(boolean.class));
                 // ref bool
-                iffalse( doNothing );
+                iffalse(doNothing);
                 // FIXME: throw Syntax
-                
-                label( doNothing );
+
+                label(doNothing);
                 // X 
                 pop();
                 // <EMPTY>

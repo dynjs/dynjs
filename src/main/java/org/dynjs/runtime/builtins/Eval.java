@@ -23,17 +23,16 @@ import org.dynjs.runtime.Types;
 public class Eval extends AbstractNativeFunction {
 
     public Eval(GlobalObject globalObject) {
-        super( globalObject, "code" );
+        super(globalObject, "code");
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         Object code = args[0];
-        if ( code != Types.UNDEFINED ) {
-            return context.getGlobalObject().getRuntime().evaluate( code.toString() );
+        if (code != Types.UNDEFINED) {
+            return context.getGlobalObject().getRuntime().evaluate(code.toString());
         }
         return Types.UNDEFINED;
     }
-
 
 }

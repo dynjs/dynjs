@@ -15,7 +15,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     public JSObject getBindingObject() {
         return this.object;
     }
-    
+
     public String toString() {
         return "[ObjectEnvironmentRecord: object=" + this.object + "]";
     }
@@ -23,7 +23,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public boolean hasBinding(ExecutionContext context, String name) {
         // 10.2.1.2.1
-        return this.object.hasProperty( context, name );
+        return this.object.hasProperty(context, name);
     }
 
     @Override
@@ -31,28 +31,28 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
         // 10.2.1.2.2
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set( "Value", Types.UNDEFINED );
-                set( "Writable", true );
-                set( "Enumerable", true );
-                set( "Configurable", configValue );
+                set("Value", Types.UNDEFINED);
+                set("Writable", true);
+                set("Enumerable", true);
+                set("Configurable", configValue);
             }
         };
-        this.object.defineOwnProperty( context, name, desc, true );
+        this.object.defineOwnProperty(context, name, desc, true);
     }
 
     @Override
     public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
         // 10.2.1.2.3
-        this.object.put( context, name, value, strict );
+        this.object.put(context, name, value, strict);
     }
 
     @Override
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.2.4
-        Object d = this.object.getProperty( context, name );
+        Object d = this.object.getProperty(context, name);
         if (d == Types.UNDEFINED) {
             if (strict) {
-                throw new ReferenceError( name );
+                throw new ReferenceError(name);
             }
             return Types.UNDEFINED;
         }
@@ -63,7 +63,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public boolean deleteBinding(ExecutionContext context, String name) {
         // 10.2.1.2.4
-        return this.object.delete( context, name, false );
+        return this.object.delete(context, name, false);
     }
 
     @Override

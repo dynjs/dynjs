@@ -24,6 +24,6 @@ public interface Statement {
     Position getPosition();
 
     int getStatementNumber();
-    
+
     String dump(String indent);
 }

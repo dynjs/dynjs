@@ -25,7 +25,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class EqualityOperatorExpression extends AbstractBinaryExpression {
 
     public EqualityOperatorExpression(final Tree tree, final Expression l, final Expression r, String op) {
-        super( tree, l, r, op );
+        super(tree, l, r, op);
     }
 
     @Override
@@ -36,38 +36,38 @@ public class EqualityOperatorExpression extends AbstractBinaryExpression {
                 LabelNode returnTrue = new LabelNode();
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( getLhs().getCodeBlock() );
+
+                append(getLhs().getCodeBlock());
                 // obj(lhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs)
-                append( getRhs().getCodeBlock() );
+                append(getRhs().getCodeBlock());
                 // val(lhs) obj(rhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs) val(rhs)
-                invokestatic( p(Types.class), "compareEquality", sig( boolean.class, Object.class, Object.class ) );
+                invokestatic(p(Types.class), "compareEquality", sig(boolean.class, Object.class, Object.class));
                 // bool
-                
-                if ( getOp().equals(  "=="  ) ) {
-                    iftrue( returnTrue );
-                    go_to( returnFalse );
+
+                if (getOp().equals("==")) {
+                    iftrue(returnTrue);
+                    go_to(returnFalse);
                 } else {
-                    iffalse( returnTrue );
-                    go_to( returnFalse );
+                    iffalse(returnTrue);
+                    go_to(returnFalse);
                 }
-                
+
                 label(returnTrue);
-                getstatic( p(Boolean.class), "TRUE", ci(Boolean.class) );
+                getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
                 go_to(end);
-                
+
                 label(returnFalse);
-                getstatic( p(Boolean.class), "FALSE", ci(Boolean.class) );
-                
+                getstatic(p(Boolean.class), "FALSE", ci(Boolean.class));
+
                 label(end);
                 nop();
-                
+
             }
         };
     }
-    
+
 }

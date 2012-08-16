@@ -29,7 +29,7 @@ public class TypeOfOpExpression extends AbstractExpression {
     private final Expression expr;
 
     public TypeOfOpExpression(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
@@ -37,11 +37,11 @@ public class TypeOfOpExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append( expr.getCodeBlock() );
+                append(expr.getCodeBlock());
                 // context obj
-                invokestatic( p(Types.class), "typeof", sig( String.class, ExecutionContext.class, Object.class ) );
+                invokestatic(p(Types.class), "typeof", sig(String.class, ExecutionContext.class, Object.class));
                 // string
             }
         };

@@ -24,22 +24,22 @@ import org.junit.Test;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
-    @Test(expected=ParserException.class)
+    @Test(expected = ParserException.class)
     public void testSyntaxErrorThrows() {
-        getRuntime().execute( "var f ( {;");
+        getRuntime().execute("var f ( {;");
     }
-    
+
     @Test
     public void evalLines() {
         getRuntime().evaluate(
                 "var x = 'test'",
                 "var y = x");
-        Reference y = getContext().resolve( "y" );
+        Reference y = getContext().resolve("y");
         assertThat(y)
                 .isNotNull()
                 .isInstanceOf(Reference.class);
-        assertThat( y.getValue( getContext() ))
-                .isEqualTo( "test" );
+        assertThat(y.getValue(getContext()))
+                .isEqualTo("test");
     }
 
     @Test
@@ -51,8 +51,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void defineUnInitializedGlobalVariables() {
         eval("var x;");
-        Reference x = getContext().resolve( "x" );
-        Object val = x.getValue( getContext() );
+        Reference x = getContext().resolve("x");
+        Object val = x.getValue(getContext());
         assertThat(val)
                 .isNotNull()
                 .isEqualTo(Types.UNDEFINED);
@@ -85,12 +85,12 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void assignsNamedEmptyFunction() {
-        check("function x(){}; var result = x();", Types.UNDEFINED );
+        check("function x(){}; var result = x();", Types.UNDEFINED);
     }
 
     @Test
     public void assignsAnonymousEmptyFunction() {
-        check("var x = function(a,b,c){}; var result = x();", Types.UNDEFINED );
+        check("var x = function(a,b,c){}; var result = x();", Types.UNDEFINED);
     }
 
     @Test
@@ -138,24 +138,24 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testHexValue() {
-    	check("var result = 0x16", 22);
+        check("var result = 0x16", 22);
     }
 
     @Test
     public void testBitwise() {
-    	check("var result = 0x000F & 0x2222", 2);
-    	check("var result = 0x000F | 0x2222", 8751);
-    	check("var result = 0x000F ^ 0x2222", 8749);
-    	check("var result = 0x000F; result &= 0x2222", 2);
-    	check("var result = 0x000F; result |= 0x2222", 8751);
-    	check("var result = 0x000F; result ^= 0x2222", 8749);
-    	
-    	check("var result = 9 << 2", 36);
-    	check("var result = 9 >> 2", 2);
-    	check("var result = -1 >>> 2", 1073741823);
-    	check("var result = 9; result <<= 2", 36);
-    	check("var result = 9; result >>= 2", 2);
-    	check("var result = -1; result >>>= 2", 1073741823);
+        check("var result = 0x000F & 0x2222", 2);
+        check("var result = 0x000F | 0x2222", 8751);
+        check("var result = 0x000F ^ 0x2222", 8749);
+        check("var result = 0x000F; result &= 0x2222", 2);
+        check("var result = 0x000F; result |= 0x2222", 8751);
+        check("var result = 0x000F; result ^= 0x2222", 8749);
+
+        check("var result = 9 << 2", 36);
+        check("var result = 9 >> 2", 2);
+        check("var result = -1 >>> 2", 1073741823);
+        check("var result = 9; result <<= 2", 36);
+        check("var result = 9; result >>= 2", 2);
+        check("var result = -1; result >>>= 2", 1073741823);
     }
 
     @Test
@@ -176,16 +176,16 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testBreak() {
-    	check("var x = 0; for (var i = 0;i < 10; i+=1){ x+=1; break;}; var result = x == 1.0;");
-    	check("var x = 0; var i = 0; for (;i < 10; i+=1){ x+=1; break;}; var result = x == 1.0;");
-    	check("var x = 0; do { x+=1;if(x % 3 == 0) {break;};x+=3 } while(x < 10); var result = x == 9;");
-    	check("var x = 0; while(x < 10) { x+=1; if(x % 2 == 0) {break;};x+=3}; var result = x == 12;");
+        check("var x = 0; for (var i = 0;i < 10; i+=1){ x+=1; break;}; var result = x == 1.0;");
+        check("var x = 0; var i = 0; for (;i < 10; i+=1){ x+=1; break;}; var result = x == 1.0;");
+        check("var x = 0; do { x+=1;if(x % 3 == 0) {break;};x+=3 } while(x < 10); var result = x == 9;");
+        check("var x = 0; while(x < 10) { x+=1; if(x % 2 == 0) {break;};x+=3}; var result = x == 12;");
     }
 
     @Test
     public void testNullLiteral() {
-        Object result = eval( "null" );
-        assertThat( result ).isEqualTo( Types.NULL );
+        Object result = eval("null");
+        assertThat(result).isEqualTo(Types.NULL);
     }
 
     @Test
@@ -221,7 +221,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 .isInstanceOf(DynObject.class);
         assertThat(((DynObject) result).resolve("w")).isInstanceOf(Boolean.class).isEqualTo(Boolean.TRUE);
     }
-    */
+     */
 
     @Test
     public void testObjectLiteralPropertyAccess() {
@@ -249,12 +249,12 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         getConfig().addBuiltin("sample", DynJSCompiler.wrapFunction(getContext(), new BypassFunction()));
         check("var result = sample(true);");
     }
-    */
+     */
 
     @Test
     public void testEval() {
-        Object result = eval( "eval('4+2')" );
-        assertThat( result ).isEqualTo( 6 );
+        Object result = eval("eval('4+2')");
+        assertThat(result).isEqualTo(6);
     }
 
     @Test
@@ -295,7 +295,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 .isInstanceOf(SayHiToJava.class);
 
     }
-    */
+     */
 
     @Test
     public void testThis() {
@@ -330,9 +330,9 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testUnaryMinusOper() {
-    	check("var result = -1 + 1", 0);
-    	check("var result = -1", -1);
-    	check("var x = 1; var result = -x == -1");
+        check("var result = -1 + 1", 0);
+        check("var result = -1", -1);
+        check("var x = 1; var result = -x == -1");
     }
 
     @Test
@@ -367,52 +367,52 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testMath(){
+    public void testMath() {
         check("var x = 10; var result = (x + 5 == 15) && (x - 1 == 9) && (x * 3 == 30) && (x / 2 == 5.0) && (x % 3 == 1);");
     }
 
     @Test
-    public void testRelational(){
+    public void testRelational() {
         check("var x = 10; var result = (x > 9) && (x < 11) && (x <= 10) && (x >= 10);");
     }
 
-   @Test
-	public void testEquality() {
-		// equality
-		check("var result = undefined == undefined;");
-		check("var result = null == null;");
-		check("var result = NaN == NaN;", false);
-		check("var result = 1 == 1;");
-		check("var result = 0 == -0;");
-		check("var result = -0 == 0;");
-		check("var result = null == undefined;");
-		check("var result = undefined == null;");
-		check("var result = 1 == '1';");
-		check("var result = '1' == 1;");
-		check("var result = '' == 0");
-		check("var result = true == 1;");
-		check("var result = false == 0;");
-		check("var result = 1 == true;");
-		check("var result = 0 == false;");
-		check("var result = 1 != 2;");
+    @Test
+    public void testEquality() {
+        // equality
+        check("var result = undefined == undefined;");
+        check("var result = null == null;");
+        check("var result = NaN == NaN;", false);
+        check("var result = 1 == 1;");
+        check("var result = 0 == -0;");
+        check("var result = -0 == 0;");
+        check("var result = null == undefined;");
+        check("var result = undefined == null;");
+        check("var result = 1 == '1';");
+        check("var result = '1' == 1;");
+        check("var result = '' == 0");
+        check("var result = true == 1;");
+        check("var result = false == 0;");
+        check("var result = 1 == true;");
+        check("var result = 0 == false;");
+        check("var result = 1 != 2;");
 
-		// strict equality
-		check("var result = 1 === 1;");
-		check("var result = 'a' === 'a';");
-		check("var result = true === true;");
-		check("var x = 'foo'; var y = x; result = x === y;");
-		check("var result = 1 !== 2;");
-	}
+        // strict equality
+        check("var result = 1 === 1;");
+        check("var result = 'a' === 'a';");
+        check("var result = true === true;");
+        check("var x = 'foo'; var y = x; result = x === y;");
+        check("var result = 1 !== 2;");
+    }
 
     @Test
-    public void testLoop(){
+    public void testLoop() {
         check("var x = 10;var y = 0; while(x < 10){x+=1;y+=1}; var result = y == 0;");
         check("var x = 10;var y = 0; do { x+=1;y+=1; } while(x < 10); var result = y == 1;");
         check("var x = 10; var y = 0; while(x < 10){ x += 1; y += 1 }; var result = y == 0;");
     }
 
     @Test
-    public void testFor(){
+    public void testFor() {
         check("var x = 0; for (var i =0;i < 10; i+=1){ x+=1;}; var result = x == 10");
         check("var x = 0; var i =0; for (var w = 0;i < 10; i+=1){ x+=1;}; var result = i == 10");
         check("var x = 0; for (; x < 10; x += 1) { x += 1; }; var result = x == 10");
@@ -421,18 +421,17 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testDivision(){
+    public void testDivision() {
         check("var x = 10; var result = x / 2 == 5.0;");
     }
 
     @Test
-    public void testNoTop(){
+    public void testNoTop() {
         check("var x = 10; var result = !(x == 20);");
     }
 
     @Test
-    public void testStringEquality(){
+    public void testStringEquality() {
         check("var result = \"house\" == \"house\" && 'house' == 'house' && \"\" == 0;");
     }
 }
-

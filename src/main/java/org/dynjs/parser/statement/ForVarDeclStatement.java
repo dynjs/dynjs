@@ -25,18 +25,21 @@ public class ForVarDeclStatement extends AbstractForStatement {
 
     private final VariableDeclarationStatement declList;
 
-    public ForVarDeclStatement(final Tree tree, final BlockManager blockManager, final VariableDeclarationStatement declList, final Expression test, final Expression increment, final Statement block) {
-        super( tree, blockManager, test, increment, block );
+    public ForVarDeclStatement(final Tree tree, final BlockManager blockManager, final VariableDeclarationStatement declList, final Expression test,
+            final Expression increment, final Statement block) {
+        super(tree, blockManager, test, increment, block);
         this.declList = declList;
     }
 
     @Override
     public CodeBlock getFirstChunkCodeBlock() {
-        return new CodeBlock() {{
-                for ( VariableDeclaration decl : declList.getVariableDeclarations() ) {
-                    append( decl.getCodeBlock() );
+        return new CodeBlock() {
+            {
+                for (VariableDeclaration decl : declList.getVariableDeclarations()) {
+                    append(decl.getCodeBlock());
                 }
-        }};
+            }
+        };
     }
 
 }

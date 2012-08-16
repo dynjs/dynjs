@@ -18,7 +18,7 @@ import org.dynjs.runtime.JSProgram;
 public class ProgramCompiler extends AbstractCompiler {
 
     public ProgramCompiler(Config config) {
-        super( config, "Program" );
+        super(config, "Program");
     }
 
     public JSProgram compile(final Statement statement) {
@@ -55,5 +55,4 @@ public class ProgramCompiler extends AbstractCompiler {
             throw new IllegalStateException( e );
         }
     }
-
 }

@@ -29,7 +29,7 @@ public class ObjectLiteralExpression extends AbstractExpression {
     private final List<NamedValue> namedValues;
 
     public ObjectLiteralExpression(final Tree tree, final List<NamedValue> namedValues) {
-        super( tree );
+        super(tree);
         this.namedValues = namedValues;
     }
 
@@ -37,13 +37,13 @@ public class ObjectLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                newobj( p( DynObject.class ) );
+                newobj(p(DynObject.class));
                 // obj
                 dup();
                 // obj obj
                 invokespecial(p(DynObject.class), "<init>", sig(void.class));
                 // obj
-                
+
             }
         };
     }

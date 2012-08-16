@@ -27,7 +27,7 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
     private final Expression expr;
 
     public LogicalNotOperatorExpression(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
@@ -37,22 +37,22 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
             {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( expr.getCodeBlock() );
+
+                append(expr.getCodeBlock());
                 // obj
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val
-                append( jsToBoolean() );
+                append(jsToBoolean());
                 // Boolean
-                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // bool
-                iftrue( returnFalse );
+                iftrue(returnFalse);
                 iconst_1();
                 go_to(end);
-                label( returnFalse );
+                label(returnFalse);
                 iconst_0();
-                label( end );
-                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                label(end);
+                invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
                 nop();
             }
         };

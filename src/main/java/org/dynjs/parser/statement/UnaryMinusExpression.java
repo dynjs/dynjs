@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
 
     public UnaryMinusExpression(Tree tree, Expression expr) {
-        super( tree, expr, "-" );
+        super(tree, expr, "-");
     }
 
     @Override
@@ -18,42 +18,42 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
             {
                 LabelNode doubleNum = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( getExpr().getCodeBlock() );
+
+                append(getExpr().getCodeBlock());
                 // val
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val
-                append( jsToNumber() );
+                append(jsToNumber());
                 // num
                 dup();
                 // num num
-                instance_of( p(Double.class)  );
+                instance_of(p(Double.class));
                 // num bool
-                
-                iftrue( doubleNum );
-                
+
+                iftrue(doubleNum);
+
                 // ------------------------------------
                 // Integer
-                
+
                 // num(Integer)
-                invokevirtual( p(Number.class), "intValue", sig(int.class) );
+                invokevirtual(p(Number.class), "intValue", sig(int.class));
                 // num(int)
-                
+
                 iconst_m1();
                 // num -1
                 imul();
                 // -num
-                invokestatic( p(Integer.class), "valueOf", sig(Integer.class, int.class) );
+                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
                 // -num(Integer)
-                
-                go_to( end );
-                
+
+                go_to(end);
+
                 // ------------------------------------
                 // Double
-                
-                label( doubleNum );
+
+                label(doubleNum);
                 // num(Doube)
-                invokevirtual( p(Number.class), "doubleValue", sig(double.class) );
+                invokevirtual(p(Number.class), "doubleValue", sig(double.class));
                 // num(double)
                 iconst_m1();
                 // num -1
@@ -61,11 +61,11 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 // num -1.0
                 dmul();
                 // -num
-                invokestatic( p(Double.class), "valueOf", sig(Double.class, double.class) );
+                invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
                 // -num(Double)
-                
+
                 // ------------------------------------
-                
+
                 label(end);
                 nop();
             }

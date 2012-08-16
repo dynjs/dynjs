@@ -3,15 +3,15 @@ package org.dynjs.runtime;
 public class LexicalEnvironment {
 
     public static LexicalEnvironment newDeclarativeEnvironment(LexicalEnvironment outer) {
-        return new LexicalEnvironment( new DeclarativeEnvironmentRecord(), outer );
+        return new LexicalEnvironment(new DeclarativeEnvironmentRecord(), outer);
     }
 
     public static LexicalEnvironment newObjectEnvironment(JSObject object, boolean provideThis, LexicalEnvironment outer) {
-        return new LexicalEnvironment( new ObjectEnvironmentRecord( object, provideThis ), outer );
+        return new LexicalEnvironment(new ObjectEnvironmentRecord(object, provideThis), outer);
     }
 
     public static LexicalEnvironment newGlobalEnvironment(DynJS runtime) {
-        return new LexicalEnvironment( new ObjectEnvironmentRecord( new GlobalObject(runtime), false ), null );
+        return new LexicalEnvironment(new ObjectEnvironmentRecord(new GlobalObject(runtime), false), null);
     }
 
     private LexicalEnvironment outer;
@@ -40,16 +40,16 @@ public class LexicalEnvironment {
 
     public Reference getIdentifierReference(ExecutionContext context, String name, boolean strict) {
         // 10.2.2.1
-        boolean exists = record.hasBinding( context, name );
+        boolean exists = record.hasBinding(context, name);
         if (exists) {
-            return new Reference( getGlobalObject(), name, this.record, strict );
+            return new Reference(getGlobalObject(), name, this.record, strict);
         }
 
         if (outer == null) {
-            return new Reference( getGlobalObject(), name, Types.UNDEFINED, strict );
+            return new Reference(getGlobalObject(), name, Types.UNDEFINED, strict);
         }
 
-        return outer.getIdentifierReference( context, name, strict );
+        return outer.getIdentifierReference(context, name, strict);
     }
 
 }

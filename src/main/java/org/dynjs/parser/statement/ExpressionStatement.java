@@ -22,7 +22,7 @@ public class ExpressionStatement extends AbstractStatement {
     private final Expression expr;
 
     public ExpressionStatement(final Expression expr) {
-        super( expr.getPosition() );
+        super(expr.getPosition());
         this.expr = expr;
     }
 
@@ -32,15 +32,15 @@ public class ExpressionStatement extends AbstractStatement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        System.err.println( expr );
-        if ( expr instanceof FunctionDeclaration ) {
+        System.err.println(expr);
+        if (expr instanceof FunctionDeclaration) {
             return normalCompletion();
         }
         return new CodeBlock() {
             {
-                append( expr.getCodeBlock() );
+                append(expr.getCodeBlock());
                 // value
-                append( normalCompletionWithValue() );
+                append(normalCompletionWithValue());
                 // Completion
             }
         };

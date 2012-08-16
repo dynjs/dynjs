@@ -1,7 +1,7 @@
 package org.dynjs.parser.statement;
 
 public class NamedValue {
-    
+
     private String name;
     private Expression expr;
 
@@ -9,11 +9,11 @@ public class NamedValue {
         this.name = name;
         this.expr = expr;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public Expression getExpr() {
         return this.expr;
     }

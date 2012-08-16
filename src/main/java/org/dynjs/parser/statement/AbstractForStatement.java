@@ -32,7 +32,7 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
     private final Statement block;
 
     public AbstractForStatement(final Tree tree, final BlockManager blockManager, final Expression test, final Expression increment, final Statement block) {
-        super( tree, blockManager );
+        super(tree, blockManager);
         this.test = test;
         this.increment = increment;
         this.block = block;
@@ -51,87 +51,87 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 LabelNode doIncrement = new LabelNode();
                 LabelNode doBreak = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( getFirstChunkCodeBlock() );
-                
-                append( normalCompletion() );
+
+                append(getFirstChunkCodeBlock());
+
+                append(normalCompletion());
                 // completion
-                
-                label( begin );
+
+                label(begin);
 
                 if (test != null) {
-                    append( test.getCodeBlock() );
-                    append( jsGetValue() );
-                    append( jsToBoolean() );
+                    append(test.getCodeBlock());
+                    append(jsGetValue());
+                    append(jsToBoolean());
                     // completion bool
-                    iffalse( end );
+                    iffalse(end);
                     // completion 
                 }
-                
+
                 // completion(prev)
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "For", block ) );
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "For", block));
                 // completion(prev) completion(cur)
                 dup();
                 // completion(prev) completion(cur) completion(cur)
-                append( jsCompletionValue() );
+                append(jsCompletionValue());
                 // completion(prev) completion(cur) val(cur)
-                ifnull( bringForward );
+                ifnull(bringForward);
                 // completion(prev) completion(cur)
-                go_to( hasValue );
-                
+                go_to(hasValue);
+
                 // ----------------------------------------
                 // bring previous forward
-                
-                label( bringForward );
+
+                label(bringForward);
                 // completion(prev) completion(cur)
                 swap();
                 // completion(cur) completion(prev)
-                append( jsCompletionValue() );
+                append(jsCompletionValue());
                 // completion(cur) val(prev)
-                putfield( p( Completion.class ), "value", ci( Object.class ) );
+                putfield(p(Completion.class), "value", ci(Object.class));
                 // completion(cur)
-                go_to( checkCompletion );
-                
+                go_to(checkCompletion);
+
                 // ----------------------------------------
                 // has value
-                
-                label( hasValue );
+
+                label(hasValue);
                 // completion(prev) completion(cur)
                 swap();
                 // completion(cur) completion(prev)
                 pop();
                 // completion(cur)
-                
+
                 // ----------------------------------------
                 // handle current completion
-                
-                label( checkCompletion);
+
+                label(checkCompletion);
                 // completion
                 dup();
                 // completion completion
-                
-                append( handleCompletion( doIncrement, /*break*/ doBreak, /*continue*/ doIncrement, /*return*/ end, /*throw*/ end ));
-                
+
+                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doIncrement, /*return*/end, /*throw*/end));
+
                 // ----------------------------------------
                 // do increment
-                
-                label( doIncrement );
+
+                label(doIncrement);
                 // completion
-                if ( increment != null ) {
-                    append( increment.getCodeBlock() );
-                    append( jsGetValue() );
+                if (increment != null) {
+                    append(increment.getCodeBlock());
+                    append(jsGetValue());
                     pop();
                 }
                 // completion
-                
-                go_to( begin );
-                
-                label( doBreak );
+
+                go_to(begin);
+
+                label(doBreak);
                 // completion(break)
-                append( convertToNormal() );
+                append(convertToNormal());
                 // completion(normal)
 
-                label( end );
+                label(end);
                 // completion
 
             }

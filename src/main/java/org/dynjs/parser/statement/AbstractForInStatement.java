@@ -35,11 +35,11 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
     private final Statement block;
 
     public AbstractForInStatement(final Tree tree, final BlockManager blockManager, final Expression rhs, final Statement block) {
-        super( tree, blockManager );
+        super(tree, blockManager);
         this.rhs = rhs;
         this.block = block;
     }
-    
+
     public abstract CodeBlock getFirstChunkCodeBlock();
 
     @Override
@@ -52,114 +52,112 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 LabelNode bringForward = new LabelNode();
                 LabelNode doBreak = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( normalCompletion() );
+
+                append(normalCompletion());
                 // completion
-                append( rhs.getCodeBlock() );
-                append( jsGetValue() );
+                append(rhs.getCodeBlock());
+                append(jsGetValue());
                 // completion val
                 dup();
                 // completion val val
-                getstatic( p(Types.class), "UNDEFINED", ci(Object.class));
+                getstatic(p(Types.class), "UNDEFINED", ci(Object.class));
                 // completion val val UNDEF
-                if_acmpeq( end );
+                if_acmpeq(end);
                 // completion val
                 dup();
                 // completion val val
-                getstatic( p(Types.class), "NULL", ci(Object.class));
+                getstatic(p(Types.class), "NULL", ci(Object.class));
                 // completion val val NULL
-                if_acmpeq( nullObj );
+                if_acmpeq(nullObj);
                 // completion val
-                append( jsToObject() );
+                append(jsToObject());
                 // completion jsObj
-                
+
                 // -----------------------------------------------
                 // completion jsObj
-                invokevirtual( p(JSObject.class), "getEnumerablePropertyNames", sig( NameEnumerator.class )  );
+                invokevirtual(p(JSObject.class), "getEnumerablePropertyNames", sig(NameEnumerator.class));
                 // completion name-enum
                 astore(4);
                 // completion
-                
-                label( nextName );
-                aload( 4 );
+
+                label(nextName);
+                aload(4);
                 // completion name-enum
-                invokevirtual( p(NameEnumerator.class), "hasNext", sig(boolean.class) );
+                invokevirtual(p(NameEnumerator.class), "hasNext", sig(boolean.class));
                 // completion bool
-                iffalse( end );
+                iffalse(end);
                 // completion 
-                aload( 4 );
+                aload(4);
                 // completion name-enum
-                invokevirtual( p(NameEnumerator.class), "next", sig(String.class) );
+                invokevirtual(p(NameEnumerator.class), "next", sig(String.class));
                 // completion str
-                
-                append( getFirstChunkCodeBlock() );
+
+                append(getFirstChunkCodeBlock());
                 // completion str ref
                 swap();
                 // completion ref str
-                invokevirtual( p(Reference.class), "putValue", sig( void.class, Object.class ) );
-                
+                invokevirtual(p(Reference.class), "putValue", sig(void.class, Object.class));
+
                 // completion 
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "For", block ));
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "For", block));
                 // completion(prev) completion(cur)
                 dup();
                 // completion(prev) completion(cur) completion(cur)
-                append( jsCompletionValue() );
+                append(jsCompletionValue());
                 // completion(prev) completion(cur) val(cur)
-                
-                ifnull( bringForward );
+
+                ifnull(bringForward);
                 // completion(prev) completion(cur) 
-                
+
                 // ----------------------------------
                 // has value
                 swap();
                 // completion(cur) completion(prev) 
                 pop();
                 // completion(cur)
-                
-                go_to( checkCompletion );
-                
-                label( bringForward );
+
+                go_to(checkCompletion);
+
+                label(bringForward);
                 // completion(prev) completion(cur) 
                 dup_x1();
                 // completion(cur) completion(prev) completion(cur) 
                 swap();
                 // completion(cur) completion(cur) completion(prev)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // completion(cur) completion(cur) val(prev)
-                putfield( p(Completion.class), "value", ci(Object.class) ); 
+                putfield(p(Completion.class), "value", ci(Object.class));
                 // completion(cur) 
-                
+
                 // -----------------------------------------------
-                label( checkCompletion );
+                label(checkCompletion);
                 // completion(cur) 
                 dup();
                 // completion(cur) completion(cur)
-                
-                append( handleCompletion( /*normal*/ nextName, /*break*/ doBreak, /*continue*/ nextName, /*return*/ end, /*throw*/ end ));
+
+                append(handleCompletion( /*normal*/nextName, /*break*/doBreak, /*continue*/nextName, /*return*/end, /*throw*/end));
                 // completion(cur)
-                
-                
+
                 // -----------------------------------------------
                 // NULL/UNDEF right-hand
-                
+
                 label(nullObj);
                 // completion val
                 pop();
                 // completion
                 go_to(end);
-                
+
                 // -----------------------------------------------
-                label( doBreak );
+                label(doBreak);
                 // completion(break)
-                append( convertToNormal() );
+                append(convertToNormal());
                 // completion(normal);
-                
+
                 // -----------------------------------------------
-                
+
                 label(end);
                 nop();
-                
-                
+
             }
         };
     }

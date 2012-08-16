@@ -25,7 +25,7 @@ public class BooleanLiteralExpression extends AbstractExpression {
     private final boolean value;
 
     public BooleanLiteralExpression(final Tree tree, final boolean value) {
-        super( tree );
+        super(tree);
         this.value = value;
     }
 
@@ -34,9 +34,9 @@ public class BooleanLiteralExpression extends AbstractExpression {
         return new CodeBlock() {
             {
                 if (value) {
-                    getstatic( p(Boolean.class), "TRUE", ci(Boolean.class) );
+                    getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
                 } else {
-                    getstatic( p(Boolean.class), "FALSE", ci(Boolean.class) );
+                    getstatic(p(Boolean.class), "FALSE", ci(Boolean.class));
                 }
             }
         };

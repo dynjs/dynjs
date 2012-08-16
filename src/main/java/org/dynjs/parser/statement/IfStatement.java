@@ -31,7 +31,7 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
     private final Statement velse;
 
     public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final Statement vthen, final Statement velse) {
-        super( tree, blockManager );
+        super(tree, blockManager);
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
@@ -45,41 +45,41 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
                 LabelNode noElseBranch = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( vbool.getCodeBlock() );
+                append(vbool.getCodeBlock());
                 // value
-                append( jsToBoolean() );
+                append(jsToBoolean());
                 // Boolean
-                invokevirtual( p( Boolean.class ), "booleanValue", sig( boolean.class ) );
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // bool
 
                 if (velse == null) {
                     // completion bool
-                    iffalse( noElseBranch );
+                    iffalse(noElseBranch);
                 } else {
-                    iffalse( elseBranch );
+                    iffalse(elseBranch);
                 }
                 // <empty>
 
                 // ----------------------------------------
                 // THEN
 
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Then", vthen ) );
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Then", vthen));
                 // completion
-                go_to( end );
+                go_to(end);
 
                 // ----------------------------------------
                 // ELSE
-                if ( velse == null ) {
-                    label( noElseBranch );
-                    append( normalCompletion() );
+                if (velse == null) {
+                    label(noElseBranch);
+                    append(normalCompletion());
                 } else {
-                    label( elseBranch );
+                    label(elseBranch);
                     // <empty>
-                    append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Else", velse ) );
+                    append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Else", velse));
                     // completion
                 }
 
-                label( end );
+                label(end);
                 // completion
 
                 nop();

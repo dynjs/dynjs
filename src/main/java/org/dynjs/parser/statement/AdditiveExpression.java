@@ -9,12 +9,12 @@ import org.objectweb.asm.tree.LabelNode;
 public class AdditiveExpression extends AbstractBinaryExpression {
 
     public AdditiveExpression(final Tree tree, final Expression lhs, final Expression rhs, final String op) {
-        super( tree, lhs, rhs, op );
+        super(tree, lhs, rhs, op);
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        if (getOp().equals( "+" )) {
+        if (getOp().equals("+")) {
             return getCodeBlockForPlus();
         } else {
             return getCodeBlockForMinus();
@@ -26,99 +26,98 @@ public class AdditiveExpression extends AbstractBinaryExpression {
             {
                 LabelNode intNums = new LabelNode();
                 LabelNode doubleNums = new LabelNode();
-                
+
                 LabelNode stringConcatByLeft = new LabelNode();
                 LabelNode stringConcat = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( getLhs().getCodeBlock() );
+                append(getLhs().getCodeBlock());
                 // ref(lhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs)
                 aconst_null();
                 // val(lhs) null
-                append( jsToPrimitive() );
+                append(jsToPrimitive());
                 // val(lhs)
                 dup();
                 // val(lhs) val(lhs)
-                instance_of( p( String.class ) );
+                instance_of(p(String.class));
                 // val(lhs) bool
-                iftrue( stringConcatByLeft );
+                iftrue(stringConcatByLeft);
 
-                append( getRhs().getCodeBlock() );
+                append(getRhs().getCodeBlock());
                 // val(lhs) ref(rhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs) val(rhs)
                 aconst_null();
                 // val(lhs) val(rhs) null
-                append( jsToPrimitive() );
+                append(jsToPrimitive());
                 // val(lhs) val(rhs)
                 dup();
                 // val(lhs) val(rhs) val(rhs)
-                instance_of( p( String.class ) );
+                instance_of(p(String.class));
                 // val(lhs) val(rhs) bool
-                iftrue( stringConcat );
+                iftrue(stringConcat);
 
                 // ----------------------------------------
                 // Numbers
-                
+
                 // Number(lhs) Number(rhs)
-                append( ifEitherIsDouble( doubleNums ) );
-                
+                append(ifEitherIsDouble(doubleNums));
+
                 // ----------------------------------------------
                 // Integer
-                
-                append( convertTopTwoToPrimitiveInts() );
+
+                append(convertTopTwoToPrimitiveInts());
                 // int(lhs) int(rhs)
                 iadd();
                 // num(total)
-                append( convertTopToInteger() );
+                append(convertTopToInteger());
                 // Integer(total)
-                go_to( end );
-                
+                go_to(end);
+
                 // ----------------------------------------------
                 // Double
-                
+
                 label(doubleNums);
                 // (doubles) Number(lhs) Number(rhs)
-                append( convertTopTwoToPrimitiveDoubles() );
+                append(convertTopTwoToPrimitiveDoubles());
                 // double(lhs) double(rhs)
                 dadd();
                 // num(total)
-                append( convertTopToDouble() );
+                append(convertTopToDouble());
                 // Double(total)
-                go_to( end );
-                
-                
+                go_to(end);
+
                 // ----------------------------------------
                 // Strings forced by LHS
-                label( stringConcatByLeft );
+                label(stringConcatByLeft);
                 // val(lhs)
-                append( getRhs().getCodeBlock() );
+                append(getRhs().getCodeBlock());
                 // val(lhs) ref(rhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs) val(rhs)
                 aconst_null();
                 // val(lhs) val(rhs) null
-                append( jsToPrimitive() );
+                append(jsToPrimitive());
                 // val(lhs) val(rhs);
 
                 // ----------------------------------------
                 // Strings
-                label( stringConcat );
+                label(stringConcat);
                 // val(lhs) val(rhs)
-                checkcast( p(String.class) );
+                checkcast(p(String.class));
                 swap();
                 // str(rhs) val(lhs)
-                checkcast( p(String.class) );
+                checkcast(p(String.class));
                 // str(rhs) str(lhs)
                 swap();
                 // str(lhs) str(rhs)
-                invokevirtual( p( String.class ), "concat", sig( String.class, String.class ) );
+                invokevirtual(p(String.class), "concat", sig(String.class, String.class));
                 // obj(concat)
 
                 // ----------------------------------------
-                label( end );
+                label(end);
                 nop();
             }
         };
@@ -130,36 +129,35 @@ public class AdditiveExpression extends AbstractBinaryExpression {
             {
                 LabelNode doubleNums = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( getLhs().getCodeBlock() );
+
+                append(getLhs().getCodeBlock());
                 // obj(lhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs) 
-                append( getRhs().getCodeBlock() );
+                append(getRhs().getCodeBlock());
                 // val(lhs) obj(rhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs) val(rhs)
-                
-                append( ifEitherIsDouble( doubleNums ) );
-                
+
+                append(ifEitherIsDouble(doubleNums));
+
                 // -------------------------------------
                 // Integer
-                
-                append( convertTopTwoToPrimitiveInts() );
+
+                append(convertTopTwoToPrimitiveInts());
                 isub();
-                append( convertTopToInteger() );
-                go_to( end );
-                
+                append(convertTopToInteger());
+                go_to(end);
+
                 // -------------------------------------
                 // Double
-                
-                label( doubleNums );
-                append( convertTopTwoToPrimitiveDoubles() );
+
+                label(doubleNums);
+                append(convertTopTwoToPrimitiveDoubles());
                 dsub();
-                append( convertTopToDouble() );
-                
-                label( end );
-                
+                append(convertTopToDouble());
+
+                label(end);
 
             }
         };

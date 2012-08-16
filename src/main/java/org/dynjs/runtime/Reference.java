@@ -51,12 +51,12 @@ public class Reference {
 
         if (isPropertyReference()) {
             if (!hasPrimitiveBase()) {
-                value = ((JSObject) this.base).get( context, this.referencedName );
+                value = ((JSObject) this.base).get(context, this.referencedName);
             } else {
                 // TODO: handle primitives (8.7.1 special case)
             }
         } else {
-            value = ((EnvironmentRecord) this.base).getBindingValue( context, this.referencedName, this.strict );
+            value = ((EnvironmentRecord) this.base).getBindingValue(context, this.referencedName, this.strict);
         }
         return value;
     }
@@ -65,30 +65,30 @@ public class Reference {
         // 8.7.2
         if (isUnresolvableReference()) {
             if (isStrictReference()) {
-                throw new ReferenceError( this.referencedName );
+                throw new ReferenceError(this.referencedName);
             } else {
-                this.globalObject.put( context, this.referencedName, value, false );
+                this.globalObject.put(context, this.referencedName, value, false);
             }
         } else if (isPropertyReference()) {
             if (!hasPrimitiveBase()) {
-                ((JSObject) this.base).put( context, this.referencedName, value, this.strict );
+                ((JSObject) this.base).put(context, this.referencedName, value, this.strict);
             } else {
                 // TODO: handle primitives
             }
         } else {
-            ((EnvironmentRecord) this.base).setMutableBinding( context, this.referencedName, value, this.strict );
+            ((EnvironmentRecord) this.base).setMutableBinding(context, this.referencedName, value, this.strict);
         }
     }
-    
+
     public boolean isValidForPrePostIncrementDecrement() {
-        if ( isStrictReference() && getBase() instanceof EnvironmentRecord ) {
-            if ( this.referencedName.equals( "eval") || this.referencedName.equals( "arguments" ) ) {
+        if (isStrictReference() && getBase() instanceof EnvironmentRecord) {
+            if (this.referencedName.equals("eval") || this.referencedName.equals("arguments")) {
                 return false;
             }
         }
         return true;
     }
-    
+
     public String toString() {
         return "[Reference: name=" + this.referencedName + "; base=" + this.base + "]";
     }

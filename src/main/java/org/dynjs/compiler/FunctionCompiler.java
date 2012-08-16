@@ -18,10 +18,10 @@ import org.dynjs.runtime.LexicalEnvironment;
 
 public class FunctionCompiler extends AbstractCompiler {
 
-    private final String CALL = sig( Object.class, ExecutionContext.class );
+    private final String CALL = sig(Object.class, ExecutionContext.class);
 
     public FunctionCompiler(Config config) {
-        super( config, "Function" );
+        super(config, "Function");
     }
 
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body) {
@@ -65,5 +65,4 @@ public class FunctionCompiler extends AbstractCompiler {
             throw new IllegalStateException( e );
         }
     }
-
 }

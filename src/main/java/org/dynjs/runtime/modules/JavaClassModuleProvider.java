@@ -14,33 +14,33 @@ import org.dynjs.runtime.PropertyDescriptor;
 public class JavaClassModuleProvider implements ModuleProvider {
 
     public void addModule(Object module) throws InvalidModuleException {
-        Module moduleAnno = module.getClass().getAnnotation( Module.class );
+        Module moduleAnno = module.getClass().getAnnotation(Module.class);
 
         if (moduleAnno == null) {
-            throw new InvalidModuleException( module, "No @Module annotation" );
+            throw new InvalidModuleException(module, "No @Module annotation");
         }
 
         String moduleName = moduleAnno.name();
 
         if (moduleName == null) {
-            throw new InvalidModuleException( module, "Name not specified in @Module" );
+            throw new InvalidModuleException(module, "Name not specified in @Module");
         }
 
-        modules.put( moduleName, module );
+        modules.put(moduleName, module);
     }
 
     @Override
     public DynObject load(ExecutionContext context, String moduleName) {
-        Object javaModule = modules.get( moduleName );
+        Object javaModule = modules.get(moduleName);
 
         if (javaModule == null) {
             return null;
         }
 
         try {
-            return buildExports( context, javaModule );
+            return buildExports(context, javaModule);
         } catch (IllegalAccessException e) {
-            throw new ModuleLoadException( moduleName, e );
+            throw new ModuleLoadException(moduleName, e);
         }
     }
 
@@ -50,7 +50,7 @@ public class JavaClassModuleProvider implements ModuleProvider {
         DynObject exports = new DynObject();
 
         for (Method method : methods) {
-            Export exportAnno = method.getAnnotation( Export.class );
+            Export exportAnno = method.getAnnotation(Export.class);
 
             if (exportAnno == null) {
                 continue;
@@ -58,21 +58,23 @@ public class JavaClassModuleProvider implements ModuleProvider {
 
             String exportName = exportAnno.name();
 
-            if ("".equals( exportName )) {
+            if ("".equals(exportName)) {
                 exportName = method.getName();
             }
 
-            final DynObject function = buildFunction( context.getGlobalObject(), javaModule, method );
-            PropertyDescriptor desc = new PropertyDescriptor() {{
-                set( "Value", function );
-            }};
-            exports.defineOwnProperty( context, exportName, desc, false);
+            final DynObject function = buildFunction(context.getGlobalObject(), javaModule, method);
+            PropertyDescriptor desc = new PropertyDescriptor() {
+                {
+                    set("Value", function);
+                }
+            };
+            exports.defineOwnProperty(context, exportName, desc, false);
         }
         return exports;
     }
 
     private DynObject buildFunction(GlobalObject globalObject, Object module, Method method) throws IllegalAccessException {
-        return new JavaFunction( globalObject, module, method );
+        return new JavaFunction(globalObject, module, method);
     }
 
     private Map<String, Object> modules = new HashMap<String, Object>();

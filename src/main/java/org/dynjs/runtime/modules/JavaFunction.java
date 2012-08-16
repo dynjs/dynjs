@@ -14,16 +14,16 @@ import org.dynjs.runtime.GlobalObject;
 public class JavaFunction extends AbstractNativeFunction {
 
     public JavaFunction(GlobalObject globalObject, Object object, Method method) throws IllegalAccessException {
-        super( globalObject );
+        super(globalObject);
         this.object = object;
         this.method = method;
-        this.handle = MethodHandles.lookup().unreflect( method ).bindTo( this.object );
+        this.handle = MethodHandles.lookup().unreflect(method).bindTo(this.object);
 
         int trueNumberOfArgs = -1;
 
         Class<?>[] methodParamTypes = this.method.getParameterTypes();
         if (methodParamTypes.length >= 1) {
-            if (methodParamTypes[0].equals( ExecutionContext.class )) {
+            if (methodParamTypes[0].equals(ExecutionContext.class)) {
                 trueNumberOfArgs = methodParamTypes.length - 1;
             }
         }
@@ -37,18 +37,18 @@ public class JavaFunction extends AbstractNativeFunction {
         for (int i = 0; i < trueNumberOfArgs; ++i) {
             formalParams[i] = "arg" + i;
         }
-        
-        setFormalParamters( formalParams );
+
+        setFormalParamters(formalParams);
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        List<Object> newArgs = buildArguments( context, self, arguments );
+        List<Object> newArgs = buildArguments(context, self, arguments);
 
         try {
-            return this.handle.invokeWithArguments( newArgs );
+            return this.handle.invokeWithArguments(newArgs);
         } catch (Throwable e) {
-            throw new DynJSException( e );
+            throw new DynJSException(e);
         }
     }
 
@@ -57,19 +57,19 @@ public class JavaFunction extends AbstractNativeFunction {
 
         Class<?>[] methodParamTypes = this.method.getParameterTypes();
         if (methodParamTypes.length >= 2) {
-            if (methodParamTypes[1].equals( ExecutionContext.class )) {
-                newArgs.add( self );
-                newArgs.add( context );
+            if (methodParamTypes[1].equals(ExecutionContext.class)) {
+                newArgs.add(self);
+                newArgs.add(context);
             }
         }
 
         for (Object arg : args) {
-            newArgs.add( arg );
+            newArgs.add(arg);
         }
 
         int additionalNulls = methodParamTypes.length - newArgs.size();
         for (int i = 0; i < additionalNulls; ++i) {
-            newArgs.add( null );
+            newArgs.add(null);
         }
 
         return newArgs;

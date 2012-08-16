@@ -24,7 +24,7 @@ public class FunctionDeclaration extends AbstractStatement {
     private FunctionDescriptor descriptor;
 
     public FunctionDeclaration(FunctionDescriptor descriptor) {
-        super( descriptor.getTree() );
+        super(descriptor.getTree());
         this.descriptor = descriptor;
     }
 
@@ -45,7 +45,7 @@ public class FunctionDeclaration extends AbstractStatement {
         // decl, no generated code here.
         return normalCompletion();
     }
-    
+
     public String toString() {
         return "fuction " + getIdentifier() + "(...){...}";
     }

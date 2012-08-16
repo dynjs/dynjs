@@ -14,11 +14,11 @@ public class VariableDeclaration extends AbstractExpression {
     private Expression initializer;
 
     public VariableDeclaration(Tree tree, String identifier, Expression initializer) {
-        super( tree );
+        super(tree);
         this.identifier = identifier;
         this.initializer = initializer;
     }
-    
+
     public String getIdentifier() {
         return this.identifier;
     }
@@ -29,20 +29,20 @@ public class VariableDeclaration extends AbstractExpression {
             {
                 // 12.2
                 if (initializer == null) {
-                    ldc( identifier );
+                    ldc(identifier);
                     // str
                 } else {
-                    append( jsResolve( identifier ) );
+                    append(jsResolve(identifier));
                     // reference
-                    aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                     // reference context
-                    append( initializer.getCodeBlock() );
+                    append(initializer.getCodeBlock());
                     // reference context val
-                    append( jsGetValue() );
+                    append(jsGetValue());
                     // reference context val
-                    invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
+                    invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
                     // reference 
-                    ldc( identifier );
+                    ldc(identifier);
                     // str
                 }
             }

@@ -28,7 +28,7 @@ public class TernaryExpression extends AbstractExpression {
     private final Expression velse;
 
     public TernaryExpression(final Tree tree, final Expression vbool, final Expression vthen, final Expression velse) {
-        super( tree );
+        super(tree);
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
@@ -41,22 +41,22 @@ public class TernaryExpression extends AbstractExpression {
                 LabelNode elseBranch = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( vbool.getCodeBlock() );
+                append(vbool.getCodeBlock());
                 // val
-                append( jsToBoolean() );
+                append(jsToBoolean());
                 // Boolean
-                invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
+                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                 // bool
-                iffalse( elseBranch );
+                iffalse(elseBranch);
                 // <empty>
-                append( vthen.getCodeBlock() );
+                append(vthen.getCodeBlock());
                 // thenval
                 go_to(end);
-                
-                label( elseBranch );
-                append( velse.getCodeBlock() );
+
+                label(elseBranch);
+                append(velse.getCodeBlock());
                 // elseval
-                label( end );
+                label(end);
                 nop();
             }
         };
