@@ -11,6 +11,7 @@ import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
+import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -35,7 +36,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("eval", new Eval(this));
         defineGlobalProperty("isNaN", new IsNaN(this));
         defineGlobalProperty("isFinite", new IsFinite(this));
-        defineGlobalProperty("Number", new DynNumber(this));
+        defineGlobalProperty("Number", new BuiltinNumber(this));
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

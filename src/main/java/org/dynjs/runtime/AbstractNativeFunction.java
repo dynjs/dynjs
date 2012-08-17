@@ -42,6 +42,7 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
             }
         }
 
+        System.err.println("About to call "+ this +" with self as " + self.getClass().getCanonicalName() + " and args of " + args[0]);
         return call(context, self, args);
     }
 
