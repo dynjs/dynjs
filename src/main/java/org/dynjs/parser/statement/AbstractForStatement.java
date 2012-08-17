@@ -51,11 +51,11 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 LabelNode doIncrement = new LabelNode();
                 LabelNode doBreak = new LabelNode();
                 LabelNode end = new LabelNode();
-
-                append(getFirstChunkCodeBlock());
+                
+                append( getFirstChunkCodeBlock() );
                 // <empty>
-
-                append(normalCompletion());
+                
+                append( normalCompletion() );
                 // completion
 
                 label(begin);
