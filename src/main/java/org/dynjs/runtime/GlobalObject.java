@@ -33,7 +33,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("eval", new Eval(this));
         defineGlobalProperty("isNaN", new IsNaN(this));
         defineGlobalProperty("isFinite", new IsFinite(this));
-        defineGlobalProperty("Number", new Types.JSNumber());
+        defineGlobalProperty("Number", new DynNumber(this));
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
