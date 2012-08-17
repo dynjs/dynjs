@@ -33,7 +33,11 @@ public class ForExprStatement extends AbstractForStatement {
 
     @Override
     public CodeBlock getFirstChunkCodeBlock() {
-        return this.initialize.getCodeBlock();
+        return new CodeBlock() {
+            {
+                append(initialize.getCodeBlock());
+                pop();
+            }
+        };
     }
-
 }
