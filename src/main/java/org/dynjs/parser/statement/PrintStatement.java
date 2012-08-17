@@ -15,6 +15,10 @@
  */
 package org.dynjs.parser.statement;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.io.PrintStream;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -34,8 +38,16 @@ public class PrintStatement extends AbstractStatement implements Statement {
         return new CodeBlock() {
             {
                 append(expr.getCodeBlock());
-                aprintln();
-                normalCompletion();
+                // obj
+                append( jsGetValue() );
+                // val
+                getstatic(p(System.class), "out", ci(PrintStream.class));
+                // val System.out
+                swap();
+                // System.out val
+                invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class) );
+                // <empty>
+                append( normalCompletion() );
             }
         };
     }

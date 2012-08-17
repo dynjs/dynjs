@@ -112,6 +112,11 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
         eval("print(x);");
     }
+    
+    @Test
+    public void testPrint() {
+        eval( "print('taco');");
+    }
 
     @Test
     public void testRelationalOperators() {

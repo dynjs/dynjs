@@ -1,7 +1,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ReferenceError;
-import org.dynjs.exception.TypeError;
 
 public class Reference {
 
@@ -46,7 +45,7 @@ public class Reference {
         Object value = null;
         if (isUnresolvableReference()) {
             System.err.println("Cannot resolve type: " + this.referencedName);
-            throw new TypeError();
+            throw new ReferenceError( referencedName );
         }
 
         if (isPropertyReference()) {

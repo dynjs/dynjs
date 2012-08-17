@@ -91,6 +91,7 @@ public class FunctionCallExpression extends AbstractExpression {
                     dup();
                     bipush(i);
                     append(argExprs.get(i).getCodeBlock());
+                    append( jsGetValue() );
                     aastore();
                 }
                 // context function self array

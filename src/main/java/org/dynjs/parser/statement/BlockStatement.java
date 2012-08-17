@@ -66,6 +66,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
     @Override
     public CodeBlock getCodeBlock() {
+        System.err.println( dump("") );
         return new CodeBlock() {
             {
                 // 12.1
