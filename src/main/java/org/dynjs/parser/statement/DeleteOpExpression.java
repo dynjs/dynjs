@@ -38,6 +38,7 @@ public class DeleteOpExpression extends AbstractExpression {
             {
                 LabelNode doNothing = new LabelNode();
                 LabelNode testStrict = new LabelNode();
+                
                 append(expr.getCodeBlock());
                 // obj
                 dup();
@@ -55,6 +56,7 @@ public class DeleteOpExpression extends AbstractExpression {
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
+                // ref bool
 
                 // --------------------------------------
                 // UNRESOLVABLE

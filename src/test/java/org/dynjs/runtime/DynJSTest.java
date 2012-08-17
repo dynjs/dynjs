@@ -174,9 +174,35 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testContinue() {
-        check("var x = 0; for (var i = 0;i < 10; i+=1){ continue; x+=1;}; var result = x == 0;");
-        check("var x = 0; do { x+=1;if(x % 3 == 0) {continue;};x+=3 } while(x < 10); var result = x == 13;");
-        check("var x = 0; while(x < 10) { x+=1; if(x % 2 == 0) {continue;};x+=3}; var result = x == 12;");
+        eval("var x = 0;",
+                "for (var i = 0;i < 10; i+=1){",
+                "  continue;",
+                "  x+=1;",
+                "}" );
+        Object x = getContext().resolve("x").getValue(getContext());
+        assertThat( x ).isEqualTo(0);
+        
+        eval("var x = 0;",
+                "do {",
+                "  x+=1;",
+                "  if(x % 3 == 0) {",
+                "    continue;",
+                "  }",
+                "  x+=3;",
+                "} while(x < 10)" );
+        x = getContext().resolve("x").getValue(getContext());
+        assertThat( x ).isEqualTo(13);
+        
+        eval("var x = 0;",
+                "while(x < 10) {",
+                "  x+=1;",
+                "  if(x % 2 == 0) {",
+                "    continue;",
+                "  }",
+                "  ;x+=3",
+                "}");
+        x = getContext().resolve("x").getValue(getContext());
+        assertThat( x ).isEqualTo(12);
     }
 
     @Test
