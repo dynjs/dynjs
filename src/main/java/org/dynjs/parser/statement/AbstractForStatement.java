@@ -51,33 +51,20 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 LabelNode doIncrement = new LabelNode();
                 LabelNode doBreak = new LabelNode();
                 LabelNode end = new LabelNode();
-<<<<<<< HEAD
 
                 append(getFirstChunkCodeBlock());
+                // <empty>
 
                 append(normalCompletion());
-=======
-                
-                append( getFirstChunkCodeBlock() );
-                // <empty>
-                
-                append( normalCompletion() );
->>>>>>> Fix for( var i ;... ) loops.
                 // completion
 
                 label(begin);
 
                 if (test != null) {
-<<<<<<< HEAD
                     append(test.getCodeBlock());
                     append(jsGetValue());
                     append(jsToBoolean());
-=======
-                    append( test.getCodeBlock() );
-                    append( jsGetValue() );
-                    append( jsToBoolean() );
-                    invokevirtual( p(Boolean.class), "booleanValue", sig(boolean.class) );
->>>>>>> Fix for( var i ;... ) loops.
+                    invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                     // completion bool
                     iffalse(end);
                     // completion 
@@ -102,17 +89,11 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 dup_x1();
                 // completion(cur) completion(prev) completion(cur)
                 swap();
-<<<<<<< HEAD
-                // completion(cur) completion(prev)
-                append(jsCompletionValue());
-                // completion(cur) val(prev)
-                putfield(p(Completion.class), "value", ci(Object.class));
-=======
+
                 // completion(cur) completion(cur) completion(prev)
-                append( jsCompletionValue() );
+                append(jsCompletionValue());
                 // completion(cur) completion(cur) val(prev)
-                putfield( p( Completion.class ), "value", ci( Object.class ) );
->>>>>>> Fix for( var i ;... ) loops.
+                putfield(p(Completion.class), "value", ci(Object.class));
                 // completion(cur)
                 go_to(checkCompletion);
 

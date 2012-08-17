@@ -33,17 +33,11 @@ public class ForVarDeclStatement extends AbstractForStatement {
 
     @Override
     public CodeBlock getFirstChunkCodeBlock() {
-<<<<<<< HEAD
         return new CodeBlock() {
             {
                 for (VariableDeclaration decl : declList.getVariableDeclarations()) {
                     append(decl.getCodeBlock());
-=======
-        return new CodeBlock() {{
-                for ( VariableDeclaration decl : declList.getVariableDeclarations() ) {
-                    append( decl.getCodeBlock() );
                     pop();
->>>>>>> Fix for( var i ;... ) loops.
                 }
             }
         };
