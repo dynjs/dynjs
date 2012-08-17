@@ -35,8 +35,10 @@ public class ForExprStatement extends AbstractForStatement {
     public CodeBlock getFirstChunkCodeBlock() {
         return new CodeBlock() {
             {
-                append(initialize.getCodeBlock());
-                pop();
+                if (initialize != null) {
+                    append(initialize.getCodeBlock());
+                    pop();
+                }
             }
         };
     }
