@@ -83,7 +83,7 @@ public class GlobalObject extends DynObject {
         return this.blockManager.retrieve(statementNumber);
     }
 
-    protected void defineGlobalProperty(final String name, final Object value) {
+    public void defineGlobalProperty(final String name, final Object value) {
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
                 set("Value", value);
