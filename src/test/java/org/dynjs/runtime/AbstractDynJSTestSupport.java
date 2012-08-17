@@ -37,6 +37,18 @@ public abstract class AbstractDynJSTestSupport {
         Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
+    
+    protected void assertNull(String scriptlet) {
+        this.runtime.execute(scriptlet, null, 0);
+        Reference result = this.runtime.getExecutionContext().resolve("result");
+        assertThat(result.getValue(getContext())).isEqualTo(Types.NULL);
+    }
+    
+    protected void assertUndefined(String scriptlet) {
+        this.runtime.execute(scriptlet, null, 0);
+        Reference result = this.runtime.getExecutionContext().resolve("result");
+        assertThat(result.getValue(getContext())).isEqualTo(Types.UNDEFINED);
+    }
 
     public DynJS getRuntime() {
         return this.runtime;

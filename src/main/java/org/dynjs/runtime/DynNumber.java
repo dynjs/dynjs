@@ -17,6 +17,10 @@ public class DynNumber extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        return null;
+        if (self == null) {
+            return Types.toNumber(args[0]);
+        }
+        return 10;
     }
+    
 }
