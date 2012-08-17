@@ -27,14 +27,14 @@ public class BasicBlockCompiler extends AbstractCompiler {
     public BasicBlock compile(final String grist, final Statement body) {
         JiteClass jiteClass = new JiteClass( nextClassName( grist ), p( AbstractBasicBlock.class ), new String[0] ) {
             {
-                defineMethod( "<init>", ACC_PUBLIC, sig( void.class, BlockStatement.class ),
+                defineMethod( "<init>", ACC_PUBLIC, sig( void.class, Statement.class ),
                         new CodeBlock() {
                             {
                                 aload( 0 );
                                 // this
                                 aload( 1 );
                                 // this statements
-                                invokespecial( p( AbstractBasicBlock.class ), "<init>", sig( void.class, BlockStatement.class ) );
+                                invokespecial( p( AbstractBasicBlock.class ), "<init>", sig( void.class, Statement.class ) );
                                 voidreturn();
                             }
                         } );
@@ -51,7 +51,7 @@ public class BasicBlockCompiler extends AbstractCompiler {
 
         Class<AbstractBasicBlock> blockClass = (Class<AbstractBasicBlock>) defineClass( jiteClass );
         try {
-            Constructor<AbstractBasicBlock> ctor = blockClass.getDeclaredConstructor( BlockStatement.class );
+            Constructor<AbstractBasicBlock> ctor = blockClass.getDeclaredConstructor( Statement.class );
             AbstractBasicBlock block = ctor.newInstance( body );
             return block;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

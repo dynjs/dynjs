@@ -1,12 +1,12 @@
 package org.dynjs.runtime;
 
-import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.Statement;
 
 public abstract class AbstractBasicBlock implements BasicBlock {
 
-    private BlockStatement body;
+    private Statement body;
 
-    public AbstractBasicBlock(BlockStatement body) {
+    public AbstractBasicBlock(Statement body) {
         this.body = body;
     }
 

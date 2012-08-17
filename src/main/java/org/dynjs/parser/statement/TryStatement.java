@@ -29,8 +29,8 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                LabelNode normalTarget = new LabelNode();
-                LabelNode throwTarget = new LabelNode();
+                LabelNode doFinally = new LabelNode();
+                LabelNode doCatch = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Try", tryBlock));
@@ -38,50 +38,71 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
 
                 dup();
                 // completion(try) completion(try)
+                append(handleCompletion(doFinally, doFinally, doFinally, doFinally, doCatch));
 
-                handleCompletion(normalTarget, normalTarget, normalTarget, normalTarget, throwTarget);
-
+                
                 // ----------------------------------------
-                // THROW
-                label(throwTarget);
+                // Catch
+                label(doCatch);
                 // completion(try)
-
-                if (catchClause != null) {
-                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                    // completion(try) context
+                
+                if( catchClause != null ) {
+                    append( jsCompletionValue() );
+                    // thrown
+                    aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                    // thrown context
                     swap();
-                    // context completion(try)
-                    append(CodeBlockUtils.compiledStatementBlock(getBlockManager(), "Catch", catchClause.getBlock()));
-                    // context completion(try) block(catch)
+                    // context thrown
+                    append( CodeBlockUtils.compiledStatementBlock(getBlockManager(), "Catch", catchClause ));
+                    // context thrown catchblock
                     swap();
-                    // context block(catch) completion(try)
-                    ldc(catchClause.getIdentifier());
-                    // context block(catch) completion(try) identifier
+                    // context catchblock thrown
+                    ldc( catchClause.getIdentifier() );
+                    // context catchblock thrown ident
                     swap();
-                    // context block(catch) identifier completion(try)
-                    getfield(p(Completion.class), "value", ci(Object.class));
-                    // context block(catch) identifier thrown
-                    invokevirtual(p(ExecutionContext.class), "invokeCatch", sig(Completion.class, BasicBlock.class, String.class, Object.class));
+                    // context catchblock ident thrown
+                    invokevirtual(p(ExecutionContext.class), "executeCatch", sig(Completion.class, BasicBlock.class, String.class, Object.class));
                     // completion(catch)
                 } else {
-                    areturn();
+                    nop();
                 }
 
                 // ----------------------------------------
-                // NORMAL, BREAK, CONTINUE, RETURN
+                // Finally
 
-                label(normalTarget);
+                label(doFinally);
                 // completion(try)
 
                 if (finallyBlock != null) {
                     append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", finallyBlock));
                     // completion(try) completion(finally)
-                    //append( CodeBlockUtils.ifCompletionIsNormal( end ) );
+                    dup();
+                    // completion(try) completion(finally) completion(finally)
+                    getfield(p(Completion.class), "type", ci(Completion.Type.class));
+                    // completion(try) completion(finally) type(finally)
+                    getstatic(p(Completion.Type.class), "NORMAL", ci(Completion.Type.class));
+                    // completion(try) completion(finally) type(finally) NORMAL
+                    
+                    LabelNode returnTryCompletion = new LabelNode();
+                    
+                    if_acmpeq( returnTryCompletion );
+                    // completion(try) completion(finally) 
+                    swap();
+                    // completion(finally) completion(try) 
+                    pop();
+                    // completion(finally)
+                    go_to(end);
+                    
+                    label( returnTryCompletion );
+                    // completion(try) completion(finally) 
+                    pop();
                     // completion(try)
                 }
 
                 label(end);
-                // completion(try) 
+                // completion(try)
+
+                nop();
             }
 
         };

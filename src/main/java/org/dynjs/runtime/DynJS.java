@@ -49,7 +49,11 @@ public class DynJS {
         JSProgram programObj = compiler.compileProgram(statements);
         Completion completion = this.context.execute(programObj);
         if (completion.type == Completion.Type.THROW) {
-            throw (DynJSException) completion.value;
+            Object thrown = completion.value;
+            if ( thrown instanceof DynJSException ) {
+                throw ((DynJSException)thrown);
+            }
+            throw new DynJSException( thrown.toString() );
         }
         return completion.value;
     }
@@ -61,7 +65,11 @@ public class DynJS {
         Completion completion = this.context.execute(programObj);
         System.err.println("completion: " + completion);
         if (completion.type == Completion.Type.THROW) {
-            throw (DynJSException) completion.value;
+            Object thrown = completion.value;
+            if ( thrown instanceof DynJSException ) {
+                throw ((DynJSException)thrown);
+            }
+            throw new DynJSException( thrown.toString() );
         }
         return completion.value;
     }
