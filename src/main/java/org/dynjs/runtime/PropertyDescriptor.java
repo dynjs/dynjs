@@ -53,7 +53,7 @@ public class PropertyDescriptor {
 
     public boolean isWritable() {
         Object v = get("Writable");
-        if (v == null) {
+        if (isNullOrUndefined(v)) {
             return false;
         }
         return (Boolean) v;
@@ -65,15 +65,14 @@ public class PropertyDescriptor {
 
     public boolean isConfigurable() {
         Object v = get("Configurable");
-        if (v == null) {
+        if (isNullOrUndefined(v)) {
             return false;
         }
-
-        if (v == Types.UNDEFINED) {
-            return false;
-        }
-
         return (Boolean) v;
+    }
+
+    private boolean isNullOrUndefined(Object v) {
+        return v == null || v == Types.UNDEFINED;
     }
 
     public boolean hasConfigurable() {
@@ -86,7 +85,7 @@ public class PropertyDescriptor {
 
     public boolean isEnumerable() {
         Object v = get("Enumerable");
-        if (v == null) {
+        if (isNullOrUndefined(v)) {
             return false;
         }
 
