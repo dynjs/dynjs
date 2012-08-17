@@ -20,6 +20,8 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.objectweb.asm.tree.LabelNode;
 
@@ -50,16 +52,32 @@ public class InstanceofExpression extends AbstractBinaryExpression {
                 // val(lhs) val(rhs) val(rhs)
                 instance_of(p(JSFunction.class));
                 // val(lhs) val(rhs) bool
+                
                 iffalse(typeError);
-                invokevirtual(p(JSFunction.class), "hasInstance", sig(boolean.class, Object.class));
+                // val(lhs) val(rhs)
+                checkcast( p(JSFunction.class) );
+                // val(lhs) fn(rhs)
+                swap();
+                // fn(rhs) val(lhs)
+                invokeinterface(p(JSFunction.class), "hasInstance", sig(boolean.class, Object.class));
+                // bool
                 go_to(end);
 
                 label(typeError);
+                // val(lhs) val(rhs)
                 pop();
                 pop();
-                // FIXME: throw TypeError;
+                iconst_0();
+                i2b();
+                //bool
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // bool context
+                invokevirtual(p(ExecutionContext.class), "throwTypeError", sig(void.class));
+                
 
                 label(end);
+                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                // Boolean
             }
         };
     }

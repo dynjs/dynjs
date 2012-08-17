@@ -16,21 +16,27 @@
 
 package org.dynjs.parser.statement;
 
-import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
+import java.util.List;
+
+import me.qmx.jitescript.CodeBlock;
+
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.runtime.JSConstructor;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.JSObject;
 
 public class NewOperatorExpression extends AbstractExpression {
 
     private final Expression newExpr;
+    private final List<Expression> argExprs;
 
-    public NewOperatorExpression(final Tree tree, final Expression newExpr) {
+    public NewOperatorExpression(final Tree tree, final Expression newExpr, final List<Expression> argExprs) {
         super(tree);
         this.newExpr = newExpr;
+        this.argExprs = argExprs;
     }
 
     @Override
@@ -38,12 +44,27 @@ public class NewOperatorExpression extends AbstractExpression {
         return new CodeBlock() {
             {
                 // 11.2.2
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
                 append(newExpr.getCodeBlock());
-                // reference
+                // context reference
                 append(jsGetValue(JSFunction.class));
-                // ctor-fn
-                invokestatic(p(Types.class), "toConstructor", sig(JSConstructor.class, JSFunction.class));
-                // ctor-fn
+                // context ctor-fn
+                
+                int numArgs = argExprs.size();
+                bipush(numArgs);
+                anewarray(p(Object.class));
+                // context function array
+                for (int i = 0; i < numArgs; ++i) {
+                    dup();
+                    bipush(i);
+                    append(argExprs.get(i).getCodeBlock());
+                    append( jsGetValue() );
+                    aastore();
+                }
+                // context function array
+                invokevirtual(p(ExecutionContext.class), "construct", sig(JSObject.class, JSFunction.class, Object[].class));
+                // obj
             }
         };
     }

@@ -24,7 +24,7 @@ import org.dynjs.exception.TypeError;
 public class DynObject implements JSObject {
 
     private String className;
-    public JSObject prototype = null;
+    private JSObject prototype = null;
 
     private final Map<String, PropertyDescriptor> properties = new HashMap<>();
     private boolean extensible = true;
@@ -38,10 +38,12 @@ public class DynObject implements JSObject {
 
     @Override
     public JSObject getPrototype() {
+        System.err.println( this + "#getPrototype -> " + prototype );
         return this.prototype;
     }
 
     protected void setPrototype(JSObject prototype) {
+        System.err.println( this + "#setPrototype -> " + prototype );
         this.prototype = prototype;
     }
 

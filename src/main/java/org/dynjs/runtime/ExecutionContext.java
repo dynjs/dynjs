@@ -81,9 +81,6 @@ public class ExecutionContext {
 
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
-        if ( function instanceof JSConstructor ) {
-            return construct( (JSConstructor) function, args );
-        }
         ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
         Object result = function.call(fnContext);
         if (result == null) {
@@ -93,14 +90,14 @@ public class ExecutionContext {
         return result;
     }
 
-    public JSObject construct(JSConstructor constructor, Object... args) {
+    public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
-        JSFunction function = constructor.getFunction();
         System.err.println( "construct with " + function + ", " + Arrays.asList( args) );
         DynObject obj = new DynObject();
         obj.setClassName("Object");
         obj.setExtensible(true);
         JSObject proto = function.getPrototype();
+        System.err.println( "constructor prototype is " + function.getPrototype() );
         obj.setPrototype(proto);
         call(function, obj, args);
         return obj;

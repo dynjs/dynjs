@@ -18,6 +18,20 @@ public class NewOperatorTest extends AbstractDynJSTestSupport {
 
         assertThat(y).isSameAs(x);
     }
+    
+    @Test
+    public void testNewWithoutParens() {
+        eval("var y;",
+                "function Thing(){ y = this };",
+                "var x = new Thing;");
+
+        JSObject x = (JSObject) getContext().resolve("x").getValue(getContext());
+        JSFunction thing = (JSFunction) getContext().resolve("Thing").getValue(getContext());
+
+        JSObject y = (JSObject) getContext().resolve("y").getValue(getContext());
+
+        assertThat(y).isSameAs(x);
+    }
 
     @Test
     public void testNewSettingThisProps() {

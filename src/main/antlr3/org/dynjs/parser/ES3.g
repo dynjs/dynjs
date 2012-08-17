@@ -962,7 +962,7 @@ memberExpression
 	;
 
 newExpression
-	: NEW^ memberExpression
+	: NEW^ memberExpression ( arguments )?
 	;
 
 	

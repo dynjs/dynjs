@@ -365,10 +365,6 @@ public class Types {
 
     }
     
-    public static JSConstructor toConstructor(JSFunction function) {
-            return new JSConstructor( function );
-    }
-
     // ----------------------------------------------------------------------
 
     public static class Undefined {

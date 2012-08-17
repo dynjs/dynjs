@@ -12,7 +12,6 @@ import org.dynjs.parser.statement.VariableDeclarationStatement;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
-    private static final Statement[] EMPTY_STATEMENT_ARRAY = new Statement[0];
     private Statement body;
     private String[] formalParameters;
     private LexicalEnvironment scope;
@@ -27,6 +26,8 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
+        JSObject proto = (JSObject) scope.getGlobalObject().get( null, "Object" );
+        setPrototype( proto );
         setClassName("Function");
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
@@ -94,11 +95,14 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public boolean hasInstance(Object v) {
+        System.err.println( this + "#hasInstance: " + v);
         if (!(v instanceof JSObject)) {
             return false;
         }
 
         JSObject proto = getPrototype();
+        
+        System.err.println( "myProto: " + proto );
 
         if (proto == null) {
             return false;

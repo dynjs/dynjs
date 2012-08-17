@@ -25,7 +25,7 @@ public class FunctionCompiler extends AbstractCompiler {
     }
 
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body) {
-        System.err.println( "compiling: " + body );
+        System.err.println( "compiling function: " + body );
         JiteClass jiteClass = new JiteClass( nextClassName(), p( AbstractFunction.class ), new String[0] ) {
             {
                 defineMethod( "<init>", ACC_PUBLIC, sig( void.class, Statement.class, LexicalEnvironment.class, String[].class ),
@@ -58,8 +58,10 @@ public class FunctionCompiler extends AbstractCompiler {
 
         Class<AbstractFunction> functionClass = (Class<AbstractFunction>) defineClass( jiteClass );
         try {
+            System.err.println( ">>>>> constructing function" );
             Constructor<AbstractFunction> ctor = functionClass.getDeclaredConstructor( Statement.class, LexicalEnvironment.class, String[].class );
             AbstractFunction function = ctor.newInstance( body, context.getLexicalEnvironment(), formalParameters );
+            System.err.println( "<<<<<" );
             return function;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException( e );

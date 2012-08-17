@@ -23,6 +23,8 @@ public class GlobalObject extends DynObject {
         this.runtime = runtime;
         this.compiler = new JSCompiler(runtime.getConfig());
         this.blockManager = new BlockManager();
+        
+        defineGlobalProperty("Object", new DynObject() );
 
         defineGlobalProperty("undefined", Types.UNDEFINED);
         defineGlobalProperty("NaN", Double.NaN);
