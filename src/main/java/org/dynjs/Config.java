@@ -2,7 +2,9 @@ package org.dynjs;
 
 import java.io.PrintStream;
 
+import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.GlobalObjectFactory;
 
 public class Config {
 
@@ -13,13 +15,14 @@ public class Config {
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
+    private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
     }
 
     public Config(ClassLoader parentClassLoader) {
-        this.classLoader = new DynamicClassLoader( parentClassLoader );
+        this.classLoader = new DynamicClassLoader(parentClassLoader);
     }
 
     public ClassLoader getClassLoader() {
@@ -56,6 +59,14 @@ public class Config {
 
     public boolean isDebug() {
         return this.debug;
+    }
+
+    public GlobalObjectFactory getGlobalObjectFactory() {
+        return globalObjectFactory;
+    }
+
+    public void setGlobalObjectFactory(GlobalObjectFactory globalObjectFactory) {
+        this.globalObjectFactory = globalObjectFactory;
     }
 
 }

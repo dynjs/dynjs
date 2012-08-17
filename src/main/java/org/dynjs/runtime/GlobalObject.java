@@ -54,6 +54,10 @@ public class GlobalObject extends DynObject {
          */
     }
 
+    public static GlobalObject newGlobalObject(DynJS runtime) {
+        return runtime.getConfig().getGlobalObjectFactory().newGlobalObject(runtime);
+    }
+
     public List<ModuleProvider> getModuleProviders() {
         // TODO: wire me back up.
         return Collections.emptyList();
