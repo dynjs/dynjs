@@ -47,6 +47,6 @@ public class FunctionDeclaration extends AbstractStatement {
     }
 
     public String toString() {
-        return "fuction " + getIdentifier() + "(...){...}";
+        return this.descriptor.toString();
     }
 }

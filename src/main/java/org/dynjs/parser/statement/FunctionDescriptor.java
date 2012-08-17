@@ -53,6 +53,6 @@ public class FunctionDescriptor {
     }
 
     public String toString() {
-        return "fuction " + this.identifier + "(...){...}";
+        return "function " + this.identifier + "(...){...}";
     }
 }
