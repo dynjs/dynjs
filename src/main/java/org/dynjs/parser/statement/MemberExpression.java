@@ -34,7 +34,7 @@ public class MemberExpression extends AbstractExpression {
     private Expression identifierExpr;
 
     public MemberExpression(final Tree tree, final Expression memberExpr, final Expression identifierExpr) {
-        super( tree );
+        super(tree);
         this.memberExpr = memberExpr;
         this.identifierExpr = identifierExpr;
     }
@@ -44,19 +44,19 @@ public class MemberExpression extends AbstractExpression {
         // 11.2.1
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append( memberExpr.getCodeBlock() );
+                append(memberExpr.getCodeBlock());
                 // context reference
-                append( jsGetValue() );
+                append(jsGetValue());
                 // context object
-                append( identifierExpr.getCodeBlock() );
+                append(identifierExpr.getCodeBlock());
                 // context object identifier-maybe-reference
-                append( jsGetValue() );
+                append(jsGetValue());
                 // context object identifier-obj
-                append( jsToString() );
+                append(jsToString());
                 // context object identifier-str
-                append( jsCreatePropertyReference() );
+                append(jsCreatePropertyReference());
                 // reference
             }
         };

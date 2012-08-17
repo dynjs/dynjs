@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class MultiplicativeExpression extends AbstractBinaryExpression {
 
     public MultiplicativeExpression(Tree tree, Expression lhs, Expression rhs, String op) {
-        super( tree, lhs, rhs, op );
+        super(tree, lhs, rhs, op);
     }
 
     @Override
@@ -19,41 +19,41 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                 LabelNode doubleNums = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( getLhs().getCodeBlock() );
+                append(getLhs().getCodeBlock());
                 // val(lhs)
-                append( jsGetValue() );
-                append( getRhs().getCodeBlock() );
+                append(jsGetValue());
+                append(getRhs().getCodeBlock());
                 // val(rhs)
-                append( jsGetValue() );
+                append(jsGetValue());
 
-                if (!getOp().equals( "/" )) {
-                    append( ifEitherIsDouble( doubleNums ) );
+                if (!getOp().equals("/")) {
+                    append(ifEitherIsDouble(doubleNums));
 
-                    append( convertTopTwoToPrimitiveInts() );
-                    if (getOp().equals( "*" )) {
+                    append(convertTopTwoToPrimitiveInts());
+                    if (getOp().equals("*")) {
                         imul();
-                    } else if (getOp().equals( "/" )) {
+                    } else if (getOp().equals("/")) {
                         idiv();
-                    } else if (getOp().equals( "%" )) {
+                    } else if (getOp().equals("%")) {
                         irem();
                     }
-                    append( convertTopToInteger() );
-                    go_to( end );
+                    append(convertTopToInteger());
+                    go_to(end);
 
-                    label( doubleNums );
+                    label(doubleNums);
                 }
-                append( convertTopTwoToPrimitiveDoubles() );
+                append(convertTopTwoToPrimitiveDoubles());
 
-                if (getOp().equals( "*" )) {
+                if (getOp().equals("*")) {
                     dmul();
-                } else if (getOp().equals( "/" )) {
+                } else if (getOp().equals("/")) {
                     ddiv();
-                } else if (getOp().equals( "%" )) {
+                } else if (getOp().equals("%")) {
                     drem();
                 }
-                append( convertTopToDouble() );
+                append(convertTopToDouble());
 
-                label( end );
+                label(end);
                 nop();
             }
         };

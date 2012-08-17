@@ -25,7 +25,7 @@ public class VoidOperatorExpression extends AbstractExpression {
     private final Expression expr;
 
     public VoidOperatorExpression(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
@@ -33,10 +33,10 @@ public class VoidOperatorExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( expr.getCodeBlock() );
-                append( jsGetValue() );
+                append(expr.getCodeBlock());
+                append(jsGetValue());
                 pop();
-                append( jsPushUndefined() );
+                append(jsPushUndefined());
             }
         };
     }

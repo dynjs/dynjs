@@ -18,15 +18,15 @@ import org.dynjs.runtime.ExecutionContext;
  */
 public class ThisExpression extends AbstractExpression {
     public ThisExpression(Tree tree) {
-        super( tree );
+        super(tree);
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                invokevirtual( p( ExecutionContext.class ), "getThisBinding", sig( Object.class ) );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                invokevirtual(p(ExecutionContext.class), "getThisBinding", sig(Object.class));
             }
         };
     }

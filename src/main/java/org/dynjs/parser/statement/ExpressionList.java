@@ -27,7 +27,7 @@ public class ExpressionList extends AbstractExpression {
     private final List<Expression> exprList;
 
     public ExpressionList(final Tree tree, final List<Expression> exprList) {
-        super( tree );
+        super(tree);
         this.exprList = exprList;
     }
 
@@ -36,7 +36,7 @@ public class ExpressionList extends AbstractExpression {
         return new CodeBlock() {
             {
                 for (Expression statement : exprList) {
-                    append( statement.getCodeBlock() );
+                    append(statement.getCodeBlock());
                 }
             }
         };

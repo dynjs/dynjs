@@ -3,12 +3,12 @@ package org.dynjs.exception;
 public class ModuleLoadException extends DynJSException {
 
     public ModuleLoadException(String moduleName, Throwable cause) {
-        super( cause );
+        super(cause);
         this.moduleName = moduleName;
     }
 
     public ModuleLoadException(String moduleName, String message) {
-        super( message );
+        super(message);
         this.moduleName = moduleName;
     }
 

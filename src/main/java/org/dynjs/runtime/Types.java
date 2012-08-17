@@ -19,19 +19,19 @@ public class Types {
             return true;
         }
 
-        return left.equals( right );
+        return left.equals(right);
     }
 
     public static JSObject toObject(Object o) {
         if (o instanceof JSObject) {
             return (JSObject) o;
         }
-        return new PrimitiveDynObject( o );
+        return new PrimitiveDynObject(o);
     }
 
     public static Object toPrimitive(Object o, String preferredType) {
         if (o instanceof JSObject) {
-            return ((JSObject) o).defaultValue( preferredType );
+            return ((JSObject) o).defaultValue(preferredType);
         }
         return o;
     }
@@ -39,7 +39,7 @@ public class Types {
     public static Number toNumber(Object o) {
         // 9.3
         if (o instanceof JSObject) {
-            return toNumber( toPrimitive( o, "Number" ) );
+            return toNumber(toPrimitive(o, "Number"));
         }
 
         if (o instanceof Number) {
@@ -51,7 +51,7 @@ public class Types {
         }
 
         if (o == Types.NULL) {
-            return Double.valueOf( 0 );
+            return Double.valueOf(0);
         }
 
         if (o instanceof Boolean) {
@@ -64,13 +64,13 @@ public class Types {
 
         try {
             String str = o.toString();
-            if (str.trim().equals( "" )) {
+            if (str.trim().equals("")) {
                 return 0;
             }
-            if (str.indexOf( "." ) > 0) {
-                return Double.valueOf( str );
+            if (str.indexOf(".") > 0) {
+                return Double.valueOf(str);
             } else {
-                return Integer.valueOf( str );
+                return Integer.valueOf(str);
             }
         } catch (NumberFormatException e) {
             return Double.NaN;
@@ -101,7 +101,7 @@ public class Types {
 
     public static Integer toUint32(Object o) {
         // 9.5
-        Number n = toNumber( o );
+        Number n = toNumber(o);
 
         if (n instanceof Integer) {
             return ((Integer) n).intValue();
@@ -112,17 +112,17 @@ public class Types {
             return 0;
         }
 
-        double posInt = (d < 0 ? -1 : 1) * Math.floor( Math.abs( d ) );
+        double posInt = (d < 0 ? -1 : 1) * Math.floor(Math.abs(d));
 
-        double int32bit = posInt % Math.pow( 2, 32 );
+        double int32bit = posInt % Math.pow(2, 32);
 
         return (int) int32bit;
     }
 
     public static Integer toInt32(Object o) {
-        int int32bit = toUint32( o );
-        if (int32bit > Math.pow( 2, 31 )) {
-            return (int) (int32bit - Math.pow( 2, 32 ));
+        int int32bit = toUint32(o);
+        if (int32bit > Math.pow(2, 31)) {
+            return (int) (int32bit - Math.pow(2, 32));
         }
         return int32bit;
     }
@@ -133,7 +133,7 @@ public class Types {
 
     public static Object getValue(ExecutionContext context, Object o) {
         if (o instanceof Reference) {
-            return ((Reference) o).getValue( context );
+            return ((Reference) o).getValue(context);
         }
         return o;
     }
@@ -150,45 +150,45 @@ public class Types {
             if (r.isUnresolvableReference()) {
                 return "undefined";
             }
-            val = getValue( context, o );
+            val = getValue(context, o);
         }
 
-        return type( val );
+        return type(val);
     }
 
     public static Object compareRelational(Object x, Object y, boolean leftFirst) {
         // 11.8.5
-        System.err.println( "compareRelational(" + x + ", " + y + ", " + leftFirst + ")" );
+        System.err.println("compareRelational(" + x + ", " + y + ", " + leftFirst + ")");
 
         Object px = null;
         Object py = null;
 
         if (leftFirst) {
-            px = toPrimitive( x, "Number" );
-            py = toPrimitive( y, "Number" );
+            px = toPrimitive(x, "Number");
+            py = toPrimitive(y, "Number");
         } else {
-            py = toPrimitive( y, "Number" );
-            px = toPrimitive( x, "Number" );
+            py = toPrimitive(y, "Number");
+            px = toPrimitive(x, "Number");
         }
 
         if (px instanceof String && py instanceof String) {
             String sx = (String) px;
             String sy = (String) py;
 
-            if (sx.compareTo( sy ) < 0) {
+            if (sx.compareTo(sy) < 0) {
                 return true;
             }
 
             return false;
         } else {
-            Number nx = toNumber( px );
-            Number ny = toNumber( py );
+            Number nx = toNumber(px);
+            Number ny = toNumber(py);
 
             if (nx.doubleValue() == Double.NaN || ny.doubleValue() == Double.NaN) {
                 return Types.UNDEFINED;
             }
 
-            if (nx.equals( ny )) {
+            if (nx.equals(ny)) {
                 return false;
             }
 
@@ -220,20 +220,20 @@ public class Types {
     public static boolean compareEquality(Object lhs, Object rhs) {
         // 11.9.3
 
-        System.err.println( "compareEquality(" + lhs + "/" + lhs.getClass() + ", " + rhs + "/" + rhs.getClass() + ")" );
+        System.err.println("compareEquality(" + lhs + "/" + lhs.getClass() + ", " + rhs + "/" + rhs.getClass() + ")");
 
-        String lhsType = type( lhs );
-        String rhsType = type( rhs );
+        String lhsType = type(lhs);
+        String rhsType = type(rhs);
 
-        if (lhsType.equals( rhsType )) {
-            System.err.println( "A" );
+        if (lhsType.equals(rhsType)) {
+            System.err.println("A");
             if (lhs == Types.UNDEFINED) {
-                System.err.println( "A1" );
+                System.err.println("A1");
 
                 return true;
             }
             if (lhs == Types.NULL) {
-                System.err.println( "A2" );
+                System.err.println("A2");
                 return true;
             }
             if (lhs instanceof Number) {
@@ -247,19 +247,19 @@ public class Types {
                         return false;
                     }
                 }
-                if (lhs.equals( rhs )) {
-                    System.err.println( "A3-c" );
+                if (lhs.equals(rhs)) {
+                    System.err.println("A3-c");
                     return true;
                 }
                 return false;
             }
             if (lhs instanceof String || lhs instanceof Boolean) {
-                return lhs.equals( rhs );
+                return lhs.equals(rhs);
             }
         }
 
         if (lhs == Types.UNDEFINED && rhs == Types.NULL) {
-            System.err.println( "B" );
+            System.err.println("B");
             return true;
         }
 
@@ -267,31 +267,31 @@ public class Types {
             return true;
         }
 
-        System.err.println( "lhsType=" + lhsType );
-        System.err.println( "rhsType=" + rhsType );
+        System.err.println("lhsType=" + lhsType);
+        System.err.println("rhsType=" + rhsType);
 
-        if (lhsType.equals( "number" ) && rhsType.equals( "string" )) {
-            return compareEquality( lhs, toNumber( rhs ) );
+        if (lhsType.equals("number") && rhsType.equals("string")) {
+            return compareEquality(lhs, toNumber(rhs));
         }
 
-        if (lhsType.equals( "string" ) && rhsType.equals( "number" )) {
-            return compareEquality( toNumber( lhs ), rhs );
+        if (lhsType.equals("string") && rhsType.equals("number")) {
+            return compareEquality(toNumber(lhs), rhs);
         }
 
-        if (lhsType.equals( "boolean" )) {
-            return compareEquality( toNumber( lhs ), rhs );
+        if (lhsType.equals("boolean")) {
+            return compareEquality(toNumber(lhs), rhs);
         }
 
-        if (rhsType.equals( "boolean" )) {
-            return compareEquality( lhs, toNumber( rhs ) );
+        if (rhsType.equals("boolean")) {
+            return compareEquality(lhs, toNumber(rhs));
         }
 
-        if ((lhsType.equals( "string" ) || lhsType.equals( "number" )) && rhsType.equals( "object" )) {
-            return compareEquality( lhs, toPrimitive( rhs, null ) );
+        if ((lhsType.equals("string") || lhsType.equals("number")) && rhsType.equals("object")) {
+            return compareEquality(lhs, toPrimitive(rhs, null));
         }
 
-        if (lhsType.equals( "object" ) && (rhsType.equals( "string" ) || rhsType.equals( "number" ))) {
-            return compareEquality( toPrimitive( lhs, null ), rhs );
+        if (lhsType.equals("object") && (rhsType.equals("string") || rhsType.equals("number"))) {
+            return compareEquality(toPrimitive(lhs, null), rhs);
         }
 
         return false;
@@ -299,10 +299,10 @@ public class Types {
 
     public static boolean compareStrictEquality(Object lhs, Object rhs) {
         // 11.9.6
-        String lhsType = type( lhs );
-        String rhsType = type( rhs );
+        String lhsType = type(lhs);
+        String rhsType = type(rhs);
 
-        if (!lhsType.equals( rhsType )) {
+        if (!lhsType.equals(rhsType)) {
             return false;
         }
 
@@ -321,11 +321,11 @@ public class Types {
             if (((Number) rhs).doubleValue() == Double.NaN) {
                 return false;
             }
-            return lhs.equals( rhs );
+            return lhs.equals(rhs);
         }
 
         if (lhs instanceof String || lhs instanceof Boolean) {
-            return lhs.equals( rhs );
+            return lhs.equals(rhs);
         }
 
         return lhs == rhs;
@@ -402,17 +402,17 @@ public class Types {
         public static final Number NEGATIVE_INFINITY = Double.NEGATIVE_INFINITY;
 
         public JSNumber() {
-            this( 0 );
+            this(0);
         }
 
         public JSNumber(Object value) {
-            super( value );
-            final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor( true );
-            positiveInfinity.setValue( POSITIVE_INFINITY );
-            this.defineOwnProperty( null, "POSITIVE_INFINITY", positiveInfinity, true );
-            final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor( true );
-            negativeInfinity.setValue( NEGATIVE_INFINITY );
-            this.defineOwnProperty( null, "NEGATIVE_INFINITY", negativeInfinity, true );
+            super(value);
+            final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+            positiveInfinity.setValue(POSITIVE_INFINITY);
+            this.defineOwnProperty(null, "POSITIVE_INFINITY", positiveInfinity, true);
+            final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+            negativeInfinity.setValue(NEGATIVE_INFINITY);
+            this.defineOwnProperty(null, "NEGATIVE_INFINITY", negativeInfinity, true);
         }
     }
 }

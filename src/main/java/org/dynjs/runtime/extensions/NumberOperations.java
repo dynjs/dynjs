@@ -72,14 +72,14 @@ public class NumberOperations {
         if (a.isNaN() || b.isNaN()) {
             return false;
         }
-        if (a.equals( b )) {
+        if (a.equals(b)) {
             return true;
         }
         return false;
     }
 
     public static Boolean neq(Double a, Double b) {
-        return !eq( a, b );
+        return !eq(a, b);
     }
 
     public static Boolean lt(Double a, Double b) {

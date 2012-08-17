@@ -5,13 +5,13 @@ public class ArgSetter extends AbstractNativeFunction {
     private String name;
 
     public ArgSetter(GlobalObject globalObject, String name) {
-        super( globalObject, "value" );
+        super(globalObject, "value");
         this.name = name;
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        getScope().getIdentifierReference( context, this.name, isStrict() ).putValue( context, args[0] );
+        getScope().getIdentifierReference(context, this.name, isStrict()).putValue(context, args[0]);
         return null;
     }
 

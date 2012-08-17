@@ -24,7 +24,7 @@ public class StringLiteralExpression extends AbstractExpression {
     private final String literal;
 
     public StringLiteralExpression(final Tree tree, String literal) {
-        super( tree );
+        super(tree);
         this.literal = literal;
     }
 
@@ -32,7 +32,7 @@ public class StringLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                ldc( literal );
+                ldc(literal);
             }
         };
     }

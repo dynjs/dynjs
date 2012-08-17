@@ -29,30 +29,30 @@ public class AssignmentExpression extends AbstractExpression {
     private final Expression rhs;
 
     public AssignmentExpression(final Tree tree, final Expression lhs, final Expression rhs) {
-        super( tree );
+        super(tree);
         this.lhs = lhs;
         this.rhs = rhs;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        System.err.println( "lhs=" + lhs );
-        System.err.println( "rhs=" + lhs );
+        System.err.println("lhs=" + lhs);
+        System.err.println("rhs=" + lhs);
         return new CodeBlock() {
             {
-                append( lhs.getCodeBlock() );
+                append(lhs.getCodeBlock());
                 // reference
-                append( rhs.getCodeBlock() );
+                append(rhs.getCodeBlock());
                 // reference expr
-                append( jsGetValue() );
+                append(jsGetValue());
                 // reference value
                 dup_x1();
                 // value reference value
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // value reference value context
                 swap();
                 // value reference context value
-                invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
+                invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
                 // value
             }
         };

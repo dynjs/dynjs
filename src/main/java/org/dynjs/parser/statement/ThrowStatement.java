@@ -25,7 +25,7 @@ public class ThrowStatement extends AbstractStatement {
     private final Expression expression;
 
     public ThrowStatement(final Tree tree, Expression expression) {
-        super( tree );
+        super(tree);
         this.expression = expression;
     }
 
@@ -33,9 +33,9 @@ public class ThrowStatement extends AbstractStatement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( expression.getCodeBlock() );
-                append( jsGetValue() );
-                append( throwCompletion() );
+                append(expression.getCodeBlock());
+                append(jsGetValue());
+                append(throwCompletion());
             }
         };
     }

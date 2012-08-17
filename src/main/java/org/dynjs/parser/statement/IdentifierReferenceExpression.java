@@ -39,7 +39,7 @@ public class IdentifierReferenceExpression extends AbstractExpression {
     private final String identifier;
 
     public IdentifierReferenceExpression(final Tree tree, final String identifier) {
-        super( tree );
+        super(tree);
         this.identifier = identifier;
     }
 
@@ -48,11 +48,11 @@ public class IdentifierReferenceExpression extends AbstractExpression {
         // 10.3.1
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                ldc( identifier );
+                ldc(identifier);
                 // context identifier
-                invokevirtual( p( ExecutionContext.class ), "resolve", sig( Reference.class, String.class ) );
+                invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
                 // reference
             }
         };

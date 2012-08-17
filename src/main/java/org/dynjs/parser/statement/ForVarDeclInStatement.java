@@ -26,7 +26,7 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
     private final VariableDeclarationStatement decl;
 
     public ForVarDeclInStatement(final Tree tree, final BlockManager blockManager, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
-        super( tree, blockManager, rhs, block );
+        super(tree, blockManager, rhs, block);
         this.decl = decl;
     }
 

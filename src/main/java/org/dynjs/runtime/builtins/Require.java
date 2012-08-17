@@ -35,7 +35,7 @@ import org.dynjs.runtime.modules.ModuleProvider;
 public class Require extends AbstractNativeFunction {
 
     public Require(GlobalObject globalObject) {
-        super( globalObject, "name" );
+        super(globalObject, "name");
     }
 
     @Override
@@ -51,14 +51,14 @@ public class Require extends AbstractNativeFunction {
         List<ModuleProvider> moduleProviders = context.getGlobalObject().getModuleProviders();
 
         for (ModuleProvider provider : moduleProviders) {
-            exports = provider.load( context, moduleName );
+            exports = provider.load(context, moduleName);
             if (exports != null) {
                 break;
             }
         }
 
         if (exports == null) {
-            System.err.println( "Cannot find module: " + moduleName );
+            System.err.println("Cannot find module: " + moduleName);
         }
 
         return exports;

@@ -24,7 +24,7 @@ public class ReturnStatement extends AbstractStatement {
     private final Expression expr;
 
     public ReturnStatement(final Tree tree, final Expression expr) {
-        super( tree );
+        super(tree);
         this.expr = expr;
     }
 
@@ -34,12 +34,12 @@ public class ReturnStatement extends AbstractStatement {
             {
                 // 12.9
                 if (expr == null) {
-                    append( jsPushUndefined() );
+                    append(jsPushUndefined());
                 } else {
-                    append( expr.getCodeBlock() );
-                    append( jsGetValue() );
+                    append(expr.getCodeBlock());
+                    append(jsGetValue());
                 }
-                append( returnCompletion() );
+                append(returnCompletion());
             }
         };
     }

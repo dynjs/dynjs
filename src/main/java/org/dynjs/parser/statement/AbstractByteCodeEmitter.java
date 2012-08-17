@@ -20,9 +20,9 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // <EMPTY>
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                ldc( identifier );
-                invokevirtual( p( ExecutionContext.class ), "resolve", sig( Reference.class, String.class ) );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                ldc(identifier);
+                invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
                 // reference
             }
         };
@@ -31,7 +31,7 @@ public class AbstractByteCodeEmitter {
     public CodeBlock jsPushUndefined() {
         return new CodeBlock() {
             {
-                getstatic( p( Types.class ), "UNDEFINED", ci( Types.Undefined.class ) );
+                getstatic(p(Types.class), "UNDEFINED", ci(Types.Undefined.class));
             }
         };
     }
@@ -40,7 +40,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: obj preferredType
-                invokestatic( p( Types.class ), "toPrimitive", sig( Object.class, Object.class, String.class ) );
+                invokestatic(p(Types.class), "toPrimitive", sig(Object.class, Object.class, String.class));
                 // obj
             }
         };
@@ -50,7 +50,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toNumber", sig( Number.class, Object.class ) );
+                invokestatic(p(Types.class), "toNumber", sig(Number.class, Object.class));
                 // obj
             }
         };
@@ -60,7 +60,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toBoolean", sig( Boolean.class, Object.class ) );
+                invokestatic(p(Types.class), "toBoolean", sig(Boolean.class, Object.class));
                 // obj
             }
         };
@@ -70,7 +70,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toInt32", sig( Integer.class, Object.class ) );
+                invokestatic(p(Types.class), "toInt32", sig(Integer.class, Object.class));
                 // obj
             }
         };
@@ -80,7 +80,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toUint32", sig( Integer.class, Object.class ) );
+                invokestatic(p(Types.class), "toUint32", sig(Integer.class, Object.class));
                 // obj
             }
         };
@@ -90,25 +90,25 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic( p( Types.class ), "toObject", sig( JSObject.class, Object.class ) );
+                invokestatic(p(Types.class), "toObject", sig(JSObject.class, Object.class));
                 // obj
             }
         };
     }
 
     public CodeBlock jsGetValue() {
-        return jsGetValue( null );
+        return jsGetValue(null);
     }
 
     public CodeBlock jsGetValue(Class<?> throwIfNot) {
         return new CodeBlock() {
             {
                 // IN: reference
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // reference context
                 swap();
                 // context reference
-                invokestatic( p( Types.class ), "getValue", sig( Object.class, ExecutionContext.class, Object.class ) );
+                invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
                 // value
                 // FIXME: handle throwing a TypeError if not throwIfNot
             }
@@ -120,7 +120,7 @@ public class AbstractByteCodeEmitter {
             {
                 // IN: reference
                 // reference
-                invokevirtual( p( Reference.class ), "getBase", sig( Object.class ) );
+                invokevirtual(p(Reference.class), "getBase", sig(Object.class));
                 // value
             }
         };
@@ -130,7 +130,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: obj
-                invokestatic( p( Types.class ), "toString", sig( String.class, Object.class ) );
+                invokestatic(p(Types.class), "toString", sig(String.class, Object.class));
             }
         };
     }
@@ -139,7 +139,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: context obj identifier
-                invokevirtual( p( ExecutionContext.class ), "createPropertyReference", sig( Reference.class, Object.class, String.class ) );
+                invokevirtual(p(ExecutionContext.class), "createPropertyReference", sig(Reference.class, Object.class, String.class));
 
             }
         };
@@ -148,7 +148,7 @@ public class AbstractByteCodeEmitter {
     public CodeBlock jsThrowTypeError() {
         return new CodeBlock() {
             {
-                invokestatic( p( ExecutionContext.class ), "throwTypeError", sig( void.class ) );
+                invokestatic(p(ExecutionContext.class), "throwTypeError", sig(void.class));
             }
         };
     }
@@ -156,8 +156,8 @@ public class AbstractByteCodeEmitter {
     public CodeBlock jsThrowReferenceError(final String ref) {
         return new CodeBlock() {
             {
-                ldc( ref );
-                invokestatic( p( ExecutionContext.class ), "throwReferenceError", sig( void.class ) );
+                ldc(ref);
+                invokestatic(p(ExecutionContext.class), "throwReferenceError", sig(void.class));
             }
         };
     }
@@ -165,7 +165,7 @@ public class AbstractByteCodeEmitter {
     public CodeBlock jsThrowSyntaxError() {
         return new CodeBlock() {
             {
-                invokestatic( p( ExecutionContext.class ), "throwSyntaxError", sig( void.class ) );
+                invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));
             }
         };
     }
@@ -174,25 +174,25 @@ public class AbstractByteCodeEmitter {
         // IN: Number Number
         return new CodeBlock() {
             {
-                checkcast( p( Number.class ) );
+                checkcast(p(Number.class));
                 swap();
                 // val(rhs) Number(lhs)
-                checkcast( p( Number.class ) );
+                checkcast(p(Number.class));
                 swap();
                 // Number(lhs) Number(rhs)
                 dup();
                 // Number(lhs) Number(rhs) Number(rhs)
-                instance_of( p( Double.class ) );
+                instance_of(p(Double.class));
                 // Number(lhs) Number(rhs) bool
-                iftrue( target );
+                iftrue(target);
                 // Number(lhs) Number(rhs)
                 swap();
                 // Number(rhs) Number(lhs)
                 dup_x1();
                 // Number(lhs) Number(rhs) Number(lhs)
-                instance_of( p( Double.class ) );
+                instance_of(p(Double.class));
                 // Number(lhs) Number(rhs) bool
-                iftrue( target );
+                iftrue(target);
                 // Number(lhs) Number(rhs)
             }
         };
@@ -205,19 +205,19 @@ public class AbstractByteCodeEmitter {
                 // IN: obj(lhs) obj(rhs)
                 dup();
                 // obj(lhs) obj(rhs) obj(rhs)
-                instance_of( p( String.class ) );
+                instance_of(p(String.class));
                 // obj(lhs) obj(rhs) bool(rhs)
-                iffalse( end );
+                iffalse(end);
                 // obj(lhs) obj(rhs)
                 swap();
                 // obj(rhs) obj(lhs)
                 dup_x1();
                 // obj(lhs) obj(rhs) obj(lhs)
-                instance_of( p( String.class ) );
+                instance_of(p(String.class));
                 // obj(lhs) obj(rhs) bool(lhs)
-                iftrue( target );
+                iftrue(target);
                 // obj(lhs) obj(rhs)
-                label( end );
+                label(end);
                 // obj(lhs) obj(rhs)
 
             }
@@ -228,11 +228,11 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: Number Number
-                invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+                invokevirtual(p(Number.class), "intValue", sig(int.class));
                 // Number(lhs) int(rhs)
                 swap();
                 // int(rhs) Number(rhs)
-                invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+                invokevirtual(p(Number.class), "intValue", sig(int.class));
                 // int(rhs) int(lhs)
                 swap();
                 // int(lhs) int(rhs);
@@ -244,7 +244,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: int
-                invokestatic( p( Integer.class ), "valueOf", sig( Integer.class, int.class ) );
+                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
             }
         };
     }
@@ -253,17 +253,17 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN Number Number
-                checkcast( p( Number.class ) );
+                checkcast(p(Number.class));
                 swap();
-                checkcast( p( Number.class ) );
+                checkcast(p(Number.class));
                 swap();
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                invokevirtual(p(Number.class), "doubleValue", sig(double.class));
                 // Number(lhs) double(rhs)
                 dup2_x1();
                 // double(rhs) Number(lhs) double(rhs);
                 pop2();
                 // double(rhs) Number(lhs)
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                invokevirtual(p(Number.class), "doubleValue", sig(double.class));
                 // double(rhs) double(lhs)
                 swap2();
                 // OUT double double
@@ -275,7 +275,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: int
-                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
+                invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
             }
         };
     }

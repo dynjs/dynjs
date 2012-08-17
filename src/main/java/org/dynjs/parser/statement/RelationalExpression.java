@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class RelationalExpression extends AbstractBinaryExpression {
 
     public RelationalExpression(Tree tree, Expression lhs, Expression rhs, String op) {
-        super( tree, lhs, rhs, op );
+        super(tree, lhs, rhs, op);
     }
 
     @Override
@@ -20,13 +20,13 @@ public class RelationalExpression extends AbstractBinaryExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( getLhs().getCodeBlock() );
-                append( jsGetValue() );
-                append( getRhs().getCodeBlock() );
-                append( jsGetValue() );
+                append(getLhs().getCodeBlock());
+                append(jsGetValue());
+                append(getRhs().getCodeBlock());
+                append(jsGetValue());
                 // lhs rhs
 
-                if (getOp().equals( ">" ) || getOp().equals( "<=" )) {
+                if (getOp().equals(">") || getOp().equals("<=")) {
                     swap();
                     iconst_0();
                     i2b();
@@ -36,49 +36,49 @@ public class RelationalExpression extends AbstractBinaryExpression {
                     i2b();
                 }
 
-                invokestatic( p( Types.class ), "compareRelational", sig( Object.class, Object.class, Object.class, boolean.class ) );
+                invokestatic(p(Types.class), "compareRelational", sig(Object.class, Object.class, Object.class, boolean.class));
 
                 // result
                 dup();
                 // result result
 
-                if (getOp().equals( "<" ) || getOp().equals( ">" )) {
+                if (getOp().equals("<") || getOp().equals(">")) {
                     // result result
-                    append( jsPushUndefined() );
+                    append(jsPushUndefined());
                     // result result UNDEF
-                    if_acmpeq( returnFalse );
+                    if_acmpeq(returnFalse);
                     // result
-                    go_to( end );
-                } else if (getOp().equals( "<=" ) || getOp().equals( ">=" )) {
+                    go_to(end);
+                } else if (getOp().equals("<=") || getOp().equals(">=")) {
                     // result result
-                    append( jsPushUndefined() );
+                    append(jsPushUndefined());
                     // result result UNDEF
-                    if_acmpeq( returnFalse );
+                    if_acmpeq(returnFalse);
                     // result
                     dup();
                     // result result
-                    getstatic( p( Boolean.class ), "TRUE", ci( Boolean.class ) );
+                    getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
                     // result result TRUE
-                    if_acmpeq( returnFalse );
+                    if_acmpeq(returnFalse);
                     // result(FALSE)
                     pop();
                     // <empty>
-                    getstatic( p( Boolean.class ), "TRUE", ci( Boolean.class ) );
+                    getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
                     // TRUE
-                    go_to( end );
+                    go_to(end);
                 }
 
                 // ----------------------------------------
                 // FALSE
 
-                label( returnFalse );
+                label(returnFalse);
                 // result
                 pop();
-                getstatic( p( Boolean.class ), "FALSE", ci( Boolean.class ) );
-                go_to( end );
+                getstatic(p(Boolean.class), "FALSE", ci(Boolean.class));
+                go_to(end);
 
                 // ----------------------------------------
-                label( end );
+                label(end);
                 nop();
             }
         };

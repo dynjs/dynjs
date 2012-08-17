@@ -19,7 +19,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private boolean strict;
 
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        this( null, scope, strict, formalParameters );
+        this(null, scope, strict, formalParameters);
     }
 
     public AbstractFunction(final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
@@ -27,16 +27,16 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
-        setClassName( "Function" );
+        setClassName("Function");
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set( "Value", formalParameters.length );
-                set( "Writable", false );
-                set( "Configurable", false );
-                set( "Enumerable", false );
+                set("Value", formalParameters.length);
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", false);
             }
         };
-        defineOwnProperty( null, "length", desc, false );
+        defineOwnProperty(null, "length", desc, false);
     }
 
     public LexicalEnvironment getScope() {
@@ -65,7 +65,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         if (this.strict) {
             throw new TypeError();
         }
-        return super.get( context, name );
+        return super.get(context, name);
     }
 
     @Override
@@ -75,7 +75,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         }
 
         if (this.body instanceof FunctionDeclaration) {
-            return Collections.singletonList( (FunctionDeclaration) this.body );
+            return Collections.singletonList((FunctionDeclaration) this.body);
         }
         return Collections.emptyList();
     }

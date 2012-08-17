@@ -19,7 +19,7 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
     private final Statement finallyBlock;
 
     public TryStatement(Tree tree, BlockManager blockManager, Statement tryBlock, CatchClause catchClause, Statement finallyBlock) {
-        super( tree, blockManager );
+        super(tree, blockManager);
         this.tryBlock = tryBlock;
         this.catchClause = catchClause;
         this.finallyBlock = finallyBlock;
@@ -33,35 +33,35 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                 LabelNode throwTarget = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Try", tryBlock ) );
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Try", tryBlock));
                 // completion(try)
 
                 dup();
                 // completion(try) completion(try)
 
-                handleCompletion( normalTarget, normalTarget, normalTarget, normalTarget, throwTarget );
+                handleCompletion(normalTarget, normalTarget, normalTarget, normalTarget, throwTarget);
 
                 // ----------------------------------------
                 // THROW
-                label( throwTarget );
+                label(throwTarget);
                 // completion(try)
 
                 if (catchClause != null) {
-                    aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                     // completion(try) context
                     swap();
                     // context completion(try)
-                    append( CodeBlockUtils.compiledStatementBlock( getBlockManager(), "Catch", catchClause.getBlock() ) );
+                    append(CodeBlockUtils.compiledStatementBlock(getBlockManager(), "Catch", catchClause.getBlock()));
                     // context completion(try) block(catch)
                     swap();
                     // context block(catch) completion(try)
-                    ldc( catchClause.getIdentifier() );
+                    ldc(catchClause.getIdentifier());
                     // context block(catch) completion(try) identifier
                     swap();
                     // context block(catch) identifier completion(try)
-                    getfield( p( Completion.class ), "value", ci( Object.class ) );
+                    getfield(p(Completion.class), "value", ci(Object.class));
                     // context block(catch) identifier thrown
-                    invokevirtual( p( ExecutionContext.class ), "invokeCatch", sig( Completion.class, BasicBlock.class, String.class, Object.class ) );
+                    invokevirtual(p(ExecutionContext.class), "invokeCatch", sig(Completion.class, BasicBlock.class, String.class, Object.class));
                     // completion(catch)
                 } else {
                     areturn();
@@ -70,17 +70,17 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                 // ----------------------------------------
                 // NORMAL, BREAK, CONTINUE, RETURN
 
-                label( normalTarget );
+                label(normalTarget);
                 // completion(try)
 
                 if (finallyBlock != null) {
-                    append( CodeBlockUtils.invokeCompiledStatementBlock( getBlockManager(), "Finally", finallyBlock ) );
+                    append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", finallyBlock));
                     // completion(try) completion(finally)
                     //append( CodeBlockUtils.ifCompletionIsNormal( end ) );
                     // completion(try)
                 }
 
-                label( end );
+                label(end);
                 // completion(try) 
             }
 

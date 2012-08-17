@@ -23,21 +23,21 @@ public class JSCompiler {
 
     public JSCompiler(Config config) {
         this.config = config;
-        this.programCompiler = new ProgramCompiler( this.config );
-        this.functionCompiler = new FunctionCompiler( this.config );
-        this.basicBlockCompiler = new BasicBlockCompiler( this.config );
+        this.programCompiler = new ProgramCompiler(this.config);
+        this.functionCompiler = new FunctionCompiler(this.config);
+        this.basicBlockCompiler = new BasicBlockCompiler(this.config);
     }
 
     public JSProgram compileProgram(Statement statement) {
-        return this.programCompiler.compile( statement );
+        return this.programCompiler.compile(statement);
     }
 
     public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body) {
-        return this.functionCompiler.compile( context, formalParameters, body );
+        return this.functionCompiler.compile(context, formalParameters, body);
     }
 
     public BasicBlock compileBasicBlock(String grist, Statement body) {
-        return this.basicBlockCompiler.compile( grist, body );
+        return this.basicBlockCompiler.compile(grist, body);
     }
 
 }

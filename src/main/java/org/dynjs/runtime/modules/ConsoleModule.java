@@ -17,10 +17,10 @@ public class ConsoleModule {
         if (errStream instanceof PrintStream) {
             err = (PrintStream) errStream;
         } else {
-            err = new PrintStream( errStream );
+            err = new PrintStream(errStream);
         }
 
-        err.println( message );
+        err.println(message);
 
     }
 

@@ -17,10 +17,10 @@ public class FilesystemModuleProvider implements ModuleProvider {
     @Override
     public DynObject load(ExecutionContext context, String moduleName) {
         DynObject exports = null;
-        String filename = normalizeFileName( moduleName );
-        File file = findFile( context, filename );
+        String filename = normalizeFileName(moduleName);
+        File file = findFile(context, filename);
         if (file == null) {
-            file = findFile( context, moduleName + "/index.js" );
+            file = findFile(context, moduleName + "/index.js");
         }
         if (file != null) {
             // TODO: FIXME: Fix this
@@ -69,11 +69,11 @@ public class FilesystemModuleProvider implements ModuleProvider {
     }
 
     private String normalizeFileName(String originalName) {
-        if (originalName.endsWith( ".js" )) {
+        if (originalName.endsWith(".js")) {
             return originalName;
         }
-        StringBuilder filename = new StringBuilder( originalName );
-        filename.append( ".js" );
+        StringBuilder filename = new StringBuilder(originalName);
+        filename.append(".js");
         return filename.toString();
     }
 

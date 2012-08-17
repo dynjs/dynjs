@@ -24,11 +24,11 @@ import org.dynjs.runtime.Types;
 public class UndefinedValueExpression extends AbstractExpression {
 
     public UndefinedValueExpression(final Tree tree) {
-        super( tree );
+        super(tree);
     }
 
     @Override
     public CodeBlock getCodeBlock() {
-        return new CodeBlock().getstatic( p( Types.class ), "UNDEFINED", ci( Object.class ) );
+        return new CodeBlock().getstatic(p(Types.class), "UNDEFINED", ci(Object.class));
     }
 }

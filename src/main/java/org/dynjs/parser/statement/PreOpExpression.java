@@ -27,7 +27,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class PreOpExpression extends AbstractUnaryOperatorExpression {
 
     public PreOpExpression(final Tree tree, final Expression expression, String op) {
-        super( tree, expression, op );
+        super(tree, expression, op);
     }
 
     @Override
@@ -39,90 +39,90 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
                 LabelNode invalid = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( getExpr().getCodeBlock() );
+                append(getExpr().getCodeBlock());
                 // obj
                 dup();
                 // obj obj
-                instance_of( p( Reference.class ) );
+                instance_of(p(Reference.class));
                 // ref bool
-                iffalse( invalid );
+                iffalse(invalid);
                 // ref
                 dup();
                 // ref ref
-                invokevirtual( p( Reference.class ), "isValidForPrePostIncrementDecrement", sig( boolean.class ) );
+                invokevirtual(p(Reference.class), "isValidForPrePostIncrementDecrement", sig(boolean.class));
                 // ref bool
-                iffalse( invalid );
+                iffalse(invalid);
                 // ref
                 dup();
                 // ref ref
                 dup();
                 // ref ref ref
-                append( jsGetValue() );
+                append(jsGetValue());
                 // ref ref value
-                append( jsToNumber() );
+                append(jsToNumber());
                 // ref ref number
 
                 dup();
                 // ref ref number number
-                instance_of( p( Double.class ) );
+                instance_of(p(Double.class));
                 // ref ref number bool
-                iftrue( doubleNum );
+                iftrue(doubleNum);
                 // ref ref number
 
                 // ----------------------------------------
                 // Integer
 
                 // ref ref number
-                invokevirtual( p( Number.class ), "intValue", sig( int.class ) );
+                invokevirtual(p(Number.class), "intValue", sig(int.class));
                 // ref ref int
                 iconst_1();
                 // ref ref int 1
-                if (getOp().equals( "++" )) {
+                if (getOp().equals("++")) {
                     iadd();
                 } else {
                     isub();
                 }
                 // ref ref int
-                invokestatic( p( Integer.class ), "valueOf", sig( Integer.class, int.class ) );
+                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
                 // ref ref Integer
-                go_to( storeNewValue );
+                go_to(storeNewValue);
 
                 // ----------------------------------------
                 // Double
 
-                label( doubleNum );
+                label(doubleNum);
                 // ref ref number
-                invokevirtual( p( Number.class ), "doubleValue", sig( double.class ) );
+                invokevirtual(p(Number.class), "doubleValue", sig(double.class));
                 // ref ref double
                 iconst_1();
                 // ref ref double 1
                 i2d();
                 // ref ref double 1.0
-                if (getOp().equals( "++" )) {
+                if (getOp().equals("++")) {
                     dadd();
                 } else {
                     dsub();
                 }
                 // ref ref double
-                invokestatic( p( Double.class ), "valueOf", sig( Double.class, double.class ) );
+                invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
                 // ref ref Double
 
-                label( storeNewValue );
+                label(storeNewValue);
                 // ref ref newval
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // ref ref newval context
                 swap();
                 // ref ref context newval
-                invokevirtual( p( Reference.class ), "putValue", sig( void.class, ExecutionContext.class, Object.class ) );
+                invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
                 // ref
-                append( jsGetValue() );
+                append(jsGetValue());
                 // value
-                go_to( end );
+                go_to(end);
 
-                label( invalid );
+                label(invalid);
                 // ref
-                append( jsThrowSyntaxError() );
-                label( end );
+                append(jsThrowSyntaxError());
+                label(end);
                 nop();
 
             }

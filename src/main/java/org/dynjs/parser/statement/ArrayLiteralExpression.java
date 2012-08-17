@@ -30,7 +30,7 @@ public class ArrayLiteralExpression extends AbstractExpression {
     private final List<Expression> exprs;
 
     public ArrayLiteralExpression(final Tree tree, final List<Expression> exprs) {
-        super( tree );
+        super(tree);
         this.exprs = exprs;
     }
 
@@ -38,30 +38,30 @@ public class ArrayLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         CodeBlock codeBlock = new CodeBlock() {
             {
-                newobj( p( DynArray.class ) );
+                newobj(p(DynArray.class));
                 dup();
-                pushInt( exprs.size() );
-                invokespecial( p( DynArray.class ), "<init>", sig( void.class, int.class ) );
-                astore( 4 );
+                pushInt(exprs.size());
+                invokespecial(p(DynArray.class), "<init>", sig(void.class, int.class));
+                astore(4);
             }
         };
-        Expression[] expressions = exprs.toArray( new Expression[] {} );
+        Expression[] expressions = exprs.toArray(new Expression[] {});
         for (int i = 0; i < expressions.length; i++) {
             Expression statement = expressions[i];
-            codeBlock = retrieveArrayReference( i, statement, codeBlock );
+            codeBlock = retrieveArrayReference(i, statement, codeBlock);
         }
-        return codeBlock.aload( 4 );
+        return codeBlock.aload(4);
     }
 
     private CodeBlock retrieveArrayReference(final int stackReference, final Expression statement,
             final CodeBlock codeBlock) {
         return new CodeBlock() {
             {
-                append( codeBlock );
-                aload( 4 );
-                pushInt( stackReference );
-                append( statement.getCodeBlock() );
-                invokevirtual( p( DynArray.class ), "set", sig( void.class, int.class, Object.class ) );
+                append(codeBlock);
+                aload(4);
+                pushInt(stackReference);
+                append(statement.getCodeBlock());
+                invokevirtual(p(DynArray.class), "set", sig(void.class, int.class, Object.class));
             }
         };
     }

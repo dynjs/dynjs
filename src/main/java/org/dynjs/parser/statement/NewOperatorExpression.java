@@ -34,7 +34,7 @@ public class NewOperatorExpression extends AbstractExpression {
     private List<Expression> argExprs;
 
     public NewOperatorExpression(final Tree tree, final Expression newExpr, final List<Expression> argExprs) {
-        super( tree );
+        super(tree);
         this.newExpr = newExpr;
         this.argExprs = argExprs;
     }
@@ -44,25 +44,25 @@ public class NewOperatorExpression extends AbstractExpression {
         return new CodeBlock() {
             {
                 // 11.2.2
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append( newExpr.getCodeBlock() );
+                append(newExpr.getCodeBlock());
                 // context reference
-                append( jsGetValue( JSFunction.class ) );
+                append(jsGetValue(JSFunction.class));
                 // context ctor
                 int numArgs = argExprs.size();
-                bipush( numArgs );
-                anewarray( p( Object.class ) );
+                bipush(numArgs);
+                anewarray(p(Object.class));
                 // context ctor array
                 for (int i = 0; i < numArgs; ++i) {
                     dup();
-                    bipush( i );
-                    append( argExprs.get( i ).getCodeBlock() );
+                    bipush(i);
+                    append(argExprs.get(i).getCodeBlock());
                     aastore();
                 }
                 // context ctor array
                 // call ExecutionContext#construct(fn, args) -> Object
-                invokevirtual( p( ExecutionContext.class ), "construct", sig( JSObject.class, JSFunction.class, Object[].class ) );
+                invokevirtual(p(ExecutionContext.class), "construct", sig(JSObject.class, JSFunction.class, Object[].class));
                 // obj
             }
         };

@@ -9,7 +9,7 @@ public class InvalidModuleException extends DynJSException {
     }
 
     public InvalidModuleException(Object module, String message) {
-        super( message );
+        super(message);
         this.module = module;
     }
 

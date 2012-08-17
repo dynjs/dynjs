@@ -10,7 +10,7 @@ public class BreakStatement extends AbstractStatement implements Statement {
     private String target;
 
     public BreakStatement(Tree tree, String target) {
-        super( tree );
+        super(tree);
         this.target = target;
     }
 
@@ -18,7 +18,7 @@ public class BreakStatement extends AbstractStatement implements Statement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( breakCompletion( target ) );
+                append(breakCompletion(target));
             }
         };
     }

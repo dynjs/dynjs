@@ -9,7 +9,7 @@ import org.dynjs.parser.statement.VariableDeclaration;
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
-        super( LexicalEnvironment.newObjectEnvironment( globalObject, false, null ), false, formalParameters );
+        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), false, formalParameters);
     }
 
     @Override
@@ -24,25 +24,25 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
 
     @Override
     public Object call(ExecutionContext context) {
-        Reference selfRef = context.resolve( "this" );
+        Reference selfRef = context.resolve("this");
         Object self = Types.UNDEFINED;
 
         if (selfRef != null && !selfRef.isUnresolvableReference()) {
-            self = selfRef.getValue( context );
+            self = selfRef.getValue(context);
         }
 
         String[] formalParams = getFormalParameters();
         Object[] args = new Object[formalParams.length];
         for (int i = 0; i < formalParams.length; ++i) {
-            Reference eachRef = context.resolve( formalParams[i] );
+            Reference eachRef = context.resolve(formalParams[i]);
             if (!eachRef.isUnresolvableReference()) {
-                args[i] = eachRef.getValue( context );
+                args[i] = eachRef.getValue(context);
             } else {
                 args[i] = Types.UNDEFINED;
             }
         }
 
-        return call( context, self, args );
+        return call(context, self, args);
     }
 
     public abstract Object call(ExecutionContext context, Object self, Object... args);

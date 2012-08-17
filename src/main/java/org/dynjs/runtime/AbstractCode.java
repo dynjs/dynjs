@@ -16,7 +16,7 @@ public abstract class AbstractCode implements JSCode {
     private boolean strict;
 
     public AbstractCode(Statement block) {
-        this( block, false );
+        this(block, false);
     }
 
     public AbstractCode(Statement block, boolean strict) {
@@ -35,7 +35,7 @@ public abstract class AbstractCode implements JSCode {
         }
 
         if (this.block instanceof FunctionDeclaration) {
-            return Collections.singletonList( (FunctionDeclaration) this.block );
+            return Collections.singletonList((FunctionDeclaration) this.block);
         }
 
         return Collections.emptyList();

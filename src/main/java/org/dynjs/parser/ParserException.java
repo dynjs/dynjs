@@ -26,14 +26,14 @@ public class ParserException extends DynJSException {
     }
 
     public ParserException(final Exception e) {
-        super( e );
+        super(e);
     }
 
     public ParserException(final String message, final Tree tree) {
-        this( message, new Position( tree ) );
+        this(message, new Position(tree));
     }
 
     public ParserException(final String message, final Position position) {
-        super( position.toString() + " " + message );
+        super(position.toString() + " " + message);
     }
 }

@@ -19,5 +19,5 @@ import me.qmx.jitescript.CodeBlock;
 
 public class CodeBlocks {
 
-    public static final CodeBlock GETPROP = new CodeBlock().aload( 0 );
+    public static final CodeBlock GETPROP = new CodeBlock().aload(0);
 }

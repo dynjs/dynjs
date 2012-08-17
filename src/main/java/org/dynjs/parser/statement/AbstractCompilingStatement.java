@@ -10,7 +10,7 @@ public abstract class AbstractCompilingStatement extends AbstractStatement {
     private BlockManager blockManager;
 
     public AbstractCompilingStatement(Tree tree, BlockManager blockManager) {
-        super( tree );
+        super(tree);
         this.blockManager = blockManager;
     }
 
@@ -19,7 +19,7 @@ public abstract class AbstractCompilingStatement extends AbstractStatement {
     }
 
     public void stash(Statement block) {
-        Entry entry = blockManager.retrieve( block.getStatementNumber() );
+        Entry entry = blockManager.retrieve(block.getStatementNumber());
         if (entry.statement == null) {
             entry.statement = block;
         }

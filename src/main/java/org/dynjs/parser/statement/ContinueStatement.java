@@ -24,7 +24,7 @@ public class ContinueStatement extends AbstractStatement {
     private String target;
 
     public ContinueStatement(Tree tree, String target) {
-        super( tree );
+        super(tree);
         this.target = target;
     }
 
@@ -32,7 +32,7 @@ public class ContinueStatement extends AbstractStatement {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append( continueCompletion( target ) );
+                append(continueCompletion(target));
             }
         };
     }

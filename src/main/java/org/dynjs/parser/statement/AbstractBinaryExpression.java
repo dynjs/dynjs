@@ -9,7 +9,7 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     private String op;
 
     AbstractBinaryExpression(final Tree tree, final Expression lhs, final Expression rhs, String op) {
-        super( tree );
+        super(tree);
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;

@@ -24,7 +24,7 @@ public class SyntaxError extends ParserException {
     private List<String> errors;
 
     public SyntaxError(RecognitionException e) {
-        super( e );
+        super(e);
     }
 
     public SyntaxError(List<String> errors) {
@@ -39,7 +39,7 @@ public class SyntaxError extends ParserException {
         StringBuffer buf = new StringBuffer();
 
         for (String message : errors) {
-            buf.append( message + "\n" );
+            buf.append(message + "\n");
         }
 
         return buf.toString();

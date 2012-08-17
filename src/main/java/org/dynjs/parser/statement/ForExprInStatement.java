@@ -26,7 +26,7 @@ public class ForExprInStatement extends AbstractForInStatement {
     private final Expression expr;
 
     public ForExprInStatement(final Tree tree, final BlockManager blockManager, final Expression expr, final Expression rhs, final Statement block) {
-        super( tree, blockManager, rhs, block );
+        super(tree, blockManager, rhs, block);
         this.expr = expr;
     }
 

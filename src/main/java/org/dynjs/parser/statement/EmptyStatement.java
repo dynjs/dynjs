@@ -22,7 +22,7 @@ import org.antlr.runtime.tree.Tree;
 public class EmptyStatement extends AbstractStatement {
 
     public EmptyStatement(final Tree tree) {
-        super( tree );
+        super(tree);
     }
 
     @Override

@@ -26,7 +26,7 @@ import org.objectweb.asm.tree.LabelNode;
 public class InstanceofExpression extends AbstractBinaryExpression {
 
     public InstanceofExpression(final Tree tree, final Expression l, final Expression r) {
-        super( tree, l, r, "instanceof" );
+        super(tree, l, r, "instanceof");
     }
 
     @Override
@@ -36,30 +36,30 @@ public class InstanceofExpression extends AbstractBinaryExpression {
                 LabelNode typeError = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append( getLhs().getCodeBlock() );
+                append(getLhs().getCodeBlock());
                 // obj(lhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs)
 
-                append( getRhs().getCodeBlock() );
+                append(getRhs().getCodeBlock());
                 // val(lhs) obj(rhs)
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val(lhs) val(rhs)
 
                 dup();
                 // val(lhs) val(rhs) val(rhs)
-                instance_of( p( JSFunction.class ) );
+                instance_of(p(JSFunction.class));
                 // val(lhs) val(rhs) bool
-                iffalse( typeError );
-                invokevirtual( p( JSFunction.class ), "hasInstance", sig( boolean.class, Object.class ) );
-                go_to( end );
+                iffalse(typeError);
+                invokevirtual(p(JSFunction.class), "hasInstance", sig(boolean.class, Object.class));
+                go_to(end);
 
-                label( typeError );
+                label(typeError);
                 pop();
                 pop();
                 // FIXME: throw TypeError;
 
-                label( end );
+                label(end);
             }
         };
     }

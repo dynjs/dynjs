@@ -33,38 +33,38 @@ public class DynArray extends DynObject {
     private Object[] array;
 
     public DynArray() {
-        this( DEFAULT_ARRAY_SIZE );
+        this(DEFAULT_ARRAY_SIZE);
     }
 
     public DynArray(int size) {
         this.array = new Object[size];
-        fillUndefinedArray( this.array, 0, this.array.length );
+        fillUndefinedArray(this.array, 0, this.array.length);
     }
 
     private void fillUndefinedArray(Object[] array, int from, int to) {
         int i;
         for (i = from; i + UNDEFINED_PREFILLED_ARRAY.length < to; i += UNDEFINED_PREFILLED_ARRAY.length) {
-            System.arraycopy( UNDEFINED_PREFILLED_ARRAY, 0, array, i, UNDEFINED_PREFILLED_ARRAY.length );
+            System.arraycopy(UNDEFINED_PREFILLED_ARRAY, 0, array, i, UNDEFINED_PREFILLED_ARRAY.length);
         }
-        System.arraycopy( UNDEFINED_PREFILLED_ARRAY, 0, array, i, to - i );
+        System.arraycopy(UNDEFINED_PREFILLED_ARRAY, 0, array, i, to - i);
     }
 
     public void set(int index, Object value) {
-        growIfNeeded( index );
+        growIfNeeded(index);
         array[index] = value;
     }
 
     private void growIfNeeded(int index) {
-        if (!checkBounds( index )) {
+        if (!checkBounds(index)) {
             Object[] reallocated = new Object[index + 1];
-            System.arraycopy( this.array, 0, reallocated, 0, this.array.length );
-            fillUndefinedArray( reallocated, this.array.length, index );
+            System.arraycopy(this.array, 0, reallocated, 0, this.array.length);
+            fillUndefinedArray(reallocated, this.array.length, index);
             this.array = reallocated;
         }
     }
 
     public Object get(int index) {
-        if (checkBounds( index )) {
+        if (checkBounds(index)) {
             return array[index];
         }
         return Types.UNDEFINED;
@@ -80,6 +80,6 @@ public class DynArray extends DynObject {
 
     @Override
     public String toString() {
-        return Arrays.toString( this.array );
+        return Arrays.toString(this.array);
     }
 }

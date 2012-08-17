@@ -31,21 +31,21 @@ public class AbstractCompiler {
     }
 
     public String nextClassName() {
-        return nextClassName( "" );
+        return nextClassName("");
     }
 
     public String nextClassName(String grist) {
-        return this.config.getBasePackage().replace( '.', '/' ) + "/" + grist + type + nextCounterValue();
+        return this.config.getBasePackage().replace('.', '/') + "/" + grist + type + nextCounterValue();
     }
 
     protected Class<?> defineClass(JiteClass jiteClass) {
-        byte[] bytecode = jiteClass.toBytes( JDKVersion.V1_7 );
+        byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
         if (config.isDebug()) {
-            ClassReader reader = new ClassReader( bytecode );
-            CheckClassAdapter.verify( reader, true, new PrintWriter( System.out ) );
+            ClassReader reader = new ClassReader(bytecode);
+            CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return new DynamicClassLoader( config.getClassLoader() ).define( jiteClass.getClassName().replace( '/', '.' ), bytecode );
+        return new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
 }
