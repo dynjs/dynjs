@@ -348,8 +348,8 @@ public class Executor {
         return new FunctionExpression(getBlockManager(), descriptor);
     }
 
-    public NewOperatorExpression newOperatorExpression(final Tree tree, final Expression expr, final List<Expression> argExprs) {
-        return new NewOperatorExpression(tree, expr, argExprs);
+    public NewOperatorExpression newOperatorExpression(final Tree tree, final Expression expr) {
+        return new NewOperatorExpression(tree, expr);
     }
 
     public IfStatement ifStatement(final Tree tree, Expression vbool, Statement vthen, Statement velse) {

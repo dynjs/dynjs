@@ -48,4 +48,13 @@ public class VariableDeclarationStatement extends AbstractStatement {
             }
         };
     }
+    
+    public String dump(String indent) {
+        StringBuffer buf = new StringBuffer();
+        buf.append( super.dump(indent ) );
+        for ( VariableDeclaration decl : this.declExprs ) {
+            buf.append( decl.dump( indent + "  " ) );
+        }
+        return buf.toString();
+    }
 }

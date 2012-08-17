@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class ExecutionContext {
     }
 
     public JSObject getThisBinding() {
+        System.err.println( "asking for this -> " + thisBinding );
         return this.thisBinding;
     }
 
@@ -79,6 +81,9 @@ public class ExecutionContext {
 
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
+        if ( function instanceof JSConstructor ) {
+            return construct( (JSConstructor) function, args );
+        }
         ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
         Object result = function.call(fnContext);
         if (result == null) {
@@ -88,8 +93,10 @@ public class ExecutionContext {
         return result;
     }
 
-    public JSObject construct(JSFunction function, Object... args) {
+    public JSObject construct(JSConstructor constructor, Object... args) {
         // 13.2.2
+        JSFunction function = constructor.getFunction();
+        System.err.println( "construct with " + function + ", " + Arrays.asList( args) );
         DynObject obj = new DynObject();
         obj.setClassName("Object");
         obj.setExtensible(true);

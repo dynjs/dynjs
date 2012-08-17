@@ -364,6 +364,10 @@ public class Types {
         return o.getClass().getName();
 
     }
+    
+    public static JSConstructor toConstructor(JSFunction function) {
+            return new JSConstructor( function );
+    }
 
     // ----------------------------------------------------------------------
 

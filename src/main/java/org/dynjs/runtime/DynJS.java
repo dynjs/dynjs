@@ -3,12 +3,14 @@ package org.dynjs.runtime;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.tree.BaseTree;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.Config;
@@ -50,10 +52,10 @@ public class DynJS {
         Completion completion = this.context.execute(programObj);
         if (completion.type == Completion.Type.THROW) {
             Object thrown = completion.value;
-            if ( thrown instanceof DynJSException ) {
-                throw ((DynJSException)thrown);
+            if (thrown instanceof DynJSException) {
+                throw ((DynJSException) thrown);
             }
-            throw new DynJSException( thrown.toString() );
+            throw new DynJSException(thrown.toString());
         }
         return completion.value;
     }
@@ -66,10 +68,10 @@ public class DynJS {
         System.err.println("completion: " + completion);
         if (completion.type == Completion.Type.THROW) {
             Object thrown = completion.value;
-            if ( thrown instanceof DynJSException ) {
-                throw ((DynJSException)thrown);
+            if (thrown instanceof DynJSException) {
+                throw ((DynJSException) thrown);
             }
-            throw new DynJSException( thrown.toString() );
+            throw new DynJSException(thrown.toString());
         }
         return completion.value;
     }
@@ -119,6 +121,7 @@ public class DynJS {
             throw new SyntaxError(errors);
         }
         CommonTree tree = (CommonTree) program.getTree();
+        dump(tree);
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
@@ -128,6 +131,24 @@ public class DynJS {
         walker.setExecutor(executor);
         walker.program();
         return walker.getResult();
+    }
+
+    private void dump(CommonTree tree) {
+        dump(tree, "");
+    }
+
+    private void dump(CommonTree tree, String indent) {
+        System.err.println(indent + tree.getText());
+
+        if (tree.getChildCount() > 0) {
+            Iterator<?> childIter = tree.getChildren().iterator();
+
+            while (childIter.hasNext()) {
+                CommonTree child = (CommonTree) childIter.next();
+                dump(child, indent + "  ");
+            }
+        }
+
     }
 
 }

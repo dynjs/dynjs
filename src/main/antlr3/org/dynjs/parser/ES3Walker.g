@@ -388,8 +388,8 @@ leftHandSideExpression returns [Expression value]
 
 newExpression returns [NewOperatorExpression value]
 @init { List<Expression> args = new ArrayList<Expression>(); }
-	: ^( NEW leftHandSideExpression ^( ARGS (expression { args.add($expression.value);})* ) )
-	{ $value = executor.newOperatorExpression($NEW, $leftHandSideExpression.value, args); }
+	: ^( NEW leftHandSideExpression )
+	{ $value = executor.newOperatorExpression($NEW, $leftHandSideExpression.value); }
 	;
 
 functionDescriptor returns [FunctionDescriptor value]

@@ -6,6 +6,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
 
 /**
  * The <code>this</code> keyword evaluates to the value of the ThisBinding of
@@ -26,7 +27,7 @@ public class ThisExpression extends AbstractExpression {
         return new CodeBlock() {
             {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                invokevirtual(p(ExecutionContext.class), "getThisBinding", sig(Object.class));
+                invokevirtual(p(ExecutionContext.class), "getThisBinding", sig(JSObject.class));
             }
         };
     }

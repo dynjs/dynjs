@@ -16,27 +16,21 @@
 
 package org.dynjs.parser.statement;
 
+import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-import java.util.List;
-
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSConstructor;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.Types;
 
 public class NewOperatorExpression extends AbstractExpression {
 
     private final Expression newExpr;
-    private List<Expression> argExprs;
 
-    public NewOperatorExpression(final Tree tree, final Expression newExpr, final List<Expression> argExprs) {
+    public NewOperatorExpression(final Tree tree, final Expression newExpr) {
         super(tree);
         this.newExpr = newExpr;
-        this.argExprs = argExprs;
     }
 
     @Override
@@ -44,26 +38,12 @@ public class NewOperatorExpression extends AbstractExpression {
         return new CodeBlock() {
             {
                 // 11.2.2
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
                 append(newExpr.getCodeBlock());
-                // context reference
+                // reference
                 append(jsGetValue(JSFunction.class));
-                // context ctor
-                int numArgs = argExprs.size();
-                bipush(numArgs);
-                anewarray(p(Object.class));
-                // context ctor array
-                for (int i = 0; i < numArgs; ++i) {
-                    dup();
-                    bipush(i);
-                    append(argExprs.get(i).getCodeBlock());
-                    aastore();
-                }
-                // context ctor array
-                // call ExecutionContext#construct(fn, args) -> Object
-                invokevirtual(p(ExecutionContext.class), "construct", sig(JSObject.class, JSFunction.class, Object[].class));
-                // obj
+                // ctor-fn
+                invokestatic(p(Types.class), "toConstructor", sig(JSConstructor.class, JSFunction.class));
+                // ctor-fn
             }
         };
     }

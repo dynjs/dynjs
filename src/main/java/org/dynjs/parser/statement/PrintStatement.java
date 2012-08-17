@@ -41,7 +41,7 @@ public class PrintStatement extends AbstractStatement implements Statement {
                 // obj
                 append( jsGetValue() );
                 // val
-                getstatic(p(System.class), "out", ci(PrintStream.class));
+                getstatic(p(System.class), "err", ci(PrintStream.class));
                 // val System.out
                 swap();
                 // System.out val

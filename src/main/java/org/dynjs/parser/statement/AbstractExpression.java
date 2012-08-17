@@ -34,4 +34,8 @@ public abstract class AbstractExpression extends AbstractByteCodeEmitter impleme
     public Position getPosition() {
         return position;
     }
+    
+    public String dump(String indent) {
+        return indent + getClass().getName() + "\n";
+    }
 }
