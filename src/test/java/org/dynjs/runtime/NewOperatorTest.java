@@ -18,7 +18,7 @@ public class NewOperatorTest extends AbstractDynJSTestSupport {
 
         assertThat(y).isSameAs(x);
     }
-    
+
     @Test
     public void testNewWithoutParens() {
         eval("var y;",

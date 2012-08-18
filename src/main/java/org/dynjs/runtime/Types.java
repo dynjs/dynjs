@@ -364,7 +364,7 @@ public class Types {
         return o.getClass().getName();
 
     }
-    
+
     // ----------------------------------------------------------------------
 
     public static class Undefined {

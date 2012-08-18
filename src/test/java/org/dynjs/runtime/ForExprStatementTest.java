@@ -1,8 +1,8 @@
 package org.dynjs.runtime;
+
 import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
-
 
 public class ForExprStatementTest extends AbstractDynJSTestSupport {
 

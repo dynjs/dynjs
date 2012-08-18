@@ -94,7 +94,7 @@ public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
         assertThat(caught).isEqualTo("taco");
         assertThat(execFinally).isEqualTo(true);
     }
-    
+
     @Test
     public void testTryCatchFinallyWithFinallyThrowing() {
         try {
