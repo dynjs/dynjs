@@ -68,6 +68,7 @@ import org.dynjs.parser.statement.ThrowStatement;
 import org.dynjs.parser.statement.TryStatement;
 import org.dynjs.parser.statement.TypeOfOpExpression;
 import org.dynjs.parser.statement.UnaryMinusExpression;
+import org.dynjs.parser.statement.UnaryPlusExpression;
 import org.dynjs.parser.statement.VariableDeclaration;
 import org.dynjs.parser.statement.VariableDeclarationStatement;
 import org.dynjs.parser.statement.VoidOperatorExpression;
@@ -178,7 +179,7 @@ public class Executor {
     }
 
     public Expression definePosOp(final Tree tree, Expression expression) {
-        throw new ParserException("not implemented yet", tree);
+        return new UnaryPlusExpression(tree, expression);
     }
 
     public Expression defineNegOp(final Tree tree, Expression expression) {
