@@ -29,7 +29,12 @@ public class Types {
         return new PrimitiveDynObject(o);
     }
 
+    public static Object toPrimitive(Object o) {
+    	return toPrimitive(o, null);
+    }
+
     public static Object toPrimitive(Object o, String preferredType) {
+    	// 9.1
         if (o instanceof JSObject) {
             return ((JSObject) o).defaultValue(preferredType);
         }
@@ -64,7 +69,7 @@ public class Types {
 
         try {
             String str = o.toString();
-            if (str.trim().equals("")) {
+            if (str.trim().isEmpty()) {
                 return 0;
             }
             if (str.indexOf(".") > 0) {
@@ -287,11 +292,11 @@ public class Types {
         }
 
         if ((lhsType.equals("string") || lhsType.equals("number")) && rhsType.equals("object")) {
-            return compareEquality(lhs, toPrimitive(rhs, null));
+            return compareEquality(lhs, toPrimitive(rhs));
         }
 
         if (lhsType.equals("object") && (rhsType.equals("string") || rhsType.equals("number"))) {
-            return compareEquality(toPrimitive(lhs, null), rhs);
+            return compareEquality(toPrimitive(lhs), rhs);
         }
 
         return false;
