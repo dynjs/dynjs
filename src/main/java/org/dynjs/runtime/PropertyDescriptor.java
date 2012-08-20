@@ -52,7 +52,7 @@ public class PropertyDescriptor {
         d.set( "Enumerable", true );
         return d;
     }
-
+    
     public PropertyDescriptor() {
     }
 

@@ -17,69 +17,120 @@ package org.dynjs.runtime;
 
 import java.util.Arrays;
 
+import org.dynjs.exception.RangeError;
+
 public class DynArray extends DynObject {
 
-    public static final int DEFAULT_ARRAY_SIZE = 16;
-    public static final Object[] UNDEFINED_PREFILLED_ARRAY;
-
-    static {
-        Object[] prefilledArray = new Object[DEFAULT_ARRAY_SIZE * 8];
-        for (int i = 0; i < prefilledArray.length; i++) {
-            prefilledArray[i] = Types.UNDEFINED;
-        }
-        UNDEFINED_PREFILLED_ARRAY = prefilledArray;
-    }
-
-    private Object[] array;
-
     public DynArray() {
-        this(DEFAULT_ARRAY_SIZE);
-    }
-
-    public DynArray(int size) {
-        this.array = new Object[size];
-        fillUndefinedArray(this.array, 0, this.array.length);
-    }
-
-    private void fillUndefinedArray(Object[] array, int from, int to) {
-        int i;
-        for (i = from; i + UNDEFINED_PREFILLED_ARRAY.length < to; i += UNDEFINED_PREFILLED_ARRAY.length) {
-            System.arraycopy(UNDEFINED_PREFILLED_ARRAY, 0, array, i, UNDEFINED_PREFILLED_ARRAY.length);
-        }
-        System.arraycopy(UNDEFINED_PREFILLED_ARRAY, 0, array, i, to - i);
-    }
-
-    public void set(int index, Object value) {
-        growIfNeeded(index);
-        array[index] = value;
-    }
-
-    private void growIfNeeded(int index) {
-        if (!checkBounds(index)) {
-            Object[] reallocated = new Object[index + 1];
-            System.arraycopy(this.array, 0, reallocated, 0, this.array.length);
-            fillUndefinedArray(reallocated, this.array.length, index);
-            this.array = reallocated;
-        }
-    }
-
-    public Object get(int index) {
-        if (checkBounds(index)) {
-            return array[index];
-        }
-        return Types.UNDEFINED;
-    }
-
-    private boolean checkBounds(int index) {
-        return index < array.length;
-    }
-
-    public int length() {
-        return array.length;
+        super.defineOwnProperty(null, "length", new PropertyDescriptor() {
+            {
+                set( "Writable", true );
+                set( "Configurable", true );
+                set( "Enumerable", true );
+                set( "Value", 0 );
+            }
+        }, false);
     }
 
     @Override
-    public String toString() {
-        return Arrays.toString(this.array);
+    public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
+        // 15.4.5.1
+        
+        System.err.println( "defineOwnProperty: " + name );
+        PropertyDescriptor oldLenDesc = (PropertyDescriptor) getOwnProperty(context, "length");
+        System.err.println( "oldLenDesc: " + oldLenDesc );
+        int oldLen = (int) oldLenDesc.getValue();
+
+        if (name.equals("length")) {
+            System.err.println( "A" );
+            if (desc.getValue() == Types.UNDEFINED) {
+                return super.defineOwnProperty(context, "length", desc, shouldThrow);
+            }
+
+            PropertyDescriptor newLenDesc = desc;
+            System.err.println( "new desc: " + newLenDesc );
+            Integer newLen = Types.toUint32(desc.getValue());
+            if (!newLen.equals(Types.toNumber(desc.getValue()))) {
+                throw new RangeError();
+            }
+            newLenDesc.setValue(newLen);
+            if (newLen >= oldLen) {
+                return super.defineOwnProperty(context, "length", newLenDesc, shouldThrow);
+            }
+            
+            System.err.println( "B" );
+            if (oldLenDesc.get("Writable") == Boolean.FALSE) {
+                System.err.println( "reject" );
+                return reject(shouldThrow);
+            }
+
+            boolean newWritable = false;
+            if ((!oldLenDesc.hasWritable()) || oldLenDesc.get("Writable") == Boolean.TRUE) {
+                newWritable = true;
+            } else {
+                newWritable = false;
+                newLenDesc.set("Writable", true);
+            }
+
+            System.err.println( "C" );
+            boolean succeeded = super.defineOwnProperty(context, "length", newLenDesc, shouldThrow);
+            
+            System.err.println( "succeeded? " + succeeded );
+
+            if (!succeeded) {
+                return false;
+            }
+
+            System.err.println( "D" );
+            while (newLen < oldLen) {
+                oldLen = oldLen - 1;
+                System.err.println( "deleting " + oldLen );
+                boolean deleteSucceeded = delete(context, "" + oldLen, false);
+
+                if (!deleteSucceeded) {
+                    newLenDesc.setValue(oldLen + 1);
+                    if (!newWritable) {
+                        newLenDesc.setWritable(false);
+                    }
+                    super.defineOwnProperty(context, "length", newLenDesc, false);
+                    return reject(shouldThrow);
+
+                }
+            }
+
+            if (newWritable == false) {
+                super.defineOwnProperty(context, "length", new PropertyDescriptor() {
+                    {
+                        set("Writable", false);
+                    }
+                }, false);
+            }
+
+            return true;
+        } // 'length'
+
+        if (isArrayIndex(name)) {
+            Integer index = Types.toUint32(name);
+            if ((index.intValue() > oldLen) && oldLenDesc.get("Writable") == Boolean.FALSE) {
+                return reject(shouldThrow);
+            }
+            boolean succeeded = super.defineOwnProperty(context, name, desc, shouldThrow);
+            if (!succeeded) {
+                return reject(shouldThrow);
+            }
+
+            if (index.intValue() >= oldLen) {
+                oldLenDesc.setValue(index.intValue() + 1);
+                super.defineOwnProperty(context, "length", oldLenDesc, false);
+            }
+            return true;
+        }
+
+        return super.defineOwnProperty(context, name, desc, shouldThrow);
     }
+
+    protected boolean isArrayIndex(String name) {
+        return name.equals(Types.toUint32(name).toString());
+    }
+
 }

@@ -4,12 +4,14 @@ import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
+    @Ignore
     @Test
     public void testArrayConstructorWithSize() {
         eval("var x = Array(0);");
@@ -21,6 +23,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(descriptor.getValue()).isEqualTo(0);
     }
 
+    @Ignore
     @Test
     public void testArrayConstructorWithElementList() {
         eval("var x = Array(1,'lol', 2);");

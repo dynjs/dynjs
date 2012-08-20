@@ -22,8 +22,10 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
+import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.DynArray;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.PropertyDescriptor;
 
 public class ArrayLiteralExpression extends AbstractExpression {
 
@@ -36,33 +38,42 @@ public class ArrayLiteralExpression extends AbstractExpression {
 
     @Override
     public CodeBlock getCodeBlock() {
-        CodeBlock codeBlock = new CodeBlock() {
-            {
-                newobj(p(DynArray.class));
-                dup();
-                pushInt(exprs.size());
-                invokespecial(p(DynArray.class), "<init>", sig(void.class, int.class));
-                astore(4);
-            }
-        };
-        Expression[] expressions = exprs.toArray(new Expression[] {});
-        for (int i = 0; i < expressions.length; i++) {
-            Expression statement = expressions[i];
-            codeBlock = retrieveArrayReference(i, statement, codeBlock);
-        }
-        return codeBlock.aload(4);
-    }
-
-    private CodeBlock retrieveArrayReference(final int stackReference, final Expression statement,
-            final CodeBlock codeBlock) {
         return new CodeBlock() {
             {
-                append(codeBlock);
-                aload(4);
-                pushInt(stackReference);
-                append(statement.getCodeBlock());
-                invokevirtual(p(DynArray.class), "set", sig(void.class, int.class, Object.class));
+                newobj(p(DynArray.class));
+                // array
+                dup();
+                // array array
+                invokespecial(p(DynArray.class), "<init>", sig(void.class));
+                // array
+                
+                int index = 0;
+                
+                for ( Expression each : exprs ) {
+                    dup();
+                    // array array
+                    aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                    // array array context
+                    ldc( index + "" );
+                    // array array context name
+                    append( each.getCodeBlock() );
+                    // array array context name val
+                    append( jsGetValue() );
+                    // array array context name val
+                    invokestatic( p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class) );
+                    // array array context name desc
+                    iconst_0();
+                    i2b();
+                    // array array context name desc bool
+                    invokevirtual(p(DynArray.class), "defineOwnProperty", sig( boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class ) );
+                    // array bool
+                    pop();
+                    // array
+                    ++index;
+                }
+                // array
             }
         };
     }
+
 }

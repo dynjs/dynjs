@@ -210,7 +210,6 @@ public class DynObject implements JSObject {
 
         PropertyDescriptor desc = (PropertyDescriptor) d;
 
-
         if (desc.get("Configurable") == Boolean.TRUE) {
             this.properties.remove(name);
             return true;
@@ -232,6 +231,7 @@ public class DynObject implements JSObject {
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 8.12.9
+        System.err.println("DOP: " + desc);
         Object c = getOwnProperty(context, name);
 
         if (c == Types.UNDEFINED) {
@@ -255,14 +255,17 @@ public class DynObject implements JSObject {
 
         PropertyDescriptor current = (PropertyDescriptor) c;
 
+        System.err.println("current: " + current);
         if (current.hasConfigurable() && !current.isConfigurable()) {
             if (desc.hasConfigurable() && desc.isConfigurable()) {
+                System.err.println("reject1");
                 return reject(shouldThrow);
             }
             Object currentEnumerable = current.get("Enumerable");
             Object descEnumerable = desc.get("Enumerable");
 
             if ((currentEnumerable != Types.UNDEFINED && descEnumerable != Types.UNDEFINED) && (currentEnumerable != descEnumerable)) {
+                System.err.println("reject2");
                 return reject(shouldThrow);
             }
         }
@@ -285,10 +288,12 @@ public class DynObject implements JSObject {
                     Object currentWritable = current.get("Writable");
                     if ((currentWritable != Types.UNDEFINED) && !current.isWritable()) {
                         if (desc.isWritable()) {
+                            System.err.println("reject3");
                             return reject(shouldThrow);
                         }
                         Object newValue = desc.getValue();
                         if (newValue != null && !Types.sameValue(current.getValue(), newValue)) {
+                            System.err.println("reject4");
                             return reject(shouldThrow);
                         }
                     }
@@ -310,18 +315,20 @@ public class DynObject implements JSObject {
                 newDesc = new PropertyDescriptor();
             }
 
-            if ( current.hasConfigurable() ) {
-                newDesc.set( "Configurable", current.get( "Configurable" ) );
+            System.err.println("---");
+            if (current.hasConfigurable()) {
+                newDesc.set("Configurable", current.get("Configurable"));
             }
-            if ( current.hasEnumerable() ) {
-                newDesc.set( "Enumerable", current.get( "Enumerable" ) );
+            if (current.hasEnumerable()) {
+                newDesc.set("Enumerable", current.get("Enumerable"));
             }
-            if ( current.hasWritable() ) {
-                newDesc.set( "Writable", current.get( "Writable" ) );
+            if (current.hasWritable()) {
+                newDesc.set("Writable", current.get("Writable"));
             }
 
             newDesc.copyAll(desc);
             this.properties.put(name, newDesc);
+            return true;
         }
 
         return false;

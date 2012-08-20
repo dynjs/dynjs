@@ -18,16 +18,19 @@ public class BuiltinArray extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        /*
         final Arguments arguments = (Arguments) Types.getValue(context, context.resolve("arguments"));
 
         final Object length = arguments.getProperty(context, "length");
         if (args.length == 1) {
             return arrayWithLength(context, args[0]);
         }
+        */
         return null;
     }
 
     // 15.4.2.2
+    /*
     private Object arrayWithLength(ExecutionContext context, Object arg) {
         final Object len = arg;
         final Number number = Types.toNumber(len);
@@ -41,4 +44,5 @@ public class BuiltinArray extends AbstractNativeFunction {
         array.defineOwnProperty(context, "length", descriptor, false);
         return array;
     }
+    */
 }
