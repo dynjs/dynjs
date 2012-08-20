@@ -15,13 +15,13 @@
  */
 package org.dynjs.runtime;
 
-import java.util.Arrays;
-
 import org.dynjs.exception.RangeError;
+import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class DynArray extends DynObject {
 
     public DynArray() {
+        setClassName( "Array" );
         super.defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
                 set( "Writable", true );
@@ -133,4 +133,13 @@ public class DynArray extends DynObject {
         return name.equals(Types.toUint32(name).toString());
     }
 
+    // ----------------------------------------
+    
+    public void setLength(final int len) {
+        defineOwnProperty(null, "length", new PropertyDescriptor(){{ set( "Value", len ); }}, false );
+    }
+    
+    public void setElement(final int index, final Object value) {
+        defineOwnProperty(null, "" + index , new PropertyDescriptor(){{ set( "Value", value ); }}, false );
+    }
 }

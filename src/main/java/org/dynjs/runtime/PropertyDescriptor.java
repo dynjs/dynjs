@@ -57,7 +57,7 @@ public class PropertyDescriptor {
     }
 
     public String toString() {
-        return "[PropertyDescriptor: attributes=" + this.attributes + "]";
+        return "[PropertyDescriptor: attributes=" + this.attributes.keySet() + "]";
     }
 
     public boolean isWritable() {

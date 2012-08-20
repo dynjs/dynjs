@@ -72,7 +72,11 @@ public class DynJS {
             }
             throw new DynJSException(thrown.toString());
         }
-        return completion.value;
+        Object v = completion.value;
+        if ( v instanceof Reference ) {
+            return ((Reference) v).getValue(context);
+        }
+        return v;
     }
 
     public Object execute(String program) {

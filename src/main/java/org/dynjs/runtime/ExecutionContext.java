@@ -93,12 +93,12 @@ public class ExecutionContext {
     public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
         System.err.println( "construct with " + function + ", " + Arrays.asList( args) );
-        DynObject obj = new DynObject();
-        obj.setClassName("Object");
-        obj.setExtensible(true);
+        JSObject obj = function.createNewObject();
+        //obj.setClassName("Object");
+        //obj.setExtensible(true);
         JSObject proto = function.getPrototype();
         System.err.println( "constructor prototype is " + function.getPrototype() );
-        obj.setPrototype(proto);
+        //obj.setPrototype(proto);
         call(function, obj, args);
         return obj;
     }

@@ -24,12 +24,7 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
 
     @Override
     public Object call(ExecutionContext context) {
-        Reference selfRef = context.resolve("this");
-        Object self = Types.UNDEFINED;
-
-        if (selfRef != null && !selfRef.isUnresolvableReference()) {
-            self = selfRef.getValue(context);
-        }
+        JSObject self = context.getThisBinding();
 
         String[] formalParams = getFormalParameters();
         Object[] args = new Object[formalParams.length];
@@ -42,7 +37,6 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
             }
         }
 
-        System.err.println("About to call "+ this +" with self as " + self.getClass().getCanonicalName() + " and args of " + args[0]);
         return call(context, self, args);
     }
 

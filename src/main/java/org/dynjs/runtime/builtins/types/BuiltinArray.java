@@ -1,48 +1,82 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.exception.RangeError;
+import java.util.Arrays;
+
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
 public class BuiltinArray extends AbstractNativeFunction {
 
     public BuiltinArray(GlobalObject globalObject) {
-        super(globalObject, "meh");
+        super(globalObject);
+        DynArray proto = new DynArray();
+        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
+            {
+                set( "Value", BuiltinArray.this );
+            }
+        }, false);
+        setPrototype( proto );
+        System.err.println( "prototype: " + proto );
+        Object ctor = getPrototype().get( null, "constructor" );
+        System.err.println( "ctor: " + ctor + " // " + ctor.getClass() );
     }
 
     @Override
-    public Object call(ExecutionContext context, Object self, Object... args) {
-        /*
-        final Arguments arguments = (Arguments) Types.getValue(context, context.resolve("arguments"));
+    public Object call(ExecutionContext context, Object self, final Object... args) {
+        DynArray arraySelf = (DynArray) self;
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+        System.err.println("argsObj: " + argsObj);
+        int numArgs = (int) argsObj.get(context, "length");
 
-        final Object length = arguments.getProperty(context, "length");
-        if (args.length == 1) {
-            return arrayWithLength(context, args[0]);
+        if (self != Types.UNDEFINED) {
+            System.err.println("construct");
+            if (numArgs == 1) {
+                final Number possiblyLen = Types.toNumber(argsObj.get(context, "0"));
+                if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
+                    arraySelf.setLength(1);
+                    arraySelf.setElement(0, argsObj.get(context, "" + 0));
+                } else {
+                    arraySelf.setLength(possiblyLen.intValue());
+                }
+            } else {
+                arraySelf.setLength(numArgs);
+                for (int i = 0; i < numArgs; ++i) {
+                    arraySelf.setElement(i, argsObj.get(context, "" + i));
+                }
+            }
+            return null;
         }
-        */
         return null;
     }
 
     // 15.4.2.2
     /*
-    private Object arrayWithLength(ExecutionContext context, Object arg) {
-        final Object len = arg;
-        final Number number = Types.toNumber(len);
-        final Integer integer = Types.toUint32(len);
-        if (number.intValue() != integer.intValue()) {
-            throw new RangeError();
-        }
-        final DynArray array = new DynArray(integer);
-        final PropertyDescriptor descriptor = PropertyDescriptor.newDataPropertyDescriptor(true);
-        descriptor.setValue(integer);
-        array.defineOwnProperty(context, "length", descriptor, false);
-        return array;
+     * private Object arrayWithLength(ExecutionContext context, Object arg) {
+     * final Object len = arg;
+     * final Number number = Types.toNumber(len);
+     * final Integer integer = Types.toUint32(len);
+     * if (number.intValue() != integer.intValue()) {
+     * throw new RangeError();
+     * }
+     * final DynArray array = new DynArray(integer);
+     * final PropertyDescriptor descriptor =
+     * PropertyDescriptor.newDataPropertyDescriptor(true);
+     * descriptor.setValue(integer);
+     * array.defineOwnProperty(context, "length", descriptor, false);
+     * return array;
+     * }
+     */
+
+    @Override
+    public JSObject createNewObject() {
+        DynArray o = new DynArray();
+        o.setPrototype(getPrototype());
+        return o;
     }
-    */
 }
