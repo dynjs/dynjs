@@ -1,7 +1,5 @@
 package org.dynjs.runtime.builtins.types;
 
-import java.util.Arrays;
-
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
@@ -10,21 +8,29 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.array.ToString;
 
 public class BuiltinArray extends AbstractNativeFunction {
 
-    public BuiltinArray(GlobalObject globalObject) {
+    public BuiltinArray(final GlobalObject globalObject) {
         super(globalObject);
         DynArray proto = new DynArray();
         proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
             {
-                set( "Value", BuiltinArray.this );
+                set("Value", BuiltinArray.this);
             }
         }, false);
-        setPrototype( proto );
-        System.err.println( "prototype: " + proto );
-        Object ctor = getPrototype().get( null, "constructor" );
-        System.err.println( "ctor: " + ctor + " // " + ctor.getClass() );
+        proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
+            {
+                set( "Value", new ToString( globalObject ) );
+            }
+        }, false);
+
+        setPrototype(proto);
+
+        System.err.println("prototype: " + proto);
+        Object ctor = getPrototype().get(null, "constructor");
+        System.err.println("ctor: " + ctor + " // " + ctor.getClass());
     }
 
     @Override

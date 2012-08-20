@@ -42,6 +42,7 @@ public class Reference {
 
     public Object getValue(ExecutionContext context) {
         // 8.7.1
+        System.err.println( this + " // getValue" );
         Object value = null;
         if (isUnresolvableReference()) {
             System.err.println("Cannot resolve type: " + this.referencedName);

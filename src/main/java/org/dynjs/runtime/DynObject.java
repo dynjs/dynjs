@@ -41,8 +41,16 @@ public class DynObject implements JSObject {
         return this.prototype;
     }
 
-    public void setPrototype(JSObject prototype) {
+    public void setPrototype(final JSObject prototype) {
         this.prototype = prototype;
+        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+            {
+                set( "Value", prototype );
+                set( "Writable", false );
+                set( "Configurable", false );
+                set( "Enumerable", false );
+            }
+        }, false);
     }
 
     @Override
@@ -66,7 +74,9 @@ public class DynObject implements JSObject {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 8.12.3
+        System.err.println( "DynObj.get(" + name + ")" );
         Object d = getProperty(context, name);
+        System.err.println( "-->" + d );
         if (d == Types.UNDEFINED) {
             return Types.UNDEFINED;
         }
@@ -114,6 +124,7 @@ public class DynObject implements JSObject {
             return d;
         }
 
+        System.err.println( "this.proto: " + this.prototype );
         if (this.prototype == null) {
             return Types.UNDEFINED;
         }

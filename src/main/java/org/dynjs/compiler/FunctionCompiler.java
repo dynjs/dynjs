@@ -11,6 +11,7 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.AbstractFunction;
+import org.dynjs.runtime.AbstractJavascriptFunction;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -26,7 +27,7 @@ public class FunctionCompiler extends AbstractCompiler {
 
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body) {
         System.err.println( "compiling function: " + body );
-        JiteClass jiteClass = new JiteClass( nextClassName(), p( AbstractFunction.class ), new String[0] ) {
+        JiteClass jiteClass = new JiteClass( nextClassName(), p( AbstractJavascriptFunction.class ), new String[0] ) {
             {
                 defineMethod( "<init>", ACC_PUBLIC, sig( void.class, Statement.class, LexicalEnvironment.class, String[].class ),
                         new CodeBlock() {
@@ -41,7 +42,7 @@ public class FunctionCompiler extends AbstractCompiler {
                                 // this statements scope strict
                                 aload( 3 );
                                 // this statements scope strict formal-parameters
-                                invokespecial( p( AbstractFunction.class ), "<init>",
+                                invokespecial( p( AbstractJavascriptFunction.class ), "<init>",
                                         sig( void.class, Statement.class, LexicalEnvironment.class, boolean.class, String[].class ) );
                                 voidreturn();
                             }

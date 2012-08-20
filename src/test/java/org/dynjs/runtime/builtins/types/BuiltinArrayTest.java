@@ -45,10 +45,39 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    public void testArrayPrototype() {
+    public void testArrayInstancePrototype() {
         eval( "var x = new Array(0);");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
         assertThat( x.getPrototype() ).isInstanceOf( DynArray.class );
+        assertThat( x.getPrototype().get( null, "constructor" ) ).isInstanceOf( BuiltinArray.class );
+    }
+    
+    @Test
+    public void testPrototype() {
+        eval( "var x = Array.prototype" );
+        DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
+        assertThat( x ).isNotNull();
+    }
+    
+    @Test
+    public void testPrototypeLikeLance() {
+        eval( "var x = (Array.prototype == null)" );
+        Object x = getContext().resolve("x").getValue( getContext() );
+        assertThat( x ).isEqualTo(false);
+    }
+    
+    
+    @Test
+    public void testArrayConstructor() {
+        eval( "var ctor = Array.prototype.constructor; var x = new ctor()" );
+        DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
+        assertThat( x.getPrototype() ).isInstanceOf( DynArray.class );
+        assertThat( x.getPrototype().get( null, "constructor" ) ).isInstanceOf( BuiltinArray.class );
+    }
+    
+    @Test
+    public void testToString() {
+        eval( "[ 1, 2, 3].toString()" );
     }
     
 }

@@ -26,8 +26,6 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
-        JSObject proto = (JSObject) scope.getGlobalObject().get( null, "Object" );
-        setPrototype( proto );
         setClassName("Function");
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
