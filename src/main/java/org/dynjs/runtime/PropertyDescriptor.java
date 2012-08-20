@@ -43,6 +43,15 @@ public class PropertyDescriptor {
             }
         };
     }
+    
+    public static PropertyDescriptor newPropertyDescriptorForObjectInitializer(Object value) {
+        PropertyDescriptor d = new PropertyDescriptor();
+        d.set( "Value", value );
+        d.set( "Writable", true );
+        d.set( "Configurable", true );
+        d.set( "Enumerable", true );
+        return d;
+    }
 
     public PropertyDescriptor() {
     }
@@ -57,6 +66,10 @@ public class PropertyDescriptor {
             return false;
         }
         return (Boolean) v;
+    }
+    
+    public boolean hasWritable() {
+        return this.attributes.containsKey( "Writable" );
     }
 
     public void setWritable(boolean writable) {
@@ -77,7 +90,7 @@ public class PropertyDescriptor {
     }
 
     public boolean hasConfigurable() {
-        return (get("Configurable") != null);
+        return this.attributes.containsKey( "Configurable" );
     }
 
     public void setConfigurable(boolean configurable) {
@@ -98,7 +111,7 @@ public class PropertyDescriptor {
     }
 
     public boolean hasEnumerable() {
-        return (get("Enumerable") != null);
+        return this.attributes.containsKey( "Configurable" );
     }
 
     public Object getValue() {

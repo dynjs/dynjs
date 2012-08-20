@@ -20,6 +20,10 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.EnvironmentRecord;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.objectweb.asm.tree.LabelNode;
 
@@ -36,45 +40,126 @@ public class DeleteOpExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                LabelNode doNothing = new LabelNode();
-                LabelNode testStrict = new LabelNode();
-                
+                LabelNode checkAsProperty = new LabelNode();
+                LabelNode handleEnvRec = new LabelNode();
+                LabelNode returnTrue = new LabelNode();
+                LabelNode end = new LabelNode();
+                // ----------------------------------------
+
                 append(expr.getCodeBlock());
-                // obj
+                // ref
                 dup();
-                // obj obj
+                // ref ref
                 instance_of(p(Reference.class));
-                // obj bool
-                iffalse(doNothing);
+                // ref bool
+                iffalse(returnTrue);
                 // ref
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isUnresolvableReference", sig(boolean.class));
                 // ref bool
-                iftrue(testStrict);
-                // ref
-                dup();
-                // ref ref
-                invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
-                // ref bool
-
-                // --------------------------------------
-                // UNRESOLVABLE
-                label(testStrict);
+                iffalse( checkAsProperty );
                 // ref
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isStrictReference", sig(boolean.class));
                 // ref bool
-                iffalse(doNothing);
-                // FIXME: throw Syntax
+                iffalse( returnTrue ); 
+                // ref
+                invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));
+                // ref + throw
+                go_to( returnTrue );
 
-                label(doNothing);
-                // X 
+                // ----------------------------------------
+                // Check as property
+                
+                label( checkAsProperty );
+                ldc( "checking as property" ).aprintln().pop();
+                // ref
+                dup();
+                // ref ref
+                invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
+                // ref bool
+                iffalse( handleEnvRec );
+                // ref 
+                dup();
+                // ref ref
+                append( jsGetBase() );
+                // ref base
+                append( jsToObject() );
+                // ref obj
+                swap();
+                // obj ref
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj ref context
+                swap();
+                // obj context ref
+                dup();
+                // obj context ref ref
+                invokevirtual(p(Reference.class), "getReferencedName", sig(String.class));
+                // obj context ref name
+                swap();
+                // obj context name ref
+                invokevirtual(p(Reference.class), "isStrictReference", sig(boolean.class));
+                // obj context name bool
+                invokeinterface(p(JSObject.class), "delete", sig(boolean.class, ExecutionContext.class, String.class, boolean.class));
+                // bool
+                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                // Boolean
+                go_to( end );
+                
+                // ----------------------------------------
+                // Environment record
+                LabelNode throwSyntax = new LabelNode();
+                
+                label( handleEnvRec );
+                // ref
+                dup();
+                // ref ref
+                invokevirtual(p(Reference.class), "isStrictReference", sig(boolean.class));
+                // ref bool
+                iftrue( throwSyntax );
+                // ref
+                dup();
+                // ref ref
+                append( jsGetBase() );
+                // ref base
+                checkcast(p(EnvironmentRecord.class));
+                // ref env-rec
+                swap();
+                // env-rec ref
+                invokevirtual(p(Reference.class), "getReferencedName", sig(String.class));
+                // env-rec name
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // env-rec name context
+                swap();
+                // env-rec context name
+                invokeinterface( p(EnvironmentRecord.class), "deleteBinding", sig(boolean.class, ExecutionContext.class, String.class));
+                // bool
+                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                // Boolean
+                go_to(end);
+                
+                
+                
+                label( throwSyntax );
+                // ref
+                invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));  
+                // ref
+                go_to( end );
+
+                // ----------------------------------------
+                // Simple true (with pop)
+                label(returnTrue);
+                // ref
                 pop();
                 // <EMPTY>
-                iconst_1();
-                // true
+                getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
+                // Boolean
+
+                // ----------------------------------------
+                label(end);
+                nop();
             }
         };
     }

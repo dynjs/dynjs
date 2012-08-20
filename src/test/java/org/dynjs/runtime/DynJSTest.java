@@ -333,7 +333,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDeleteOper() {
-        check("var x = {a:'lol'}; var result = delete x.a;", false);
+        check("var x = {a:'lol'}; var result = delete x.a;", true);
+        JSObject x = (JSObject) getContext().resolve("x").getValue( getContext() );
+        assertThat( x.get( getContext(), "a") ).isEqualTo(Types.UNDEFINED );
+        
     }
 
     @Test

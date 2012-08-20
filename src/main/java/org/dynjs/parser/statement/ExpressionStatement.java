@@ -32,7 +32,6 @@ public class ExpressionStatement extends AbstractStatement {
 
     @Override
     public CodeBlock getCodeBlock() {
-        System.err.println(expr);
         if (expr instanceof FunctionDeclaration) {
             return normalCompletion();
         }

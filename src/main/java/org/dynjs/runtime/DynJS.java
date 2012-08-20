@@ -65,7 +65,6 @@ public class DynJS {
         BlockStatement statements = parseSourceCode(this.context, program, filename);
         JSProgram programObj = compiler.compileProgram(statements);
         Completion completion = this.context.execute(programObj);
-        System.err.println("completion: " + completion);
         if (completion.type == Completion.Type.THROW) {
             Object thrown = completion.value;
             if (thrown instanceof DynJSException) {
@@ -121,7 +120,7 @@ public class DynJS {
             throw new SyntaxError(errors);
         }
         CommonTree tree = (CommonTree) program.getTree();
-        dump(tree);
+        //dump(tree);
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);

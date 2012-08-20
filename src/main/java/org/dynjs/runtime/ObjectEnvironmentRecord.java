@@ -8,7 +8,6 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     private boolean provideThis;
 
     public ObjectEnvironmentRecord(JSObject object, boolean provideThis) {
-        System.err.println( "this=" + object + " // " + provideThis );
         this.object = object;
         this.provideThis = provideThis;
     }

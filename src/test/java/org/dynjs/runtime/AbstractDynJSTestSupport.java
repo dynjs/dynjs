@@ -12,7 +12,7 @@ public abstract class AbstractDynJSTestSupport {
     @Before
     public void setUp() {
         this.config = new Config();
-        this.config.setDebug(true);
+        //this.config.setDebug(true);
         this.runtime = new DynJS(this.config);
     }
 

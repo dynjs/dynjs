@@ -163,7 +163,6 @@ public class Types {
 
     public static Object compareRelational(Object x, Object y, boolean leftFirst) {
         // 11.8.5
-        System.err.println("compareRelational(" + x + ", " + y + ", " + leftFirst + ")");
 
         Object px = null;
         Object py = null;
@@ -225,20 +224,15 @@ public class Types {
     public static boolean compareEquality(Object lhs, Object rhs) {
         // 11.9.3
 
-        System.err.println("compareEquality(" + lhs + "/" + lhs.getClass() + ", " + rhs + "/" + rhs.getClass() + ")");
-
         String lhsType = type(lhs);
         String rhsType = type(rhs);
 
         if (lhsType.equals(rhsType)) {
-            System.err.println("A");
             if (lhs == Types.UNDEFINED) {
-                System.err.println("A1");
 
                 return true;
             }
             if (lhs == Types.NULL) {
-                System.err.println("A2");
                 return true;
             }
             if (lhs instanceof Number) {
@@ -253,7 +247,6 @@ public class Types {
                     }
                 }
                 if (lhs.equals(rhs)) {
-                    System.err.println("A3-c");
                     return true;
                 }
                 return false;
@@ -264,16 +257,12 @@ public class Types {
         }
 
         if (lhs == Types.UNDEFINED && rhs == Types.NULL) {
-            System.err.println("B");
             return true;
         }
 
         if (lhs == Types.NULL && rhs == Types.UNDEFINED) {
             return true;
         }
-
-        System.err.println("lhsType=" + lhsType);
-        System.err.println("rhsType=" + rhsType);
 
         if (lhsType.equals("number") && rhsType.equals("string")) {
             return compareEquality(lhs, toNumber(rhs));

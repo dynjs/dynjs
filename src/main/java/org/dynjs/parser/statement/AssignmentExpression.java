@@ -36,8 +36,6 @@ public class AssignmentExpression extends AbstractExpression {
 
     @Override
     public CodeBlock getCodeBlock() {
-        System.err.println("lhs=" + lhs);
-        System.err.println("rhs=" + lhs);
         return new CodeBlock() {
             {
                 append(lhs.getCodeBlock());

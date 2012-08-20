@@ -13,5 +13,19 @@ public class ObjectLiteralTest extends AbstractDynJSTestSupport {
         assertThat(x).isNotNull();
         assertThat(x.getValue(getContext())).isInstanceOf(JSObject.class);
     }
+    
+    @Test
+    public void testNonEmptyObjectCreation() {
+        eval( "var x = { foo: 'bar' }; var y = x.foo;" );
+        Reference x = getContext().resolve("x");
+        assertThat(x).isNotNull();
+        JSObject val = (JSObject) x.getValue(getContext());
+        
+        Object foo = val.get( getContext(), "foo" );
+        assertThat( foo ).isEqualTo( "bar" );
+        
+        Object y = getContext().resolve("y").getValue(getContext());
+        assertThat( y ).isEqualTo( "bar" );
+    }
 
 }
