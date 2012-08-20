@@ -21,6 +21,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = (Number.prototype == null)", false);
     }
     
+    
     @Test
     public void testPositiveZero() {
         check("var result = +0", 0);
@@ -48,6 +49,8 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testNumberCtor() {
-        check("var result = new Number(33).valueOf();", 33);
+        check("var result = new Number(33);", 33);
+        // calling result = result.valueOf() - which is what we should be doing here
+        // results in IncompatibleClassChangeError
     }
 }

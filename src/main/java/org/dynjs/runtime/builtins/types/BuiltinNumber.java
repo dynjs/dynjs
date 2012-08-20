@@ -21,12 +21,16 @@ public class BuiltinNumber extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (self.equals(Types.UNDEFINED)) {
+            throw new RuntimeException("confusing!");
+        }
+        if (self instanceof org.dynjs.runtime.PrimitiveDynObject) {
             // called as a function
             return Types.toNumber(args[0]);
         } else {
             // called as a ctor
-            // TODO: we never get here
-            return "Not implemented";
+            System.err.println( "This is : " + this + " And args are: " + args[0]);
+            // No matter what I return here, the JS bits get a DynObject
+            return null;
         }
     }
     
