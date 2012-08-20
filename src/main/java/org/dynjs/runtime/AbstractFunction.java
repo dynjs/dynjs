@@ -26,8 +26,8 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
-        JSObject proto = (JSObject) scope.getGlobalObject().get( null, "Object" );
-        setPrototype( proto );
+        final JSObject prototype = getPrototype(scope.getGlobalObject());
+        setPrototype( prototype );
         setClassName("Function");
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
@@ -38,6 +38,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             }
         };
         defineOwnProperty(null, "length", desc, false);
+    }
+    
+    public JSObject getPrototype( GlobalObject globalObject ) {
+        return (JSObject) globalObject.get( null, "Object" );
     }
 
     public LexicalEnvironment getScope() {

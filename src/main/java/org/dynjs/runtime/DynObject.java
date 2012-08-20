@@ -45,6 +45,9 @@ public class DynObject implements JSObject {
     protected void setPrototype(JSObject prototype) {
         System.err.println( this + "#setPrototype -> " + prototype );
         this.prototype = prototype;
+        final PropertyDescriptor property = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+        property.setValue(this.prototype);
+        this.defineOwnProperty(null, "prototype", property, true);
     }
 
     @Override

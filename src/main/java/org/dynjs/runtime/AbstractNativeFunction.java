@@ -24,11 +24,11 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
 
     @Override
     public Object call(ExecutionContext context) {
-        Reference selfRef = context.resolve("this");
+        JSObject selfRef = context.getThisBinding();
         Object self = Types.UNDEFINED;
 
-        if (selfRef != null && !selfRef.isUnresolvableReference()) {
-            self = selfRef.getValue(context);
+        if (selfRef != null) {
+            self = selfRef;
         }
 
         String[] formalParams = getFormalParameters();
