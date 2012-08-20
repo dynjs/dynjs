@@ -20,4 +20,12 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         final PropertyDescriptor descriptor = (PropertyDescriptor) value.getOwnProperty(getContext(), "length");
         assertThat(descriptor.getValue()).isEqualTo(0);
     }
+
+    @Test
+    public void testArrayConstructorWithElementList() {
+        eval("var x = Array(1,'lol', 2);");
+        final Reference x = getContext().resolve("x");
+        assertThat(x).isNotNull();
+        assertThat(x.getValue(getContext())).isInstanceOf(DynArray.class);
+    }
 }

@@ -2,10 +2,12 @@ package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.exception.RangeError;
 import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
 public class BuiltinArray extends AbstractNativeFunction {
@@ -16,6 +18,9 @@ public class BuiltinArray extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        final Arguments arguments = (Arguments) Types.getValue(context, context.resolve("arguments"));
+
+        final Object length = arguments.getProperty(context, "length");
         if (args.length == 1) {
             return arrayWithLength(context, args[0]);
         }
