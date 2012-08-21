@@ -13,6 +13,7 @@ import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
+import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -26,7 +27,7 @@ public class GlobalObject extends DynObject {
         this.compiler = new JSCompiler(runtime.getConfig());
         this.blockManager = new BlockManager();
         
-        defineGlobalProperty("Object", new DynObject() );
+        defineGlobalProperty("Object", new BuiltinObject(this));
 
         defineGlobalProperty("undefined", Types.UNDEFINED);
         defineGlobalProperty("NaN", Double.NaN);

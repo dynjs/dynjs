@@ -1,14 +1,10 @@
 package org.dynjs.runtime.builtins.types;
 
+import static org.fest.assertions.Assertions.*;
+
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Reference;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
