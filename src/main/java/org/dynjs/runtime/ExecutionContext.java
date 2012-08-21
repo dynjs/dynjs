@@ -81,6 +81,8 @@ public class ExecutionContext {
 
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
+        System.err.println( "**** CALL " + function );
+        System.err.println( Arrays.asList(args));
         ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
         Object result = function.call(fnContext);
         if (result == null) {
@@ -241,8 +243,8 @@ public class ExecutionContext {
 
                             desc = new PropertyDescriptor() {
                                 {
-                                    set( "Set", new ArgSetter( getGlobalObject(), name ) );
-                                    set( "Get", new ArgGetter( getGlobalObject(), name ) );
+                                    set( "Set", new ArgSetter( env, name ) );
+                                    set( "Get", new ArgGetter( env, name ) );
                                     set( "Configurable", true );
                                 }
                             };

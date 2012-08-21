@@ -4,13 +4,14 @@ public class ArgGetter extends AbstractNativeFunction {
 
     private String name;
 
-    public ArgGetter(GlobalObject globalObject, String name) {
-        super(globalObject);
+    public ArgGetter(LexicalEnvironment env, String name) {
+        super(env, false);
         this.name = name;
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        System.err.println( "GET scope: " + getScope() );
         return getScope().getIdentifierReference(context, this.name, isStrict());
     }
 
