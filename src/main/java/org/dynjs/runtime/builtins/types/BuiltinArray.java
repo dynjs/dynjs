@@ -1,13 +1,13 @@
 package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.array.Join;
 import org.dynjs.runtime.builtins.types.array.ToString;
 
 public class BuiltinArray extends AbstractNativeFunction {
@@ -23,6 +23,11 @@ public class BuiltinArray extends AbstractNativeFunction {
         proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
             {
                 set( "Value", new ToString( globalObject ) );
+            }
+        }, false);
+        proto.defineOwnProperty(null, "join", new PropertyDescriptor() {
+            {
+                set( "Value", new Join( globalObject ) );
             }
         }, false);
 

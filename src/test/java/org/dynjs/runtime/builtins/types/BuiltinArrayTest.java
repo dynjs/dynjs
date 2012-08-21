@@ -77,7 +77,20 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testToString() {
-        eval( "[ 1, 2, 3].toString()" );
+        Object result = eval( "new Array( 1, 2, 3 ).toString()" );
+        assertThat( result ).isEqualTo( "1,2,3" );
+    }
+    
+    @Test
+    public void testJoinNoArg() {
+        Object result = eval( "new Array( 1, 2, 3 ).join()" );
+        assertThat( result ).isEqualTo( "1,2,3" );
+    }
+    
+    @Test
+    public void testJoinWithArg() {
+        Object result = eval( "new Array( 1, 2, 3 ).join(' . ')" );
+        assertThat( result ).isEqualTo( "1 . 2 . 3" );
     }
     
 }
