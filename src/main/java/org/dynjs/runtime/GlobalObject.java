@@ -14,6 +14,7 @@ import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
+import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -40,6 +41,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("isFinite", new IsFinite(this));
         defineGlobalProperty("Number", new BuiltinNumber(this));
         defineGlobalProperty("Array", new BuiltinArray(this));
+        defineGlobalProperty("String", new BuiltinString(this));
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

@@ -103,6 +103,17 @@ public class Types {
 
         return true;
     }
+    
+    public static Integer toInteger(Object o) {
+        Number number = toNumber(o);
+        if ( number instanceof Double ) {
+            if ( ((Double)number).isNaN() ) {
+                return 0;
+            }
+        }
+        
+        return number.intValue();
+    }
 
     public static Integer toUint32(Object o) {
         // 9.5
