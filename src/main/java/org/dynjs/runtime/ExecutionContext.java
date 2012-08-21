@@ -95,13 +95,23 @@ public class ExecutionContext {
     public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
         System.err.println( "construct with " + function + ", " + Arrays.asList( args) );
+        // 1. create the new object
         JSObject obj = function.createNewObject();
-        //obj.setClassName("Object");
-        //obj.setExtensible(true);
-        JSObject proto = function.getPrototype();
-        System.err.println( "constructor prototype is " + function.getPrototype() );
-        //obj.setPrototype(proto);
-        call(function, obj, args);
+        // 2. set internal methods per 8.12 [DynObject]
+        // 3. set class name [DynObject subclass (defaults true)]
+        // 4. Set Extensible [DynObject subclass (defaults true)]
+        // 5. Get the function's prototype
+        // 6. If prototype is an object make that the new object's prototype
+        // 7. If prototype is not an object set to the standard builtin object prototype 15.2.4 [AbstractJavascriptFunction]
+        // [AbstractJavascriptFunction] handles #7, subclasses may handle #6 if necessary (see BuiltinArray#createNewObject)
+        obj.setPrototype(function.getPrototype());
+        // 8. Call the function with obj as self
+        Object result = call(function, obj, args);
+        // 9. If result is a JSObject return it
+        if (result instanceof JSObject) {
+            return (JSObject) result;
+        }
+        // Otherwise return obj
         return obj;
     }
 

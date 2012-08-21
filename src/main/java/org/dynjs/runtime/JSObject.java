@@ -28,4 +28,6 @@ public interface JSObject {
 
     NameEnumerator getEnumerablePropertyNames();
 
+    void setPrototype(JSObject prototype);
+
 }

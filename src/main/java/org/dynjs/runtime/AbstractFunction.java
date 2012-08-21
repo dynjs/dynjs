@@ -120,9 +120,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     @Override
     public JSObject createNewObject() {
         DynObject o = new DynObject();
-        o.setClassName("object");
-        o.setExtensible(true);
-        o.setPrototype(getPrototype() );
+        o.setPrototype(getPrototype());
         return o;
     }
 }

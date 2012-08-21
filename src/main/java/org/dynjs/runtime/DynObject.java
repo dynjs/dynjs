@@ -30,6 +30,8 @@ public class DynObject implements JSObject {
     private boolean extensible = true;
 
     public DynObject() {
+        setClassName("Object");
+        setExtensible(true);
     }
 
     // ------------------------------------------------------------------------
