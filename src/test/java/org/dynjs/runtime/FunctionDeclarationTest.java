@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.*;
+import static org.junit.Assert.*;
 
 public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
 
@@ -21,7 +22,12 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testInvalidFunction() {
-        eval( "function(){};" );
+        try {
+            eval( "function (){};" );
+            fail("Invalid functions should be invalid, dammit.");
+        } catch (Exception e) {
+            
+        }
     }
 
 }
