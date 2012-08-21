@@ -47,7 +47,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberFunction() {
-        this.runtime.execute("var x = Number(8)", null, 0);
+        this.runtime.execute("var x = Number(8)");
         Reference result = this.runtime.getExecutionContext().resolve("x");
         PrimitiveDynObject value = (PrimitiveDynObject) result.getValue(getContext());
         assertThat(value.getPrimitiveValue()).isEqualTo(8);
@@ -55,9 +55,50 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberCtor() {
-        this.runtime.execute("var x = new Number(33)", null, 0);
+        this.runtime.execute("var x = new Number(33)");
         Reference result = this.runtime.getExecutionContext().resolve("x");
         PrimitiveDynObject value = (PrimitiveDynObject) result.getValue(getContext());
         assertThat(value.getPrimitiveValue()).isEqualTo(33);
+    }
+    
+    @Test
+    public void testNumberPrototypeConstructor() {
+        // 15.7.1
+        this.runtime.execute("var x = Number.prototype.constructor");
+        Reference result = this.runtime.getExecutionContext().resolve("x");
+        assertThat(result.getValue(getContext())).isInstanceOf(BuiltinNumber.class);
+    }
+    
+    @Test
+    public void testNumberPrototypeToString() {
+        // 15.7.2
+        check("var result = Number.prototype.toString()", "0");
+    }
+    
+    @Test
+    public void testNumberToString() {
+        check("var result = new Number(12); result = result.toString()", "12");
+    }
+    
+    @Test
+    public void testNumberPrototypeToLocaleString() {
+        // 15.7.3
+        check("var result = Number.prototype.toLocaleString()", "0");
+    }
+
+    @Test
+    public void testNumberToLocaleString() {
+        check("var result = new Number(12); result = result.toLocaleString()", "12");
+    }
+    
+    @Test
+    public void testNumberPrototypeValueOf() {
+        // 15.7.4
+        check("var result = Number.prototype.valueOf()", 0);
+    }
+
+    @Test
+    public void testNumberValueOf() {
+        check("var result = new Number(12).valueOf();", 12);
     }
 }

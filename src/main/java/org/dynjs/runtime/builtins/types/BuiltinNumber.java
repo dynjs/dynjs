@@ -14,7 +14,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
     public static final Number POSITIVE_INFINITY = Double.POSITIVE_INFINITY;
     public static final Number NEGATIVE_INFINITY = Double.NEGATIVE_INFINITY;
 
-    public BuiltinNumber(GlobalObject globalObject) {
+    public BuiltinNumber(final GlobalObject globalObject) {
         super(globalObject);
 
         final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
@@ -26,19 +26,64 @@ public class BuiltinNumber extends AbstractNativeFunction {
         this.defineOwnProperty(null, "NEGATIVE_INFINITY", negativeInfinity, true);
         
         // 15.7.4
-        DynObject prototype = new DynObject();
+        PrimitiveDynObject prototype = new PrimitiveDynObject();
+        prototype.setClassName("Number");
+        prototype.setPrimitiveValue(0);
+        // 15.7.4.1
         prototype.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
             {
                 set("Value", BuiltinNumber.this);
             }
         }, false);
+        // 15.7.4.2
         prototype.defineOwnProperty(null, "toString", new PropertyDescriptor() {
             {
-                set("Value", "someday it'll be implemented");
+                set("Value", new AbstractNativeFunction(globalObject) {
+                    @Override
+                    public Object call(ExecutionContext context, Object self, Object... args) {
+                        if (self instanceof PrimitiveDynObject) {
+                            return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
+                        }
+                        return "0";
+                    }
+                    
+                });
+            }
+        }, false);
+        // 15.7.4.3
+        prototype.defineOwnProperty(null, "toLocaleString", new PropertyDescriptor() {            
+            {
+                set("Value", new AbstractNativeFunction(globalObject) {
+                    @Override
+                    public Object call(ExecutionContext context, Object self, Object... args) {
+                        if (self instanceof PrimitiveDynObject) {
+                            return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
+                        }
+                        return "0";
+                    }
+                });
+            }
+        }, false);
+        // 15.7.4.4
+        prototype.defineOwnProperty(null, "valueOf", new PropertyDescriptor() {
+            {
+                set("Value", new AbstractNativeFunction(globalObject) {
+                    @Override
+                    public Object call(ExecutionContext context, Object self, Object... args) {
+                        if (BuiltinNumber.isNumber((DynObject) self)) {
+                            return ((PrimitiveDynObject)self).getPrimitiveValue();
+                        }
+                        return "TypeError";
+                    }
+                });
             }
         }, false);
         
         setPrototype(prototype);
+    }
+    
+    public static boolean isNumber(DynObject object) {
+        return "Number".equals(object.getClassName());
     }
 
     @Override
