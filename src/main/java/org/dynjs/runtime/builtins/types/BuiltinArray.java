@@ -36,24 +36,21 @@ public class BuiltinArray extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, final Object... args) {
         DynArray arraySelf = (DynArray) self;
-        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
-        System.err.println("argsObj: " + argsObj);
-        int numArgs = (int) argsObj.get(context, "length");
 
         if (self != Types.UNDEFINED) {
             System.err.println("construct");
-            if (numArgs == 1) {
-                final Number possiblyLen = Types.toNumber(argsObj.get(context, "0"));
+            if (args.length == 1) {
+                final Number possiblyLen = Types.toNumber(args[0]);
                 if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
                     arraySelf.setLength(1);
-                    arraySelf.setElement(0, argsObj.get(context, "" + 0));
+                    arraySelf.setElement(0, args[0] );
                 } else {
                     arraySelf.setLength(possiblyLen.intValue());
                 }
             } else {
-                arraySelf.setLength(numArgs);
-                for (int i = 0; i < numArgs; ++i) {
-                    arraySelf.setElement(i, argsObj.get(context, "" + i));
+                arraySelf.setLength(args.length);
+                for (int i = 0; i < args.length; ++i) {
+                    arraySelf.setElement(i, args[i] );
                 }
             }
             return null;

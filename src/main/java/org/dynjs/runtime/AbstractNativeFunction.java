@@ -26,15 +26,13 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public Object call(ExecutionContext context) {
         JSObject self = context.getThisBinding();
 
-        String[] formalParams = getFormalParameters();
-        Object[] args = new Object[formalParams.length];
-        for (int i = 0; i < formalParams.length; ++i) {
-            Reference eachRef = context.resolve(formalParams[i]);
-            if (!eachRef.isUnresolvableReference()) {
-                args[i] = eachRef.getValue(context);
-            } else {
-                args[i] = Types.UNDEFINED;
-            }
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+        int numArgs = (int) argsObj.get(context, "length");
+        
+        Object[] args = new Object[numArgs];
+        
+        for ( int i = 0 ; i < numArgs; ++i ) {
+            args[i] = argsObj.get( context, "" + i );
         }
 
         return call(context, self, args);
