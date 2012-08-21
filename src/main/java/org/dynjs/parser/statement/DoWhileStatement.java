@@ -58,10 +58,12 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
 
                 append(vbool.getCodeBlock());
                 // completion(block) result
+                append( jsGetValue() );
+                // completion(block) result
                 append(jsToBoolean());
-                // completion(blokc) Boolean
+                // completion(block) Boolean
                 invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-                // completion(blokc) bool
+                // completion(block) bool
                 iffalse(end);
                 pop();
                 // <EMPTY>
