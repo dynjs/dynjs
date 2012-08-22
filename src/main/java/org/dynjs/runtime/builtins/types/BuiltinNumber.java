@@ -8,11 +8,13 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.number.ToFixed;
 
 public class BuiltinNumber extends AbstractNativeFunction {
 
     public static final Number POSITIVE_INFINITY = Double.POSITIVE_INFINITY;
     public static final Number NEGATIVE_INFINITY = Double.NEGATIVE_INFINITY;
+    public static final Number NaN = Double.NaN;
 
     public BuiltinNumber(final GlobalObject globalObject) {
         super(globalObject);
@@ -24,6 +26,10 @@ public class BuiltinNumber extends AbstractNativeFunction {
         final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
         negativeInfinity.setValue(NEGATIVE_INFINITY);
         this.defineOwnProperty(null, "NEGATIVE_INFINITY", negativeInfinity, true);
+        
+        final PropertyDescriptor nan = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+        nan.setValue(globalObject.getProperty(null, "NaN"));
+        this.defineOwnProperty(null, "NaN", nan, false);
         
         // 15.7.4
         PrimitiveDynObject prototype = new PrimitiveDynObject();
@@ -41,7 +47,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
                 set("Value", new AbstractNativeFunction(globalObject) {
                     @Override
                     public Object call(ExecutionContext context, Object self, Object... args) {
-                        if (self instanceof PrimitiveDynObject) {
+                        if (BuiltinNumber.isNumber((DynObject) self)) {
                             return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
                         }
                         return "0";
@@ -56,7 +62,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
                 set("Value", new AbstractNativeFunction(globalObject) {
                     @Override
                     public Object call(ExecutionContext context, Object self, Object... args) {
-                        if (self instanceof PrimitiveDynObject) {
+                        if (BuiltinNumber.isNumber((DynObject) self)) {
                             return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
                         }
                         return "0";
@@ -76,6 +82,12 @@ public class BuiltinNumber extends AbstractNativeFunction {
                         return "TypeError";
                     }
                 });
+            }
+        }, false);
+        // 15.7.4.5
+        prototype.defineOwnProperty(null, "toFixed", new PropertyDescriptor() {
+            {
+                set("Value", new ToFixed(globalObject));
             }
         }, false);
         

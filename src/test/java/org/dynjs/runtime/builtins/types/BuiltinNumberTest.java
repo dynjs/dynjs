@@ -1,11 +1,14 @@
 package org.dynjs.runtime.builtins.types;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import org.dynjs.exception.RangeError;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinNumberTest extends AbstractDynJSTestSupport {
@@ -100,5 +103,61 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testNumberValueOf() {
         check("var result = new Number(12).valueOf();", 12);
+    }
+    
+    @Test
+    public void testNumberToFixedDefault() {
+        check("var result = new Number(12345.67890123).toFixed()", "12345.67890123");
+    }
+    
+    @Test
+    public void testNumberNegativeDigitsRangeError() {
+        try {
+            check("var result = new Number(123).toFixed(-1)", "0");
+            fail("toFixed() should throw RangeError with -1 as a parameter");
+        } catch (RangeError error) {
+            // expected
+        } catch (Exception e) {
+            fail("Unexpected exception thrown. " + e);
+        }
+    }
+
+    @Test
+    public void testNumberTooManyDigitsRangeError() {
+        try {
+            check("var result = new Number(123).toFixed(21)", "0");
+            fail("toFixed() should throw RangeError with 21 as a parameter");
+        } catch (RangeError error) {
+            // expected
+        } catch (Exception e) {
+            fail("Unexpected exception thrown. " + e);
+        }
+    }
+    
+    @Ignore
+    public void testNumberToFixedNaN() {
+        // TODO: Make globalObject.NaN a DynObject
+        check("var result = Number.NaN.toFixed()", "NaN");
+    }
+    
+    @Test
+    public void testNumberCtorNaNToFixed() {
+        check("var result = new Number('adf').toFixed()", "NaN");
+    }
+    
+    @Test
+    public void testNegativeNumberToFixed() {
+        check("var result = new Number(-12).toFixed()", "-12");
+    }
+    
+    @Ignore
+    public void testToFixedLength() {
+        // TODO: what's up with this?
+        check("var result = new Number(12).toFixed.length", 1);
+    }
+    
+    @Test
+    public void testToFixedWithPrecision() {
+        check("var result = new Number(12.12345).toFixed(2)", 12.12);
     }
 }
