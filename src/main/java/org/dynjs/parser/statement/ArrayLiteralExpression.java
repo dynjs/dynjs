@@ -26,6 +26,7 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class ArrayLiteralExpression extends AbstractExpression {
 
@@ -40,11 +41,9 @@ public class ArrayLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                newobj(p(DynArray.class));
-                // array
-                dup();
-                // array array
-                invokespecial(p(DynArray.class), "<init>", sig(void.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                invokestatic( p(BuiltinArray.class), "newArrayLiteral", sig(DynArray.class, ExecutionContext.class));
                 // array
                 
                 int index = 0;

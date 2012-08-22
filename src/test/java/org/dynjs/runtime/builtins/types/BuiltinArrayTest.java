@@ -89,4 +89,11 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat( result ).isEqualTo( "1 . 2 . 3" );
     }
     
+    @Test
+    public void testJoinWithArgOnLiteral() {
+        Object result = eval( "[ 1, 2, 3 ].join(' . ')" );
+        assertThat( result ).isEqualTo( "1 . 2 . 3" );
+        
+    }
+    
 }

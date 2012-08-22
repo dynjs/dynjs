@@ -22,12 +22,12 @@ public class BuiltinArray extends AbstractNativeFunction {
         }, false);
         proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
             {
-                set( "Value", new ToString( globalObject ) );
+                set("Value", new ToString(globalObject));
             }
         }, false);
         proto.defineOwnProperty(null, "join", new PropertyDescriptor() {
             {
-                set( "Value", new Join( globalObject ) );
+                set("Value", new Join(globalObject));
             }
         }, false);
 
@@ -48,14 +48,14 @@ public class BuiltinArray extends AbstractNativeFunction {
                 final Number possiblyLen = Types.toNumber(args[0]);
                 if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
                     arraySelf.setLength(1);
-                    arraySelf.setElement(0, args[0] );
+                    arraySelf.setElement(0, args[0]);
                 } else {
                     arraySelf.setLength(possiblyLen.intValue());
                 }
             } else {
                 arraySelf.setLength(args.length);
                 for (int i = 0; i < args.length; ++i) {
-                    arraySelf.setElement(i, args[i] );
+                    arraySelf.setElement(i, args[i]);
                 }
             }
             return null;
@@ -86,5 +86,12 @@ public class BuiltinArray extends AbstractNativeFunction {
         DynArray o = new DynArray();
         o.setPrototype(getPrototype());
         return o;
+    }
+
+    // ----------------------------------------------------------------------
+    
+    public static DynArray newArrayLiteral(ExecutionContext context) {
+        BuiltinArray ctor = (BuiltinArray) context.getGlobalObject().get(context, "Array" );
+        return (DynArray) context.construct(ctor);
     }
 }
