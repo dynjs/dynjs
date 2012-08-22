@@ -58,6 +58,7 @@ import org.dynjs.parser.statement.ObjectLiteralExpression;
 import org.dynjs.parser.statement.PostOpExpression;
 import org.dynjs.parser.statement.PreOpExpression;
 import org.dynjs.parser.statement.PrintStatement;
+import org.dynjs.parser.statement.RegexExpression;
 import org.dynjs.parser.statement.RelationalExpression;
 import org.dynjs.parser.statement.ReturnStatement;
 import org.dynjs.parser.statement.StrictEqualityOperatorExpression;
@@ -323,7 +324,7 @@ public class Executor {
     }
 
     public Expression defineRegExLiteral(final Tree tree, final String regex) {
-        throw new ParserException("not implemented yet", tree);
+        return new RegexExpression(tree, regex);
     }
 
     public BooleanLiteralExpression defineTrueLiteral(final Tree tree) {
