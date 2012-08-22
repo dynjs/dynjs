@@ -430,7 +430,7 @@ literal returns [Expression value]
 	| StringLiteral
 	{ $value = executor.defineStringLiteral($StringLiteral, $StringLiteral.text);  }
 	| RegularExpressionLiteral
-	{ $value = executor.defineRegExLiteral($RegularExpressionLiteral);  }
+	{ $value = executor.defineRegExLiteral($RegularExpressionLiteral, $RegularExpressionLiteral.text);  }
 	| arrayLiteral
 	{ $value = $arrayLiteral.value;  }
 	| objectLiteral

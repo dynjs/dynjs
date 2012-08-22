@@ -322,7 +322,7 @@ public class Executor {
         return new NullLiteralExpression(tree);
     }
 
-    public Expression defineRegExLiteral(final Tree tree) {
+    public Expression defineRegExLiteral(final Tree tree, final String regex) {
         throw new ParserException("not implemented yet", tree);
     }
 
