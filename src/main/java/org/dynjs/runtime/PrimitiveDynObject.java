@@ -18,5 +18,9 @@ public class PrimitiveDynObject extends DynObject {
     public Object getPrimitiveValue() {
         return this.value;
     }
+    
+    public String toString() {
+        return "[PrimitiveDynObject: value=" + this.value + "]";
+    }
 
 }

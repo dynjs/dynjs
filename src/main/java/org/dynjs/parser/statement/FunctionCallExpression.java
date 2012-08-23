@@ -23,6 +23,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Reference;
@@ -43,7 +44,7 @@ public class FunctionCallExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                LabelNode withSelf = new LabelNode();
+                LabelNode propertyRef = new LabelNode();
                 LabelNode noSelf = new LabelNode();
                 LabelNode doCall = new LabelNode();
                 // 11.2.3
@@ -62,8 +63,36 @@ public class FunctionCallExpression extends AbstractExpression {
                 instance_of(p(Reference.class));
                 // context function ref isref?
                 iffalse(noSelf);
+                
+                // ----------------------------------------
+                // Reference
+                
                 // context function ref
                 checkcast(p(Reference.class));
+                
+                dup();
+                // context function ref ref
+                invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class) );
+                // context function ref bool(is-prop)
+                
+                iftrue( propertyRef );
+                
+                // ----------------------------------------
+                // Environment Record
+                
+                // context function ref
+                append(jsGetBase());
+                // context function base
+                checkcast( p(EnvironmentRecord.class ) );
+                // context function env-rec
+                invokeinterface(p(EnvironmentRecord.class), "implicitThisValue", sig(Object.class));
+                // context function self
+                go_to( doCall );
+                
+                // ----------------------------------------
+                // Property Reference
+                label (propertyRef );
+                // context function ref
                 append(jsGetBase());
                 // context function self
                 go_to(doCall);

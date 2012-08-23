@@ -60,19 +60,31 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
 
         PropertyDescriptor desc = this.immutableBindings.get(name);
+        System.err.println( "immutable: " + desc );
         if ((desc != null) && (desc.get("Initialized") == null)) {
+            System.err.println( "GBV 1" );
             if (strict) {
+            System.err.println( "GBV 2" );
                 throw new TypeError();
             }
+            System.err.println( "GBV 3" );
             return Types.UNDEFINED;
         }
+        
+        if ( desc != null ) {
+            return desc.getValue();
+        }
 
+            System.err.println( "GBV 4" );
         desc = this.mutableBindings.get(name);
+            System.err.println( "GBV 5: " + desc );
 
         if (desc == null) {
+            System.err.println( "GBV 6" );
             return Types.UNDEFINED;
         }
 
+            System.err.println( "GBV 7:" + desc.getValue() );
         return desc.getValue();
     }
 
@@ -114,6 +126,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
     public void initializeImmutableBinding(String name, Object value) {
         // 10.2.1.1.8
+        System.err.println( this + " initialize immutable: " + name + " // " + value );
         PropertyDescriptor desc = this.immutableBindings.get(name);
         desc.setValue(value);
         desc.set("Initialized", Boolean.TRUE);

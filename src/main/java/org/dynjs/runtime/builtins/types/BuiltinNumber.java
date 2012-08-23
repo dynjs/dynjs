@@ -18,7 +18,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
     public static final Number NaN = Double.NaN;
 
     public BuiltinNumber(final GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, true );
 
         // 15.7.4
         PrimitiveDynObject prototype = new PrimitiveDynObject();
@@ -108,7 +108,8 @@ public class BuiltinNumber extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (self.equals(Types.UNDEFINED)) {
+        System.err.println( "NUMBER SELF: " + self );
+        if (self == Types.UNDEFINED ) {
             // called as a function
             return Types.toNumber(args[0]);
         } else {

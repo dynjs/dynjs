@@ -52,8 +52,8 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberFunction() {
         this.runtime.execute("var x = Number(8)");
         Reference result = this.runtime.getExecutionContext().resolve("x");
-        PrimitiveDynObject value = (PrimitiveDynObject) result.getValue(getContext());
-        assertThat(value.getPrimitiveValue()).isEqualTo(8);
+        Integer value = (Integer) result.getValue(getContext());
+        assertThat(value).isEqualTo(8);
     }
 
     @Test

@@ -30,10 +30,10 @@ public class ExecutionContext {
 
     private LexicalEnvironment lexicalEnvironment;
     private LexicalEnvironment variableEnvironment;
-    private JSObject thisBinding;
+    private Object thisBinding;
     private boolean strict;
 
-    public ExecutionContext(LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, JSObject thisBinding, boolean strict) {
+    public ExecutionContext(LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.lexicalEnvironment = lexicalEnvironment;
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
@@ -48,8 +48,8 @@ public class ExecutionContext {
         return this.variableEnvironment;
     }
 
-    public JSObject getThisBinding() {
-        System.err.println( "asking for this -> " + thisBinding );
+    public Object getThisBinding() {
+        System.err.println("asking for this -> " + thisBinding);
         return this.thisBinding;
     }
 
@@ -81,8 +81,8 @@ public class ExecutionContext {
 
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
-        System.err.println( "**** CALL " + function );
-        System.err.println( Arrays.asList(args));
+        System.err.println("**** CALL " + function + " // " + self);
+        System.err.println(Arrays.asList(args));
         ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
         Object result = function.call(fnContext);
         if (result == null) {
@@ -94,7 +94,7 @@ public class ExecutionContext {
 
     public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
-        System.err.println( "construct with " + function + ", " + Arrays.asList( args) );
+        System.err.println("construct with " + function + ", " + Arrays.asList(args));
         // 1. create the new object
         JSObject obj = function.createNewObject();
         // 2. set internal methods per 8.12 [DynObject]
@@ -133,11 +133,20 @@ public class ExecutionContext {
 
     public ExecutionContext createFunctionExecutionContext(JSFunction function, Object thisArg, Object... arguments) {
         // 10.4.3
-        if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
-            thisArg = this.getLexicalEnvironment().getGlobalObject();
+        Object thisBinding = null;
+        if (function.isStrict()) {
+            thisBinding = thisArg;
+        } else {
+            if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
+                thisBinding = this.getLexicalEnvironment().getGlobalObject();
+            } else if (!(thisArg instanceof JSObject)) {
+                thisBinding = Types.toObject(thisArg);
+            } else {
+                thisBinding = thisArg;
+            }
         }
 
-        JSObject thisBinding = Types.toObject(thisArg);
+        System.err.println("thisBinding=" + thisBinding);
 
         LexicalEnvironment scope = function.getScope();
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
@@ -216,13 +225,13 @@ public class ExecutionContext {
         Arguments obj = new Arguments();
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set( "Value", arguments.length );
-                set( "Writable", true );
-                set( "Enumerable", false );
-                set( "Configurable", true );
+                set("Value", arguments.length);
+                set("Writable", true);
+                set("Enumerable", false);
+                set("Configurable", true);
             }
         };
-        obj.defineOwnProperty( this, "length", desc, false );
+        obj.defineOwnProperty(this, "length", desc, false);
 
         String[] names = function.getFormalParameters();
 
@@ -235,30 +244,30 @@ public class ExecutionContext {
             final Object val = arguments[i];
             desc = new PropertyDescriptor() {
                 {
-                    set( "Value", val );
-                    set( "Writable", true );
-                    set( "Enumerable", false );
-                    set( "Configurable", true );
+                    set("Value", val);
+                    set("Writable", true);
+                    set("Enumerable", false);
+                    set("Configurable", true);
                 }
             };
 
-            obj.defineOwnProperty( this, "" + i, desc, false );
+            obj.defineOwnProperty(this, "" + i, desc, false);
 
             if (i < names.length) {
                 if (!function.isStrict()) {
                     final String name = names[i];
                     if (i < names.length) {
-                        if (!mappedNames.contains( name )) {
-                            mappedNames.add( name );
+                        if (!mappedNames.contains(name)) {
+                            mappedNames.add(name);
 
                             desc = new PropertyDescriptor() {
                                 {
-                                    set( "Set", new ArgSetter( env, name ) );
-                                    set( "Get", new ArgGetter( env, name ) );
-                                    set( "Configurable", true );
+                                    set("Set", new ArgSetter(env, name));
+                                    set("Get", new ArgGetter(env, name));
+                                    set("Configurable", true);
                                 }
                             };
-                            map.defineOwnProperty( this, "" + i, desc, false );
+                            map.defineOwnProperty(this, "" + i, desc, false);
                         }
                     }
                 }
@@ -266,7 +275,7 @@ public class ExecutionContext {
         }
 
         if (!mappedNames.isEmpty()) {
-            obj.setParameterMap( map );
+            obj.setParameterMap(map);
         }
 
         return obj;
@@ -351,9 +360,9 @@ public class ExecutionContext {
     public static void throwSyntaxError() {
         throw new SyntaxError(new ArrayList<String>());
     }
-    
+
     public JSObject getPrototypeFor(String type) {
-        return (JSObject) ((JSObject)getGlobalObject().get( null, type )).get( null, "prototype" );
+        return (JSObject) ((JSObject) getGlobalObject().get(null, type)).get(null, "prototype");
     }
 
 }

@@ -12,9 +12,11 @@ import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
+import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinString;
+import org.dynjs.runtime.builtins.types.BuiltinTypeError;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -41,6 +43,9 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("Number", new BuiltinNumber(this));
         defineGlobalProperty("Array", new BuiltinArray(this));
         defineGlobalProperty("String", new BuiltinString(this));
+        
+        defineGlobalProperty("Error", new BuiltinError(this));
+        defineGlobalProperty("TypeError", new BuiltinTypeError(this));
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

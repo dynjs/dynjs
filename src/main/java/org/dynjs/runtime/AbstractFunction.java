@@ -61,7 +61,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 15.3.5.4
-        if (this.strict) {
+        if (name.equals("caller") && this.strict) {
             throw new TypeError();
         }
         return super.get(context, name);
