@@ -7,6 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.error.ToString;
 
 public class BuiltinError extends AbstractNativeFunction {
 
@@ -27,6 +28,11 @@ public class BuiltinError extends AbstractNativeFunction {
         proto.defineOwnProperty(null, "message", new PropertyDescriptor() {
             {
                 set("Value", "" );
+            }
+        }, false);
+        proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
+            {
+                set("Value", new ToString(globalObject) );
             }
         }, false);
         setPrototype(proto);

@@ -39,4 +39,14 @@ public class BuiltinTypeErrorTest extends AbstractDynJSTestSupport {
         assertThat( result.get( getContext(), "message" ) ).isEqualTo( "" );
         assertThat( result.getClassName() ).isEqualTo( "Error" );
     }
+    
+    @Test
+    public void testToStringNoMessage() {
+        assertThat( eval( "TypeError().toString()" ) ).isEqualTo( "TypeError" );
+    }
+    
+    @Test
+    public void testToStringWithMessage() {
+        assertThat( eval( "TypeError('that is wrong').toString()" ) ).isEqualTo( "TypeError: that is wrong" );
+    }
 }
