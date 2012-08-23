@@ -1,6 +1,6 @@
 package org.dynjs.runtime;
 
-import org.dynjs.exception.ReferenceError;
+import org.dynjs.exception.ThrowException;
 
 public class ObjectEnvironmentRecord implements EnvironmentRecord {
 
@@ -52,7 +52,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
         Object d = this.object.getProperty(context, name);
         if (d == Types.UNDEFINED) {
             if (strict) {
-                throw new ReferenceError(name);
+                throw new ThrowException( context.createReferenceError( name + " is not defined") );
             }
             return Types.UNDEFINED;
         }

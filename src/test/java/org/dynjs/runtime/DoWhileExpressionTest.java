@@ -2,7 +2,7 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.*;
 
-import org.dynjs.exception.ReferenceError;
+import org.dynjs.exception.ThrowException;
 import org.junit.Test;
 
 public class DoWhileExpressionTest extends AbstractDynJSTestSupport {
@@ -31,7 +31,7 @@ public class DoWhileExpressionTest extends AbstractDynJSTestSupport {
             eval("var x = 0",
                     "do x = 42; while ( iDoNotExist );");
             throw new AssertionError("Should have throw a ReferenceError on iDoNotExist");
-        } catch (ReferenceError e) {
+        } catch (ThrowException e) {
             // expected and correct
         }
         Object x = getContext().resolve("x").getValue(getContext());

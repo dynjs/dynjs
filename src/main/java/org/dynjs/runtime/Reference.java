@@ -1,6 +1,6 @@
 package org.dynjs.runtime;
 
-import org.dynjs.exception.ReferenceError;
+import org.dynjs.exception.ThrowException;
 
 public class Reference {
 
@@ -42,11 +42,9 @@ public class Reference {
 
     public Object getValue(ExecutionContext context) {
         // 8.7.1
-        System.err.println( this + " // getValue" );
         Object value = null;
         if (isUnresolvableReference()) {
-            System.err.println("Cannot resolve type: " + this.referencedName);
-            throw new ReferenceError( referencedName );
+            throw new ThrowException(context.createReferenceError(referencedName + " is not defined"));
         }
 
         if (isPropertyReference()) {
@@ -65,7 +63,7 @@ public class Reference {
         // 8.7.2
         if (isUnresolvableReference()) {
             if (isStrictReference()) {
-                throw new ReferenceError(this.referencedName);
+                throw new ThrowException(context.createReferenceError(referencedName + " is not defined"));
             } else {
                 this.globalObject.put(context, this.referencedName, value, false);
             }

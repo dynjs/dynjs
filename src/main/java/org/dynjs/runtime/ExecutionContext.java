@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.ReferenceError;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -353,8 +352,9 @@ public class ExecutionContext {
         return call(func, Types.UNDEFINED, message);
     }
 
-    public static void throwReferenceError(String ref) {
-        throw new ReferenceError(ref);
+    public Object createReferenceError(String message) {
+        JSFunction func = (JSFunction) getGlobalObject().get(this, "ReferenceError");
+        return call(func, Types.UNDEFINED, message);
     }
 
     public static void throwSyntaxError() {

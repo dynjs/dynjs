@@ -18,7 +18,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.DynJSException;
-import org.dynjs.exception.ReferenceError;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ParserException;
 import org.junit.Test;
 
@@ -108,7 +108,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var result = (function(){return 1+1;})() === 2;");
     }
 
-    @Test(expected = ReferenceError.class)
+    @Test(expected = ThrowException.class)
     public void throwsReferenceErrorWhenCallAnonExistingReference() {
         eval("print(x);");
     }

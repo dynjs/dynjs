@@ -168,11 +168,22 @@ public class AbstractByteCodeEmitter {
         };
     }
 
-    public CodeBlock jsThrowReferenceError(final String ref) {
+    public CodeBlock jsThrowReferenceError(final String message) {
         return new CodeBlock() {
             {
-                ldc(ref);
-                invokestatic(p(ExecutionContext.class), "throwReferenceError", sig(void.class));
+                newobj(p(ThrowException.class));
+                // obj
+                dup();
+                // obj obj
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj obj context
+                ldc( message );
+                // obj obj context message 
+                invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
+                // obj obj ex
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                // obj
+                athrow();
             }
         };
     }
