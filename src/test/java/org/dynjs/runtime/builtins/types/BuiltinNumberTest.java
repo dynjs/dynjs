@@ -134,14 +134,13 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         }
     }
     
-    @Ignore
-    public void testNumberToFixedNaN() {
-        // TODO: Make globalObject.NaN a DynObject
+    @Test
+    public void testNumberNaNToFixed() {
         check("var result = Number.NaN.toFixed()", "NaN");
     }
     
     @Test
-    public void testNumberCtorNaNToFixed() {
+    public void testNumberCtorToFixed() {
         check("var result = new Number('adf').toFixed()", "NaN");
     }
     

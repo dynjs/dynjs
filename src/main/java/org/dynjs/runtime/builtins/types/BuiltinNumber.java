@@ -9,6 +9,7 @@ import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.ToFixed;
+import org.dynjs.runtime.builtins.types.number.NaN;
 
 public class BuiltinNumber extends AbstractNativeFunction {
 
@@ -19,18 +20,6 @@ public class BuiltinNumber extends AbstractNativeFunction {
     public BuiltinNumber(final GlobalObject globalObject) {
         super(globalObject);
 
-        final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        positiveInfinity.setValue(POSITIVE_INFINITY);
-        this.defineOwnProperty(null, "POSITIVE_INFINITY", positiveInfinity, true);
-
-        final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        negativeInfinity.setValue(NEGATIVE_INFINITY);
-        this.defineOwnProperty(null, "NEGATIVE_INFINITY", negativeInfinity, true);
-        
-        final PropertyDescriptor nan = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        nan.setValue(globalObject.getProperty(null, "NaN"));
-        this.defineOwnProperty(null, "NaN", nan, false);
-        
         // 15.7.4
         PrimitiveDynObject prototype = new PrimitiveDynObject();
         prototype.setClassName("Number");
@@ -92,6 +81,25 @@ public class BuiltinNumber extends AbstractNativeFunction {
         }, false);
         
         setPrototype(prototype);
+
+        final NaN nan = new NaN(globalObject);
+        this.defineOwnProperty(null, "NaN", new PropertyDescriptor() {
+            {
+                set("Value", nan);
+            }
+        }, false);
+        globalObject.defineGlobalProperty("NaN", nan);
+        
+        final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+        positiveInfinity.setValue(POSITIVE_INFINITY);
+        this.defineOwnProperty(null, "POSITIVE_INFINITY", positiveInfinity, true);
+
+        final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+        negativeInfinity.setValue(NEGATIVE_INFINITY);
+        this.defineOwnProperty(null, "NEGATIVE_INFINITY", negativeInfinity, true);
+        
+        
+
     }
     
     public static boolean isNumber(DynObject object) {

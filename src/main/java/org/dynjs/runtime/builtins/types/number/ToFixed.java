@@ -7,7 +7,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.BuiltinNumber;
 
 public class ToFixed extends AbstractNativeFunction {
     
@@ -28,12 +27,11 @@ public class ToFixed extends AbstractNativeFunction {
         if (digits < 0 || digits > 20) {
             throw new RangeError("toFixed() digits argument must be between 0 and 20");
         }
-        Object primitive = ((PrimitiveDynObject)self).getPrimitiveValue();
-        if (primitive == BuiltinNumber.NaN) {
+        if (self instanceof NaN) {
             return "NaN";
         }
+        Object primitive = ((PrimitiveDynObject)self).getPrimitiveValue();
         return Double.toString((double) primitive);
-//        return Types.toString(primitive);
     }
 
 }
