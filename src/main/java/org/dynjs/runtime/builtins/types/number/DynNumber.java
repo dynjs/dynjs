@@ -27,6 +27,11 @@ public abstract class DynNumber extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         return this.getPrimitiveValue();
     }
+    
+    @Override
+    public Object defaultValue(String preferredType) {
+        return getPrimitiveValue();
+    }
 
     public abstract Object getPrimitiveValue();
 }
