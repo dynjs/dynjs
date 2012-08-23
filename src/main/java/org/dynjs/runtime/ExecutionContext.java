@@ -10,8 +10,8 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ReferenceError;
 import org.dynjs.exception.TypeError;
 import org.dynjs.parser.SyntaxError;
-import org.dynjs.parser.statement.FunctionDeclaration;
-import org.dynjs.parser.statement.VariableDeclaration;
+import org.dynjs.parser.ast.FunctionDeclaration;
+import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
 
 public class ExecutionContext {

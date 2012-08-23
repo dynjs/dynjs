@@ -21,7 +21,7 @@ import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 import org.dynjs.parser.SyntaxError;
-import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.ast.BlockStatement;
 
 public class DynJS {
 

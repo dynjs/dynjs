@@ -10,7 +10,7 @@ import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.statement.BlockStatement;
+import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.AbstractBasicBlock;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;

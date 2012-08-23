@@ -46,7 +46,7 @@ options
 @header {
 package org.dynjs.parser;
 
-import org.dynjs.parser.statement.*;
+import org.dynjs.parser.ast.*;
 }
 
 @members {

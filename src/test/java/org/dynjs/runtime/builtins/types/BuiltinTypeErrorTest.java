@@ -4,8 +4,6 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PrimitiveDynObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinTypeErrorTest extends AbstractDynJSTestSupport {

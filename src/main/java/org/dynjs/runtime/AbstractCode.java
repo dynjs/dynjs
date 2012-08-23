@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.statement.BlockStatement;
-import org.dynjs.parser.statement.ExpressionStatement;
-import org.dynjs.parser.statement.FunctionDeclaration;
-import org.dynjs.parser.statement.VariableDeclaration;
-import org.dynjs.parser.statement.VariableDeclarationStatement;
+import org.dynjs.parser.ast.BlockStatement;
+import org.dynjs.parser.ast.ExpressionStatement;
+import org.dynjs.parser.ast.FunctionDeclaration;
+import org.dynjs.parser.ast.VariableDeclaration;
+import org.dynjs.parser.ast.VariableDeclarationStatement;
 
 public abstract class AbstractCode implements JSCode {
 
