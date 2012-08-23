@@ -15,8 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import org.dynjs.exception.RangeError;
-import org.dynjs.runtime.builtins.types.BuiltinArray;
+import org.dynjs.exception.ThrowException;
 
 public class DynArray extends DynObject {
 
@@ -51,7 +50,7 @@ public class DynArray extends DynObject {
             System.err.println( "new desc: " + newLenDesc );
             Integer newLen = Types.toUint32(desc.getValue());
             if (!newLen.equals(Types.toNumber(desc.getValue()))) {
-                throw new RangeError();
+                throw new ThrowException( context.createRangeError( "invalid length: " + newLen ) );
             }
             newLenDesc.setValue(newLen);
             if (newLen >= oldLen) {

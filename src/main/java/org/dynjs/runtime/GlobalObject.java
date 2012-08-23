@@ -15,6 +15,7 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
+import org.dynjs.runtime.builtins.types.BuiltinRangeError;
 import org.dynjs.runtime.builtins.types.BuiltinReferenceError;
 import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
@@ -49,6 +50,7 @@ public class GlobalObject extends DynObject {
         
         defineGlobalProperty("Error", new BuiltinError(this));
         defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));
+        defineGlobalProperty("RangeError", new BuiltinRangeError(this));
         defineGlobalProperty("SyntaxError", new BuiltinSyntaxError(this));
         defineGlobalProperty("TypeError", new BuiltinTypeError(this));
         defineGlobalProperty("URIError", new BuiltinURIError(this));

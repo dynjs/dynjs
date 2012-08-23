@@ -1,6 +1,6 @@
 package org.dynjs.runtime.builtins.types.number;
 
-import org.dynjs.exception.RangeError;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -25,7 +25,7 @@ public class ToFixed extends AbstractNativeFunction {
             digits = Types.toInt32(args[0]);
         }
         if (digits < 0 || digits > 20) {
-            throw new RangeError("toFixed() digits argument must be between 0 and 20");
+            throw new ThrowException( context.createRangeError("toFixed() digits argument must be between 0 and 20") );
         }
         if (self instanceof NaN) {
             return "NaN";

@@ -1,13 +1,13 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 import static org.junit.Assert.*;
 
-import org.dynjs.exception.RangeError;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -142,10 +142,8 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         try {
             check("var result = new Number(123).toFixed(-1)", "0");
             fail("toFixed() should throw RangeError with -1 as a parameter");
-        } catch (RangeError error) {
-            // expected
-        } catch (Exception e) {
-            fail("Unexpected exception thrown. " + e);
+        } catch (ThrowException error) {
+            assertThat( ((JSObject)error.getValue()).get( getContext(), "name" ) ).isEqualTo( "RangeError" );
         }
     }
 
@@ -154,10 +152,8 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         try {
             check("var result = new Number(123).toFixed(21)", "0");
             fail("toFixed() should throw RangeError with 21 as a parameter");
-        } catch (RangeError error) {
-            // expected
-        } catch (Exception e) {
-            fail("Unexpected exception thrown. " + e);
+        } catch (ThrowException error) {
+            assertThat( ((JSObject)error.getValue()).get( getContext(), "name" ) ).isEqualTo( "RangeError" );
         }
     }
     

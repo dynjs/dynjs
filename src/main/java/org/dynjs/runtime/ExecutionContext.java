@@ -356,6 +356,11 @@ public class ExecutionContext {
         JSFunction func = (JSFunction) getGlobalObject().get(this, "ReferenceError");
         return call(func, Types.UNDEFINED, message);
     }
+    
+    public Object createRangeError(String message) {
+        JSFunction func = (JSFunction) getGlobalObject().get(this, "RangeError");
+        return call(func, Types.UNDEFINED, message);
+    }
 
     public static void throwSyntaxError() {
         throw new SyntaxError(new ArrayList<String>());
