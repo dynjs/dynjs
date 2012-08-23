@@ -1,5 +1,6 @@
 package org.dynjs.runtime.builtins.types.number;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
@@ -15,12 +16,12 @@ public class ValueOf extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.4
-        if (self instanceof DynNumber) {
-            return ((DynNumber)self).getPrimitiveValue();
-        }
         if (BuiltinNumber.isNumber((DynObject) self)) {
+            if (self instanceof DynNumber) {
+                return ((DynNumber)self).getPrimitiveValue();
+            }
             return ((PrimitiveDynObject)self).getPrimitiveValue();
         }
-        return "TypeError";
+        throw new ThrowException( context.createTypeError( "Number.valueOf() only allowed on Numbers" ));
     }
 }

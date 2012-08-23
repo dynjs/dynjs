@@ -8,6 +8,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.number.NegativeInfinity;
 import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
 import org.dynjs.runtime.builtins.types.number.ToFixed;
 import org.dynjs.runtime.builtins.types.number.NaN;
@@ -16,10 +17,6 @@ import org.dynjs.runtime.builtins.types.number.ToString;
 import org.dynjs.runtime.builtins.types.number.ValueOf;
 
 public class BuiltinNumber extends AbstractNativeFunction {
-
-    public static final Number POSITIVE_INFINITY = Double.POSITIVE_INFINITY;
-    public static final Number NEGATIVE_INFINITY = Double.NEGATIVE_INFINITY;
-    public static final Number NaN = Double.NaN;
 
     public BuiltinNumber(final GlobalObject globalObject) {
         super(globalObject, true );
@@ -38,22 +35,9 @@ public class BuiltinNumber extends AbstractNativeFunction {
         defineAccessorProperty(this, "NaN", new NaN(globalObject));
         globalObject.defineGlobalProperty("NaN", new NaN(globalObject));
         defineAccessorProperty(this, "POSITIVE_INFINITY", new PositiveInfinity(globalObject));
-        defineAccessorProperty(this, "NEGATIVE_INFINITY", NEGATIVE_INFINITY);
-    }
-    
-    private void defineProperty(DynObject object, String name, final Object value) {
-        object.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set("Value", value);
-            }
-        }, false);
-
-    }
-    
-    private void defineAccessorProperty(DynObject object, String name, Object value) {
-        PropertyDescriptor descriptor = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        descriptor.setValue(value);
-        object.defineOwnProperty(null, name, descriptor, false);
+        globalObject.defineGlobalProperty("Infinity", new PositiveInfinity(globalObject));
+        defineAccessorProperty(this, "NEGATIVE_INFINITY", new NegativeInfinity(globalObject));
+        defineAccessorProperty(this, "-Infinity", new NegativeInfinity(globalObject));
     }
     
     public static boolean isNumber(DynObject object) {
@@ -62,7 +46,6 @@ public class BuiltinNumber extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        System.err.println( "NUMBER SELF: " + self );
         if (self == Types.UNDEFINED ) {
             // called as a function
             return Types.toNumber(args[0]);
@@ -82,5 +65,19 @@ public class BuiltinNumber extends AbstractNativeFunction {
         object.setClassName("Number");
         return object;
     }
+    
+    private void defineProperty(DynObject object, String name, final Object value) {
+        object.defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                set("Value", value);
+            }
+        }, false);
 
+    }
+    
+    private void defineAccessorProperty(DynObject object, String name, Object value) {
+        PropertyDescriptor descriptor = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+        descriptor.setValue(value);
+        object.defineOwnProperty(null, name, descriptor, false);
+    }
 }

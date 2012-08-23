@@ -8,19 +8,28 @@ import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.builtins.types.BuiltinNumber;
+import org.dynjs.runtime.builtins.types.number.NegativeInfinity;
+import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
-    public void testPositiveInfinity() {
-        check("var result = Number.POSITIVE_INFINITY != null", true);
-    }
+    public void testNumberPositiveInfinity() {
+        this.runtime.execute("var result = Number.POSITIVE_INFINITY");
+        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Object value = (Object) result.getValue(getContext());
+        assertThat(value).isInstanceOf(PositiveInfinity.class);
+  }
 
     @Test
-    public void testNegativeInfinity() {
-        check("var result = Number.NEGATIVE_INFINITY", BuiltinNumber.NEGATIVE_INFINITY);
+    public void testNumberNegativeInfinity() {
+        this.runtime.execute("var result = Number.NEGATIVE_INFINITY");
+        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Object value = (Object) result.getValue(getContext());
+        assertThat(value).isInstanceOf(NegativeInfinity.class);
     }
 
     @Test
@@ -115,21 +124,44 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testNaNValueOf() {
+        // 15.7.4
+        check("var result = NaN.valueOf()", Double.NaN);
+    }
+    
+    @Test
     public void testNewNumberNaNValueOf() {
         // 15.7.4
-        check("var result = new Number('adf').valueOf();", BuiltinNumber.NaN);
+        check("var result = new Number('adf').valueOf();", Double.NaN);
     }
     
     @Test
     public void testNumberNaNValueOf() {
         // 15.7.4
-        check("var result = Number.NaN.valueOf();", BuiltinNumber.NaN);
+        check("var result = Number.NaN.valueOf();", Double.NaN);
     }
     
     @Test
     public void testNumberPositiveInfinityValueOf() {
         // 15.7.4
         check("var result = Number.POSITIVE_INFINITY.valueOf()", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testNumberNegativeInfinityValueOf() {
+        // 15.7.4
+        check("var result = Number.NEGATIVE_INFINITY.valueOf()", Double.NEGATIVE_INFINITY);
+    }
+    
+    @Test
+    public void testPositiveInfinityValueOf() {
+        // 15.7.4
+        check("var result = Infinity.valueOf()", Double.POSITIVE_INFINITY);
+    }
+
+    @Test
+    public void testNegativeInfinityValueOf() {
+        check("var result = -Infinity.valueOf()", Double.NEGATIVE_INFINITY);
     }
     
     @Test
