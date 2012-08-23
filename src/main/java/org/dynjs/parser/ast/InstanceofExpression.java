@@ -70,9 +70,7 @@ public class InstanceofExpression extends AbstractBinaryExpression {
                 iconst_0();
                 i2b();
                 //bool
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                // bool context
-                invokevirtual(p(ExecutionContext.class), "throwTypeError", sig(void.class));
+                append( jsThrowTypeError( "not an object" ) );
                 
 
                 label(end);

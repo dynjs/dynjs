@@ -15,8 +15,11 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
+import org.dynjs.runtime.builtins.types.BuiltinReferenceError;
 import org.dynjs.runtime.builtins.types.BuiltinString;
+import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
+import org.dynjs.runtime.builtins.types.BuiltinURIError;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -45,7 +48,10 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("String", new BuiltinString(this));
         
         defineGlobalProperty("Error", new BuiltinError(this));
+        defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));
+        defineGlobalProperty("SyntaxError", new BuiltinSyntaxError(this));
         defineGlobalProperty("TypeError", new BuiltinTypeError(this));
+        defineGlobalProperty("URIError", new BuiltinURIError(this));
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

@@ -2,13 +2,12 @@ package org.dynjs.runtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ReferenceError;
-import org.dynjs.exception.TypeError;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -304,7 +303,7 @@ public class ExecutionContext {
                     };
                     globalObject.defineOwnProperty(this, identifier, newProp, true);
                 } else if (existingProp.isAccessorDescriptor() || (!existingProp.isWritable() && !existingProp.isEnumerable())) {
-                    throw new TypeError();
+                    throw new ThrowException(createTypeError("unable to bind function '" + identifier + "'"));
                 }
             }
             JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock());
@@ -349,8 +348,9 @@ public class ExecutionContext {
         return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry(statementNumber);
     }
 
-    public static void throwTypeError() {
-        throw new TypeError();
+    public Object createTypeError(String message) {
+        JSFunction func = (JSFunction) getGlobalObject().get(this, "TypeError");
+        return call(func, Types.UNDEFINED, message);
     }
 
     public static void throwReferenceError(String ref) {

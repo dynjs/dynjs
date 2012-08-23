@@ -3,7 +3,7 @@ package org.dynjs.runtime;
 import java.util.Collections;
 import java.util.List;
 
-import org.dynjs.exception.TypeError;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -62,7 +62,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public Object get(ExecutionContext context, String name) {
         // 15.3.5.4
         if (name.equals("caller") && this.strict) {
-            throw new TypeError();
+            throw new ThrowException( context.createTypeError("may not reference 'caller'"));
         }
         return super.get(context, name);
     }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dynjs.exception.TypeError;
+import org.dynjs.exception.ThrowException;
 
 public class DynObject implements JSObject {
 
@@ -68,8 +68,8 @@ public class DynObject implements JSObject {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 8.12.3
-        if ( name.equals( "prototype" ) ) {
-            if ( this.prototype == null ) {
+        if (name.equals("prototype")) {
+            if (this.prototype == null) {
                 return Types.NULL;
             }
             return this.prototype;
@@ -122,7 +122,7 @@ public class DynObject implements JSObject {
             return d;
         }
 
-        System.err.println( "this.proto: " + this.prototype );
+        System.err.println("this.proto: " + this.prototype);
         if (this.prototype == null) {
             return Types.UNDEFINED;
         }
@@ -141,7 +141,7 @@ public class DynObject implements JSObject {
         // 8.12.5
         if (!canPut(context, name)) {
             if (shouldThrow) {
-                throw new TypeError();
+                throw new ThrowException(context.createTypeError("cannot put property '" + name + "'"));
             }
             return;
         }
@@ -225,7 +225,7 @@ public class DynObject implements JSObject {
         }
 
         if (shouldThrow) {
-            throw new TypeError();
+            throw new ThrowException(context.createTypeError("cannot delete unconfigurable property '" + name + "'"));
         }
 
         return false;
@@ -244,7 +244,7 @@ public class DynObject implements JSObject {
 
         if (c == Types.UNDEFINED) {
             if (!isExtensible()) {
-                return reject(shouldThrow);
+                return reject(context, shouldThrow);
             } else {
                 PropertyDescriptor newDesc = null;
                 if (desc.isGenericDescriptor() || desc.isDataDescriptor()) {
@@ -265,13 +265,13 @@ public class DynObject implements JSObject {
 
         if (current.hasConfigurable() && !current.isConfigurable()) {
             if (desc.hasConfigurable() && desc.isConfigurable()) {
-                return reject(shouldThrow);
+                return reject(context, shouldThrow);
             }
             Object currentEnumerable = current.get("Enumerable");
             Object descEnumerable = desc.get("Enumerable");
 
             if ((currentEnumerable != Types.UNDEFINED && descEnumerable != Types.UNDEFINED) && (currentEnumerable != descEnumerable)) {
-                return reject(shouldThrow);
+                return reject(context, shouldThrow);
             }
         }
 
@@ -280,7 +280,7 @@ public class DynObject implements JSObject {
         if (!desc.isGenericDescriptor()) {
             if (current.isDataDescriptor() != desc.isDataDescriptor()) {
                 if (!current.isConfigurable()) {
-                    return reject(shouldThrow);
+                    return reject(context, shouldThrow);
                 }
                 if (current.isDataDescriptor()) {
                     newDesc = PropertyDescriptor.newAccessorPropertyDescriptor(true);
@@ -293,11 +293,11 @@ public class DynObject implements JSObject {
                     Object currentWritable = current.get("Writable");
                     if ((currentWritable != Types.UNDEFINED) && !current.isWritable()) {
                         if (desc.isWritable()) {
-                            return reject(shouldThrow);
+                            return reject(context, shouldThrow);
                         }
                         Object newValue = desc.getValue();
                         if (newValue != null && !Types.sameValue(current.getValue(), newValue)) {
-                            return reject(shouldThrow);
+                            return reject(context, shouldThrow);
                         }
                     }
                 }
@@ -305,11 +305,11 @@ public class DynObject implements JSObject {
                 if (!current.isConfigurable()) {
                     Object newSetter = desc.getSetter();
                     if (newSetter != null && !Types.sameValue(current.getSetter(), newSetter)) {
-                        return reject(shouldThrow);
+                        return reject(context, shouldThrow);
                     }
                     Object newGetter = desc.getGetter();
                     if (newGetter != null && !Types.sameValue(current.getGetter(), newGetter)) {
-                        return reject(shouldThrow);
+                        return reject(context, shouldThrow);
                     }
                 }
             }
@@ -336,9 +336,9 @@ public class DynObject implements JSObject {
         return false;
     }
 
-    protected boolean reject(boolean shouldThrow) {
+    protected boolean reject(ExecutionContext context, boolean shouldThrow) {
         if (shouldThrow) {
-            throw new TypeError();
+            throw new ThrowException( context.createTypeError( "unable to perform operation" ));
         }
         return false;
     }

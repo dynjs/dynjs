@@ -1,6 +1,6 @@
 package org.dynjs.runtime;
 
-import org.dynjs.exception.TypeError;
+import org.dynjs.exception.ThrowException;
 
 public class Arguments extends DynObject {
 
@@ -26,7 +26,7 @@ public class Arguments extends DynObject {
         if (d == Types.UNDEFINED) {
             Object v = super.get(context, name);
             if (name.equals("caller") && (v instanceof JSFunction) && ((JSFunction) v).isStrict()) {
-                throw new TypeError();
+                throw new ThrowException( context.createTypeError( "may not reference 'caller'"));
             }
             return v;
         }
@@ -57,7 +57,7 @@ public class Arguments extends DynObject {
         System.err.println( "args.defineOwnProperty: " + name + " // " + desc );
         boolean allowed = super.defineOwnProperty(context, name, desc, false);
         if (!allowed) {
-            return reject(shouldThrow);
+            return reject(context, shouldThrow);
         }
 
         if (this.map.getOwnProperty(context, name) != Types.UNDEFINED) {

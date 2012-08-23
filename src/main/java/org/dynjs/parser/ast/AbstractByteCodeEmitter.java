@@ -4,6 +4,7 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
@@ -147,10 +148,22 @@ public class AbstractByteCodeEmitter {
         };
     }
 
-    public CodeBlock jsThrowTypeError() {
+    public CodeBlock jsThrowTypeError(final String message) {
         return new CodeBlock() {
             {
-                invokestatic(p(ExecutionContext.class), "throwTypeError", sig(void.class));
+                newobj(p(ThrowException.class));
+                // obj
+                dup();
+                // obj obj
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj obj context
+                ldc( message );
+                // obj obj context message 
+                invokevirtual(p(ExecutionContext.class), "createTypeError", sig(JSObject.class, String.class));
+                // obj obj ex
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                // obj
+                athrow();
             }
         };
     }

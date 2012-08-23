@@ -61,7 +61,7 @@ public class DynArray extends DynObject {
             System.err.println( "B" );
             if (oldLenDesc.get("Writable") == Boolean.FALSE) {
                 System.err.println( "reject" );
-                return reject(shouldThrow);
+                return reject(context, shouldThrow);
             }
 
             boolean newWritable = false;
@@ -93,7 +93,7 @@ public class DynArray extends DynObject {
                         newLenDesc.setWritable(false);
                     }
                     super.defineOwnProperty(context, "length", newLenDesc, false);
-                    return reject(shouldThrow);
+                    return reject(context, shouldThrow);
 
                 }
             }
@@ -112,11 +112,11 @@ public class DynArray extends DynObject {
         if (isArrayIndex(name)) {
             Integer index = Types.toUint32(name);
             if ((index.intValue() > oldLen) && oldLenDesc.get("Writable") == Boolean.FALSE) {
-                return reject(shouldThrow);
+                return reject(context, shouldThrow);
             }
             boolean succeeded = super.defineOwnProperty(context, name, desc, shouldThrow);
             if (!succeeded) {
-                return reject(shouldThrow);
+                return reject(context, shouldThrow);
             }
 
             if (index.intValue() >= oldLen) {
