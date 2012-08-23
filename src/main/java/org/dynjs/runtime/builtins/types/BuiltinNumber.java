@@ -8,8 +8,12 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
 import org.dynjs.runtime.builtins.types.number.ToFixed;
 import org.dynjs.runtime.builtins.types.number.NaN;
+import org.dynjs.runtime.builtins.types.number.ToLocaleString;
+import org.dynjs.runtime.builtins.types.number.ToString;
+import org.dynjs.runtime.builtins.types.number.ValueOf;
 
 public class BuiltinNumber extends AbstractNativeFunction {
 
@@ -20,86 +24,36 @@ public class BuiltinNumber extends AbstractNativeFunction {
     public BuiltinNumber(final GlobalObject globalObject) {
         super(globalObject, true );
 
-        // 15.7.4
+        // 15.7.4 Set the prototype
         PrimitiveDynObject prototype = new PrimitiveDynObject();
         prototype.setClassName("Number");
         prototype.setPrimitiveValue(0);
-        // 15.7.4.1
-        prototype.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
-            {
-                set("Value", BuiltinNumber.this);
-            }
-        }, false);
-        // 15.7.4.2
-        prototype.defineOwnProperty(null, "toString", new PropertyDescriptor() {
-            {
-                set("Value", new AbstractNativeFunction(globalObject) {
-                    @Override
-                    public Object call(ExecutionContext context, Object self, Object... args) {
-                        if (BuiltinNumber.isNumber((DynObject) self)) {
-                            return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
-                        }
-                        return "0";
-                    }
-                    
-                });
-            }
-        }, false);
-        // 15.7.4.3
-        prototype.defineOwnProperty(null, "toLocaleString", new PropertyDescriptor() {            
-            {
-                set("Value", new AbstractNativeFunction(globalObject) {
-                    @Override
-                    public Object call(ExecutionContext context, Object self, Object... args) {
-                        if (BuiltinNumber.isNumber((DynObject) self)) {
-                            return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
-                        }
-                        return "0";
-                    }
-                });
-            }
-        }, false);
-        // 15.7.4.4
-        prototype.defineOwnProperty(null, "valueOf", new PropertyDescriptor() {
-            {
-                set("Value", new AbstractNativeFunction(globalObject) {
-                    @Override
-                    public Object call(ExecutionContext context, Object self, Object... args) {
-                        if (BuiltinNumber.isNumber((DynObject) self)) {
-                            return ((PrimitiveDynObject)self).getPrimitiveValue();
-                        }
-                        return "TypeError";
-                    }
-                });
-            }
-        }, false);
-        // 15.7.4.5
-        prototype.defineOwnProperty(null, "toFixed", new PropertyDescriptor() {
-            {
-                set("Value", new ToFixed(globalObject));
-            }
-        }, false);
-        
+        defineProperty(prototype, "constructor",     BuiltinNumber.this);                // 15.7.4.1
+        defineProperty(prototype, "toString",        new ToString(globalObject));        // 15.7.4.2
+        defineProperty(prototype, "toLocaleString",  new ToLocaleString(globalObject));  // 15.7.4.3
+        defineProperty(prototype, "valueOf",         new ValueOf(globalObject));         // 15.7.4.4
+        defineProperty(prototype, "toFixed",         new ToFixed(globalObject));         // 15.7.4.5        
         setPrototype(prototype);
 
-        final NaN nan = new NaN(globalObject);
-        this.defineOwnProperty(null, "NaN", new PropertyDescriptor() {
+        defineAccessorProperty(this, "NaN", new NaN(globalObject));
+        globalObject.defineGlobalProperty("NaN", new NaN(globalObject));
+        defineAccessorProperty(this, "POSITIVE_INFINITY", new PositiveInfinity(globalObject));
+        defineAccessorProperty(this, "NEGATIVE_INFINITY", NEGATIVE_INFINITY);
+    }
+    
+    private void defineProperty(DynObject object, String name, final Object value) {
+        object.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", nan);
+                set("Value", value);
             }
         }, false);
-        globalObject.defineGlobalProperty("NaN", nan);
-        
-        final PropertyDescriptor positiveInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        positiveInfinity.setValue(POSITIVE_INFINITY);
-        this.defineOwnProperty(null, "POSITIVE_INFINITY", positiveInfinity, true);
 
-        final PropertyDescriptor negativeInfinity = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        negativeInfinity.setValue(NEGATIVE_INFINITY);
-        this.defineOwnProperty(null, "NEGATIVE_INFINITY", negativeInfinity, true);
-        
-        
-
+    }
+    
+    private void defineAccessorProperty(DynObject object, String name, Object value) {
+        PropertyDescriptor descriptor = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+        descriptor.setValue(value);
+        object.defineOwnProperty(null, name, descriptor, false);
     }
     
     public static boolean isNumber(DynObject object) {

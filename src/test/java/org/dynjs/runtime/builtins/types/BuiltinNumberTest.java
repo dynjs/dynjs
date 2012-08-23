@@ -15,7 +15,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testPositiveInfinity() {
-        check("var result = Number.POSITIVE_INFINITY", BuiltinNumber.POSITIVE_INFINITY);
+        check("var result = Number.POSITIVE_INFINITY != null", true);
     }
 
     @Test
@@ -80,6 +80,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testNumberToString() {
+        // 15.7.2
         check("var result = new Number(12); result = result.toString()", "12");
     }
     
@@ -91,6 +92,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberToLocaleString() {
+        // 15.7.3
         check("var result = new Number(12); result = result.toLocaleString()", "12");
     }
     
@@ -101,8 +103,33 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testNumberValueOf() {
+    public void testNewNumberValueOf() {
+        // 15.7.4
         check("var result = new Number(12).valueOf();", 12);
+    }
+    
+    @Ignore
+    public void testNumberValueOf() {
+        // 15.7.4
+        check("var result = Number(12).valueOf()", 12);
+    }
+    
+    @Test
+    public void testNewNumberNaNValueOf() {
+        // 15.7.4
+        check("var result = new Number('adf').valueOf();", BuiltinNumber.NaN);
+    }
+    
+    @Test
+    public void testNumberNaNValueOf() {
+        // 15.7.4
+        check("var result = Number.NaN.valueOf();", BuiltinNumber.NaN);
+    }
+    
+    @Test
+    public void testNumberPositiveInfinityValueOf() {
+        // 15.7.4
+        check("var result = Number.POSITIVE_INFINITY.valueOf()", Double.POSITIVE_INFINITY);
     }
     
     @Test
