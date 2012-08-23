@@ -17,8 +17,10 @@
 package org.dynjs.parser.statement;
 
 import me.qmx.jitescript.CodeBlock;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.exception.ThrowException;
 
 public class ThrowStatement extends AbstractStatement {
 
@@ -35,7 +37,16 @@ public class ThrowStatement extends AbstractStatement {
             {
                 append(expression.getCodeBlock());
                 append(jsGetValue());
-                append(throwCompletion());
+                // val
+                newobj(p(ThrowException.class));
+                // val ex
+                dup_x1();
+                // ex val ex
+                swap();
+                // ex ex val
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                // ex
+                athrow();
             }
         };
     }

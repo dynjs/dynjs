@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.DynJSException;
+import org.dynjs.exception.ThrowException;
 import org.junit.Test;
 
 public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
@@ -82,8 +83,9 @@ public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
                     "  executed_finally=true;",
                     "}");
             throw new AssertionError("Should have thrown");
-        } catch (DynJSException e) {
-            assertThat( e.getMessage() ).isEqualTo("fish");
+        } catch (ThrowException e) {
+            System.err.println( "****** " + e );
+            assertThat( e.getValue() ).isEqualTo("fish");
         }
 
         Object execTry = getContext().resolve("executed_try").getValue(getContext());
@@ -111,8 +113,8 @@ public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
                     "  throw 'fish';",
                     "}");
             throw new AssertionError("Should have thrown");
-        } catch (DynJSException e) {
-            assertThat( e.getMessage() ).isEqualTo("fish");
+        } catch (ThrowException e) {
+            assertThat( e.getValue() ).isEqualTo("fish");
         }
 
         Object execTry = getContext().resolve("executed_try").getValue(getContext());

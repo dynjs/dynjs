@@ -24,6 +24,7 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Completion;
 import org.objectweb.asm.tree.LabelNode;
@@ -74,6 +75,8 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                 append(normalCompletion());
                 // completion
+                astore( JSCompiler.Arities.COMPLETION );
+                // <empty>
 
                 for (Statement statement : blockContent) {
                     if (statement == null) {
@@ -88,37 +91,41 @@ public class BlockStatement extends AbstractStatement implements Statement {
                         line(statement.getPosition().getLine());
                     }
                     append(statement.getCodeBlock());
-                    // completion(prev) completion(cur)
-                    dup();
-                    // completion(prev) completion(cur) completion(cur)
-                    append(handleCompletion(nonAbrupt, abrupt, abrupt, abrupt, abrupt));
-                    label(nonAbrupt);
-                    // completion(prev) completion(cur);
-
-                    dup();
-                    // completion(prev) completion(cur) completion(cur)
-                    append(jsCompletionValue());
-                    // completion(prev) completion(cur) value
-                    ifnull(bringForwardValue);
-                    // completion(prev) completion(cur)
-                    swap();
-                    // completion(cur) completion(prev)
-                    pop();
                     // completion(cur)
+                    dup();
+                    // completion(cur) completion(cur)
+                    append(handleCompletion(nonAbrupt, abrupt, abrupt, abrupt ) );
+                    
+                    // ----------------------------------------
+                    // Non-abrupt
+                    
+                    label(nonAbrupt);
+                    // completion(cur);
+                    dup();
+                    // completion(cur) completion(cur)
+                    append(jsCompletionValue());
+                    // completion(cur) value
+                    ifnull(bringForwardValue);
+                    // completion(cur)
+                    astore( JSCompiler.Arities.COMPLETION );
+                    // <empty>
                     go_to(nextStatement);
+                    
+                    // ----------------------------------------
 
                     label(bringForwardValue);
-                    // completion(prev) completion(cur)
-                    dup_x1();
-                    // completion(cur) completion(prev) completion(cur)
-                    swap();
+                    // completion(cur)
+                    dup();
+                    // completion(cur) completion(cur)
+                    aload( JSCompiler.Arities.COMPLETION );
                     // completion(cur) completion(cur) completion(prev)
                     append(jsCompletionValue());
-                    // completion(cur) val(prev)
+                    // completion(cur) completion(cur) val(prev)
                     putfield(p(Completion.class), "value", ci(Object.class));
                     // completion(cur)
+                    astore( JSCompiler.Arities.COMPLETION );
+                    // <empty>
                     label(nextStatement);
-                    // completion(cur)
                 }
 
                 go_to(end);
@@ -127,17 +134,15 @@ public class BlockStatement extends AbstractStatement implements Statement {
                 // ABRUPT
 
                 label(abrupt);
-                // completion(prev) completion(cur)
-                swap();
-                // completion(cur) completion(prev)
-                pop();
                 // completion(cur)
+                astore( JSCompiler.Arities.COMPLETION );
+                // <empty>
 
                 // ----------------------------------------
                 // END
                 label(end);
-                // completion
-                nop();
+                // <empty>
+                aload( JSCompiler.Arities.COMPLETION );
             }
         };
     }

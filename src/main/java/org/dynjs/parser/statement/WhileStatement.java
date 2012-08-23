@@ -68,7 +68,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
 
                 dup();
                 // completion(block) completion(block)
-                append(handleCompletion(begin, breakTarget, begin, end, end));
+                append(handleCompletion(begin, breakTarget, begin, end));
 
                 // completion(block)
 

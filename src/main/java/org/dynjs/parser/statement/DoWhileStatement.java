@@ -49,7 +49,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 // completion(block)
                 dup();
                 // completion(block) completion(block)
-                append(handleCompletion(normalTarget, breakTarget, normalTarget, end, end));
+                append(handleCompletion(normalTarget, breakTarget, normalTarget, end));
 
                 // ----------------------------------------
                 // NORMAL
@@ -58,7 +58,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
 
                 append(vbool.getCodeBlock());
                 // completion(block) result
-                append( jsGetValue() );
+                append(jsGetValue());
                 // completion(block) result
                 append(jsToBoolean());
                 // completion(block) Boolean

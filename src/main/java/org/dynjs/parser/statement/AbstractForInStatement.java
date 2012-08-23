@@ -135,7 +135,7 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 dup();
                 // completion(cur) completion(cur)
 
-                append(handleCompletion( /*normal*/nextName, /*break*/doBreak, /*continue*/nextName, /*return*/end, /*throw*/end));
+                append(handleCompletion( /*normal*/nextName, /*break*/doBreak, /*continue*/nextName, /*return*/end) );
                 // completion(cur)
 
                 // -----------------------------------------------

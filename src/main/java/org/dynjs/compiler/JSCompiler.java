@@ -12,8 +12,7 @@ public class JSCompiler {
     public static interface Arities {
         int THIS = 0;
         int EXECUTION_CONTEXT = 1;
-        int SELF = 2;
-        int ARGS = 3;
+        int COMPLETION = 2;
     }
 
     private Config config;

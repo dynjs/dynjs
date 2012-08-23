@@ -115,7 +115,7 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 dup();
                 // completion completion
 
-                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doIncrement, /*return*/end, /*throw*/end));
+                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doIncrement, /*return*/end ) );
 
                 // ----------------------------------------
                 // do increment

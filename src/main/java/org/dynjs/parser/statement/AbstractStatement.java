@@ -126,15 +126,14 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             final LabelNode normalTarget,
             final LabelNode breakTarget,
             final LabelNode continueTarget,
-            final LabelNode returnTarget,
-            final LabelNode throwTarget) {
+            final LabelNode returnTarget) {
         return new CodeBlock() {
             {
                 // IN: completion
                 append(jsCompletionType());
                 lookupswitch(normalTarget,
-                        new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal(), Type.THROW.ordinal() },
-                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget, throwTarget });
+                        new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal() },
+                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget } );
 
             }
         };
