@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
 
 @Module(name = "console")
 public class ConsoleModule {
@@ -21,7 +22,6 @@ public class ConsoleModule {
         }
 
         err.println(message);
-
     }
 
 }

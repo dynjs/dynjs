@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.dynjs.exception.DynJSException;
@@ -22,9 +23,9 @@ public class JavaFunction extends AbstractNativeFunction {
         int trueNumberOfArgs = -1;
 
         Class<?>[] methodParamTypes = this.method.getParameterTypes();
-        if (methodParamTypes.length >= 1) {
+        if (methodParamTypes.length >= 2) {
             if (methodParamTypes[0].equals(ExecutionContext.class)) {
-                trueNumberOfArgs = methodParamTypes.length - 1;
+                trueNumberOfArgs = methodParamTypes.length - 2;
             }
         }
 
@@ -57,9 +58,9 @@ public class JavaFunction extends AbstractNativeFunction {
 
         Class<?>[] methodParamTypes = this.method.getParameterTypes();
         if (methodParamTypes.length >= 2) {
-            if (methodParamTypes[1].equals(ExecutionContext.class)) {
-                newArgs.add(self);
+            if (methodParamTypes[0].equals(ExecutionContext.class)) {
                 newArgs.add(context);
+                newArgs.add(self);
             }
         }
 

@@ -23,7 +23,9 @@ import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinURIError;
+import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
+import org.dynjs.runtime.modules.JavaClassModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
@@ -60,6 +62,11 @@ public class GlobalObject extends DynObject {
         
         defineGlobalProperty("require", new Require(this));
         this.moduleProviders.add( new FilesystemModuleProvider() );
+        
+        JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
+        javaClassModuleProvider.addModule( new ConsoleModule() );
+        
+        this.moduleProviders.add( javaClassModuleProvider );
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
