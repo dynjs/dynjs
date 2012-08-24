@@ -2,9 +2,11 @@ package org.dynjs.runtime.modules;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.StackElement;
 
 @Module(name = "console")
 public class ConsoleModule {
@@ -22,6 +24,20 @@ public class ConsoleModule {
         }
 
         err.println(message);
+    }
+    
+    @Export
+    public void trace(ExecutionContext context, Object self) {
+        List<StackElement> stack = new ArrayList<>();
+        context.collectStackElements(stack);
+        boolean first = true;
+        for (StackElement each : stack) {
+            if ( first ) {
+                first = false;
+                continue;
+            }
+            log(context, self, each.toString() );
+        }
     }
 
 }

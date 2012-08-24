@@ -9,6 +9,7 @@ import org.dynjs.exception.ModuleLoadException;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.PropertyDescriptor;
 
 public class JavaClassModuleProvider implements ModuleProvider {
@@ -38,13 +39,13 @@ public class JavaClassModuleProvider implements ModuleProvider {
         }
 
         try {
-            return buildExports(context, javaModule);
+            return buildExports(context, moduleName, javaModule);
         } catch (IllegalAccessException e) {
             throw new ModuleLoadException(moduleName, e);
         }
     }
 
-    private DynObject buildExports(ExecutionContext context, Object javaModule) throws IllegalAccessException {
+    private DynObject buildExports(ExecutionContext context, String moduleName, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
 
         DynObject exports = new DynObject();
@@ -62,18 +63,19 @@ public class JavaClassModuleProvider implements ModuleProvider {
                 exportName = method.getName();
             }
 
-            final DynObject function = buildFunction(context.getGlobalObject(), javaModule, method);
+            final JSFunction function = buildFunction(context.getGlobalObject(), javaModule, method);
             PropertyDescriptor desc = new PropertyDescriptor() {
                 {
                     set("Value", function);
                 }
             };
+            function.setDebugContext( moduleName + "." + exportName );
             exports.defineOwnProperty(context, exportName, desc, false);
         }
         return exports;
     }
 
-    private DynObject buildFunction(GlobalObject globalObject, Object module, Method method) throws IllegalAccessException {
+    private JSFunction buildFunction(GlobalObject globalObject, Object module, Method method) throws IllegalAccessException {
         return new JavaFunction(globalObject, module, method);
     }
 

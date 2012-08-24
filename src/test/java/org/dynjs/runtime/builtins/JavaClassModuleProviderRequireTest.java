@@ -29,6 +29,14 @@ public class JavaClassModuleProviderRequireTest extends AbstractDynJSTestSupport
         eval( "require('console').log( 'howdy' )" );
     }
     
+    @Test
+    public void testConsoleTrace() {
+        eval( "var console = require('console');",
+                "function foo() {",
+                "  console.trace();",
+                "}",
+                "foo();" );
+    }
     
 
 }
