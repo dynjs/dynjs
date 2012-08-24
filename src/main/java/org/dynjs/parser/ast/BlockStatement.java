@@ -34,8 +34,13 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
     private final List<Statement> blockContent;
 
-    public BlockStatement(final Tree tree, final List<Statement> blockContent) {
-        super(tree);
+    public BlockStatement(Tree tree, final List<Statement> blockContent) {
+        super( tree );
+        this.blockContent = blockContent;
+    }
+    
+    public BlockStatement(final List<Statement> blockContent) {
+        super( blockContent.isEmpty() ? null : blockContent.get(0).getPosition() );
         this.blockContent = blockContent;
     }
 

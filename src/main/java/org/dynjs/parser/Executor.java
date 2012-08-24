@@ -91,7 +91,7 @@ public class Executor {
     }
 
     public BlockStatement program(final List<Statement> blockContent) {
-        return new BlockStatement(null, blockContent);
+        return new BlockStatement(blockContent);
     }
 
     public BlockStatement block(final Tree tree, final List<Statement> blockContent) {

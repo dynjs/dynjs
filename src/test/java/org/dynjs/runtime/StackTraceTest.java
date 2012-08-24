@@ -36,4 +36,34 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             assertThat( stack.contains( "at <eval> (<eval>:12)" ) ).isTrue();
         }
     }
+    
+    @Test
+    public void testComplexStackAndPretendWeHaveFilename() {
+        try {
+            getRuntime().execute("\n" +
+                    "var x = { one: function() { bar() } };\n" +
+                    "var y = { two: x.one };\n" +
+                    "function foo() {\n" +
+                    " throw TypeError();\n" +
+                    "}\n" +
+                    "function bar() {\n" +
+                    "  foo();\n" +
+                    "}\n" +
+                    "\n" +
+                    "try {\n" +
+                    "  y.two();\n" +
+                    "} catch(e) {\n" +
+                    "  print(e.stack);\n" +
+                    "  throw e;\n" +
+                    "}", "fakefile.js", 0 );
+        } catch (ThrowException e) {
+            JSObject o = (JSObject) e.getValue();
+            String stack = (String) o.get(getContext(), "stack" );
+            assertThat( stack.contains( "TypeError" ) ).isTrue();
+            assertThat( stack.contains( "at foo (fakefile.js:5)" ) ).isTrue();
+            assertThat( stack.contains( "at bar (fakefile.js:8)" ) ).isTrue();
+            assertThat( stack.contains( "at Object.one (fakefile.js:2)" ) ).isTrue();
+            assertThat( stack.contains( "at <eval> (fakefile.js:12)" ) ).isTrue();
+        }
+    }
 }
