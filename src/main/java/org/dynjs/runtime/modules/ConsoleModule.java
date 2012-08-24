@@ -29,13 +29,8 @@ public class ConsoleModule {
     @Export
     public void trace(ExecutionContext context, Object self) {
         List<StackElement> stack = new ArrayList<>();
-        context.collectStackElements(stack);
-        boolean first = true;
+        context.getParent().collectStackElements(stack);
         for (StackElement each : stack) {
-            if ( first ) {
-                first = false;
-                continue;
-            }
             log(context, self, each.toString() );
         }
     }
