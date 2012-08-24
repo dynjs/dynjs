@@ -8,6 +8,7 @@ import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.number.NegativeInfinity;
 import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
@@ -161,12 +162,44 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNegativeInfinityValueOf() {
+        // 15.7.4
         check("var result = -Infinity.valueOf()", Double.NEGATIVE_INFINITY);
     }
     
     @Test
+    public void testExponentValueOf() {
+        // 15.7.4 TODO: The check value should really be 1000 - an int
+        check("var result = new Number(1E3).valueOf();", 1000.0);
+    }
+    
+    @Test
     public void testNumberToFixedDefault() {
-        check("var result = new Number(12345.67890123).toFixed()", "12345.67890123");
+        check("var result = new Number(12345.67890123).toFixed()", "12346");
+    }
+    
+    @Test
+    public void testNumberToFixedWithTooManyParameters() {
+        check("var result = new Number(123).toFixed(1,2,3)", Types.UNDEFINED);
+    }
+    
+    @Ignore
+    public void testBigAssNumberToFixed() {
+        check("var result = new Number(1e+21).toFixed();", "1e+21");
+    }
+    
+    @Ignore
+    public void testBigAssButSmallerNumberToFixed() {
+        check("var result = new Number(1E+20).toFixed();", "1e+20");
+    }
+    
+    @Ignore
+    public void testRoundedFractionalDigitsToFixed() {
+        check("var result = new Number(13.45).toFixed(20)", "13.5");
+    }
+    
+    @Ignore
+    public void testBigAssJavaFriendlyNumberToFixed() {
+        check("var result = new Number(1.0E+21).toFixed();", "1e+21");
     }
     
     @Test
@@ -195,11 +228,16 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    public void testNumberCtorToFixed() {
+    public void testNumberPositiveInfinityToFixed() {
+        check("var result = Number.POSITIVE_INFINITY.toFixed()", "Infinity");
+    }
+    
+    @Test
+    public void testNumberCtorToNaNToFixed() {
         check("var result = new Number('adf').toFixed()", "NaN");
     }
     
-    @Ignore
+    @Test
     public void testNegativeNumberToFixed() {
         check("var result = new Number(-12).toFixed()", "-12");
     }

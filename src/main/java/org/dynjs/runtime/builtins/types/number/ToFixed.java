@@ -9,8 +9,8 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 public class ToFixed extends AbstractNativeFunction {
-    
-    public ToFixed(GlobalObject globalObject) { 
+
+    public ToFixed(GlobalObject globalObject) {
         super(globalObject);
         PropertyDescriptor length = PropertyDescriptor.newAccessorPropertyDescriptor(true);
         length.set("Value", 1);
@@ -20,18 +20,55 @@ public class ToFixed extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.5
-        int digits = 0;
-        if (args.length == 1) {
-            digits = Types.toInt32(args[0]);
+        String value = "";
+        if (args.length > 1) {
+            return Types.UNDEFINED;
         }
-        if (digits < 0 || digits > 20) {
-            throw new ThrowException( context.createRangeError("toFixed() digits argument must be between 0 and 20") );
+        else {
+            Integer digits = 0;
+            if (args.length == 1) {
+                digits = (Integer) Types.toNumber(args[0]);
+            }
+            if (digits < 0 || digits > 20) {
+                throw new ThrowException( context.createRangeError("toFixed() digits argument must be between 0 and 20") );
+            }
+            
+            Object primitiveValue = Double.NaN;
+            if (self instanceof PrimitiveDynObject) {
+                primitiveValue = ((PrimitiveDynObject)self).getPrimitiveValue();
+            } else if (self instanceof DynNumber) {
+                primitiveValue = ((DynNumber)self).getPrimitiveValue();
+            }
+            if (primitiveValue instanceof Double) {
+                value = doubleToFixed((double) primitiveValue, digits);
+            } else {
+                value = Integer.toString((int) primitiveValue);
+            }
         }
-        if (self instanceof NaN) {
-            return "NaN";
-        }
-        Object primitive = ((PrimitiveDynObject)self).getPrimitiveValue();
-        return Double.toString((double) primitive);
+        return value;
     }
 
+    private String doubleToFixed(double _double_, int digits) {
+        String value;
+        if (Double.isNaN(_double_)) {
+            value = "NaN";
+        } else if (Double.isInfinite(_double_)) {
+            if (_double_ > 0) {
+                value = "Infinity";
+            } else {
+                value = "-Infinity";
+            }
+        }
+        else if (_double_ >= 1.0E21) {
+            value = Types.toString(_double_);
+        } else {
+            if (digits == 0) {
+                value = String.valueOf(Math.round(_double_));
+            } else {
+                value = Double.toString(_double_);
+            }
+        }
+        // TODO: We have to make exponential values look like JS and not Java
+        return value;
+    }
 }
