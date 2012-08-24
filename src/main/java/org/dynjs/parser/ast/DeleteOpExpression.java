@@ -74,7 +74,6 @@ public class DeleteOpExpression extends AbstractExpression {
                 // Check as property
                 
                 label( checkAsProperty );
-                ldc( "checking as property" ).aprintln().pop();
                 // ref
                 dup();
                 // ref ref

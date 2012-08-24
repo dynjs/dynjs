@@ -15,7 +15,6 @@ public class CharAt extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.2
         String strSelf = Types.toString(self);
-        System.err.println( "STR: " + strSelf );
         int position = Types.toInteger(args[0]);
         if ( position < 0 || position > strSelf.length() ) {
             return "";

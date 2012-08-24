@@ -122,7 +122,6 @@ public class DynObject implements JSObject {
             return d;
         }
 
-        System.err.println("this.proto: " + this.prototype);
         if (this.prototype == null) {
             return Types.UNDEFINED;
         }

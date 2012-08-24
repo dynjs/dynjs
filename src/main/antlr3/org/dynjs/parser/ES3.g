@@ -1577,7 +1577,6 @@ finallyClause
 
 functionDeclaration
 	: FUNCTION name=Identifier formalParameterList functionBody
-	{ System.err.println( "FN: " + name ); }
 	-> ^( FUNCTION $name formalParameterList functionBody )
 	;
 

@@ -21,7 +21,8 @@ public class UnaryMinusExpressionTest extends AbstractDynJSTestSupport {
     @Test
     public void testUnaryMinusOnVar() {
         Object result = eval("var x = 1; -x;");
-        System.err.println(result);
+        assertThat( result ).isEqualTo( -1 );
+        
     }
 
 }

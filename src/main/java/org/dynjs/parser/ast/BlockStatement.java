@@ -81,7 +81,6 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                 for (Statement statement : blockContent) {
                     if (statement == null) {
-                        System.err.println("NULL!");
                         continue;
                     }
                     LabelNode nonAbrupt = new LabelNode();

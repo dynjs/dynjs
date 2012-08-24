@@ -37,7 +37,6 @@ public class Arguments extends DynObject {
     public Object getOwnProperty(ExecutionContext context, String name) {
         // 10.6 [[GetOwnProperty]]
         Object d = super.getOwnProperty(context, name);
-        System.err.println( "getOwnProperty: " + name + " // " + d);
         if (d == Types.UNDEFINED) {
             return d;
         }
@@ -54,7 +53,6 @@ public class Arguments extends DynObject {
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 10.6 [[DefineOwnProperty]]
-        System.err.println( "args.defineOwnProperty: " + name + " // " + desc );
         boolean allowed = super.defineOwnProperty(context, name, desc, false);
         if (!allowed) {
             return reject(context, shouldThrow);

@@ -62,7 +62,6 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
 
     @Override
     public JSObject createNewObject() {
-        System.err.println( "*** create new object" ) ;
         DynObject o = new DynObject();
         o.setPrototype(getPrototype());
         o.setClassName("Error");

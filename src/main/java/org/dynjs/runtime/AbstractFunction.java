@@ -95,15 +95,12 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public boolean hasInstance(Object v) {
-        System.err.println( this + "#hasInstance: " + v);
         if (!(v instanceof JSObject)) {
             return false;
         }
 
         JSObject proto = getPrototype();
         
-        System.err.println( "myProto: " + proto );
-
         if (proto == null) {
             return false;
         }

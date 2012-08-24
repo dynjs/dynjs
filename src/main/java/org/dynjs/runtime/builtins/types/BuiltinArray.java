@@ -32,10 +32,6 @@ public class BuiltinArray extends AbstractNativeFunction {
         }, false);
 
         setPrototype(proto);
-
-        System.err.println("prototype: " + proto);
-        Object ctor = getPrototype().get(null, "constructor");
-        System.err.println("ctor: " + ctor + " // " + ctor.getClass());
     }
 
     @Override
@@ -43,7 +39,6 @@ public class BuiltinArray extends AbstractNativeFunction {
         DynArray arraySelf = (DynArray) self;
 
         if (self != Types.UNDEFINED) {
-            System.err.println("construct");
             if (args.length == 1) {
                 final Number possiblyLen = Types.toNumber(args[0]);
                 if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {

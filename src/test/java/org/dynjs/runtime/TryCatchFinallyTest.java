@@ -84,7 +84,6 @@ public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
                     "}");
             throw new AssertionError("Should have thrown");
         } catch (ThrowException e) {
-            System.err.println( "****** " + e );
             assertThat( e.getValue() ).isEqualTo("fish");
         }
 

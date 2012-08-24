@@ -43,7 +43,6 @@ public class BuiltinError extends AbstractNativeFunction {
         DynArray arraySelf = (DynArray) self;
 
         if (self != Types.UNDEFINED) {
-            System.err.println("construct");
             if (args.length == 1) {
                 final Number possiblyLen = Types.toNumber(args[0]);
                 if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {

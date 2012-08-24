@@ -37,7 +37,6 @@ public class Join extends AbstractNativeFunction {
                 buf.append(separator);
             }
             Object v = array.get(context, "" + i);
-            System.err.println(i + "V=" + v);
             if (v == Types.UNDEFINED || v == Types.NULL) {
                 v = "";
             } else {

@@ -57,7 +57,6 @@ public class ExecutionContext {
     }
 
     public Object getThisBinding() {
-        System.err.println("asking for this -> " + thisBinding);
         return this.thisBinding;
     }
 
@@ -89,7 +88,6 @@ public class ExecutionContext {
 
     public Completion execute(JSProgram program) {
         setStrict(program.isStrict());
-        System.err.println("execute: " + program);
         this.fileName = program.getFileName();
         performDeclarationBindingInstantiation(program);
         return program.execute(this);
@@ -102,8 +100,6 @@ public class ExecutionContext {
 
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
-        System.err.println("**** CALL " + function + " // " + self);
-        System.err.println(Arrays.asList(args));
         ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
         Object result = function.call(fnContext);
         if (result == null) {
@@ -115,7 +111,6 @@ public class ExecutionContext {
 
     public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
-        System.err.println("construct with " + function + ", " + Arrays.asList(args));
         // 1. create the new object
         JSObject obj = function.createNewObject();
         // 2. set internal methods per 8.12 [DynObject]

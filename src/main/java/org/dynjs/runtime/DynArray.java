@@ -35,19 +35,15 @@ public class DynArray extends DynObject {
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 15.4.5.1
         
-        System.err.println( "defineOwnProperty: " + name );
         PropertyDescriptor oldLenDesc = (PropertyDescriptor) getOwnProperty(context, "length");
-        System.err.println( "oldLenDesc: " + oldLenDesc );
         int oldLen = (int) oldLenDesc.getValue();
 
         if (name.equals("length")) {
-            System.err.println( "A" );
             if (desc.getValue() == Types.UNDEFINED) {
                 return super.defineOwnProperty(context, "length", desc, shouldThrow);
             }
 
             PropertyDescriptor newLenDesc = desc;
-            System.err.println( "new desc: " + newLenDesc );
             Integer newLen = Types.toUint32(desc.getValue());
             if (!newLen.equals(Types.toNumber(desc.getValue()))) {
                 throw new ThrowException( context.createRangeError( "invalid length: " + newLen ) );
@@ -57,9 +53,7 @@ public class DynArray extends DynObject {
                 return super.defineOwnProperty(context, "length", newLenDesc, shouldThrow);
             }
             
-            System.err.println( "B" );
             if (oldLenDesc.get("Writable") == Boolean.FALSE) {
-                System.err.println( "reject" );
                 return reject(context, shouldThrow);
             }
 
@@ -71,19 +65,14 @@ public class DynArray extends DynObject {
                 newLenDesc.set("Writable", true);
             }
 
-            System.err.println( "C" );
             boolean succeeded = super.defineOwnProperty(context, "length", newLenDesc, shouldThrow);
             
-            System.err.println( "succeeded? " + succeeded );
-
             if (!succeeded) {
                 return false;
             }
 
-            System.err.println( "D" );
             while (newLen < oldLen) {
                 oldLen = oldLen - 1;
-                System.err.println( "deleting " + oldLen );
                 boolean deleteSucceeded = delete(context, "" + oldLen, false);
 
                 if (!deleteSucceeded) {

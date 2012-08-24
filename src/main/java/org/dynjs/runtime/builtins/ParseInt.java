@@ -71,12 +71,9 @@ public class ParseInt extends AbstractNativeFunction {
         }
 
         try {
-            System.err.println("text: " + text);
-            System.err.println("radix: " + radix);
             return Integer.parseInt(text, radix);
         } catch (NumberFormatException e) {
-            System.err.println(e.getLocalizedMessage());
-            e.printStackTrace();
+            // ignore
         }
         return Double.NaN;
     }

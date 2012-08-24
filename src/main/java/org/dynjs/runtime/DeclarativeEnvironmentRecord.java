@@ -34,7 +34,6 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
 
-        System.err.println("declarative.setMutableBinding: " + name);
         // 10.2.1.1.3
         if (!hasBinding(context, name)) {
             throw new AssertionError("10.2.1.1.3: No binding exists for " + name);
@@ -118,7 +117,6 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
     public void initializeImmutableBinding(String name, Object value) {
         // 10.2.1.1.8
-        System.err.println(this + " initialize immutable: " + name + " // " + value);
         PropertyDescriptor desc = this.immutableBindings.get(name);
         desc.setValue(value);
         desc.set("Initialized", Boolean.TRUE);
