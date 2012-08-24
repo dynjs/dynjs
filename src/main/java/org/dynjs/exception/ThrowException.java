@@ -1,13 +1,58 @@
 package org.dynjs.exception;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.StackElement;
+import org.dynjs.runtime.StackGetter;
+
 public class ThrowException extends DynJSException {
-    
+
     private Object value;
+    private ArrayList<StackElement> stack;
 
     public ThrowException(Object value) {
         this.value = value;
     }
-    
+
+    public ThrowException(final ExecutionContext context, Object value) {
+        this(value);
+        this.stack = new ArrayList<StackElement>();
+        context.collectStackElements(this.stack);
+
+        StackTraceElement[] elements = new StackTraceElement[this.stack.size()];
+        for (int i = 0; i < elements.length; ++i) {
+            StackElement e = stack.get(i);
+            String cn = "<global>";
+            String fn = null;
+            int dotLoc = e.debugContext.indexOf(".");
+            if (dotLoc > 0) {
+                cn = e.debugContext.substring(0, dotLoc);
+                fn = e.debugContext.substring(dotLoc + 1);
+            } else {
+                fn = e.debugContext;
+            }
+            elements[i] = new StackTraceElement(cn, fn, e.fileName, e.lineNumber);
+        }
+        setStackTrace(elements);
+
+        if (value instanceof JSObject) {
+            String errorName = "<unknown>";
+            if ( ((JSObject)value).hasProperty(context, "name" ) ) {
+                errorName = (String) ((JSObject)value).get(context, "name" );
+            }
+            final String err = errorName;
+            ((JSObject)value).defineOwnProperty(context, "stack", new PropertyDescriptor() {
+                {
+                    set("Get", new StackGetter(context.getGlobalObject(), err, stack));
+                }
+            }, false);
+        }
+    }
+
     public Object getValue() {
         return this.value;
     }

@@ -8,4 +8,10 @@ public interface JSFunction extends JSObject, JSCallable, JSCode {
     boolean hasInstance(Object obj);
     
     JSObject createNewObject();
+    
+    String getFileName();
+    
+    void setDebugContext(String context);
+    String getDebugContext();
+    
 }

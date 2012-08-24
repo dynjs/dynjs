@@ -27,6 +27,7 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class BlockStatement extends AbstractStatement implements Statement {
@@ -89,6 +90,12 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                     if (statement.getPosition() != null) {
                         line(statement.getPosition().getLine());
+                        aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                        // context
+                        ldc( statement.getPosition().getLine() );
+                        // context line
+                        invokevirtual( p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
+                        // <empty>
                     }
                     append(statement.getCodeBlock());
                     // completion(cur)

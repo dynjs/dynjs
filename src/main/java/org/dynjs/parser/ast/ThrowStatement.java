@@ -16,11 +16,13 @@
 
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.ExecutionContext;
 
 public class ThrowStatement extends AbstractStatement {
 
@@ -44,7 +46,11 @@ public class ThrowStatement extends AbstractStatement {
                 // ex val ex
                 swap();
                 // ex ex val
-                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // ex ex val context
+                swap();
+                // ex ex context val
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, ExecutionContext.class, Object.class));
                 // ex
                 athrow();
             }

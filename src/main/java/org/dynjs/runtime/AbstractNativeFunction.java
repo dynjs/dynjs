@@ -9,15 +9,15 @@ import org.dynjs.parser.ast.VariableDeclaration;
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
-        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), false, formalParameters);
+        super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), false, formalParameters);
     }
     
     public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
-        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
+        super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
     }
     
     public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super( scope, strict, formalParameters);
+        super( null, scope, strict, formalParameters);
     }
 
 
@@ -61,5 +61,9 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     }
 
     public abstract Object call(ExecutionContext context, Object self, Object... args);
+    
+    public String getFileName() {
+        return getClass().getName().replace(".", "/" ) + ".java";
+    }
 
 }

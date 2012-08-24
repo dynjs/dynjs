@@ -45,6 +45,13 @@ public class PropertyDescriptor {
     }
     
     public static PropertyDescriptor newPropertyDescriptorForObjectInitializer(Object value) {
+        return newPropertyDescriptorForObjectInitializer(null, value);
+    }
+    
+    public static PropertyDescriptor newPropertyDescriptorForObjectInitializer(String name, Object value) {
+        if ( name != null && ( value instanceof JSFunction ) ) {
+            ((JSFunction)value).setDebugContext( "Object." + name );
+        }
         PropertyDescriptor d = new PropertyDescriptor();
         d.set( "Value", value );
         d.set( "Writable", true );

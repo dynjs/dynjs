@@ -17,7 +17,7 @@ public class ExecutionContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        ExecutionContext context = new ExecutionContext(env, env, env.getGlobalObject(), false);
+        ExecutionContext context = new ExecutionContext(null, env, env, env.getGlobalObject(), false);
         return context;
     }
 
@@ -26,16 +26,26 @@ public class ExecutionContext {
         return createGlobalExecutionContext(runtime);
     }
 
+    private ExecutionContext parent;
     private LexicalEnvironment lexicalEnvironment;
     private LexicalEnvironment variableEnvironment;
     private Object thisBinding;
     private boolean strict;
 
-    public ExecutionContext(LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
+    private int lineNumber;
+    private String fileName;
+    private String debugContext = "<eval>";
+
+    public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
+        this.parent = parent;
         this.lexicalEnvironment = lexicalEnvironment;
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+    }
+
+    public ExecutionContext getParent() {
+        return this.parent;
     }
 
     public LexicalEnvironment getLexicalEnvironment() {
@@ -60,14 +70,27 @@ public class ExecutionContext {
     }
 
     public Reference resolve(String name) {
-        Reference ref = this.lexicalEnvironment.getIdentifierReference(this, name, isStrict());
-        return ref;
+        return this.lexicalEnvironment.getIdentifierReference(this, name, isStrict());
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    public int getLineNumber() {
+        return this.lineNumber;
+    }
+
+    public String getFileName() {
+        return this.fileName;
     }
 
     // ----------------------------------------------------------------------
 
     public Completion execute(JSProgram program) {
         setStrict(program.isStrict());
+        System.err.println("execute: " + program);
+        this.fileName = program.getFileName();
         performDeclarationBindingInstantiation(program);
         return program.execute(this);
     }
@@ -119,10 +142,10 @@ public class ExecutionContext {
         // 10.4.2 (with caller)
         ExecutionContext context = null;
         if (!eval.isStrict()) {
-            context = new ExecutionContext(this.getLexicalEnvironment(), this.getVariableEnvironment(), this.getThisBinding(), false);
+            context = new ExecutionContext(this, this.getLexicalEnvironment(), this.getVariableEnvironment(), this.getThisBinding(), false);
         } else {
             LexicalEnvironment strictVarEnv = LexicalEnvironment.newDeclarativeEnvironment(this.getLexicalEnvironment());
-            context = new ExecutionContext(strictVarEnv, strictVarEnv, this.getThisBinding(), true);
+            context = new ExecutionContext(this, strictVarEnv, strictVarEnv, this.getThisBinding(), true);
         }
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
@@ -144,13 +167,13 @@ public class ExecutionContext {
             }
         }
 
-        System.err.println("thisBinding=" + thisBinding);
-
         LexicalEnvironment scope = function.getScope();
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
-        ExecutionContext context = new ExecutionContext(localEnv, localEnv, thisBinding, function.isStrict());
+        ExecutionContext context = new ExecutionContext(this, localEnv, localEnv, thisBinding, function.isStrict());
         context.performDeclarationBindingInstantiation(function, arguments);
+        context.fileName = function.getFileName();
+        context.debugContext = function.getDebugContext();
         return context;
     }
 
@@ -306,6 +329,7 @@ public class ExecutionContext {
                 }
             }
             JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock());
+            function.setDebugContext(identifier);
             env.setMutableBinding(this, identifier, function, code.isStrict());
         }
     }
@@ -348,18 +372,30 @@ public class ExecutionContext {
     }
 
     public Object createTypeError(String message) {
-        JSFunction func = (JSFunction) getGlobalObject().get(this, "TypeError");
-        return call(func, Types.UNDEFINED, message);
+        return createError("TypeError", message);
     }
 
     public Object createReferenceError(String message) {
-        JSFunction func = (JSFunction) getGlobalObject().get(this, "ReferenceError");
-        return call(func, Types.UNDEFINED, message);
+        return createError("ReferenceError", message);
     }
-    
+
     public Object createRangeError(String message) {
-        JSFunction func = (JSFunction) getGlobalObject().get(this, "RangeError");
-        return call(func, Types.UNDEFINED, message);
+        return createError("RangeError", message);
+    }
+
+    public Object createError(String type, String message) {
+        JSFunction func = (JSFunction) getGlobalObject().get(this, type);
+        JSObject err = (JSObject) call(func, Types.UNDEFINED, message);
+
+        return err;
+
+    }
+
+    public void collectStackElements(List<StackElement> elements) {
+        elements.add(new StackElement(this.fileName, this.lineNumber, this.debugContext));
+        if (parent != null) {
+            parent.collectStackElements(elements);
+        }
     }
 
     public static void throwSyntaxError() {

@@ -16,6 +16,8 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private String[] formalParameters;
     private LexicalEnvironment scope;
     private boolean strict;
+    
+    private String debugContext;
 
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         this(null, scope, strict, formalParameters);
@@ -122,5 +124,24 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         DynObject o = new DynObject();
         o.setPrototype(getPrototype());
         return o;
+    }
+    
+    public String getFileName() {
+        String name = null;
+        if ( this.body.getPosition() != null ) {
+            name = this.body.getPosition().getFileName();
+        }
+        if ( name == null ) {
+            name = "<eval>";
+        }
+        return name;
+    }
+    
+    public void setDebugContext(String debugContext) {
+        this.debugContext = debugContext;
+    }
+    
+    public String getDebugContext() {
+        return this.debugContext;
     }
 }

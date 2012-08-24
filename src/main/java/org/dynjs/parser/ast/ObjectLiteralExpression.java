@@ -47,25 +47,33 @@ public class ObjectLiteralExpression extends AbstractExpression {
                 // obj obj
                 invokespecial(p(DynObject.class), "<init>", sig(void.class));
                 // obj
-                
-                for ( NamedValue each : namedValues ) {
+
+                for (NamedValue each : namedValues) {
                     dup();
                     // obj obj
-                    aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                     // obj obj context
-                    ldc( each.getName() );
+                    ldc(each.getName());
                     // obj obj context name
-                    append( each.getExpr().getCodeBlock() );
+                    Expression expr = each.getExpr();
+                    append(expr.getCodeBlock());
                     // obj obj context name val
-                    append( jsGetValue() );
+                    append(jsGetValue());
                     // obj obj context name val
-                    invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
+                    if (expr instanceof FunctionExpression) {
+                        ldc( each.getName() );
+                        swap();
+                        invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, String.class, Object.class));
+                    } else {
+                        invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
+                    }
                     // obj obj context name desc
                     iconst_0();
                     // obj obj context name desc 0
                     i2b();
                     // obj obj context name desc false
-                    invokeinterface(p(JSObject.class), "defineOwnProperty", sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class ));
+                    invokeinterface(p(JSObject.class), "defineOwnProperty",
+                            sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class));
                     // obj bool
                     pop();
                     // obj

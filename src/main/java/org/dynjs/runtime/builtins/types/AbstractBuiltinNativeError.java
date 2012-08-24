@@ -1,11 +1,16 @@
 package org.dynjs.runtime.builtins.types;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.StackElement;
+import org.dynjs.runtime.StackGetter;
 import org.dynjs.runtime.Types;
 
 public class AbstractBuiltinNativeError extends AbstractNativeFunction {
@@ -39,12 +44,9 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, final Object... args) {
         JSObject o = null;
 
-        System.err.println( "# A: " + self );
         if (self == Types.UNDEFINED ) {
-           System.err.println( "# B" );
             o = createNewObject();
         } else {
-           System.err.println( "# C" );
             o = (JSObject) self;
         }
 
@@ -55,7 +57,6 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
                 }
             }, false);
         }
-        
         return o;
     }
 

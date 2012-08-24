@@ -52,5 +52,16 @@ public abstract class AbstractCode implements JSCode {
 
         return Collections.emptyList();
     }
+    
+    public String getFileName() {
+        String name = null;
+        if ( this.block.getPosition() != null ) {
+            name = this.block.getPosition().getFileName();
+        }
+        if ( name == null ) {
+            name = "<eval>";
+        }
+        return name;
+    }
 
 }
