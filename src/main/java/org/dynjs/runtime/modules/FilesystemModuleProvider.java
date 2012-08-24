@@ -1,9 +1,13 @@
 package org.dynjs.runtime.modules;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the
@@ -16,65 +20,56 @@ public class FilesystemModuleProvider implements ModuleProvider {
 
     @Override
     public DynObject load(ExecutionContext context, String moduleName) {
-        DynObject exports = null;
         String filename = normalizeFileName(moduleName);
         File file = findFile(context, filename);
         if (file == null) {
             file = findFile(context, moduleName + "/index.js");
         }
         if (file != null) {
-            // TODO: FIXME: Fix this
-            /*
-             * try {
-             * DynThreadContext evalContext = new DynThreadContext( context );
-             * // System.err.println("ADDING LOAD PATH: " + file.getParent());
-             * evalContext.addLoadPath( file.getParent() + "/" );
-             * context.getRuntime().eval( evalContext, "var module  = {};" );
-             * context.getRuntime().eval( evalContext, "var exports = {};" );
-             * context.getRuntime().eval( evalContext,
-             * "module.exports = exports;" );
-             * context.getRuntime().eval( evalContext,
-             * new FileInputStream( file ), filename );
-             * try {
-             * exports = (DynObject) evalContext.getScope().resolve( "exports"
-             * );
-             * } catch (ReferenceError error) {
-             * System.err.println( error.getLocalizedMessage() );
-             * }
-             * } catch (FileNotFoundException e) {
-             * throw new ModuleLoadException( moduleName, e );
-             * }
-             */
+            DynJS runtime = context.getGlobalObject().getRuntime();
+            ExecutionContext requireContext = ExecutionContext.createGlobalExecutionContext(runtime);
+
+            GlobalObject requireGlobal = requireContext.getGlobalObject();
+
+            DynObject module = new DynObject();
+            DynObject exports = new DynObject();
+            
+            requireGlobal.addLoadPath( file.getParent() );
+
+            module.put(requireContext, "exports", exports, true);
+            requireGlobal.put(requireContext, "module", module, true);
+            requireGlobal.put(requireContext, "exports", exports, true);
+
+            try {
+                runtime.execute(requireContext, file);
+            } catch (IOException e) {
+                return null;
+            }
+            
+            exports = (DynObject) requireGlobal.get( requireContext, "exports" );
+
+            return exports;
         }
-        return exports;
+        return null;
     }
 
     private File findFile(ExecutionContext context, String fileName) {
-        File file = null;
-        /*
-         * Iterator<String> iterator = context.getLoadPaths().iterator();
-         * while (iterator.hasNext()) {
-         * String path = iterator.next();
-         * file = new File( path + fileName );
-         * // System.err.println("Looking for file: " +
-         * // file.getAbsolutePath());
-         * if (file.exists()) {
-         * break;
-         * } else {
-         * file = null;
-         * }
-         * }
-         */
-        return file;
+        List<String> loadPaths = context.getGlobalObject().getLoadPaths();
+        for ( String loadPath : loadPaths ) {
+            File file = new File(loadPath, fileName );
+            if (file.exists()) {
+                return file;
+            }
+        }
+
+        return null;
     }
 
     private String normalizeFileName(String originalName) {
         if (originalName.endsWith(".js")) {
             return originalName;
         }
-        StringBuilder filename = new StringBuilder(originalName);
-        filename.append(".js");
-        return filename.toString();
+        return originalName + ".js";
     }
 
 }

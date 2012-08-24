@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
+import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
@@ -21,17 +23,18 @@ import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinURIError;
+import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
 
 public class GlobalObject extends DynObject {
 
     private DynJS runtime;
-    private JSCompiler compiler;
     private BlockManager blockManager;
+    private List<ModuleProvider> moduleProviders = new ArrayList<>();
+    private List<String> loadPaths = new ArrayList<>();
 
     public GlobalObject(DynJS runtime) {
         this.runtime = runtime;
-        this.compiler = new JSCompiler(runtime.getConfig());
         this.blockManager = new BlockManager();
         
         defineGlobalProperty("Object", new BuiltinObject(this));
@@ -54,6 +57,9 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("SyntaxError", new BuiltinSyntaxError(this));
         defineGlobalProperty("TypeError", new BuiltinTypeError(this));
         defineGlobalProperty("URIError", new BuiltinURIError(this));
+        
+        defineGlobalProperty("require", new Require(this));
+        this.moduleProviders.add( new FilesystemModuleProvider() );
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
@@ -79,8 +85,15 @@ public class GlobalObject extends DynObject {
     }
 
     public List<ModuleProvider> getModuleProviders() {
-        // TODO: wire me back up.
-        return Collections.emptyList();
+        return this.moduleProviders;
+    }
+    
+    public void addLoadPath(String path) {
+        this.loadPaths.add( path );
+    }
+    
+    public List<String> getLoadPaths() {
+        return this.loadPaths;
     }
 
     public DynJS getRuntime() {
@@ -92,7 +105,7 @@ public class GlobalObject extends DynObject {
     }
 
     public JSCompiler getCompiler() {
-        return this.compiler;
+        return this.runtime.getCompiler();
     }
 
     public BlockManager getBlockManager() {

@@ -40,26 +40,7 @@ public class BuiltinError extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, final Object... args) {
-        DynArray arraySelf = (DynArray) self;
-
-        if (self != Types.UNDEFINED) {
-            if (args.length == 1) {
-                final Number possiblyLen = Types.toNumber(args[0]);
-                if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
-                    arraySelf.setLength(1);
-                    arraySelf.setElement(0, args[0]);
-                } else {
-                    arraySelf.setLength(possiblyLen.intValue());
-                }
-            } else {
-                arraySelf.setLength(args.length);
-                for (int i = 0; i < args.length; ++i) {
-                    arraySelf.setElement(i, args[i]);
-                }
-            }
-            return null;
-        }
-        return null;
+        return self;
     }
 
     // 15.4.2.2

@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,6 @@ import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.BaseTree;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.Config;
@@ -26,6 +26,7 @@ import org.dynjs.parser.ast.BlockStatement;
 public class DynJS {
 
     private Config config;
+    private JSCompiler compiler;
     private ExecutionContext context;
 
     public DynJS() {
@@ -34,6 +35,7 @@ public class DynJS {
 
     public DynJS(Config config) {
         this.config = config;
+        this.compiler = new JSCompiler( config );
         this.context = ExecutionContext.createGlobalExecutionContext(this);
     }
 
@@ -41,15 +43,35 @@ public class DynJS {
         return this.config;
     }
 
+    public JSCompiler getCompiler() {
+        return this.compiler;
+    }
+
     public ExecutionContext getExecutionContext() {
         return this.context;
     }
 
+    public Object execute(File file) throws IOException {
+        return execute( this.context, file );
+    }
+    
+    public Object execute(ExecutionContext execContext, File file) throws IOException {
+        FileInputStream in = new FileInputStream(file);
+        try {
+            return execute(execContext, in, file.getPath());
+        } finally {
+            in.close();
+        }
+    }
+
     public Object execute(FileInputStream program, String filename) throws IOException {
-        JSCompiler compiler = this.context.getCompiler();
-        BlockStatement statements = parseSourceCode(this.context, program, filename);
-        JSProgram programObj = compiler.compileProgram(statements);
-        Completion completion = this.context.execute(programObj);
+        return execute( this.context, program, filename );
+    }
+    
+    public Object execute(ExecutionContext execContext, FileInputStream program, String filename) throws IOException {
+        BlockStatement statements = parseSourceCode(execContext, program, filename);
+        JSProgram programObj = this.compiler.compileProgram(statements);
+        Completion completion = execContext.execute(programObj);
         if (completion.type == Completion.Type.THROW) {
             Object thrown = completion.value;
             if (thrown instanceof DynJSException) {
@@ -73,7 +95,7 @@ public class DynJS {
             throw new DynJSException(thrown.toString());
         }
         Object v = completion.value;
-        if ( v instanceof Reference ) {
+        if (v instanceof Reference) {
             return ((Reference) v).getValue(context);
         }
         return v;
@@ -124,7 +146,7 @@ public class DynJS {
             throw new SyntaxError(errors);
         }
         CommonTree tree = (CommonTree) program.getTree();
-        //dump(tree);
+        // dump(tree);
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);

@@ -23,7 +23,7 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
                     "try {",
                     "  (function(){y.two();})();",
                     "} catch(e) {",
-                    "  //print(e.stack);",
+                    "  print(e.stack);",
                     "  throw e;",
                     "}");
             throw new AssertionError("Should have thrown");
