@@ -3,7 +3,7 @@ package org.dynjs.runtime;
 import org.junit.Test;
 import static org.fest.assertions.Assertions.*;
 
-public class WhileExpressionTest extends AbstractDynJSTestSupport {
+public class WhileStatementTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testBasicLoop() {
