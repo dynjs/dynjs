@@ -41,11 +41,10 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
         return new CodeBlock() {
             {
                 LabelNode end = new LabelNode();
-                LabelNode normalTarget = new LabelNode();
                 LabelNode breakTarget = new LabelNode();
                 LabelNode begin = new LabelNode();
 
-                getstatic(p(Completion.class), "NORMAL_COMPLETION", ci(Completion.class));
+                append( normalCompletion() );
                 // completion(block)
 
                 label(begin);

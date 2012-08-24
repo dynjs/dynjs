@@ -2,8 +2,6 @@ package org.dynjs.runtime;
 
 public class Completion {
 
-    public static final Completion NORMAL_COMPLETION = new Completion(Type.NORMAL, null, null);
-
     public enum Type {
         NORMAL,
         BREAK,
@@ -23,7 +21,7 @@ public class Completion {
     }
 
     public static Completion createNormal() {
-        return NORMAL_COMPLETION;
+        return new Completion(Type.NORMAL, null, null);
     }
 
     public static Completion createNormal(Object value) {
