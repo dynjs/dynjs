@@ -64,7 +64,7 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context ref function bool
                 iftrue( isCallable );
                 // context ref function 
-                append( jsThrowTypeError( "not a function" ) );
+                append( jsThrowTypeError( memberExpr + " is not a function" ) );
                 // THROWN!
                 
                 // ----------------------------------------

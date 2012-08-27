@@ -42,6 +42,6 @@ public class StringLiteralExpression extends AbstractExpression {
     }
     
     public String toString() {
-        return "'" + this.literal + "'";
+        return this.literal;
     }
 }

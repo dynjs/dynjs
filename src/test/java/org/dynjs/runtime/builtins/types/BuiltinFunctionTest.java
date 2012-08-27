@@ -52,7 +52,26 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
     @Test
     public void testToStringNative() {
         Object str = eval( "parseInt.toString()" );
-        System.err.println( str );
+    }
+    
+    @Test
+    public void testApply() {
+        Object result = eval( "var thing = { taco: 20 };",
+                "var f = function(x) {",
+                "  return this.taco + x;",
+                "};",
+                "f.apply(thing,[42]);");
+        assertThat( result ).isEqualTo( 62 );
+    }
+    
+    @Test
+    public void testCall() {
+        Object result = eval( "var thing = { taco: 20 };",
+                "var f = function(x) {",
+                "  return this.taco + x;",
+                "};",
+                "f.call(thing,42);");
+        assertThat( result ).isEqualTo( 62 );
     }
 
 
