@@ -20,11 +20,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynJS;
 import org.jboss.jreadline.console.Console;
 import org.jboss.jreadline.console.ConsoleOutput;
+import org.jboss.jreadline.console.settings.Settings;
 
 public class Repl {
 
@@ -35,14 +35,19 @@ public class Repl {
     public static final String PROMPT = "dynjs> ";
     private final DynJS runtime;
     private final OutputStream out;
+    private final InputStream in;
 
     public Repl(DynJS runtime, InputStream in, OutputStream out) {
         this.runtime = runtime;
-        this.out = out;
+        this.out     = out;
+        this.in      = in;
     }
 
     public void run() {
         try {
+            Settings consoleSettings = Settings.getInstance();
+            consoleSettings.setStdOut( this.out );
+            consoleSettings.setInputStream( this.in );
             Console console = new Console();
             console.pushToStdOut( WELCOME_MESSAGE );
             ConsoleOutput line = null;
@@ -52,12 +57,9 @@ public class Repl {
                     break;
                 } else {
                     try {
-//                        console.pushToStdOut( "Eval: " + statement );
                         Object object = runtime.evaluate(statement);
-                        console.pushToStdOut(object.toString());
+                        console.pushToStdOut(object.toString() + "\n");
                     } catch (DynJSException e) {
-                        console.pushToStdErr(e.getClass().getSimpleName() + "\n");
-                        console.pushToStdErr(e.getLocalizedMessage() + "\n");
                         console.pushToStdErr("Error parsing statement: " + statement + "\n");
                     } catch (IncompatibleClassChangeError e) {
                         console.pushToStdErr("Error parsing statement: " + statement + "\n");
