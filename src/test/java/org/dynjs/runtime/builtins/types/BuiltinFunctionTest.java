@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.JSObject;
 import org.junit.Test;
 
 public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
@@ -74,13 +75,32 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testBind() {
+    public void testBindFunction() {
         Object result = eval("var self = { z: 10 };",
                 "var f = function(x,y) { this.z + x + y };",
                 "var b = f.bind(self, 20);",
                 "b(42);");
         
         assertThat( result ).isEqualTo(72);
+    }
+    
+    @Test
+    public void testBindConstructorWithoutSelf() {
+        JSObject result = (JSObject) eval("var ctor = function(x){ return { taco:x } };",
+                "var bound_ctor = ctor.bind(undefined, 42);",
+                "new bound_ctor()");
+        
+        assertThat( result.get( getContext(), "taco") ).isEqualTo( 42 );
+    }
+    
+    @Test
+    public void testBindConstructorWithSelf() {
+        JSObject result = (JSObject) eval("var b = 99;",
+                "var ctor = function(x){ return { taco:x } };",
+                "var bound_ctor = ctor.bind(b, 42);",
+                "new bound_ctor()");
+        
+        assertThat( result.get( getContext(), "taco") ).isEqualTo( 42 );
     }
 
 }

@@ -8,8 +8,8 @@ public class BoundFunction extends AbstractNativeFunction {
     private Object boundThis;
     private Object[] boundArgs;
 
-    public BoundFunction(LexicalEnvironment scope, boolean strict, final JSFunction target, final Object boundThis, final Object[] boundArgs) {
-        super(scope, strict);
+    public BoundFunction(LexicalEnvironment scope, final JSFunction target, final Object boundThis, final Object[] boundArgs) {
+        super(scope, true);
         this.target = target;
         this.boundThis = boundThis;
         this.boundArgs = boundArgs;
@@ -24,9 +24,9 @@ public class BoundFunction extends AbstractNativeFunction {
         defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
                 set("Value", realLength);
-                set("Writable", false );
-                set("Configurable", false );
-                set("Enumerable", false );
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", false);
             }
         }, false);
     }
@@ -34,18 +34,22 @@ public class BoundFunction extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.5.1
-        Object[] allArgs = new Object[ boundArgs.length + args.length ];
-        
-        for ( int i = 0 ; i < boundArgs.length ;++i) {
+        Object[] allArgs = new Object[boundArgs.length + args.length];
+
+        for (int i = 0; i < boundArgs.length; ++i) {
             allArgs[i] = boundArgs[i];
         }
-        
-        System.err.println( "--" );
-        for ( int i = boundArgs.length, j=0 ; i < boundArgs.length + args.length; ++i, ++j ) {
+
+        System.err.println("--");
+        for (int i = boundArgs.length, j = 0; i < boundArgs.length + args.length; ++i, ++j) {
             allArgs[i] = args[j];
         }
-        
-        return context.call( this.target, this.boundThis, allArgs );
+
+        if (self != Types.UNDEFINED) {
+            return context.call(this.target, self, allArgs);
+        } else {
+            return context.call(this.target, this.boundThis, allArgs);
+        }
     }
 
 }
