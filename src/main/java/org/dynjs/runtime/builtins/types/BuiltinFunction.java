@@ -21,6 +21,7 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.function.Apply;
+import org.dynjs.runtime.builtins.types.function.Bind;
 import org.dynjs.runtime.builtins.types.function.Call;
 import org.dynjs.runtime.builtins.types.function.ToString;
 
@@ -54,6 +55,11 @@ public class BuiltinFunction extends AbstractNativeFunction {
         proto.defineOwnProperty(null, "call", new PropertyDescriptor() {
             {
                 set( "Value", new Call(globalObject) );
+            }
+        }, false);
+        proto.defineOwnProperty(null, "bind", new PropertyDescriptor() {
+            {
+                set( "Value", new Bind(globalObject) );
             }
         }, false);
         setPrototype(proto);
