@@ -27,6 +27,7 @@ import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
 public class FunctionCallExpression extends AbstractExpression {
@@ -47,6 +48,7 @@ public class FunctionCallExpression extends AbstractExpression {
                 LabelNode propertyRef = new LabelNode();
                 LabelNode noSelf = new LabelNode();
                 LabelNode doCall = new LabelNode();
+                LabelNode isCallable = new LabelNode();
                 // 11.2.3
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
@@ -55,6 +57,20 @@ public class FunctionCallExpression extends AbstractExpression {
                 dup();
                 // context ref ref
                 append(jsGetValue());
+                // context ref function
+                dup();
+                // context ref function function
+                invokestatic(p(Types.class), "isCallable", sig(boolean.class, Object.class));
+                // context ref function bool
+                iftrue( isCallable );
+                // context ref function 
+                append( jsThrowTypeError( "not a function" ) );
+                // THROWN!
+                
+                // ----------------------------------------
+                // Is Callable
+                
+                label( isCallable );
                 // context ref function
                 swap();
                 // context function ref

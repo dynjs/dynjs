@@ -366,19 +366,19 @@ public class ExecutionContext {
         return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry(statementNumber);
     }
 
-    public Object createTypeError(String message) {
+    public JSObject createTypeError(String message) {
         return createError("TypeError", message);
     }
 
-    public Object createReferenceError(String message) {
+    public JSObject createReferenceError(String message) {
         return createError("ReferenceError", message);
     }
 
-    public Object createRangeError(String message) {
+    public JSObject createRangeError(String message) {
         return createError("RangeError", message);
     }
 
-    public Object createError(String type, String message) {
+    public JSObject createError(String type, String message) {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
         JSObject err = (JSObject) call(func, Types.UNDEFINED, message);
 
