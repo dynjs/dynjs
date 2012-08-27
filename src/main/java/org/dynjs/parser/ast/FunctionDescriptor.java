@@ -35,7 +35,7 @@ public class FunctionDescriptor {
         this.formalParameters = formalParameters;
         this.block = block;
     }
-
+    
     public Tree getTree() {
         return this.tree;
     }

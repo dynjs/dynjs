@@ -378,6 +378,10 @@ public class ExecutionContext {
         return createError("RangeError", message);
     }
 
+    public JSObject createSyntaxError(String message) {
+        return createError("SyntaxError", message);
+    }
+
     public JSObject createError(String type, String message) {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
         JSObject err = (JSObject) call(func, Types.UNDEFINED, message);

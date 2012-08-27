@@ -1,7 +1,6 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.Config;
@@ -15,6 +14,7 @@ import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinError;
+import org.dynjs.runtime.builtins.types.BuiltinFunction;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRangeError;
@@ -52,6 +52,8 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("Number", new BuiltinNumber(this));
         defineGlobalProperty("Array", new BuiltinArray(this));
         defineGlobalProperty("String", new BuiltinString(this));
+        
+        defineGlobalProperty("Function", new BuiltinFunction(this));
         
         defineGlobalProperty("Error", new BuiltinError(this));
         defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));

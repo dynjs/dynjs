@@ -57,6 +57,15 @@ public class ThrowException extends DynJSException {
             }, false);
         }
     }
+    
+    public String getMessage() {
+        if ( value instanceof JSObject ) {
+            if ( ((JSObject)value).hasProperty(null, "message")) {
+                return (String) ((JSObject)value).get(null, "message");
+            }
+        }
+        return super.getMessage();
+    }
 
     public Object getValue() {
         return this.value;
