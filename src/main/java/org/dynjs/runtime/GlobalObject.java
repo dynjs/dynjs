@@ -43,8 +43,6 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("Object", new BuiltinObject(this));
 
         defineGlobalProperty("undefined", Types.UNDEFINED);
-        defineGlobalProperty("Infinity", Double.POSITIVE_INFINITY);
-        defineGlobalProperty("-Infinity", Double.NEGATIVE_INFINITY);
         defineGlobalProperty("parseFloat", new ParseFloat(this));
         defineGlobalProperty("parseInt", new ParseInt(this));
         defineGlobalProperty("eval", new Eval(this));
