@@ -103,7 +103,6 @@ public class BuiltinFunction extends AbstractNativeFunction {
     }
 
     public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws RecognitionException {
-        System.err.println("PARSE: " + code);
         final ANTLRStringStream stream = new ANTLRStringStream(code);
         ES3Lexer lexer = new ES3Lexer(stream);
 

@@ -40,7 +40,6 @@ public class BoundFunction extends AbstractNativeFunction {
             allArgs[i] = boundArgs[i];
         }
 
-        System.err.println("--");
         for (int i = boundArgs.length, j = 0; i < boundArgs.length + args.length; ++i, ++j) {
             allArgs[i] = args[j];
         }
@@ -51,5 +50,13 @@ public class BoundFunction extends AbstractNativeFunction {
             return context.call(this.target, this.boundThis, allArgs);
         }
     }
+
+    @Override
+    public boolean hasInstance(Object v) {
+        // 15.3.4.5.3
+        return target.hasInstance(v);
+    }
+    
+    
 
 }
