@@ -20,10 +20,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import jline.console.ConsoleReader;
 
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynJS;
+import org.jboss.jreadline.console.Console;
+import org.jboss.jreadline.console.ConsoleOutput;
 
 public class Repl {
 
@@ -33,34 +34,33 @@ public class Repl {
             + System.lineSeparator();
     public static final String PROMPT = "dynjs> ";
     private final DynJS runtime;
-    private final InputStream in;
     private final OutputStream out;
 
     public Repl(DynJS runtime, InputStream in, OutputStream out) {
         this.runtime = runtime;
-        this.in = in;
         this.out = out;
     }
 
     public void run() {
-        ConsoleReader console = null;
         try {
-            console = new ConsoleReader(in, out);
-            console.println(WELCOME_MESSAGE);
-            String statement = null;
-            while ((statement = console.readLine(PROMPT)) != null) {
-                if ("exit".equals(statement.trim())) {
-                    return;
+            Console console = new Console();
+            console.pushToStdOut( WELCOME_MESSAGE );
+            ConsoleOutput line = null;
+            while ((line = console.read(PROMPT)) != null) {
+                String statement = line.getBuffer();
+                if (statement.equalsIgnoreCase( "exit" )) {
+                    break;
                 } else {
                     try {
+//                        console.pushToStdOut( "Eval: " + statement );
                         Object object = runtime.evaluate(statement);
-                        System.out.println(object.toString());
+                        console.pushToStdOut(object.toString());
                     } catch (DynJSException e) {
-                        console.println(e.getClass().getSimpleName());
-                        console.println(e.getLocalizedMessage());
-                        console.println("Error parsing statement: " + statement.toString());
+                        console.pushToStdErr(e.getClass().getSimpleName() + "\n");
+                        console.pushToStdErr(e.getLocalizedMessage() + "\n");
+                        console.pushToStdErr("Error parsing statement: " + statement + "\n");
                     } catch (IncompatibleClassChangeError e) {
-                        console.println("Error parsing statement: " + statement.toString());
+                        console.pushToStdErr("Error parsing statement: " + statement + "\n");
                     } catch (Exception e) {
                         e.printStackTrace(new PrintWriter(out));
                     }
