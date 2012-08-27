@@ -43,6 +43,10 @@ public class BlockStatement extends AbstractStatement implements Statement {
         super( blockContent.isEmpty() ? null : blockContent.get(0).getPosition() );
         this.blockContent = blockContent;
     }
+    
+    public List<Statement> getBlockContent() {
+        return this.blockContent;
+    }
 
     public List<FunctionDeclaration> getFunctionDeclarations() {
         if (this.blockContent == null) {

@@ -27,6 +27,10 @@ public class StringLiteralExpression extends AbstractExpression {
         super(tree);
         this.literal = literal;
     }
+    
+    public String getLiteral() {
+        return this.literal;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

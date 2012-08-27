@@ -69,31 +69,14 @@ public class DynJS {
     }
     
     public Object execute(ExecutionContext execContext, FileInputStream program, String filename) throws IOException {
-        BlockStatement statements = parseSourceCode(execContext, program, filename);
-        JSProgram programObj = this.compiler.compileProgram(statements);
+        JSProgram programObj = compile( execContext, program, filename );
         Completion completion = execContext.execute(programObj);
-        if (completion.type == Completion.Type.THROW) {
-            Object thrown = completion.value;
-            if (thrown instanceof DynJSException) {
-                throw ((DynJSException) thrown);
-            }
-            throw new DynJSException(thrown.toString());
-        }
         return completion.value;
     }
-
+    
     public Object execute(String program, String filename, int lineNumber) {
-        JSCompiler compiler = this.context.getCompiler();
-        BlockStatement statements = parseSourceCode(this.context, program, filename);
-        JSProgram programObj = compiler.compileProgram(statements);
+        JSProgram programObj = compile( this.context, program, filename );
         Completion completion = this.context.execute(programObj);
-        if (completion.type == Completion.Type.THROW) {
-            Object thrown = completion.value;
-            if (thrown instanceof DynJSException) {
-                throw ((DynJSException) thrown);
-            }
-            throw new DynJSException(thrown.toString());
-        }
         Object v = completion.value;
         if (v instanceof Reference) {
             return ((Reference) v).getValue(context);
@@ -113,6 +96,32 @@ public class DynJS {
             fullCode.append("\n");
         }
         return execute(fullCode.toString(), null, 0);
+    }
+    
+    public JSProgram compile(String program) {
+        return compile( this.context, program, null );
+    }
+    
+    public JSProgram compile(String program, String filename) {
+        return compile( this.context, program, filename );
+    }
+    
+    public JSProgram compile(ExecutionContext execContext, String program, String filename) {
+        JSCompiler compiler = execContext.getCompiler();
+        BlockStatement statements = parseSourceCode(execContext, program, filename);
+        JSProgram programObj = compiler.compileProgram(statements);
+        return programObj;
+    }
+    
+    public JSProgram compile(FileInputStream program, String filename) throws IOException {
+        return compile( this.context, program, filename );
+    }
+    
+    public JSProgram compile(ExecutionContext execContext, FileInputStream program, String filename) throws IOException {
+        JSCompiler compiler = execContext.getCompiler();
+        BlockStatement statements = parseSourceCode(execContext, program, filename);
+        JSProgram programObj = compiler.compileProgram(statements);
+        return programObj;
     }
 
     private BlockStatement parseSourceCode(ExecutionContext context, String code, String filename) {

@@ -7,7 +7,6 @@ public class Completion {
         BREAK,
         CONTINUE,
         RETURN,
-        THROW
     }
 
     public Type type;
@@ -42,10 +41,6 @@ public class Completion {
 
     public static Completion createReturn(Object value) {
         return new Completion(Type.RETURN, value, null);
-    }
-
-    public static Completion createThrow(Object value) {
-        return new Completion(Type.THROW, value, null);
     }
 
     public String toString() {
