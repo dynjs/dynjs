@@ -16,7 +16,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private String[] formalParameters;
     private LexicalEnvironment scope;
     private boolean strict;
-    
+
     private String debugContext;
 
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
@@ -38,6 +38,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             }
         };
         defineOwnProperty(null, "length", desc, false);
+        Object proto = scope.getGlobalObject().get(null, "Function");
+        if (proto != Types.UNDEFINED) {
+            setPrototype((JSObject) proto);
+        }
     }
 
     public LexicalEnvironment getScope() {
@@ -64,7 +68,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public Object get(ExecutionContext context, String name) {
         // 15.3.5.4
         if (name.equals("caller") && this.strict) {
-            throw new ThrowException( context.createTypeError("may not reference 'caller'"));
+            throw new ThrowException(context.createTypeError("may not reference 'caller'"));
         }
         return super.get(context, name);
     }
@@ -100,7 +104,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         }
 
         JSObject proto = getPrototype();
-        
+
         if (proto == null) {
             return false;
         }
@@ -115,30 +119,48 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             }
         }
     }
-    
+
     @Override
     public JSObject createNewObject() {
         DynObject o = new DynObject();
         o.setPrototype(getPrototype());
         return o;
     }
-    
+
     public String getFileName() {
         String name = null;
-        if ( this.body.getPosition() != null ) {
+        if (this.body.getPosition() != null) {
             name = this.body.getPosition().getFileName();
         }
-        if ( name == null ) {
+        if (name == null) {
             name = "<eval>";
         }
         return name;
     }
-    
+
     public void setDebugContext(String debugContext) {
         this.debugContext = debugContext;
     }
-    
+
     public String getDebugContext() {
         return this.debugContext;
+    }
+
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("function(");
+        String[] params = getFormalParameters();
+        for (int i = 0; i < params.length; ++i) {
+            if (i > 0) {
+                buffer.append(", ");
+            }
+            buffer.append(params[i]);
+        }
+        buffer.append("){\n");
+        buffer.append(body.toIndentedString("  "));
+        buffer.append("}");
+
+        return buffer.toString();
     }
 }

@@ -39,4 +39,21 @@ public class FunctionExpression extends AbstractExpression {
         return CodeBlockUtils.compiledFunction(blockManager, descriptor.getFormalParameters(), descriptor.getBlock());
     }
 
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
+        String[] params = this.descriptor.getFormalParameters();
+        for (int i = 0; i < params.length; ++i) {
+            if (i > 0) {
+                buf.append(", ");
+            }
+            buf.append(params[i]);
+        }
+        buf.append(") {");
+        buf.append(this.descriptor.getBlock().toIndentedString("  "));
+        buf.append("}");
+        return buf.toString();
+
+    }
+
 }

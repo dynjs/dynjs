@@ -59,4 +59,8 @@ public class CompoundAssignmentExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return rootExpr.getLhs() + " " + rootExpr.getOp() + "=" + rootExpr.getRhs();
+    }
 }

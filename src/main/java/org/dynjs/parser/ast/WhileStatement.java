@@ -44,7 +44,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 LabelNode breakTarget = new LabelNode();
                 LabelNode begin = new LabelNode();
 
-                append( normalCompletion() );
+                append(normalCompletion());
                 // completion(block)
 
                 label(begin);
@@ -85,5 +85,15 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 nop();
             }
         };
+    }
+
+    public String toIndentedString(String indent) {
+        StringBuffer buf = new StringBuffer();
+
+        buf.append(indent).append("while (").append(this.vbool.toString()).append(") {\n");
+        buf.append( this.vloop.toIndentedString( indent + "  " ) );
+        buf.append(indent).append("}");
+
+        return buf.toString();
     }
 }

@@ -41,4 +41,8 @@ public class BooleanLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "" + this.value;
+    }
 }

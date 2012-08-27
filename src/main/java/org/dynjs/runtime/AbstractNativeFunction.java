@@ -65,5 +65,23 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public String getFileName() {
         return getClass().getName().replace(".", "/" ) + ".java";
     }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("function(");
+        String[] params = getFormalParameters();
+        for (int i = 0; i < params.length; ++i) {
+            if (i > 0) {
+                buffer.append(", ");
+            }
+            buffer.append( params[i] );
+        }
+        buffer.append("){\n");
+        buffer.append( "  <native code>\n" );
+        buffer.append("}");
+
+        return buffer.toString();
+    }
 
 }

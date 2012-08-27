@@ -39,6 +39,18 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
     }
 
     public abstract CodeBlock getFirstChunkCodeBlock();
+    
+    protected Expression getTest() {
+        return this.test;
+    }
+    
+    protected Expression getIncrement() {
+        return this.increment;
+    }
+    
+    protected Statement getBlock() {
+        return this.block;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

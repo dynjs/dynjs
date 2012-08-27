@@ -39,6 +39,7 @@ public class GlobalObject extends DynObject {
         this.runtime = runtime;
         this.blockManager = new BlockManager();
         
+        defineGlobalProperty("Function", new BuiltinFunction(this));
         defineGlobalProperty("Object", new BuiltinObject(this));
 
         defineGlobalProperty("undefined", Types.UNDEFINED);
@@ -52,8 +53,6 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("Number", new BuiltinNumber(this));
         defineGlobalProperty("Array", new BuiltinArray(this));
         defineGlobalProperty("String", new BuiltinString(this));
-        
-        defineGlobalProperty("Function", new BuiltinFunction(this));
         
         defineGlobalProperty("Error", new BuiltinError(this));
         defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));

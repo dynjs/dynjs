@@ -31,4 +31,8 @@ public class UndefinedValueExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock().getstatic(p(Types.class), "UNDEFINED", ci(Object.class));
     }
+    
+    public String toString() {
+        return "undefined";
+    }
 }

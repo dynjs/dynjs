@@ -42,4 +42,14 @@ public class ForExprStatement extends AbstractForStatement {
             }
         };
     }
+
+    public String toIndentedString(String indent) {
+        StringBuffer buf = new StringBuffer();
+        buf.append(indent).append("for (").append(this.initialize == null ? "" : this.initialize.toString()).append(" ; ");
+        buf.append((getTest() == null ? "" : getTest().toString())).append(" ; ");
+        buf.append((getIncrement() == null ? "" : getIncrement().toString())).append(") {\n");
+        buf.append(getBlock().toIndentedString(indent + "  "));
+        buf.append(indent).append("}");
+        return buf.toString();
+    }
 }

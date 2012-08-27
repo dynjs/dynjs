@@ -35,15 +35,15 @@ public class BlockStatement extends AbstractStatement implements Statement {
     private final List<Statement> blockContent;
 
     public BlockStatement(Tree tree, final List<Statement> blockContent) {
-        super( tree );
+        super(tree);
         this.blockContent = blockContent;
     }
-    
+
     public BlockStatement(final List<Statement> blockContent) {
-        super( blockContent.isEmpty() ? null : blockContent.get(0).getPosition() );
+        super(blockContent.isEmpty() ? null : blockContent.get(0).getPosition());
         this.blockContent = blockContent;
     }
-    
+
     public List<Statement> getBlockContent() {
         return this.blockContent;
     }
@@ -57,7 +57,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
         for (Statement each : this.blockContent) {
             if (each instanceof FunctionDeclaration) {
-                decls.add( (FunctionDeclaration) each );
+                decls.add((FunctionDeclaration) each);
             }
         }
 
@@ -69,7 +69,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
         for (Statement each : this.blockContent) {
             if (each instanceof VariableDeclarationStatement) {
                 VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
-                decls.addAll( statement.getVariableDeclarations() );
+                decls.addAll(statement.getVariableDeclarations());
             }
         }
         return decls;
@@ -85,7 +85,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                 append(normalCompletion());
                 // completion
-                astore( JSCompiler.Arities.COMPLETION );
+                astore(JSCompiler.Arities.COMPLETION);
                 // <empty>
 
                 for (Statement statement : blockContent) {
@@ -98,22 +98,22 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                     if (statement.getPosition() != null) {
                         line(statement.getPosition().getLine());
-                        aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                         // context
-                        ldc( statement.getPosition().getLine() );
+                        ldc(statement.getPosition().getLine());
                         // context line
-                        invokevirtual( p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
+                        invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
                         // <empty>
                     }
                     append(statement.getCodeBlock());
                     // completion(cur)
                     dup();
                     // completion(cur) completion(cur)
-                    append(handleCompletion(nonAbrupt, abrupt, abrupt, abrupt ) );
-                    
+                    append(handleCompletion(nonAbrupt, abrupt, abrupt, abrupt));
+
                     // ----------------------------------------
                     // Non-abrupt
-                    
+
                     label(nonAbrupt);
                     // completion(cur);
                     dup();
@@ -122,23 +122,23 @@ public class BlockStatement extends AbstractStatement implements Statement {
                     // completion(cur) value
                     ifnull(bringForwardValue);
                     // completion(cur)
-                    astore( JSCompiler.Arities.COMPLETION );
+                    astore(JSCompiler.Arities.COMPLETION);
                     // <empty>
                     go_to(nextStatement);
-                    
+
                     // ----------------------------------------
 
                     label(bringForwardValue);
                     // completion(cur)
                     dup();
                     // completion(cur) completion(cur)
-                    aload( JSCompiler.Arities.COMPLETION );
+                    aload(JSCompiler.Arities.COMPLETION);
                     // completion(cur) completion(cur) completion(prev)
                     append(jsCompletionValue());
                     // completion(cur) completion(cur) val(prev)
                     putfield(p(Completion.class), "value", ci(Object.class));
                     // completion(cur)
-                    astore( JSCompiler.Arities.COMPLETION );
+                    astore(JSCompiler.Arities.COMPLETION);
                     // <empty>
                     label(nextStatement);
                 }
@@ -150,14 +150,14 @@ public class BlockStatement extends AbstractStatement implements Statement {
 
                 label(abrupt);
                 // completion(cur)
-                astore( JSCompiler.Arities.COMPLETION );
+                astore(JSCompiler.Arities.COMPLETION);
                 // <empty>
 
                 // ----------------------------------------
                 // END
                 label(end);
                 // <empty>
-                aload( JSCompiler.Arities.COMPLETION );
+                aload(JSCompiler.Arities.COMPLETION);
             }
         };
     }
@@ -168,6 +168,17 @@ public class BlockStatement extends AbstractStatement implements Statement {
         buffer.append(super.dump(indent));
         for (Statement each : this.blockContent) {
             buffer.append(each.dump(indent + "  "));
+        }
+
+        return buffer.toString();
+    }
+
+    public String toIndentedString(String indent) {
+        StringBuffer buffer = new StringBuffer();
+
+        for (Statement each : this.blockContent) {
+            buffer.append(each.toIndentedString(indent));
+            buffer.append("\n");
         }
 
         return buffer.toString();

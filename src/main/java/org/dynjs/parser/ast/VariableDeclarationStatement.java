@@ -57,4 +57,18 @@ public class VariableDeclarationStatement extends AbstractStatement {
         }
         return buf.toString();
     }
+    
+    public String toIndentedString(String indent) {
+        StringBuffer buf = new StringBuffer();
+        buf.append( indent ).append( "var " );
+        boolean first = true;
+        for ( VariableDeclaration each : declExprs ) {
+            if ( ! first ) {
+                buf.append( ", " );
+            }
+            buf.append( each.toString() );
+            first = false;
+        }
+        return buf.toString();
+    }
 }

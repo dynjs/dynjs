@@ -58,5 +58,4 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
             }
         };
     }
-
 }

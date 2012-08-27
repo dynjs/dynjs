@@ -55,4 +55,8 @@ public class AssignmentExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return lhs + " = " + rhs;
+    }
 }

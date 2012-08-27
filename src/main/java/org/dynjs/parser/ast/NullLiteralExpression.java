@@ -35,4 +35,8 @@ public class NullLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "null";
+    }
 }

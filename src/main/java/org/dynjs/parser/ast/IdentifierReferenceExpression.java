@@ -57,4 +57,8 @@ public class IdentifierReferenceExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return this.identifier;
+    }
 }

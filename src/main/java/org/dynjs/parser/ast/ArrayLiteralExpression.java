@@ -74,5 +74,19 @@ public class ArrayLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append( "[" );
+        boolean first = true;
+        for ( Expression each : this.exprs ) {
+            if ( ! first ) {
+                buf.append( ", " );
+            }
+            buf.append( each.toString() );
+        }
+        buf.append( "]" );
+        return buf.toString();
+    }
 
 }

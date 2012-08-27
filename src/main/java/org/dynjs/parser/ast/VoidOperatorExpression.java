@@ -40,5 +40,9 @@ public class VoidOperatorExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "void " + expr;
+    }
 
 }

@@ -71,4 +71,8 @@ public class NumberLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return this.text;
+    }
 }

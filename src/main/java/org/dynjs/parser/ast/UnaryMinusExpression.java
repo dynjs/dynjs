@@ -71,4 +71,8 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "-" + getExpr();
+    }
 }

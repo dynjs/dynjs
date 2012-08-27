@@ -39,6 +39,14 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
         this.rhs = rhs;
         this.block = block;
     }
+    
+    protected Expression getRhs() {
+        return this.rhs;
+    }
+    
+    protected Statement getBlock() {
+        return this.block;
+    }
 
     public abstract CodeBlock getFirstChunkCodeBlock();
 

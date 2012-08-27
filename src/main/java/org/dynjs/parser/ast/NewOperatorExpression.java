@@ -68,4 +68,20 @@ public class NewOperatorExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append( this.newExpr ).append( "(" );
+        boolean first = true;
+        for ( Expression each : this.argExprs ) {
+            if ( ! first ) {
+                buf.append( ", " );
+            }
+            buf.append( each.toString() );
+            first = false;
+            
+        }
+        buf.append( ")" );
+        return buf.toString();
+    }
 }

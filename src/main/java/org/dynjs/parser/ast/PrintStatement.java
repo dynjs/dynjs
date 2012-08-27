@@ -51,4 +51,8 @@ public class PrintStatement extends AbstractStatement implements Statement {
             }
         };
     }
+    
+    public String toIndentedString(String indent) {
+        return indent + "print(" + this.expr.toString() + ")";
+    }
 }

@@ -57,5 +57,9 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "! " + this.expr;
+    }
 
 }

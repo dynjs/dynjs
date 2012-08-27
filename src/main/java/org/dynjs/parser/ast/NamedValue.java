@@ -17,5 +17,9 @@ public class NamedValue {
     public Expression getExpr() {
         return this.expr;
     }
+    
+    public String toString() {
+        return this.name + ":" + this.expr;
+    }
 
 }

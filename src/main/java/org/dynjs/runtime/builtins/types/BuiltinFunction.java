@@ -13,22 +13,37 @@ import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
-import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.function.ToString;
 
 public class BuiltinFunction extends AbstractNativeFunction {
 
-    public BuiltinFunction(GlobalObject globalObject) {
-        super(globalObject);
-        DynObject proto = new DynObject();
+    public BuiltinFunction(final GlobalObject globalObject) {
+        super(globalObject, "args");
+
+        JSFunction proto = new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return Types.UNDEFINED;
+            }
+        };
+
+        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
+            {
+                set( "Value", BuiltinFunction.this );
+            }
+        }, false);
+        proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
+            {
+                set( "Value", new ToString(globalObject) );
+            }
+        }, false);
         setPrototype(proto);
     }
 
@@ -61,6 +76,7 @@ public class BuiltinFunction extends AbstractNativeFunction {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
             JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameters(), descriptor.getBlock());
+            function.setPrototype(getPrototype());
             return function;
         } catch (RecognitionException e) {
             throw new ThrowException(context.createSyntaxError(e.getMessage()));
@@ -69,7 +85,7 @@ public class BuiltinFunction extends AbstractNativeFunction {
     }
 
     public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws RecognitionException {
-        System.err.println( "PARSE: " + code );
+        System.err.println("PARSE: " + code);
         final ANTLRStringStream stream = new ANTLRStringStream(code);
         ES3Lexer lexer = new ES3Lexer(stream);
 
@@ -79,7 +95,7 @@ public class BuiltinFunction extends AbstractNativeFunction {
         ES3Parser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();
         if (!errors.isEmpty()) {
-            System.err.println( errors );
+            System.err.println(errors);
             throw new ThrowException(context.createSyntaxError(errors.get(0)));
         }
 

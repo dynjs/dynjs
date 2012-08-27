@@ -22,4 +22,8 @@ public class BreakStatement extends AbstractStatement implements Statement {
             }
         };
     }
+    
+    public String toIndentedString(String indent) {
+        return indent + "break" + ( target == null ? ";" : target + ";" );
+    }
 }

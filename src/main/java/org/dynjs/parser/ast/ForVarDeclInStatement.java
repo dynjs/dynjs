@@ -34,5 +34,13 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
     public CodeBlock getFirstChunkCodeBlock() {
         return decl.getCodeBlock();
     }
+    
+    public String toIndentedString(String indent) {
+        StringBuffer buf = new StringBuffer();
+        buf.append( indent ).append( "for (").append( decl.toIndentedString("") ).append( " in " ).append( getRhs().toString() ).append( ") {\n");
+        buf.append( getBlock().toIndentedString( indent + "  " ) );
+        buf.append( indent ).append( "}" );
+        return buf.toString();
+    }
 
 }

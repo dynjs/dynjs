@@ -46,5 +46,9 @@ public class TypeOfOpExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "typeof " + this.expr;
+    }
 
 }

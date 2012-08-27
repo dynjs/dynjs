@@ -86,4 +86,17 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
             }
         };
     }
+    
+    public String toIndentedString(String indent) {
+        StringBuffer buf = new StringBuffer();
+        
+        buf.append( indent ).append( "if (" ).append( this.vbool.toString() ).append( ") {\n" );
+        buf.append( this.vthen.toIndentedString( indent + "  " ) );
+        if ( this.velse != null ) {
+            buf.append( indent ).append( "} else {\n" ).append( this.velse.toIndentedString(indent + "  " ) );
+        }
+        buf.append( indent ).append( "}" );
+        
+        return buf.toString();
+    }
 }

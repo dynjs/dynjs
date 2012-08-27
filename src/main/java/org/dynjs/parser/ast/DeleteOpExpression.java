@@ -162,5 +162,9 @@ public class DeleteOpExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "delete " + this.expr;
+    }
 
 }

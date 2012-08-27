@@ -29,4 +29,8 @@ public class EmptyStatement extends AbstractStatement {
     public CodeBlock getCodeBlock() {
         return normalCompletion();
     }
+    
+    public String toIndentedString(String indent) {
+        return "";
+    }
 }

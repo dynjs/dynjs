@@ -142,13 +142,13 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                         // ----------------------------------------
                         // IN CASE CATCH ITSELF THROWS
                         // ----------------------------------------
-                        
+
                         LabelNode normalFinallyAfterThrow = new LabelNode();
 
-                        trycatch(catchStart, catchEnd, catchCatchHandler, null );
+                        trycatch(catchStart, catchEnd, catchCatchHandler, null);
                         label(catchCatchHandler);
                         // ex
-                        
+
                         append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", finallyBlock));
                         // ex completion(finally)
                         dup();
@@ -163,8 +163,8 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
                         // completion(finally) ex
                         pop();
                         // completion(finally)
-                        go_to( end );
-                        
+                        go_to(end);
+
                         label(normalFinallyAfterThrow);
                         // ex completion(finally)
                         pop();
@@ -228,6 +228,22 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
         }
 
         return CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", finallyBlock);
+    }
+
+    public String toIndentedString(String indent) {
+        StringBuffer buf = new StringBuffer();
+        buf.append(indent).append("try {\n");
+        buf.append(this.tryBlock.toIndentedString(indent + "  "));
+        buf.append(indent).append("}\n");
+        if (this.catchClause != null) {
+            buf.append(this.catchClause.toIndentedString(indent + "  "));
+        }
+        if (this.finallyBlock != null) {
+            buf.append(indent).append("finally {\n");
+            buf.append(this.finallyBlock.toIndentedString(indent + "  "));
+            buf.append(indent).append("}");
+        }
+        return buf.toString();
     }
 
 }

@@ -26,5 +26,9 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     public String getOp() {
         return this.op;
     }
+    
+    public String toString() {
+        return this.lhs + " " + this.op + " " + this.rhs;
+    }
 
 }

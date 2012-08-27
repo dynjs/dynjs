@@ -56,5 +56,9 @@ public class ThrowStatement extends AbstractStatement {
             }
         };
     }
+    
+    public String toIndentedString(String indent) {
+        return indent + "throw " + this.expression.toString();
+    }
 
 }

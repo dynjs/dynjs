@@ -82,4 +82,22 @@ public class ObjectLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append( "{ " );
+        boolean first = true;
+        
+        for ( NamedValue each : this.namedValues ) {
+            if ( ! first ) {
+                buf.append( ", " );
+            }
+            first = false;
+            buf.append( each.toString() );
+            
+        }
+        buf.append( " }" );
+        
+        return buf.toString();
+    }
 }
