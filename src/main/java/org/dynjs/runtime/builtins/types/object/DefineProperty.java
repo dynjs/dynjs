@@ -11,7 +11,7 @@ import org.dynjs.runtime.Types;
 public class DefineProperty extends AbstractNativeFunction {
 
     public DefineProperty(GlobalObject globalObject) {
-        super(globalObject, "o");
+        super(globalObject, "o", "name", "attrs");
     }
 
     @Override
