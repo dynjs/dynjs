@@ -460,12 +460,19 @@ arrayLiteral returns [Expression value]
 	;
 
 objectLiteral returns [Expression value]
-@init { List<NamedValue> namedValues = new ArrayList<NamedValue>(); }
+@init { List<PropertyAssignment> propAssignments = new ArrayList<PropertyAssignment>(); }
 	: ^( OBJECT
-	    ( ^( NAMEDVALUE propertyName expr
-	       { final NamedValue st = executor.namedValue($NAMEDVALUE, $propertyName.value, $expr.value); namedValues.add(st); }
-	       ) )* )
-	{ $value = executor.objectValue($OBJECT, namedValues);  }
+	    ( ^( NAMEDVALUE pn1=propertyName expr
+	       { final NamedValue st = executor.namedValue($NAMEDVALUE, $pn1.value, $expr.value); propAssignments.add(st); }
+	       ) 
+	       |
+	      ^( PROPERTYGET pn2=propertyName b1=block )
+	       { final PropertyGet pg = executor.propertyGet($PROPERTYGET, $pn2.value, $b1.value ); propAssignments.add(pg); }
+	      |
+	      ^( PROPERTYSET pn3=propertyName Identifier b2=block )
+	       { final PropertySet ps = executor.propertySet($PROPERTYSET, $pn3.value, $Identifier.text, $b2.value ); propAssignments.add(ps); }
+	    )* )
+	{ $value = executor.objectValue($OBJECT, propAssignments);  }
 	;
 
 propertyName returns [String value]

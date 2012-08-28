@@ -206,6 +206,8 @@ tokens
 	ITEM ;
 	LABELLED ;
 	NAMEDVALUE ;
+	PROPERTYSET ;
+	PROPERTYGET ;
 	NEG ;
 	OBJECT ;
 	PDEC ;
@@ -931,9 +933,16 @@ arrayItem
 	;
 
 objectLiteral
-	: lb=LBRACE ( nameValuePair ( COMMA nameValuePair )* )? RBRACE
-	-> ^( OBJECT[$lb, "OBJECT"] nameValuePair* )
+	: lb=LBRACE ( propertyAssignment ( COMMA propertyAssignment )* COMMA? )? RBRACE
+	-> ^( OBJECT[$lb, "OBJECT"] propertyAssignment* )
 	;
+	
+propertyAssignment
+    : 
+      { input.LT(1).getText().equals( "get" ) }?=>propertyGet
+    | { input.LT(1).getText().equals( "set" ) }?=>propertySet
+    | nameValuePair 
+    ;
 	
 nameValuePair
 	: propertyName COLON assignmentExpression
@@ -945,6 +954,18 @@ propertyName
 	| StringLiteral
 	| numericLiteral
 	;
+	
+propertyGet
+	: get=Identifier propertyName LPAREN RPAREN functionBody
+	-> ^(PROPERTYGET[$get] propertyName functionBody)
+	;
+  
+propertySet
+    : set=Identifier propertyName LPAREN id=Identifier RPAREN functionBody
+	-> ^(PROPERTYSET[$set] propertyName $id functionBody)
+    ;
+    
+    
 
 // $>
 

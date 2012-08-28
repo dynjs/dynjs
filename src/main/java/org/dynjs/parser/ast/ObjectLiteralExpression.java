@@ -30,11 +30,11 @@ import org.dynjs.runtime.PropertyDescriptor;
 
 public class ObjectLiteralExpression extends AbstractExpression {
 
-    private final List<NamedValue> namedValues;
+    private final List<PropertyAssignment> propertyAssignments;
 
-    public ObjectLiteralExpression(final Tree tree, final List<NamedValue> namedValues) {
+    public ObjectLiteralExpression(final Tree tree, final List<PropertyAssignment> propertyAssignments) {
         super(tree);
-        this.namedValues = namedValues;
+        this.propertyAssignments = propertyAssignments;
     }
 
     @Override
@@ -48,35 +48,10 @@ public class ObjectLiteralExpression extends AbstractExpression {
                 invokespecial(p(DynObject.class), "<init>", sig(void.class));
                 // obj
 
-                for (NamedValue each : namedValues) {
+                for (PropertyAssignment each : propertyAssignments) {
                     dup();
                     // obj obj
-                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                    // obj obj context
-                    ldc(each.getName());
-                    // obj obj context name
-                    Expression expr = each.getExpr();
-                    append(expr.getCodeBlock());
-                    // obj obj context name val
-                    append(jsGetValue());
-                    // obj obj context name val
-                    if (expr instanceof FunctionExpression) {
-                        ldc( each.getName() );
-                        swap();
-                        invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, String.class, Object.class));
-                    } else {
-                        invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
-                    }
-                    // obj obj context name desc
-                    iconst_0();
-                    // obj obj context name desc 0
-                    i2b();
-                    // obj obj context name desc false
-                    invokeinterface(p(JSObject.class), "defineOwnProperty",
-                            sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class));
-                    // obj bool
-                    pop();
-                    // obj
+                    append( each.getCodeBlock() );
                 }
                 // obj
             }
@@ -88,7 +63,7 @@ public class ObjectLiteralExpression extends AbstractExpression {
         buf.append( "{ " );
         boolean first = true;
         
-        for ( NamedValue each : this.namedValues ) {
+        for ( PropertyAssignment each : this.propertyAssignments ) {
             if ( ! first ) {
                 buf.append( ", " );
             }

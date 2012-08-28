@@ -386,7 +386,7 @@ public class ExecutionContext {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
         JSObject err = null;
         if (message == null) {
-            err = (JSObject) call(func, Types.UNDEFINED );
+            err = (JSObject) call(func, Types.UNDEFINED);
         } else {
             err = (JSObject) call(func, Types.UNDEFINED, message);
         }

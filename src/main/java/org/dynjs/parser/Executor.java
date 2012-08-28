@@ -58,6 +58,9 @@ import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
 import org.dynjs.parser.ast.PrintStatement;
+import org.dynjs.parser.ast.PropertyAssignment;
+import org.dynjs.parser.ast.PropertyGet;
+import org.dynjs.parser.ast.PropertySet;
 import org.dynjs.parser.ast.RelationalExpression;
 import org.dynjs.parser.ast.ReturnStatement;
 import org.dynjs.parser.ast.StrictEqualityOperatorExpression;
@@ -437,8 +440,8 @@ public class Executor {
         throw new ParserException("not implemented yet", tree);
     }
 
-    public Expression objectValue(final Tree tree, List<NamedValue> namedValues) {
-        return new ObjectLiteralExpression(tree, namedValues);
+    public Expression objectValue(final Tree tree, List<PropertyAssignment> propAssignments) {
+        return new ObjectLiteralExpression(tree, propAssignments);
     }
 
     public Statement propertyNameNumeric(Statement numericLiteral) {
@@ -447,6 +450,14 @@ public class Executor {
 
     public NamedValue namedValue(final Tree tree, final String name, final Expression expr) {
         return new NamedValue(name, expr);
+    }
+    
+    public PropertySet propertySet(final Tree tree, final String name, final String identifier, Statement block) {
+        return new PropertySet( getBlockManager(), name, identifier, block );
+    }
+    
+    public PropertyGet propertyGet(final Tree tree, final String name, Statement block) {
+        return new PropertyGet( getBlockManager(), name, block );
     }
 
     public Expression arrayLiteral(final Tree tree, final List<Expression> exprs) {

@@ -60,6 +60,37 @@ public class PropertyDescriptor {
         return d;
     }
 
+    public static PropertyDescriptor newPropertyDescriptorForObjectInitializerGet(Object orig, String name, JSFunction value) {
+        value.setDebugContext("Object.get " + name);
+        PropertyDescriptor d = null;
+        
+        if (orig == Types.UNDEFINED) {
+            d = new PropertyDescriptor();
+        } else {
+            d = (PropertyDescriptor) orig;
+        }
+        d.set("Get", value);
+        d.set("Configurable", true);
+        d.set("Enumerable", true);
+        return d;
+    }
+    
+    public static PropertyDescriptor newPropertyDescriptorForObjectInitializerSet(Object orig, String name, JSFunction value) {
+        value.setDebugContext("Object.set " + name);
+        PropertyDescriptor d = null;
+        
+        if (orig == Types.UNDEFINED) {
+            d = new PropertyDescriptor();
+        } else {
+            d = (PropertyDescriptor) orig;
+        }
+        d.set("Set", value);
+        d.set("Configurable", true);
+        d.set("Enumerable", true);
+        return d;
+    }
+
+
     public PropertyDescriptor() {
     }
 
