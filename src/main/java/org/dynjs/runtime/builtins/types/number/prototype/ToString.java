@@ -1,4 +1,4 @@
-package org.dynjs.runtime.builtins.types.number;
+package org.dynjs.runtime.builtins.types.number.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;

@@ -10,10 +10,10 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.NaN;
 import org.dynjs.runtime.builtins.types.number.NegativeInfinity;
 import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
-import org.dynjs.runtime.builtins.types.number.ToFixed;
-import org.dynjs.runtime.builtins.types.number.ToLocaleString;
-import org.dynjs.runtime.builtins.types.number.ToString;
-import org.dynjs.runtime.builtins.types.number.ValueOf;
+import org.dynjs.runtime.builtins.types.number.prototype.ToFixed;
+import org.dynjs.runtime.builtins.types.number.prototype.ToLocaleString;
+import org.dynjs.runtime.builtins.types.number.prototype.ToString;
+import org.dynjs.runtime.builtins.types.number.prototype.ValueOf;
 
 public class BuiltinNumber extends AbstractNativeFunction {
 
