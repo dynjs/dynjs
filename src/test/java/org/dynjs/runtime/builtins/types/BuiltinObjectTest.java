@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.junit.Test;
@@ -93,6 +94,15 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testGetOwnPropertyDescriptor_Accessor() {
+        JSObject result = (JSObject) eval( "var x = { set foo(x){ this.internal_foo = x}, get foo(){ this.internal_foo } }",
+                "Object.getOwnPropertyDescriptor(x, 'foo');");
+        
+        assertThat( result ).isNotNull();
+        
+        assertThat( result.get( getContext(), "get" ) ).isNotNull().isInstanceOf( JSFunction.class);
+        assertThat( result.get( getContext(), "set" ) ).isNotNull().isInstanceOf( JSFunction.class);
+        assertThat( result.get( getContext(), "configurable" ) ).isEqualTo( true );
+        assertThat( result.get( getContext(), "enumerable" ) ).isEqualTo( true );
 
     }
 }
