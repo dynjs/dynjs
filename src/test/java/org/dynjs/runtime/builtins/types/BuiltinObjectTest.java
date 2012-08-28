@@ -2,6 +2,9 @@ package org.dynjs.runtime.builtins.types;
 
 import static org.fest.assertions.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.JSFunction;
@@ -83,26 +86,46 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
     public void testGetOwnPropertyDescriptor_Data() {
         JSObject result = (JSObject) eval("var x = { foo: 'taco' };",
                 "Object.getOwnPropertyDescriptor(x, 'foo');");
-        
-        assertThat( result ).isNotNull();
-        
-        assertThat( result.get( getContext(), "value" ) ).isEqualTo( "taco" );
-        assertThat( result.get( getContext(), "writable" ) ).isEqualTo( true );
-        assertThat( result.get( getContext(), "configurable" ) ).isEqualTo( true );
-        assertThat( result.get( getContext(), "enumerable" ) ).isEqualTo( true );
+
+        assertThat(result).isNotNull();
+
+        assertThat(result.get(getContext(), "value")).isEqualTo("taco");
+        assertThat(result.get(getContext(), "writable")).isEqualTo(true);
+        assertThat(result.get(getContext(), "configurable")).isEqualTo(true);
+        assertThat(result.get(getContext(), "enumerable")).isEqualTo(true);
     }
 
     @Test
     public void testGetOwnPropertyDescriptor_Accessor() {
-        JSObject result = (JSObject) eval( "var x = { set foo(x){ this.internal_foo = x}, get foo(){ this.internal_foo } }",
+        JSObject result = (JSObject) eval("var x = { set foo(x){ this.internal_foo = x}, get foo(){ this.internal_foo } }",
                 "Object.getOwnPropertyDescriptor(x, 'foo');");
-        
-        assertThat( result ).isNotNull();
-        
-        assertThat( result.get( getContext(), "get" ) ).isNotNull().isInstanceOf( JSFunction.class);
-        assertThat( result.get( getContext(), "set" ) ).isNotNull().isInstanceOf( JSFunction.class);
-        assertThat( result.get( getContext(), "configurable" ) ).isEqualTo( true );
-        assertThat( result.get( getContext(), "enumerable" ) ).isEqualTo( true );
 
+        assertThat(result).isNotNull();
+
+        assertThat(result.get(getContext(), "get")).isNotNull().isInstanceOf(JSFunction.class);
+        assertThat(result.get(getContext(), "set")).isNotNull().isInstanceOf(JSFunction.class);
+        assertThat(result.get(getContext(), "configurable")).isEqualTo(true);
+        assertThat(result.get(getContext(), "enumerable")).isEqualTo(true);
+
+    }
+
+    @Test
+    public void testGetOwnPropertyNames() {
+        JSObject result = (JSObject) eval("var x = {",
+                "foo: 42,",
+                "set bar(x){ this.internal_bar=x },",
+                "get bar(){ return this.internal_bar},",
+                "}",
+                "Object.getOwnPropertyNames(x)");
+
+        assertThat(result).isNotNull();
+        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+
+        List<String> names = new ArrayList<>();
+        names.add((String) result.get(getContext(), "0"));
+        names.add((String) result.get(getContext(), "1"));
+
+        assertThat(names).contains("foo");
+        assertThat(names).contains("bar");
     }
 }
