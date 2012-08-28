@@ -27,6 +27,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.builtins.types.BuiltinObject;
 
 public class ObjectLiteralExpression extends AbstractExpression {
 
@@ -41,11 +42,10 @@ public class ObjectLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                newobj(p(DynObject.class));
-                // obj
-                dup();
-                // obj obj
-                invokespecial(p(DynObject.class), "<init>", sig(void.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
+                
+                invokestatic(p(BuiltinObject.class), "newObject", sig(DynObject.class, ExecutionContext.class));
                 // obj
 
                 for (PropertyAssignment each : propertyAssignments) {

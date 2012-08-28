@@ -26,7 +26,7 @@ public class GetOwnPropertyNames extends AbstractNativeFunction {
 
         JSObject jsObj = (JSObject) o;
 
-        JSObject array = BuiltinArray.newArrayLiteral(context);
+        JSObject array = BuiltinArray.newArray(context);
 
         int i = 0;
         NameEnumerator names = jsObj.getOwnPropertyNames();

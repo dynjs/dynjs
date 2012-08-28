@@ -68,13 +68,13 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
                 "x.foo;");
 
         assertThat(result).isEqualTo("cheese");
-        
-        assertThat( eval( "Object.isFrozen(x)")).isEqualTo(false);
+
+        assertThat(eval("Object.isFrozen(x)")).isEqualTo(false);
 
         result = eval("Object.freeze(x);",
                 "x.foo = 'fish';",
                 "x.foo;");
-        assertThat( eval( "Object.isFrozen(x)")).isEqualTo(true);
+        assertThat(eval("Object.isFrozen(x)")).isEqualTo(true);
 
         assertThat(result).isEqualTo("cheese");
     }
@@ -177,18 +177,18 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
     public void testSeal() {
         eval("var x = { taco: 'fish' };");
         assertThat(eval("Object.isSealed(x)")).isEqualTo(false);
-        eval( "Object.seal( x )" );
+        eval("Object.seal( x )");
         assertThat(eval("Object.isSealed(x)")).isEqualTo(true);
     }
-    
+
     @Test
     public void testExtensibility() {
-        eval( "var x = { taco: 'fish' }");
-        assertThat( eval("Object.isExtensible(x)" ) ).isEqualTo(true);
-        eval( "Object.preventExtensions(x)");
-        assertThat( eval("Object.isExtensible(x)" ) ).isEqualTo(false);
+        eval("var x = { taco: 'fish' }");
+        assertThat(eval("Object.isExtensible(x)")).isEqualTo(true);
+        eval("Object.preventExtensions(x)");
+        assertThat(eval("Object.isExtensible(x)")).isEqualTo(false);
     }
-    
+
     @Test
     public void testKeys() {
         JSObject result = (JSObject) eval("var x = {",
@@ -207,5 +207,46 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
 
         assertThat(names).contains("foo");
         assertThat(names).contains("bar");
+    }
+
+    @Test
+    public void testToString() {
+        Object result = eval("var x = {}; x.toString()");
+        assertThat(result).isEqualTo("[object Object]");
+    }
+
+    @Test
+    public void testToLocaleString() {
+        Object result = eval("var x = {}; x.toLocaleString()");
+        assertThat(result).isEqualTo("[object Object]");
+    }
+
+    @Test
+    public void testHasOwnProperty() {
+        eval("var x = { fish: 'taco' };");
+
+        assertThat(eval("x.hasOwnProperty('fish')")).isEqualTo(true);
+        assertThat(eval("x.hasOwnProperty('taco')")).isEqualTo(false);
+    }
+
+    @Test
+    public void testIsPrototypeOf() {
+        eval("var w = {};",
+                "var x = {};",
+                "var y = Object.create(x);",
+                "var z = Object.create(y);");
+        assertThat(eval("x.isPrototypeOf(y)")).isEqualTo(true);
+        assertThat(eval("x.isPrototypeOf(z)")).isEqualTo(true);
+        assertThat(eval("x.isPrototypeOf(w)")).isEqualTo(false);
+    }
+
+    @Test
+    public void testPropertyIsEnumerable() {
+        eval("var x = { foo: 'bar' };",
+                "Object.defineProperty(x, 'fish', { value:'taco', enumerable:false });");
+
+        assertThat(eval("x.propertyIsEnumerable('foo')")).isEqualTo(true);
+        assertThat(eval("x.propertyIsEnumerable('fish')")).isEqualTo(false);
+        assertThat(eval("x.propertyIsEnumerable('no_such_property')")).isEqualTo(false);
     }
 }

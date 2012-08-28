@@ -43,7 +43,7 @@ public class ArrayLiteralExpression extends AbstractExpression {
             {
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
                 // context
-                invokestatic( p(BuiltinArray.class), "newArrayLiteral", sig(DynArray.class, ExecutionContext.class));
+                invokestatic( p(BuiltinArray.class), "newArray", sig(DynArray.class, ExecutionContext.class));
                 // array
                 
                 int index = 0;

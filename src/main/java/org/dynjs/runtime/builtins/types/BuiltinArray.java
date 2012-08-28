@@ -75,7 +75,7 @@ public class BuiltinArray extends AbstractNativeFunction {
 
     // ----------------------------------------------------------------------
 
-    public static DynArray newArrayLiteral(ExecutionContext context) {
+    public static DynArray newArray(ExecutionContext context) {
         BuiltinArray ctor = (BuiltinArray) context.getGlobalObject().get(context, "Array");
         return (DynArray) context.construct(ctor);
     }

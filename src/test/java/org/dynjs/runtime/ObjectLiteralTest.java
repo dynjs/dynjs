@@ -40,5 +40,14 @@ public class ObjectLiteralTest extends AbstractDynJSTestSupport {
         
         assertThat( result ).isEqualTo("cheesecheddarmore");
     }
+    
+    @Test
+    public void testPrototype() {
+        Object result = eval( "var x = {};",
+                "Object.getPrototypeOf(x)" );
+        
+        assertThat( result ).isNotSameAs( Types.UNDEFINED );
+        assertThat( eval( "Object.getPrototypeOf(x)" ) ).isSameAs( eval( "Object.prototype" ) );
+    }
 
 }
