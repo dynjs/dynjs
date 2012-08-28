@@ -1,4 +1,4 @@
-package org.dynjs.runtime.builtins.types.array;
+package org.dynjs.runtime.builtins.types.array.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;

@@ -20,49 +20,32 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.function.Apply;
-import org.dynjs.runtime.builtins.types.function.Bind;
-import org.dynjs.runtime.builtins.types.function.Call;
-import org.dynjs.runtime.builtins.types.function.ToString;
+import org.dynjs.runtime.builtins.types.function.prototype.Apply;
+import org.dynjs.runtime.builtins.types.function.prototype.Bind;
+import org.dynjs.runtime.builtins.types.function.prototype.Call;
+import org.dynjs.runtime.builtins.types.function.prototype.ToString;
 
 public class BuiltinFunction extends AbstractNativeFunction {
 
     public BuiltinFunction(final GlobalObject globalObject) {
         super(globalObject, "args");
 
-        JSFunction proto = new AbstractNativeFunction(globalObject) {
+        final JSFunction proto = new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
                 return Types.UNDEFINED;
             }
         };
 
-        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
-            {
-                set( "Value", BuiltinFunction.this );
-            }
-        }, false);
-        proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
-            {
-                set( "Value", new ToString(globalObject) );
-            }
-        }, false);
-        proto.defineOwnProperty(null, "apply", new PropertyDescriptor() {
-            {
-                set( "Value", new Apply(globalObject) );
-            }
-        }, false);
-        proto.defineOwnProperty(null, "call", new PropertyDescriptor() {
-            {
-                set( "Value", new Call(globalObject) );
-            }
-        }, false);
-        proto.defineOwnProperty(null, "bind", new PropertyDescriptor() {
-            {
-                set( "Value", new Bind(globalObject) );
-            }
-        }, false);
-        setPrototype(proto);
+        proto.put(null, "constructor", this, false);
+        proto.put(null, "toString", new ToString(globalObject), false);
+        proto.put(null, "apply", new Apply(globalObject), false);
+        proto.put(null, "call", new Call(globalObject), false);
+        proto.put(null, "bind", new Bind(globalObject), false);
+        
+        put( null, "prototype", proto, false );
+
+        setPrototype( proto );
     }
 
     @Override

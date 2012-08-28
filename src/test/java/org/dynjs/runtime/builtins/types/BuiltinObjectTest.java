@@ -159,7 +159,7 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         eval("var x = { taco: 'fish' };",
                 "var y = Object.create(x);");
 
-        assertThat(eval("y.prototype")).isSameAs(eval("x"));
+        assertThat(eval("Object.getPrototypeOf(y)")).isSameAs(eval("x"));
         assertThat(eval("y.taco")).isEqualTo("fish");
     }
 
@@ -168,7 +168,7 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         eval("var x = { taco: 'fish' };",
                 "var y = Object.create(x, { cheese: { value: 'cheddar' } });");
 
-        assertThat(eval("y.prototype")).isSameAs(eval("x"));
+        assertThat(eval("Object.getPrototypeOf(y)")).isSameAs(eval("x"));
         assertThat(eval("y.taco")).isEqualTo("fish");
         assertThat(eval("y.cheese")).isEqualTo("cheddar");
     }

@@ -1,50 +1,34 @@
 package org.dynjs.runtime.builtins.types;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.StackElement;
-import org.dynjs.runtime.StackGetter;
 import org.dynjs.runtime.Types;
 
 public class AbstractBuiltinNativeError extends AbstractNativeFunction {
 
     public AbstractBuiltinNativeError(GlobalObject globalObject, final String name) {
         super(globalObject, true, "message");
-        DynObject proto = new DynObject();
-        proto.setClassName("String");
-        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
-            {
-                set( "Value", AbstractBuiltinNativeError.this );
-            }
-        }, false);
-        proto.defineOwnProperty(null, "name", new PropertyDescriptor() {
-            {
-                set( "Value", name );
-            }
-        }, false);
-        proto.defineOwnProperty(null, "message", new PropertyDescriptor() {
-            {
-                set("Value", "" );
-            }
-        }, false);
+
+        final DynObject proto = new DynObject();
+        proto.setClassName("Error");
+        proto.put(null, "constructor", this, false);
+        proto.put(null, "name", name, false);
+        proto.put(null, "message", "", false);
+        proto.setPrototype(globalObject.getPrototypeFor("Error"));
         
-        JSObject errorProto = ((JSObject)globalObject.get( null, "Error" )).getPrototype();
-        proto.setPrototype( errorProto );
-        setPrototype(proto);
+        put(null, "prototype", proto, false);
+        setPrototype(globalObject.getPrototypeFor("Function"));
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, final Object... args) {
         JSObject o = null;
 
-        if (self == Types.UNDEFINED ) {
+        if (self == Types.UNDEFINED) {
             o = createNewObject();
         } else {
             o = (JSObject) self;
@@ -63,7 +47,7 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
     @Override
     public JSObject createNewObject() {
         DynObject o = new DynObject();
-        o.setPrototype(getPrototype());
+        o.setPrototype((JSObject) get(null, "prototype"));
         o.setClassName("Error");
         return o;
     }

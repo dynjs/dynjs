@@ -7,31 +7,21 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.array.Join;
-import org.dynjs.runtime.builtins.types.array.ToString;
+import org.dynjs.runtime.builtins.types.array.prototype.Join;
+import org.dynjs.runtime.builtins.types.array.prototype.ToString;
 
 public class BuiltinArray extends AbstractNativeFunction {
 
     public BuiltinArray(final GlobalObject globalObject) {
         super(globalObject);
-        DynArray proto = new DynArray();
-        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
-            {
-                set("Value", BuiltinArray.this);
-            }
-        }, false);
-        proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
-            {
-                set("Value", new ToString(globalObject));
-            }
-        }, false);
-        proto.defineOwnProperty(null, "join", new PropertyDescriptor() {
-            {
-                set("Value", new Join(globalObject));
-            }
-        }, false);
 
-        setPrototype(proto);
+        final DynArray proto = new DynArray();
+        proto.put(null, "constructor", this, false );
+        proto.put(null, "toString", new ToString( globalObject ), false );
+        proto.put( null, "join", new Join(globalObject), false );
+        put(null, "prototype", proto, false );
+        
+        setPrototype( globalObject.getPrototypeFor( "Function" ));
     }
 
     @Override
@@ -84,9 +74,9 @@ public class BuiltinArray extends AbstractNativeFunction {
     }
 
     // ----------------------------------------------------------------------
-    
+
     public static DynArray newArrayLiteral(ExecutionContext context) {
-        BuiltinArray ctor = (BuiltinArray) context.getGlobalObject().get(context, "Array" );
+        BuiltinArray ctor = (BuiltinArray) context.getGlobalObject().get(context, "Array");
         return (DynArray) context.construct(ctor);
     }
 }

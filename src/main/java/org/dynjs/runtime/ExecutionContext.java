@@ -120,7 +120,10 @@ public class ExecutionContext {
         // 6. If prototype is an object make that the new object's prototype
         // 7. If prototype is not an object set to the standard builtin object prototype 15.2.4 [AbstractJavascriptFunction]
         // [AbstractJavascriptFunction] handles #7, subclasses may handle #6 if necessary (see BuiltinArray#createNewObject)
-        obj.setPrototype(function.getPrototype());
+        Object p = function.get(this, "prototype");
+        if (p != Types.UNDEFINED) {
+            obj.setPrototype((JSObject) p);
+        }
         // 8. Call the function with obj as self
         Object result = call(function, obj, args);
         // 9. If result is a JSObject return it
@@ -406,7 +409,7 @@ public class ExecutionContext {
     }
 
     public JSObject getPrototypeFor(String type) {
-        return (JSObject) ((JSObject) getGlobalObject().get(null, type)).get(null, "prototype");
+        return getGlobalObject().getPrototypeFor(type);
     }
 
 }

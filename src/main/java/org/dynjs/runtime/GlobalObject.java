@@ -136,5 +136,17 @@ public class GlobalObject extends DynObject {
         };
         defineOwnProperty(null, name, desc, false);
     }
+    
+    public JSObject getPrototypeFor(String type) {
+        Object typeObj = get(null, type);
+        if ( typeObj == Types.UNDEFINED ) {
+            return null;
+        }
+        Object prototype = ((JSObject)typeObj).get( null, "prototype" );
+        if ( prototype == Types.UNDEFINED ) {
+            return null;
+        }
+        return (JSObject) prototype;
+    }
 
 }

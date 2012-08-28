@@ -15,29 +15,33 @@ public class BuiltinString extends AbstractNativeFunction {
 
     public BuiltinString(final GlobalObject globalObject) {
         super(globalObject, "value");
-        DynObject proto = new DynObject();
+        final DynObject proto = new DynObject();
         proto.setClassName("String");
         proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
             {
-                set( "Value", BuiltinString.this );
+                set("Value", BuiltinString.this);
             }
         }, false);
         proto.defineOwnProperty(null, "toString", new PropertyDescriptor() {
             {
-                set( "Value", new ToString(globalObject) );
+                set("Value", new ToString(globalObject));
             }
         }, false);
         proto.defineOwnProperty(null, "valueOf", new PropertyDescriptor() {
             {
-                set( "Value", new ToString(globalObject) );
+                set("Value", new ToString(globalObject));
             }
         }, false);
         proto.defineOwnProperty(null, "charAt", new PropertyDescriptor() {
             {
-                set( "Value", new CharAt(globalObject) );
+                set("Value", new CharAt(globalObject));
             }
         }, false);
-        setPrototype(proto);
+        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+            {
+                set( "Value", proto );
+            }
+        }, false);
     }
 
     @Override

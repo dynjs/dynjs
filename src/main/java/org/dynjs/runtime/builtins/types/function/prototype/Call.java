@@ -1,4 +1,4 @@
-package org.dynjs.runtime.builtins.types.function;
+package org.dynjs.runtime.builtins.types.function.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;

@@ -68,12 +68,6 @@ public class DynObject implements JSObject {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 8.12.3
-        if (name.equals("prototype")) {
-            if (this.prototype == null) {
-                return Types.NULL;
-            }
-            return this.prototype;
-        }
         Object d = getProperty(context, name);
         if (d == Types.UNDEFINED) {
             return Types.UNDEFINED;

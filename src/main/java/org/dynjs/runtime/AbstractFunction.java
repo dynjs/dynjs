@@ -38,7 +38,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             }
         };
         defineOwnProperty(null, "length", desc, false);
-        Object proto = scope.getGlobalObject().get(null, "Function");
+        Object proto = scope.getGlobalObject().getPrototypeFor("Function");
         if (proto != Types.UNDEFINED) {
             setPrototype((JSObject) proto);
         }

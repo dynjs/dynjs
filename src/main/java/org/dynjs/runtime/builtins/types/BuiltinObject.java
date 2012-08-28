@@ -26,74 +26,80 @@ public class BuiltinObject extends AbstractNativeFunction {
     public BuiltinObject(final GlobalObject globalObject) {
         super(globalObject, "value");
 
-
         defineOwnProperty(null, "getPrototypeOf", new PropertyDescriptor() {
             {
-                set( "Value", new GetPrototypeOf(globalObject));
+                set("Value", new GetPrototypeOf(globalObject));
             }
         }, false);
         defineOwnProperty(null, "getOwnPropertyDescriptor", new PropertyDescriptor() {
             {
-                set( "Value", new GetOwnPropertyDescriptor(globalObject));
+                set("Value", new GetOwnPropertyDescriptor(globalObject));
             }
         }, false);
         defineOwnProperty(null, "getOwnPropertyNames", new PropertyDescriptor() {
             {
-                set( "Value", new GetOwnPropertyNames(globalObject));
+                set("Value", new GetOwnPropertyNames(globalObject));
             }
         }, false);
         defineOwnProperty(null, "create", new PropertyDescriptor() {
             {
-                set( "Value", new Create(globalObject));
+                set("Value", new Create(globalObject));
             }
         }, false);
         defineOwnProperty(null, "defineProperty", new PropertyDescriptor() {
             {
-                set( "Value", new DefineProperty(globalObject));
+                set("Value", new DefineProperty(globalObject));
             }
         }, false);
         defineOwnProperty(null, "defineProperties", new PropertyDescriptor() {
             {
-                set( "Value", new DefineProperties(globalObject));
+                set("Value", new DefineProperties(globalObject));
             }
         }, false);
         defineOwnProperty(null, "seal", new PropertyDescriptor() {
             {
-                set( "Value", new Seal(globalObject));
+                set("Value", new Seal(globalObject));
             }
         }, false);
         defineOwnProperty(null, "freeze", new PropertyDescriptor() {
             {
-                set( "Value", new Freeze(globalObject));
+                set("Value", new Freeze(globalObject));
             }
         }, false);
         defineOwnProperty(null, "preventExtensions", new PropertyDescriptor() {
             {
-                set( "Value", new PreventExtensions(globalObject));
+                set("Value", new PreventExtensions(globalObject));
             }
         }, false);
         defineOwnProperty(null, "isSealed", new PropertyDescriptor() {
             {
-                set( "Value", new IsSealed(globalObject));
+                set("Value", new IsSealed(globalObject));
             }
         }, false);
         defineOwnProperty(null, "isFrozen", new PropertyDescriptor() {
             {
-                set( "Value", new IsFrozen(globalObject));
+                set("Value", new IsFrozen(globalObject));
             }
         }, false);
         defineOwnProperty(null, "isExtensible", new PropertyDescriptor() {
             {
-                set( "Value", new IsExtensible(globalObject));
+                set("Value", new IsExtensible(globalObject));
             }
         }, false);
         defineOwnProperty(null, "keys", new PropertyDescriptor() {
             {
-                set( "Value", new Keys(globalObject));
+                set("Value", new Keys(globalObject));
             }
         }, false);
-        DynObject proto = new DynObject();
-        setPrototype(proto);
+        
+        final DynObject proto = new DynObject();
+        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+            {
+                set( "Value", proto );
+            }
+        }, false);
+
+        setPrototype(globalObject.getPrototypeFor("Function"));
     }
 
     @Override
