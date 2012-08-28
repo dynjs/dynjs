@@ -179,6 +179,13 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         assertThat(eval("Object.isSealed(x)")).isEqualTo(false);
         eval( "Object.seal( x )" );
         assertThat(eval("Object.isSealed(x)")).isEqualTo(true);
-
+    }
+    
+    @Test
+    public void testExtensibility() {
+        eval( "var x = { taco: 'fish' }");
+        assertThat( eval("Object.isExtensible(x)" ) ).isEqualTo(true);
+        eval( "Object.preventExtensions(x)");
+        assertThat( eval("Object.isExtensible(x)" ) ).isEqualTo(false);
     }
 }

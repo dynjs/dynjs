@@ -14,6 +14,7 @@ import org.dynjs.runtime.builtins.types.object.Freeze;
 import org.dynjs.runtime.builtins.types.object.GetOwnPropertyDescriptor;
 import org.dynjs.runtime.builtins.types.object.GetOwnPropertyNames;
 import org.dynjs.runtime.builtins.types.object.GetPrototypeOf;
+import org.dynjs.runtime.builtins.types.object.IsExtensible;
 import org.dynjs.runtime.builtins.types.object.IsFrozen;
 import org.dynjs.runtime.builtins.types.object.IsSealed;
 import org.dynjs.runtime.builtins.types.object.PreventExtensions;
@@ -78,6 +79,11 @@ public class BuiltinObject extends AbstractNativeFunction {
         defineOwnProperty(null, "isFrozen", new PropertyDescriptor() {
             {
                 set( "Value", new IsFrozen(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "isExtensible", new PropertyDescriptor() {
+            {
+                set( "Value", new IsExtensible(globalObject));
             }
         }, false);
         DynObject proto = new DynObject();

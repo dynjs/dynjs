@@ -17,7 +17,7 @@ public class IsFrozen extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        // 15.2.3.11
+        // 15.2.3.12
         Object o = args[0];
 
         if (!(o instanceof JSObject)) {
