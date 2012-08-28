@@ -3,6 +3,8 @@ package org.dynjs.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dynjs.exception.ThrowException;
+
 public class PropertyDescriptor {
 
     private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>() {
@@ -63,7 +65,7 @@ public class PropertyDescriptor {
     public static PropertyDescriptor newPropertyDescriptorForObjectInitializerGet(Object orig, String name, JSFunction value) {
         value.setDebugContext("Object.get " + name);
         PropertyDescriptor d = null;
-        
+
         if (orig == Types.UNDEFINED) {
             d = new PropertyDescriptor();
         } else {
@@ -74,11 +76,11 @@ public class PropertyDescriptor {
         d.set("Enumerable", true);
         return d;
     }
-    
+
     public static PropertyDescriptor newPropertyDescriptorForObjectInitializerSet(Object orig, String name, JSFunction value) {
         value.setDebugContext("Object.set " + name);
         PropertyDescriptor d = null;
-        
+
         if (orig == Types.UNDEFINED) {
             d = new PropertyDescriptor();
         } else {
@@ -89,7 +91,6 @@ public class PropertyDescriptor {
         d.set("Enumerable", true);
         return d;
     }
-
 
     public PropertyDescriptor() {
     }
@@ -319,7 +320,48 @@ public class PropertyDescriptor {
         return obj;
     }
 
-    public static PropertyDescriptor toPropertyDescriptor(JSObject obj) {
-        return null;
+    public static PropertyDescriptor toPropertyDescriptor(ExecutionContext context, Object o) {
+        // 8.10.5
+        if (!(o instanceof JSObject)) {
+            throw new ThrowException(context.createTypeError("attribtues must be an object"));
+        }
+
+        JSObject obj = (JSObject) o;
+        PropertyDescriptor d = new PropertyDescriptor();
+
+        if (obj.hasProperty(context, "enumerable")) {
+            d.set("Enumerable", Types.toBoolean(obj.get(context, "enumerable")));
+        }
+        if (obj.hasProperty(context, "configurable")) {
+            d.set("Configurable", Types.toBoolean(obj.get(context, "configurable")));
+        }
+        if (obj.hasProperty(context, "value")) {
+            d.set("Value", obj.get(context, "value"));
+        }
+        if (obj.hasProperty(context, "writable")) {
+            d.set("Writable", Types.toBoolean(obj.get(context, "writable")));
+        }
+        if (obj.hasProperty(context, "get")) {
+            Object getter = obj.get(context, "get");
+            if ((!Types.isCallable(getter)) && (getter != Types.UNDEFINED)) {
+                throw new ThrowException(context.createTypeError("get must be callable"));
+            }
+            d.set("Get", getter);
+        }
+        if (obj.hasProperty(context, "set")) {
+            Object setter = obj.get(context, "set");
+            if ((!Types.isCallable(setter)) && (setter != Types.UNDEFINED)) {
+                throw new ThrowException(context.createTypeError("set must be callable"));
+            }
+            d.set("Set", setter);
+        }
+
+        if ((d.get("Get") != Types.UNDEFINED) || (d.get("Set") != Types.UNDEFINED)) {
+            if ((d.get("Writable") != Types.UNDEFINED) || (d.get("Value") != Types.UNDEFINED)) {
+                throw new ThrowException(context.createTypeError("may not be both a data property and an accessor property"));
+            }
+        }
+
+        return d;
     }
 }

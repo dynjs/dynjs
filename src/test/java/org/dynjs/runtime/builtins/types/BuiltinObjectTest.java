@@ -128,4 +128,13 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         assertThat(names).contains("foo");
         assertThat(names).contains("bar");
     }
+
+    @Test
+    public void testDefineProperty() {
+        Object result = eval("var x = {};",
+                "Object.defineProperty( x, 'foo', { value: 'toast' });",
+                "x.foo");
+        
+        assertThat( result ).isEqualTo( "toast" );
+    }
 }

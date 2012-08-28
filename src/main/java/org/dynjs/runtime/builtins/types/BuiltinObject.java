@@ -7,6 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.object.DefineProperty;
 import org.dynjs.runtime.builtins.types.object.Freeze;
 import org.dynjs.runtime.builtins.types.object.GetOwnPropertyDescriptor;
 import org.dynjs.runtime.builtins.types.object.GetOwnPropertyNames;
@@ -35,6 +36,11 @@ public class BuiltinObject extends AbstractNativeFunction {
         defineOwnProperty(null, "getOwnPropertyNames", new PropertyDescriptor() {
             {
                 set( "Value", new GetOwnPropertyNames(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "defineProperty", new PropertyDescriptor() {
+            {
+                set( "Value", new DefineProperty(globalObject));
             }
         }, false);
         DynObject proto = new DynObject();
