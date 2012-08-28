@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins.types;
 
 import static org.fest.assertions.Assertions.*;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
@@ -102,5 +103,20 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
         
         assertThat( result.get( getContext(), "taco") ).isEqualTo( 42 );
     }
+    
+    @Test(expected=ThrowException.class)
+    public void testArgumentsThrowOnBindedFunction() {
+        eval( "var f = function(){ print(arguments); return 42; }",
+                "var b = f.bind();",
+                "b.arguments");
+    }
+    
+    @Test(expected=ThrowException.class)
+    public void testCallerThrowOnBindedFunction() {
+        eval( "var f = function(){ print(arguments); return 42; }",
+                "var b = f.bind();",
+                "b.caller");
+    }
+
 
 }

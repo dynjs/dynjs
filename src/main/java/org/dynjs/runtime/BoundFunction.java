@@ -29,6 +29,23 @@ public class BoundFunction extends AbstractNativeFunction {
                 set("Enumerable", false);
             }
         }, false);
+        final JSFunction thrower = (JSFunction) scope.getGlobalObject().get( null, "__throwTypeError" );
+        defineOwnProperty(null, "caller", new PropertyDescriptor() {
+            {
+                set( "Set", thrower );
+                set( "Get", thrower );
+                set( "Configurable", false );
+                set( "Enumerable", false );
+            }
+        }, false);
+        defineOwnProperty(null, "arguments", new PropertyDescriptor() {
+            {
+                set( "Set", thrower );
+                set( "Get", thrower );
+                set( "Configurable", false );
+                set( "Enumerable", false );
+            }
+        }, false);
     }
 
     @Override
@@ -56,7 +73,5 @@ public class BoundFunction extends AbstractNativeFunction {
         // 15.3.4.5.3
         return target.hasInstance(v);
     }
-    
-    
 
 }

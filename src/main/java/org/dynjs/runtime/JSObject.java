@@ -26,8 +26,10 @@ public interface JSObject {
 
     boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow);
 
-    NameEnumerator getEnumerablePropertyNames();
+    NameEnumerator getOwnPropertyNames();
 
     void setPrototype(JSObject prototype);
+    
+    void setExtensible(boolean extensible);
 
 }

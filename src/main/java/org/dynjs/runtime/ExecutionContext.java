@@ -384,8 +384,12 @@ public class ExecutionContext {
 
     public JSObject createError(String type, String message) {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
-        JSObject err = (JSObject) call(func, Types.UNDEFINED, message);
-
+        JSObject err = null;
+        if (message == null) {
+            err = (JSObject) call(func, Types.UNDEFINED );
+        } else {
+            err = (JSObject) call(func, Types.UNDEFINED, message);
+        }
         return err;
 
     }

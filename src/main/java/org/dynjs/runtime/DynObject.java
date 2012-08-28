@@ -343,7 +343,7 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public NameEnumerator getEnumerablePropertyNames() {
+    public NameEnumerator getOwnPropertyNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (String name : this.properties.keySet()) {
             PropertyDescriptor desc = this.properties.get(name);

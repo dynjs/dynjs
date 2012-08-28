@@ -12,6 +12,7 @@ import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.Require;
+import org.dynjs.runtime.builtins.ThrowTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinFunction;
@@ -41,6 +42,8 @@ public class GlobalObject extends DynObject {
         
         defineGlobalProperty("Function", new BuiltinFunction(this));
         defineGlobalProperty("Object", new BuiltinObject(this));
+        
+        defineGlobalProperty("__throwTypeError", new ThrowTypeError(this));
 
         defineGlobalProperty("undefined", Types.UNDEFINED);
         defineGlobalProperty("parseFloat", new ParseFloat(this));

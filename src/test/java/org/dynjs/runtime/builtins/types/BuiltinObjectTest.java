@@ -24,36 +24,52 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         eval("var x = new Object( 'howdy' );");
         Object x = getContext().resolve("x").getValue(getContext());
         assertThat(x).isInstanceOf(PrimitiveDynObject.class);
-        
+
         PrimitiveDynObject primitiveX = (PrimitiveDynObject) x;
-        assertThat( primitiveX.getPrimitiveValue() ).isEqualTo("howdy");
+        assertThat(primitiveX.getPrimitiveValue()).isEqualTo("howdy");
     }
-    
+
     @Test
     public void testConstructorWithBoolean() {
         eval("var x = new Object( true );");
         Object x = getContext().resolve("x").getValue(getContext());
         assertThat(x).isInstanceOf(PrimitiveDynObject.class);
-        
+
         PrimitiveDynObject primitiveX = (PrimitiveDynObject) x;
-        assertThat( primitiveX.getPrimitiveValue() ).isEqualTo(true);
+        assertThat(primitiveX.getPrimitiveValue()).isEqualTo(true);
     }
-    
+
     @Test
     public void testConstructorWithInteger() {
         eval("var x = new Object( 42 );");
         Object x = getContext().resolve("x").getValue(getContext());
         assertThat(x).isInstanceOf(PrimitiveDynObject.class);
-        
+
         PrimitiveDynObject primitiveX = (PrimitiveDynObject) x;
-        assertThat( primitiveX.getPrimitiveValue() ).isEqualTo(42);
-    }
-    
-    @Test
-    public void testConstructWithoutArg() {
-        eval( "var x = new Object();");
-        Object x = getContext().resolve("x").getValue(getContext());
-        assertThat( x ).isInstanceOf(DynObject.class);
+        assertThat(primitiveX.getPrimitiveValue()).isEqualTo(42);
     }
 
+    @Test
+    public void testConstructWithoutArg() {
+        eval("var x = new Object();");
+        Object x = getContext().resolve("x").getValue(getContext());
+        assertThat(x).isInstanceOf(DynObject.class);
+    }
+
+    @Test
+    public void testFreeze() {
+        Object result = eval("var x = { foo: 'taco' };",
+                "x.foo = 'cheese';",
+                "x.foo;");
+
+        assertThat( result ).isEqualTo( "cheese" );
+
+        result = eval("var x = { foo: 'taco' };",
+                "Object.freeze(x);",
+                "x.foo = 'cheese';",
+                "x.foo;");
+        
+        assertThat( result ).isEqualTo( "taco" );
+
+    }
 }
