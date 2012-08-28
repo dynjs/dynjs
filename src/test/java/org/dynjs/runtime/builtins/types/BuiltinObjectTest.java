@@ -68,13 +68,15 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
                 "x.foo;");
 
         assertThat(result).isEqualTo("cheese");
+        
+        assertThat( eval( "Object.isFrozen(x)")).isEqualTo(false);
 
-        result = eval("var x = { foo: 'taco' };",
-                "Object.freeze(x);",
-                "x.foo = 'cheese';",
+        result = eval("Object.freeze(x);",
+                "x.foo = 'fish';",
                 "x.foo;");
+        assertThat( eval( "Object.isFrozen(x)")).isEqualTo(true);
 
-        assertThat(result).isEqualTo("taco");
+        assertThat(result).isEqualTo("cheese");
     }
 
     @Test
@@ -140,34 +142,43 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDefineProperties() {
-        eval( "var attrs = {",
+        eval("var attrs = {",
                 " foo: { value: 'toast' },",
                 " fish: { value: 'taco' },",
-                "};" ,
+                "};",
                 "var x = {};",
-                "Object.defineProperties(x, attrs);" );
-        
-        assertThat( eval( "x.foo" ) ).isEqualTo("toast" );
-        assertThat( eval( "x.fish" ) ).isEqualTo("taco" );
-        
+                "Object.defineProperties(x, attrs);");
+
+        assertThat(eval("x.foo")).isEqualTo("toast");
+        assertThat(eval("x.fish")).isEqualTo("taco");
+
     }
-    
+
     @Test
     public void testCreateWithoutProps() {
-        eval( "var x = { taco: 'fish' };",
-                "var y = Object.create(x);" );
-        
-        assertThat( eval( "y.prototype" ) ).isSameAs( eval( "x" ));
-        assertThat( eval( "y.taco" ) ).isEqualTo( "fish" );
+        eval("var x = { taco: 'fish' };",
+                "var y = Object.create(x);");
+
+        assertThat(eval("y.prototype")).isSameAs(eval("x"));
+        assertThat(eval("y.taco")).isEqualTo("fish");
     }
-    
+
     @Test
     public void testCreateWithProps() {
-        eval( "var x = { taco: 'fish' };",
-                "var y = Object.create(x, { cheese: { value: 'cheddar' } });" );
-        
-        assertThat( eval( "y.prototype" ) ).isSameAs( eval( "x" ));
-        assertThat( eval( "y.taco" ) ).isEqualTo( "fish" );
-        assertThat( eval( "y.cheese" ) ).isEqualTo( "cheddar" );
+        eval("var x = { taco: 'fish' };",
+                "var y = Object.create(x, { cheese: { value: 'cheddar' } });");
+
+        assertThat(eval("y.prototype")).isSameAs(eval("x"));
+        assertThat(eval("y.taco")).isEqualTo("fish");
+        assertThat(eval("y.cheese")).isEqualTo("cheddar");
+    }
+
+    @Test
+    public void testSeal() {
+        eval("var x = { taco: 'fish' };");
+        assertThat(eval("Object.isSealed(x)")).isEqualTo(false);
+        eval( "Object.seal( x )" );
+        assertThat(eval("Object.isSealed(x)")).isEqualTo(true);
+
     }
 }

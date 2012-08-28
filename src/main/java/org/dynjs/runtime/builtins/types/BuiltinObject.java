@@ -14,17 +14,17 @@ import org.dynjs.runtime.builtins.types.object.Freeze;
 import org.dynjs.runtime.builtins.types.object.GetOwnPropertyDescriptor;
 import org.dynjs.runtime.builtins.types.object.GetOwnPropertyNames;
 import org.dynjs.runtime.builtins.types.object.GetPrototypeOf;
+import org.dynjs.runtime.builtins.types.object.IsFrozen;
+import org.dynjs.runtime.builtins.types.object.IsSealed;
+import org.dynjs.runtime.builtins.types.object.PreventExtensions;
+import org.dynjs.runtime.builtins.types.object.Seal;
 
 public class BuiltinObject extends AbstractNativeFunction {
 
     public BuiltinObject(final GlobalObject globalObject) {
         super(globalObject, "value");
 
-        defineOwnProperty(null, "freeze", new PropertyDescriptor() {
-            {
-                set( "Value", new Freeze(globalObject));
-            }
-        }, false);
+
         defineOwnProperty(null, "getPrototypeOf", new PropertyDescriptor() {
             {
                 set( "Value", new GetPrototypeOf(globalObject));
@@ -53,6 +53,31 @@ public class BuiltinObject extends AbstractNativeFunction {
         defineOwnProperty(null, "defineProperties", new PropertyDescriptor() {
             {
                 set( "Value", new DefineProperties(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "seal", new PropertyDescriptor() {
+            {
+                set( "Value", new Seal(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "freeze", new PropertyDescriptor() {
+            {
+                set( "Value", new Freeze(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "preventExtensions", new PropertyDescriptor() {
+            {
+                set( "Value", new PreventExtensions(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "isSealed", new PropertyDescriptor() {
+            {
+                set( "Value", new IsSealed(globalObject));
+            }
+        }, false);
+        defineOwnProperty(null, "isFrozen", new PropertyDescriptor() {
+            {
+                set( "Value", new IsFrozen(globalObject));
             }
         }, false);
         DynObject proto = new DynObject();
