@@ -188,4 +188,24 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         eval( "Object.preventExtensions(x)");
         assertThat( eval("Object.isExtensible(x)" ) ).isEqualTo(false);
     }
+    
+    @Test
+    public void testKeys() {
+        JSObject result = (JSObject) eval("var x = {",
+                "foo: 42,",
+                "set bar(x){ this.internal_bar=x },",
+                "get bar(){ return this.internal_bar},",
+                "}",
+                "Object.keys(x)");
+
+        assertThat(result).isNotNull();
+        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+
+        List<String> names = new ArrayList<>();
+        names.add((String) result.get(getContext(), "0"));
+        names.add((String) result.get(getContext(), "1"));
+
+        assertThat(names).contains("foo");
+        assertThat(names).contains("bar");
+    }
 }
