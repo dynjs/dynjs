@@ -151,4 +151,23 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         assertThat( eval( "x.fish" ) ).isEqualTo("taco" );
         
     }
+    
+    @Test
+    public void testCreateWithoutProps() {
+        eval( "var x = { taco: 'fish' };",
+                "var y = Object.create(x);" );
+        
+        assertThat( eval( "y.prototype" ) ).isSameAs( eval( "x" ));
+        assertThat( eval( "y.taco" ) ).isEqualTo( "fish" );
+    }
+    
+    @Test
+    public void testCreateWithProps() {
+        eval( "var x = { taco: 'fish' };",
+                "var y = Object.create(x, { cheese: { value: 'cheddar' } });" );
+        
+        assertThat( eval( "y.prototype" ) ).isSameAs( eval( "x" ));
+        assertThat( eval( "y.taco" ) ).isEqualTo( "fish" );
+        assertThat( eval( "y.cheese" ) ).isEqualTo( "cheddar" );
+    }
 }
