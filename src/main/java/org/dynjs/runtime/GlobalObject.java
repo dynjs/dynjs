@@ -20,6 +20,7 @@ import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRangeError;
 import org.dynjs.runtime.builtins.types.BuiltinReferenceError;
+import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
@@ -54,6 +55,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("Number", new BuiltinNumber(this));
         defineGlobalProperty("Array", new BuiltinArray(this));
         defineGlobalProperty("String", new BuiltinString(this));
+        defineGlobalProperty("RegExp", new BuiltinRegExp(this));
         
         defineGlobalProperty("Error", new BuiltinError(this));
         defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));
