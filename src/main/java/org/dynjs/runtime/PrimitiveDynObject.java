@@ -25,7 +25,7 @@ public class PrimitiveDynObject extends DynObject {
     }
 
     public String toString() {
-        return "[PrimitiveDynObject: value=" + this.value + "]";
+        return "[" + getClass().getSimpleName() +  ": value=" + this.value + "]";
     }
 
 }

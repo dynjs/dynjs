@@ -76,6 +76,7 @@ import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.parser.ast.VariableDeclarationStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
+import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.BlockManager;
 
 public class Executor {
@@ -433,7 +434,7 @@ public class Executor {
     }
 
     public Statement withStatement(final Tree tree, Expression expression, Statement statement) {
-        throw new ParserException("not implemented yet", tree);
+        return new WithStatement( tree, getBlockManager(), expression, statement );
     }
 
     public Statement labelledStatement(final Tree tree, String label, Statement statement) {
