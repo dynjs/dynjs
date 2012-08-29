@@ -91,7 +91,11 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic(p(Types.class), "toObject", sig(JSObject.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT);
+                // obj context
+                swap();
+                // context obj
+                invokestatic(p(Types.class), "toObject", sig(JSObject.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };

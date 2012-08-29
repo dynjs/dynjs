@@ -30,6 +30,12 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testValueOfOnLiteral() {
+        Object o = eval( "'taco'.valueOf()" );
+        assertThat( o ).isEqualTo( "taco" );
+    }
+    
+    @Test
     public void testToString() {
         Object o = eval( "new String(42).toString()" );
         assertThat( o ).isEqualTo( "42" );

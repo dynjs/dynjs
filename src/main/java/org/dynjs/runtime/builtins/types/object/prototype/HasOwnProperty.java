@@ -15,7 +15,7 @@ public class HasOwnProperty extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.2.4.5
-        JSObject o = Types.toObject(self);
+        JSObject o = Types.toObject(context, self);
         String p = Types.toString( args[0] );
         
         Object desc = o.getOwnProperty(context, p);

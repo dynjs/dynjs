@@ -29,7 +29,7 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
         JSObject o = null;
 
         if (self == Types.UNDEFINED) {
-            o = createNewObject();
+            o = createNewObject(context);
         } else {
             o = (JSObject) self;
         }
@@ -45,7 +45,7 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
     }
 
     @Override
-    public JSObject createNewObject() {
+    public JSObject createNewObject(ExecutionContext context) {
         DynObject o = new DynObject();
         o.setPrototype((JSObject) get(null, "prototype"));
         o.setClassName("Error");

@@ -16,7 +16,7 @@ public class PropertyIsEnumerable extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.2.4.7
-        JSObject o = Types.toObject(self);
+        JSObject o = Types.toObject(context, self);
         String v = Types.toString(args[0]);
 
         Object desc = o.getOwnProperty(context, v);

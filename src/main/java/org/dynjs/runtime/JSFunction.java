@@ -7,7 +7,7 @@ public interface JSFunction extends JSObject, JSCallable, JSCode {
 
     boolean hasInstance(Object obj);
     
-    JSObject createNewObject();
+    JSObject createNewObject(ExecutionContext context);
     
     String getFileName();
     

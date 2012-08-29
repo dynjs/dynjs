@@ -17,7 +17,7 @@ public class ToLocaleString extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.2.4.3
-        JSObject o = Types.toObject(self);
+        JSObject o = Types.toObject(context, self);
 
         Object toString = o.get(context, "toString");
         if (!(toString instanceof JSFunction)) {

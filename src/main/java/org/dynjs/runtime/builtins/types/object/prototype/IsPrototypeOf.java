@@ -20,7 +20,7 @@ public class IsPrototypeOf extends AbstractNativeFunction {
             return false;
         }
 
-        JSObject o = Types.toObject(self);
+        JSObject o = Types.toObject(context, self);
         
         while (true) {
             v = ((JSObject) v).getPrototype();

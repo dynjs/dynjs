@@ -1,5 +1,7 @@
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.builtins.types.string.DynString;
+
 public class Types {
 
     public static final Undefined UNDEFINED = new Undefined();
@@ -22,9 +24,12 @@ public class Types {
         return left.equals(right);
     }
 
-    public static JSObject toObject(Object o) {
+    public static JSObject toObject(ExecutionContext context, Object o) {
         if (o instanceof JSObject) {
             return (JSObject) o;
+        }
+        if ( o instanceof String ) {
+            return new DynString( context, (String) o );
         }
         return new PrimitiveDynObject(o);
     }

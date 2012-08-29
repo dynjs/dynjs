@@ -58,7 +58,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
     }
 
     @Override
-    public JSObject createNewObject() {
+    public JSObject createNewObject(ExecutionContext context) {
         // 15.7.2.1
         PrimitiveDynObject object = new PrimitiveDynObject();
         object.setPrototype(this.getPrototype());

@@ -28,7 +28,7 @@ public class DefineProperties extends AbstractNativeFunction {
         }
         
         JSObject jsObj = (JSObject) o;
-        JSObject props = Types.toObject( args[1] );
+        JSObject props = Types.toObject( context, args[1] );
         
         List<String> names = props.getOwnPropertyNames().toList();
         List<PropertyDescriptor> descriptors = new ArrayList<>();

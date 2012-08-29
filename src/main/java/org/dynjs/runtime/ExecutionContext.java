@@ -112,7 +112,7 @@ public class ExecutionContext {
     public JSObject construct(JSFunction function, Object... args) {
         // 13.2.2
         // 1. create the new object
-        JSObject obj = function.createNewObject();
+        JSObject obj = function.createNewObject( this );
         // 2. set internal methods per 8.12 [DynObject]
         // 3. set class name [DynObject subclass (defaults true)]
         // 4. Set Extensible [DynObject subclass (defaults true)]
@@ -159,7 +159,7 @@ public class ExecutionContext {
             if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
                 thisBinding = this.getLexicalEnvironment().getGlobalObject();
             } else if (!(thisArg instanceof JSObject)) {
-                thisBinding = Types.toObject(thisArg);
+                thisBinding = Types.toObject( this, thisArg);
             } else {
                 thisBinding = thisArg;
             }

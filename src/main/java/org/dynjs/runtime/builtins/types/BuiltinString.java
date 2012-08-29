@@ -9,6 +9,7 @@ import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.string.CharAt;
+import org.dynjs.runtime.builtins.types.string.DynString;
 import org.dynjs.runtime.builtins.types.string.ToString;
 
 public class BuiltinString extends AbstractNativeFunction {
@@ -59,9 +60,8 @@ public class BuiltinString extends AbstractNativeFunction {
     }
 
     @Override
-    public JSObject createNewObject() {
-        PrimitiveDynObject o = new PrimitiveDynObject();
-        o.setClassName("String");
+    public JSObject createNewObject(ExecutionContext context) {
+        DynString o = new DynString(context);
         return o;
     }
 

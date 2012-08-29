@@ -63,7 +63,7 @@ public class BuiltinObject extends AbstractNativeFunction {
             }
 
             if (args[0] instanceof String || args[0] instanceof Boolean || args[0] instanceof Number) {
-                return Types.toObject(args[0]);
+                return Types.toObject(context, args[0]);
             }
         }
 

@@ -16,7 +16,7 @@ public class ToString extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.2
-        JSObject array = Types.toObject(self);
+        JSObject array = Types.toObject(context, self);
         Object func = array.get(context, "join");
         if (!Types.isCallable(func)) {
             func = context.getPrototypeFor("Object").get(context, "toString");

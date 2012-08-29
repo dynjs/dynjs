@@ -48,26 +48,8 @@ public class BuiltinArray extends AbstractNativeFunction {
         return null;
     }
 
-    // 15.4.2.2
-    /*
-     * private Object arrayWithLength(ExecutionContext context, Object arg) {
-     * final Object len = arg;
-     * final Number number = Types.toNumber(len);
-     * final Integer integer = Types.toUint32(len);
-     * if (number.intValue() != integer.intValue()) {
-     * throw new RangeError();
-     * }
-     * final DynArray array = new DynArray(integer);
-     * final PropertyDescriptor descriptor =
-     * PropertyDescriptor.newDataPropertyDescriptor(true);
-     * descriptor.setValue(integer);
-     * array.defineOwnProperty(context, "length", descriptor, false);
-     * return array;
-     * }
-     */
-
     @Override
-    public JSObject createNewObject() {
+    public JSObject createNewObject(ExecutionContext context) {
         DynArray o = new DynArray();
         o.setPrototype(getPrototype());
         return o;

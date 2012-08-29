@@ -29,7 +29,7 @@ public class Reference {
     }
 
     public boolean hasPrimitiveBase() {
-        return false;
+        return ( this.base instanceof String );
     }
 
     public boolean isPropertyReference() {
@@ -51,12 +51,33 @@ public class Reference {
             if (!hasPrimitiveBase()) {
                 value = ((JSObject) this.base).get(context, this.referencedName);
             } else {
-                // TODO: handle primitives (8.7.1 special case)
+                value = primitiveGet( context, Types.toObject( context, this.base ), this.referencedName );
             }
         } else {
             value = ((EnvironmentRecord) this.base).getBindingValue(context, this.referencedName, this.strict);
         }
         return value;
+    }
+    
+    protected Object primitiveGet(ExecutionContext context, JSObject o, String name) {
+        // 8.7.1 primitive [[Get]]
+        Object d = o.getProperty(context, name);
+        if ( d == Types.UNDEFINED ) {
+            return Types.UNDEFINED;
+        }
+        
+        PropertyDescriptor desc = (PropertyDescriptor) d;
+        if ( desc.isDataDescriptor() ) {
+            return desc.getValue();
+        }
+        
+        Object getter = desc.get( "Get" );
+        
+        if ( getter == Types.UNDEFINED ) {
+            return Types.UNDEFINED;
+        }
+        
+        return context.call( (JSFunction) getter, o );
     }
 
     public void putValue(ExecutionContext context, Object value) {

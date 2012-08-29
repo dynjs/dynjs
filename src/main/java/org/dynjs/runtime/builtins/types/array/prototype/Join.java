@@ -17,7 +17,7 @@ public class Join extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.5
 
-        JSObject array = Types.toObject(self);
+        JSObject array = Types.toObject(context, self);
         int len = Types.toUint32(array.get(context, "length"));
         if (len == 0) {
             return "";

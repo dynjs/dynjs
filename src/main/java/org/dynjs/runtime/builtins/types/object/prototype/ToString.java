@@ -23,7 +23,7 @@ public class ToString extends AbstractNativeFunction {
             return "[object Null]";
         }
         
-        JSObject o = Types.toObject(self);
+        JSObject o = Types.toObject(context, self);
         
         return "[object " + o.getClassName() + "]";
     }
