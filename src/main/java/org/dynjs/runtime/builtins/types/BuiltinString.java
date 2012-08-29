@@ -61,8 +61,7 @@ public class BuiltinString extends AbstractNativeFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        DynString o = new DynString(context);
-        return o;
+        return new DynString(context.getGlobalObject());
     }
 
 }

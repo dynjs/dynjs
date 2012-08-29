@@ -4,10 +4,10 @@ public class PrimitiveDynObject extends DynObject {
 
     private Object value;
     
-    public PrimitiveDynObject() {
+    protected PrimitiveDynObject() {
     }
 
-    public PrimitiveDynObject(Object value) {
+    protected PrimitiveDynObject(Object value) {
         this.value = value;
     }
     
@@ -19,6 +19,11 @@ public class PrimitiveDynObject extends DynObject {
         return this.value;
     }
     
+    @Override
+    public Object defaultValue(String hint) {
+        return value;
+    }
+
     public String toString() {
         return "[PrimitiveDynObject: value=" + this.value + "]";
     }

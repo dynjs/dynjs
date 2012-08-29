@@ -9,9 +9,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.BuiltinNumber;
-import org.dynjs.runtime.builtins.types.number.NegativeInfinity;
-import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
+import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -19,18 +17,12 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberPositiveInfinity() {
-        this.runtime.execute("var result = Number.POSITIVE_INFINITY");
-        Reference result = this.runtime.getExecutionContext().resolve("result");
-        Object value = (Object) result.getValue(getContext());
-        assertThat(value).isInstanceOf(PositiveInfinity.class);
+        assertThat( eval("Number.POSITIVE_INFINITY") ).isInstanceOf(DynNumber.class);
   }
 
     @Test
     public void testNumberNegativeInfinity() {
-        this.runtime.execute("var result = Number.NEGATIVE_INFINITY");
-        Reference result = this.runtime.getExecutionContext().resolve("result");
-        Object value = (Object) result.getValue(getContext());
-        assertThat(value).isInstanceOf(NegativeInfinity.class);
+        assertThat( eval("Number.NEGATIVE_INFINITY") ).isInstanceOf( DynNumber.class );
     }
 
     @Test
@@ -118,16 +110,16 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = new Number(12).valueOf();", 12);
     }
     
-    @Ignore // Until we get invokedynamic to hang functions off of primitives
+    @Test
     public void testNumberValueOf() {
         // 15.7.4
-        check("var result = Number(12).valueOf()", 12);
+        assertThat( eval("Number(12).valueOf()" )).isEqualTo(12);
     }
     
     @Test
     public void testNaNValueOf() {
         // 15.7.4
-        check("var result = NaN.valueOf()", Double.NaN);
+        assertThat( eval("NaN.valueOf()" ) ).isEqualTo( Double.NaN);
     }
     
     @Test
@@ -183,21 +175,25 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
     
     @Ignore
+    @Test
     public void testBigAssNumberToFixed() {
-        check("var result = new Number(1e+21).toFixed();", "1e+21");
+        assertThat( eval("new Number(1e+21).toFixed()" )).isEqualTo("1e+21");
     }
     
     @Ignore
+    @Test
     public void testBigAssButSmallerNumberToFixed() {
         check("var result = new Number(1E+20).toFixed();", "1e+20");
     }
     
     @Ignore
+    @Test
     public void testRoundedFractionalDigitsToFixed() {
         check("var result = new Number(13.45).toFixed(20)", "13.5");
     }
     
     @Ignore
+    @Test
     public void testBigAssJavaFriendlyNumberToFixed() {
         check("var result = new Number(1.0E+21).toFixed();", "1e+21");
     }
@@ -253,6 +249,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
     
     @Ignore
+    @Test
     public void testToFixedWithPrecision() {
         check("var result = new Number(12.12345).toFixed(2)", 12.12);
     }

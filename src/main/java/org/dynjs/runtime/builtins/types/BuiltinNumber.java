@@ -7,9 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.number.NaN;
-import org.dynjs.runtime.builtins.types.number.NegativeInfinity;
-import org.dynjs.runtime.builtins.types.number.PositiveInfinity;
+import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToFixed;
 import org.dynjs.runtime.builtins.types.number.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.number.prototype.ToString;
@@ -21,9 +19,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
         super(globalObject, true);
 
         // 15.7.4 Set the prototype
-        final PrimitiveDynObject proto = new PrimitiveDynObject();
-        proto.setClassName("Number");
-        proto.setPrimitiveValue(0);
+        final PrimitiveDynObject proto = new DynNumber(globalObject, 0);
         proto.put( null, "constructor", this, false );
         proto.put( null, "toString", new ToString(globalObject), false );
         proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
@@ -33,11 +29,15 @@ public class BuiltinNumber extends AbstractNativeFunction {
         put( null, "prototype", proto, false );
         setPrototype(globalObject.getPrototypeFor("Function"));
 
-        put(null, "NaN", new NaN(globalObject), false);
-        put(null, "POSITIVE_INFINITY", new PositiveInfinity(globalObject), false);
-        put(null, "NEGATIVE_INFINITY", new NegativeInfinity(globalObject), false);
+        put(null, "NaN", new DynNumber(globalObject, Double.NaN), false);
+        put(null, "POSITIVE_INFINITY", new DynNumber(globalObject, Double.POSITIVE_INFINITY), false);
+        put(null, "NEGATIVE_INFINITY", new DynNumber(globalObject, Double.NEGATIVE_INFINITY), false);
         globalObject.put(null, "NaN", get( null, "NaN" ), false );
         globalObject.put(null, "Infinity", get( null, "POSITIVE_INFINITY" ), false );
+        
+        ((JSObject)get( null, "NaN" )).setPrototype( proto );
+        ((JSObject)get( null, "POSITIVE_INFINITY" )).setPrototype( proto );
+        ((JSObject)get( null, "NEGATIVE_INFINITY" )).setPrototype( proto );
     }
 
     public static boolean isNumber(DynObject object) {
@@ -60,10 +60,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
     @Override
     public JSObject createNewObject(ExecutionContext context) {
         // 15.7.2.1
-        PrimitiveDynObject object = new PrimitiveDynObject();
-        object.setPrototype(this.getPrototype());
-        object.setClassName("Number");
-        return object;
+        return new DynNumber( context.getGlobalObject() );
     }
 
 }

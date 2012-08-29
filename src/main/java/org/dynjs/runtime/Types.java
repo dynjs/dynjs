@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.string.DynString;
 
 public class Types {
@@ -29,7 +30,10 @@ public class Types {
             return (JSObject) o;
         }
         if ( o instanceof String ) {
-            return new DynString( context, (String) o );
+            return new DynString( context.getGlobalObject(), (String) o );
+        }
+        if ( o instanceof Number ) {
+            return new DynNumber( context.getGlobalObject(), (Number) o );
         }
         return new PrimitiveDynObject(o);
     }
