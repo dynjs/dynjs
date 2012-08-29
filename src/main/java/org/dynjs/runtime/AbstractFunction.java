@@ -31,7 +31,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         setClassName("Function");
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set("Value", formalParameters.length);
+                set("Value", 1); // http://es5.github.com/#x15.3.3.2
                 set("Writable", false);
                 set("Configurable", false);
                 set("Enumerable", false);

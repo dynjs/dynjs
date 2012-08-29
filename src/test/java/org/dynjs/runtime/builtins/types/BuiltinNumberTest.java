@@ -118,7 +118,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = new Number(12).valueOf();", 12);
     }
     
-    @Ignore
+    @Ignore // Until we get invokedynamic to hang functions off of primitives
     public void testNumberValueOf() {
         // 15.7.4
         check("var result = Number(12).valueOf()", 12);
@@ -242,9 +242,13 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = new Number(-12).toFixed()", "-12");
     }
     
-    @Ignore
+    @Test
+    public void testNumberCtorLength() {
+        check("var result = Number.length", 1);
+    }
+    
+    @Test
     public void testToFixedLength() {
-        // TODO: what's up with this?
         check("var result = new Number(12).toFixed.length", 1);
     }
     
