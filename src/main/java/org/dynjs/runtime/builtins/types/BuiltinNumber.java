@@ -1,7 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;

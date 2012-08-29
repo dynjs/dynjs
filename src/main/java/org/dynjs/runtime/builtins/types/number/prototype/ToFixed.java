@@ -62,12 +62,22 @@ public class ToFixed extends AbstractNativeFunction {
             value = Types.toString(_double_);
         } else {
             if (digits == 0) {
-                value = String.valueOf(Math.round(_double_));
+                value = String.valueOf(new Integer((int) _double_));
             } else {
                 value = Double.toString(_double_);
             }
         }
         // TODO: We have to make exponential values look like JS and not Java
+        return rewritePossiblyExponentialValue(value);
+    }
+
+    private String rewritePossiblyExponentialValue(String value) {
+        // Java writes exponential values as 1.0E14 while JS likes
+        // them as 1e+14
+        final int index = value.indexOf(".0E");
+        if (index != -1) {
+            value = value.substring(0, index) + "e+" + value.substring(index+3);
+        }
         return value;
     }
 }
