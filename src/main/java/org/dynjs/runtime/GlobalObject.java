@@ -9,6 +9,7 @@ import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
+import org.dynjs.runtime.builtins.JSON;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.Require;
@@ -63,6 +64,8 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("SyntaxError", new BuiltinSyntaxError(this));
         defineGlobalProperty("TypeError", new BuiltinTypeError(this));
         defineGlobalProperty("URIError", new BuiltinURIError(this));
+        
+        defineGlobalProperty("JSON", new JSON(this) );
         
         defineGlobalProperty("require", new Require(this));
         this.moduleProviders.add( new FilesystemModuleProvider() );
