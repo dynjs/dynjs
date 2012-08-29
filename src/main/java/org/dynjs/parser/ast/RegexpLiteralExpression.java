@@ -40,4 +40,8 @@ public class RegexpLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public String toString() {
+        return "/" + this.pattern + "/" + this.flags;
+    }
 }
