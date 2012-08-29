@@ -40,10 +40,6 @@ public class BuiltinNumber extends AbstractNativeFunction {
         ((JSObject)get( null, "NEGATIVE_INFINITY" )).setPrototype( proto );
     }
 
-    public static boolean isNumber(DynObject object) {
-        return "Number".equals(object.getClassName());
-    }
-
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (self == Types.UNDEFINED) {

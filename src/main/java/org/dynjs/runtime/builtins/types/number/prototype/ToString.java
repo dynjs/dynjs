@@ -4,8 +4,8 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
+import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToString extends AbstractNativeFunction {
     public ToString(GlobalObject globalObject) {
@@ -14,8 +14,8 @@ public class ToString extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (BuiltinNumber.isNumber((DynObject) self)) {
-            return ((PrimitiveDynObject)self).getPrimitiveValue().toString();
+        if (self instanceof DynNumber) {
+            return ((DynNumber)self).getPrimitiveValue().toString();
         }
         return "0";
     }
