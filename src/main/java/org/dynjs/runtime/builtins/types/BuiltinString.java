@@ -16,7 +16,7 @@ public class BuiltinString extends AbstractNativeFunction {
 
     public BuiltinString(final GlobalObject globalObject) {
         super(globalObject, "value");
-        final DynObject proto = new DynObject();
+        final DynObject proto = new DynObject( globalObject );
         proto.setClassName("String");
         proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
             {

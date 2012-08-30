@@ -20,7 +20,6 @@ public class BuiltinBoolean extends AbstractNativeFunction {
         proto.put( null, "constructor", this, false );
         proto.put( null, "toString", new ToString(globalObject), false );
         proto.put( null, "valueOf", new ValueOf(globalObject), false );
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
         
         put( null, "prototype", proto, false );
         setPrototype(globalObject.getPrototypeFor("Function"));

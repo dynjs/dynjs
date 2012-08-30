@@ -14,7 +14,6 @@ public class BuiltinRegExp extends AbstractNativeFunction {
         setPrototype(globalObject.getPrototypeFor("Function"));
 
         DynRegExp proto = new DynRegExp(globalObject, "", "" );
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ) );
         proto.put( null, "constructor", this, false );
         proto.put( null, "exec", new Exec(globalObject), false );
         

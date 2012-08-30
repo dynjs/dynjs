@@ -4,10 +4,12 @@ public class PrimitiveDynObject extends DynObject {
 
     private Object value;
     
-    protected PrimitiveDynObject() {
+    protected PrimitiveDynObject(GlobalObject globalObject) {
+        super( globalObject );
     }
 
-    protected PrimitiveDynObject(Object value) {
+    protected PrimitiveDynObject(GlobalObject globalObject, Object value) {
+        super( globalObject );
         this.value = value;
     }
     

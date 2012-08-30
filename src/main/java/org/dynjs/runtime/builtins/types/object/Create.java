@@ -26,7 +26,7 @@ public class Create extends AbstractNativeFunction {
 
         JSObject jsObj = (JSObject) o;
         
-        DynObject newObj = new DynObject();
+        DynObject newObj = new DynObject( context.getGlobalObject() );
         
         newObj.setPrototype( jsObj );
         

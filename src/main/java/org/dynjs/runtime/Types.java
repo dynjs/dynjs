@@ -35,7 +35,7 @@ public class Types {
         if ( o instanceof Number ) {
             return new DynNumber( context.getGlobalObject(), (Number) o );
         }
-        return new PrimitiveDynObject(o);
+        return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
 
     public static Object toPrimitive(Object o) {

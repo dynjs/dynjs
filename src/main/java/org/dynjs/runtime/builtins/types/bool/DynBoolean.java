@@ -10,7 +10,7 @@ public class DynBoolean extends PrimitiveDynObject {
     }
     
     public DynBoolean(GlobalObject globalObject, Boolean value) {
-        super( value );
+        super( globalObject, value );
         setClassName( "Boolean" );
         setPrototype(globalObject.getPrototypeFor("Boolean"));
     }

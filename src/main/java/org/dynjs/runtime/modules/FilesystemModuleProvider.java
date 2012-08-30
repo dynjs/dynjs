@@ -31,8 +31,8 @@ public class FilesystemModuleProvider implements ModuleProvider {
 
             GlobalObject requireGlobal = requireContext.getGlobalObject();
 
-            DynObject module = new DynObject();
-            DynObject exports = new DynObject();
+            DynObject module = new DynObject( context.getGlobalObject() );
+            DynObject exports = new DynObject( context.getGlobalObject() );
             
             requireGlobal.addLoadPath( file.getParent() );
 

@@ -9,7 +9,7 @@ public class DynString extends PrimitiveDynObject {
         this( globalObject, null );
     }
     public DynString(GlobalObject globalObject, String value) {
-        super( value );
+        super( globalObject, value );
         setClassName( "String" );
         setPrototype(globalObject.getPrototypeFor("String"));
     }

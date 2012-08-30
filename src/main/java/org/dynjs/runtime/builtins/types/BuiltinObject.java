@@ -44,7 +44,7 @@ public class BuiltinObject extends AbstractNativeFunction {
         put(null, "isExtensible", new IsExtensible(globalObject), false );
         put(null, "keys", new Keys(globalObject), false );
         
-        final DynObject proto = new DynObject();
+        final DynObject proto = new DynObject( globalObject );
         proto.put( null, "toString", new ToString(globalObject), false );
         proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
         proto.put( null, "hasOwnProperty", new HasOwnProperty(globalObject), false );

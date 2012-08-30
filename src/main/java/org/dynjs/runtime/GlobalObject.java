@@ -40,6 +40,7 @@ public class GlobalObject extends DynObject {
     private List<String> loadPaths = new ArrayList<>();
 
     public GlobalObject(DynJS runtime) {
+        super( null );
         this.runtime = runtime;
         this.blockManager = new BlockManager();
         
@@ -76,6 +77,8 @@ public class GlobalObject extends DynObject {
         javaClassModuleProvider.addModule( new ConsoleModule() );
         
         this.moduleProviders.add( javaClassModuleProvider );
+        
+        setPrototype( getPrototypeFor( "Object" ) );
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);

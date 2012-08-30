@@ -48,7 +48,7 @@ public class JavaClassModuleProvider implements ModuleProvider {
     private DynObject buildExports(ExecutionContext context, String moduleName, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
 
-        DynObject exports = new DynObject();
+        DynObject exports = new DynObject( context.getGlobalObject() );
 
         for (Method method : methods) {
             Export exportAnno = method.getAnnotation(Export.class);

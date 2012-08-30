@@ -13,7 +13,7 @@ public class BuiltinError extends AbstractNativeFunction {
     public BuiltinError(final GlobalObject globalObject) {
         super(globalObject);
         
-        final DynObject proto = new DynObject();
+        final DynObject proto = new DynObject( globalObject );
         proto.setClassName("Error");
         proto.put(null, "constructor", this, false );
         proto.put(null, "name", "Error", false );
@@ -31,8 +31,7 @@ public class BuiltinError extends AbstractNativeFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        DynObject o = new DynObject();
-        o.setPrototype( (JSObject) get( null, "prototype" ));
+        DynObject o = new DynObject( context.getGlobalObject() );
         o.setClassName("Error");
         return o;
     }

@@ -10,7 +10,7 @@ public class DynNumber extends PrimitiveDynObject {
     }
     
     public DynNumber(GlobalObject globalObject, Number value) {
-        super( value );
+        super( globalObject, value );
         setClassName( "Number" );
         setPrototype(globalObject.getPrototypeFor("Number"));
     }

@@ -29,9 +29,12 @@ public class DynObject implements JSObject {
     private final Map<String, PropertyDescriptor> properties = new HashMap<>();
     private boolean extensible = true;
 
-    public DynObject() {
+    public DynObject(GlobalObject globalObject) {
         setClassName("Object");
         setExtensible(true);
+        if (globalObject != null) {
+            setPrototype(globalObject.getPrototypeFor("Object"));
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -331,7 +334,7 @@ public class DynObject implements JSObject {
 
     protected boolean reject(ExecutionContext context, boolean shouldThrow) {
         if (shouldThrow) {
-            throw new ThrowException( context.createTypeError( "unable to perform operation" ));
+            throw new ThrowException(context.createTypeError("unable to perform operation"));
         }
         return false;
     }

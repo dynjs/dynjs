@@ -19,7 +19,8 @@ import org.dynjs.exception.ThrowException;
 
 public class DynArray extends DynObject {
 
-    public DynArray() {
+    public DynArray(GlobalObject globalObject) {
+        super( globalObject );
         setClassName( "Array" );
         super.defineOwnProperty(null, "length", new PropertyDescriptor() {
             {

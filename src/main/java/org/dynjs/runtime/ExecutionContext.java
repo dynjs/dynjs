@@ -124,6 +124,7 @@ public class ExecutionContext {
         if (p != Types.UNDEFINED) {
             obj.setPrototype((JSObject) p);
         }
+        
         // 8. Call the function with obj as self
         Object result = call(function, obj, args);
         // 9. If result is a JSObject return it
@@ -252,7 +253,7 @@ public class ExecutionContext {
     private Arguments createArgumentsObject(final JSFunction function, final Object[] arguments) {
         // 10.6
 
-        Arguments obj = new Arguments();
+        Arguments obj = new Arguments( getGlobalObject() );
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
                 set("Value", arguments.length);
@@ -265,7 +266,7 @@ public class ExecutionContext {
 
         String[] names = function.getFormalParameters();
 
-        DynObject map = new DynObject();
+        DynObject map = new DynObject( getGlobalObject() );
         List<String> mappedNames = new ArrayList<>();
 
         final LexicalEnvironment env = getVariableEnvironment();
@@ -400,9 +401,9 @@ public class ExecutionContext {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
         JSObject err = null;
         if (message == null) {
-            err = (JSObject) call(func, Types.UNDEFINED);
+            err = (JSObject) construct(func, Types.UNDEFINED);
         } else {
-            err = (JSObject) call(func, Types.UNDEFINED, message);
+            err = (JSObject) construct(func, Types.UNDEFINED, message);
         }
         return err;
 

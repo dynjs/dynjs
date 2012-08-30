@@ -14,11 +14,10 @@ public class BuiltinArray extends AbstractNativeFunction {
     public BuiltinArray(final GlobalObject globalObject) {
         super(globalObject);
 
-        final DynArray proto = new DynArray();
+        final DynArray proto = new DynArray( globalObject );
         proto.put(null, "constructor", this, false );
         proto.put(null, "toString", new ToString( globalObject ), false );
         proto.put( null, "join", new Join(globalObject), false );
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
         put(null, "prototype", proto, false );
         
         setPrototype( globalObject.getPrototypeFor( "Function" ));
@@ -50,9 +49,7 @@ public class BuiltinArray extends AbstractNativeFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        DynArray o = new DynArray();
-        o.setPrototype(getPrototype());
-        return o;
+        return new DynArray( context.getGlobalObject() );
     }
 
     // ----------------------------------------------------------------------

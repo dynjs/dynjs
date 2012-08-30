@@ -13,7 +13,7 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
     public AbstractBuiltinNativeError(GlobalObject globalObject, final String name) {
         super(globalObject, true, "message");
 
-        final DynObject proto = new DynObject();
+        final DynObject proto = new DynObject( globalObject );
         proto.setClassName("Error");
         proto.put(null, "constructor", this, false);
         proto.put(null, "name", name, false);
@@ -29,7 +29,7 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
         JSObject o = null;
 
         if (self == Types.UNDEFINED) {
-            o = createNewObject(context);
+            o = context.createError( (String) ((JSObject)get( context, "prototype" )).get(null, "name"), null);
         } else {
             o = (JSObject) self;
         }
@@ -46,8 +46,7 @@ public class AbstractBuiltinNativeError extends AbstractNativeFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        DynObject o = new DynObject();
-        o.setPrototype((JSObject) get(null, "prototype"));
+        DynObject o = new DynObject( context.getGlobalObject() );
         o.setClassName("Error");
         return o;
     }

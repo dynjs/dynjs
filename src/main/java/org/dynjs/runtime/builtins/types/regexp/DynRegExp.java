@@ -7,6 +7,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 public class DynRegExp extends DynObject {
 
     public DynRegExp(GlobalObject globalObject) {
+        super( globalObject );
         setClassName("RegExp");
         setPrototype(globalObject.getPrototypeFor("RegExp"));
     }
