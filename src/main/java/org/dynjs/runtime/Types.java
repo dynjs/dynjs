@@ -93,6 +93,7 @@ public class Types {
 
     public static Boolean toBoolean(Object o) {
         // 9.2
+        System.err.println( "toBoolean(" + o + ")" );
         if (o instanceof Boolean) {
             return (Boolean) o;
         }

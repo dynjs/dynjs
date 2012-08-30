@@ -51,4 +51,37 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
         assertThat( y ).isEqualTo(5);
     }
     
+    @Test
+    public void testNullCondition() {
+        Object result = eval( "var x = 1;",
+                "while (null) {",
+                "  x = 2;",
+                "}",
+                "x;" );
+        
+        assertThat( result ).isEqualTo(1);
+    }
+    
+    @Test
+    public void testZeroCondition() {
+        Object result = eval( "var x = 1;",
+                "while (0) {",
+                "  x = 2;",
+                "}",
+                "x;" );
+        
+        assertThat( result ).isEqualTo(1);
+    }
+    
+    @Test
+    public void testUndefinedCondition() {
+        Object result = eval( "var x = 1;",
+                "while (undefined) {",
+                "  x = 2;",
+                "}",
+                "x;" );
+        
+        assertThat( result ).isEqualTo(1);
+    }
+    
 }

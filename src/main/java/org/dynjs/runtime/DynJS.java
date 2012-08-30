@@ -69,12 +69,14 @@ public class DynJS {
     }
     
     public Object execute(ExecutionContext execContext, FileInputStream program, String filename) throws IOException {
+        System.err.println("FILE: " + filename );
         JSProgram programObj = compile( execContext, program, filename );
         Completion completion = execContext.execute(programObj);
         return completion.value;
     }
     
     public Object execute(String program, String filename, int lineNumber) {
+        System.err.println("FILE: " + filename );
         JSProgram programObj = compile( this.context, program, filename );
         Completion completion = this.context.execute(programObj);
         Object v = completion.value;
