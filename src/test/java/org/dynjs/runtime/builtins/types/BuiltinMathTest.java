@@ -1,6 +1,8 @@
 package org.dynjs.runtime.builtins.types;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
@@ -9,7 +11,7 @@ import org.junit.Test;
 public class BuiltinMathTest extends AbstractDynJSTestSupport {
     
     @Test
-    public void testMathPrototypeIsUnefined() {
+    public void testMathPrototypeIsUndefined() {
         assertThat(eval("Math.prototype")).isEqualTo(Types.UNDEFINED);
     }
     
@@ -51,6 +53,26 @@ public class BuiltinMathTest extends AbstractDynJSTestSupport {
     @Test
     public void testMathSqrt2() {
         assertPrimitive("Math.SQRT2", Math.sqrt(2.0f));
+    }
+    
+    @Test
+    public void testMathConstructor() {
+        try {
+            eval("new Math()");
+            fail("The Math constructor should raise a TypeError");
+        } catch (ThrowException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testMathFunction() {
+        try {
+            eval("Math()");
+            fail("The Math function should raise a TypeError");
+        } catch (ThrowException e) {
+            // expected
+        }
     }
 
     private void assertPrimitive(String javascript, Number value) {

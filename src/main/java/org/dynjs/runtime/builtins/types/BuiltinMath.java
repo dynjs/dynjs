@@ -1,8 +1,10 @@
 package org.dynjs.runtime.builtins.types;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class BuiltinMath extends AbstractNativeFunction {
@@ -23,8 +25,7 @@ public class BuiltinMath extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new ThrowException(context.createTypeError("Math is not a function"));
     }
 
 }
