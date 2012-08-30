@@ -399,7 +399,6 @@ public class ExecutionContext {
 
     public JSObject createError(String type, String message) {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
-        System.err.println( "creating: " + type + " // " + func.getClass() );
         JSObject err = null;
         if (message == null) {
             err = (JSObject) construct(func);
