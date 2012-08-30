@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.string.DynString;
 
@@ -34,6 +35,9 @@ public class Types {
         }
         if ( o instanceof Number ) {
             return new DynNumber( context.getGlobalObject(), (Number) o );
+        }
+        if ( o instanceof Boolean ) {
+            return new DynBoolean(context.getGlobalObject(), (Boolean) o );
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }

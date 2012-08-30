@@ -29,7 +29,7 @@ public class Reference {
     }
 
     public boolean hasPrimitiveBase() {
-        return ( this.base instanceof String ) || ( this.base instanceof Number );
+        return ( this.base instanceof String ) || ( this.base instanceof Number ) || ( this.base instanceof Boolean );
     }
 
     public boolean isPropertyReference() {
