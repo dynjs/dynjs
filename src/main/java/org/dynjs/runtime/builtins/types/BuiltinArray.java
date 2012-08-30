@@ -5,7 +5,6 @@ import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.array.prototype.Join;
 import org.dynjs.runtime.builtins.types.array.prototype.ToString;
@@ -19,6 +18,7 @@ public class BuiltinArray extends AbstractNativeFunction {
         proto.put(null, "constructor", this, false );
         proto.put(null, "toString", new ToString( globalObject ), false );
         proto.put( null, "join", new Join(globalObject), false );
+        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
         put(null, "prototype", proto, false );
         
         setPrototype( globalObject.getPrototypeFor( "Function" ));

@@ -15,6 +15,7 @@ import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.builtins.ThrowTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
+import org.dynjs.runtime.builtins.types.BuiltinBoolean;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinFunction;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
@@ -53,6 +54,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("eval", new Eval(this));
         defineGlobalProperty("isNaN", new IsNaN(this));
         defineGlobalProperty("isFinite", new IsFinite(this));
+        defineGlobalProperty("Boolean", new BuiltinBoolean(this));
         defineGlobalProperty("Number", new BuiltinNumber(this));
         defineGlobalProperty("Array", new BuiltinArray(this));
         defineGlobalProperty("String", new BuiltinString(this));

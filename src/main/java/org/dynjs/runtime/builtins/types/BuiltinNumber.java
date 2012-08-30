@@ -26,6 +26,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
         proto.put( null, "valueOf", new ValueOf(globalObject), false );
         proto.put( null, "toFixed", new ToFixed(globalObject), false );
         proto.put( null, "toExponential", new ToExponential(globalObject), false );
+        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
         
         put( null, "prototype", proto, false );
         setPrototype(globalObject.getPrototypeFor("Function"));
