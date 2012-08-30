@@ -41,28 +41,33 @@ public class ThrowException extends DynJSException {
 
         if (value instanceof JSObject) {
             String errorName = "<unknown>";
-            if ( ((JSObject)value).hasProperty(context, "name" ) ) {
-                errorName = (String) ((JSObject)value).get(context, "name" );
+            if (((JSObject) value).hasProperty(context, "name")) {
+                errorName = (String) ((JSObject) value).get(context, "name");
             }
             String message = null;
-            if ( ((JSObject)value).hasProperty(context, "message" ) ) {
-                message = (String) ((JSObject)value).get(context, "message" );
+            if (((JSObject) value).hasProperty(context, "message")) {
+                message = (String) ((JSObject) value).get(context, "message");
             }
             final String msg = message;
             final String err = errorName;
-            ((JSObject)value).defineOwnProperty(context, "stack", new PropertyDescriptor() {
+            ((JSObject) value).defineOwnProperty(context, "stack", new PropertyDescriptor() {
                 {
                     set("Get", new StackGetter(context.getGlobalObject(), err, msg, stack));
                 }
             }, false);
         }
     }
-    
+
     public String getMessage() {
-        if ( value instanceof JSObject ) {
-            if ( ((JSObject)value).hasProperty(null, "message")) {
-                return (String) ((JSObject)value).get(null, "message");
+        if (value instanceof JSObject) {
+            String message = "";
+            if (((JSObject) value).hasProperty(null, "name")) {
+                message += ((JSObject)value).get( null, "name" ) + ": ";
             }
+            if (((JSObject) value).hasProperty(null, "message")) {
+                message += ((JSObject) value).get(null, "message");
+            }
+            return message;
         }
         return super.getMessage();
     }
