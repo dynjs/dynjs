@@ -1364,7 +1364,7 @@ iterationStatement
 	;
 	
 doStatement
-	: DO statement WHILE LPAREN expression RPAREN semic
+	: DO statement semic? WHILE LPAREN expression RPAREN semic
 	-> ^( DO statement expression )
 	;
 	
