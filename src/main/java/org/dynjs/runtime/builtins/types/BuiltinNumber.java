@@ -7,6 +7,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
+import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;
 import org.dynjs.runtime.builtins.types.number.prototype.ToFixed;
 import org.dynjs.runtime.builtins.types.number.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.number.prototype.ToString;
@@ -24,6 +25,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
         proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
         proto.put( null, "valueOf", new ValueOf(globalObject), false );
         proto.put( null, "toFixed", new ToFixed(globalObject), false );
+        proto.put( null, "toExponential", new ToExponential(globalObject), false );
         
         put( null, "prototype", proto, false );
         setPrototype(globalObject.getPrototypeFor("Function"));

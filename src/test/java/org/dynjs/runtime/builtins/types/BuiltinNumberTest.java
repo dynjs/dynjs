@@ -252,4 +252,34 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testToFixedWithPrecision() {
         check("var result = new Number(12.12345).toFixed(2)", 12.12);
     }
+    
+    @Test
+    public void testToExponentialLength() {
+        check("var result = new Number(21).toExponential.length", 1);
+    }
+    
+    @Ignore
+    public void testToExponential() {
+        check("var result = new Number(14).toExponential()", "1.4e+1");
+    }
+    
+    @Ignore
+    public void testNegativeNumberToExponential() {
+        check("var result = new Number(-14).toExponential()", "-1.4e+1");
+    }
+    
+    @Test
+    public void testToExponentialNaN() {
+        check("var result = new Number('asdf').toExponential()", "NaN");
+    }
+    
+    @Test
+    public void testZeroToExponential() {
+        check("var result = new Number(0).toExponential()", "0e+0");
+    }
+
+    @Test
+    public void testDoubleZeroToExponential() {
+        check("var result = new Number(0.0).toExponential()", "0e+0");
+    }
 }
