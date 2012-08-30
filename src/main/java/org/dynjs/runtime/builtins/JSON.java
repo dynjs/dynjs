@@ -18,6 +18,7 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.builtins.types.json.Parse;
+import org.dynjs.runtime.builtins.types.json.Stringify;
 
 public class JSON extends DynObject {
 
@@ -25,6 +26,7 @@ public class JSON extends DynObject {
         setClassName("JSON" );
         setPrototype( globalObject.getPrototypeFor("Object" ));
         put( null, "parse", new Parse(globalObject), false );
+        put( null, "stringify", new Stringify(globalObject), false );
     }
 
 }
