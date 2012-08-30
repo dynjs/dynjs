@@ -19,6 +19,16 @@ public class ForVarDeclExpressionTest extends AbstractDynJSTestSupport {
         
         Object y = getContext().resolve("y").getValue(getContext());
         assertThat( y ).isEqualTo(9);
+    }
+    
+    @Test
+    public void testLoopWithNaNTest() {
+        Object result = eval( "var y=0;",
+                "for ( var i = 0 ; NaN; ) {",
+                "  y = i;",
+                "}",
+                "y");
         
+        assertThat( result ).isEqualTo( 0);
     }
 }

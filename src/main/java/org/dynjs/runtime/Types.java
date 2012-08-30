@@ -93,22 +93,32 @@ public class Types {
 
     public static Boolean toBoolean(Object o) {
         // 9.2
-        System.err.println( "toBoolean(" + o + ")" );
         if (o instanceof Boolean) {
             return (Boolean) o;
         }
+        
         if (o == Types.UNDEFINED || o == Types.NULL) {
             return false;
         }
+        if ( o instanceof Double ) {
+            if ( ((Double)o).isNaN() || ((Double)o).doubleValue() == 0.0 ) {
+                return false;
+            }
+            return true;
+        }
+        
         if (o instanceof Number) {
-            double d = ((Number) o).doubleValue();
-            if (d == 0 || d == Double.NaN) {
+            if ( ((Number)o).intValue() == 0) {
                 return false;
             }
             return true;
         }
         if (o instanceof String) {
             return (((String) o).length() != 0);
+        }
+        
+        if ( o instanceof PrimitiveDynObject ) {
+            return toBoolean( ((PrimitiveDynObject)o).getPrimitiveValue() );
         }
 
         return true;
