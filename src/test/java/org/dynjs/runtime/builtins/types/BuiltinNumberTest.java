@@ -10,6 +10,7 @@ import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,6 +24,20 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testNumberNegativeInfinity() {
         assertThat( eval("Number.NEGATIVE_INFINITY") ).isInstanceOf( DynNumber.class );
+    }
+    
+    @Test
+    public void testMinValue() {
+        Object minValue = eval("Number.MIN_VALUE");
+        assertThat( minValue ).isInstanceOf( DynNumber.class );
+        assertThat( ((PrimitiveDynObject) minValue).getPrimitiveValue() ).isEqualTo( Double.MIN_VALUE );
+    }
+
+    @Test
+    public void testMaxValue() {
+        Object minValue = eval("Number.MAX_VALUE");
+        assertThat( minValue ).isInstanceOf( DynNumber.class );
+        assertThat( ((PrimitiveDynObject) minValue).getPrimitiveValue() ).isEqualTo( Double.MAX_VALUE );
     }
 
     @Test

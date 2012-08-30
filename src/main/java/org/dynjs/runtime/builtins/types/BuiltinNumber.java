@@ -34,6 +34,8 @@ public class BuiltinNumber extends AbstractNativeFunction {
         put(null, "NaN", new DynNumber(globalObject, Double.NaN), false);
         put(null, "POSITIVE_INFINITY", new DynNumber(globalObject, Double.POSITIVE_INFINITY), false);
         put(null, "NEGATIVE_INFINITY", new DynNumber(globalObject, Double.NEGATIVE_INFINITY), false);
+        put(null, "MIN_VALUE", new DynNumber(globalObject, Double.MIN_VALUE), false);
+        put(null, "MAX_VALUE", new DynNumber(globalObject, Double.MAX_VALUE), false);
         globalObject.put(null, "NaN", get( null, "NaN" ), false );
         globalObject.put(null, "Infinity", get( null, "POSITIVE_INFINITY" ), false );
         
