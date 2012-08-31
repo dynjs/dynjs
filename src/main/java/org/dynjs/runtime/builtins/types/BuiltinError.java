@@ -14,12 +14,12 @@ public class BuiltinError extends AbstractNativeFunction {
         super(globalObject);
         
         final DynObject proto = new DynObject( globalObject );
+        put(null, "prototype", proto, false );
         proto.setClassName("Error");
         proto.put(null, "constructor", this, false );
         proto.put(null, "name", "Error", false );
         proto.put(null, "message", "", false );
         proto.put(null, "toString", new ToString(globalObject), false );
-        put(null, "prototype", proto, false );
         
         setPrototype( globalObject.getPrototypeFor( "Function" ));
     }

@@ -20,6 +20,7 @@ public class BuiltinArray extends AbstractNativeFunction {
         super(globalObject);
 
         final DynArray proto = new DynArray(globalObject);
+        put(null, "prototype", proto, false);
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
         proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
@@ -29,7 +30,6 @@ public class BuiltinArray extends AbstractNativeFunction {
         proto.put(null, "push", new Push(globalObject), false);
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
         
-        put(null, "prototype", proto, false);
         put(null, "isArray", new IsArray(globalObject), false);
 
         setPrototype(globalObject.getPrototypeFor("Function"));

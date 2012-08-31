@@ -36,6 +36,7 @@ public class BuiltinFunction extends AbstractNativeFunction {
             }
         };
 
+        put( null, "prototype", proto, false );
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
         proto.put(null, "apply", new Apply(globalObject), false);
@@ -43,7 +44,6 @@ public class BuiltinFunction extends AbstractNativeFunction {
         proto.put(null, "bind", new Bind(globalObject), false);
         proto.setPrototype( globalObject.getPrototypeFor( "Object" ) );
         
-        put( null, "prototype", proto, false );
 
         setPrototype( proto );
     }

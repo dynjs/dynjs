@@ -30,6 +30,14 @@ public class BuiltinObject extends AbstractNativeFunction {
     public BuiltinObject(final GlobalObject globalObject) {
         super(globalObject, "value");
 
+        final DynObject proto = new DynObject( globalObject );
+        put(null, "prototype", proto, false );
+        proto.put( null, "toString", new ToString(globalObject), false );
+        proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
+        proto.put( null, "hasOwnProperty", new HasOwnProperty(globalObject), false );
+        proto.put( null, "isPrototypeOf", new IsPrototypeOf(globalObject), false );
+        proto.put( null, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject), false );
+        
         put(null, "getPrototypeOf", new GetPrototypeOf(globalObject), false );
         put(null, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject), false );
         put(null, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject), false );
@@ -43,14 +51,6 @@ public class BuiltinObject extends AbstractNativeFunction {
         put(null, "isFrozen", new IsFrozen(globalObject), false );
         put(null, "isExtensible", new IsExtensible(globalObject), false );
         put(null, "keys", new Keys(globalObject), false );
-        
-        final DynObject proto = new DynObject( globalObject );
-        proto.put( null, "toString", new ToString(globalObject), false );
-        proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
-        proto.put( null, "hasOwnProperty", new HasOwnProperty(globalObject), false );
-        proto.put( null, "isPrototypeOf", new IsPrototypeOf(globalObject), false );
-        proto.put( null, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject), false );
-        put(null, "prototype", proto, false );
         
         setPrototype(globalObject.getPrototypeFor("Function"));
     }

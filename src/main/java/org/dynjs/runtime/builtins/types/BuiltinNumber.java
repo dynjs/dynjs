@@ -20,6 +20,7 @@ public class BuiltinNumber extends AbstractNativeFunction {
 
         // 15.7.4 Set the prototype
         final PrimitiveDynObject proto = new DynNumber(globalObject, 0);
+        put( null, "prototype", proto, false );
         proto.put( null, "constructor", this, false );
         proto.put( null, "toString", new ToString(globalObject), false );
         proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
@@ -28,7 +29,6 @@ public class BuiltinNumber extends AbstractNativeFunction {
         proto.put( null, "toExponential", new ToExponential(globalObject), false );
         proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
         
-        put( null, "prototype", proto, false );
         setPrototype(globalObject.getPrototypeFor("Function"));
 
         put(null, "NaN", new DynNumber(globalObject, Double.NaN), false);
