@@ -1,30 +1,28 @@
-package org.dynjs.runtime.builtins.types.math;
+package org.dynjs.runtime.builtins.math;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class Acos extends AbstractNativeFunction {
-
-    public Acos(GlobalObject globalObject) {
+public class Abs extends AbstractNativeFunction {
+    
+    public Abs(GlobalObject globalObject) {
         super(globalObject);
     }
-    
+
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         Number arg = Types.toNumber(args[0]);
         if (arg instanceof Double) {
-            Double argd = (Double) arg;
-            if (argd > 1 || argd < -1 || Double.isNaN(argd)) {
+            if (Double.isNaN((Double) arg)) {
                 return Double.NaN;
-            } 
-            return Math.acos(argd);
-        } else {
-            if ((Integer) arg == 1) {
-                return 0;
+            } else if (Double.isInfinite((Double) arg)) {
+                return Double.POSITIVE_INFINITY; 
             }
-            return Math.acos((Integer) arg);
+            return Math.abs((Double) arg);
+        } else {
+            return Math.abs((Integer) arg);
         }
     }
 

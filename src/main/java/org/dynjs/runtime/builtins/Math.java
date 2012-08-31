@@ -2,8 +2,9 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.builtins.types.math.Abs;
-import org.dynjs.runtime.builtins.types.math.Acos;
+import org.dynjs.runtime.builtins.math.Abs;
+import org.dynjs.runtime.builtins.math.Acos;
+import org.dynjs.runtime.builtins.math.Asin;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -24,6 +25,7 @@ public class Math extends DynObject {
         // Math functions 15.8.2
         put(null, "abs", new Abs(globalObject), false); // 15.8.2.1
         put(null, "acos", new Acos(globalObject), false); // 15.8.2.2
+        put(null, "asin", new Asin(globalObject), false); // 15.8.2.3
     }
 
 

@@ -106,6 +106,41 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathAsin() {
+        assertThat(eval("Math.asin(0.5)")).isEqualTo( java.lang.Math.asin( 0.5 ) );
+    }
+    
+    @Test
+    public void testMathAsinNaN() {
+        assertThat(eval("Math.asin(new Number('qw4'))")).isEqualTo( Double.NaN );
+    }
+    
+    @Test
+    public void testMathAsinGreaterThanOne() {
+        assertThat(eval("Math.asin(1.5)")).isEqualTo( Double.NaN );
+    }
+    
+    @Test
+    public void testMathAsinLessThanNegativeOne() {
+        assertThat(eval("Math.asin(-1.5)")).isEqualTo( Double.NaN );
+    }
+    
+    @Test
+    public void testMathAsinNegativeZero() {
+        assertThat(eval("Math.asin(-0)")).isEqualTo( 0 );
+    }
+    
+    @Test
+    public void testMathAsinZero() {
+        assertThat(eval("Math.asin(0)")).isEqualTo( 0 );
+    }
+    
+    @Test
+    public void testMathAsinFloatyZero() {
+        assertThat(eval("Math.asin(0.0)")).isEqualTo( 0 );
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
