@@ -6,7 +6,10 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.array.IsArray;
+import org.dynjs.runtime.builtins.types.array.prototype.Concat;
 import org.dynjs.runtime.builtins.types.array.prototype.Join;
+import org.dynjs.runtime.builtins.types.array.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.array.prototype.ToString;
 
 public class BuiltinArray extends AbstractNativeFunction {
@@ -17,9 +20,13 @@ public class BuiltinArray extends AbstractNativeFunction {
         final DynArray proto = new DynArray(globalObject);
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
+        proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
+        proto.put(null, "concat", new Concat(globalObject), false);
         proto.put(null, "join", new Join(globalObject), false);
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
+        
         put(null, "prototype", proto, false);
+        put(null, "isArray", new IsArray(globalObject), false);
 
         setPrototype(globalObject.getPrototypeFor("Function"));
     }

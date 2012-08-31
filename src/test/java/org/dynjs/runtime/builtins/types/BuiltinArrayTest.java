@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.DynArray;
+import org.dynjs.runtime.JSObject;
 import org.junit.Test;
 
 public class BuiltinArrayTest extends AbstractDynJSTestSupport {
@@ -93,6 +94,32 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     public void testJoinWithArgOnLiteral() {
         Object result = eval( "[ 1, 2, 3 ].join(' . ')" );
         assertThat( result ).isEqualTo( "1 . 2 . 3" );
+        
+    }
+    
+    @Test
+    public void testConcatNoSplat() {
+        JSObject result = (JSObject) eval( "[1,2,3].concat(4,5,6)");
+        assertThat( result.get( getContext(), "length" )).isEqualTo( 6 );
+        assertThat( result.get( getContext(), "0" )).isEqualTo( 1 );
+        assertThat( result.get( getContext(), "1" )).isEqualTo( 2 );
+        assertThat( result.get( getContext(), "2" )).isEqualTo( 3 );
+        assertThat( result.get( getContext(), "3" )).isEqualTo( 4 );
+        assertThat( result.get( getContext(), "4" )).isEqualTo( 5 );
+        assertThat( result.get( getContext(), "5" )).isEqualTo( 6 );
+    }
+    
+    @Test
+    public void testConcatWithSplat() {
+        JSObject result = (JSObject) eval( "[1,2,3].concat(4,[5,6],7)");
+        assertThat( result.get( getContext(), "length" )).isEqualTo( 7 );
+        assertThat( result.get( getContext(), "0" )).isEqualTo( 1 );
+        assertThat( result.get( getContext(), "1" )).isEqualTo( 2 );
+        assertThat( result.get( getContext(), "2" )).isEqualTo( 3 );
+        assertThat( result.get( getContext(), "3" )).isEqualTo( 4 );
+        assertThat( result.get( getContext(), "4" )).isEqualTo( 5 );
+        assertThat( result.get( getContext(), "5" )).isEqualTo( 6 );
+        assertThat( result.get( getContext(), "6" )).isEqualTo( 7 );
         
     }
     
