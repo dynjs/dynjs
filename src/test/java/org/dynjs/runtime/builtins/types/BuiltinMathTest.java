@@ -81,6 +81,31 @@ public class BuiltinMathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathAcos() {
+        assertThat(eval("Math.acos(0.5)")).isEqualTo(Math.acos(0.5));
+    }
+    
+    @Test
+    public void testMathAcosNaN() {
+        assertThat(eval("Math.acos(new Number('asdf'))")).isEqualTo(Double.NaN);
+    }
+    
+    @Test
+    public void testMathAcosGreaterThanOne() {
+        assertThat(eval("Math.acos(1.5)")).isEqualTo(Double.NaN);
+    }
+    
+    @Test
+    public void testMathAcosLessThanNegativeOne() {
+        assertThat(eval("Math.acos(-1.5)")).isEqualTo(Double.NaN);
+    }
+    
+    @Test
+    public void testMathAcosExactlyOne() {
+        assertThat(eval("Math.acos(1)")).isEqualTo(0);
+    }
+    
+@Test
     public void testMathConstructor() {
         try {
             eval("new Math()");

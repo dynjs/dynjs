@@ -5,6 +5,7 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.builtins.types.math.Abs;
+import org.dynjs.runtime.builtins.types.math.Acos;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class BuiltinMath extends AbstractNativeFunction {
@@ -25,6 +26,7 @@ public class BuiltinMath extends AbstractNativeFunction {
         
         // Math functions 15.8.2
         put(null, "abs", new Abs(globalObject), false); // 15.8.2.1
+        put(null, "acos", new Acos(globalObject), false); // 15.8.2.2
     }
 
     @Override
