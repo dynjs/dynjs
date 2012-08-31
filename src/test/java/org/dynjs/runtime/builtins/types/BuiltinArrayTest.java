@@ -152,8 +152,8 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         eval("var a = ['a', 'b', 'c']");
 
         assertThat(eval("a.push( 'd', 'e' )")).isEqualTo(5);
-        
-        JSObject result = (JSObject) eval( "a" );
+
+        JSObject result = (JSObject) eval("a");
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
         assertThat(result.get(getContext(), "1")).isEqualTo("b");
         assertThat(result.get(getContext(), "2")).isEqualTo("c");
@@ -161,6 +161,52 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "4")).isEqualTo("e");
 
         assertThat(eval("a.length")).isEqualTo(5);
+    }
+
+    @Test
+    public void testReverseEven() {
+        JSObject result = (JSObject) eval("['a', 'b', 'c', 'd' ].reverse()");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(4);
+        assertThat(result.get(getContext(), "0")).isEqualTo("d");
+        assertThat(result.get(getContext(), "1")).isEqualTo("c");
+        assertThat(result.get(getContext(), "2")).isEqualTo("b");
+        assertThat(result.get(getContext(), "3")).isEqualTo("a");
+    }
+
+    @Test
+    public void testReverseOdd() {
+        JSObject result = (JSObject) eval("['a', 'b', 'c', 'd', 'e' ].reverse()");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(5);
+        assertThat(result.get(getContext(), "0")).isEqualTo("e");
+        assertThat(result.get(getContext(), "1")).isEqualTo("d");
+        assertThat(result.get(getContext(), "2")).isEqualTo("c");
+        assertThat(result.get(getContext(), "3")).isEqualTo("b");
+        assertThat(result.get(getContext(), "4")).isEqualTo("a");
+    }
+
+    @Test
+    public void testReverseOne() {
+        JSObject result = (JSObject) eval("['a'].reverse()");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "0")).isEqualTo("a");
+    }
+
+    @Test
+    public void testShift() {
+        eval("var a = [ 'a', 'b', 'c' ]");
+
+        Object result = eval("a.shift()");
+
+        assertThat(result).isEqualTo("a");
+        
+        JSObject a = (JSObject) eval( "a" );
+        assertThat(a.get(getContext(), "length")).isEqualTo(2);
+        assertThat(a.get(getContext(), "0")).isEqualTo("b");
+        assertThat(a.get(getContext(), "1")).isEqualTo("c");
+        
     }
 
 }
