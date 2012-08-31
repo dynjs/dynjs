@@ -56,6 +56,31 @@ public class BuiltinMathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathAbs() {
+        assertThat(eval("Math.abs(-2)")).isEqualTo(2);
+    }
+    
+    @Test
+    public void testMathAbsNaN() {
+        assertThat(eval("Math.abs(new Number('asdf'))")).isEqualTo(Double.NaN);
+    }
+    
+    @Test
+    public void testMathAbsNegativeInfinity() {
+        assertThat(eval("Math.abs(-Infinity)")).isEqualTo(Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathAbsNumberNegativeInfinity() {
+        assertThat(eval("Math.abs(Number.NEGATIVE_INFINITY)")).isEqualTo(Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathAbsNegativeZero() {
+        assertThat(eval("Math.abs(-0)")).isEqualTo(0);
+    }
+    
+    @Test
     public void testMathConstructor() {
         try {
             eval("new Math()");
