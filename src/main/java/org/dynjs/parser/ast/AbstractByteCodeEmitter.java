@@ -36,6 +36,14 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
+    
+    public CodeBlock jsPushNull() {
+        return new CodeBlock() {
+            {
+                getstatic(p(Types.class), "NULL", ci(Types.Null.class));
+            }
+        };
+    }
 
     public CodeBlock jsToPrimitive() {
         return new CodeBlock() {

@@ -15,11 +15,15 @@
  */
 package org.dynjs.parser.ast;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
 
 public class ForVarDeclInStatement extends AbstractForInStatement {
 
@@ -32,7 +36,18 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
 
     @Override
     public CodeBlock getFirstChunkCodeBlock() {
-        return decl.getCodeBlock();
+        return new CodeBlock() {{
+            append( decl.getCodeBlock() );
+            // completion
+            pop();
+            // <EMPTY>
+            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+            // context
+            ldc( decl.getVariableDeclarations().get(0).getIdentifier() );
+            // context identifier
+            invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
+            // reference
+        }};
     }
     
     public String toIndentedString(String indent) {

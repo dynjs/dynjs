@@ -64,11 +64,11 @@ public class DynJS {
         }
     }
 
-    public Object execute(FileInputStream program, String filename) throws IOException {
+    public Object execute(InputStream program, String filename) throws IOException {
         return execute( this.context, program, filename );
     }
     
-    public Object execute(ExecutionContext execContext, FileInputStream program, String filename) throws IOException {
+    public Object execute(ExecutionContext execContext, InputStream program, String filename) throws IOException {
         JSProgram programObj = compile( execContext, program, filename );
         Completion completion = execContext.execute(programObj);
         return completion.value;
@@ -117,7 +117,7 @@ public class DynJS {
         return compile( this.context, program, filename );
     }
     
-    public JSProgram compile(ExecutionContext execContext, FileInputStream program, String filename) throws IOException {
+    public JSProgram compile(ExecutionContext execContext, InputStream program, String filename) throws IOException {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
         JSProgram programObj = compiler.compileProgram(statements);

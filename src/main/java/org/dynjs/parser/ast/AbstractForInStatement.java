@@ -20,13 +20,14 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractForInStatement extends AbstractCompilingStatement {
@@ -54,41 +55,42 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                LabelNode nullObj = new LabelNode();
                 LabelNode nextName = new LabelNode();
                 LabelNode checkCompletion = new LabelNode();
                 LabelNode bringForward = new LabelNode();
                 LabelNode doBreak = new LabelNode();
+                LabelNode undefEnd = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 append(normalCompletion());
                 // completion
                 append(rhs.getCodeBlock());
+                // completion val
                 append(jsGetValue());
                 // completion val
                 dup();
                 // completion val val
-                getstatic(p(Types.class), "UNDEFINED", ci(Object.class));
+                append( jsPushUndefined() );
                 // completion val val UNDEF
-                if_acmpeq(end);
+                if_acmpeq(undefEnd);
                 // completion val
                 dup();
                 // completion val val
-                getstatic(p(Types.class), "NULL", ci(Object.class));
+                append( jsPushNull() );
                 // completion val val NULL
-                if_acmpeq(nullObj);
+                if_acmpeq(undefEnd);
                 // completion val
                 append(jsToObject());
                 // completion jsObj
 
                 // -----------------------------------------------
                 // completion jsObj
-                invokevirtual(p(JSObject.class), "getEnumerablePropertyNames", sig(NameEnumerator.class));
+                invokeinterface(p(JSObject.class), "getOwnPropertyNames", sig(NameEnumerator.class));
                 // completion name-enum
                 astore(4);
                 // completion
-
                 label(nextName);
+                // completion
                 aload(4);
                 // completion name-enum
                 invokevirtual(p(NameEnumerator.class), "hasNext", sig(boolean.class));
@@ -104,8 +106,11 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion str ref
                 swap();
                 // completion ref str
-                invokevirtual(p(Reference.class), "putValue", sig(void.class, Object.class));
-
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // completion ref str context
+                swap();
+                // completion ref context str
+                invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
                 // completion 
                 append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "For", block));
                 // completion(prev) completion(cur)
@@ -113,18 +118,19 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion(prev) completion(cur) completion(cur)
                 append(jsCompletionValue());
                 // completion(prev) completion(cur) val(cur)
-
                 ifnull(bringForward);
                 // completion(prev) completion(cur) 
-
+                
                 // ----------------------------------
                 // has value
                 swap();
                 // completion(cur) completion(prev) 
                 pop();
                 // completion(cur)
-
                 go_to(checkCompletion);
+                
+                // ----------------------------------------
+                // bring previous value forward
 
                 label(bringForward);
                 // completion(prev) completion(cur) 
@@ -142,28 +148,28 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion(cur) 
                 dup();
                 // completion(cur) completion(cur)
-
-                append(handleCompletion( /*normal*/nextName, /*break*/doBreak, /*continue*/nextName, /*return*/end) );
-                // completion(cur)
-
-                // -----------------------------------------------
-                // NULL/UNDEF right-hand
-
-                label(nullObj);
-                // completion val
-                pop();
+                append(handleCompletion( nextName, doBreak, nextName, end) );
                 // completion
-                go_to(end);
 
                 // -----------------------------------------------
                 label(doBreak);
                 // completion(break)
                 append(convertToNormal());
                 // completion(normal);
+                go_to( end );
+                
+                // -----------------------------------------------
+                // RHS is undefined
+                // completion undef
+                label( undefEnd );
+                // completion undef
+                pop();
+                // completion
 
                 // -----------------------------------------------
 
                 label(end);
+                // completion
                 nop();
 
             }
