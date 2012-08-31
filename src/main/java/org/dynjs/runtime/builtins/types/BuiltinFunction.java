@@ -18,7 +18,6 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.function.prototype.Apply;
 import org.dynjs.runtime.builtins.types.function.prototype.Bind;
@@ -42,6 +41,7 @@ public class BuiltinFunction extends AbstractNativeFunction {
         proto.put(null, "apply", new Apply(globalObject), false);
         proto.put(null, "call", new Call(globalObject), false);
         proto.put(null, "bind", new Bind(globalObject), false);
+        proto.setPrototype( globalObject.getPrototypeFor( "Object" ) );
         
         put( null, "prototype", proto, false );
 

@@ -41,13 +41,16 @@ public class GlobalObject extends DynObject {
     private List<String> loadPaths = new ArrayList<>();
 
     public GlobalObject(DynJS runtime) {
-        super( null );
+        super(null);
         this.runtime = runtime;
         this.blockManager = new BlockManager();
-        
+
         defineGlobalProperty("Function", new BuiltinFunction(this));
         defineGlobalProperty("Object", new BuiltinObject(this));
-        
+        /** Slight ordering issue, must fix-up manually */
+        getPrototypeFor("Function").setPrototype(getPrototypeFor("Object"));
+        /** End fix-up **/
+
         defineGlobalProperty("__throwTypeError", new ThrowTypeError(this));
 
         defineGlobalProperty("undefined", Types.UNDEFINED);
@@ -62,25 +65,25 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("String", new BuiltinString(this));
         defineGlobalProperty("RegExp", new BuiltinRegExp(this));
         defineGlobalProperty("Math", new BuiltinMath(this));
-        
+
         defineGlobalProperty("Error", new BuiltinError(this));
         defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));
         defineGlobalProperty("RangeError", new BuiltinRangeError(this));
         defineGlobalProperty("SyntaxError", new BuiltinSyntaxError(this));
         defineGlobalProperty("TypeError", new BuiltinTypeError(this));
         defineGlobalProperty("URIError", new BuiltinURIError(this));
-        
-        defineGlobalProperty("JSON", new JSON(this) );
-        
+
+        defineGlobalProperty("JSON", new JSON(this));
+
         defineGlobalProperty("require", new Require(this));
-        this.moduleProviders.add( new FilesystemModuleProvider() );
-        
+        this.moduleProviders.add(new FilesystemModuleProvider());
+
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
-        javaClassModuleProvider.addModule( new ConsoleModule() );
-        
-        this.moduleProviders.add( javaClassModuleProvider );
-        
-        setPrototype( getPrototypeFor( "Object" ) );
+        javaClassModuleProvider.addModule(new ConsoleModule());
+
+        this.moduleProviders.add(javaClassModuleProvider);
+
+        setPrototype(getPrototypeFor("Object"));
 
         /*
          * put("-Infinity", Double.NEGATIVE_INFINITY);
@@ -108,11 +111,11 @@ public class GlobalObject extends DynObject {
     public List<ModuleProvider> getModuleProviders() {
         return this.moduleProviders;
     }
-    
+
     public void addLoadPath(String path) {
-        this.loadPaths.add( path );
+        this.loadPaths.add(path);
     }
-    
+
     public List<String> getLoadPaths() {
         return this.loadPaths;
     }
@@ -148,14 +151,14 @@ public class GlobalObject extends DynObject {
         };
         defineOwnProperty(null, name, desc, false);
     }
-    
+
     public JSObject getPrototypeFor(String type) {
         Object typeObj = get(null, type);
-        if ( typeObj == Types.UNDEFINED ) {
+        if (typeObj == Types.UNDEFINED) {
             return null;
         }
-        Object prototype = ((JSObject)typeObj).get( null, "prototype" );
-        if ( prototype == Types.UNDEFINED ) {
+        Object prototype = ((JSObject) typeObj).get(null, "prototype");
+        if (prototype == Types.UNDEFINED) {
             return null;
         }
         return (JSObject) prototype;

@@ -17,11 +17,12 @@ public class BuiltinBoolean extends AbstractNativeFunction {
 
         // 15.6.4 Set the prototype
         final PrimitiveDynObject proto = new DynBoolean(globalObject, Boolean.FALSE);
-        proto.put( null, "constructor", this, false );
-        proto.put( null, "toString", new ToString(globalObject), false );
-        proto.put( null, "valueOf", new ValueOf(globalObject), false );
-        
-        put( null, "prototype", proto, false );
+        proto.put(null, "constructor", this, false);
+        proto.put(null, "toString", new ToString(globalObject), false);
+        proto.put(null, "valueOf", new ValueOf(globalObject), false);
+        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+
+        put(null, "prototype", proto, false);
         setPrototype(globalObject.getPrototypeFor("Function"));
 
     }
@@ -41,7 +42,7 @@ public class BuiltinBoolean extends AbstractNativeFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynBoolean( context.getGlobalObject() );
+        return new DynBoolean(context.getGlobalObject());
     }
 
 }

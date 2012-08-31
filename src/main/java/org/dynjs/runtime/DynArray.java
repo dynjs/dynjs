@@ -30,6 +30,7 @@ public class DynArray extends DynObject {
                 set( "Value", 0 );
             }
         }, false);
+        setPrototype( globalObject.getPrototypeFor( "Object" ));
     }
 
     @Override
