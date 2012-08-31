@@ -256,4 +256,17 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
     }
     
+    @Test
+    public void testMap() {
+        JSObject result = (JSObject) eval( 
+                "['a', 'b', 'c' ].map( function(each,i) {",
+                "  return 'foo' + each;",
+                "} );" );
+        
+        assertThat( result.get(getContext(), "length" ) ).isEqualTo(3);
+        assertThat(result.get(getContext(), "0")).isEqualTo("fooa");
+        assertThat(result.get(getContext(), "1")).isEqualTo("foob");
+        assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
+    }
+    
 }

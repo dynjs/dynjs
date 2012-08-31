@@ -9,6 +9,7 @@ import org.dynjs.runtime.builtins.types.array.IsArray;
 import org.dynjs.runtime.builtins.types.array.prototype.Concat;
 import org.dynjs.runtime.builtins.types.array.prototype.ForEach;
 import org.dynjs.runtime.builtins.types.array.prototype.Join;
+import org.dynjs.runtime.builtins.types.array.prototype.Map;
 import org.dynjs.runtime.builtins.types.array.prototype.Pop;
 import org.dynjs.runtime.builtins.types.array.prototype.Push;
 import org.dynjs.runtime.builtins.types.array.prototype.Reverse;
@@ -41,6 +42,7 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.put(null, "slice", new Slice(globalObject), false);
         
         proto.put(null, "forEach", new ForEach(globalObject), false);
+        proto.put(null, "map", new Map(globalObject), false);
         
         put(null, "isArray", new IsArray(globalObject), false);
     }
