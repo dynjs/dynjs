@@ -241,5 +241,19 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
         assertThat(result.get(getContext(), "2")).isEqualTo("d");
     }
-
+    
+    @Test
+    public void testForEach() {
+        JSObject result = (JSObject) eval( "var collector = [];",
+                "['a', 'b', 'c' ].forEach( function(each,i) {",
+                "  collector.push('foo'+each);",
+                "} );",
+                "collector;");
+        
+        assertThat( result.get(getContext(), "length" ) ).isEqualTo(3);
+        assertThat(result.get(getContext(), "0")).isEqualTo("fooa");
+        assertThat(result.get(getContext(), "1")).isEqualTo("foob");
+        assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
+    }
+    
 }
