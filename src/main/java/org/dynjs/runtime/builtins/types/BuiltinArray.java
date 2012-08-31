@@ -12,6 +12,7 @@ import org.dynjs.runtime.builtins.types.array.prototype.Pop;
 import org.dynjs.runtime.builtins.types.array.prototype.Push;
 import org.dynjs.runtime.builtins.types.array.prototype.Reverse;
 import org.dynjs.runtime.builtins.types.array.prototype.Shift;
+import org.dynjs.runtime.builtins.types.array.prototype.Slice;
 import org.dynjs.runtime.builtins.types.array.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.array.prototype.ToString;
 
@@ -36,6 +37,7 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.put(null, "push", new Push(globalObject), false);
         proto.put(null, "reverse", new Reverse(globalObject), false);
         proto.put(null, "shift", new Shift(globalObject), false);
+        proto.put(null, "slice", new Slice(globalObject), false);
         
         put(null, "isArray", new IsArray(globalObject), false);
     }

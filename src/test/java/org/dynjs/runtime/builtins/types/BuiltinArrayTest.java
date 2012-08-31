@@ -206,7 +206,40 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(a.get(getContext(), "length")).isEqualTo(2);
         assertThat(a.get(getContext(), "0")).isEqualTo("b");
         assertThat(a.get(getContext(), "1")).isEqualTo("c");
-        
+    }
+    
+    @Test
+    public void testSlicePositiveArgs() {
+        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(1,3)");
+        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "0")).isEqualTo("b");
+        assertThat(result.get(getContext(), "1")).isEqualTo("c");
+    }
+    
+    @Test
+    public void testSliceNegativeEnd() {
+        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(0,-1)");
+        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "0")).isEqualTo("a");
+        assertThat(result.get(getContext(), "1")).isEqualTo("b");
+        assertThat(result.get(getContext(), "2")).isEqualTo("c");
+    }
+    
+    @Test
+    public void testSliceNegativeStart() {
+        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(-3,3)");
+        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "0")).isEqualTo("b");
+        assertThat(result.get(getContext(), "1")).isEqualTo("c");
+    }
+    
+    @Test
+    public void testSliceNegativeStartNoEnd() {
+        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(-3)");
+        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "0")).isEqualTo("b");
+        assertThat(result.get(getContext(), "1")).isEqualTo("c");
+        assertThat(result.get(getContext(), "2")).isEqualTo("d");
     }
 
 }
