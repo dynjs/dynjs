@@ -10,15 +10,16 @@ import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.JSON;
+import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.builtins.ThrowTypeError;
+import org.dynjs.runtime.builtins.types.AbstractBuiltinType;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinBoolean;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinFunction;
-import org.dynjs.runtime.builtins.types.BuiltinMath;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRangeError;
@@ -39,43 +40,57 @@ public class GlobalObject extends DynObject {
     private BlockManager blockManager;
     private List<ModuleProvider> moduleProviders = new ArrayList<>();
     private List<String> loadPaths = new ArrayList<>();
+    private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
 
     public GlobalObject(DynJS runtime) {
         super(null);
         this.runtime = runtime;
         this.blockManager = new BlockManager();
+        
+        // ----------------------------------------
+        // Built-in types
+        // ----------------------------------------
 
-        defineGlobalProperty("Function", new BuiltinFunction(this));
-        defineGlobalProperty("Object", new BuiltinObject(this));
-        /** Slight ordering issue, must fix-up manually */
-        getPrototypeFor("Function").setPrototype(getPrototypeFor("Object"));
-        /** End fix-up **/
+        registerBuiltinType("Object", new BuiltinObject(this));
+        registerBuiltinType("Function", new BuiltinFunction(this));
+        registerBuiltinType("Boolean", new BuiltinBoolean(this));
+        registerBuiltinType("Number", new BuiltinNumber(this));
+        registerBuiltinType("Array", new BuiltinArray(this));
+        registerBuiltinType("String", new BuiltinString(this));
+        registerBuiltinType("RegExp", new BuiltinRegExp(this));
+        registerBuiltinType("Error", new BuiltinError(this));
+        registerBuiltinType("ReferenceError", new BuiltinReferenceError(this));
+        registerBuiltinType("RangeError", new BuiltinRangeError(this));
+        registerBuiltinType("SyntaxError", new BuiltinSyntaxError(this));
+        registerBuiltinType("TypeError", new BuiltinTypeError(this));
+        registerBuiltinType("URIError", new BuiltinURIError(this));
+        
+        initializeBuiltinTypes();
 
-        defineGlobalProperty("__throwTypeError", new ThrowTypeError(this));
+        // ----------------------------------------
+        // Built-in global functions
+        // ----------------------------------------
+        
+        put(null, "__throwTypeError", new ThrowTypeError(this), false);
+        put(null, "undefined", Types.UNDEFINED, false);
+        put(null, "parseFloat", new ParseFloat(this), false);
+        put(null, "parseInt", new ParseInt(this), false);
+        put(null, "eval", new Eval(this), false);
+        put(null, "isNaN", new IsNaN(this), false);
+        put(null, "isFinite", new IsFinite(this), false);
+        put(null, "require", new Require(this), false);
+        
+        // ----------------------------------------
+        // Built-in global objects
+        // ----------------------------------------
 
-        defineGlobalProperty("undefined", Types.UNDEFINED);
-        defineGlobalProperty("parseFloat", new ParseFloat(this));
-        defineGlobalProperty("parseInt", new ParseInt(this));
-        defineGlobalProperty("eval", new Eval(this));
-        defineGlobalProperty("isNaN", new IsNaN(this));
-        defineGlobalProperty("isFinite", new IsFinite(this));
-        defineGlobalProperty("Boolean", new BuiltinBoolean(this));
-        defineGlobalProperty("Number", new BuiltinNumber(this));
-        defineGlobalProperty("Array", new BuiltinArray(this));
-        defineGlobalProperty("String", new BuiltinString(this));
-        defineGlobalProperty("RegExp", new BuiltinRegExp(this));
-        defineGlobalProperty("Math", new BuiltinMath(this));
-
-        defineGlobalProperty("Error", new BuiltinError(this));
-        defineGlobalProperty("ReferenceError", new BuiltinReferenceError(this));
-        defineGlobalProperty("RangeError", new BuiltinRangeError(this));
-        defineGlobalProperty("SyntaxError", new BuiltinSyntaxError(this));
-        defineGlobalProperty("TypeError", new BuiltinTypeError(this));
-        defineGlobalProperty("URIError", new BuiltinURIError(this));
-
-        defineGlobalProperty("JSON", new JSON(this));
-
-        defineGlobalProperty("require", new Require(this));
+        put(null, "JSON", new JSON(this), false);
+        put(null, "Math", new Math(this), false);
+        
+        // ----------------------------------------
+        // Module-provider setup
+        // ----------------------------------------
+        
         this.moduleProviders.add(new FilesystemModuleProvider());
 
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
@@ -85,23 +100,18 @@ public class GlobalObject extends DynObject {
 
         setPrototype(getPrototypeFor("Object"));
 
-        /*
-         * put("-Infinity", Double.NEGATIVE_INFINITY);
-         * put("Object", new DynObject() {{
-         * setProperty("defineProperty", new DefineProperty());
-         * }});
-         * put("Array", new DynObject());
-         * put("Date", new DynObject());
-         * put("String", new DynObject());
-         * put("Boolean", new DynObject());
-         * put("Error", new DynObject());
-         * put("Function", new DynObject() {{
-         * setProperty("prototype", get("Object"));
-         * }});
-         * put("require", DynJSCompiler.wrapFunction(get("Function"), new
-         * Require()));
-         * put("Math", new DynObject());
-         */
+    }
+
+    private void registerBuiltinType(String name, AbstractBuiltinType type) {
+        put(null, name, type, false);
+        this.builtinTypes.add( type );
+    }
+    
+    private void initializeBuiltinTypes() {
+        for ( AbstractBuiltinType each : this.builtinTypes ) {
+            each.setPrototype( getPrototypeFor( "Function" ));
+            each.initialize( this );
+        }
     }
 
     public static GlobalObject newGlobalObject(DynJS runtime) {

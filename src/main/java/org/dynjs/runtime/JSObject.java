@@ -5,6 +5,7 @@ public interface JSObject {
     JSObject getPrototype();
 
     String getClassName();
+    void setClassName(String className);
 
     boolean isExtensible();
 

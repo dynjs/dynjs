@@ -1,24 +1,25 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.dynjs.runtime.builtins.types.regexp.prototype.Exec;
 
-public class BuiltinRegExp extends AbstractNativeFunction {
+public class BuiltinRegExp extends AbstractBuiltinType {
 
     public BuiltinRegExp(final GlobalObject globalObject) {
-        super(globalObject, true, "pattern", "flags");
-        setPrototype(globalObject.getPrototypeFor("Function"));
-
+        super(globalObject, "pattern", "flags");
+        
         DynRegExp proto = new DynRegExp(globalObject, "", "" );
         put( null, "prototype", proto, false );
-        
+    }
+    
+    @Override
+    public void initialize(GlobalObject globalObject, JSObject proto) {
+        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
         proto.put( null, "constructor", this, false );
         proto.put( null, "exec", new Exec(globalObject), false );
-        
     }
 
     @Override

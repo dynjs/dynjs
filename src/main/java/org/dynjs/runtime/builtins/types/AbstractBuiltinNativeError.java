@@ -1,6 +1,5 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -8,20 +7,25 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
-public class AbstractBuiltinNativeError extends AbstractNativeFunction {
+public class AbstractBuiltinNativeError extends AbstractBuiltinType {
+
+    private String name;
 
     public AbstractBuiltinNativeError(GlobalObject globalObject, final String name) {
-        super(globalObject, true, "message");
+        super(globalObject, "message");
 
         final DynObject proto = new DynObject( globalObject );
+        put(null, "prototype", proto, false);
+        this.name = name;
+    }
+    
+    @Override
+    public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setClassName("Error");
         proto.put(null, "constructor", this, false);
-        proto.put(null, "name", name, false);
+        proto.put(null, "name", this.name, false);
         proto.put(null, "message", "", false);
         proto.setPrototype(globalObject.getPrototypeFor("Error"));
-        
-        put(null, "prototype", proto, false);
-        setPrototype(globalObject.getPrototypeFor("Function"));
     }
 
     @Override

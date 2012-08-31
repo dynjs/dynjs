@@ -1,4 +1,4 @@
-package org.dynjs.runtime.builtins.types;
+package org.dynjs.runtime.builtins;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.junit.Test;
 
-public class BuiltinMathTest extends AbstractDynJSTestSupport {
+public class MathTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testMathPrototypeIsUndefined() {
@@ -17,42 +17,42 @@ public class BuiltinMathTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testMathE() {
-        assertPrimitive("Math.E", Math.E);
+        assertPrimitive("Math.E", java.lang.Math.E);
     }
     
     @Test
     public void testLn10() {
-        assertPrimitive("Math.LN10", Math.log(10));
+        assertPrimitive("Math.LN10", java.lang.Math.log(10));
     }
 
     @Test
     public void testLn2() {
-        assertPrimitive("Math.LN2", Math.log(2));
+        assertPrimitive("Math.LN2", java.lang.Math.log(2));
     }
 
     @Test
     public void testLog2e() {
-        assertPrimitive("Math.LOG2E", Math.log(Math.E)/Math.log(2));
+        assertPrimitive("Math.LOG2E", java.lang.Math.log(java.lang.Math.E)/java.lang.Math.log(2));
     }
     
     @Test
     public void testLog10e() {
-        assertPrimitive("Math.LOG10E", Math.log10(Math.E));
+        assertPrimitive("Math.LOG10E", java.lang.Math.log10(java.lang.Math.E));
     }
 
     @Test
     public void testMathPi() {
-        assertPrimitive("Math.PI", Math.PI);
+        assertPrimitive("Math.PI", java.lang.Math.PI);
     }
     
     @Test
     public void testMathSqrt1_2() {
-        assertPrimitive("Math.SQRT1_2", Math.sqrt(0.5f));
+        assertPrimitive("Math.SQRT1_2", java.lang.Math.sqrt(0.5f));
     }
 
     @Test
     public void testMathSqrt2() {
-        assertPrimitive("Math.SQRT2", Math.sqrt(2.0f));
+        assertPrimitive("Math.SQRT2", java.lang.Math.sqrt(2.0f));
     }
     
     @Test
@@ -82,7 +82,7 @@ public class BuiltinMathTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testMathAcos() {
-        assertThat(eval("Math.acos(0.5)")).isEqualTo(Math.acos(0.5));
+        assertThat(eval("Math.acos(0.5)")).isEqualTo(java.lang.Math.acos(0.5));
     }
     
     @Test
@@ -105,16 +105,6 @@ public class BuiltinMathTest extends AbstractDynJSTestSupport {
         assertThat(eval("Math.acos(1)")).isEqualTo(0);
     }
     
-@Test
-    public void testMathConstructor() {
-        try {
-            eval("new Math()");
-            fail("The Math constructor should raise a TypeError");
-        } catch (ThrowException e) {
-            // expected
-        }
-    }
-
     @Test
     public void testMathFunction() {
         try {

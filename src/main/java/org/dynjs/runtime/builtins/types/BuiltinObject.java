@@ -1,6 +1,5 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -25,13 +24,17 @@ import org.dynjs.runtime.builtins.types.object.prototype.PropertyIsEnumerable;
 import org.dynjs.runtime.builtins.types.object.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.object.prototype.ToString;
 
-public class BuiltinObject extends AbstractNativeFunction {
+public class BuiltinObject extends AbstractBuiltinType {
 
     public BuiltinObject(final GlobalObject globalObject) {
         super(globalObject, "value");
 
         final DynObject proto = new DynObject( globalObject );
         put(null, "prototype", proto, false );
+    }
+    
+    @Override
+    public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.put( null, "toString", new ToString(globalObject), false );
         proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
         proto.put( null, "hasOwnProperty", new HasOwnProperty(globalObject), false );
@@ -51,8 +54,6 @@ public class BuiltinObject extends AbstractNativeFunction {
         put(null, "isFrozen", new IsFrozen(globalObject), false );
         put(null, "isExtensible", new IsExtensible(globalObject), false );
         put(null, "keys", new Keys(globalObject), false );
-        
-        setPrototype(globalObject.getPrototypeFor("Function"));
     }
 
     @Override
