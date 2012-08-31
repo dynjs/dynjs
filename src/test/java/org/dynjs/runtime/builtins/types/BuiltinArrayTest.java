@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.*;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.Types;
 import org.junit.Test;
 
 public class BuiltinArrayTest extends AbstractDynJSTestSupport {
@@ -120,6 +121,31 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat( result.get( getContext(), "4" )).isEqualTo( 5 );
         assertThat( result.get( getContext(), "5" )).isEqualTo( 6 );
         assertThat( result.get( getContext(), "6" )).isEqualTo( 7 );
+    }
+    
+    @Test
+    public void testPop() {
+        eval( "var a = [ 'a', 'b', 'c', 'd', 'e' ]");
+        
+        assertThat( eval( "a.length" ) ).isEqualTo( 5 );
+        
+        assertThat( eval( "a.pop()" ) ).isEqualTo( "e" );
+        assertThat( eval( "a.length" ) ).isEqualTo( 4 );
+        
+        assertThat( eval( "a.pop()" ) ).isEqualTo( "d" );
+        assertThat( eval( "a.length" ) ).isEqualTo( 3 );
+        
+        assertThat( eval( "a.pop()" ) ).isEqualTo( "c" );
+        assertThat( eval( "a.length" ) ).isEqualTo( 2 );
+        
+        assertThat( eval( "a.pop()" ) ).isEqualTo( "b" );
+        assertThat( eval( "a.length" ) ).isEqualTo( 1 );
+        
+        assertThat( eval( "a.pop()" ) ).isEqualTo( "a" );
+        assertThat( eval( "a.length" ) ).isEqualTo( 0 );
+        
+        assertThat( eval( "a.pop()" ) ).isEqualTo( Types.UNDEFINED );
+        assertThat( eval( "a.length" ) ).isEqualTo( 0 );
         
     }
     
