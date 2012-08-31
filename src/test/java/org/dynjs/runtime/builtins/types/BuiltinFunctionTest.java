@@ -81,42 +81,52 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
                 "var f = function(x,y) { this.z + x + y };",
                 "var b = f.bind(self, 20);",
                 "b(42);");
-        
-        assertThat( result ).isEqualTo(72);
+
+        assertThat(result).isEqualTo(72);
     }
-    
+
     @Test
     public void testBindConstructorWithoutSelf() {
         JSObject result = (JSObject) eval("var ctor = function(x){ return { taco:x } };",
                 "var bound_ctor = ctor.bind(undefined, 42);",
                 "new bound_ctor()");
-        
-        assertThat( result.get( getContext(), "taco") ).isEqualTo( 42 );
+
+        assertThat(result.get(getContext(), "taco")).isEqualTo(42);
     }
-    
+
     @Test
     public void testBindConstructorWithSelf() {
         JSObject result = (JSObject) eval("var b = 99;",
                 "var ctor = function(x){ return { taco:x } };",
                 "var bound_ctor = ctor.bind(b, 42);",
                 "new bound_ctor()");
-        
-        assertThat( result.get( getContext(), "taco") ).isEqualTo( 42 );
+
+        assertThat(result.get(getContext(), "taco")).isEqualTo(42);
     }
-    
-    @Test(expected=ThrowException.class)
+
+    @Test(expected = ThrowException.class)
     public void testArgumentsThrowOnBindedFunction() {
-        eval( "var f = function(){ print(arguments); return 42; }",
+        eval("var f = function(){ print(arguments); return 42; }",
                 "var b = f.bind();",
                 "b.arguments");
     }
-    
-    @Test(expected=ThrowException.class)
+
+    @Test(expected = ThrowException.class)
     public void testCallerThrowOnBindedFunction() {
-        eval( "var f = function(){ print(arguments); return 42; }",
+        eval("var f = function(){ print(arguments); return 42; }",
                 "var b = f.bind();",
                 "b.caller");
     }
 
+    @Test
+    public void testFunctionPrototypeFunctionPrototypes_MetaMetaMeta() {
+        try {
+            eval("Function.prototype.toString.call()");
+            throw new AssertionError("Should have throw TypeError");
+        } catch (ThrowException e) {
+            JSObject value = (JSObject) e.getValue();
+            assertThat( (String) value.get( getContext(), "message" ) ).contains( "only allowed on functions" );
+        }
+    }
 
 }

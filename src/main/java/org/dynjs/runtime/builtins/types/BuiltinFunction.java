@@ -28,6 +28,9 @@ public class BuiltinFunction extends AbstractNativeFunction {
 
     public BuiltinFunction(final GlobalObject globalObject) {
         super(globalObject, "args");
+        
+        // register ourselves with the Global before he can.
+        globalObject.put(null, "Function", this, false);
 
         final JSFunction proto = new AbstractNativeFunction(globalObject) {
             @Override
