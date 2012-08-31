@@ -7,6 +7,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.array.IsArray;
 import org.dynjs.runtime.builtins.types.array.prototype.Concat;
+import org.dynjs.runtime.builtins.types.array.prototype.Filter;
 import org.dynjs.runtime.builtins.types.array.prototype.ForEach;
 import org.dynjs.runtime.builtins.types.array.prototype.Join;
 import org.dynjs.runtime.builtins.types.array.prototype.Map;
@@ -43,6 +44,7 @@ public class BuiltinArray extends AbstractBuiltinType {
         
         proto.put(null, "forEach", new ForEach(globalObject), false);
         proto.put(null, "map", new Map(globalObject), false);
+        proto.put(null, "filter", new Filter(globalObject), false);
         
         put(null, "isArray", new IsArray(globalObject), false);
     }

@@ -269,4 +269,16 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
     }
     
+    @Test
+    public void testFilter() {
+        JSObject result = (JSObject) eval( 
+                "['a', 'b', 'c', 'd' ].filter( function(each,i) {",
+                "  return ( i % 2 == 0 );",
+                "} );" );
+        
+        assertThat( result.get(getContext(), "length" ) ).isEqualTo(2);
+        assertThat(result.get(getContext(), "0")).isEqualTo("a");
+        assertThat(result.get(getContext(), "1")).isEqualTo("c");
+    }
+    
 }
