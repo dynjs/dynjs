@@ -7,13 +7,13 @@ import org.dynjs.runtime.PropertyDescriptor;
 public class DynRegExp extends DynObject {
 
     public DynRegExp(GlobalObject globalObject) {
-        super( globalObject );
+        super(globalObject);
         setClassName("RegExp");
         setPrototype(globalObject.getPrototypeFor("RegExp"));
     }
-    
+
     public DynRegExp(GlobalObject globalObject, final String pattern, final String flags) {
-        this( globalObject );
+        this(globalObject);
         setPatternAndFlags(pattern, flags);
     }
 
@@ -21,6 +21,14 @@ public class DynRegExp extends DynObject {
         defineOwnProperty(null, "source", new PropertyDescriptor() {
             {
                 set("Value", pattern);
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", false);
+            }
+        }, false);
+        defineOwnProperty(null, "multiline", new PropertyDescriptor() {
+            {
+                set("Value", flags.contains("m"));
                 set("Writable", false);
                 set("Configurable", false);
                 set("Enumerable", false);
@@ -50,7 +58,5 @@ public class DynRegExp extends DynObject {
                 set("Enumerable", false);
             }
         }, false);
-
     }
-
 }

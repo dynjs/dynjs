@@ -51,10 +51,10 @@ public class Exec extends AbstractNativeFunction {
                 regexp.put(context, "lastIndex", 0, true);
                 return Types.NULL;
             }
-            if (!matcher.find(i)) {
-                ++i;
-            } else {
+            if (matcher.find(i)) {
                 matchSucceeded = true;
+            } else {
+                ++i;
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
