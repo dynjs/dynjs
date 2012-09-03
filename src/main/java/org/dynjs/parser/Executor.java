@@ -328,7 +328,7 @@ public class Executor {
     }
 
     public Expression defineRegExLiteral(final Tree tree, String text) {
-        return new RegexpLiteralExpression( tree, text );
+        return new RegexpLiteralExpression(tree, text);
     }
 
     public BooleanLiteralExpression defineTrueLiteral(final Tree tree) {
