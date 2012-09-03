@@ -34,8 +34,23 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
 	}
 
 	@Test
-	public void testExec() {
+	public void testExecWithGlobalFlag() {
 		eval("var r = /foo./g", "var s = 'footfool';");
+
+		JSObject result = (JSObject) eval("r.exec(s)");
+
+		assertThat(result).isNotNull();
+		assertThat(result.get(getContext(), "length")).isEqualTo(1);
+		assertThat(result.get(getContext(), "0")).isEqualTo("foot");
+
+		result = (JSObject) eval("r.exec(s)");
+		assertThat(result.get(getContext(), "length")).isEqualTo(1);
+		assertThat(result.get(getContext(), "0")).isEqualTo("fool");
+	}
+
+	@Test
+	public void testExecWithMultilineFlag() {
+		eval("var r = /foo./mg", "var s = 'foot\\nfool';");
 
 		JSObject result = (JSObject) eval("r.exec(s)");
 
