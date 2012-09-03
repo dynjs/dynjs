@@ -26,6 +26,14 @@ public class DynRegExp extends DynObject {
                 set("Enumerable", false);
             }
         }, false);
+        defineOwnProperty(null, "multiline", new PropertyDescriptor() {
+            {
+                set("Value", flags.contains("m"));
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", false);
+            }
+        }, false);
         defineOwnProperty(null, "global", new PropertyDescriptor() {
             {
                 set("Value", flags.contains("g"));
@@ -50,7 +58,5 @@ public class DynRegExp extends DynObject {
                 set("Enumerable", false);
             }
         }, false);
-
     }
-
 }
