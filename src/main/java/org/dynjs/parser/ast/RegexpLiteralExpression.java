@@ -17,35 +17,35 @@ import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
 public class RegexpLiteralExpression extends AbstractExpression {
 
-	static class RegexpLiteralExpressionParser {
-		private static final String REG_EXP_PATTERN = "^\\/(.*)\\/([igm]{0,})$";
+    static class RegexpLiteralExpressionParser {
+        private static final String REG_EXP_PATTERN = "^\\/(.*)\\/([igm]{0,})$";
 
-		static RegexpLiteralExpressionParser parse(String text) {
-			Pattern pattern = Pattern.compile(REG_EXP_PATTERN);
-			Matcher matcher = pattern.matcher(text);
-			if (matcher.matches()) {
-				return new RegexpLiteralExpressionParser(matcher.group(1), matcher.group(2));
-			}
+        static RegexpLiteralExpressionParser parse(String text) {
+            Pattern pattern = Pattern.compile(REG_EXP_PATTERN);
+            Matcher matcher = pattern.matcher(text);
+            if (matcher.matches()) {
+                return new RegexpLiteralExpressionParser(matcher.group(1), matcher.group(2));
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		private final String source;
-		private final String flags;
+        private final String source;
+        private final String flags;
 
-		private RegexpLiteralExpressionParser(String source, String flags) {
-			this.source = source;
-			this.flags = flags;
-		}
+        private RegexpLiteralExpressionParser(String source, String flags) {
+            this.source = source;
+            this.flags = flags;
+        }
 
-		public String getPattern() {
-			return source;
-		}
+        public String getPattern() {
+            return source;
+        }
 
-		public String getFlags() {
-			return flags;
-		}
-	}
+        public String getFlags() {
+            return flags;
+        }
+    }
 
     private String pattern;
     private String flags;
@@ -53,20 +53,20 @@ public class RegexpLiteralExpression extends AbstractExpression {
     public RegexpLiteralExpression(Tree tree, String text) {
         super(tree);
 
-		RegexpLiteralExpressionParser parser = RegexpLiteralExpressionParser
-				.parse(text);
-		if (parser == null) {
-			throw new ParserException("Invalid regular expression", tree);
-		}
-		this.pattern = parser.getPattern();
-		this.flags = parser.getFlags();
+        RegexpLiteralExpressionParser parser = RegexpLiteralExpressionParser
+                .parse(text);
+        if (parser == null) {
+            throw new ParserException("Invalid regular expression", tree);
+        }
+        this.pattern = parser.getPattern();
+        this.flags = parser.getFlags();
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
                 invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class));
                 // regexp
@@ -81,7 +81,7 @@ public class RegexpLiteralExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return "/" + this.pattern + "/" + this.flags;
     }

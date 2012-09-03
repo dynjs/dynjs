@@ -7,13 +7,13 @@ import org.dynjs.runtime.PropertyDescriptor;
 public class DynRegExp extends DynObject {
 
     public DynRegExp(GlobalObject globalObject) {
-        super( globalObject );
+        super(globalObject);
         setClassName("RegExp");
         setPrototype(globalObject.getPrototypeFor("RegExp"));
     }
-    
+
     public DynRegExp(GlobalObject globalObject, final String pattern, final String flags) {
-        this( globalObject );
+        this(globalObject);
         setPatternAndFlags(pattern, flags);
     }
 

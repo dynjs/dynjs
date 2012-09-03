@@ -52,9 +52,9 @@ public class Exec extends AbstractNativeFunction {
                 return Types.NULL;
             }
             if (matcher.find(i)) {
-            	matchSucceeded = true;
+                matchSucceeded = true;
             } else {
-            	++i;
+                ++i;
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
