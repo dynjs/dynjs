@@ -1,7 +1,5 @@
 package org.dynjs.runtime.builtins;
 
-import java.util.Arrays;
-
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
