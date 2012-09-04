@@ -232,6 +232,11 @@ package org.dynjs.parser;
 @lexer::members
 {
 private Token last;
+private EscapeHandler escapeHandler = new EscapeHandler();
+
+private String handleEscape(String es) {
+  return escapeHandler.handle( es );
+}
 
 private final boolean areRegularExpressionsEnabled()
 {
@@ -839,44 +844,33 @@ Note: octal escape sequences are described in the B Compatibility section.
 These are removed from the standards but are here for backwards compatibility with earlier ECMAScript definitions.
 */
 	
-fragment CharacterEscapeSequence
-	: ~( DecimalDigit | 'x' | 'u' | LineTerminator ) // Concatenation of SingleEscapeCharacter and NonEscapeCharacter
-	;
-
-fragment ZeroToThree
-	: '0'..'3'
-	;
-	
-fragment OctalEscapeSequence
-	: OctalDigit
-	| ZeroToThree OctalDigit
-	| '4'..'7' OctalDigit
-	| ZeroToThree OctalDigit OctalDigit
-	;
-	
-fragment HexEscapeSequence
-	: 'x' HexDigit HexDigit
-	;
-	
-fragment UnicodeEscapeSequence
-	: 'u' HexDigit HexDigit HexDigit HexDigit
-	;
-
-fragment EscapeSequence
+EscapeSequence
 	:
-	BSLASH 
-	(
-		CharacterEscapeSequence 
-		| OctalEscapeSequence
-		| HexEscapeSequence
-		| UnicodeEscapeSequence
+	BSLASH
+	( ~(DecimalDigit | 'x' | 'u' | LineTerminator )
+	| ( OctalDigit | '0'..'3' OctalDigit OctalDigit | '4'..'7' OctalDigit OctalDigit )
+	| 'x' HexDigit HexDigit
+	| 'u' HexDigit HexDigit HexDigit HexDigit 
 	)
 	;
 
 StringLiteral
-	: (SQUOTE ( ~( SQUOTE | BSLASH | LineTerminator ) | EscapeSequence )* SQUOTE
-	| DQUOTE ( ~( DQUOTE | BSLASH | LineTerminator ) | EscapeSequence )* DQUOTE)
-	  { setText(input.substring($start+1, $stop - 1)); }
+@init{
+  StringBuffer buf = new StringBuffer();
+}
+	: 
+	( SQUOTE 
+	  ( ch=~( SQUOTE | BSLASH | LineTerminator ) {buf.append( (char) $ch ); }
+	  | es=EscapeSequence {buf.append( handleEscape( $es.getText() ) ); }
+	  )* 
+	  SQUOTE
+	| DQUOTE 
+	  ( ch=~( DQUOTE | BSLASH | LineTerminator ) {buf.append( (char) $ch ); }
+	  | es=EscapeSequence {buf.append( handleEscape( $es.getText() ) ); }
+	  )* 
+	  DQUOTE)
+	  //{ setText(input.substring($start+1, $stop - 1)); }
+	  { setText( buf.toString() ); }
 	;
 
 // $>

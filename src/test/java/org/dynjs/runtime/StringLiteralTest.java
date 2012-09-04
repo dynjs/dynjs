@@ -25,4 +25,11 @@ public class StringLiteralTest extends AbstractDynJSTestSupport {
         assertThat(x).isNotNull();
         assertThat(x.getValue(getContext())).isEqualTo("howdy");
     }
+
+    @Test
+    public void testEscapeSequences() {
+        assertThat(eval("'foo\\nbar\\rbaz\\t'")).isEqualTo("foo\nbar\rbaz\t");
+        assertThat(eval("'\\x59\\x5A'")).isEqualTo("YZ");
+        assertThat(eval("'\\u0062\\u006f\\u0062'")).isEqualTo("bob");
+    }
 }
