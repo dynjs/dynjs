@@ -7,6 +7,7 @@ import org.dynjs.runtime.builtins.math.Abs;
 import org.dynjs.runtime.builtins.math.Acos;
 import org.dynjs.runtime.builtins.math.Asin;
 import org.dynjs.runtime.builtins.math.Atan;
+import org.dynjs.runtime.builtins.math.Atan2;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -29,6 +30,7 @@ public class Math extends DynObject {
         put(null, "acos", new Acos(globalObject), false); // 15.8.2.2
         put(null, "asin", new Asin(globalObject), false); // 15.8.2.3
         put(null, "atan", new Atan(globalObject), false); // 15.8.2.4
+        put(null, "atan2", new Atan2(globalObject), false); // 15.8.2.5
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {

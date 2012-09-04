@@ -15,4 +15,15 @@ public class DynNumber extends PrimitiveDynObject {
         setPrototype(globalObject.getPrototypeFor("Number"));
     }
     
+    public static boolean isNaN(Object object) {
+        if (object instanceof Double) {
+            return Double.isNaN((Double) object);
+        } else if (object instanceof Integer) {
+            return false;
+        } else if (object instanceof DynNumber) {
+            return DynNumber.isNaN(((DynNumber) object).getPrimitiveValue());
+        }
+        return true;
+    }
+    
 }

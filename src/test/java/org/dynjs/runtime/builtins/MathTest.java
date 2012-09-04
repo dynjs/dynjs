@@ -172,6 +172,41 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testMathAtan2Length() {
+        assertThat(eval("Math.atan2.length")).isEqualTo(2);
+    }
+    
+    @Test
+    public void testMathAtan2WithOnlyOneArg() {
+        assertThat(eval("Math.atan2(0.4)")).isEqualTo(Double.NaN);
+    }
+    
+    @Test
+    public void testMathAtan2() {
+      assertThat(eval("Math.atan2(0.5, 0.5)")).isEqualTo(java.lang.Math.atan2(0.5, 0.5));
+    }
+    
+    @Test
+    public void testMathAtan2WithIntegers() {
+      assertThat(eval("Math.atan2(1, 1)")).isEqualTo(java.lang.Math.atan2(1, 1));
+    }
+    
+    @Test
+    public void testMathAtan2WithXInteger() {
+      assertThat(eval("Math.atan2(1.0, 1)")).isEqualTo(java.lang.Math.atan2(1.0, 1));
+    }
+    
+    @Test
+    public void testMathAtan2YNaN() {
+        assertEval("Math.atan2(new Number('asdf'), 0.3)", Double.NaN);
+    }
+
+    @Test
+    public void testMathAtan2XNaN() {
+        assertEval("Math.atan2(0.3, new Number('asdf'))", Double.NaN);
+    }
+
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
@@ -179,6 +214,10 @@ public class MathTest extends AbstractDynJSTestSupport {
         } catch (ThrowException e) {
             // expected
         }
+    }
+    
+    private void assertEval(String javascript, Object expected) {
+        assertThat(eval(javascript)).isEqualTo(expected);
     }
 
     private void assertPrimitive(String javascript, Number value) {

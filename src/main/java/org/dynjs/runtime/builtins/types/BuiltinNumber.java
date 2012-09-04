@@ -15,7 +15,7 @@ import org.dynjs.runtime.builtins.types.number.prototype.ValueOf;
 public class BuiltinNumber extends AbstractBuiltinType {
 
     public BuiltinNumber(final GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "value");
 
         // 15.7.4 Set the prototype
         final PrimitiveDynObject proto = new DynNumber(globalObject, 0);
@@ -43,13 +43,17 @@ public class BuiltinNumber extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        Number number = Types.toNumber(args[0]);
         if (self == Types.UNDEFINED) {
             // called as a function
-            return Types.toNumber(args[0]);
+            return number;
         } else {
             // called as a ctor
             PrimitiveDynObject numberObject = (PrimitiveDynObject) self;
-            numberObject.setPrimitiveValue(Types.toNumber(args[0]));
+            if (args[0] == Types.UNDEFINED) {
+                number = 0;
+            }
+            numberObject.setPrimitiveValue(number);
             return numberObject;
         }
     }

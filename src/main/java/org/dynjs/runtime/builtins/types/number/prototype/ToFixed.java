@@ -5,7 +5,6 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PrimitiveDynObject;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
@@ -13,9 +12,6 @@ public class ToFixed extends AbstractNativeFunction {
 
     public ToFixed(GlobalObject globalObject) {
         super(globalObject, "fractionDigits");
-        PropertyDescriptor length = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-        length.set("Value", 1);
-        this.defineOwnProperty(null, "length", length, false);
     }
 
     @Override

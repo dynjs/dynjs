@@ -89,6 +89,11 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testNumberDefault() {
+        assertThat(eval("new Number().valueOf()")).isEqualTo(0);
+    }
+    
+    @Test
     public void testNumberPrototypeToString() {
         // 15.7.2
         check("var result = Number.prototype.toString()", "0");
