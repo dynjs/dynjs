@@ -18,6 +18,12 @@ import org.dynjs.runtime.GlobalObject;
  */
 public class FilesystemModuleProvider implements ModuleProvider {
 
+    public FilesystemModuleProvider(GlobalObject globalObject) {
+        globalObject.addLoadPath( System.getProperty("user.dir") + "/");
+        globalObject.addLoadPath(System.getProperty("user.home") + "/.node_modules/");
+        globalObject.addLoadPath(System.getProperty("user.home") + "/.node_libraries/");
+        globalObject.addLoadPath("/usr/local/lib/node/");
+        globalObject.addLoadPath("/usr/local/lib/node_modules/");    }
     @Override
     public DynObject load(ExecutionContext context, String moduleName) {
         String filename = normalizeFileName(moduleName);

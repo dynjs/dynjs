@@ -91,7 +91,7 @@ public class GlobalObject extends DynObject {
         // Module-provider setup
         // ----------------------------------------
         
-        this.moduleProviders.add(new FilesystemModuleProvider());
+        this.moduleProviders.add(new FilesystemModuleProvider(this));
 
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
         javaClassModuleProvider.addModule(new ConsoleModule());
