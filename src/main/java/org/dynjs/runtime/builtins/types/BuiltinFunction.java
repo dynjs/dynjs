@@ -56,7 +56,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         int numArgs = args.length;
         String body = "";
         if (numArgs > 0) {
-            body = Types.toString(args[numArgs - 1]);
+            body = Types.toString(context, args[numArgs - 1]);
         }
 
         StringBuffer formalParams = new StringBuffer();
@@ -66,7 +66,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
             if (!first) {
                 formalParams.append(",");
             }
-            formalParams.append(Types.toString(args[i]));
+            formalParams.append(Types.toString(context, args[i]));
             first = false;
         }
 

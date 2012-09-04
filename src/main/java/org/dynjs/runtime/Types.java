@@ -42,22 +42,22 @@ public class Types {
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
 
-    public static Object toPrimitive(Object o) {
-    	return toPrimitive(o, null);
+    public static Object toPrimitive(ExecutionContext context, Object o) {
+    	return toPrimitive(context, o, null);
     }
 
-    public static Object toPrimitive(Object o, String preferredType) {
+    public static Object toPrimitive(ExecutionContext context, Object o, String preferredType) {
     	// 9.1
         if (o instanceof JSObject) {
-            return ((JSObject) o).defaultValue(preferredType);
+            return ((JSObject) o).defaultValue(context, preferredType);
         }
         return o;
     }
 
-    public static Number toNumber(Object o) {
+    public static Number toNumber(ExecutionContext context, Object o) {
         // 9.3
         if (o instanceof JSObject) {
-            return toNumber(toPrimitive(o, "Number"));
+            return toNumber(context, toPrimitive(context, o, "Number"));
         }
 
         if (o instanceof Number) {
@@ -128,8 +128,8 @@ public class Types {
         return true;
     }
     
-    public static Integer toInteger(Object o) {
-        Number number = toNumber(o);
+    public static Integer toInteger(ExecutionContext context, Object o) {
+        Number number = toNumber(context, o);
         if ( number instanceof Double ) {
             if ( ((Double)number).isNaN() ) {
                 return 0;
@@ -139,9 +139,9 @@ public class Types {
         return number.intValue();
     }
 
-    public static Integer toUint32(Object o) {
+    public static Integer toUint32(ExecutionContext context, Object o) {
         // 9.5
-        Number n = toNumber(o);
+        Number n = toNumber(context, o);
 
         if (n instanceof Integer) {
             return ((Integer) n).intValue();
@@ -159,8 +159,8 @@ public class Types {
         return (int) int32bit;
     }
 
-    public static Integer toInt32(Object o) {
-        int int32bit = toUint32(o);
+    public static Integer toInt32(ExecutionContext context, Object o) {
+        int int32bit = toUint32(context, o);
         if (int32bit > Math.pow(2, 31)) {
             return (int) (int32bit - Math.pow(2, 32));
         }
@@ -178,7 +178,10 @@ public class Types {
         return o;
     }
 
-    public static String toString(Object o) {
+    public static String toString(ExecutionContext context, Object o) {
+        if ( o instanceof JSObject ) {
+            return (String) toPrimitive(context, o, "String");
+        }
         return o.toString();
     }
 
@@ -196,18 +199,18 @@ public class Types {
         return type(val);
     }
 
-    public static Object compareRelational(Object x, Object y, boolean leftFirst) {
+    public static Object compareRelational(ExecutionContext context, Object x, Object y, boolean leftFirst) {
         // 11.8.5
 
         Object px = null;
         Object py = null;
 
         if (leftFirst) {
-            px = toPrimitive(x, "Number");
-            py = toPrimitive(y, "Number");
+            px = toPrimitive(context, x, "Number");
+            py = toPrimitive(context, y, "Number");
         } else {
-            py = toPrimitive(y, "Number");
-            px = toPrimitive(x, "Number");
+            py = toPrimitive(context, y, "Number");
+            px = toPrimitive(context, x, "Number");
         }
 
         if (px instanceof String && py instanceof String) {
@@ -220,8 +223,8 @@ public class Types {
 
             return false;
         } else {
-            Number nx = toNumber(px);
-            Number ny = toNumber(py);
+            Number nx = toNumber(context, px);
+            Number ny = toNumber(context, py);
 
             if (nx.doubleValue() == Double.NaN || ny.doubleValue() == Double.NaN) {
                 return Types.UNDEFINED;
@@ -256,7 +259,7 @@ public class Types {
 
     }
 
-    public static boolean compareEquality(Object lhs, Object rhs) {
+    public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.3
 
         String lhsType = type(lhs);
@@ -300,33 +303,33 @@ public class Types {
         }
 
         if (lhsType.equals("number") && rhsType.equals("string")) {
-            return compareEquality(lhs, toNumber(rhs));
+            return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
         if (lhsType.equals("string") && rhsType.equals("number")) {
-            return compareEquality(toNumber(lhs), rhs);
+            return compareEquality(context, toNumber(context, lhs), rhs);
         }
 
         if (lhsType.equals("boolean")) {
-            return compareEquality(toNumber(lhs), rhs);
+            return compareEquality(context, toNumber(context, lhs), rhs);
         }
 
         if (rhsType.equals("boolean")) {
-            return compareEquality(lhs, toNumber(rhs));
+            return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
         if ((lhsType.equals("string") || lhsType.equals("number")) && rhsType.equals("object")) {
-            return compareEquality(lhs, toPrimitive(rhs));
+            return compareEquality(context, lhs, toPrimitive(context, rhs));
         }
 
         if (lhsType.equals("object") && (rhsType.equals("string") || rhsType.equals("number"))) {
-            return compareEquality(toPrimitive(lhs), rhs);
+            return compareEquality(context, toPrimitive(context, lhs), rhs);
         }
 
         return false;
     }
 
-    public static boolean compareStrictEquality(Object lhs, Object rhs) {
+    public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
         String lhsType = type(lhs);
         String rhsType = type(rhs);

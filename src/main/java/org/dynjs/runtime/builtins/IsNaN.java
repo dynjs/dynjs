@@ -30,8 +30,8 @@ public class IsNaN extends AbstractNativeFunction {
             Object value = ((Reference) arg).getValue(context);
             return value.equals(Double.POSITIVE_INFINITY) || value.equals(Double.NEGATIVE_INFINITY);
         }
-        int radix = ParseInt.extractRadix(Types.toString(arg));
-        String text = ParseInt.cleanText(Types.toString(arg), radix);
+        int radix = ParseInt.extractRadix(Types.toString(context, arg));
+        String text = ParseInt.cleanText(Types.toString(context, arg), radix);
         return (ParseInt.parseInt(text, radix).equals(Double.NaN));
     }
 

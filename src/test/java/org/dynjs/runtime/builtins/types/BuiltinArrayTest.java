@@ -63,7 +63,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         Object x = getContext().resolve("x").getValue(getContext());
         assertThat(x).isEqualTo(false);
     }
-
+    
     @Test
     public void testArrayConstructor() {
         eval("var ctor = Array.prototype.constructor; var x = new ctor()");

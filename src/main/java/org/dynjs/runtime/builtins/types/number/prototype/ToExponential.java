@@ -15,8 +15,8 @@ public class ToExponential extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.6 Number.prototype.toExponential (fractionDigits) 
-        Number  x = Types.toNumber(self);
-        Integer f = Types.toInteger(args[0]);
+        Number  x = Types.toNumber(context, self);
+        Integer f = Types.toInteger(context, args[0]);
         double  xd = x.doubleValue();
         int     xi = x.intValue();
 

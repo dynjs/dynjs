@@ -28,7 +28,7 @@ public class Parse extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String jsonText = Types.toString(args[0]);
+        String jsonText = Types.toString(context, args[0]);
         JsonFactory factory = new JsonFactory();
         Object unfiltered = null;
         try {
@@ -57,7 +57,7 @@ public class Parse extends AbstractNativeFunction {
         if (val instanceof JSObject) {
             JSObject jsVal = (JSObject) val;
             if (jsVal.getClassName().equals("Array")) {
-                int len = Types.toInteger(jsVal.get(context, "length"));
+                int len = Types.toInteger(context, jsVal.get(context, "length"));
                 int i = 0;
                 while ( i < len ) {
                     Object newElement = walk( context, reviver, jsVal, "" + i );

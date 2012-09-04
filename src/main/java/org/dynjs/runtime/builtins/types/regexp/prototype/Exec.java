@@ -19,7 +19,7 @@ public class Exec extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String str = Types.toString(args[0]);
+        String str = Types.toString(context, args[0]);
 
         DynRegExp regexp = (DynRegExp) self;
         int flags = 0;

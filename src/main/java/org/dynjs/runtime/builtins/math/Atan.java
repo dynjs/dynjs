@@ -13,7 +13,7 @@ public class Atan extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Number arg = Types.toNumber(args[0]);
+        Number arg = Types.toNumber(context, args[0]);
         if (arg instanceof Double) {
             return Math.atan((Double) arg);
         } else {

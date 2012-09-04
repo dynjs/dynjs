@@ -49,7 +49,13 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: obj preferredType
-                invokestatic(p(Types.class), "toPrimitive", sig(Object.class, Object.class, String.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj preferredType context
+                dup_x2();
+                // context obj preferredType context
+                pop();
+                // context obj preferredType
+                invokestatic(p(Types.class), "toPrimitive", sig(Object.class, ExecutionContext.class, Object.class, String.class));
                 // obj
             }
         };
@@ -59,7 +65,11 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic(p(Types.class), "toNumber", sig(Number.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj context
+                swap();
+                // context obj
+                invokestatic(p(Types.class), "toNumber", sig(Number.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -79,7 +89,11 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic(p(Types.class), "toInt32", sig(Integer.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj context
+                swap();
+                // context obj
+                invokestatic(p(Types.class), "toInt32", sig(Integer.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -89,7 +103,11 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                invokestatic(p(Types.class), "toUint32", sig(Integer.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj context
+                swap();
+                // context obj
+                invokestatic(p(Types.class), "toUint32", sig(Integer.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -145,7 +163,11 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: obj
-                invokestatic(p(Types.class), "toString", sig(String.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj context
+                swap();
+                // context obj
+                invokestatic(p(Types.class), "toString", sig(String.class, ExecutionContext.class, Object.class));
             }
         };
     }

@@ -22,7 +22,7 @@ public class PrimitiveDynObject extends DynObject {
     }
     
     @Override
-    public Object defaultValue(String hint) {
+    public Object defaultValue(ExecutionContext context, String hint) {
         return value;
     }
 

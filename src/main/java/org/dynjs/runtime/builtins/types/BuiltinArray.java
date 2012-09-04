@@ -55,7 +55,7 @@ public class BuiltinArray extends AbstractBuiltinType {
 
         if (self != Types.UNDEFINED) {
             if (args.length == 1) {
-                final Number possiblyLen = Types.toNumber(args[0]);
+                final Number possiblyLen = Types.toNumber(context, args[0]);
                 if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
                     arraySelf.setLength(1);
                     arraySelf.setElement(0, args[0]);

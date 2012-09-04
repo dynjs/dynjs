@@ -23,7 +23,7 @@ public interface JSObject {
 
     boolean delete(ExecutionContext context, String name, boolean shouldThrow);
 
-    Object defaultValue(String hint);
+    Object defaultValue(ExecutionContext context, String hint);
 
     boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow);
 

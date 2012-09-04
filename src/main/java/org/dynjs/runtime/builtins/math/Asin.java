@@ -13,7 +13,7 @@ public class Asin extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Number arg = Types.toNumber(args[0]);
+        Number arg = Types.toNumber(context, args[0]);
         if (arg.equals(1) || arg.equals(1.0) || arg.equals(0) || arg.equals(0.0)) {
             return 0;
         }

@@ -19,7 +19,7 @@ public class ToLocaleString extends AbstractNativeFunction {
         // 15.4.4.3
         JSObject o = Types.toObject(context, self);
 
-        int len = Types.toUint32(o.get(context, "length"));
+        int len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
             return "";

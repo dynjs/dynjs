@@ -165,7 +165,7 @@ public class ExecutionContext {
                 thisBinding = thisArg;
             }
         }
-
+        
         LexicalEnvironment scope = function.getScope();
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 

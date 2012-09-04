@@ -21,7 +21,7 @@ public class Map extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.19
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(o.get(context, "length"));
+        int len = Types.toUint32(context, o.get(context, "length"));
 
         if (!(args[0] instanceof JSFunction)) {
             throw new ThrowException(context.createTypeError("callbackFn must be a function"));

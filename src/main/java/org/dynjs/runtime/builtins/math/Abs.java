@@ -13,7 +13,7 @@ public class Abs extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Number arg = Types.toNumber(args[0]);
+        Number arg = Types.toNumber(context, args[0]);
         if (arg instanceof Double) {
             if (Double.isNaN((Double) arg)) {
                 return Double.NaN;

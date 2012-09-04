@@ -30,16 +30,19 @@ public class BuiltinString extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (self != null) {
+        if (self != Types.UNDEFINED ) {
+            // Constructor
             if (args[0] != Types.UNDEFINED) {
                 PrimitiveDynObject primSelf = (PrimitiveDynObject) self;
-                primSelf.setPrimitiveValue(Types.toString(args[0]));
+                primSelf.setPrimitiveValue(Types.toString(context, args[0]));
                 return primSelf;
+            } else {
+                return self;
             }
-
+        } else {
+            // As function
+            return Types.toString(context, args[0]);
         }
-
-        return null;
     }
 
     @Override

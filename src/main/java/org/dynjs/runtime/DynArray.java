@@ -46,8 +46,8 @@ public class DynArray extends DynObject {
             }
 
             PropertyDescriptor newLenDesc = desc;
-            Integer newLen = Types.toUint32(desc.getValue());
-            if (!newLen.equals(Types.toNumber(desc.getValue()))) {
+            Integer newLen = Types.toUint32(context, desc.getValue());
+            if (!newLen.equals(Types.toNumber(context, desc.getValue()))) {
                 throw new ThrowException( context.createRangeError( "invalid length: " + newLen ) );
             }
             newLenDesc.setValue(newLen);
@@ -99,8 +99,8 @@ public class DynArray extends DynObject {
             return true;
         } // 'length'
 
-        if (isArrayIndex(name)) {
-            Integer index = Types.toUint32(name);
+        if (isArrayIndex(context, name)) {
+            Integer index = Types.toUint32(context, name);
             if ((index.intValue() > oldLen) && oldLenDesc.get("Writable") == Boolean.FALSE) {
                 return reject(context, shouldThrow);
             }
@@ -119,8 +119,8 @@ public class DynArray extends DynObject {
         return super.defineOwnProperty(context, name, desc, shouldThrow);
     }
 
-    protected boolean isArrayIndex(String name) {
-        return name.equals(Types.toUint32(name).toString());
+    protected boolean isArrayIndex(ExecutionContext context, String name) {
+        return name.equals(Types.toUint32(context, name).toString());
     }
 
     // ----------------------------------------

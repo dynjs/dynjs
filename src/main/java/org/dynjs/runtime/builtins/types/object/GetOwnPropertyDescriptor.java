@@ -25,7 +25,7 @@ public class GetOwnPropertyDescriptor extends AbstractNativeFunction {
         
         JSObject jsObj = (JSObject) o;
         
-        String name = Types.toString( args[1] );
+        String name = Types.toString( context, args[1] );
         
         Object desc = jsObj.getOwnProperty(context, name);
         

@@ -25,7 +25,7 @@ public class DefineProperty extends AbstractNativeFunction {
         
         JSObject jsObj = (JSObject) o;
         
-        String name = Types.toString( args[1] );
+        String name = Types.toString( context, args[1] );
         Object attrs = args[2];
         
         PropertyDescriptor d = PropertyDescriptor.toPropertyDescriptor(context, attrs);

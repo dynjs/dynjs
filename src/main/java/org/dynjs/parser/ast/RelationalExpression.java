@@ -4,6 +4,8 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
@@ -20,11 +22,12 @@ public class RelationalExpression extends AbstractBinaryExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT);
                 append(getLhs().getCodeBlock());
                 append(jsGetValue());
                 append(getRhs().getCodeBlock());
                 append(jsGetValue());
-                // lhs rhs
+                // context lhs rhs
 
                 if (getOp().equals(">") || getOp().equals("<=")) {
                     swap();
@@ -36,7 +39,7 @@ public class RelationalExpression extends AbstractBinaryExpression {
                     i2b();
                 }
 
-                invokestatic(p(Types.class), "compareRelational", sig(Object.class, Object.class, Object.class, boolean.class));
+                invokestatic(p(Types.class), "compareRelational", sig(Object.class, ExecutionContext.class, Object.class, Object.class, boolean.class));
 
                 // result
                 dup();

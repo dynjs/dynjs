@@ -21,9 +21,9 @@ public class Slice extends AbstractNativeFunction {
         JSObject o = Types.toObject(context, self);
 
         DynArray a = BuiltinArray.newArray(context);
-        int len = Types.toInteger(o.get(context, "length"));
+        int len = Types.toInteger(context, o.get(context, "length"));
 
-        int relativeStart = Types.toInteger(args[0]);
+        int relativeStart = Types.toInteger(context, args[0]);
         int k = Math.min(relativeStart, len);
 
         if (relativeStart < 0) {
@@ -32,7 +32,7 @@ public class Slice extends AbstractNativeFunction {
 
         int relativeEnd = len;
         if (args[1] != Types.UNDEFINED) {
-            relativeEnd = Types.toInteger(args[1]);
+            relativeEnd = Types.toInteger(context, args[1]);
         }
 
         int finalPos = Math.min(relativeEnd, len);

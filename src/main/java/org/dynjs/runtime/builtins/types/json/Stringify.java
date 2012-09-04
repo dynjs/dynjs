@@ -36,17 +36,17 @@ public class Stringify extends AbstractNativeFunction {
                 replacerFunction = (JSFunction) jsReplacer;
             } else if (jsReplacer.getClassName().equals("Array")) {
                 propertyList = new ArrayList<>();
-                int len = Types.toInteger(jsReplacer.get(context, "length"));
+                int len = Types.toInteger(context, jsReplacer.get(context, "length"));
                 for (int i = 0; i < len; ++i) {
                     Object v = jsReplacer.get(context, "" + i);
                     String item = null;
                     if (Types.type(v).equals("string")) {
                         item = (String) v;
                     } else if (Types.type(v).equals("number")) {
-                        item = Types.toString(v);
+                        item = Types.toString(context, v);
                     } else if (Types.type(v).equals("object")) {
                         if (((JSObject) v).getClassName().equals("String") || ((JSObject) v).getClassName().equals("Number")) {
-                            item = Types.toString(v);
+                            item = Types.toString(context, v);
                         }
                     }
 
@@ -62,9 +62,9 @@ public class Stringify extends AbstractNativeFunction {
         if (space != Types.UNDEFINED) {
             if (space instanceof JSObject) {
                 if (((JSObject) space).getClassName().equals("Number")) {
-                    space = Types.toNumber(space);
+                    space = Types.toNumber(context, space);
                 } else if (((JSObject) space).getClassName().equals("String")) {
-                    space = Types.toString(space);
+                    space = Types.toString(context, space);
                 }
             }
         }
@@ -72,7 +72,7 @@ public class Stringify extends AbstractNativeFunction {
         String gap = "";
 
         if (Types.type(space).equals("number")) {
-            int spaceInt = Types.toInteger(space);
+            int spaceInt = Types.toInteger(context, space);
             if (spaceInt < 10) {
                 spaceInt = 10;
             }
@@ -80,7 +80,7 @@ public class Stringify extends AbstractNativeFunction {
                 gap += " ";
             }
         } else if (Types.type(space).equals("string")) {
-            String spaceStr = Types.toString(space);
+            String spaceStr = Types.toString(context, space);
             if (spaceStr.length() <= 10) {
                 gap = spaceStr.toString();
             } else {
@@ -117,9 +117,9 @@ public class Stringify extends AbstractNativeFunction {
         if (value instanceof JSObject) {
             String objClass = ((JSObject) value).getClassName();
             if (objClass.equals("Number")) {
-                value = Types.toNumber(value);
+                value = Types.toNumber(context, value);
             } else if (objClass.equals("String")) {
-                value = Types.toString(value);
+                value = Types.toString(context, value);
             } else if (objClass.equals("Boolean")) {
                 value = ((PrimitiveDynObject) value).getPrimitiveValue();
             }
@@ -148,7 +148,7 @@ public class Stringify extends AbstractNativeFunction {
                 }
             }
 
-            return Types.toString(value);
+            return Types.toString(context, value);
         }
 
         if ((value instanceof JSObject) && (!(value instanceof JSFunction))) {
@@ -176,7 +176,7 @@ public class Stringify extends AbstractNativeFunction {
 
         List<String> partial = new ArrayList<>();
 
-        int len = Types.toInteger(value.get(context, "length"));
+        int len = Types.toInteger(context, value.get(context, "length"));
 
         for (int i = 0; i < len; ++i) {
             String strP = str(context, stack, indent, gap, replacer, propertyList, value, "" + i);

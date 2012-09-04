@@ -26,14 +26,14 @@ public class ToString extends AbstractNativeFunction {
         if ( name == Types.UNDEFINED ) {
             name = "Error";
         } else {
-            name = Types.toString(name);
+            name = Types.toString(context, name);
         }
         
         Object message = jsSelf.get( context, "message" );
         if ( message == Types.UNDEFINED ) {
             message = "";
         } else {
-            message = Types.toString(message);
+            message = Types.toString(context, message);
         }
         
         if ( name.toString().equals( "" ) && message.toString().equals( "" )) {

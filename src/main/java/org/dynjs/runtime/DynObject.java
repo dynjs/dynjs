@@ -228,8 +228,27 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public Object defaultValue(String hint) {
-        // TODO Auto-generated method stub
+    public Object defaultValue(ExecutionContext context, String hint) {
+        // 8.12.8
+        if (hint.equals("String")) {
+            Object toString = get(context, "toString");
+            if (toString instanceof JSFunction) {
+                Object result = context.call((JSFunction) toString, this);
+                if (result instanceof String) {
+                    return result;
+                }
+            }
+            
+            Object valueOf = get( context, "valueOf" );
+            if ( valueOf instanceof JSFunction ) {
+                Object result = context.call( (JSFunction) valueOf, this );
+                if ( result instanceof String ) {
+                    return result;
+                }
+            }
+            throw new ThrowException( context.createTypeError( "String coercion must return a primitive value" ));
+        }
+
         return null;
     }
 

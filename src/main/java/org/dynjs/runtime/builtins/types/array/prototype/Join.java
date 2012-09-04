@@ -17,7 +17,7 @@ public class Join extends AbstractNativeFunction {
         // 15.4.4.5
 
         JSObject array = Types.toObject(context, self);
-        int len = Types.toUint32(array.get(context, "length"));
+        int len = Types.toUint32(context, array.get(context, "length"));
         if (len == 0) {
             return "";
         }
@@ -25,7 +25,7 @@ public class Join extends AbstractNativeFunction {
         String separator = ",";
         if (args.length >= 1) {
             if (args[0] != Types.UNDEFINED) {
-                separator = Types.toString(args[0]);
+                separator = Types.toString(context, args[0]);
             }
         }
 
@@ -39,7 +39,7 @@ public class Join extends AbstractNativeFunction {
             if (v == Types.UNDEFINED || v == Types.NULL) {
                 v = "";
             } else {
-                v = Types.toString(v);
+                v = Types.toString(context, v);
             }
             buf.append(v);
         }

@@ -16,7 +16,7 @@ public class Pop extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.2
         JSObject array = Types.toObject(context, self);
-        int len = Types.toInteger( array.get( context, "length" ));
+        int len = Types.toInteger( context, array.get( context, "length" ));
         
         if ( len == 0 ) {
             array.put(context, "length", 0, true);

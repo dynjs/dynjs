@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins.types;
 
 import static org.fest.assertions.Assertions.*;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.junit.Ignore;
@@ -47,6 +48,12 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     public void testCharAtWithinBounds() {
         Object o = eval( "new String(42).charAt(1)" );
         assertThat( o ).isEqualTo( "2" );
+    }
+    
+    @Test(expected=ThrowException.class)
+    public void testToStringMustThrowIfNotAPrimitiveResult() {
+        eval( "var obj = { toString:function(){ return new Object(); } };",
+                "String(obj)");
     }
 
 }

@@ -15,10 +15,12 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
@@ -37,15 +39,17 @@ public class StrictEqualityOperatorExpression extends AbstractBinaryExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context
                 append(getLhs().getCodeBlock());
-                // obj(lhs)
+                // context obj(lhs)
                 append(jsGetValue());
-                // val(lhs)
+                // context val(lhs)
                 append(getRhs().getCodeBlock());
-                // val(lhs) obj(rhs)
+                // context val(lhs) obj(rhs)
                 append(jsGetValue());
-                // val(lhs) val(rhs)
-                invokestatic(p(Types.class), "compareStrictEquality", sig(boolean.class, Object.class, Object.class));
+                // context val(lhs) val(rhs)
+                invokestatic(p(Types.class), "compareStrictEquality", sig(boolean.class, ExecutionContext.class, Object.class, Object.class));
                 // bool
 
                 if (getOp().equals("===")) {

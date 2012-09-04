@@ -23,7 +23,7 @@ public class ToFixed extends AbstractNativeFunction {
         String value = "";
         Integer digits = 0;
         if (args[0] != Types.UNDEFINED ) {
-            digits = (Integer) Types.toNumber(args[0]);
+            digits = (Integer) Types.toNumber(context, args[0]);
         }
         if (digits < 0 || digits > 20) {
             throw new ThrowException(context.createRangeError("toFixed() digits argument must be between 0 and 20"));
@@ -36,14 +36,14 @@ public class ToFixed extends AbstractNativeFunction {
             primitiveValue = ((DynNumber) self).getPrimitiveValue();
         }
         if (primitiveValue instanceof Double) {
-            value = doubleToFixed((double) primitiveValue, digits);
+            value = doubleToFixed(context, (double) primitiveValue, digits);
         } else {
             value = Integer.toString((int) primitiveValue);
         }
         return value;
     }
 
-    private String doubleToFixed(double _double_, int digits) {
+    private String doubleToFixed(ExecutionContext context, double _double_, int digits) {
         String value;
         if (Double.isNaN(_double_)) {
             value = "NaN";
@@ -55,7 +55,7 @@ public class ToFixed extends AbstractNativeFunction {
             }
         }
         else if (_double_ >= 1.0E21) {
-            value = Types.toString(_double_);
+            value = Types.toString(context, _double_);
         } else {
             if (digits == 0) {
                 value = String.valueOf(new Integer((int) _double_));
