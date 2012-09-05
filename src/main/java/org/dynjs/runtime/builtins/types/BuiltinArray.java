@@ -20,6 +20,7 @@ import org.dynjs.runtime.builtins.types.array.prototype.Sort;
 import org.dynjs.runtime.builtins.types.array.prototype.Splice;
 import org.dynjs.runtime.builtins.types.array.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.array.prototype.ToString;
+import org.dynjs.runtime.builtins.types.array.prototype.Unshift;
 
 public class BuiltinArray extends AbstractBuiltinType {
 
@@ -45,6 +46,7 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.put(null, "slice", new Slice(globalObject), false);
         proto.put(null, "sort", new Sort(globalObject), false);
         proto.put(null, "splice", new Splice(globalObject), false);
+        proto.put(null, "unshift", new Unshift(globalObject), false);
 
         proto.put(null, "forEach", new ForEach(globalObject), false);
         proto.put(null, "map", new Map(globalObject), false);

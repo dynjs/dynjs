@@ -9,7 +9,7 @@ import org.dynjs.runtime.Types;
 public class Shift extends AbstractNativeFunction {
 
     public Shift(GlobalObject globalObject) {
-        super(globalObject, "item");
+        super(globalObject);
     }
 
     @Override

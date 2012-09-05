@@ -352,4 +352,23 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "0")).isEqualTo(1);
     }
 
+    @Test
+    public void testUnshift() {
+        Object result = eval("var a = [1,2,3];",
+                "a.unshift(4,5,6,7)");
+
+        JSObject a = (JSObject) eval("a");
+
+        assertThat(result).isEqualTo(7);
+
+        assertThat(a.get(getContext(), "length")).isEqualTo(7);
+        assertThat(a.get(getContext(), "0")).isEqualTo(4);
+        assertThat(a.get(getContext(), "1")).isEqualTo(5);
+        assertThat(a.get(getContext(), "2")).isEqualTo(6);
+        assertThat(a.get(getContext(), "3")).isEqualTo(7);
+        assertThat(a.get(getContext(), "4")).isEqualTo(1);
+        assertThat(a.get(getContext(), "5")).isEqualTo(2);
+        assertThat(a.get(getContext(), "6")).isEqualTo(3);
+    }
+
 }
