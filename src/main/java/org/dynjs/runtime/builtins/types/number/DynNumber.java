@@ -23,7 +23,7 @@ public class DynNumber extends PrimitiveDynObject {
         } else if (object instanceof DynNumber) {
             return DynNumber.isNaN(((DynNumber) object).getPrimitiveValue());
         }
-        return true;
+        return false;
     }
     
 }

@@ -13,6 +13,7 @@ import org.dynjs.runtime.builtins.math.Cos;
 import org.dynjs.runtime.builtins.math.Exp;
 import org.dynjs.runtime.builtins.math.Floor;
 import org.dynjs.runtime.builtins.math.Log;
+import org.dynjs.runtime.builtins.math.Max;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -41,6 +42,7 @@ public class Math extends DynObject {
         put(null, "exp",   new Exp(globalObject), false);   // 15.8.2.8
         put(null, "floor", new Floor(globalObject), false); // 15.8.2.9
         put(null, "log",   new Log(globalObject), false);   // 15.8.2.10
+        put(null, "max",   new Max(globalObject), false);   // 15.8.2.11
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {

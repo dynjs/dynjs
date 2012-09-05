@@ -352,6 +352,36 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathMaxLength() {
+        assertEval("Math.max.length", 2);
+    }
+    
+    @Test
+    public void testMathMax() {
+        assertEval("Math.max(0.5, 2)", 2);
+    }
+    
+    @Test
+    public void testMathMaxOneArg() {
+        assertEval("Math.max(2)", 2);
+    }
+    
+    @Test
+    public void testMathMaxThreeArgs() {
+        assertEval("Math.max(1,4,6)", 6);
+    }
+    
+    @Test
+    public void testMathMaxVeryManyArgs() {
+        assertEval("Math.max(1,4,6,12,4,987,0,12.34,98765.45)", 98765.45);
+    }
+    
+    @Test
+    public void testMathMaxVeryManyArgsAndOneNaNStuckInTheMiddle() {
+        assertEval("Math.max(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
