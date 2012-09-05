@@ -312,6 +312,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathFloorFootnote() {
+        assertEval("Math.floor(1.234) == -Math.ceil(-1.234)", true);
+    }
+    
+    @Test
     public void testMathFloorGreaterThanZeroButLessThanOne() {
         assertEval("Math.floor(0.99999999)", 0);
     }
