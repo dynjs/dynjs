@@ -1,9 +1,11 @@
 package org.dynjs.runtime.builtins.types;
 
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;
@@ -32,13 +34,13 @@ public class BuiltinNumber extends AbstractBuiltinType {
         proto.put(null, "toFixed", new ToFixed(globalObject), false);
         proto.put(null, "toExponential", new ToExponential(globalObject), false);
 
-        put(null, "NaN", new DynNumber(globalObject, Double.NaN), false);
-        put(null, "POSITIVE_INFINITY", new DynNumber(globalObject, Double.POSITIVE_INFINITY), false);
-        put(null, "NEGATIVE_INFINITY", new DynNumber(globalObject, Double.NEGATIVE_INFINITY), false);
-        put(null, "MIN_VALUE", new DynNumber(globalObject, Double.MIN_VALUE), false);
-        put(null, "MAX_VALUE", new DynNumber(globalObject, Double.MAX_VALUE), false);
-        globalObject.put(null, "NaN", get(null, "NaN"), false);
-        globalObject.put(null, "Infinity", get(null, "POSITIVE_INFINITY"), false);
+        defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
+        defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);
+        defineReadOnlyProperty(this, globalObject, "NEGATIVE_INFINITY", Double.NEGATIVE_INFINITY);
+        defineReadOnlyProperty(this, globalObject, "MIN_VALUE", Double.MIN_VALUE);
+        defineReadOnlyProperty(this, globalObject, "MAX_VALUE", Double.MAX_VALUE);
+        defineReadOnlyProperty(globalObject, globalObject, "NaN", Double.NaN);
+        defineReadOnlyProperty(globalObject, globalObject, "Infinity", Double.POSITIVE_INFINITY);
     }
 
     @Override
@@ -63,5 +65,18 @@ public class BuiltinNumber extends AbstractBuiltinType {
         // 15.7.2.1
         return new DynNumber(context.getGlobalObject());
     }
+    
+    protected static void defineReadOnlyProperty(final DynObject on, final GlobalObject globalObject, String name, final Number value) {
+        on.defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                set("Value", new DynNumber(globalObject, value));
+                set("Writable", false);
+                set("Enumerable", false);
+                set("Configurable", false);
+            }
+        }, false);
+    }
+
+
 
 }
