@@ -35,7 +35,7 @@ public class DynJS {
 
     public DynJS(Config config) {
         this.config = config;
-        this.compiler = new JSCompiler( config );
+        this.compiler = new JSCompiler(config);
         this.context = ExecutionContext.createGlobalExecutionContext(this);
     }
 
@@ -52,30 +52,51 @@ public class DynJS {
     }
 
     public Object execute(File file) throws IOException {
-        return execute( this.context, file );
+        return execute(file, false);
     }
-    
+
+    public Object execute(File file, boolean forceStrict) throws IOException {
+        return execute(this.context, file, forceStrict);
+    }
+
     public Object execute(ExecutionContext execContext, File file) throws IOException {
+        return execute(execContext, file, false);
+    }
+
+    public Object execute(ExecutionContext execContext, File file, boolean forceStrict) throws IOException {
         FileInputStream in = new FileInputStream(file);
         try {
-            return execute(execContext, in, file.getPath());
+            return execute(execContext, in, file.getPath(), forceStrict);
         } finally {
             in.close();
         }
     }
 
     public Object execute(InputStream program, String filename) throws IOException {
-        return execute( this.context, program, filename );
+        return execute(program, filename, false);
     }
-    
+
+    public Object execute(InputStream program, String filename, boolean forceStrict) throws IOException {
+        return execute(this.context, program, filename, forceStrict);
+    }
+
     public Object execute(ExecutionContext execContext, InputStream program, String filename) throws IOException {
-        JSProgram programObj = compile( execContext, program, filename );
+        return execute(execContext, program, filename, false);
+
+    }
+
+    public Object execute(ExecutionContext execContext, InputStream program, String filename, boolean forceStrict) throws IOException {
+        JSProgram programObj = compile(execContext, program, filename, forceStrict );
         Completion completion = execContext.execute(programObj);
         return completion.value;
     }
-    
+
     public Object execute(String program, String filename, int lineNumber) {
-        JSProgram programObj = compile( this.context, program, filename );
+        return execute( program, filename, lineNumber, false );
+        
+    }
+    public Object execute(String program, String filename, int lineNumber, boolean forceStrict) {
+        JSProgram programObj = compile(this.context, program, filename, forceStrict );
         Completion completion = this.context.execute(programObj);
         Object v = completion.value;
         if (v instanceof Reference) {
@@ -97,30 +118,30 @@ public class DynJS {
         }
         return execute(fullCode.toString(), null, 0);
     }
-    
+
     public JSProgram compile(String program) {
-        return compile( this.context, program, null );
+        return compile(this.context, program, null, false);
     }
-    
+
     public JSProgram compile(String program, String filename) {
-        return compile( this.context, program, filename );
+        return compile(this.context, program, filename, false);
     }
-    
-    public JSProgram compile(ExecutionContext execContext, String program, String filename) {
+
+    public JSProgram compile(ExecutionContext execContext, String program, String filename, boolean forceStrict) {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
-        JSProgram programObj = compiler.compileProgram(statements);
+        JSProgram programObj = compiler.compileProgram(statements, forceStrict);
         return programObj;
     }
-    
-    public JSProgram compile(FileInputStream program, String filename) throws IOException {
-        return compile( this.context, program, filename );
+
+    public JSProgram compile(InputStream program, String filename) throws IOException {
+        return compile(this.context, program, filename, false);
     }
-    
-    public JSProgram compile(ExecutionContext execContext, InputStream program, String filename) throws IOException {
+
+    public JSProgram compile(ExecutionContext execContext, InputStream program, String filename, boolean forceStrict) throws IOException {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
-        JSProgram programObj = compiler.compileProgram(statements);
+        JSProgram programObj = compiler.compileProgram(statements, false);
         return programObj;
     }
 

@@ -27,7 +27,7 @@ public class ProgramCompiler extends AbstractCompiler {
         super(config, "Program");
     }
 
-    public JSProgram compile(final Statement statement) {
+    public JSProgram compile(final Statement statement, boolean forceStrict) {
         JiteClass jiteClass = new JiteClass(nextClassName(), p(BaseProgram.class), new String[0]) {
             {
                 defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Statement.class),
@@ -63,7 +63,11 @@ public class ProgramCompiler extends AbstractCompiler {
         Class<BaseProgram> cls = (Class<BaseProgram>) defineClass(jiteClass);
         try {
             Constructor<BaseProgram> ctor = cls.getDeclaredConstructor(Statement.class);
-            return (JSProgram) ctor.newInstance(statement);
+            BaseProgram program = ctor.newInstance(statement);
+            if ( forceStrict ) {
+                program.setStrict( true );
+            }
+            return program;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }

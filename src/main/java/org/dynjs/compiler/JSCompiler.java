@@ -27,8 +27,8 @@ public class JSCompiler {
         this.basicBlockCompiler = new BasicBlockCompiler(this.config);
     }
 
-    public JSProgram compileProgram(Statement statement) {
-        return this.programCompiler.compile(statement);
+    public JSProgram compileProgram(Statement statement, boolean forceStrict) {
+        return this.programCompiler.compile(statement, forceStrict);
     }
 
     public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body) {
