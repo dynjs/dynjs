@@ -217,6 +217,36 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testMathCeil() {
+        assertEval("Math.ceil(12)", 12);
+    }
+    
+    @Test
+    public void testMathCeilFloaty() {
+        assertEval("Math.ceil(12.12)", 13);
+    }
+    
+    @Test
+    public void testMathCeilNaN() {
+        assertEval("Math.ceil(new Number('asdf'))", Double.NaN);
+    }
+    
+    @Test
+    public void testMathCeilPositiveInfinity() {
+        assertEval("Math.ceil(Number.POSITIVE_INFINITY)", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathCeilNegativeInfinity() {
+        assertEval("Math.ceil(Number.NEGATIVE_INFINITY)", Double.NEGATIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathCeilNegativeLessThanNegativeOne() {
+        assertEval("Math.ceil(-0.2)", 0);
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
