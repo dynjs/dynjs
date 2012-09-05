@@ -317,6 +317,40 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat( result.get( getContext(), "1")).isEqualTo("lance" );
         assertThat( result.get( getContext(), "2")).isEqualTo("thebob" );
     }
+    
+    @Test
+    public void testSpliceNoDeletion() {
+        JSObject result = (JSObject) eval( "var a = [1,2,3];",
+                "a.splice(0,0,4,5)");
+        
+        JSObject a = (JSObject) eval( "a" );
+        
+        assertThat( a.get( getContext(), "length")).isEqualTo(5);
+        assertThat( a.get( getContext(), "0")).isEqualTo(4);
+        assertThat( a.get( getContext(), "1")).isEqualTo(5);
+        assertThat( a.get( getContext(), "2")).isEqualTo(1);
+        assertThat( a.get( getContext(), "3")).isEqualTo(2);
+        assertThat( a.get( getContext(), "4")).isEqualTo(3);
+        
+        assertThat( result.get( getContext(), "length" )).isEqualTo(0);
+    }
+    
+    @Test
+    public void testSpliceWithDeletion() {
+        JSObject result = (JSObject) eval( "var a = [1,2,3];",
+                "a.splice(0,1,4,5)");
+        
+        JSObject a = (JSObject) eval( "a" );
+        
+        assertThat( a.get( getContext(), "length")).isEqualTo(4);
+        assertThat( a.get( getContext(), "0")).isEqualTo(4);
+        assertThat( a.get( getContext(), "1")).isEqualTo(5);
+        assertThat( a.get( getContext(), "2")).isEqualTo(2);
+        assertThat( a.get( getContext(), "3")).isEqualTo(3);
+        
+        assertThat( result.get( getContext(), "length" )).isEqualTo(1);
+        assertThat( result.get( getContext(), "0" )).isEqualTo(1);
+    }
                 
     
 }
