@@ -247,6 +247,21 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathCos() {
+        assertEval("Math.cos(3)", java.lang.Math.cos(3));
+    }
+    
+    @Test
+    public void testMathCosFloaty() {
+        assertEval("Math.cos(3.5)", java.lang.Math.cos(3.5));
+    }
+    
+    @Test
+    public void testMathCosInfinite() {
+        assertEval("Math.cos(Infinity)", Double.NaN);
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
