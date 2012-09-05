@@ -281,4 +281,42 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
     
+    @Test
+    public void testSortStringsNoFunction() {
+        JSObject result = (JSObject) eval( "['qmx', 'lance', 'bob' ].sort()");
+        
+        assertThat( result.get(getContext(), "length" )).isEqualTo(3);
+        assertThat( result.get(getContext(), "0" )).isEqualTo("bob");
+        assertThat( result.get(getContext(), "1" )).isEqualTo("lance");
+        assertThat( result.get(getContext(), "2" )).isEqualTo("qmx");
+    }
+    
+    @Test
+    public void testSortNonStringsNoFunction() {
+        JSObject result = (JSObject) eval( "[1,2,10,20].sort()" );
+        assertThat( result.get(getContext(), "length" )).isEqualTo(4);
+        assertThat( result.get(getContext(), "0" )).isEqualTo(1);
+        assertThat( result.get(getContext(), "1" )).isEqualTo(10);
+        assertThat( result.get(getContext(), "2" )).isEqualTo(2);
+        assertThat( result.get(getContext(), "3" )).isEqualTo(20);
+    }
+    
+    @Test
+    public void testStringsWithFunction() {
+        JSObject result = (JSObject) eval( "[ 'thebob', 'lance', 'qmx' ].sort( function(x,y){",
+                "if ( x.length > y.length ) {",
+                "  return 1;",
+                "} else if ( x.length < y.length ) {",
+                "  return -1;",
+                "} else {",
+                "  return 0",
+                "} } )" );
+        
+        assertThat( result.get( getContext(), "length")).isEqualTo(3);
+        assertThat( result.get( getContext(), "0")).isEqualTo("qmx" );
+        assertThat( result.get( getContext(), "1")).isEqualTo("lance" );
+        assertThat( result.get( getContext(), "2")).isEqualTo("thebob" );
+    }
+                
+    
 }

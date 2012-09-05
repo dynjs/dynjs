@@ -170,6 +170,22 @@ public class Types {
     public static boolean isCallable(Object o) {
         return (o instanceof JSCallable);
     }
+    
+    public static boolean isSparse(ExecutionContext context, JSObject o) {
+        if ( ! o.hasProperty(context, "length" ) ) {
+            return false;
+        }
+        
+        int len = Types.toUint32(context, o.get(context, "length" ) );
+        
+        for ( int i = 0 ; i < len ;++i ) {
+            if ( o.getOwnProperty(context, ""+i) == Types.UNDEFINED) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     public static Object getValue(ExecutionContext context, Object o) {
         if (o instanceof Reference) {
