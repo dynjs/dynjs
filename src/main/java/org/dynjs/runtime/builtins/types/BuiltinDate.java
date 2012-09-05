@@ -1,0 +1,26 @@
+package org.dynjs.runtime.builtins.types;
+
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
+
+public class BuiltinDate extends AbstractBuiltinType {
+
+    public BuiltinDate(final GlobalObject globalObject) {
+        super(globalObject, "year", "month", "date", "hours", "minutes", "seconds", "ms");
+
+    @Override
+    public JSObject createNewObject(ExecutionContext context) {
+        return new DynDate(context.getGlobalObject());
+    }
+
+    @Override
+    public void initialize(GlobalObject globalObject, JSObject prototype) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+}
