@@ -205,6 +205,16 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathAtan2XNaN() {
         assertEval("Math.atan2(0.3, new Number('asdf'))", Double.NaN);
     }
+    
+    @Test
+    public void testMathAtan2XGreaterThanZero() {
+        assertEval("Math.atan2(1, 0)", java.lang.Math.PI/2);
+    }
+    
+    @Test
+    public void testMathAtan2NegativeInfinity() {
+        assertEval("Math.atan2(-Infinity, Number.NEGATIVE_INFINITY)", -3*java.lang.Math.PI/4);
+    }
 
     @Test
     public void testMathFunction() {
