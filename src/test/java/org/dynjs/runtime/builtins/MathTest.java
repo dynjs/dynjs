@@ -423,7 +423,17 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathPow() {
-        assertEval("Math.pow(12,123.123)", java.lang.Math.pow(12, 123.123));
+        assertEval("Math.pow(12,12.123)", java.lang.Math.pow(12, 12.123));
+    }
+    
+    @Test
+    public void testMathPowWithYNaN() {
+        assertEval("Math.pow(12, NaN)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathPowXNaNYZero() {
+        assertEval("Math.pow(NaN, 0)", 1);
     }
 
     @Test

@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.math;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.Math;
 
 public class Acos extends AbstractNativeFunction {
 
@@ -13,16 +13,7 @@ public class Acos extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Number arg = Types.toNumber(context, args[0]);
-        if (arg instanceof Double) {
-            Double argd = (Double) arg;
-            if (argd > 1 || argd < -1 || Double.isNaN(argd)) {
-                return Double.NaN;
-            }
-            return Math.acos(argd);
-        } else {
-            return (int) Math.acos((Integer) arg);
-        }
+        return Math.coerceIntegerIfPossible(java.lang.Math.acos(Math.functionArgToDouble(context, args[0])));
     }
 
 }

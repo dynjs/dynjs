@@ -4,6 +4,7 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Max extends AbstractNativeFunction {
@@ -31,12 +32,9 @@ public class Max extends AbstractNativeFunction {
         for (int i = 1; i < args.length; i++) {
             if (DynNumber.isNaN(args[i]))
                 return Double.NaN;
-            max = Math.max(new Double(Types.toNumber(context, args[i]).toString()), max);
+            max = java.lang.Math.max(Math.functionArgToDouble(context, args[i]), max);
         }
-        if (max - Math.floor(max) == 0)
-            return (int) max;
-        else
-            return max;
+        return Math.coerceIntegerIfPossible(max);
     }
 
 }

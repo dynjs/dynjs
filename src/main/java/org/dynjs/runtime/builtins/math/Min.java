@@ -4,6 +4,7 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Min extends AbstractNativeFunction {
@@ -31,12 +32,9 @@ public class Min extends AbstractNativeFunction {
         for (int i = 1; i < args.length; i++) {
             if (DynNumber.isNaN(args[i]))
                 return Double.NaN;
-            min = Math.min(new Double(Types.toNumber(context, args[i]).toString()), min);
+            min = java.lang.Math.min(Math.functionArgToDouble(context, args[i]), min);
         }
-        if (min - Math.floor(min) == 0)
-            return (int) min;
-        else
-            return min;
+        return Math.coerceIntegerIfPossible(min);
     }
 
 }

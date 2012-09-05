@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.math;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.Math;
 
 public class Atan extends AbstractNativeFunction {
 
@@ -13,11 +13,6 @@ public class Atan extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Number arg = Types.toNumber(context, args[0]);
-        if (arg instanceof Double) {
-            return Math.atan((Double) arg);
-        } else {
-            return (int) Math.atan((Integer) arg);
-        }
+        return Math.coerceIntegerIfPossible(java.lang.Math.atan(Math.functionArgToDouble(context, args[0])));
     }
 }

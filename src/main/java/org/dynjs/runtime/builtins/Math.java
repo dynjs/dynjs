@@ -1,8 +1,10 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.math.Abs;
 import org.dynjs.runtime.builtins.math.Acos;
 import org.dynjs.runtime.builtins.math.Asin;
@@ -58,6 +60,18 @@ public class Math extends DynObject {
                 set("Configurable", false);
             }
         }, false);
+    }
+
+    public static Object coerceIntegerIfPossible(double d) {
+        // TODO: I believe this is broken for doubles expressed in scientific notation
+        if (Double.isInfinite(d) || Double.isNaN(d) || (d - java.lang.Math.ceil(d) != 0) || Double.MAX_VALUE == d)
+            return d;
+        else
+            return (int) d;
+    }
+
+    public static Double functionArgToDouble(ExecutionContext context, Object arg) {
+        return new Double(Types.toNumber(context, arg).toString());
     }
 
 }

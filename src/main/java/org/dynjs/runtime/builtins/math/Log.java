@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.math;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Log extends AbstractNativeFunction {
@@ -17,11 +17,8 @@ public class Log extends AbstractNativeFunction {
         if (DynNumber.isNaN(args[0])) {
             return Double.NaN;
         }
-        final Double arg = new Double(Types.toNumber(context, args[0]).toString());
-        if (arg == 1) {
-            return 0;
-        }
-        return java.lang.Math.log(arg);
+        final Double arg = Math.functionArgToDouble(context, args[0]);
+        return Math.coerceIntegerIfPossible(java.lang.Math.log(arg));
     }
 
 }
