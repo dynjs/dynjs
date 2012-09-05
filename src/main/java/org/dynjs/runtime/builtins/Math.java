@@ -11,6 +11,7 @@ import org.dynjs.runtime.builtins.math.Atan2;
 import org.dynjs.runtime.builtins.math.Ceil;
 import org.dynjs.runtime.builtins.math.Cos;
 import org.dynjs.runtime.builtins.math.Exp;
+import org.dynjs.runtime.builtins.math.Floor;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -29,14 +30,15 @@ public class Math extends DynObject {
         defineReadOnlyProperty( globalObject, "SQRT2", java.lang.Math.sqrt(2.0f) ); // 15.8.1.8
         
         // Math functions 15.8.2
-        put(null, "abs", new Abs(globalObject), false); // 15.8.2.1
-        put(null, "acos", new Acos(globalObject), false); // 15.8.2.2
-        put(null, "asin", new Asin(globalObject), false); // 15.8.2.3
-        put(null, "atan", new Atan(globalObject), false); // 15.8.2.4
+        put(null, "abs",   new Abs(globalObject), false);   // 15.8.2.1
+        put(null, "acos",  new Acos(globalObject), false);  // 15.8.2.2
+        put(null, "asin",  new Asin(globalObject), false);  // 15.8.2.3
+        put(null, "atan",  new Atan(globalObject), false);  // 15.8.2.4
         put(null, "atan2", new Atan2(globalObject), false); // 15.8.2.5
-        put(null, "ceil", new Ceil(globalObject), false); // 15.8.2.6
-        put(null, "cos", new Cos(globalObject), false); // 15.8.2.7
-        put(null, "exp", new Exp(globalObject), false); // 15.8.2.8
+        put(null, "ceil",  new Ceil(globalObject), false);  // 15.8.2.6
+        put(null, "cos",   new Cos(globalObject), false);   // 15.8.2.7
+        put(null, "exp",   new Exp(globalObject), false);   // 15.8.2.8
+        put(null, "floor", new Floor(globalObject), false); // 15.8.2.9
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {

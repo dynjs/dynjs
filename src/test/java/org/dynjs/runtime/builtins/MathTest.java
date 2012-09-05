@@ -297,6 +297,26 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathFloor() {
+        assertEval("Math.floor(1.6)", 1);
+    }
+    
+    @Test
+    public void testMathFloorInfinite() {
+        assertEval("Math.floor(Infinity)", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathFloorNegativeInfinite() {
+        assertEval("Math.floor(-Infinity)", Double.NEGATIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathFloorGreaterThanZeroButLessThanOne() {
+        assertEval("Math.floor(0.99999999)", 0);
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
