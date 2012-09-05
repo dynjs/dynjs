@@ -24,7 +24,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
+        proto.setPrototype(globalObject.getPrototypeFor("Object"));
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
         proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);

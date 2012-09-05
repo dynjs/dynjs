@@ -79,39 +79,38 @@ public class JSONTest extends AbstractDynJSTestSupport {
                 "]");
 
     }
-    
+
     @Test
     public void testStringifyObject() {
-        eval( "var x = {",
+        eval("var x = {",
                 "foo: 42,",
                 "fish: 'taco',",
-                "}" );
-        
-        String result = (String) eval( "JSON.stringify(x)" );
-        System.err.println( result );
-        assertThat( result ).contains( "\"fish\":\"taco\"" );
-        assertThat( result ).contains( "\"foo\":42" );
-        assertThat( result ).startsWith("{" );
-        assertThat( result ).endsWith("}" );
-        assertThat( result ).doesNotContain(" ");
-        assertThat( result ).doesNotContain("\n");
+                "}");
+
+        String result = (String) eval("JSON.stringify(x)");
+        System.err.println(result);
+        assertThat(result).contains("\"fish\":\"taco\"");
+        assertThat(result).contains("\"foo\":42");
+        assertThat(result).startsWith("{");
+        assertThat(result).endsWith("}");
+        assertThat(result).doesNotContain(" ");
+        assertThat(result).doesNotContain("\n");
     }
-    
+
     @Test
     public void testStringifyObjectWithPropertyList() {
-        eval( "var x = {",
+        eval("var x = {",
                 "foo: 42,",
                 "fish: 'taco',",
-                "}" );
-        
-        String result = (String) eval( "JSON.stringify(x, ['foo'])" );
-        assertThat( result ).doesNotContain( "\"fish\":\"taco\"" );
-        assertThat( result ).contains( "\"foo\":42" );
-        assertThat( result ).startsWith("{" );
-        assertThat( result ).endsWith("}" );
-        assertThat( result ).doesNotContain(" ");
-        assertThat( result ).doesNotContain("\n");
+                "}");
+
+        String result = (String) eval("JSON.stringify(x, ['foo'])");
+        assertThat(result).doesNotContain("\"fish\":\"taco\"");
+        assertThat(result).contains("\"foo\":42");
+        assertThat(result).startsWith("{");
+        assertThat(result).endsWith("}");
+        assertThat(result).doesNotContain(" ");
+        assertThat(result).doesNotContain("\n");
     }
-    
 
 }

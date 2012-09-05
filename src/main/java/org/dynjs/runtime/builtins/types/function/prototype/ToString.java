@@ -15,11 +15,11 @@ public class ToString extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.2
-        System.err.println( "SELF: " + self );
-        if ( ! ( self instanceof JSFunction ) ) {
-            throw new ThrowException( context.createTypeError( "Function.toString() only allowed on functions" ));
+        System.err.println("SELF: " + self);
+        if (!(self instanceof JSFunction)) {
+            throw new ThrowException(context.createTypeError("Function.toString() only allowed on functions"));
         }
-        
+
         return self.toString();
     }
 

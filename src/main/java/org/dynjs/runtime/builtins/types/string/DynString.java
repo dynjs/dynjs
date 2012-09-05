@@ -22,10 +22,10 @@ public class DynString extends PrimitiveDynObject {
         super.setPrimitiveValue(value);
         defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
-                set( "Value", ((String)value).length() );
-                set( "Writable", false );
-                set( "Configurable", false );
-                set( "Enumerable", false );
+                set("Value", ((String) value).length());
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", false);
             }
         }, false);
     }

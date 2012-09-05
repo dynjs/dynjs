@@ -5,8 +5,7 @@ import org.dynjs.runtime.GlobalObject;
 public class BuiltinSyntaxError extends AbstractBuiltinNativeError {
 
     public BuiltinSyntaxError(GlobalObject globalObject) {
-        super(globalObject, "ReferenceError" );
+        super(globalObject, "ReferenceError");
     }
-    
 
 }

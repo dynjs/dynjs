@@ -14,7 +14,7 @@ public class BuiltinString extends AbstractBuiltinType {
 
     public BuiltinString(final GlobalObject globalObject) {
         super(globalObject, "value");
-        
+
         final DynObject proto = new DynObject(globalObject);
         proto.setClassName("String");
         put(null, "prototype", proto, false);
@@ -22,15 +22,15 @@ public class BuiltinString extends AbstractBuiltinType {
 
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put( null, "constructor", this, false );
-        proto.put( null, "toString", new ToString(globalObject), false );
-        proto.put( null, "valueOf", new ToString(globalObject), false );
-        proto.put( null, "charAt", new CharAt(globalObject), false );
+        proto.put(null, "constructor", this, false);
+        proto.put(null, "toString", new ToString(globalObject), false);
+        proto.put(null, "valueOf", new ToString(globalObject), false);
+        proto.put(null, "charAt", new CharAt(globalObject), false);
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (self != Types.UNDEFINED ) {
+        if (self != Types.UNDEFINED) {
             // Constructor
             if (args[0] != Types.UNDEFINED) {
                 PrimitiveDynObject primSelf = (PrimitiveDynObject) self;

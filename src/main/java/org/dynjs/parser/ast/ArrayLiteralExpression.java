@@ -41,30 +41,31 @@ public class ArrayLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                invokestatic( p(BuiltinArray.class), "newArray", sig(DynArray.class, ExecutionContext.class));
+                invokestatic(p(BuiltinArray.class), "newArray", sig(DynArray.class, ExecutionContext.class));
                 // array
-                
+
                 int index = 0;
-                
-                for ( Expression each : exprs ) {
+
+                for (Expression each : exprs) {
                     dup();
                     // array array
-                    aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                     // array array context
-                    ldc( index + "" );
+                    ldc(index + "");
                     // array array context name
-                    append( each.getCodeBlock() );
+                    append(each.getCodeBlock());
                     // array array context name val
-                    append( jsGetValue() );
+                    append(jsGetValue());
                     // array array context name val
-                    invokestatic( p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class) );
+                    invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
                     // array array context name desc
                     iconst_0();
                     i2b();
                     // array array context name desc bool
-                    invokevirtual(p(DynArray.class), "defineOwnProperty", sig( boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class ) );
+                    invokevirtual(p(DynArray.class), "defineOwnProperty", sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class,
+                            boolean.class));
                     // array bool
                     pop();
                     // array
@@ -74,18 +75,18 @@ public class ArrayLiteralExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append( "[" );
+        buf.append("[");
         boolean first = true;
-        for ( Expression each : this.exprs ) {
-            if ( ! first ) {
-                buf.append( ", " );
+        for (Expression each : this.exprs) {
+            if (!first) {
+                buf.append(", ");
             }
-            buf.append( each.toString() );
+            buf.append(each.toString());
         }
-        buf.append( "]" );
+        buf.append("]");
         return buf.toString();
     }
 

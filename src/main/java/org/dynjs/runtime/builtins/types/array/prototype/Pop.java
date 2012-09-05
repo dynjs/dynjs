@@ -16,16 +16,16 @@ public class Pop extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.2
         JSObject array = Types.toObject(context, self);
-        int len = Types.toInteger( context, array.get( context, "length" ));
-        
-        if ( len == 0 ) {
+        int len = Types.toInteger(context, array.get(context, "length"));
+
+        if (len == 0) {
             array.put(context, "length", 0, true);
             return Types.UNDEFINED;
         }
-        
+
         int index = len - 1;
-        
-        Object element = array.get(context, "" + index );
+
+        Object element = array.get(context, "" + index);
         array.delete(context, "" + index, true);
         array.put(context, "length", index, true);
         return element;

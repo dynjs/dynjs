@@ -29,31 +29,31 @@ public class BuiltinObject extends AbstractBuiltinType {
     public BuiltinObject(final GlobalObject globalObject) {
         super(globalObject, "value");
 
-        final DynObject proto = new DynObject( globalObject );
-        put(null, "prototype", proto, false );
+        final DynObject proto = new DynObject(globalObject);
+        put(null, "prototype", proto, false);
     }
-    
+
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.put( null, "toString", new ToString(globalObject), false );
-        proto.put( null, "toLocaleString", new ToLocaleString(globalObject), false );
-        proto.put( null, "hasOwnProperty", new HasOwnProperty(globalObject), false );
-        proto.put( null, "isPrototypeOf", new IsPrototypeOf(globalObject), false );
-        proto.put( null, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject), false );
-        
-        put(null, "getPrototypeOf", new GetPrototypeOf(globalObject), false );
-        put(null, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject), false );
-        put(null, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject), false );
-        put(null, "create", new Create(globalObject), false );
-        put(null, "defineProperty", new DefineProperty(globalObject), false );
-        put(null, "defineProperties", new DefineProperties(globalObject), false );
-        put(null, "seal", new Seal(globalObject), false );
-        put(null, "freeze", new Freeze(globalObject), false );
-        put(null, "preventExtensions", new PreventExtensions(globalObject), false );
-        put(null, "isSealed", new IsSealed(globalObject), false );
-        put(null, "isFrozen", new IsFrozen(globalObject), false );
-        put(null, "isExtensible", new IsExtensible(globalObject), false );
-        put(null, "keys", new Keys(globalObject), false );
+        proto.put(null, "toString", new ToString(globalObject), false);
+        proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
+        proto.put(null, "hasOwnProperty", new HasOwnProperty(globalObject), false);
+        proto.put(null, "isPrototypeOf", new IsPrototypeOf(globalObject), false);
+        proto.put(null, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject), false);
+
+        put(null, "getPrototypeOf", new GetPrototypeOf(globalObject), false);
+        put(null, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject), false);
+        put(null, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject), false);
+        put(null, "create", new Create(globalObject), false);
+        put(null, "defineProperty", new DefineProperty(globalObject), false);
+        put(null, "defineProperties", new DefineProperties(globalObject), false);
+        put(null, "seal", new Seal(globalObject), false);
+        put(null, "freeze", new Freeze(globalObject), false);
+        put(null, "preventExtensions", new PreventExtensions(globalObject), false);
+        put(null, "isSealed", new IsSealed(globalObject), false);
+        put(null, "isFrozen", new IsFrozen(globalObject), false);
+        put(null, "isExtensible", new IsExtensible(globalObject), false);
+        put(null, "keys", new Keys(globalObject), false);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class BuiltinObject extends AbstractBuiltinType {
 
         return null;
     }
-    
+
     public static DynObject newObject(ExecutionContext context) {
         BuiltinObject ctor = (BuiltinObject) context.getGlobalObject().get(context, "Object");
         return (DynObject) context.construct(ctor);

@@ -22,13 +22,13 @@ public class GetOwnPropertyDescriptor extends AbstractNativeFunction {
         if (!(o instanceof JSObject)) {
             throw new ThrowException(context.createTypeError("must be an object"));
         }
-        
+
         JSObject jsObj = (JSObject) o;
-        
-        String name = Types.toString( context, args[1] );
-        
+
+        String name = Types.toString(context, args[1]);
+
         Object desc = jsObj.getOwnProperty(context, name);
-        
+
         return PropertyDescriptor.fromPropertyDescriptor(context, desc);
     }
 }

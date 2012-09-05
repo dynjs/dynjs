@@ -33,16 +33,16 @@ public class Seal extends AbstractNativeFunction {
             Object d = jsObj.getOwnProperty(context, name);
             if (d != Types.UNDEFINED) {
                 PropertyDescriptor desc = (PropertyDescriptor) d;
-                Object isConfigurable = desc.get( "Configurable" );
-                if ( isConfigurable == Boolean.TRUE ) {
-                    desc.set( "Configurable", false );
+                Object isConfigurable = desc.get("Configurable");
+                if (isConfigurable == Boolean.TRUE) {
+                    desc.set("Configurable", false);
                 }
                 jsObj.defineOwnProperty(context, name, desc, true);
             }
         }
-        
-        jsObj.setExtensible( false );
-        
+
+        jsObj.setExtensible(false);
+
         return jsObj;
 
     }

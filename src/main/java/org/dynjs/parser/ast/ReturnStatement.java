@@ -43,8 +43,8 @@ public class ReturnStatement extends AbstractStatement {
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
-        return indent + "return" + ( this.expr == null ? "" : " " + this.expr.toString() );
+        return indent + "return" + (this.expr == null ? "" : " " + this.expr.toString());
     }
 }

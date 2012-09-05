@@ -47,10 +47,10 @@ public class Filter extends AbstractNativeFunction {
                 if (Types.toBoolean(selected)) {
                     a.defineOwnProperty(context, "" + to, new PropertyDescriptor() {
                         {
-                            set( "Value", kValue );
-                            set( "Writable", true );
-                            set( "Configurable", true );
-                            set( "Enumerable", true );
+                            set("Value", kValue);
+                            set("Writable", true);
+                            set("Configurable", true);
+                            set("Enumerable", true);
                         }
                     }, false);
                     ++to;

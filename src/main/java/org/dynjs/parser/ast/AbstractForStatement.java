@@ -39,15 +39,15 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
     }
 
     public abstract CodeBlock getFirstChunkCodeBlock();
-    
+
     protected Expression getTest() {
         return this.test;
     }
-    
+
     protected Expression getIncrement() {
         return this.increment;
     }
-    
+
     protected Statement getBlock() {
         return this.block;
     }
@@ -63,11 +63,11 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 LabelNode doIncrement = new LabelNode();
                 LabelNode doBreak = new LabelNode();
                 LabelNode end = new LabelNode();
-                
-                append( getFirstChunkCodeBlock() );
+
+                append(getFirstChunkCodeBlock());
                 // <empty>
-                
-                append( normalCompletion() );
+
+                append(normalCompletion());
                 // completion
 
                 label(begin);
@@ -127,7 +127,7 @@ public abstract class AbstractForStatement extends AbstractCompilingStatement {
                 dup();
                 // completion completion
 
-                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doIncrement, /*return*/end ) );
+                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doIncrement, /*return*/end));
 
                 // ----------------------------------------
                 // do increment

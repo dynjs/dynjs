@@ -9,7 +9,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinStringTest extends AbstractDynJSTestSupport {
-    
+
     @Test
     public void testConstructorWithString() {
         PrimitiveDynObject o = (PrimitiveDynObject) eval("new String('howdy')");
@@ -23,36 +23,35 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         assertThat(o.getClassName()).isEqualTo("String");
         assertThat(o.getPrimitiveValue()).isEqualTo("42");
     }
-    
+
     @Test
     public void testValueOf() {
-        Object o = eval( "new String(42).valueOf()" );
-        assertThat( o ).isEqualTo( "42" );
+        Object o = eval("new String(42).valueOf()");
+        assertThat(o).isEqualTo("42");
     }
-    
+
     @Test
     public void testValueOfOnLiteral() {
-        Object o = eval( "'taco'.valueOf()" );
-        assertThat( o ).isEqualTo( "taco" );
+        Object o = eval("'taco'.valueOf()");
+        assertThat(o).isEqualTo("taco");
     }
-    
+
     @Test
     public void testToString() {
-        Object o = eval( "new String(42).toString()" );
-        assertThat( o ).isEqualTo( "42" );
+        Object o = eval("new String(42).toString()");
+        assertThat(o).isEqualTo("42");
     }
-    
-    
+
     @Ignore
     @Test
     public void testCharAtWithinBounds() {
-        Object o = eval( "new String(42).charAt(1)" );
-        assertThat( o ).isEqualTo( "2" );
+        Object o = eval("new String(42).charAt(1)");
+        assertThat(o).isEqualTo("2");
     }
-    
-    @Test(expected=ThrowException.class)
+
+    @Test(expected = ThrowException.class)
     public void testToStringMustThrowIfNotAPrimitiveResult() {
-        eval( "var obj = { toString:function(){ return new Object(); } };",
+        eval("var obj = { toString:function(){ return new Object(); } };",
                 "String(obj)");
     }
 

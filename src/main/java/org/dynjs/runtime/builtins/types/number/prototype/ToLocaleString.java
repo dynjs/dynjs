@@ -8,7 +8,7 @@ import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToLocaleString extends AbstractNativeFunction {
-    
+
     public ToLocaleString(GlobalObject globalObject) {
         super(globalObject);
     }
@@ -16,7 +16,7 @@ public class ToLocaleString extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (self instanceof DynNumber) {
-            return ((DynNumber)self).getPrimitiveValue().toString();
+            return ((DynNumber) self).getPrimitiveValue().toString();
         }
         return "0";
     }

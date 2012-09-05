@@ -133,7 +133,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
                 append(jsCompletionType());
                 lookupswitch(normalTarget,
                         new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal() },
-                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget } );
+                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget });
 
             }
         };

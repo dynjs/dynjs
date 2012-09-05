@@ -11,6 +11,7 @@ public class Ceil extends AbstractNativeFunction {
     public Ceil(GlobalObject globalObject) {
         super(globalObject, "x");
     }
+
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (DynNumber.isNaN(args[0])) {

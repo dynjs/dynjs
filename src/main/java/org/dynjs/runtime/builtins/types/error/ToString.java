@@ -19,35 +19,35 @@ public class ToString extends AbstractNativeFunction {
         if (!(self instanceof JSObject)) {
             throw new ThrowException(context.createTypeError("'this' must be an object"));
         }
-        
+
         JSObject jsSelf = (JSObject) self;
-        
+
         Object name = jsSelf.get(context, "name");
-        if ( name == Types.UNDEFINED ) {
+        if (name == Types.UNDEFINED) {
             name = "Error";
         } else {
             name = Types.toString(context, name);
         }
-        
-        Object message = jsSelf.get( context, "message" );
-        if ( message == Types.UNDEFINED ) {
+
+        Object message = jsSelf.get(context, "message");
+        if (message == Types.UNDEFINED) {
             message = "";
         } else {
             message = Types.toString(context, message);
         }
-        
-        if ( name.toString().equals( "" ) && message.toString().equals( "" )) {
+
+        if (name.toString().equals("") && message.toString().equals("")) {
             return "Error";
         }
-        
-        if ( name.equals( "" ) ) {
+
+        if (name.equals("")) {
             return message;
         }
-        
-        if ( message.equals( "" )) {
+
+        if (message.equals("")) {
             return name;
         }
-        
+
         return name + ": " + message;
     }
 

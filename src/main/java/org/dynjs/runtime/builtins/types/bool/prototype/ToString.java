@@ -14,13 +14,13 @@ public class ToString extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if ( self instanceof Boolean ) {
+        if (self instanceof Boolean) {
             return self.toString();
         }
         if (self instanceof DynBoolean) {
-            return ((DynBoolean)self).getPrimitiveValue().toString();
+            return ((DynBoolean) self).getPrimitiveValue().toString();
         }
-        
-        throw new ThrowException( context.createTypeError( "not a boolean" ));
+
+        throw new ThrowException(context.createTypeError("not a boolean"));
     }
 }

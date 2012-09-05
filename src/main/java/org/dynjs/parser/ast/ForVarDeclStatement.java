@@ -42,7 +42,7 @@ public class ForVarDeclStatement extends AbstractForStatement {
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(indent).append("for (").append(this.declList == null ? "" : this.declList.toIndentedString("")).append(" ; ");

@@ -21,7 +21,7 @@ public class UnaryPlusExpression extends AbstractUnaryOperatorExpression {
             }
         };
     }
-    
+
     public String toString() {
         return "+" + getExpr();
     }

@@ -62,15 +62,15 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context ref function function
                 invokestatic(p(Types.class), "isCallable", sig(boolean.class, Object.class));
                 // context ref function bool
-                iftrue( isCallable );
+                iftrue(isCallable);
                 // context ref function 
-                append( jsThrowTypeError( memberExpr + " is not a function" ) );
+                append(jsThrowTypeError(memberExpr + " is not a function"));
                 // THROWN!
-                
+
                 // ----------------------------------------
                 // Is Callable
-                
-                label( isCallable );
+
+                label(isCallable);
                 // context ref function
                 swap();
                 // context function ref
@@ -79,35 +79,35 @@ public class FunctionCallExpression extends AbstractExpression {
                 instance_of(p(Reference.class));
                 // context function ref isref?
                 iffalse(noSelf);
-                
+
                 // ----------------------------------------
                 // Reference
-                
+
                 // context function ref
                 checkcast(p(Reference.class));
-                
+
                 dup();
                 // context function ref ref
-                invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class) );
+                invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
                 // context function ref bool(is-prop)
-                
-                iftrue( propertyRef );
-                
+
+                iftrue(propertyRef);
+
                 // ----------------------------------------
                 // Environment Record
-                
+
                 // context function ref
                 append(jsGetBase());
                 // context function base
-                checkcast( p(EnvironmentRecord.class ) );
+                checkcast(p(EnvironmentRecord.class));
                 // context function env-rec
                 invokeinterface(p(EnvironmentRecord.class), "implicitThisValue", sig(Object.class));
                 // context function self
-                go_to( doCall );
-                
+                go_to(doCall);
+
                 // ----------------------------------------
                 // Property Reference
-                label (propertyRef );
+                label(propertyRef);
                 // context function ref
                 append(jsGetBase());
                 // context function self
@@ -136,7 +136,7 @@ public class FunctionCallExpression extends AbstractExpression {
                     dup();
                     bipush(i);
                     append(argExprs.get(i).getCodeBlock());
-                    append( jsGetValue() );
+                    append(jsGetValue());
                     aastore();
                 }
                 // context function self array
@@ -146,20 +146,20 @@ public class FunctionCallExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append( this.memberExpr ).append( "(" );
+        buf.append(this.memberExpr).append("(");
         boolean first = true;
-        for ( Expression each : this.argExprs ) {
-            if ( ! first ) {
-                buf.append( ", " );
+        for (Expression each : this.argExprs) {
+            if (!first) {
+                buf.append(", ");
             }
-            buf.append( each.toString() );
+            buf.append(each.toString());
             first = false;
-            
+
         }
-        buf.append( ")" );
+        buf.append(")");
         return buf.toString();
     }
 }

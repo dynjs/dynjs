@@ -7,7 +7,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Cos extends AbstractNativeFunction {
-    
+
     public Cos(GlobalObject globalObject) {
         super(globalObject, "x");
     }
@@ -18,7 +18,9 @@ public class Cos extends AbstractNativeFunction {
             return Double.NaN;
         }
         final Double arg = new Double(Types.toNumber(context, args[0]).toString());
-        if (arg == 0) { return 1; }
+        if (arg == 0) {
+            return 1;
+        }
         return java.lang.Math.cos(arg);
     }
 

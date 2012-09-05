@@ -33,17 +33,17 @@ public class IsSealed extends AbstractNativeFunction {
             Object d = jsObj.getOwnProperty(context, name);
             if (d != Types.UNDEFINED) {
                 PropertyDescriptor desc = (PropertyDescriptor) d;
-                Object isConfigurable = desc.get( "Configurable" );
-                if ( isConfigurable == Boolean.TRUE ) {
+                Object isConfigurable = desc.get("Configurable");
+                if (isConfigurable == Boolean.TRUE) {
                     return false;
                 }
             }
         }
-        
-        if ( ! jsObj.isExtensible() ) {
+
+        if (!jsObj.isExtensible()) {
             return true;
         }
-        
+
         return false;
 
     }

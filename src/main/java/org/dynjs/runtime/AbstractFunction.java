@@ -24,7 +24,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     }
 
     public AbstractFunction(final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super( scope.getGlobalObject() );
+        super(scope.getGlobalObject());
         this.body = body;
         this.formalParameters = formalParameters;
         this.scope = scope;
@@ -39,7 +39,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             }
         };
         defineOwnProperty(null, "length", desc, false);
-        setPrototype( scope.getGlobalObject().getPrototypeFor("Function") );
+        setPrototype(scope.getGlobalObject().getPrototypeFor("Function"));
     }
 
     public LexicalEnvironment getScope() {
@@ -101,15 +101,15 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             return false;
         }
 
-        JSObject o = (JSObject) get( null, "prototype" );
+        JSObject o = (JSObject) get(null, "prototype");
 
-        if (o == null || v == Types.UNDEFINED ) {
+        if (o == null || v == Types.UNDEFINED) {
             return false;
         }
 
         while (true) {
             v = ((JSObject) v).getPrototype();
-            if (v == null || v == Types.UNDEFINED ) {
+            if (v == null || v == Types.UNDEFINED) {
                 return false;
             }
             if (v == o) {
@@ -120,7 +120,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynObject( context.getGlobalObject() );
+        return new DynObject(context.getGlobalObject());
     }
 
     public String getFileName() {

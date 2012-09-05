@@ -52,10 +52,10 @@ public class InstanceofExpression extends AbstractBinaryExpression {
                 // val(lhs) val(rhs) val(rhs)
                 instance_of(p(JSFunction.class));
                 // val(lhs) val(rhs) bool
-                
+
                 iffalse(typeError);
                 // val(lhs) val(rhs)
-                checkcast( p(JSFunction.class) );
+                checkcast(p(JSFunction.class));
                 // val(lhs) fn(rhs)
                 swap();
                 // fn(rhs) val(lhs)
@@ -70,11 +70,10 @@ public class InstanceofExpression extends AbstractBinaryExpression {
                 iconst_0();
                 i2b();
                 //bool
-                append( jsThrowTypeError( "not an object" ) );
-                
+                append(jsThrowTypeError("not an object"));
 
                 label(end);
-                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
                 // Boolean
             }
         };

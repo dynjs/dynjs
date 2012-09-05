@@ -22,7 +22,7 @@ public class RelationalExpression extends AbstractBinaryExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 append(getLhs().getCodeBlock());
                 append(jsGetValue());
                 append(getRhs().getCodeBlock());

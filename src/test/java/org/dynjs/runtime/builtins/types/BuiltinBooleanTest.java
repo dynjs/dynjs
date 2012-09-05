@@ -11,40 +11,39 @@ public class BuiltinBooleanTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testBooleanFunction() {
-        assertThat( eval( "Boolean('true')" )).isEqualTo( true );
-        assertThat( eval( "Boolean('anything')" )).isEqualTo( true );
-        assertThat( eval( "Boolean('')" )).isEqualTo( false );
+        assertThat(eval("Boolean('true')")).isEqualTo(true);
+        assertThat(eval("Boolean('anything')")).isEqualTo(true);
+        assertThat(eval("Boolean('')")).isEqualTo(false);
     }
-    
+
     @Test
     public void testBooleanConstructor() {
-        JSObject result = (JSObject) eval( "new Boolean(true)" );
-        assertThat( result ).isInstanceOf(DynBoolean.class);
-        assertThat( ((DynBoolean)result).getPrimitiveValue() ).isEqualTo(true);
+        JSObject result = (JSObject) eval("new Boolean(true)");
+        assertThat(result).isInstanceOf(DynBoolean.class);
+        assertThat(((DynBoolean) result).getPrimitiveValue()).isEqualTo(true);
     }
-    
-    
+
     @Test
     public void testBooleanConstructorWithString() {
-        JSObject result = (JSObject) eval( "new Boolean('')" );
-        assertThat( result ).isInstanceOf(DynBoolean.class);
-        assertThat( ((DynBoolean)result).getPrimitiveValue() ).isEqualTo(false);
+        JSObject result = (JSObject) eval("new Boolean('')");
+        assertThat(result).isInstanceOf(DynBoolean.class);
+        assertThat(((DynBoolean) result).getPrimitiveValue()).isEqualTo(false);
     }
-    
+
     @Test
     public void testPrototype() {
-        assertThat( eval( "Object.getPrototypeOf( new Boolean() )" ) ).isSameAs( eval("Boolean.prototype" ));
+        assertThat(eval("Object.getPrototypeOf( new Boolean() )")).isSameAs(eval("Boolean.prototype"));
     }
-    
+
     @Test
     public void testToString() {
-        assertThat( eval( "new Boolean(true).toString()" ) ).isEqualTo( "true" );
-        assertThat( eval( "new Boolean(false).toString()" ) ).isEqualTo( "false" );
+        assertThat(eval("new Boolean(true).toString()")).isEqualTo("true");
+        assertThat(eval("new Boolean(false).toString()")).isEqualTo("false");
     }
-    
+
     @Test
     public void testValueOf() {
-        assertThat( eval( "new Boolean(true).valueOf()" ) ).isEqualTo( true );
-        assertThat( eval( "new Boolean(false).valueOf()" ) ).isEqualTo( false );
+        assertThat(eval("new Boolean(true).valueOf()")).isEqualTo(true);
+        assertThat(eval("new Boolean(false).valueOf()")).isEqualTo(false);
     }
 }

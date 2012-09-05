@@ -25,18 +25,17 @@ public class JavaClassModuleProviderRequireTest extends AbstractDynJSTestSupport
 
     @Test
     public void testJavaImplementedRequires() {
-        assertThat( eval("require('console').log" ) ).isInstanceOf(JSFunction.class);
-        eval( "require('console').log( 'howdy' )" );
+        assertThat(eval("require('console').log")).isInstanceOf(JSFunction.class);
+        eval("require('console').log( 'howdy' )");
     }
-    
+
     @Test
     public void testConsoleTrace() {
-        eval( "var console = require('console');",
+        eval("var console = require('console');",
                 "function foo() {",
                 "  console.trace();",
                 "}",
-                "foo();" );
+                "foo();");
     }
-    
 
 }

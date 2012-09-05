@@ -39,21 +39,21 @@ public class Repl {
 
     public Repl(DynJS runtime, InputStream in, OutputStream out) {
         this.runtime = runtime;
-        this.out     = out;
-        this.in      = in;
+        this.out = out;
+        this.in = in;
     }
 
     public void run() {
         try {
             Settings consoleSettings = Settings.getInstance();
-            consoleSettings.setStdOut( this.out );
-            consoleSettings.setInputStream( this.in );
+            consoleSettings.setStdOut(this.out);
+            consoleSettings.setInputStream(this.in);
             Console console = new Console();
-            console.pushToStdOut( WELCOME_MESSAGE );
+            console.pushToStdOut(WELCOME_MESSAGE);
             ConsoleOutput line = null;
             while ((line = console.read(PROMPT)) != null) {
                 String statement = line.getBuffer();
-                if (statement.equalsIgnoreCase( "exit" )) {
+                if (statement.equalsIgnoreCase("exit")) {
                     break;
                 } else {
                     try {

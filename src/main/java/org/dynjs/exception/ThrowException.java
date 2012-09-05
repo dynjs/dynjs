@@ -62,7 +62,7 @@ public class ThrowException extends DynJSException {
         if (value instanceof JSObject) {
             String message = "";
             if (((JSObject) value).hasProperty(null, "name")) {
-                message += ((JSObject)value).get( null, "name" ) + ": ";
+                message += ((JSObject) value).get(null, "name") + ": ";
             }
             if (((JSObject) value).hasProperty(null, "message")) {
                 message += ((JSObject) value).get(null, "message");

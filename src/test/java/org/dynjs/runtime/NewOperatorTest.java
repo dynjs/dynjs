@@ -35,12 +35,12 @@ public class NewOperatorTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNewSettingThisProps() {
-        eval( "function Thing(){ this.taco='fish'; };",
+        eval("function Thing(){ this.taco='fish'; };",
                 "var x = new Thing();");
 
         JSObject x = (JSObject) getContext().resolve("x").getValue(getContext());
-        Object result = x.get(getContext(), "taco" );
-        assertThat( result ).isEqualTo("fish");
+        Object result = x.get(getContext(), "taco");
+        assertThat(result).isEqualTo("fish");
     }
 
 }

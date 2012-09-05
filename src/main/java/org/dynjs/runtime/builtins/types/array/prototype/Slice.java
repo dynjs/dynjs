@@ -49,10 +49,10 @@ public class Slice extends AbstractNativeFunction {
                 final Object kValue = o.get(context, "" + k);
                 a.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
                     {
-                        set( "Value", kValue );
-                        set( "Writable", true );
-                        set( "Configurable", true );
-                        set( "Enumerable", true );
+                        set("Value", kValue);
+                        set("Writable", true);
+                        set("Configurable", true);
+                        set("Enumerable", true);
                     }
                 }, false);
             }

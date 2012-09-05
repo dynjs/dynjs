@@ -11,15 +11,14 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
         super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), false, formalParameters);
     }
-    
+
     public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
         super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
     }
-    
-    public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super( null, scope, strict, formalParameters);
-    }
 
+    public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+        super(null, scope, strict, formalParameters);
+    }
 
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
@@ -39,21 +38,21 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
         int numArgs = (int) argsObj.get(context, "length");
         int paramsLen = getFormalParameters().length;
 
-        Object[] args = new Object[numArgs < paramsLen ? paramsLen : numArgs ];
+        Object[] args = new Object[numArgs < paramsLen ? paramsLen : numArgs];
 
         for (int i = 0; i < numArgs; ++i) {
             Object v = argsObj.get(context, "" + i);
             if (v instanceof Reference) {
-                if ( ((Reference)v).isUnresolvableReference() ) {
+                if (((Reference) v).isUnresolvableReference()) {
                     v = Types.UNDEFINED;
                 } else {
-                    v = ((Reference)v).getValue(context);
+                    v = ((Reference) v).getValue(context);
                 }
             }
             args[i] = v;
         }
-        
-        for ( int i = numArgs ; i < paramsLen; ++i ) {
+
+        for (int i = numArgs; i < paramsLen; ++i) {
             args[i] = Types.UNDEFINED;
         }
 
@@ -61,11 +60,11 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     }
 
     public abstract Object call(ExecutionContext context, Object self, Object... args);
-    
+
     public String getFileName() {
-        return getClass().getName().replace(".", "/" ) + ".java";
+        return getClass().getName().replace(".", "/") + ".java";
     }
-    
+
     public String toString() {
         StringBuffer buffer = new StringBuffer();
 
@@ -75,10 +74,10 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
             if (i > 0) {
                 buffer.append(", ");
             }
-            buffer.append( params[i] );
+            buffer.append(params[i]);
         }
         buffer.append("){\n");
-        buffer.append( "  <native code>\n" );
+        buffer.append("  <native code>\n");
         buffer.append("}");
 
         return buffer.toString();

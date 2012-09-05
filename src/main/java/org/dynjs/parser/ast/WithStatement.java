@@ -15,7 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-
 import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
@@ -44,15 +43,15 @@ public class WithStatement extends AbstractCompilingStatement implements Stateme
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append( expr.getCodeBlock() );
+                append(expr.getCodeBlock());
                 // context val
-                append( jsGetValue() );
+                append(jsGetValue());
                 // context val
-                append( jsToObject() );
+                append(jsToObject());
                 // context obj
-                append( CodeBlockUtils.compiledStatementBlock(getBlockManager(), "With", block) );
+                append(CodeBlockUtils.compiledStatementBlock(getBlockManager(), "With", block));
                 // context obj block
                 invokevirtual(p(ExecutionContext.class), "executeWith", sig(Completion.class, JSObject.class, BasicBlock.class));
                 // completion
@@ -64,7 +63,7 @@ public class WithStatement extends AbstractCompilingStatement implements Stateme
         StringBuffer buf = new StringBuffer();
 
         buf.append(indent).append("with (").append(this.expr.toString()).append(") {\n");
-        buf.append( this.block.toIndentedString( indent + "  " ) );
+        buf.append(this.block.toIndentedString(indent + "  "));
         buf.append(indent).append("}");
 
         return buf.toString();

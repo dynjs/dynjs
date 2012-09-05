@@ -163,39 +163,39 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAtanNegativeInfinity() {
-        assertThat(eval("Math.atan(-Infinity)")).isEqualTo(-java.lang.Math.PI/2);
+        assertThat(eval("Math.atan(-Infinity)")).isEqualTo(-java.lang.Math.PI / 2);
     }
 
     @Test
     public void testMathAtanPositiveInfinity() {
-        assertThat(eval("Math.atan(Infinity)")).isEqualTo(java.lang.Math.PI/2);
+        assertThat(eval("Math.atan(Infinity)")).isEqualTo(java.lang.Math.PI / 2);
     }
 
     @Test
     public void testMathAtan2Length() {
         assertThat(eval("Math.atan2.length")).isEqualTo(2);
     }
-    
+
     @Test
     public void testMathAtan2WithOnlyOneArg() {
         assertThat(eval("Math.atan2(0.4)")).isEqualTo(Double.NaN);
     }
-    
+
     @Test
     public void testMathAtan2() {
-      assertThat(eval("Math.atan2(0.5, 0.5)")).isEqualTo(java.lang.Math.atan2(0.5, 0.5));
+        assertThat(eval("Math.atan2(0.5, 0.5)")).isEqualTo(java.lang.Math.atan2(0.5, 0.5));
     }
-    
+
     @Test
     public void testMathAtan2WithIntegers() {
-      assertThat(eval("Math.atan2(1, 1)")).isEqualTo(java.lang.Math.atan2(1, 1));
+        assertThat(eval("Math.atan2(1, 1)")).isEqualTo(java.lang.Math.atan2(1, 1));
     }
-    
+
     @Test
     public void testMathAtan2WithXInteger() {
-      assertThat(eval("Math.atan2(1.0, 1)")).isEqualTo(java.lang.Math.atan2(1.0, 1));
+        assertThat(eval("Math.atan2(1.0, 1)")).isEqualTo(java.lang.Math.atan2(1.0, 1));
     }
-    
+
     @Test
     public void testMathAtan2YNaN() {
         assertEval("Math.atan2(new Number('asdf'), 0.3)", Double.NaN);
@@ -205,227 +205,227 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathAtan2XNaN() {
         assertEval("Math.atan2(0.3, new Number('asdf'))", Double.NaN);
     }
-    
+
     @Test
     public void testMathAtan2XGreaterThanZero() {
-        assertEval("Math.atan2(1, 0)", java.lang.Math.PI/2);
+        assertEval("Math.atan2(1, 0)", java.lang.Math.PI / 2);
     }
-    
+
     @Test
     public void testMathAtan2NegativeInfinity() {
-        assertEval("Math.atan2(-Infinity, Number.NEGATIVE_INFINITY)", -3*java.lang.Math.PI/4);
+        assertEval("Math.atan2(-Infinity, Number.NEGATIVE_INFINITY)", -3 * java.lang.Math.PI / 4);
     }
 
     @Test
     public void testMathCeil() {
         assertEval("Math.ceil(12)", 12);
     }
-    
+
     @Test
     public void testMathCeilFloaty() {
         assertEval("Math.ceil(12.12)", 13);
     }
-    
+
     @Test
     public void testMathCeilNaN() {
         assertEval("Math.ceil(new Number('asdf'))", Double.NaN);
     }
-    
+
     @Test
     public void testMathCeilPositiveInfinity() {
         assertEval("Math.ceil(Number.POSITIVE_INFINITY)", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathCeilNegativeInfinity() {
         assertEval("Math.ceil(Number.NEGATIVE_INFINITY)", Double.NEGATIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathCeilNegativeLessThanNegativeOne() {
         assertEval("Math.ceil(-0.2)", 0);
     }
-    
+
     @Test
     public void testMathCos() {
         assertEval("Math.cos(3)", java.lang.Math.cos(3));
     }
-    
+
     @Test
     public void testMathCosZero() {
         assertEval("Math.cos(0)", 1);
     }
-    
+
     @Test
     public void testMathCosFloaty() {
         assertEval("Math.cos(3.5)", java.lang.Math.cos(3.5));
     }
-    
+
     @Test
     public void testMathCosInfinite() {
         assertEval("Math.cos(Infinity)", Double.NaN);
     }
-    
+
     @Test
     public void testMathCosNegativeInfinite() {
         assertEval("Math.cos(-Infinity)", Double.NaN);
     }
-    
+
     @Test
     public void testMathExp() {
         assertEval("Math.exp(123.456)", java.lang.Math.exp(123.456));
     }
-    
+
     @Test
     public void testMathExpInt() {
         assertEval("Math.exp(123)", java.lang.Math.exp(123));
     }
-    
+
     @Test
     public void testMathExpZero() {
         assertEval("Math.exp(0)", 1);
     }
-    
+
     @Test
     public void testMathExpInfinite() {
         assertEval("Math.exp(Infinity)", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathExpNegativeInfinite() {
         assertEval("Math.exp(-Infinity)", 0);
     }
-    
+
     @Test
     public void testMathFloor() {
         assertEval("Math.floor(1.6)", 1);
     }
-    
+
     @Test
     public void testMathFloorInfinite() {
         assertEval("Math.floor(Infinity)", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathFloorNegativeInfinite() {
         assertEval("Math.floor(-Infinity)", Double.NEGATIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathFloorFootnote() {
         assertEval("Math.floor(1.234) == -Math.ceil(-1.234)", true);
     }
-    
+
     @Test
     public void testMathFloorGreaterThanZeroButLessThanOne() {
         assertEval("Math.floor(0.99999999)", 0);
     }
-    
+
     @Test
     public void testMathLog() {
         assertEval("Math.log(2)", java.lang.Math.log(2));
     }
-    
+
     @Test
     public void testMathLogNaN() {
         assertEval("Math.log(new Number('asdf'))", Double.NaN);
     }
-    
+
     @Test
     public void testMathLogLessThanZero() {
         assertEval("Math.log(-1)", Double.NaN);
     }
-    
+
     @Test
     public void testMathLogZero() {
         assertEval("Math.log(0)", Double.NEGATIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathLogExactlyOne() {
         assertEval("Math.log(1)", 0);
     }
-    
+
     @Test
     public void testMathLogInfinity() {
         assertEval("Math.log(Infinity)", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathMaxLength() {
         assertEval("Math.max.length", 2);
     }
-    
+
     @Test
     public void testMathMax() {
         assertEval("Math.max(0.5, 2)", 2);
     }
-    
+
     @Test
     public void testMathMaxNoArgs() {
         assertEval("Math.max()", Double.NEGATIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathMaxOneArg() {
         assertEval("Math.max(2)", 2);
     }
-    
+
     @Test
     public void testMathMaxThreeArgs() {
         assertEval("Math.max(1,4,6)", 6);
     }
-    
+
     @Test
     public void testMathMaxVeryManyArgs() {
         assertEval("Math.max(1,4,6,12,4,987,0,12.34,98765.45)", 98765.45);
     }
-    
+
     @Test
     public void testMathMaxVeryManyArgsAndOneNaNStuckInTheMiddle() {
         assertEval("Math.max(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
     }
-    
+
     @Test
     public void testMathMinLength() {
         assertEval("Math.min.length", 2);
     }
-    
+
     @Test
     public void testMathMin() {
         assertEval("Math.min(0.5, 2)", 0.5);
     }
-    
+
     @Test
     public void testMathMinNoArgs() {
         assertEval("Math.min()", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathMinOneArg() {
         assertEval("Math.min(2)", 2);
     }
-    
+
     @Test
     public void testMathMinThreeArgs() {
         assertEval("Math.min(1,4,0.5)", 0.5);
     }
-    
+
     @Test
     public void testMathMinVeryManyArgs() {
         assertEval("Math.min(1,4,6,12,4,987,0,12.34,98765.45)", 0);
     }
-    
+
     @Test
     public void testMathMinVeryManyArgsAndOneNaNStuckInTheMiddle() {
         assertEval("Math.min(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
     }
-    
+
     @Test
     public void testMathPow() {
         assertEval("Math.pow(12,123.123)", java.lang.Math.pow(12, 123.123));
     }
-    
+
     @Test
     public void testMathFunction() {
         try {
@@ -435,7 +435,7 @@ public class MathTest extends AbstractDynJSTestSupport {
             // expected
         }
     }
-    
+
     private void assertEval(String javascript, Object expected) {
         assertThat(eval(javascript)).isEqualTo(expected);
     }

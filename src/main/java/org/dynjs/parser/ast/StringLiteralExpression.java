@@ -27,7 +27,7 @@ public class StringLiteralExpression extends AbstractExpression {
         super(tree);
         this.literal = literal;
     }
-    
+
     public String getLiteral() {
         return this.literal;
     }
@@ -40,7 +40,7 @@ public class StringLiteralExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return this.literal;
     }

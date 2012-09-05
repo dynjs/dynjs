@@ -61,7 +61,7 @@ public class TernaryExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return this.vbool + " ? " + this.vthen + " : " + this.velse;
     }

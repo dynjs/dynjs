@@ -42,37 +42,37 @@ public class ObjectLiteralExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                
+
                 invokestatic(p(BuiltinObject.class), "newObject", sig(DynObject.class, ExecutionContext.class));
                 // obj
 
                 for (PropertyAssignment each : propertyAssignments) {
                     dup();
                     // obj obj
-                    append( each.getCodeBlock() );
+                    append(each.getCodeBlock());
                 }
                 // obj
             }
         };
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append( "{ " );
+        buf.append("{ ");
         boolean first = true;
-        
-        for ( PropertyAssignment each : this.propertyAssignments ) {
-            if ( ! first ) {
-                buf.append( ", " );
+
+        for (PropertyAssignment each : this.propertyAssignments) {
+            if (!first) {
+                buf.append(", ");
             }
             first = false;
-            buf.append( each.toString() );
-            
+            buf.append(each.toString());
+
         }
-        buf.append( " }" );
-        
+        buf.append(" }");
+
         return buf.toString();
     }
 }

@@ -53,5 +53,4 @@ public class Concat extends AbstractNativeFunction {
         
         return array;
     }
-
 }

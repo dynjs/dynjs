@@ -13,19 +13,19 @@ public class BuiltinError extends AbstractBuiltinType {
 
     public BuiltinError(final GlobalObject globalObject) {
         super(globalObject);
-        
-        final DynObject proto = new DynObject( globalObject );
+
+        final DynObject proto = new DynObject(globalObject);
         proto.setClassName("Error");
-        put(null, "prototype", proto, false );
+        put(null, "prototype", proto, false);
 
     }
-    
+
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.put(null, "constructor", this, false );
-        proto.put(null, "name", "Error", false );
-        proto.put(null, "message", "", false );
-        proto.put(null, "toString", new ToString(globalObject), false );
+        proto.put(null, "constructor", this, false);
+        proto.put(null, "name", "Error", false);
+        proto.put(null, "message", "", false);
+        proto.put(null, "toString", new ToString(globalObject), false);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class BuiltinError extends AbstractBuiltinType {
         JSObject o = null;
 
         if (self == Types.UNDEFINED) {
-            o = context.createError( (String) ((JSObject)get( context, "prototype" )).get(null, "name"), null);
+            o = context.createError((String) ((JSObject) get(context, "prototype")).get(null, "name"), null);
         } else {
             o = (JSObject) self;
         }
@@ -50,7 +50,7 @@ public class BuiltinError extends AbstractBuiltinType {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        DynObject o = new DynObject( context.getGlobalObject() );
+        DynObject o = new DynObject(context.getGlobalObject());
         o.setClassName("Error");
         return o;
     }

@@ -16,10 +16,10 @@ public class CharAt extends AbstractNativeFunction {
         // 15.4.4.2
         String strSelf = Types.toString(context, self);
         int position = Types.toInteger(context, args[0]);
-        if ( position < 0 || position > strSelf.length() ) {
+        if (position < 0 || position > strSelf.length()) {
             return "";
         }
-        
+
         return "" + strSelf.charAt(position);
     }
 

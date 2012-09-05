@@ -27,12 +27,12 @@ public class CatchClause extends AbstractStatement {
     public CodeBlock getCodeBlock() {
         return this.block.getCodeBlock();
     }
-    
+
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append( indent ).append( "catch(" ).append( this.identifier ).append( "){\n" );
-        buf.append( block.toIndentedString(indent + "" ));
-        buf.append( indent ).append( "}" );
+        buf.append(indent).append("catch(").append(this.identifier).append("){\n");
+        buf.append(block.toIndentedString(indent + ""));
+        buf.append(indent).append("}");
         return buf.toString();
     }
 

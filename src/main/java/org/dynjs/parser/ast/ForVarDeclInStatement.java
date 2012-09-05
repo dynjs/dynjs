@@ -36,25 +36,27 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
 
     @Override
     public CodeBlock getFirstChunkCodeBlock() {
-        return new CodeBlock() {{
-            append( decl.getCodeBlock() );
-            // completion
-            pop();
-            // <EMPTY>
-            aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-            // context
-            ldc( decl.getVariableDeclarations().get(0).getIdentifier() );
-            // context identifier
-            invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
-            // reference
-        }};
+        return new CodeBlock() {
+            {
+                append(decl.getCodeBlock());
+                // completion
+                pop();
+                // <EMPTY>
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                // context
+                ldc(decl.getVariableDeclarations().get(0).getIdentifier());
+                // context identifier
+                invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
+                // reference
+            }
+        };
     }
-    
+
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append( indent ).append( "for (").append( decl.toIndentedString("") ).append( " in " ).append( getRhs().toString() ).append( ") {\n");
-        buf.append( getBlock().toIndentedString( indent + "  " ) );
-        buf.append( indent ).append( "}" );
+        buf.append(indent).append("for (").append(decl.toIndentedString("")).append(" in ").append(getRhs().toString()).append(") {\n");
+        buf.append(getBlock().toIndentedString(indent + "  "));
+        buf.append(indent).append("}");
         return buf.toString();
     }
 

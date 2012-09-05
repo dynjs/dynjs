@@ -11,7 +11,7 @@ public class Exp extends AbstractNativeFunction {
     public Exp(GlobalObject globalObject) {
         super(globalObject, "x");
     }
-    
+
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (DynNumber.isNaN(args[0])) {
@@ -20,8 +20,11 @@ public class Exp extends AbstractNativeFunction {
         final Double arg = new Double(Types.toNumber(context, args[0]).toString());
         // These special cases handle return values that should not be floaty
         // according to the spec
-        if (arg == 0) { return 1; }
-        else if (Double.isInfinite(arg) && arg < 0) { return 0; }
+        if (arg == 0) {
+            return 1;
+        } else if (Double.isInfinite(arg) && arg < 0) {
+            return 0;
+        }
         return java.lang.Math.exp(arg);
     }
 

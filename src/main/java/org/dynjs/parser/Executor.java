@@ -435,7 +435,7 @@ public class Executor {
     }
 
     public Statement withStatement(final Tree tree, Expression expression, Statement statement) {
-        return new WithStatement( tree, getBlockManager(), expression, statement );
+        return new WithStatement(tree, getBlockManager(), expression, statement);
     }
 
     public Statement labelledStatement(final Tree tree, String label, Statement statement) {
@@ -453,13 +453,13 @@ public class Executor {
     public NamedValue namedValue(final Tree tree, final String name, final Expression expr) {
         return new NamedValue(name, expr);
     }
-    
+
     public PropertySet propertySet(final Tree tree, final String name, final String identifier, Statement block) {
-        return new PropertySet( getBlockManager(), name, identifier, block );
+        return new PropertySet(getBlockManager(), name, identifier, block);
     }
-    
+
     public PropertyGet propertyGet(final Tree tree, final String name, Statement block) {
-        return new PropertyGet( getBlockManager(), name, block );
+        return new PropertyGet(getBlockManager(), name, block);
     }
 
     public Expression arrayLiteral(final Tree tree, final List<Expression> exprs) {

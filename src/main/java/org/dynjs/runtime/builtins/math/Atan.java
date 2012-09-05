@@ -6,7 +6,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class Atan extends AbstractNativeFunction {
-    
+
     public Atan(GlobalObject globalObject) {
         super(globalObject, "x");
     }

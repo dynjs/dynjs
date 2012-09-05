@@ -38,43 +38,43 @@ public class Splice extends AbstractNativeFunction {
                 final Object fromValue = o.get(context, "" + (actualStart + k));
                 a.defineOwnProperty(context, "" + k, new PropertyDescriptor() {
                     {
-                        set( "Value", fromValue );
-                        set( "Writable", true );
-                        set( "Configurable", true );
-                        set( "Enumerable", true );
+                        set("Value", fromValue);
+                        set("Writable", true);
+                        set("Configurable", true);
+                        set("Enumerable", true);
                     }
                 }, false);
             }
         }
-        
+
         int itemCount = args.length - 2;
-        
-        if ( itemCount < actualDeleteCount ) {
-            for ( int k = actualStart ; k < (len - actualDeleteCount ); ++k ) {
-                if ( o.hasProperty(context, "" + ( k + actualDeleteCount ) ) ) {
-                   final Object fromValue = o.get(context, "" + ( k + actualDeleteCount ) ); 
-                   o.put(context, "" + (k + itemCount ), fromValue, true );
+
+        if (itemCount < actualDeleteCount) {
+            for (int k = actualStart; k < (len - actualDeleteCount); ++k) {
+                if (o.hasProperty(context, "" + (k + actualDeleteCount))) {
+                    final Object fromValue = o.get(context, "" + (k + actualDeleteCount));
+                    o.put(context, "" + (k + itemCount), fromValue, true);
                 } else {
-                   o.delete(context, "" + (k + itemCount ), true );
+                    o.delete(context, "" + (k + itemCount), true);
                 }
             }
-            
-            for ( int k = len ; k > ( len - actualDeleteCount + itemCount ); --k ) {
-                o.delete( context, "" + ( k-1), true);
+
+            for (int k = len; k > (len - actualDeleteCount + itemCount); --k) {
+                o.delete(context, "" + (k - 1), true);
             }
-        } else if ( itemCount > actualDeleteCount ) {
-            for ( int k = ( len - actualDeleteCount ); k > actualStart ; --k ) {
-                if ( o.hasProperty(context, "" + ( k + actualDeleteCount - 1 ) ) ) {
-                    final Object fromValue = o.get( context, "" + ( k + actualDeleteCount - 1 ) );
-                    o.put(context, "" + ( k + itemCount -1), fromValue, true);
+        } else if (itemCount > actualDeleteCount) {
+            for (int k = (len - actualDeleteCount); k > actualStart; --k) {
+                if (o.hasProperty(context, "" + (k + actualDeleteCount - 1))) {
+                    final Object fromValue = o.get(context, "" + (k + actualDeleteCount - 1));
+                    o.put(context, "" + (k + itemCount - 1), fromValue, true);
                 } else {
-                    o.delete(context, "" + ( k + itemCount -1), true);
+                    o.delete(context, "" + (k + itemCount - 1), true);
                 }
             }
         }
-        
-        for ( int k = actualStart, i = 0 ; i < itemCount ; ++k, ++i ) {
-            o.put(context, ""+k, args[i+2], true);
+
+        for (int k = actualStart, i = 0; i < itemCount; ++k, ++i) {
+            o.put(context, "" + k, args[i + 2], true);
         }
 
         return a;

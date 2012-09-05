@@ -84,7 +84,7 @@ public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
                     "}");
             throw new AssertionError("Should have thrown");
         } catch (ThrowException e) {
-            assertThat( e.getValue() ).isEqualTo("fish");
+            assertThat(e.getValue()).isEqualTo("fish");
         }
 
         Object execTry = getContext().resolve("executed_try").getValue(getContext());
@@ -113,7 +113,7 @@ public class TryCatchFinallyTest extends AbstractDynJSTestSupport {
                     "}");
             throw new AssertionError("Should have thrown");
         } catch (ThrowException e) {
-            assertThat( e.getValue() ).isEqualTo("fish");
+            assertThat(e.getValue()).isEqualTo("fish");
         }
 
         Object execTry = getContext().resolve("executed_try").getValue(getContext());

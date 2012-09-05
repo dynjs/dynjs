@@ -29,45 +29,45 @@ public class ArrayLiteralTest extends AbstractDynJSTestSupport {
     public void testNonEmptyArrayCreation() {
         eval("var x = [ 1, 2, 3 ];");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat( x.get( getContext(), "0") ).isEqualTo(1);
-        assertThat( x.get( getContext(), "1") ).isEqualTo(2);
-        assertThat( x.get( getContext(), "2") ).isEqualTo(3);
+        assertThat(x.get(getContext(), "0")).isEqualTo(1);
+        assertThat(x.get(getContext(), "1")).isEqualTo(2);
+        assertThat(x.get(getContext(), "2")).isEqualTo(3);
     }
-    
+
     @Test
     public void testArrayAccess() {
-        eval( "var x = [ 1, 2, 3 ]; var y = x[0];" );
+        eval("var x = [ 1, 2, 3 ]; var y = x[0];");
         Object y = getContext().resolve("y").getValue(getContext());
-        assertThat( y ).isEqualTo(1);
+        assertThat(y).isEqualTo(1);
     }
-    
+
     @Test
     public void testArrayAssignmentWithinBounds() {
-        eval( "var x = [ 1, 2, 3]; x[1] = 'taco';");
+        eval("var x = [ 1, 2, 3]; x[1] = 'taco';");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat( x.get( getContext(), "0") ).isEqualTo(1);
-        assertThat( x.get( getContext(), "1") ).isEqualTo("taco");
-        assertThat( x.get( getContext(), "2") ).isEqualTo(3);
+        assertThat(x.get(getContext(), "0")).isEqualTo(1);
+        assertThat(x.get(getContext(), "1")).isEqualTo("taco");
+        assertThat(x.get(getContext(), "2")).isEqualTo(3);
     }
-    
+
     @Test
     public void testArrayAssignmentOutsideOfBounds() {
-        eval( "var x = [ 1, 2, 3]; x[3] = 'taco';");
+        eval("var x = [ 1, 2, 3]; x[3] = 'taco';");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat( x.get( getContext(), "0") ).isEqualTo(1);
-        assertThat( x.get( getContext(), "1") ).isEqualTo(2);
-        assertThat( x.get( getContext(), "2") ).isEqualTo(3);
-        assertThat( x.get( getContext(), "3") ).isEqualTo("taco");
+        assertThat(x.get(getContext(), "0")).isEqualTo(1);
+        assertThat(x.get(getContext(), "1")).isEqualTo(2);
+        assertThat(x.get(getContext(), "2")).isEqualTo(3);
+        assertThat(x.get(getContext(), "3")).isEqualTo("taco");
     }
-    
+
     @Test
     public void testArrayTruncationUsingLength() {
-        eval( "var x = [1, 2, 3]; x.length=1;");
+        eval("var x = [1, 2, 3]; x.length=1;");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat( x.get( getContext(), "0") ).isEqualTo(1);
-        assertThat( x.get( getContext(), "1") ).isEqualTo( Types.UNDEFINED );
-        assertThat( x.get( getContext(), "2") ).isEqualTo( Types.UNDEFINED );
-        assertThat( x.get( getContext(), "3") ).isEqualTo( Types.UNDEFINED );
+        assertThat(x.get(getContext(), "0")).isEqualTo(1);
+        assertThat(x.get(getContext(), "1")).isEqualTo(Types.UNDEFINED);
+        assertThat(x.get(getContext(), "2")).isEqualTo(Types.UNDEFINED);
+        assertThat(x.get(getContext(), "3")).isEqualTo(Types.UNDEFINED);
     }
 
 }

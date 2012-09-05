@@ -25,18 +25,18 @@ public class Create extends AbstractNativeFunction {
         }
 
         JSObject jsObj = (JSObject) o;
-        
-        DynObject newObj = new DynObject( context.getGlobalObject() );
-        
-        newObj.setPrototype( jsObj );
-        
+
+        DynObject newObj = new DynObject(context.getGlobalObject());
+
+        newObj.setPrototype(jsObj);
+
         Object props = args[1];
-        if ( props != Types.UNDEFINED ) {
-            JSObject object = (JSObject) context.getGlobalObject().get(context, "Object" );
-            JSFunction definePropertiesFn = (JSFunction) object.get( context, "defineProperties" );
-            context.call(definePropertiesFn, Types.UNDEFINED, new Object[] { newObj, props } );
+        if (props != Types.UNDEFINED) {
+            JSObject object = (JSObject) context.getGlobalObject().get(context, "Object");
+            JSFunction definePropertiesFn = (JSFunction) object.get(context, "defineProperties");
+            context.call(definePropertiesFn, Types.UNDEFINED, new Object[] { newObj, props });
         }
-        
+
         return newObj;
     }
 }

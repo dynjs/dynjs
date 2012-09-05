@@ -6,7 +6,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class Pow extends AbstractNativeFunction {
-    
+
     public Pow(GlobalObject globalObject) {
         super(globalObject, "x");
     }

@@ -178,10 +178,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 "for (var i = 0;i < 10; i+=1){",
                 "  continue;",
                 "  x+=1;",
-                "}" );
+                "}");
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat( x ).isEqualTo(0);
-        
+        assertThat(x).isEqualTo(0);
+
         eval("var x = 0;",
                 "do {",
                 "  x+=1;",
@@ -189,10 +189,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 "    continue;",
                 "  }",
                 "  x+=3;",
-                "} while(x < 10)" );
+                "} while(x < 10)");
         x = getContext().resolve("x").getValue(getContext());
-        assertThat( x ).isEqualTo(13);
-        
+        assertThat(x).isEqualTo(13);
+
         eval("var x = 0;",
                 "while(x < 10) {",
                 "  x+=1;",
@@ -202,7 +202,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 "  ;x+=3",
                 "}");
         x = getContext().resolve("x").getValue(getContext());
-        assertThat( x ).isEqualTo(12);
+        assertThat(x).isEqualTo(12);
     }
 
     @Test
@@ -260,7 +260,6 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var x = {'y':false}; var result = x.y;", false);
         check("var x = {'z':true}; var result = x['z'];", true);
     }
-
 
     @Test
     public void testObjectAssignment() {
@@ -334,9 +333,9 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void testDeleteOper() {
         check("var x = {a:'lol'}; var result = delete x.a;", true);
-        JSObject x = (JSObject) getContext().resolve("x").getValue( getContext() );
-        assertThat( x.get( getContext(), "a") ).isEqualTo(Types.UNDEFINED );
-        
+        JSObject x = (JSObject) getContext().resolve("x").getValue(getContext());
+        assertThat(x.get(getContext(), "a")).isEqualTo(Types.UNDEFINED);
+
     }
 
     @Test

@@ -22,7 +22,7 @@ public class GetPrototypeOf extends AbstractNativeFunction {
         }
 
         JSObject jsObj = (JSObject) o;
-        
+
         return jsObj.getPrototype();
     }
 }

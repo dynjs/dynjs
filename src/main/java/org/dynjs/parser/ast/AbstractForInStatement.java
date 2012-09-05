@@ -40,11 +40,11 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
         this.rhs = rhs;
         this.block = block;
     }
-    
+
     protected Expression getRhs() {
         return this.rhs;
     }
-    
+
     protected Statement getBlock() {
         return this.block;
     }
@@ -70,13 +70,13 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion val
                 dup();
                 // completion val val
-                append( jsPushUndefined() );
+                append(jsPushUndefined());
                 // completion val val UNDEF
                 if_acmpeq(undefEnd);
                 // completion val
                 dup();
                 // completion val val
-                append( jsPushNull() );
+                append(jsPushNull());
                 // completion val val NULL
                 if_acmpeq(undefEnd);
                 // completion val
@@ -106,7 +106,7 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion str ref
                 swap();
                 // completion ref str
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // completion ref str context
                 swap();
                 // completion ref context str
@@ -120,7 +120,7 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion(prev) completion(cur) val(cur)
                 ifnull(bringForward);
                 // completion(prev) completion(cur) 
-                
+
                 // ----------------------------------
                 // has value
                 swap();
@@ -128,7 +128,7 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 pop();
                 // completion(cur)
                 go_to(checkCompletion);
-                
+
                 // ----------------------------------------
                 // bring previous value forward
 
@@ -148,7 +148,7 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion(cur) 
                 dup();
                 // completion(cur) completion(cur)
-                append(handleCompletion( nextName, doBreak, nextName, end) );
+                append(handleCompletion(nextName, doBreak, nextName, end));
                 // completion
 
                 // -----------------------------------------------
@@ -156,12 +156,12 @@ public abstract class AbstractForInStatement extends AbstractCompilingStatement 
                 // completion(break)
                 append(convertToNormal());
                 // completion(normal);
-                go_to( end );
-                
+                go_to(end);
+
                 // -----------------------------------------------
                 // RHS is undefined
                 // completion undef
-                label( undefEnd );
+                label(undefEnd);
                 // completion undef
                 pop();
                 // completion

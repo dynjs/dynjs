@@ -30,24 +30,24 @@ public class Types {
         if (o instanceof JSObject) {
             return (JSObject) o;
         }
-        if ( o instanceof String ) {
-            return new DynString( context.getGlobalObject(), (String) o );
+        if (o instanceof String) {
+            return new DynString(context.getGlobalObject(), (String) o);
         }
-        if ( o instanceof Number ) {
-            return new DynNumber( context.getGlobalObject(), (Number) o );
+        if (o instanceof Number) {
+            return new DynNumber(context.getGlobalObject(), (Number) o);
         }
-        if ( o instanceof Boolean ) {
-            return new DynBoolean(context.getGlobalObject(), (Boolean) o );
+        if (o instanceof Boolean) {
+            return new DynBoolean(context.getGlobalObject(), (Boolean) o);
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
 
     public static Object toPrimitive(ExecutionContext context, Object o) {
-    	return toPrimitive(context, o, null);
+        return toPrimitive(context, o, null);
     }
 
     public static Object toPrimitive(ExecutionContext context, Object o, String preferredType) {
-    	// 9.1
+        // 9.1
         if (o instanceof JSObject) {
             return ((JSObject) o).defaultValue(context, preferredType);
         }
@@ -100,19 +100,19 @@ public class Types {
         if (o instanceof Boolean) {
             return (Boolean) o;
         }
-        
+
         if (o == Types.UNDEFINED || o == Types.NULL) {
             return false;
         }
-        if ( o instanceof Double ) {
-            if ( ((Double)o).isNaN() || ((Double)o).doubleValue() == 0.0 ) {
+        if (o instanceof Double) {
+            if (((Double) o).isNaN() || ((Double) o).doubleValue() == 0.0) {
                 return false;
             }
             return true;
         }
-        
+
         if (o instanceof Number) {
-            if ( ((Number)o).intValue() == 0) {
+            if (((Number) o).intValue() == 0) {
                 return false;
             }
             return true;
@@ -120,22 +120,22 @@ public class Types {
         if (o instanceof String) {
             return (((String) o).length() != 0);
         }
-        
-        if ( o instanceof PrimitiveDynObject ) {
-            return toBoolean( ((PrimitiveDynObject)o).getPrimitiveValue() );
+
+        if (o instanceof PrimitiveDynObject) {
+            return toBoolean(((PrimitiveDynObject) o).getPrimitiveValue());
         }
 
         return true;
     }
-    
+
     public static Integer toInteger(ExecutionContext context, Object o) {
         Number number = toNumber(context, o);
-        if ( number instanceof Double ) {
-            if ( ((Double)number).isNaN() ) {
+        if (number instanceof Double) {
+            if (((Double) number).isNaN()) {
                 return 0;
             }
         }
-        
+
         return number.intValue();
     }
 
@@ -170,20 +170,20 @@ public class Types {
     public static boolean isCallable(Object o) {
         return (o instanceof JSCallable);
     }
-    
+
     public static boolean isSparse(ExecutionContext context, JSObject o) {
-        if ( ! o.hasProperty(context, "length" ) ) {
+        if (!o.hasProperty(context, "length")) {
             return false;
         }
-        
-        int len = Types.toUint32(context, o.get(context, "length" ) );
-        
-        for ( int i = 0 ; i < len ;++i ) {
-            if ( o.getOwnProperty(context, ""+i) == Types.UNDEFINED) {
+
+        int len = Types.toUint32(context, o.get(context, "length"));
+
+        for (int i = 0; i < len; ++i) {
+            if (o.getOwnProperty(context, "" + i) == Types.UNDEFINED) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -195,7 +195,7 @@ public class Types {
     }
 
     public static String toString(ExecutionContext context, Object o) {
-        if ( o instanceof JSObject ) {
+        if (o instanceof JSObject) {
             return (String) toPrimitive(context, o, "String");
         }
         return o.toString();

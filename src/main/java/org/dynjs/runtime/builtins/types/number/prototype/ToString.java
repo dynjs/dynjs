@@ -15,7 +15,7 @@ public class ToString extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (self instanceof DynNumber) {
-            return ((DynNumber)self).getPrimitiveValue().toString();
+            return ((DynNumber) self).getPrimitiveValue().toString();
         }
         return "0";
     }

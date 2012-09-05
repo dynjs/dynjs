@@ -59,32 +59,32 @@ public class Parse extends AbstractNativeFunction {
             if (jsVal.getClassName().equals("Array")) {
                 int len = Types.toInteger(context, jsVal.get(context, "length"));
                 int i = 0;
-                while ( i < len ) {
-                    Object newElement = walk( context, reviver, jsVal, "" + i );
-                    if ( newElement == Types.UNDEFINED ) {
-                        jsVal.delete(context, "" + i, false );
+                while (i < len) {
+                    Object newElement = walk(context, reviver, jsVal, "" + i);
+                    if (newElement == Types.UNDEFINED) {
+                        jsVal.delete(context, "" + i, false);
                     } else {
-                        jsVal.put(context, "" +i, newElement, false);
+                        jsVal.put(context, "" + i, newElement, false);
                     }
                     ++i;
                 }
             } else {
                 NameEnumerator keys = jsVal.getOwnPropertyNames();
-                
-                while ( keys.hasNext() ) {
+
+                while (keys.hasNext()) {
                     String key = keys.next();
-                    Object newElement = walk( context, reviver, jsVal, key);
-                    if ( newElement == Types.UNDEFINED ) {
-                        jsVal.delete( context, key, false );
+                    Object newElement = walk(context, reviver, jsVal, key);
+                    if (newElement == Types.UNDEFINED) {
+                        jsVal.delete(context, key, false);
                     } else {
-                        jsVal.put( context, key, newElement, false );
+                        jsVal.put(context, key, newElement, false);
                     }
                 }
-                
+
             }
         }
-        
-        return context.call(reviver, holder, name, val );
+
+        return context.call(reviver, holder, name, val);
     }
 
     protected Object parse(ExecutionContext context, JsonParser p) throws JsonParseException, IOException {

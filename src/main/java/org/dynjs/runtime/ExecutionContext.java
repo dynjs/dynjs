@@ -124,7 +124,7 @@ public class ExecutionContext {
         if (p != Types.UNDEFINED) {
             obj.setPrototype((JSObject) p);
         }
-        
+
         // 8. Call the function with obj as self
         Object result = call(function, obj, args);
         // 9. If result is a JSObject return it
@@ -165,7 +165,7 @@ public class ExecutionContext {
                 thisBinding = thisArg;
             }
         }
-        
+
         LexicalEnvironment scope = function.getScope();
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 

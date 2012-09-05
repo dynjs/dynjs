@@ -37,7 +37,7 @@ public class Shift extends AbstractNativeFunction {
 
         o.delete(context, "" + (len - 1), true);
         o.put(context, "length", len - 1, true);
-        
+
         return first;
     }
 

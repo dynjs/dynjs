@@ -8,15 +8,15 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
 public class SortComparator implements Comparator<Integer> {
-    
+
     private ExecutionContext context;
     private JSObject o;
     private JSFunction compareFn;
 
     public SortComparator(ExecutionContext context, JSObject o) {
-        this( context, o, null );
+        this(context, o, null);
     }
-    
+
     public SortComparator(ExecutionContext context, JSObject o, JSFunction compareFn) {
         this.context = context;
         this.o = o;
@@ -58,13 +58,11 @@ public class SortComparator implements Comparator<Integer> {
         if (compareFn != null) {
             return (int) context.call(compareFn, Types.UNDEFINED, x, y);
         }
-        
+
         String xStr = Types.toString(context, x);
         String yStr = Types.toString(context, y);
-        
-        return xStr.compareTo( yStr );
+
+        return xStr.compareTo(yStr);
     }
-    
-    
 
 }

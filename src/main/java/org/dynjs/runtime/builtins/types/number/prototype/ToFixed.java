@@ -17,12 +17,12 @@ public class ToFixed extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.5
-        if ( args.length > 1 ) {
+        if (args.length > 1) {
             return Types.UNDEFINED;
         }
         String value = "";
         Integer digits = 0;
-        if (args[0] != Types.UNDEFINED ) {
+        if (args[0] != Types.UNDEFINED) {
             digits = (Integer) Types.toNumber(context, args[0]);
         }
         if (digits < 0 || digits > 20) {
@@ -53,8 +53,7 @@ public class ToFixed extends AbstractNativeFunction {
             } else {
                 value = "-Infinity";
             }
-        }
-        else if (_double_ >= 1.0E21) {
+        } else if (_double_ >= 1.0E21) {
             value = Types.toString(context, _double_);
         } else {
             if (digits == 0) {
@@ -72,7 +71,7 @@ public class ToFixed extends AbstractNativeFunction {
         // them as 1e+14
         final int index = value.indexOf(".0E");
         if (index != -1) {
-            value = value.substring(0, index) + "e+" + value.substring(index+3);
+            value = value.substring(0, index) + "e+" + value.substring(index + 3);
         }
         return value;
     }

@@ -5,6 +5,7 @@ public interface JSObject {
     JSObject getPrototype();
 
     String getClassName();
+
     void setClassName(String className);
 
     boolean isExtensible();
@@ -30,7 +31,7 @@ public interface JSObject {
     NameEnumerator getOwnPropertyNames();
 
     void setPrototype(JSObject prototype);
-    
+
     void setExtensible(boolean extensible);
 
 }

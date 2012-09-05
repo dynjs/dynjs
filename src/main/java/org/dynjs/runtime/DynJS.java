@@ -86,17 +86,18 @@ public class DynJS {
     }
 
     public Object execute(ExecutionContext execContext, InputStream program, String filename, boolean forceStrict) throws IOException {
-        JSProgram programObj = compile(execContext, program, filename, forceStrict );
+        JSProgram programObj = compile(execContext, program, filename, forceStrict);
         Completion completion = execContext.execute(programObj);
         return completion.value;
     }
 
     public Object execute(String program, String filename, int lineNumber) {
-        return execute( program, filename, lineNumber, false );
-        
+        return execute(program, filename, lineNumber, false);
+
     }
+
     public Object execute(String program, String filename, int lineNumber, boolean forceStrict) {
-        JSProgram programObj = compile(this.context, program, filename, forceStrict );
+        JSProgram programObj = compile(this.context, program, filename, forceStrict);
         Completion completion = this.context.execute(programObj);
         Object v = completion.value;
         if (v instanceof Reference) {

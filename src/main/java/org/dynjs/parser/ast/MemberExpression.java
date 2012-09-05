@@ -61,7 +61,7 @@ public class MemberExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return this.memberExpr + "." + this.identifierExpr;
     }

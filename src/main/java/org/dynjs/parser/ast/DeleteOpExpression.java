@@ -58,38 +58,38 @@ public class DeleteOpExpression extends AbstractExpression {
                 // ref ref
                 invokevirtual(p(Reference.class), "isUnresolvableReference", sig(boolean.class));
                 // ref bool
-                iffalse( checkAsProperty );
+                iffalse(checkAsProperty);
                 // ref
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isStrictReference", sig(boolean.class));
                 // ref bool
-                iffalse( returnTrue ); 
+                iffalse(returnTrue);
                 // ref
                 invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));
                 // ref + throw
-                go_to( returnTrue );
+                go_to(returnTrue);
 
                 // ----------------------------------------
                 // Check as property
-                
-                label( checkAsProperty );
+
+                label(checkAsProperty);
                 // ref
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
                 // ref bool
-                iffalse( handleEnvRec );
+                iffalse(handleEnvRec);
                 // ref 
                 dup();
                 // ref ref
-                append( jsGetBase() );
+                append(jsGetBase());
                 // ref base
-                append( jsToObject() );
+                append(jsToObject());
                 // ref obj
                 swap();
                 // obj ref
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj ref context
                 swap();
                 // obj context ref
@@ -103,25 +103,25 @@ public class DeleteOpExpression extends AbstractExpression {
                 // obj context name bool
                 invokeinterface(p(JSObject.class), "delete", sig(boolean.class, ExecutionContext.class, String.class, boolean.class));
                 // bool
-                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
                 // Boolean
-                go_to( end );
-                
+                go_to(end);
+
                 // ----------------------------------------
                 // Environment record
                 LabelNode throwSyntax = new LabelNode();
-                
-                label( handleEnvRec );
+
+                label(handleEnvRec);
                 // ref
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isStrictReference", sig(boolean.class));
                 // ref bool
-                iftrue( throwSyntax );
+                iftrue(throwSyntax);
                 // ref
                 dup();
                 // ref ref
-                append( jsGetBase() );
+                append(jsGetBase());
                 // ref base
                 checkcast(p(EnvironmentRecord.class));
                 // ref env-rec
@@ -129,23 +129,21 @@ public class DeleteOpExpression extends AbstractExpression {
                 // env-rec ref
                 invokevirtual(p(Reference.class), "getReferencedName", sig(String.class));
                 // env-rec name
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // env-rec name context
                 swap();
                 // env-rec context name
-                invokeinterface( p(EnvironmentRecord.class), "deleteBinding", sig(boolean.class, ExecutionContext.class, String.class));
+                invokeinterface(p(EnvironmentRecord.class), "deleteBinding", sig(boolean.class, ExecutionContext.class, String.class));
                 // bool
-                invokestatic( p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
                 // Boolean
                 go_to(end);
-                
-                
-                
-                label( throwSyntax );
+
+                label(throwSyntax);
                 // ref
-                invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));  
+                invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));
                 // ref
-                go_to( end );
+                go_to(end);
 
                 // ----------------------------------------
                 // Simple true (with pop)
@@ -162,7 +160,7 @@ public class DeleteOpExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return "delete " + this.expr;
     }

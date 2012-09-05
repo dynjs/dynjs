@@ -43,10 +43,10 @@ public class Map extends AbstractNativeFunction {
                 final Object mappedValue = context.call(callbackFn, t, kValue, o);
                 a.defineOwnProperty(context, "" + k, new PropertyDescriptor() {
                     {
-                        set( "Value", mappedValue );
-                        set( "Writable", true );
-                        set( "Configurable", true );
-                        set( "Enumerable", true );
+                        set("Value", mappedValue);
+                        set("Writable", true);
+                        set("Configurable", true);
+                        set("Enumerable", true);
                     }
                 }, false);
             }

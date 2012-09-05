@@ -22,8 +22,8 @@ public class PreventExtensions extends AbstractNativeFunction {
         }
 
         JSObject jsObj = (JSObject) o;
-        jsObj.setExtensible( false );
-        
+        jsObj.setExtensible(false);
+
         return jsObj;
 
     }

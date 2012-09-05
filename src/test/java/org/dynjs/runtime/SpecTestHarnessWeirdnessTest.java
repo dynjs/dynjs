@@ -9,10 +9,9 @@ import org.junit.Test;
 
 public class SpecTestHarnessWeirdnessTest extends AbstractDynJSTestSupport {
 
-    
     @Test
     public void testWeirdnessOne() throws IOException {
-        InputStream in = getClass().getClassLoader().getResourceAsStream( "org/dynjs/runtime/weirdness1.js" );
-        getRuntime().execute( in, "weirdness1.js");
+        InputStream in = getClass().getClassLoader().getResourceAsStream("org/dynjs/runtime/weirdness1.js");
+        getRuntime().execute(in, "weirdness1.js");
     }
 }

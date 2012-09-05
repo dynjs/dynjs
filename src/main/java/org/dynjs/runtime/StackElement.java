@@ -1,7 +1,7 @@
 package org.dynjs.runtime;
 
 public class StackElement {
-    
+
     public String fileName;
     public int lineNumber;
     public String debugContext;
@@ -11,7 +11,7 @@ public class StackElement {
         this.lineNumber = lineNumber;
         this.debugContext = debugContext;
     }
-    
+
     public String toString() {
         return this.debugContext + " (" + this.fileName + ":" + this.lineNumber + ")";
     }

@@ -16,7 +16,9 @@ public class IsFinite extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         Object o = args[0];
         if (o != Types.UNDEFINED) {
-            if (o instanceof DynNumber) { return false; }
+            if (o instanceof DynNumber) {
+                return false;
+            }
             if (o instanceof Number) {
                 return !Double.isInfinite(((Number) o).doubleValue());
             }

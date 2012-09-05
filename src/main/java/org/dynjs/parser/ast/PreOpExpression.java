@@ -128,7 +128,7 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
             }
         };
     }
-    
+
     public String toString() {
         return getOp() + getExpr();
     }

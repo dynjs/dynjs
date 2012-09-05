@@ -52,8 +52,7 @@ public class NumberLiteralExpression extends AbstractExpression {
                         String javafied = base + ".0" + exponent;
                         ldc(javafied);
                         invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
-                    }
-                    else {
+                    } else {
                         String realText = text;
                         if (text.startsWith("0x") || text.startsWith("0X")) {
                             realText = text.substring(2);
@@ -71,7 +70,7 @@ public class NumberLiteralExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return this.text;
     }

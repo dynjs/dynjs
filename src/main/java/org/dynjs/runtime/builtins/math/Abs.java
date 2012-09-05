@@ -6,7 +6,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class Abs extends AbstractNativeFunction {
-    
+
     public Abs(GlobalObject globalObject) {
         super(globalObject, "x");
     }
@@ -18,7 +18,7 @@ public class Abs extends AbstractNativeFunction {
             if (Double.isNaN((Double) arg)) {
                 return Double.NaN;
             } else if (Double.isInfinite((Double) arg)) {
-                return Double.POSITIVE_INFINITY; 
+                return Double.POSITIVE_INFINITY;
             }
             return Math.abs((Double) arg);
         } else {

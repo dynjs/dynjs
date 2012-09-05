@@ -1,6 +1,6 @@
 package org.dynjs.runtime.builtins;
-import static org.fest.assertions.Assertions.*;
 
+import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
@@ -90,7 +90,7 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNegativeInfinity() {
-        assertThat( eval("-Infinity" ) ).isEqualTo( Double.NEGATIVE_INFINITY );
+        assertThat(eval("-Infinity")).isEqualTo(Double.NEGATIVE_INFINITY);
     }
 
 }

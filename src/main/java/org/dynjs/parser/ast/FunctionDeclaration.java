@@ -49,20 +49,20 @@ public class FunctionDeclaration extends AbstractStatement {
     public String toString() {
         return this.descriptor.toString();
     }
-    
+
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append( indent ).append( "function" ).append( this.descriptor.getIdentifier() == null ? "" : " " +this.descriptor.getIdentifier() ).append( "(" );
+        buf.append(indent).append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
         String[] params = this.descriptor.getFormalParameters();
-        for ( int i = 0 ; i < params.length; ++i ) {
-            if ( i > 0 ) {
-                buf.append( ", " );
+        for (int i = 0; i < params.length; ++i) {
+            if (i > 0) {
+                buf.append(", ");
             }
-            buf.append( params[i] );
+            buf.append(params[i]);
         }
-        buf.append( ") {\n");
-        buf.append( this.descriptor.getBlock().toIndentedString( indent + "  " ));
-        buf.append( "}" );
+        buf.append(") {\n");
+        buf.append(this.descriptor.getBlock().toIndentedString(indent + "  "));
+        buf.append("}");
         return buf.toString();
     }
 }

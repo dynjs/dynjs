@@ -19,14 +19,14 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         Object result = fn.call(getContext());
         assertThat(result).isEqualTo(42.0);
     }
-    
+
     @Test
     public void testInvalidFunction() {
         try {
-            eval( "function (){};" );
+            eval("function (){};");
             fail("Invalid functions should be invalid, dammit.");
         } catch (Exception e) {
-            
+
         }
     }
 

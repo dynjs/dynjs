@@ -8,6 +8,6 @@ public interface Expression {
     Position getPosition();
 
     CodeBlock getCodeBlock();
-    
+
     String dump(String indent);
 }

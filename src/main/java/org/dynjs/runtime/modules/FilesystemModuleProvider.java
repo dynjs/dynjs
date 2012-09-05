@@ -19,11 +19,13 @@ import org.dynjs.runtime.GlobalObject;
 public class FilesystemModuleProvider implements ModuleProvider {
 
     public FilesystemModuleProvider(GlobalObject globalObject) {
-        globalObject.addLoadPath( System.getProperty("user.dir") + "/");
+        globalObject.addLoadPath(System.getProperty("user.dir") + "/");
         globalObject.addLoadPath(System.getProperty("user.home") + "/.node_modules/");
         globalObject.addLoadPath(System.getProperty("user.home") + "/.node_libraries/");
         globalObject.addLoadPath("/usr/local/lib/node/");
-        globalObject.addLoadPath("/usr/local/lib/node_modules/");    }
+        globalObject.addLoadPath("/usr/local/lib/node_modules/");
+    }
+
     @Override
     public DynObject load(ExecutionContext context, String moduleName) {
         String filename = normalizeFileName(moduleName);
@@ -37,10 +39,10 @@ public class FilesystemModuleProvider implements ModuleProvider {
 
             GlobalObject requireGlobal = requireContext.getGlobalObject();
 
-            DynObject module = new DynObject( context.getGlobalObject() );
-            DynObject exports = new DynObject( context.getGlobalObject() );
-            
-            requireGlobal.addLoadPath( file.getParent() );
+            DynObject module = new DynObject(context.getGlobalObject());
+            DynObject exports = new DynObject(context.getGlobalObject());
+
+            requireGlobal.addLoadPath(file.getParent());
 
             module.put(requireContext, "exports", exports, true);
             requireGlobal.put(requireContext, "module", module, true);
@@ -51,8 +53,8 @@ public class FilesystemModuleProvider implements ModuleProvider {
             } catch (IOException e) {
                 return null;
             }
-            
-            exports = (DynObject) requireGlobal.get( requireContext, "exports" );
+
+            exports = (DynObject) requireGlobal.get(requireContext, "exports");
 
             return exports;
         }
@@ -61,8 +63,8 @@ public class FilesystemModuleProvider implements ModuleProvider {
 
     private File findFile(ExecutionContext context, String fileName) {
         List<String> loadPaths = context.getGlobalObject().getLoadPaths();
-        for ( String loadPath : loadPaths ) {
-            File file = new File(loadPath, fileName );
+        for (String loadPath : loadPaths) {
+            File file = new File(loadPath, fileName);
             if (file.exists()) {
                 return file;
             }

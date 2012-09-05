@@ -15,8 +15,8 @@ public class ValueOf extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.4
         if (self instanceof DynNumber) {
-            return ((DynNumber)self).getPrimitiveValue();
+            return ((DynNumber) self).getPrimitiveValue();
         }
-        return ((PrimitiveDynObject)self).getPrimitiveValue();
+        return ((PrimitiveDynObject) self).getPrimitiveValue();
     }
 }

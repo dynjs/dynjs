@@ -32,7 +32,7 @@ public class ThisExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return "this";
     }

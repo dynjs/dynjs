@@ -110,7 +110,7 @@ public class Stringify extends AbstractNativeFunction {
             }
         }
 
-        if (replacer != null ) {
+        if (replacer != null) {
             value = context.call(replacer, holder, key, value);
         }
 

@@ -13,7 +13,7 @@ public abstract class AbstractBuiltinType extends AbstractNativeFunction {
 
     public void initialize(GlobalObject globalObject) {
         Object proto = get(null, "prototype");
-        if ( proto == Types.UNDEFINED ) {
+        if (proto == Types.UNDEFINED) {
             proto = null;
         }
         initialize(globalObject, (JSObject) proto);

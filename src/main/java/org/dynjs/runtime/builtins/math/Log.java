@@ -7,7 +7,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Log extends AbstractNativeFunction {
-    
+
     public Log(GlobalObject globalObject) {
         super(globalObject, "x");
     }
@@ -18,7 +18,9 @@ public class Log extends AbstractNativeFunction {
             return Double.NaN;
         }
         final Double arg = new Double(Types.toNumber(context, args[0]).toString());
-        if (arg == 1) { return 0; }
+        if (arg == 1) {
+            return 0;
+        }
         return java.lang.Math.log(arg);
     }
 

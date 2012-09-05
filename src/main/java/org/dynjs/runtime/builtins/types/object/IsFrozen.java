@@ -33,23 +33,23 @@ public class IsFrozen extends AbstractNativeFunction {
             Object d = jsObj.getOwnProperty(context, name);
             if (d != Types.UNDEFINED) {
                 PropertyDescriptor desc = (PropertyDescriptor) d;
-                if ( desc.isDataDescriptor() ) {
-                    Object isWritable = desc.get( "Writable" );
-                    if ( isWritable == Boolean.TRUE ) {
+                if (desc.isDataDescriptor()) {
+                    Object isWritable = desc.get("Writable");
+                    if (isWritable == Boolean.TRUE) {
                         return false;
                     }
                 }
-                Object isConfigurable = desc.get( "Configurable" );
-                if ( isConfigurable == Boolean.TRUE ) {
+                Object isConfigurable = desc.get("Configurable");
+                if (isConfigurable == Boolean.TRUE) {
                     return false;
                 }
             }
         }
-        
-        if ( ! jsObj.isExtensible() ) {
+
+        if (!jsObj.isExtensible()) {
             return true;
         }
-        
+
         return false;
 
     }

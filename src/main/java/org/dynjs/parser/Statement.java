@@ -26,6 +26,6 @@ public interface Statement {
     int getStatementNumber();
 
     String dump(String indent);
-    
+
     String toIndentedString(String indent);
 }

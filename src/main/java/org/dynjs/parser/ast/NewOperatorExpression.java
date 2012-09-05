@@ -44,13 +44,13 @@ public class NewOperatorExpression extends AbstractExpression {
         return new CodeBlock() {
             {
                 // 11.2.2
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
                 append(newExpr.getCodeBlock());
                 // context reference
                 append(jsGetValue(JSFunction.class));
                 // context ctor-fn
-                
+
                 int numArgs = argExprs.size();
                 bipush(numArgs);
                 anewarray(p(Object.class));
@@ -59,7 +59,7 @@ public class NewOperatorExpression extends AbstractExpression {
                     dup();
                     bipush(i);
                     append(argExprs.get(i).getCodeBlock());
-                    append( jsGetValue() );
+                    append(jsGetValue());
                     aastore();
                 }
                 // context function array
@@ -68,20 +68,20 @@ public class NewOperatorExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append( this.newExpr ).append( "(" );
+        buf.append(this.newExpr).append("(");
         boolean first = true;
-        for ( Expression each : this.argExprs ) {
-            if ( ! first ) {
-                buf.append( ", " );
+        for (Expression each : this.argExprs) {
+            if (!first) {
+                buf.append(", ");
             }
-            buf.append( each.toString() );
+            buf.append(each.toString());
             first = false;
-            
+
         }
-        buf.append( ")" );
+        buf.append(")");
         return buf.toString();
     }
 }

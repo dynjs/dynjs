@@ -84,11 +84,11 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append( indent ).append( "do {\n" );
-        buf.append( indent ).append( "} while (" ).append( vbool.toString() ).append( ")" );
+        buf.append(indent).append("do {\n");
+        buf.append(indent).append("} while (").append(vbool.toString()).append(")");
         return buf.toString();
     }
 }

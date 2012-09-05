@@ -25,7 +25,7 @@ public class ConsoleModule {
 
         err.println(message);
     }
-    
+
     @Export
     public void trace(ExecutionContext context, Object self) {
         List<StackElement> stack = new ArrayList<>();
@@ -34,5 +34,4 @@ public class ConsoleModule {
             log(context, self, each.toString() );
         }
     }
-
 }

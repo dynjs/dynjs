@@ -14,7 +14,7 @@ public class IsArray extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.3.2
-        return ( args[0] instanceof DynArray );
+        return (args[0] instanceof DynArray);
     }
 
 }

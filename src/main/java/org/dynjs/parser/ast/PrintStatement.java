@@ -39,19 +39,19 @@ public class PrintStatement extends AbstractStatement implements Statement {
             {
                 append(expr.getCodeBlock());
                 // obj
-                append( jsGetValue() );
+                append(jsGetValue());
                 // val
                 getstatic(p(System.class), "err", ci(PrintStream.class));
                 // val System.out
                 swap();
                 // System.out val
-                invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class) );
+                invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class));
                 // <empty>
-                append( normalCompletion() );
+                append(normalCompletion());
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
         return indent + "print(" + this.expr.toString() + ")";
     }

@@ -7,7 +7,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Floor extends AbstractNativeFunction {
-    
+
     public Floor(GlobalObject globalObject) {
         super(globalObject, "x");
     }
@@ -18,7 +18,9 @@ public class Floor extends AbstractNativeFunction {
             return Double.NaN;
         }
         final Double arg = new Double(Types.toNumber(context, args[0]).toString());
-        if (Double.isInfinite(arg)) { return arg; }
+        if (Double.isInfinite(arg)) {
+            return arg;
+        }
         return (int) java.lang.Math.floor(arg);
     }
 

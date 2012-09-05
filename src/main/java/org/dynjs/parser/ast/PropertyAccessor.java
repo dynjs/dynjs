@@ -13,14 +13,13 @@ public abstract class PropertyAccessor extends PropertyAssignment {
         this.blockManager = blockManager;
         this.block = block;
     }
-    
+
     public BlockManager getBlockManager() {
         return this.blockManager;
     }
-    
+
     public Statement getBlock() {
         return this.block;
     }
-
 
 }

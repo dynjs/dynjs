@@ -14,7 +14,7 @@ public class WithStatementTest extends AbstractDynJSTestSupport {
                 "}");
 
         assertThat(result).isEqualTo("taco");
-        assertThat( eval( "x.cheese" ) ).isEqualTo( Types.UNDEFINED );
+        assertThat(eval("x.cheese")).isEqualTo(Types.UNDEFINED);
 
     }
 }

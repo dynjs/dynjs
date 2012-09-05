@@ -13,10 +13,10 @@ public class ThrowTypeErrorTest extends AbstractDynJSTestSupport {
     public void testThrowTypeError() {
         try {
             eval("__throwTypeError()");
-            throw new AssertionError("Should have thrown a type error" );
+            throw new AssertionError("Should have thrown a type error");
         } catch (ThrowException e) {
             JSObject err = (JSObject) e.getValue();
-            assertThat( err.get( getContext(), "name" ) ).isEqualTo("TypeError" );
+            assertThat(err.get(getContext(), "name")).isEqualTo("TypeError");
         }
     }
 }

@@ -18,10 +18,10 @@ public class BuiltinBoolean extends AbstractBuiltinType {
         final PrimitiveDynObject proto = new DynBoolean(globalObject, Boolean.FALSE);
         put(null, "prototype", proto, false);
     }
-    
+
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
+        proto.setPrototype(globalObject.getPrototypeFor("Object"));
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
         proto.put(null, "valueOf", new ValueOf(globalObject), false);

@@ -16,13 +16,13 @@ public class HasOwnProperty extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.2.4.5
         JSObject o = Types.toObject(context, self);
-        String p = Types.toString( context, args[0] );
-        
+        String p = Types.toString(context, args[0]);
+
         Object desc = o.getOwnProperty(context, p);
-        if ( desc == Types.UNDEFINED ) {
+        if (desc == Types.UNDEFINED) {
             return false;
         }
-        
+
         return true;
     }
 

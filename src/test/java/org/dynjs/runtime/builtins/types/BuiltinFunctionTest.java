@@ -125,7 +125,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
             throw new AssertionError("Should have throw TypeError");
         } catch (ThrowException e) {
             JSObject value = (JSObject) e.getValue();
-            assertThat( (String) value.get( getContext(), "message" ) ).contains( "only allowed on functions" );
+            assertThat((String) value.get(getContext(), "message")).contains("only allowed on functions");
         }
     }
 

@@ -36,7 +36,7 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
-    
+
     public CodeBlock jsPushNull() {
         return new CodeBlock() {
             {
@@ -49,7 +49,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN: obj preferredType
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj preferredType context
                 dup_x2();
                 // context obj preferredType context
@@ -65,7 +65,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -89,7 +89,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -103,7 +103,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -117,7 +117,7 @@ public class AbstractByteCodeEmitter {
         return new CodeBlock() {
             {
                 // IN obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -156,14 +156,12 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
-    
-    
 
     public CodeBlock jsToString() {
         return new CodeBlock() {
             {
                 // IN: obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -189,9 +187,9 @@ public class AbstractByteCodeEmitter {
                 // obj
                 dup();
                 // obj obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj obj context
-                ldc( message );
+                ldc(message);
                 // obj obj context message 
                 invokevirtual(p(ExecutionContext.class), "createTypeError", sig(JSObject.class, String.class));
                 // obj obj ex
@@ -209,9 +207,9 @@ public class AbstractByteCodeEmitter {
                 // obj
                 dup();
                 // obj obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj obj context
-                ldc( message );
+                ldc(message);
                 // obj obj context message 
                 invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
                 // obj obj ex

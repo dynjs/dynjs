@@ -27,25 +27,26 @@ public class PropertySet extends PropertyAccessor {
                 // IN obj
                 dup();
                 // obj obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj obj context
-                ldc( getName() );
+                ldc(getName());
                 // obj obj context name
                 invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
                 // obj desc(orig)
                 append(CodeBlockUtils.compiledFunction(getBlockManager(), new String[] { identifier }, getBlock()));
                 // obj desc(orig) fn
-                ldc( getName() );
+                ldc(getName());
                 // obj desc(orig) fn name
                 swap();
                 // obj desc(orig) name fn
-                invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializerSet", sig(PropertyDescriptor.class, Object.class, String.class, JSFunction.class));
+                invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializerSet", sig(PropertyDescriptor.class, Object.class, String.class,
+                        JSFunction.class));
                 // obj desc(new)
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj desc(new) context
                 swap();
                 // obj context desc(new)
-                ldc( getName() );
+                ldc(getName());
                 // obj context desc(new) name
                 swap();
                 // obj context name desc(new)

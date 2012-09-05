@@ -63,7 +63,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         Object x = getContext().resolve("x").getValue(getContext());
         assertThat(x).isEqualTo(false);
     }
-    
+
     @Test
     public void testArrayConstructor() {
         eval("var ctor = Array.prototype.constructor; var x = new ctor()");
@@ -201,156 +201,155 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         Object result = eval("a.shift()");
 
         assertThat(result).isEqualTo("a");
-        
-        JSObject a = (JSObject) eval( "a" );
+
+        JSObject a = (JSObject) eval("a");
         assertThat(a.get(getContext(), "length")).isEqualTo(2);
         assertThat(a.get(getContext(), "0")).isEqualTo("b");
         assertThat(a.get(getContext(), "1")).isEqualTo("c");
     }
-    
+
     @Test
     public void testSlicePositiveArgs() {
-        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(1,3)");
+        JSObject result = (JSObject) eval("['a','b','c','d'].slice(1,3)");
         assertThat(result.get(getContext(), "length")).isEqualTo(2);
         assertThat(result.get(getContext(), "0")).isEqualTo("b");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
-    
+
     @Test
     public void testSliceNegativeEnd() {
-        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(0,-1)");
+        JSObject result = (JSObject) eval("['a','b','c','d'].slice(0,-1)");
         assertThat(result.get(getContext(), "length")).isEqualTo(3);
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
         assertThat(result.get(getContext(), "1")).isEqualTo("b");
         assertThat(result.get(getContext(), "2")).isEqualTo("c");
     }
-    
+
     @Test
     public void testSliceNegativeStart() {
-        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(-3,3)");
+        JSObject result = (JSObject) eval("['a','b','c','d'].slice(-3,3)");
         assertThat(result.get(getContext(), "length")).isEqualTo(2);
         assertThat(result.get(getContext(), "0")).isEqualTo("b");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
-    
+
     @Test
     public void testSliceNegativeStartNoEnd() {
-        JSObject result = (JSObject) eval( "['a','b','c','d'].slice(-3)");
+        JSObject result = (JSObject) eval("['a','b','c','d'].slice(-3)");
         assertThat(result.get(getContext(), "length")).isEqualTo(3);
         assertThat(result.get(getContext(), "0")).isEqualTo("b");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
         assertThat(result.get(getContext(), "2")).isEqualTo("d");
     }
-    
+
     @Test
     public void testForEach() {
-        JSObject result = (JSObject) eval( "var collector = [];",
+        JSObject result = (JSObject) eval("var collector = [];",
                 "['a', 'b', 'c' ].forEach( function(each,i) {",
                 "  collector.push('foo'+each);",
                 "} );",
                 "collector;");
-        
-        assertThat( result.get(getContext(), "length" ) ).isEqualTo(3);
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(3);
         assertThat(result.get(getContext(), "0")).isEqualTo("fooa");
         assertThat(result.get(getContext(), "1")).isEqualTo("foob");
         assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
     }
-    
+
     @Test
     public void testMap() {
-        JSObject result = (JSObject) eval( 
+        JSObject result = (JSObject) eval(
                 "['a', 'b', 'c' ].map( function(each,i) {",
                 "  return 'foo' + each;",
-                "} );" );
-        
-        assertThat( result.get(getContext(), "length" ) ).isEqualTo(3);
+                "} );");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(3);
         assertThat(result.get(getContext(), "0")).isEqualTo("fooa");
         assertThat(result.get(getContext(), "1")).isEqualTo("foob");
         assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
     }
-    
+
     @Test
     public void testFilter() {
-        JSObject result = (JSObject) eval( 
+        JSObject result = (JSObject) eval(
                 "['a', 'b', 'c', 'd' ].filter( function(each,i) {",
                 "  return ( i % 2 == 0 );",
-                "} );" );
-        
-        assertThat( result.get(getContext(), "length" ) ).isEqualTo(2);
+                "} );");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(2);
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
-    
+
     @Test
     public void testSortStringsNoFunction() {
-        JSObject result = (JSObject) eval( "['qmx', 'lance', 'bob' ].sort()");
-        
-        assertThat( result.get(getContext(), "length" )).isEqualTo(3);
-        assertThat( result.get(getContext(), "0" )).isEqualTo("bob");
-        assertThat( result.get(getContext(), "1" )).isEqualTo("lance");
-        assertThat( result.get(getContext(), "2" )).isEqualTo("qmx");
+        JSObject result = (JSObject) eval("['qmx', 'lance', 'bob' ].sort()");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "0")).isEqualTo("bob");
+        assertThat(result.get(getContext(), "1")).isEqualTo("lance");
+        assertThat(result.get(getContext(), "2")).isEqualTo("qmx");
     }
-    
+
     @Test
     public void testSortNonStringsNoFunction() {
-        JSObject result = (JSObject) eval( "[1,2,10,20].sort()" );
-        assertThat( result.get(getContext(), "length" )).isEqualTo(4);
-        assertThat( result.get(getContext(), "0" )).isEqualTo(1);
-        assertThat( result.get(getContext(), "1" )).isEqualTo(10);
-        assertThat( result.get(getContext(), "2" )).isEqualTo(2);
-        assertThat( result.get(getContext(), "3" )).isEqualTo(20);
+        JSObject result = (JSObject) eval("[1,2,10,20].sort()");
+        assertThat(result.get(getContext(), "length")).isEqualTo(4);
+        assertThat(result.get(getContext(), "0")).isEqualTo(1);
+        assertThat(result.get(getContext(), "1")).isEqualTo(10);
+        assertThat(result.get(getContext(), "2")).isEqualTo(2);
+        assertThat(result.get(getContext(), "3")).isEqualTo(20);
     }
-    
+
     @Test
     public void testStringsWithFunction() {
-        JSObject result = (JSObject) eval( "[ 'thebob', 'lance', 'qmx' ].sort( function(x,y){",
+        JSObject result = (JSObject) eval("[ 'thebob', 'lance', 'qmx' ].sort( function(x,y){",
                 "if ( x.length > y.length ) {",
                 "  return 1;",
                 "} else if ( x.length < y.length ) {",
                 "  return -1;",
                 "} else {",
                 "  return 0",
-                "} } )" );
-        
-        assertThat( result.get( getContext(), "length")).isEqualTo(3);
-        assertThat( result.get( getContext(), "0")).isEqualTo("qmx" );
-        assertThat( result.get( getContext(), "1")).isEqualTo("lance" );
-        assertThat( result.get( getContext(), "2")).isEqualTo("thebob" );
+                "} } )");
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "0")).isEqualTo("qmx");
+        assertThat(result.get(getContext(), "1")).isEqualTo("lance");
+        assertThat(result.get(getContext(), "2")).isEqualTo("thebob");
     }
-    
+
     @Test
     public void testSpliceNoDeletion() {
-        JSObject result = (JSObject) eval( "var a = [1,2,3];",
+        JSObject result = (JSObject) eval("var a = [1,2,3];",
                 "a.splice(0,0,4,5)");
-        
-        JSObject a = (JSObject) eval( "a" );
-        
-        assertThat( a.get( getContext(), "length")).isEqualTo(5);
-        assertThat( a.get( getContext(), "0")).isEqualTo(4);
-        assertThat( a.get( getContext(), "1")).isEqualTo(5);
-        assertThat( a.get( getContext(), "2")).isEqualTo(1);
-        assertThat( a.get( getContext(), "3")).isEqualTo(2);
-        assertThat( a.get( getContext(), "4")).isEqualTo(3);
-        
-        assertThat( result.get( getContext(), "length" )).isEqualTo(0);
+
+        JSObject a = (JSObject) eval("a");
+
+        assertThat(a.get(getContext(), "length")).isEqualTo(5);
+        assertThat(a.get(getContext(), "0")).isEqualTo(4);
+        assertThat(a.get(getContext(), "1")).isEqualTo(5);
+        assertThat(a.get(getContext(), "2")).isEqualTo(1);
+        assertThat(a.get(getContext(), "3")).isEqualTo(2);
+        assertThat(a.get(getContext(), "4")).isEqualTo(3);
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(0);
     }
-    
+
     @Test
     public void testSpliceWithDeletion() {
-        JSObject result = (JSObject) eval( "var a = [1,2,3];",
+        JSObject result = (JSObject) eval("var a = [1,2,3];",
                 "a.splice(0,1,4,5)");
-        
-        JSObject a = (JSObject) eval( "a" );
-        
-        assertThat( a.get( getContext(), "length")).isEqualTo(4);
-        assertThat( a.get( getContext(), "0")).isEqualTo(4);
-        assertThat( a.get( getContext(), "1")).isEqualTo(5);
-        assertThat( a.get( getContext(), "2")).isEqualTo(2);
-        assertThat( a.get( getContext(), "3")).isEqualTo(3);
-        
-        assertThat( result.get( getContext(), "length" )).isEqualTo(1);
-        assertThat( result.get( getContext(), "0" )).isEqualTo(1);
+
+        JSObject a = (JSObject) eval("a");
+
+        assertThat(a.get(getContext(), "length")).isEqualTo(4);
+        assertThat(a.get(getContext(), "0")).isEqualTo(4);
+        assertThat(a.get(getContext(), "1")).isEqualTo(5);
+        assertThat(a.get(getContext(), "2")).isEqualTo(2);
+        assertThat(a.get(getContext(), "3")).isEqualTo(3);
+
+        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "0")).isEqualTo(1);
     }
-                
-    
+
 }

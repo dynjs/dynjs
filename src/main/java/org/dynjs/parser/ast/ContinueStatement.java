@@ -36,8 +36,8 @@ public class ContinueStatement extends AbstractStatement {
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
-        return indent + "continue" + ( this.target == null ? ";" : this.target + ";" );
+        return indent + "continue" + (this.target == null ? ";" : this.target + ";");
     }
 }

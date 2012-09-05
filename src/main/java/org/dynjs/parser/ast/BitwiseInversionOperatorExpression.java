@@ -48,7 +48,7 @@ public class BitwiseInversionOperatorExpression extends AbstractExpression {
             }
         };
     }
-    
+
     public String toString() {
         return "~" + expr;
     }

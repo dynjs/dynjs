@@ -29,25 +29,25 @@ public class BuiltinFunction extends AbstractBuiltinType {
 
     public BuiltinFunction(final GlobalObject globalObject) {
         super(globalObject, "args");
-        
+
         final JSFunction proto = new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
                 return Types.UNDEFINED;
             }
         };
-        put( null, "prototype", proto, false );
+        put(null, "prototype", proto, false);
     }
-    
+
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
+        proto.setPrototype(globalObject.getPrototypeFor("Object"));
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
         proto.put(null, "apply", new Apply(globalObject), false);
         proto.put(null, "call", new Call(globalObject), false);
         proto.put(null, "bind", new Bind(globalObject), false);
-        setPrototype( proto );
+        setPrototype(proto);
     }
 
     @Override

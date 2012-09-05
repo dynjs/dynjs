@@ -29,10 +29,10 @@ public class BuiltinArray extends AbstractBuiltinType {
         final DynArray proto = new DynArray(globalObject);
         put(null, "prototype", proto, false);
     }
-    
+
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype( globalObject.getPrototypeFor( "Object" ));
+        proto.setPrototype(globalObject.getPrototypeFor("Object"));
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
         proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
@@ -45,11 +45,11 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.put(null, "slice", new Slice(globalObject), false);
         proto.put(null, "sort", new Sort(globalObject), false);
         proto.put(null, "splice", new Splice(globalObject), false);
-        
+
         proto.put(null, "forEach", new ForEach(globalObject), false);
         proto.put(null, "map", new Map(globalObject), false);
         proto.put(null, "filter", new Filter(globalObject), false);
-        
+
         put(null, "isArray", new IsArray(globalObject), false);
     }
 

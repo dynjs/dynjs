@@ -48,18 +48,16 @@ public class VariableDeclaration extends AbstractExpression {
             }
         };
     }
-    
-    
+
     public String dump(String indent) {
         StringBuffer buf = new StringBuffer();
-        
-        buf.append( "var " + this.identifier );
-        if ( this.initializer != null ) {
-            buf.append( this.initializer.dump( indent + "  " ) );
+
+        buf.append("var " + this.identifier);
+        if (this.initializer != null) {
+            buf.append(this.initializer.dump(indent + "  "));
         }
-        
+
         return buf.toString();
     }
-
 
 }

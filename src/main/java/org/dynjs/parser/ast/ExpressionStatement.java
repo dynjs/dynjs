@@ -44,7 +44,7 @@ public class ExpressionStatement extends AbstractStatement {
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
         return indent + this.expr.toString();
     }

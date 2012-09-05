@@ -7,7 +7,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Max extends AbstractNativeFunction {
-    
+
     public Max(GlobalObject globalObject) {
         super(globalObject, "value1", "value2");
     }
@@ -15,19 +15,28 @@ public class Max extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // No arguments supplied
-        if (args[0] == Types.UNDEFINED) { return Double.NEGATIVE_INFINITY; }
+        if (args[0] == Types.UNDEFINED) {
+            return Double.NEGATIVE_INFINITY;
+        }
         // One argument supplied
-        if (args[1] == Types.UNDEFINED) { return args[0]; }
+        if (args[1] == Types.UNDEFINED) {
+            return args[0];
+        }
         // One NaN argument supplied
-        if (DynNumber.isNaN(args[0])) { return Double.NaN; }
-        
+        if (DynNumber.isNaN(args[0])) {
+            return Double.NaN;
+        }
+
         double max = new Double(Types.toNumber(context, args[0]).toString());
         for (int i = 1; i < args.length; i++) {
-            if (DynNumber.isNaN(args[i])) return Double.NaN;
+            if (DynNumber.isNaN(args[i]))
+                return Double.NaN;
             max = Math.max(new Double(Types.toNumber(context, args[i]).toString()), max);
         }
-        if (max - Math.floor(max) == 0) return (int) max; 
-        else return max;
+        if (max - Math.floor(max) == 0)
+            return (int) max;
+        else
+            return max;
     }
 
 }

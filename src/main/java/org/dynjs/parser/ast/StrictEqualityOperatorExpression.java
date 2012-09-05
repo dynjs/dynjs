@@ -39,7 +39,7 @@ public class StrictEqualityOperatorExpression extends AbstractBinaryExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
                 append(getLhs().getCodeBlock());
                 // context obj(lhs)

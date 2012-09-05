@@ -34,15 +34,15 @@ public class GetOwnPropertyNames extends AbstractNativeFunction {
             final String name = names.next();
             array.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
                 {
-                    set( "Value", name );
-                    set( "Writable", true );
-                    set( "Configurable", true );
-                    set( "Enumerable", true );
+                    set("Value", name);
+                    set("Writable", true);
+                    set("Configurable", true);
+                    set("Enumerable", true);
                 }
             }, false);
             ++i;
         }
-        
+
         return array;
     }
 }

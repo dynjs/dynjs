@@ -35,16 +35,16 @@ public class ToLocaleString extends AbstractNativeFunction {
                 str.append(separator);
             }
             first = false;
-            Object element = o.get( context, ""+ i);
-            if ( element != Types.UNDEFINED || element != Types.NULL ) {
+            Object element = o.get(context, "" + i);
+            if (element != Types.UNDEFINED || element != Types.NULL) {
                 JSObject jsElement = Types.toObject(context, element);
-                Object toLocaleString = jsElement.get( context, "toLocaleString" );
-                
-                if ( ! Types.isCallable(toLocaleString)) {
-                    throw new ThrowException( context.createTypeError( "toLocaleString must be callable" ));
+                Object toLocaleString = jsElement.get(context, "toLocaleString");
+
+                if (!Types.isCallable(toLocaleString)) {
+                    throw new ThrowException(context.createTypeError("toLocaleString must be callable"));
                 }
-                
-                str.append( context.call( (JSFunction)toLocaleString, jsElement ) );
+
+                str.append(context.call((JSFunction) toLocaleString, jsElement));
             }
         }
 

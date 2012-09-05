@@ -20,11 +20,10 @@ public class NameEnumerator {
     public String next() {
         return this.names.get(this.counter++);
     }
-    
+
     public List<String> toList() {
         List<String> list = new ArrayList<>();
         list.addAll( this.names );
         return list;
     }
-
 }

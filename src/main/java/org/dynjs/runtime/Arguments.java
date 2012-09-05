@@ -7,7 +7,7 @@ public class Arguments extends DynObject {
     private JSObject map;
 
     public Arguments(GlobalObject globalObject) {
-        super( globalObject );
+        super(globalObject);
         setClassName("Arguments");
         this.map = new DynObject(globalObject);
     }
@@ -27,7 +27,7 @@ public class Arguments extends DynObject {
         if (d == Types.UNDEFINED) {
             Object v = super.get(context, name);
             if (name.equals("caller") && (v instanceof JSFunction) && ((JSFunction) v).isStrict()) {
-                throw new ThrowException( context.createTypeError( "may not reference 'caller'"));
+                throw new ThrowException(context.createTypeError("may not reference 'caller'"));
             }
             return v;
         }
@@ -85,9 +85,9 @@ public class Arguments extends DynObject {
         }
         return result;
     }
-    
+
     public String toString() {
-        return "[Arguments: length=" + get( null, "length" ) + "]";
+        return "[Arguments: length=" + get(null, "length") + "]";
     }
 
 }

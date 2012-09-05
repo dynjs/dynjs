@@ -75,9 +75,9 @@ public class JavaFunction extends AbstractNativeFunction {
 
         return newArgs;
     }
-    
+
     public String getFileName() {
-        return this.object.getClass().getName().replace( ".", "/" ) + ".java";
+        return this.object.getClass().getName().replace(".", "/") + ".java";
     }
 
     private Object object;

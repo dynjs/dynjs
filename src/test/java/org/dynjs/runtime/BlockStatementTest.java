@@ -10,5 +10,5 @@ public class BlockStatementTest extends AbstractDynJSTestSupport {
     public void testOneLine() {
         eval("void true;");
     }
-    
+
 }

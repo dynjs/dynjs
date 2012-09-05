@@ -29,21 +29,21 @@ public class BoundFunction extends AbstractNativeFunction {
                 set("Enumerable", false);
             }
         }, false);
-        final JSFunction thrower = (JSFunction) scope.getGlobalObject().get( null, "__throwTypeError" );
+        final JSFunction thrower = (JSFunction) scope.getGlobalObject().get(null, "__throwTypeError");
         defineOwnProperty(null, "caller", new PropertyDescriptor() {
             {
-                set( "Set", thrower );
-                set( "Get", thrower );
-                set( "Configurable", false );
-                set( "Enumerable", false );
+                set("Set", thrower);
+                set("Get", thrower);
+                set("Configurable", false);
+                set("Enumerable", false);
             }
         }, false);
         defineOwnProperty(null, "arguments", new PropertyDescriptor() {
             {
-                set( "Set", thrower );
-                set( "Get", thrower );
-                set( "Configurable", false );
-                set( "Enumerable", false );
+                set("Set", thrower);
+                set("Get", thrower);
+                set("Configurable", false);
+                set("Enumerable", false);
             }
         }, false);
     }

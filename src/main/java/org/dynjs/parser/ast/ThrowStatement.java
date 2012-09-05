@@ -46,7 +46,7 @@ public class ThrowStatement extends AbstractStatement {
                 // ex val ex
                 swap();
                 // ex ex val
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // ex ex val context
                 swap();
                 // ex ex context val
@@ -56,7 +56,7 @@ public class ThrowStatement extends AbstractStatement {
             }
         };
     }
-    
+
     public String toIndentedString(String indent) {
         return indent + "throw " + this.expression.toString();
     }

@@ -93,7 +93,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
         StringBuffer buf = new StringBuffer();
 
         buf.append(indent).append("while (").append(this.vbool.toString()).append(") {\n");
-        buf.append( this.vloop.toIndentedString( indent + "  " ) );
+        buf.append(this.vloop.toIndentedString(indent + "  "));
         buf.append(indent).append("}");
 
         return buf.toString();

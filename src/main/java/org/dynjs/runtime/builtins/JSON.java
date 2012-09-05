@@ -23,10 +23,10 @@ import org.dynjs.runtime.builtins.types.json.Stringify;
 public class JSON extends DynObject {
 
     public JSON(GlobalObject globalObject) {
-        super( globalObject );
-        setClassName("JSON" );
-        put( null, "parse", new Parse(globalObject), false );
-        put( null, "stringify", new Stringify(globalObject), false );
+        super(globalObject);
+        setClassName("JSON");
+        put(null, "parse", new Parse(globalObject), false);
+        put(null, "stringify", new Stringify(globalObject), false);
     }
 
 }
