@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 public class Atan extends AbstractNativeFunction {
     
     public Atan(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "x");
     }
 
     @Override

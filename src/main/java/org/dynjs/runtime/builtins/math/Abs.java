@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 public class Abs extends AbstractNativeFunction {
     
     public Abs(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "x");
     }
 
     @Override

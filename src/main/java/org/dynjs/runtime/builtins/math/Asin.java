@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 public class Asin extends AbstractNativeFunction {
     
     public Asin(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "x");
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 public class Acos extends AbstractNativeFunction {
 
     public Acos(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "x");
     }
     
     @Override

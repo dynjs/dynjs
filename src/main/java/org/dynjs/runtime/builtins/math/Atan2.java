@@ -9,6 +9,7 @@ import org.dynjs.runtime.builtins.types.number.DynNumber;
 public class Atan2 extends AbstractNativeFunction {
 
     public Atan2(GlobalObject globalObject) {
+        // Don't fix this. By convention, atan2 has the y variable first
         super(globalObject, "y", "x");
     }
 
