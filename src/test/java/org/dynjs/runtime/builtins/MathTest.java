@@ -252,6 +252,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathCosZero() {
+        assertEval("Math.cos(0)", 1);
+    }
+    
+    @Test
     public void testMathCosFloaty() {
         assertEval("Math.cos(3.5)", java.lang.Math.cos(3.5));
     }
@@ -259,6 +264,36 @@ public class MathTest extends AbstractDynJSTestSupport {
     @Test
     public void testMathCosInfinite() {
         assertEval("Math.cos(Infinity)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathCosNegativeInfinite() {
+        assertEval("Math.cos(-Infinity)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathExp() {
+        assertEval("Math.exp(123.456)", java.lang.Math.exp(123.456));
+    }
+    
+    @Test
+    public void testMathExpInt() {
+        assertEval("Math.exp(123)", java.lang.Math.exp(123));
+    }
+    
+    @Test
+    public void testMathExpZero() {
+        assertEval("Math.exp(0)", 1);
+    }
+    
+    @Test
+    public void testMathExpInfinite() {
+        assertEval("Math.exp(Infinity)", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathExpNegativeInfinite() {
+        assertEval("Math.exp(-Infinity)", 0);
     }
     
     @Test
