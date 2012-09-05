@@ -5,6 +5,8 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.error.ToString;
 
 public class BuiltinError extends AbstractBuiltinType {
@@ -28,7 +30,22 @@ public class BuiltinError extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, final Object... args) {
-        return self;
+        JSObject o = null;
+
+        if (self == Types.UNDEFINED) {
+            o = context.createError( (String) ((JSObject)get( context, "prototype" )).get(null, "name"), null);
+        } else {
+            o = (JSObject) self;
+        }
+
+        if (args[0] != Types.UNDEFINED) {
+            o.defineOwnProperty(context, "message", new PropertyDescriptor() {
+                {
+                    set("Value", args[0]);
+                }
+            }, false);
+        }
+        return o;
     }
 
     @Override
