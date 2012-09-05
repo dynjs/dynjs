@@ -18,6 +18,7 @@ import org.dynjs.runtime.builtins.math.Log;
 import org.dynjs.runtime.builtins.math.Max;
 import org.dynjs.runtime.builtins.math.Min;
 import org.dynjs.runtime.builtins.math.Pow;
+import org.dynjs.runtime.builtins.math.Random;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -36,19 +37,20 @@ public class Math extends DynObject {
         defineReadOnlyProperty(globalObject, "SQRT2", java.lang.Math.sqrt(2.0f)); // 15.8.1.8
 
         // Math functions 15.8.2
-        put(null, "abs", new Abs(globalObject), false); // 15.8.2.1
-        put(null, "acos", new Acos(globalObject), false); // 15.8.2.2
-        put(null, "asin", new Asin(globalObject), false); // 15.8.2.3
-        put(null, "atan", new Atan(globalObject), false); // 15.8.2.4
-        put(null, "atan2", new Atan2(globalObject), false); // 15.8.2.5
-        put(null, "ceil", new Ceil(globalObject), false); // 15.8.2.6
-        put(null, "cos", new Cos(globalObject), false); // 15.8.2.7
-        put(null, "exp", new Exp(globalObject), false); // 15.8.2.8
-        put(null, "floor", new Floor(globalObject), false); // 15.8.2.9
-        put(null, "log", new Log(globalObject), false); // 15.8.2.10
-        put(null, "max", new Max(globalObject), false); // 15.8.2.11
-        put(null, "min", new Min(globalObject), false); // 15.8.2.12
-        put(null, "pow", new Pow(globalObject), false); // 15.8.2.13
+        put(null, "abs",    new Abs(globalObject), false);    // 15.8.2.1
+        put(null, "acos",   new Acos(globalObject), false);   // 15.8.2.2
+        put(null, "asin",   new Asin(globalObject), false);   // 15.8.2.3
+        put(null, "atan",   new Atan(globalObject), false);   // 15.8.2.4
+        put(null, "atan2",  new Atan2(globalObject), false);  // 15.8.2.5
+        put(null, "ceil",   new Ceil(globalObject), false);   // 15.8.2.6
+        put(null, "cos",    new Cos(globalObject), false);    // 15.8.2.7
+        put(null, "exp",    new Exp(globalObject), false);    // 15.8.2.8
+        put(null, "floor",  new Floor(globalObject), false);  // 15.8.2.9
+        put(null, "log",    new Log(globalObject), false);    // 15.8.2.10
+        put(null, "max",    new Max(globalObject), false);    // 15.8.2.11
+        put(null, "min",    new Min(globalObject), false);    // 15.8.2.12
+        put(null, "pow",    new Pow(globalObject), false);    // 15.8.2.13
+        put(null, "random", new Random(globalObject), false); // 15.8.2.14
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {

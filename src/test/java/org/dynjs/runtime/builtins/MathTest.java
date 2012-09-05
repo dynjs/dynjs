@@ -435,7 +435,16 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathPowXNaNYZero() {
         assertEval("Math.pow(NaN, 0)", 1);
     }
+    
+    @Test
+    public void testMathRandom() {
+        assertEval("Math.random() > 0", true);
+    }
 
+    @Test
+    public void testMathRandomLessThanOne() {
+        assertEval("Math.random() < 1", true);
+    }
     @Test
     public void testMathFunction() {
         try {
