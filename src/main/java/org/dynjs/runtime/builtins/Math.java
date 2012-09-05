@@ -19,6 +19,7 @@ import org.dynjs.runtime.builtins.math.Max;
 import org.dynjs.runtime.builtins.math.Min;
 import org.dynjs.runtime.builtins.math.Pow;
 import org.dynjs.runtime.builtins.math.Random;
+import org.dynjs.runtime.builtins.math.Round;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -51,6 +52,7 @@ public class Math extends DynObject {
         put(null, "min",    new Min(globalObject), false);    // 15.8.2.12
         put(null, "pow",    new Pow(globalObject), false);    // 15.8.2.13
         put(null, "random", new Random(globalObject), false); // 15.8.2.14
+        put(null, "round",  new Round(globalObject), false);  // 15.8.2.15
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {

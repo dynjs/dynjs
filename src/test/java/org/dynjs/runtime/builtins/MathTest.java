@@ -445,6 +445,22 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathRandomLessThanOne() {
         assertEval("Math.random() < 1", true);
     }
+    
+    @Test
+    public void testMathRound() {
+        assertEval("Math.round(3.5)", 4);
+    }
+    
+    @Test
+    public void testMathRoundDown() {
+        assertEval("Math.round(3.4)", 3);
+    }
+    
+    @Test
+    public void testMathRoundNegative() {
+        assertEval("Math.round(-3.5)", -3);
+    }
+    
     @Test
     public void testMathFunction() {
         try {
