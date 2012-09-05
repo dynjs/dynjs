@@ -422,6 +422,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathPow() {
+        assertEval("Math.pow(12,123.123)", java.lang.Math.pow(12, 123.123));
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
