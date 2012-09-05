@@ -362,6 +362,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathMaxNoArgs() {
+        assertEval("Math.max()", Double.NEGATIVE_INFINITY);
+    }
+    
+    @Test
     public void testMathMaxOneArg() {
         assertEval("Math.max(2)", 2);
     }
@@ -379,6 +384,41 @@ public class MathTest extends AbstractDynJSTestSupport {
     @Test
     public void testMathMaxVeryManyArgsAndOneNaNStuckInTheMiddle() {
         assertEval("Math.max(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathMinLength() {
+        assertEval("Math.min.length", 2);
+    }
+    
+    @Test
+    public void testMathMin() {
+        assertEval("Math.min(0.5, 2)", 0.5);
+    }
+    
+    @Test
+    public void testMathMinNoArgs() {
+        assertEval("Math.min()", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathMinOneArg() {
+        assertEval("Math.min(2)", 2);
+    }
+    
+    @Test
+    public void testMathMinThreeArgs() {
+        assertEval("Math.min(1,4,0.5)", 0.5);
+    }
+    
+    @Test
+    public void testMathMinVeryManyArgs() {
+        assertEval("Math.min(1,4,6,12,4,987,0,12.34,98765.45)", 0);
+    }
+    
+    @Test
+    public void testMathMinVeryManyArgsAndOneNaNStuckInTheMiddle() {
+        assertEval("Math.min(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
     }
     
     @Test
