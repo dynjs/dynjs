@@ -322,6 +322,36 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testMathLog() {
+        assertEval("Math.log(2)", java.lang.Math.log(2));
+    }
+    
+    @Test
+    public void testMathLogNaN() {
+        assertEval("Math.log(new Number('asdf'))", Double.NaN);
+    }
+    
+    @Test
+    public void testMathLogLessThanZero() {
+        assertEval("Math.log(-1)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathLogZero() {
+        assertEval("Math.log(0)", Double.NEGATIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathLogExactlyOne() {
+        assertEval("Math.log(1)", 0);
+    }
+    
+    @Test
+    public void testMathLogInfinity() {
+        assertEval("Math.log(Infinity)", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
     public void testMathFunction() {
         try {
             eval("Math()");
