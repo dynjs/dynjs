@@ -9,7 +9,9 @@ import org.dynjs.runtime.builtins.types.array.IsArray;
 import org.dynjs.runtime.builtins.types.array.prototype.Concat;
 import org.dynjs.runtime.builtins.types.array.prototype.Filter;
 import org.dynjs.runtime.builtins.types.array.prototype.ForEach;
+import org.dynjs.runtime.builtins.types.array.prototype.IndexOf;
 import org.dynjs.runtime.builtins.types.array.prototype.Join;
+import org.dynjs.runtime.builtins.types.array.prototype.LastIndexOf;
 import org.dynjs.runtime.builtins.types.array.prototype.Map;
 import org.dynjs.runtime.builtins.types.array.prototype.Pop;
 import org.dynjs.runtime.builtins.types.array.prototype.Push;
@@ -47,6 +49,8 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.put(null, "sort", new Sort(globalObject), false);
         proto.put(null, "splice", new Splice(globalObject), false);
         proto.put(null, "unshift", new Unshift(globalObject), false);
+        proto.put(null, "indexOf", new IndexOf(globalObject), false);
+        proto.put(null, "lastIndexOf", new LastIndexOf(globalObject), false);
 
         proto.put(null, "forEach", new ForEach(globalObject), false);
         proto.put(null, "map", new Map(globalObject), false);
