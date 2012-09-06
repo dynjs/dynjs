@@ -82,6 +82,9 @@ public class Types {
 
         try {
             String str = o.toString();
+            if ( str.equals( "Infinity" ) ) {
+                return Math.pow(10, 10000);
+            }
             if (str.trim().isEmpty()) {
                 return 0;
             }
@@ -188,7 +191,6 @@ public class Types {
     }
 
     public static Object getValue(ExecutionContext context, Object o) {
-        System.err.println( "Types.getValue(" + o + ")" );
         if (o instanceof Reference) {
             return ((Reference) o).getValue(context);
         }
