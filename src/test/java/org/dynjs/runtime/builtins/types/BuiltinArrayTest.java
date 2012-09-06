@@ -450,5 +450,17 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         Object result = eval( "[1,2,3].reduce( function(accum,e){ return accum+e }, 10 )");
         assertThat( result ).isEqualTo(16);
     }
+    
+    @Test
+    public void testReduceRight() {
+        Object result = eval( "[1,2,3].reduceRight( function(accum,e){ return accum+e } )");
+        assertThat( result ).isEqualTo(6);
+    }
+    
+    @Test
+    public void testReduceRightWithInitial() {
+        Object result = eval( "[1,2,3].reduceRight( function(accum,e){ return accum+e }, 10 )");
+        assertThat( result ).isEqualTo(16);
+    }
 
 }
