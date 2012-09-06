@@ -13,7 +13,7 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     public void testFromCharCode() {
         assertThat( eval( "String.fromCharCode(66, 79, 66)") ).isEqualTo( "BOB" );
     }
-
+    
     @Test
     public void testConstructorWithString() {
         PrimitiveDynObject o = (PrimitiveDynObject) eval("new String('howdy')");
@@ -56,6 +56,11 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     public void testToStringMustThrowIfNotAPrimitiveResult() {
         eval("var obj = { toString:function(){ return new Object(); } };",
                 "String(obj)");
+    }
+    
+    @Test
+    public void testCharCodeAt() {
+        assertThat( eval( "'BOB'.charCodeAt(2)" )).isEqualTo(66);
     }
 
 }
