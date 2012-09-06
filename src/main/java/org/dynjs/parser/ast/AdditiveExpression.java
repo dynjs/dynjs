@@ -61,6 +61,14 @@ public class AdditiveExpression extends AbstractBinaryExpression {
 
                 // ----------------------------------------
                 // Numbers
+                
+                
+                // val(lhs) val(rhs)
+                append( jsToNumber() );
+                swap();
+                append( jsToNumber() );
+                swap();
+                // num(lhs) num(rhs)
 
                 // Number(lhs) Number(rhs)
                 append(ifEitherIsDouble(doubleNums));
@@ -133,11 +141,13 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 append(getLhs().getCodeBlock());
                 // obj(lhs)
                 append(jsGetValue());
-                // val(lhs) 
+                // val(lhs)
+                append(jsToNumber());
                 append(getRhs().getCodeBlock());
                 // val(lhs) obj(rhs)
                 append(jsGetValue());
                 // val(lhs) val(rhs)
+                append(jsToNumber());
 
                 append(ifEitherIsDouble(doubleNums));
 
