@@ -301,4 +301,27 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testDoubleZeroToExponential() {
         check("var result = new Number(0.0).toExponential()", "0e+0");
     }
+    
+    @Test( expected = ThrowException.class )
+    public void testNumberValueOfNotOnNumber() {
+        eval("var s1 = new String(); s1.valueOf = Number.prototype.valueOf; s1.valueOf()");
+        fail("Number.valueOf() on non-Number should throw TypeError");
+    }
+    
+    @Test
+    public void testDivideByZeroIsPositiveInfinity() {
+        check("var result = (1/0 == Infinity)", true);
+    }
+    
+    @Test
+    @Ignore
+    public void testDivideByZeroIsStrictlyPositiveInfinity() {
+        check("var result = (1/0 === Infinity)", true);
+    }
+
+    @Test
+    @Ignore
+    public void testNumberPrototypeIsZero() {
+        check("var result = 1/Number.prototype", Double.POSITIVE_INFINITY);
+    }
 }

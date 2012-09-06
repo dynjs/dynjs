@@ -1,10 +1,9 @@
 package org.dynjs.runtime.builtins.types.number.prototype;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToString extends AbstractNativeFunction {
@@ -17,6 +16,6 @@ public class ToString extends AbstractNativeFunction {
         if (self instanceof DynNumber) {
             return ((DynNumber) self).getPrimitiveValue().toString();
         }
-        return "0";
+        throw new ThrowException( context.createTypeError( "Number.prototype.toString() only allowed on Numbers" ));
     }
 }

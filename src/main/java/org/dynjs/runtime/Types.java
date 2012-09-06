@@ -366,7 +366,7 @@ public class Types {
             if (((Number) lhs).doubleValue() == Double.NaN) {
                 return false;
             }
-            if (((Number) rhs).doubleValue() == Double.NaN) {
+            if (rhs instanceof Number && ((Number) rhs).doubleValue() == Double.NaN) {
                 return false;
             }
             return lhs.equals(rhs);

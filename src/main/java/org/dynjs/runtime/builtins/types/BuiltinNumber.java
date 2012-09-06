@@ -27,12 +27,12 @@ public class BuiltinNumber extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
-        proto.put(null, "valueOf", new ValueOf(globalObject), false);
-        proto.put(null, "toFixed", new ToFixed(globalObject), false);
-        proto.put(null, "toExponential", new ToExponential(globalObject), false);
+        defineReadOnlyFunction(proto, globalObject, "constructor", this);
+        defineReadOnlyFunction(proto, globalObject, "toString", new ToString(globalObject));
+        defineReadOnlyFunction(proto, globalObject, "toLocaleString", new ToLocaleString(globalObject));
+        defineReadOnlyFunction(proto, globalObject, "valueOf", new ValueOf(globalObject));
+        defineReadOnlyFunction(proto, globalObject, "toFixed", new ToFixed(globalObject));
+        defineReadOnlyFunction(proto, globalObject, "toExponential", new ToExponential(globalObject));
 
         defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
         defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);
@@ -77,6 +77,14 @@ public class BuiltinNumber extends AbstractBuiltinType {
         }, false);
     }
 
-
-
+    protected static void defineReadOnlyFunction(final JSObject on, final GlobalObject globalObject, String name, final Object value) {
+        on.defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                set("Value", value);
+                set("Writable", false);
+                set("Enumerable", false);
+                set("Configurable", false);
+            }
+        }, false);
+    }
 }

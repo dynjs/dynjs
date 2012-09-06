@@ -1,9 +1,9 @@
 package org.dynjs.runtime.builtins.types.number.prototype;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ValueOf extends AbstractNativeFunction {
@@ -17,6 +17,6 @@ public class ValueOf extends AbstractNativeFunction {
         if (self instanceof DynNumber) {
             return ((DynNumber) self).getPrimitiveValue();
         }
-        return ((PrimitiveDynObject) self).getPrimitiveValue();
+        throw new ThrowException( context.createTypeError( "Number.valueOf() only allowed on Numbers" ));
     }
 }
