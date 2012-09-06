@@ -10,6 +10,7 @@ import org.dynjs.runtime.builtins.types.string.DynString;
 import org.dynjs.runtime.builtins.types.string.FromCharCode;
 import org.dynjs.runtime.builtins.types.string.prototype.CharAt;
 import org.dynjs.runtime.builtins.types.string.prototype.CharCodeAt;
+import org.dynjs.runtime.builtins.types.string.prototype.Concat;
 import org.dynjs.runtime.builtins.types.string.prototype.ToString;
 import org.dynjs.runtime.builtins.types.string.prototype.ValueOf;
 
@@ -32,6 +33,7 @@ public class BuiltinString extends AbstractBuiltinType {
         proto.put(null, "valueOf", new ValueOf(globalObject), false);
         proto.put(null, "charAt", new CharAt(globalObject), false);
         proto.put(null, "charCodeAt", new CharCodeAt(globalObject), false);
+        proto.put(null, "concat", new Concat(globalObject), false);
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 public class CharAt extends AbstractNativeFunction {
 
     public CharAt(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "pos");
     }
 
     @Override

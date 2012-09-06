@@ -8,7 +8,7 @@ import org.dynjs.runtime.Types;
 public class CharCodeAt extends AbstractNativeFunction {
 
     public CharCodeAt(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "pos");
     }
 
     @Override
