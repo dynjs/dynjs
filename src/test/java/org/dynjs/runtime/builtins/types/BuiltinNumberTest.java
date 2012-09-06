@@ -320,7 +320,6 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testNumberPrototypeIsZero() {
         check("var result = 1/Number.prototype", Double.POSITIVE_INFINITY);
     }

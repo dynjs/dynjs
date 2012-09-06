@@ -22,9 +22,11 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                 append(getLhs().getCodeBlock());
                 // val(lhs)
                 append(jsGetValue());
+                append(jsToNumber());
                 append(getRhs().getCodeBlock());
                 // val(rhs)
                 append(jsGetValue());
+                append(jsToNumber());
 
                 if (!getOp().equals("/")) {
                     append(ifEitherIsDouble(doubleNums));

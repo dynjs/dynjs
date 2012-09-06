@@ -188,6 +188,7 @@ public class Types {
     }
 
     public static Object getValue(ExecutionContext context, Object o) {
+        System.err.println( "Types.getValue(" + o + ")" );
         if (o instanceof Reference) {
             return ((Reference) o).getValue(context);
         }
