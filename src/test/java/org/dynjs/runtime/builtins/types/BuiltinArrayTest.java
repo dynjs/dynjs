@@ -370,42 +370,47 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(a.get(getContext(), "5")).isEqualTo(2);
         assertThat(a.get(getContext(), "6")).isEqualTo(3);
     }
-    
+
     @Test
     public void testIndexOfNoStart() {
-        Object result = eval( "['bob', 'lance', 'qmx'].indexOf( 'lance')");
-        assertThat( result ).isEqualTo(1);
+        Object result = eval("['bob', 'lance', 'qmx'].indexOf( 'lance')");
+        assertThat(result).isEqualTo(1);
     }
-    
+
     @Test
     public void testIndexOfWithPositiveStart() {
-        Object result = eval( "['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',2)");
-        assertThat( result ).isEqualTo(4);
+        Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',2)");
+        assertThat(result).isEqualTo(4);
     }
-    
+
     @Test
     public void testIndexOfWithNegativeStart() {
-        Object result = eval( "['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',-3)");
-        assertThat( result ).isEqualTo(4);
+        Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',-3)");
+        assertThat(result).isEqualTo(4);
     }
-    
+
     @Test
     public void testLastIndexOfNoStart() {
-        Object result = eval( "['bob', 'lance', 'qmx'].lastIndexOf( 'lance')");
-        assertThat( result ).isEqualTo(1);
+        Object result = eval("['bob', 'lance', 'qmx'].lastIndexOf( 'lance')");
+        assertThat(result).isEqualTo(1);
     }
-    
+
     @Test
     public void testLastIndexOfWithPositiveStart() {
-        Object result = eval( "['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].lastIndexOf('lance',3)");
-        assertThat( result ).isEqualTo(1);
+        Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].lastIndexOf('lance',3)");
+        assertThat(result).isEqualTo(1);
     }
-    
+
     @Test
     public void testLastIndexOfWithNegativeStart() {
-        Object result = eval( "['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].lastIndexOf('lance',-3)");
-        assertThat( result ).isEqualTo(1);
+        Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].lastIndexOf('lance',-3)");
+        assertThat(result).isEqualTo(1);
     }
-    
+
+    @Test
+    public void testLastIndexOfWithInfinity() {
+        eval("var obj = { 0: 0, length: Infinity };",
+                "return Array.prototype.lastIndexOf.call(obj, 0) === -1;");
+    }
 
 }

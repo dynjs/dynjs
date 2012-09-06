@@ -17,7 +17,7 @@ public class IndexOf extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.14
         JSObject o = Types.toObject(context, self);
-        int len = Types.toInteger(context, o.get(context, "length"));
+        int len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
             return -1;

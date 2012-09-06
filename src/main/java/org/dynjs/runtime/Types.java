@@ -150,11 +150,14 @@ public class Types {
             return ((Integer) n).intValue();
         }
 
-        double d = n.doubleValue();
-        if (d == Double.POSITIVE_INFINITY || d == Double.NEGATIVE_INFINITY || d == Double.NaN) {
-            return 0;
+        if ( n instanceof Double ) {
+            if ( ((Double)n).isInfinite() || ((Double)n).isNaN() ) {
+                return 0;
+            }
         }
 
+        double d = n.doubleValue();
+        
         double posInt = (d < 0 ? -1 : 1) * Math.floor(Math.abs(d));
 
         double int32bit = posInt % Math.pow(2, 32);
