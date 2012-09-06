@@ -6,9 +6,11 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.string.CharAt;
 import org.dynjs.runtime.builtins.types.string.DynString;
-import org.dynjs.runtime.builtins.types.string.ToString;
+import org.dynjs.runtime.builtins.types.string.FromCharCode;
+import org.dynjs.runtime.builtins.types.string.prototype.CharAt;
+import org.dynjs.runtime.builtins.types.string.prototype.ToString;
+import org.dynjs.runtime.builtins.types.string.prototype.ValueOf;
 
 public class BuiltinString extends AbstractBuiltinType {
 
@@ -21,10 +23,12 @@ public class BuiltinString extends AbstractBuiltinType {
     }
 
     public void initialize(GlobalObject globalObject, JSObject proto) {
+        put(null, "fromCharCode", new FromCharCode(globalObject), false);
+        
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
         proto.put(null, "constructor", this, false);
         proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "valueOf", new ToString(globalObject), false);
+        proto.put(null, "valueOf", new ValueOf(globalObject), false);
         proto.put(null, "charAt", new CharAt(globalObject), false);
     }
 

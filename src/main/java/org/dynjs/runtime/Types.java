@@ -82,7 +82,7 @@ public class Types {
 
         try {
             String str = o.toString();
-            if ( str.equals( "Infinity" ) ) {
+            if (str.equals("Infinity")) {
                 return Math.pow(10, 10000);
             }
             if (str.trim().isEmpty()) {
@@ -142,6 +142,29 @@ public class Types {
         return number.intValue();
     }
 
+    public static Integer toUint16(ExecutionContext context, Object o) {
+        // 9.7
+        Number n = toNumber(context, o);
+        
+        if (n instanceof Double) {
+            if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
+                return 0;
+            }
+        }
+        
+        int posInt = (int) (sign(n) * Math.floor( Math.abs( n.intValue() )));
+        
+        return (posInt % 65536) ;
+    }
+    
+    protected static int sign(Number n) {
+        if ( n.doubleValue() < 0 ) {
+            return -1;
+        }
+        
+        return 1;
+    }
+
     public static Integer toUint32(ExecutionContext context, Object o) {
         // 9.5
         Number n = toNumber(context, o);
@@ -150,14 +173,14 @@ public class Types {
             return ((Integer) n).intValue();
         }
 
-        if ( n instanceof Double ) {
-            if ( ((Double)n).isInfinite() || ((Double)n).isNaN() ) {
+        if (n instanceof Double) {
+            if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
                 return 0;
             }
         }
 
         double d = n.doubleValue();
-        
+
         double posInt = (d < 0 ? -1 : 1) * Math.floor(Math.abs(d));
 
         double int32bit = posInt % Math.pow(2, 32);

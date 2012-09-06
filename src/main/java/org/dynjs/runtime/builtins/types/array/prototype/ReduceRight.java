@@ -16,7 +16,7 @@ public class ReduceRight extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        // 15.4.4.21
+        // 15.4.4.22
         JSObject o = Types.toObject(context, self);
         int len = Types.toUint32(context, o.get(context, "length"));
 

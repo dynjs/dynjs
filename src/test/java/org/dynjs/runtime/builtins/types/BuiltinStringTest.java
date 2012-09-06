@@ -5,10 +5,14 @@ import static org.fest.assertions.Assertions.*;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.PrimitiveDynObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinStringTest extends AbstractDynJSTestSupport {
+    
+    @Test
+    public void testFromCharCode() {
+        assertThat( eval( "String.fromCharCode(66, 79, 66)") ).isEqualTo( "BOB" );
+    }
 
     @Test
     public void testConstructorWithString() {
@@ -42,7 +46,6 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         assertThat(o).isEqualTo("42");
     }
 
-    @Ignore
     @Test
     public void testCharAtWithinBounds() {
         Object o = eval("new String(42).charAt(1)");
