@@ -64,7 +64,7 @@ public class Exec extends AbstractNativeFunction {
         DynArray a = BuiltinArray.newArray(context);
         a.put(context, "index", matcher.start(), true);
         a.put(context, "input", str, true);
-        a.put(context, "length", matcher.groupCount() + 1, true);
+        a.put(context, "length", (long) matcher.groupCount() + 1, true);
         a.put(context, "0", matcher.group(0), true);
         for (int j = 1; j <= matcher.groupCount(); ++j) {
             a.put(context, "" + j, matcher.group(j), true);

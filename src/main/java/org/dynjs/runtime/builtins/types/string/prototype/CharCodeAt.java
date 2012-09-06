@@ -15,12 +15,12 @@ public class CharCodeAt extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.5
         String strSelf = Types.toString(context, self);
-        int position = Types.toInteger(context, args[0]);
+        long position = Types.toInteger(context, args[0]);
         if (position < 0 || position > strSelf.length()) {
             return "";
         }
 
-        return (int) strSelf.charAt(position);
+        return (long) strSelf.charAt( (int) position);
     }
 
 }

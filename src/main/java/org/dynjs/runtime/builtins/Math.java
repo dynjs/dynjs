@@ -66,12 +66,12 @@ public class Math extends DynObject {
         }, false);
     }
 
-    public static Object coerceIntegerIfPossible(double d) {
+    public static Object coerceLongIfPossible(double d) {
         // TODO: I believe this is broken for doubles expressed in scientific notation
         if (Double.isInfinite(d) || Double.isNaN(d) || (d - java.lang.Math.ceil(d) != 0) || Double.MAX_VALUE == d)
             return d;
         else
-            return (int) d;
+            return (long) d;
     }
 
     public static Double functionArgToDouble(ExecutionContext context, Object arg) {

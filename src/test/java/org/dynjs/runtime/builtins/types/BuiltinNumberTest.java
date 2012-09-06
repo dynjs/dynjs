@@ -46,30 +46,30 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testPositiveZero() {
-        check("var result = +0", 0);
+        check("var result = +0", 0L);
     }
 
     @Test
     public void testNegativeZero() {
-        check("var result = -0", 0);
+        check("var result = -0", 0L);
     }
 
     @Test
     public void testNegativeWholeNumbers() {
-        check("var result = -123", -123);
+        check("var result = -123", -123L);
     }
 
     @Test
     public void testPositiveWholeNumbers() {
-        check("var result = +123", 123);
+        check("var result = +123", 123L);
     }
 
     @Test
     public void testNumberFunction() {
         this.runtime.execute("var x = Number(8)");
         Reference result = this.runtime.getExecutionContext().resolve("x");
-        Integer value = (Integer) result.getValue(getContext());
-        assertThat(value).isEqualTo(8);
+        Long value = (Long) result.getValue(getContext());
+        assertThat(value).isEqualTo(8L);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         this.runtime.execute("var x = new Number(33)");
         Reference result = this.runtime.getExecutionContext().resolve("x");
         PrimitiveDynObject value = (PrimitiveDynObject) result.getValue(getContext());
-        assertThat(value.getPrimitiveValue()).isEqualTo(33);
+        assertThat(value.getPrimitiveValue()).isEqualTo(33L);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberDefault() {
-        assertThat(eval("new Number().valueOf()")).isEqualTo(0);
+        assertThat(eval("new Number().valueOf()")).isEqualTo(0L);
     }
 
     @Test
@@ -120,19 +120,19 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testNumberPrototypeValueOf() {
         // 15.7.4
-        check("var result = Number.prototype.valueOf()", 0);
+        check("var result = Number.prototype.valueOf()", 0L);
     }
 
     @Test
     public void testNewNumberValueOf() {
         // 15.7.4
-        check("var result = new Number(12).valueOf();", 12);
+        check("var result = new Number(12).valueOf();", 12L);
     }
 
     @Test
     public void testNumberValueOf() {
         // 15.7.4
-        assertThat(eval("Number(12).valueOf()")).isEqualTo(12);
+        assertThat(eval("Number(12).valueOf()")).isEqualTo(12L);
     }
 
     @Test
@@ -260,12 +260,12 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberCtorLength() {
-        check("var result = Number.length", 1);
+        check("var result = Number.length", 1L);
     }
 
     @Test
     public void testToFixedLength() {
-        check("var result = new Number(12).toFixed.length", 1);
+        check("var result = new Number(12).toFixed.length", 1L);
     }
 
     @Test
@@ -275,7 +275,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testToExponentialLength() {
-        check("var result = new Number(21).toExponential.length", 1);
+        check("var result = new Number(21).toExponential.length", 1L);
     }
 
     @Test

@@ -31,15 +31,15 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                 if (!getOp().equals("/")) {
                     append(ifEitherIsDouble(doubleNums));
 
-                    append(convertTopTwoToPrimitiveInts());
+                    append(convertTopTwoToPrimitiveLongs());
                     if (getOp().equals("*")) {
-                        imul();
+                        lmul();
                     } else if (getOp().equals("/")) {
-                        idiv();
+                        ldiv();
                     } else if (getOp().equals("%")) {
-                        irem();
+                        lrem();
                     }
-                    append(convertTopToInteger());
+                    append(convertTopToLong());
                     go_to(end);
 
                     label(doubleNums);

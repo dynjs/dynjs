@@ -15,7 +15,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
         Object result = eval("var f = new Function('x', 'return x*2;');",
                 "f(42);");
 
-        assertThat(result).isEqualTo(84);
+        assertThat(result).isEqualTo(84L);
     }
 
     @Test
@@ -23,7 +23,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
         Object result = eval("var f = Function('x', 'return x*2;');",
                 "f(42);");
 
-        assertThat(result).isEqualTo(84);
+        assertThat(result).isEqualTo(84L);
     }
 
     @Test
@@ -31,12 +31,12 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
         Object result = eval("var f = Function('x,y', 'return x*y*2;');",
                 "f(42,10);");
 
-        assertThat(result).isEqualTo(840);
+        assertThat(result).isEqualTo(840L);
     }
 
     @Test
     public void testFunctionLength() {
-        assertThat(eval("Function.length")).isEqualTo(1);
+        assertThat(eval("Function.length")).isEqualTo(1L);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
                 "  return this.taco + x;",
                 "};",
                 "f.apply(thing,[42]);");
-        assertThat(result).isEqualTo(62);
+        assertThat(result).isEqualTo(62L);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
                 "  return this.taco + x;",
                 "};",
                 "f.call(thing,42);");
-        assertThat(result).isEqualTo(62);
+        assertThat(result).isEqualTo(62L);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
                 "var b = f.bind(self, 20);",
                 "b(42);");
 
-        assertThat(result).isEqualTo(72);
+        assertThat(result).isEqualTo(72L);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
                 "var bound_ctor = ctor.bind(undefined, 42);",
                 "new bound_ctor()");
 
-        assertThat(result.get(getContext(), "taco")).isEqualTo(42);
+        assertThat(result.get(getContext(), "taco")).isEqualTo(42L);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
                 "var bound_ctor = ctor.bind(b, 42);",
                 "new bound_ctor()");
 
-        assertThat(result.get(getContext(), "taco")).isEqualTo(42);
+        assertThat(result.get(getContext(), "taco")).isEqualTo(42L);
     }
 
     @Test(expected = ThrowException.class)

@@ -74,14 +74,14 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 append(ifEitherIsDouble(doubleNums));
 
                 // ----------------------------------------------
-                // Integer
+                // Integral
 
-                append(convertTopTwoToPrimitiveInts());
-                // int(lhs) int(rhs)
-                iadd();
+                append(convertTopTwoToPrimitiveLongs());
+                // long(lhs) long(rhs)
+                ladd();
                 // num(total)
-                append(convertTopToInteger());
-                // Integer(total)
+                append(convertTopToLong());
+                // Long(total)
                 go_to(end);
 
                 // ----------------------------------------------
@@ -152,11 +152,11 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 append(ifEitherIsDouble(doubleNums));
 
                 // -------------------------------------
-                // Integer
+                // Integral
 
-                append(convertTopTwoToPrimitiveInts());
-                isub();
-                append(convertTopToInteger());
+                append(convertTopTwoToPrimitiveLongs());
+                lsub();
+                append(convertTopToLong());
                 go_to(end);
 
                 // -------------------------------------

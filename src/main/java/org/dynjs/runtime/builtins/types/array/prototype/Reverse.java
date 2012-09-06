@@ -16,13 +16,13 @@ public class Reverse extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.8
         JSObject o = Types.toObject(context, self);
-        int len = Types.toInteger(context, o.get(context, "length"));
+        long len = Types.toInteger(context, o.get(context, "length"));
 
-        int middle = (int) Math.floor(len / 2);
-        int lower = 0;
+        long middle = (long) Math.floor(len / 2);
+        long lower = 0;
 
         while (lower != middle) {
-            int upper = len - lower - 1;
+           long upper = len - lower - 1;
 
             Object lowerValue = o.get(context, "" + lower);
             Object upperValue = o.get(context, "" + upper);

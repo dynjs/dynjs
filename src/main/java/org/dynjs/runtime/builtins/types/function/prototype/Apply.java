@@ -32,8 +32,8 @@ public class Apply extends AbstractNativeFunction {
             throw new ThrowException(context.createTypeError("argArray must be an object"));
         }
 
-        int len = Types.toUint32(context, ((JSObject) argArray).get(context, "length"));
-        Object[] argList = new Object[len];
+        long len = Types.toUint32(context, ((JSObject) argArray).get(context, "length"));
+        Object[] argList = new Object[(int)len];
 
         for (int i = 0; i < len; ++i) {
             argList[i] = ((JSObject) argArray).get(context, "" + i);

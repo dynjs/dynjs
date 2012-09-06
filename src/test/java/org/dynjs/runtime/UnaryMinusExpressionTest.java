@@ -9,7 +9,7 @@ public class UnaryMinusExpressionTest extends AbstractDynJSTestSupport {
     @Test
     public void testUnaryMinusInt() {
         Object result = eval("-42");
-        assertThat(result).isEqualTo(-42);
+        assertThat(result).isEqualTo(-42L);
     }
 
     @Test
@@ -21,7 +21,7 @@ public class UnaryMinusExpressionTest extends AbstractDynJSTestSupport {
     @Test
     public void testUnaryMinusOnVar() {
         Object result = eval("var x = 1; -x;");
-        assertThat(result).isEqualTo(-1);
+        assertThat(result).isEqualTo(-1L);
 
     }
 

@@ -9,7 +9,7 @@ public class AdditiveExpressionTest extends AbstractDynJSTestSupport {
     @Test
     public void testAddIntegers() {
         Object result = eval("1+2");
-        assertThat(result).isEqualTo(3);
+        assertThat(result).isEqualTo(3L);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class AdditiveExpressionTest extends AbstractDynJSTestSupport {
     @Test
     public void testSubtractIntegers() {
         Object result = eval("3-1");
-        assertThat(result).isEqualTo(2);
+        assertThat(result).isEqualTo(2L);
     }
 
     @Test

@@ -13,7 +13,7 @@ public class Round extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        return Math.coerceIntegerIfPossible(java.lang.Math.round(Math.functionArgToDouble(context, args[0])));
+        return Math.coerceLongIfPossible(java.lang.Math.round(Math.functionArgToDouble(context, args[0])));
     }
 
 }

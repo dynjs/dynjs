@@ -60,7 +60,7 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testCharCodeAt() {
-        assertThat( eval( "'BOB'.charCodeAt(2)" )).isEqualTo(66);
+        assertThat( eval( "'BOB'.charCodeAt(2)" )).isEqualTo(66L);
     }
     
     @Test

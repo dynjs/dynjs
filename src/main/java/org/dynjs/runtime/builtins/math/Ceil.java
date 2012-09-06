@@ -21,7 +21,7 @@ public class Ceil extends AbstractNativeFunction {
         if (Double.isInfinite(arg)) {
             return arg;
         }
-        return (int) java.lang.Math.ceil(arg);
+        return (long) java.lang.Math.ceil(arg);
     }
 
 }

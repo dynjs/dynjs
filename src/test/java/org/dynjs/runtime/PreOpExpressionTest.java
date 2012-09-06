@@ -10,8 +10,8 @@ public class PreOpExpressionTest extends AbstractDynJSTestSupport {
         eval("var x = 1; var y = ++x;");
         Object x = getContext().resolve("x").getValue(getContext());
         Object y = getContext().resolve("y").getValue(getContext());
-        assertThat(x).isEqualTo(2);
-        assertThat(y).isEqualTo(2);
+        assertThat(x).isEqualTo(2L);
+        assertThat(y).isEqualTo(2L);
     }
 
     @Test
@@ -19,8 +19,8 @@ public class PreOpExpressionTest extends AbstractDynJSTestSupport {
         eval("var x = 2; var y = --x;");
         Object x = getContext().resolve("x").getValue(getContext());
         Object y = getContext().resolve("y").getValue(getContext());
-        assertThat(x).isEqualTo(1);
-        assertThat(y).isEqualTo(1);
+        assertThat(x).isEqualTo(1L);
+        assertThat(y).isEqualTo(1L);
     }
 
     @Test

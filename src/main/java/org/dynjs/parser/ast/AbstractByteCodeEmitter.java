@@ -93,7 +93,7 @@ public class AbstractByteCodeEmitter {
                 // obj context
                 swap();
                 // context obj
-                invokestatic(p(Types.class), "toInt32", sig(Integer.class, ExecutionContext.class, Object.class));
+                invokestatic(p(Types.class), "toInt32", sig(Long.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -107,7 +107,7 @@ public class AbstractByteCodeEmitter {
                 // obj context
                 swap();
                 // context obj
-                invokestatic(p(Types.class), "toUint32", sig(Integer.class, ExecutionContext.class, Object.class));
+                invokestatic(p(Types.class), "toUint32", sig(Long.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -282,27 +282,31 @@ public class AbstractByteCodeEmitter {
         };
     }
 
-    public CodeBlock convertTopTwoToPrimitiveInts() {
+    public CodeBlock convertTopTwoToPrimitiveLongs() {
         return new CodeBlock() {
             {
                 // IN: Number Number
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
-                // Number(lhs) int(rhs)
-                swap();
-                // int(rhs) Number(rhs)
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
-                // int(rhs) int(lhs)
-                swap();
-                // int(lhs) int(rhs);
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
+                // Number(lhs) long(rhs)
+                dup2_x1();
+                // long(rhs) Number(lhs) long(rhs)
+                pop2();
+                // long(rhs) Number(lhs)
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
+                // long(rhs) long(lhs)
+                dup2_x2();
+                // long(lhs) long(rhs) long(lhs);
+                pop2();
+                // long(lhs) long(rhs)
             }
         };
     }
 
-    public CodeBlock convertTopToInteger() {
+    public CodeBlock convertTopToLong() {
         return new CodeBlock() {
             {
                 // IN: int
-                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
+                invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
             }
         };
     }

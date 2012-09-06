@@ -57,8 +57,8 @@ public class Parse extends AbstractNativeFunction {
         if (val instanceof JSObject) {
             JSObject jsVal = (JSObject) val;
             if (jsVal.getClassName().equals("Array")) {
-                int len = Types.toInteger(context, jsVal.get(context, "length"));
-                int i = 0;
+                long len = Types.toInteger(context, jsVal.get(context, "length"));
+                long i = 0;
                 while (i < len) {
                     Object newElement = walk(context, reviver, jsVal, "" + i);
                     if (newElement == Types.UNDEFINED) {

@@ -18,7 +18,7 @@ public class Some extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.17
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         if (!(args[0] instanceof JSFunction)) {
             throw new ThrowException(context.createTypeError("callbackFn must be a function"));
@@ -31,7 +31,7 @@ public class Some extends AbstractNativeFunction {
             t = args[1];
         }
 
-        for (int k = 0; k < len; ++k) {
+        for (long k = 0; k < len; ++k) {
             boolean kPresent = o.hasProperty(context, "" + k);
             if (kPresent) {
                 Object kValue = o.get(context, "" + k);

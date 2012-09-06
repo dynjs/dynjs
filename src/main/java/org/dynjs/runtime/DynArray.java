@@ -27,7 +27,7 @@ public class DynArray extends DynObject {
                 set("Writable", true);
                 set("Configurable", true);
                 set("Enumerable", true);
-                set("Value", 0);
+                set("Value", 0L);
             }
         }, false);
         setPrototype(globalObject.getPrototypeFor("Object"));
@@ -38,7 +38,7 @@ public class DynArray extends DynObject {
         // 15.4.5.1
 
         PropertyDescriptor oldLenDesc = (PropertyDescriptor) getOwnProperty(context, "length");
-        int oldLen = (int) oldLenDesc.getValue();
+        long oldLen = (long) oldLenDesc.getValue();
 
         if (name.equals("length")) {
             if (desc.getValue() == Types.UNDEFINED) {
@@ -46,7 +46,7 @@ public class DynArray extends DynObject {
             }
 
             PropertyDescriptor newLenDesc = desc;
-            Integer newLen = Types.toUint32(context, desc.getValue());
+            Long newLen = Types.toUint32(context, desc.getValue());
             if (!newLen.equals(Types.toNumber(context, desc.getValue()))) {
                 throw new ThrowException(context.createRangeError("invalid length: " + newLen));
             }
@@ -100,8 +100,8 @@ public class DynArray extends DynObject {
         } // 'length'
 
         if (isArrayIndex(context, name)) {
-            Integer index = Types.toUint32(context, name);
-            if ((index.intValue() > oldLen) && oldLenDesc.get("Writable") == Boolean.FALSE) {
+            Long index = Types.toUint32(context, name);
+            if ((index.longValue() > oldLen) && oldLenDesc.get("Writable") == Boolean.FALSE) {
                 return reject(context, shouldThrow);
             }
             boolean succeeded = super.defineOwnProperty(context, name, desc, shouldThrow);
@@ -109,8 +109,8 @@ public class DynArray extends DynObject {
                 return reject(context, shouldThrow);
             }
 
-            if (index.intValue() >= oldLen) {
-                oldLenDesc.setValue(index.intValue() + 1);
+            if (index.longValue() >= oldLen) {
+                oldLenDesc.setValue(index.longValue() + 1);
                 super.defineOwnProperty(context, "length", oldLenDesc, false);
             }
             return true;
@@ -125,7 +125,7 @@ public class DynArray extends DynObject {
 
     // ----------------------------------------
 
-    public void setLength(final int len) {
+    public void setLength(final long len) {
         defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
                 set("Value", len);
@@ -133,7 +133,7 @@ public class DynArray extends DynObject {
         }, false);
     }
 
-    public void setElement(final int index, final Object value) {
+    public void setElement(final long index, final Object value) {
         defineOwnProperty(null, "" + index, new PropertyDescriptor() {
             {
                 set("Value", value);

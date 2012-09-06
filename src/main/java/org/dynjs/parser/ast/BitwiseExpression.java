@@ -22,37 +22,40 @@ public class BitwiseExpression extends AbstractBinaryExpression {
                 } else {
                     append(jsToInt32());
                 }
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
 
                 append(getRhs().getCodeBlock());
                 append(jsGetValue());
                 append(jsToUint32());
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
                 // int int
 
                 if (getOp().equals("<<")) {
-                    ldc(0x1F);
-                    iand();
-                    ishl();
+                    //ldc(0x1F);
+                    //land();
+                    l2i();
+                    lshl();
                 } else if (getOp().equals(">>")) {
-                    ldc(0x1F);
-                    iand();
-                    ishr();
+                    //ldc(0x1F);
+                    //land();
+                    l2i();
+                    lshr();
                 } else if (getOp().equals(">>>")) {
-                    ldc(0x1F);
-                    iand();
-                    iushr();
+                    //ldc(0x1F);
+                    //land();
+                    l2i();
+                    lushr();
                 } else if (getOp().equals("&")) {
-                    iand();
+                    land();
                 } else if (getOp().equals("|")) {
-                    ior();
+                    lor();
                 } else if (getOp().equals("^")) {
-                    ixor();
+                    lxor();
                 }
-                // int
+                // long
 
-                append(convertTopToInteger());
-                // Integer
+                append(convertTopToLong());
+                // Long
             }
         };
     }

@@ -11,7 +11,7 @@ public class FunctionCallExpressionTest extends AbstractDynJSTestSupport {
     public void testValidFunction() {
         Object result = eval("var x = function(){ return 42;};",
                 "x()");
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(42L);
     }
 
     @Test(expected = ThrowException.class)

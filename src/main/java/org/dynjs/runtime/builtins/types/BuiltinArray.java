@@ -78,7 +78,7 @@ public class BuiltinArray extends AbstractBuiltinType {
                     arraySelf.setLength(1);
                     arraySelf.setElement(0, args[0]);
                 } else {
-                    arraySelf.setLength(possiblyLen.intValue());
+                    arraySelf.setLength(possiblyLen.longValue());
                 }
             } else {
                 arraySelf.setLength(args.length);

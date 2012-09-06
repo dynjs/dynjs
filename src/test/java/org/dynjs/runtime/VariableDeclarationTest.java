@@ -23,7 +23,7 @@ public class VariableDeclarationTest extends AbstractDynJSTestSupport {
         assertThat(result.getReferencedName()).isEqualTo("x");
         assertThat(result.isPropertyReference()).isFalse();
         assertThat(result.isUnresolvableReference()).isFalse();
-        assertThat(result.getValue(getContext())).isEqualTo(42);
+        assertThat(result.getValue(getContext())).isEqualTo(42L);
     }
 
     @Test
@@ -35,14 +35,14 @@ public class VariableDeclarationTest extends AbstractDynJSTestSupport {
         assertThat(x.getReferencedName()).isEqualTo("x");
         assertThat(x.isPropertyReference()).isFalse();
         assertThat(x.isUnresolvableReference()).isFalse();
-        assertThat(x.getValue(getContext())).isEqualTo(42);
+        assertThat(x.getValue(getContext())).isEqualTo(42L);
 
         Reference y = getContext().resolve("y");
         assertThat(y).isNotNull();
         assertThat(y.getReferencedName()).isEqualTo("y");
         assertThat(y.isPropertyReference()).isFalse();
         assertThat(y.isUnresolvableReference()).isFalse();
-        assertThat(y.getValue(getContext())).isEqualTo(84);
+        assertThat(y.getValue(getContext())).isEqualTo(84L);
     }
 
     @Test

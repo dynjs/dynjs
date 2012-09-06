@@ -51,7 +51,7 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         assertThat(x).isInstanceOf(PrimitiveDynObject.class);
 
         PrimitiveDynObject primitiveX = (PrimitiveDynObject) x;
-        assertThat(primitiveX.getPrimitiveValue()).isEqualTo(42);
+        assertThat(primitiveX.getPrimitiveValue()).isEqualTo(42L);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
                 "Object.getOwnPropertyNames(x)");
 
         assertThat(result).isNotNull();
-        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "length")).isEqualTo(2L);
 
         List<String> names = new ArrayList<>();
         names.add((String) result.get(getContext(), "0"));
@@ -199,7 +199,7 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
                 "Object.keys(x)");
 
         assertThat(result).isNotNull();
-        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "length")).isEqualTo(2L);
 
         List<String> names = new ArrayList<>();
         names.add((String) result.get(getContext(), "0"));

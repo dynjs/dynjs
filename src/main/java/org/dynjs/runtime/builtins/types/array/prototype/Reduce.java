@@ -18,7 +18,7 @@ public class Reduce extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.21
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         if (!(args[0] instanceof JSFunction)) {
             throw new ThrowException(context.createTypeError("callbackFn must be a function"));
@@ -32,7 +32,7 @@ public class Reduce extends AbstractNativeFunction {
 
         Object accumulator = null;
 
-        int k = 0;
+        long k = 0;
         if (args.length >= 2) {
             accumulator = args[1];
         } else {

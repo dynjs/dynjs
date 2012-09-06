@@ -16,9 +16,9 @@ public class Unshift extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.9
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
-        for (int k = len; k > 0; --k) {
+        for (long k = len; k > 0; --k) {
             if (o.hasProperty(context, "" + (k - 1))) {
                 final Object fromValue = o.get(context, "" + (k - 1));
                 o.put(context, "" + (k + args.length - 1), fromValue, true);

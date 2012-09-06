@@ -70,21 +70,21 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
                 // ref ref number
 
                 // ----------------------------------------
-                // Integer
+                // Integral
 
                 // ref ref number
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
-                // ref ref int
-                iconst_1();
-                // ref ref int 1
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
+                // ref ref long
+                ldc( 1L );
+                // ref ref long 1L
                 if (getOp().equals("++")) {
-                    iadd();
+                    ladd();
                 } else {
-                    isub();
+                    lsub();
                 }
-                // ref ref int
-                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
-                // ref ref Integer
+                // ref ref long
+                invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
+                // ref ref Long
                 go_to(storeNewValue);
 
                 // ----------------------------------------

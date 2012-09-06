@@ -36,9 +36,9 @@ public class Concat extends AbstractNativeFunction {
             if ( e instanceof JSObject && ((JSObject)e).getClassName().equals( "Array" )) {
                 JSObject jsE = (JSObject) e;
                 
-                int len = Types.toInteger( context, jsE.get( context, "length" ) );
+                long len = Types.toInteger( context, jsE.get( context, "length" ) );
                 
-                for ( int k = 0 ; k < len ; ++k ) {
+                for ( long k = 0 ; k < len ; ++k ) {
                     if ( jsE.hasProperty(context, ""+k ) ) {
                         Object subElement = jsE.get( context, ""+k);
                         array.put(context, ""+n, subElement, false);

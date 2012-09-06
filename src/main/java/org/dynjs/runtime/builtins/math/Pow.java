@@ -15,7 +15,7 @@ public class Pow extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         Double x = Math.functionArgToDouble(context, args[0]);
         Double y = Math.functionArgToDouble(context, args[1]);
-        return Math.coerceIntegerIfPossible(java.lang.Math.pow(x, y));
+        return Math.coerceLongIfPossible(java.lang.Math.pow(x, y));
     }
 
 }

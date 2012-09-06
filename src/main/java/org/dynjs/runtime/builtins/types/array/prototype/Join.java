@@ -17,7 +17,7 @@ public class Join extends AbstractNativeFunction {
         // 15.4.4.5
 
         JSObject array = Types.toObject(context, self);
-        int len = Types.toUint32(context, array.get(context, "length"));
+        long len = Types.toUint32(context, array.get(context, "length"));
         if (len == 0) {
             return "";
         }
@@ -31,7 +31,7 @@ public class Join extends AbstractNativeFunction {
 
         StringBuffer buf = new StringBuffer();
 
-        for (int i = 0; i < len; ++i) {
+        for (long i = 0; i < len; ++i) {
             if (i > 0) {
                 buf.append(separator);
             }

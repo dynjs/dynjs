@@ -21,8 +21,8 @@ public class ToFixed extends AbstractNativeFunction {
         if (args.length > 1) {
             return Types.UNDEFINED;
         }
-        int digits = Types.toInteger(context, args[0]);
-        if (digits < 0 || digits > 20) {
+        long digits = Types.toInteger(context, args[0]);
+        if (digits < 0L || digits > 20L) {
             throw new ThrowException(context.createRangeError("Number.prototype.toFixed() digits argument must be between 0 and 20"));
         }
         final Number number = Types.toNumber(context, self);
@@ -30,7 +30,7 @@ public class ToFixed extends AbstractNativeFunction {
             return String.valueOf(number);
         else if (number.doubleValue() < 1.0E21) {
             final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());
-            return bigDecimal.setScale(digits, BigDecimal.ROUND_HALF_UP).toString();
+            return bigDecimal.setScale((int)digits, BigDecimal.ROUND_HALF_UP).toString();
         } else {
             return DynNumber.rewritePossiblyExponentialValue(String.valueOf(number.doubleValue()));
         }

@@ -63,7 +63,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAbs() {
-        assertThat(eval("Math.abs(-2)")).isEqualTo(2);
+        assertThat(eval("Math.abs(-2)")).isEqualTo(2L);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAbsNegativeZero() {
-        assertThat(eval("Math.abs(-0)")).isEqualTo(0);
+        assertThat(eval("Math.abs(-0)")).isEqualTo(0L);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAcosExactlyOne() {
-        assertThat(eval("Math.acos(1)")).isEqualTo(0);
+        assertThat(eval("Math.acos(1)")).isEqualTo(0L);
     }
 
     @Test
@@ -133,17 +133,17 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAsinNegativeZero() {
-        assertThat(eval("Math.asin(-0)")).isEqualTo(0);
+        assertThat(eval("Math.asin(-0)")).isEqualTo(0L);
     }
 
     @Test
     public void testMathAsinZero() {
-        assertThat(eval("Math.asin(0)")).isEqualTo(0);
+        assertThat(eval("Math.asin(0)")).isEqualTo(0L);
     }
 
     @Test
     public void testMathAsinFloatyZero() {
-        assertThat(eval("Math.asin(0.0)")).isEqualTo(0);
+        assertThat(eval("Math.asin(0.0)")).isEqualTo(0L);
     }
 
     @Test
@@ -158,12 +158,12 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAtanPositiveZero() {
-        assertThat(eval("Math.atan(0)")).isEqualTo(0);
+        assertThat(eval("Math.atan(0)")).isEqualTo(0L);
     }
 
     @Test
     public void testMathAtanNegativeZero() {
-        assertThat(eval("Math.atan(-0)")).isEqualTo(0);
+        assertThat(eval("Math.atan(-0)")).isEqualTo(0L);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathAtan2Length() {
-        assertThat(eval("Math.atan2.length")).isEqualTo(2);
+        assertThat(eval("Math.atan2.length")).isEqualTo(2L);
     }
 
     @Test
@@ -223,12 +223,12 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathCeil() {
-        assertEval("Math.ceil(12)", 12);
+        assertEval("Math.ceil(12)", 12L);
     }
 
     @Test
     public void testMathCeilFloaty() {
-        assertEval("Math.ceil(12.12)", 13);
+        assertEval("Math.ceil(12.12)", 13L);
     }
 
     @Test
@@ -248,7 +248,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathCeilNegativeLessThanNegativeOne() {
-        assertEval("Math.ceil(-0.2)", 0);
+        assertEval("Math.ceil(-0.2)", 0L);
     }
 
     @Test
@@ -303,7 +303,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathFloor() {
-        assertEval("Math.floor(1.6)", 1);
+        assertEval("Math.floor(1.6)", 1L);
     }
 
     @Test
@@ -323,7 +323,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathFloorGreaterThanZeroButLessThanOne() {
-        assertEval("Math.floor(0.99999999)", 0);
+        assertEval("Math.floor(0.99999999)", 0L);
     }
 
     @Test
@@ -348,7 +348,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathLogExactlyOne() {
-        assertEval("Math.log(1)", 0);
+        assertEval("Math.log(1)", 0L);
     }
 
     @Test
@@ -358,12 +358,12 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathMaxLength() {
-        assertEval("Math.max.length", 2);
+        assertEval("Math.max.length", 2L);
     }
 
     @Test
     public void testMathMax() {
-        assertEval("Math.max(0.5, 2)", 2);
+        assertEval("Math.max(0.5, 2)", 2L);
     }
 
     @Test
@@ -373,12 +373,12 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathMaxOneArg() {
-        assertEval("Math.max(2)", 2);
+        assertEval("Math.max(2)", 2L);
     }
 
     @Test
     public void testMathMaxThreeArgs() {
-        assertEval("Math.max(1,4,6)", 6);
+        assertEval("Math.max(1,4,6)", 6L);
     }
 
     @Test
@@ -393,7 +393,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathMinLength() {
-        assertEval("Math.min.length", 2);
+        assertEval("Math.min.length", 2L);
     }
 
     @Test
@@ -408,7 +408,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathMinOneArg() {
-        assertEval("Math.min(2)", 2);
+        assertEval("Math.min(2)", 2L);
     }
 
     @Test
@@ -418,7 +418,7 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathMinVeryManyArgs() {
-        assertEval("Math.min(1,4,6,12,4,987,0,12.34,98765.45)", 0);
+        assertEval("Math.min(1,4,6,12,4,987,0,12.34,98765.45)", 0L);
     }
 
     @Test
@@ -438,7 +438,7 @@ public class MathTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testMathPowXNaNYZero() {
-        assertEval("Math.pow(NaN, 0)", 1);
+        assertEval("Math.pow(NaN, 0)", 1L);
     }
     
     @Test
@@ -453,17 +453,17 @@ public class MathTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testMathRound() {
-        assertEval("Math.round(3.5)", 4);
+        assertEval("Math.round(3.5)", 4L);
     }
     
     @Test
     public void testMathRoundDown() {
-        assertEval("Math.round(3.4)", 3);
+        assertEval("Math.round(3.4)", 3L);
     }
     
     @Test
     public void testMathRoundNegative() {
-        assertEval("Math.round(-3.5)", -3);
+        assertEval("Math.round(-3.5)", -3L);
     }
     
     @Test

@@ -18,7 +18,7 @@ public class Log extends AbstractNativeFunction {
             return Double.NaN;
         }
         final Double arg = Math.functionArgToDouble(context, args[0]);
-        return Math.coerceIntegerIfPossible(java.lang.Math.log(arg));
+        return Math.coerceLongIfPossible(java.lang.Math.log(arg));
     }
 
 }

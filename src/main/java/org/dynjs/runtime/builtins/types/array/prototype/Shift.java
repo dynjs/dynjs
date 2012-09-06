@@ -16,7 +16,7 @@ public class Shift extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.9
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
             o.put(context, "length", 0, true);
@@ -25,7 +25,7 @@ public class Shift extends AbstractNativeFunction {
 
         Object first = o.get(context, "0");
 
-        for (int k = 1; k < len; ++k) {
+        for (long k = 1; k < len; ++k) {
             boolean fromPresent = o.hasProperty(context, "" + k);
 
             if (fromPresent) {

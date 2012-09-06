@@ -14,21 +14,21 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     public void testArrayConstructorWithSizeZero() {
         eval("var x = new Array(0);");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat(x.get(getContext(), "length")).isEqualTo(0);
+        assertThat(x.get(getContext(), "length")).isEqualTo(0L);
     }
 
     @Test
     public void testArrayConstructorWithSizeNonZero() {
         eval("var x = new Array(42);");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat(x.get(getContext(), "length")).isEqualTo(42);
+        assertThat(x.get(getContext(), "length")).isEqualTo(42L);
     }
 
     @Test
     public void testArrayConstructorWithSizeNonNumeric() {
         eval("var x = new Array('taco');");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat(x.get(getContext(), "length")).isEqualTo(1);
+        assertThat(x.get(getContext(), "length")).isEqualTo(1L);
         assertThat(x.get(getContext(), "0")).isEqualTo("taco");
     }
 
@@ -36,10 +36,10 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     public void testArrayConstructorWithElementList() {
         eval("var x = new Array(1,'lol', 2);");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
-        assertThat(x.get(getContext(), "length")).isEqualTo(3);
-        assertThat(x.get(getContext(), "0")).isEqualTo(1);
+        assertThat(x.get(getContext(), "length")).isEqualTo(3L);
+        assertThat(x.get(getContext(), "0")).isEqualTo(1L);
         assertThat(x.get(getContext(), "1")).isEqualTo("lol");
-        assertThat(x.get(getContext(), "2")).isEqualTo(2);
+        assertThat(x.get(getContext(), "2")).isEqualTo(2L);
     }
 
     @Test
@@ -100,58 +100,58 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testConcatNoSplat() {
         JSObject result = (JSObject) eval("[1,2,3].concat(4,5,6)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(6);
-        assertThat(result.get(getContext(), "0")).isEqualTo(1);
-        assertThat(result.get(getContext(), "1")).isEqualTo(2);
-        assertThat(result.get(getContext(), "2")).isEqualTo(3);
-        assertThat(result.get(getContext(), "3")).isEqualTo(4);
-        assertThat(result.get(getContext(), "4")).isEqualTo(5);
-        assertThat(result.get(getContext(), "5")).isEqualTo(6);
+        assertThat(result.get(getContext(), "length")).isEqualTo(6L);
+        assertThat(result.get(getContext(), "0")).isEqualTo(1L);
+        assertThat(result.get(getContext(), "1")).isEqualTo(2L);
+        assertThat(result.get(getContext(), "2")).isEqualTo(3L);
+        assertThat(result.get(getContext(), "3")).isEqualTo(4L);
+        assertThat(result.get(getContext(), "4")).isEqualTo(5L);
+        assertThat(result.get(getContext(), "5")).isEqualTo(6L);
     }
 
     @Test
     public void testConcatWithSplat() {
         JSObject result = (JSObject) eval("[1,2,3].concat(4,[5,6],7)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(7);
-        assertThat(result.get(getContext(), "0")).isEqualTo(1);
-        assertThat(result.get(getContext(), "1")).isEqualTo(2);
-        assertThat(result.get(getContext(), "2")).isEqualTo(3);
-        assertThat(result.get(getContext(), "3")).isEqualTo(4);
-        assertThat(result.get(getContext(), "4")).isEqualTo(5);
-        assertThat(result.get(getContext(), "5")).isEqualTo(6);
-        assertThat(result.get(getContext(), "6")).isEqualTo(7);
+        assertThat(result.get(getContext(), "length")).isEqualTo(7L);
+        assertThat(result.get(getContext(), "0")).isEqualTo(1L);
+        assertThat(result.get(getContext(), "1")).isEqualTo(2L);
+        assertThat(result.get(getContext(), "2")).isEqualTo(3L);
+        assertThat(result.get(getContext(), "3")).isEqualTo(4L);
+        assertThat(result.get(getContext(), "4")).isEqualTo(5L);
+        assertThat(result.get(getContext(), "5")).isEqualTo(6L);
+        assertThat(result.get(getContext(), "6")).isEqualTo(7L);
     }
 
     @Test
     public void testPop() {
         eval("var a = [ 'a', 'b', 'c', 'd', 'e' ]");
 
-        assertThat(eval("a.length")).isEqualTo(5);
+        assertThat(eval("a.length")).isEqualTo(5L);
 
         assertThat(eval("a.pop()")).isEqualTo("e");
-        assertThat(eval("a.length")).isEqualTo(4);
+        assertThat(eval("a.length")).isEqualTo(4L);
 
         assertThat(eval("a.pop()")).isEqualTo("d");
-        assertThat(eval("a.length")).isEqualTo(3);
+        assertThat(eval("a.length")).isEqualTo(3L);
 
         assertThat(eval("a.pop()")).isEqualTo("c");
-        assertThat(eval("a.length")).isEqualTo(2);
+        assertThat(eval("a.length")).isEqualTo(2L);
 
         assertThat(eval("a.pop()")).isEqualTo("b");
-        assertThat(eval("a.length")).isEqualTo(1);
+        assertThat(eval("a.length")).isEqualTo(1L);
 
         assertThat(eval("a.pop()")).isEqualTo("a");
-        assertThat(eval("a.length")).isEqualTo(0);
+        assertThat(eval("a.length")).isEqualTo(0L);
 
         assertThat(eval("a.pop()")).isEqualTo(Types.UNDEFINED);
-        assertThat(eval("a.length")).isEqualTo(0);
+        assertThat(eval("a.length")).isEqualTo(0L);
     }
 
     @Test
     public void testPush() {
         eval("var a = ['a', 'b', 'c']");
 
-        assertThat(eval("a.push( 'd', 'e' )")).isEqualTo(5);
+        assertThat(eval("a.push( 'd', 'e' )")).isEqualTo(5L);
 
         JSObject result = (JSObject) eval("a");
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
@@ -160,14 +160,14 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "3")).isEqualTo("d");
         assertThat(result.get(getContext(), "4")).isEqualTo("e");
 
-        assertThat(eval("a.length")).isEqualTo(5);
+        assertThat(eval("a.length")).isEqualTo(5L);
     }
 
     @Test
     public void testReverseEven() {
         JSObject result = (JSObject) eval("['a', 'b', 'c', 'd' ].reverse()");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(4);
+        assertThat(result.get(getContext(), "length")).isEqualTo(4L);
         assertThat(result.get(getContext(), "0")).isEqualTo("d");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
         assertThat(result.get(getContext(), "2")).isEqualTo("b");
@@ -178,7 +178,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     public void testReverseOdd() {
         JSObject result = (JSObject) eval("['a', 'b', 'c', 'd', 'e' ].reverse()");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(5);
+        assertThat(result.get(getContext(), "length")).isEqualTo(5L);
         assertThat(result.get(getContext(), "0")).isEqualTo("e");
         assertThat(result.get(getContext(), "1")).isEqualTo("d");
         assertThat(result.get(getContext(), "2")).isEqualTo("c");
@@ -190,7 +190,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     public void testReverseOne() {
         JSObject result = (JSObject) eval("['a'].reverse()");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "length")).isEqualTo(1L);
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
     }
 
@@ -203,7 +203,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result).isEqualTo("a");
 
         JSObject a = (JSObject) eval("a");
-        assertThat(a.get(getContext(), "length")).isEqualTo(2);
+        assertThat(a.get(getContext(), "length")).isEqualTo(2L);
         assertThat(a.get(getContext(), "0")).isEqualTo("b");
         assertThat(a.get(getContext(), "1")).isEqualTo("c");
     }
@@ -211,7 +211,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testSlicePositiveArgs() {
         JSObject result = (JSObject) eval("['a','b','c','d'].slice(1,3)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "length")).isEqualTo(2L);
         assertThat(result.get(getContext(), "0")).isEqualTo("b");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
@@ -219,7 +219,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testSliceNegativeEnd() {
         JSObject result = (JSObject) eval("['a','b','c','d'].slice(0,-1)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
         assertThat(result.get(getContext(), "1")).isEqualTo("b");
         assertThat(result.get(getContext(), "2")).isEqualTo("c");
@@ -228,7 +228,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testSliceNegativeStart() {
         JSObject result = (JSObject) eval("['a','b','c','d'].slice(-3,3)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "length")).isEqualTo(2L);
         assertThat(result.get(getContext(), "0")).isEqualTo("b");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
@@ -236,7 +236,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testSliceNegativeStartNoEnd() {
         JSObject result = (JSObject) eval("['a','b','c','d'].slice(-3)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo("b");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
         assertThat(result.get(getContext(), "2")).isEqualTo("d");
@@ -250,7 +250,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
                 "} );",
                 "collector;");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo("fooa");
         assertThat(result.get(getContext(), "1")).isEqualTo("foob");
         assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
@@ -263,7 +263,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
                 "  return 'foo' + each;",
                 "} );");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo("fooa");
         assertThat(result.get(getContext(), "1")).isEqualTo("foob");
         assertThat(result.get(getContext(), "2")).isEqualTo("fooc");
@@ -276,7 +276,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
                 "  return ( i % 2 == 0 );",
                 "} );");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "length")).isEqualTo(2L);
         assertThat(result.get(getContext(), "0")).isEqualTo("a");
         assertThat(result.get(getContext(), "1")).isEqualTo("c");
     }
@@ -285,7 +285,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     public void testSortStringsNoFunction() {
         JSObject result = (JSObject) eval("['qmx', 'lance', 'bob' ].sort()");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo("bob");
         assertThat(result.get(getContext(), "1")).isEqualTo("lance");
         assertThat(result.get(getContext(), "2")).isEqualTo("qmx");
@@ -294,11 +294,11 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testSortNonStringsNoFunction() {
         JSObject result = (JSObject) eval("[1,2,10,20].sort()");
-        assertThat(result.get(getContext(), "length")).isEqualTo(4);
-        assertThat(result.get(getContext(), "0")).isEqualTo(1);
-        assertThat(result.get(getContext(), "1")).isEqualTo(10);
-        assertThat(result.get(getContext(), "2")).isEqualTo(2);
-        assertThat(result.get(getContext(), "3")).isEqualTo(20);
+        assertThat(result.get(getContext(), "length")).isEqualTo(4L);
+        assertThat(result.get(getContext(), "0")).isEqualTo(1L);
+        assertThat(result.get(getContext(), "1")).isEqualTo(10L);
+        assertThat(result.get(getContext(), "2")).isEqualTo(2L);
+        assertThat(result.get(getContext(), "3")).isEqualTo(20L);
     }
 
     @Test
@@ -312,7 +312,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
                 "  return 0",
                 "} } )");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo("qmx");
         assertThat(result.get(getContext(), "1")).isEqualTo("lance");
         assertThat(result.get(getContext(), "2")).isEqualTo("thebob");
@@ -325,14 +325,14 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
         JSObject a = (JSObject) eval("a");
 
-        assertThat(a.get(getContext(), "length")).isEqualTo(5);
-        assertThat(a.get(getContext(), "0")).isEqualTo(4);
-        assertThat(a.get(getContext(), "1")).isEqualTo(5);
-        assertThat(a.get(getContext(), "2")).isEqualTo(1);
-        assertThat(a.get(getContext(), "3")).isEqualTo(2);
-        assertThat(a.get(getContext(), "4")).isEqualTo(3);
+        assertThat(a.get(getContext(), "length")).isEqualTo(5L);
+        assertThat(a.get(getContext(), "0")).isEqualTo(4L);
+        assertThat(a.get(getContext(), "1")).isEqualTo(5L);
+        assertThat(a.get(getContext(), "2")).isEqualTo(1L);
+        assertThat(a.get(getContext(), "3")).isEqualTo(2L);
+        assertThat(a.get(getContext(), "4")).isEqualTo(3L);
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(0);
+        assertThat(result.get(getContext(), "length")).isEqualTo(0L);
     }
 
     @Test
@@ -342,14 +342,14 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
         JSObject a = (JSObject) eval("a");
 
-        assertThat(a.get(getContext(), "length")).isEqualTo(4);
-        assertThat(a.get(getContext(), "0")).isEqualTo(4);
-        assertThat(a.get(getContext(), "1")).isEqualTo(5);
-        assertThat(a.get(getContext(), "2")).isEqualTo(2);
-        assertThat(a.get(getContext(), "3")).isEqualTo(3);
+        assertThat(a.get(getContext(), "length")).isEqualTo(4L);
+        assertThat(a.get(getContext(), "0")).isEqualTo(4L);
+        assertThat(a.get(getContext(), "1")).isEqualTo(5L);
+        assertThat(a.get(getContext(), "2")).isEqualTo(2L);
+        assertThat(a.get(getContext(), "3")).isEqualTo(3L);
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(1);
-        assertThat(result.get(getContext(), "0")).isEqualTo(1);
+        assertThat(result.get(getContext(), "length")).isEqualTo(1L);
+        assertThat(result.get(getContext(), "0")).isEqualTo(1L);
     }
 
     @Test
@@ -359,108 +359,120 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
         JSObject a = (JSObject) eval("a");
 
-        assertThat(result).isEqualTo(7);
+        assertThat(result).isEqualTo(7L);
 
-        assertThat(a.get(getContext(), "length")).isEqualTo(7);
-        assertThat(a.get(getContext(), "0")).isEqualTo(4);
-        assertThat(a.get(getContext(), "1")).isEqualTo(5);
-        assertThat(a.get(getContext(), "2")).isEqualTo(6);
-        assertThat(a.get(getContext(), "3")).isEqualTo(7);
-        assertThat(a.get(getContext(), "4")).isEqualTo(1);
-        assertThat(a.get(getContext(), "5")).isEqualTo(2);
-        assertThat(a.get(getContext(), "6")).isEqualTo(3);
+        assertThat(a.get(getContext(), "length")).isEqualTo(7L);
+        assertThat(a.get(getContext(), "0")).isEqualTo(4L);
+        assertThat(a.get(getContext(), "1")).isEqualTo(5L);
+        assertThat(a.get(getContext(), "2")).isEqualTo(6L);
+        assertThat(a.get(getContext(), "3")).isEqualTo(7L);
+        assertThat(a.get(getContext(), "4")).isEqualTo(1L);
+        assertThat(a.get(getContext(), "5")).isEqualTo(2L);
+        assertThat(a.get(getContext(), "6")).isEqualTo(3L);
     }
 
     @Test
     public void testIndexOfNoStart() {
         Object result = eval("['bob', 'lance', 'qmx'].indexOf( 'lance')");
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
     @Test
     public void testIndexOfWithPositiveStart() {
         Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',2)");
-        assertThat(result).isEqualTo(4);
+        assertThat(result).isEqualTo(4L);
     }
 
     @Test
     public void testIndexOfWithNegativeStart() {
         Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',-3)");
-        assertThat(result).isEqualTo(4);
+        assertThat(result).isEqualTo(4L);
     }
 
     @Test
     public void testLastIndexOfNoStart() {
         Object result = eval("['bob', 'lance', 'qmx'].lastIndexOf( 'lance')");
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
     @Test
     public void testLastIndexOfWithPositiveStart() {
         Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].lastIndexOf('lance',3)");
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
     @Test
     public void testLastIndexOfWithNegativeStart() {
         Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].lastIndexOf('lance',-3)");
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
     @Test
     public void testLastIndexOfWithInfinity() {
         Object result = eval("var obj = { 0: 0, length: Infinity };",
                 "return Array.prototype.lastIndexOf.call(obj, 0) === -1;");
-        
-        assertThat( result ).isEqualTo(true);
+
+        assertThat(result).isEqualTo(true);
     }
-    
+
     @Test
     public void testEveryTrue() {
-        Object result = eval( "[1,2,3].every(function(e){ e < 10 })");
-        assertThat( result ).isEqualTo(true);
+        Object result = eval("[1,2,3].every(function(e){ e < 10 })");
+        assertThat(result).isEqualTo(true);
     }
-    
+
     @Test
     public void testEveryFalse() {
-        Object result = eval( "[1,2,3,4,5,11,6,7,8,9].every(function(e){ e < 10 })");
-        assertThat( result ).isEqualTo(false);
+        Object result = eval("[1,2,3,4,5,11,6,7,8,9].every(function(e){ e < 10 })");
+        assertThat(result).isEqualTo(false);
     }
-    
+
     @Test
     public void testSomeTrue() {
-        Object result = eval( "[1,2,3].some(function(e){ e > 2 })");
-        assertThat( result ).isEqualTo(true);
+        Object result = eval("[1,2,3].some(function(e){ e > 2 })");
+        assertThat(result).isEqualTo(true);
     }
-    
+
     @Test
     public void testSomeFalse() {
-        Object result = eval( "[1,2,3,4,5,11,6,7,8,9].some(function(e){ e > 40 })");
-        assertThat( result ).isEqualTo(false);
+        Object result = eval("[1,2,3,4,5,11,6,7,8,9].some(function(e){ e > 40 })");
+        assertThat(result).isEqualTo(false);
     }
-    
+
     @Test
     public void testReduce() {
-        Object result = eval( "[1,2,3].reduce( function(accum,e){ return accum+e } )");
-        assertThat( result ).isEqualTo(6);
+        Object result = eval("[1,2,3].reduce( function(accum,e){ return accum+e } )");
+        assertThat(result).isEqualTo(6L);
     }
-    
+
     @Test
     public void testReduceWithInitial() {
-        Object result = eval( "[1,2,3].reduce( function(accum,e){ return accum+e }, 10 )");
-        assertThat( result ).isEqualTo(16);
+        Object result = eval("[1,2,3].reduce( function(accum,e){ return accum+e }, 10 )");
+        assertThat(result).isEqualTo(16L);
     }
-    
+
     @Test
     public void testReduceRight() {
-        Object result = eval( "[1,2,3].reduceRight( function(accum,e){ return accum+e } )");
-        assertThat( result ).isEqualTo(6);
+        Object result = eval("[1,2,3].reduceRight( function(accum,e){ return accum+e } )");
+        assertThat(result).isEqualTo(6L);
     }
-    
+
     @Test
     public void testReduceRightWithInitial() {
-        Object result = eval( "[1,2,3].reduceRight( function(accum,e){ return accum+e }, 10 )");
-        assertThat( result ).isEqualTo(16);
+        Object result = eval("[1,2,3].reduceRight( function(accum,e){ return accum+e }, 10 )");
+        assertThat(result).isEqualTo(16L);
+    }
+
+    @Test
+    public void testReduceRightSpec1() {
+        Object result = eval("var initialValue = 0;",
+                "function callbackfn(accum, val, idx, obj) {",
+                "    accum += val;",
+                "    return accum;",
+                "}",
+                "20 === [11, 9].reduceRight(callbackfn, initialValue);");
+        
+        assertThat( result ).isEqualTo(true);
     }
 
 }

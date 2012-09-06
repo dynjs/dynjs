@@ -74,10 +74,10 @@ public class Types {
 
         if (o instanceof Boolean) {
             if (o == Boolean.TRUE) {
-                return 1;
+                return 1L;
             }
 
-            return 0;
+            return 0L;
         }
 
         try {
@@ -86,16 +86,16 @@ public class Types {
                 return Math.pow(10, 10000);
             }
             if (str.trim().isEmpty()) {
-                return 0;
+                return 0L;
             }
             
             if ( str.startsWith( "0x" ) ) {
-                return Integer.decode( str );
+                return Long.decode( str );
             }
             if (str.indexOf(".") > 0) {
                 return Double.valueOf(str);
             } else {
-                return Integer.valueOf(str);
+                return Long.valueOf(str);
             }
         } catch (NumberFormatException e) {
             return Double.NaN;
@@ -135,30 +135,30 @@ public class Types {
         return true;
     }
 
-    public static Integer toInteger(ExecutionContext context, Object o) {
+    public static Long toInteger(ExecutionContext context, Object o) {
         Number number = toNumber(context, o);
         if (number instanceof Double) {
             if (((Double) number).isNaN()) {
-                return 0;
+                return 0L;
             }
         }
 
-        return number.intValue();
+        return number.longValue();
     }
 
-    public static Integer toUint16(ExecutionContext context, Object o) {
+    public static Long toUint16(ExecutionContext context, Object o) {
         // 9.7
         Number n = toNumber(context, o);
         
         if (n instanceof Double) {
             if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
-                return 0;
+                return 0L;
             }
         }
         
         int posInt = (int) (sign(n) * Math.floor( Math.abs( n.intValue() )));
         
-        return (posInt % 65536) ;
+        return (long) (posInt % 65536) ;
     }
     
     protected static int sign(Number n) {
@@ -169,17 +169,17 @@ public class Types {
         return 1;
     }
 
-    public static Integer toUint32(ExecutionContext context, Object o) {
+    public static Long toUint32(ExecutionContext context, Object o) {
         // 9.5
         Number n = toNumber(context, o);
 
-        if (n instanceof Integer) {
-            return ((Integer) n).intValue();
+        if (n instanceof Long) {
+            return (Long) n;
         }
 
         if (n instanceof Double) {
             if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
-                return 0;
+                return (long) 0;
             }
         }
 
@@ -189,13 +189,13 @@ public class Types {
 
         double int32bit = posInt % Math.pow(2, 32);
 
-        return (int) int32bit;
+        return (long) int32bit;
     }
 
-    public static Integer toInt32(ExecutionContext context, Object o) {
-        int int32bit = toUint32(context, o);
+    public static Long toInt32(ExecutionContext context, Object o) {
+        long int32bit = toUint32(context, o);
         if (int32bit > Math.pow(2, 31)) {
-            return (int) (int32bit - Math.pow(2, 32));
+            return (long) (int32bit - Math.pow(2, 32));
         }
         return int32bit;
     }
@@ -209,9 +209,9 @@ public class Types {
             return false;
         }
 
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
-        for (int i = 0; i < len; ++i) {
+        for (long i = 0; i < len; ++i) {
             if (o.getOwnProperty(context, "" + i) == Types.UNDEFINED) {
                 return true;
             }

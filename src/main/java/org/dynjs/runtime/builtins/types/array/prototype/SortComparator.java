@@ -7,7 +7,7 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
-public class SortComparator implements Comparator<Integer> {
+public class SortComparator implements Comparator<Long> {
 
     private ExecutionContext context;
     private JSObject o;
@@ -24,7 +24,7 @@ public class SortComparator implements Comparator<Integer> {
     }
 
     @Override
-    public int compare(Integer j, Integer k) {
+    public int compare(Long j, Long k) {
         boolean hasJ = o.hasProperty(context, "" + j);
         boolean hasK = o.hasProperty(context, "" + k);
 
@@ -56,7 +56,7 @@ public class SortComparator implements Comparator<Integer> {
         }
 
         if (compareFn != null) {
-            return (int) context.call(compareFn, Types.UNDEFINED, x, y);
+            return (int)(long) context.call(compareFn, Types.UNDEFINED, x, y);
         }
 
         String xStr = Types.toString(context, x);

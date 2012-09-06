@@ -31,7 +31,7 @@ public class ParseInt extends AbstractNativeFunction {
         String text = ((String) arguments[0]).trim();
         Object radixArg = arguments[1];
 
-        int radix = 10;
+        long radix = 10;
         if (radixArg != Types.UNDEFINED) {
             radix = Types.toInteger(context, radixArg);
             if (radix == 0) { radix = 10; }
@@ -42,7 +42,7 @@ public class ParseInt extends AbstractNativeFunction {
         return parseInt(text, radix);
     }
 
-    static String cleanText(String text, int radix) {
+    static String cleanText(String text, long radix) {
         if (radix == 16) {
             if (text.startsWith("0x") || text.startsWith("0X")) {
                 return text.substring(2);
@@ -61,14 +61,14 @@ public class ParseInt extends AbstractNativeFunction {
         return radix;
     }
 
-    static Object parseInt(String text, int radix) {
+    static Object parseInt(String text, long radix) {
         int dotLoc = text.indexOf('.');
         if (dotLoc >= 0) {
             text = text.substring(0, dotLoc);
         }
 
         try {
-            return Integer.parseInt(text, radix);
+            return Integer.parseInt(text, (int) radix);
         } catch (NumberFormatException e) {
             // ignore
         }

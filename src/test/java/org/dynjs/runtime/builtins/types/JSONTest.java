@@ -13,7 +13,7 @@ public class JSONTest extends AbstractDynJSTestSupport {
     @Test
     public void testParseArray() {
         DynArray result = (DynArray) eval("JSON.parse('[42,86]')");
-        assertThat(result.get(getContext(), "length")).isEqualTo(2);
+        assertThat(result.get(getContext(), "length")).isEqualTo(2L);
         assertThat(result.get(getContext(), "0")).isEqualTo(42);
         assertThat(result.get(getContext(), "1")).isEqualTo(86);
     }
@@ -21,11 +21,11 @@ public class JSONTest extends AbstractDynJSTestSupport {
     @Test
     public void testParseNestedArray() {
         DynArray result = (DynArray) eval("JSON.parse('[42,86,[\"a\", \"b\", \"c\" ]]')");
-        assertThat(result.get(getContext(), "length")).isEqualTo(3);
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
         assertThat(result.get(getContext(), "0")).isEqualTo(42);
         assertThat(result.get(getContext(), "1")).isEqualTo(86);
         DynArray nested = (DynArray) result.get(getContext(), "2");
-        assertThat(nested.get(getContext(), "length")).isEqualTo(3);
+        assertThat(nested.get(getContext(), "length")).isEqualTo(3L);
         assertThat(nested.get(getContext(), "0")).isEqualTo("a");
         assertThat(nested.get(getContext(), "1")).isEqualTo("b");
         assertThat(nested.get(getContext(), "2")).isEqualTo("c");
@@ -53,7 +53,7 @@ public class JSONTest extends AbstractDynJSTestSupport {
                 "}",
                 "})");
 
-        assertThat(result.get(getContext(), "length")).isEqualTo(7);
+        assertThat(result.get(getContext(), "length")).isEqualTo(7L);
         assertThat(result.get(getContext(), "0")).isEqualTo(1);
         assertThat(result.get(getContext(), "1")).isEqualTo(Types.UNDEFINED);
         assertThat(result.get(getContext(), "2")).isEqualTo(3);

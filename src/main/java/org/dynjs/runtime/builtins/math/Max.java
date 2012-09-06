@@ -34,7 +34,7 @@ public class Max extends AbstractNativeFunction {
                 return Double.NaN;
             max = java.lang.Math.max(Math.functionArgToDouble(context, args[i]), max);
         }
-        return Math.coerceIntegerIfPossible(max);
+        return Math.coerceLongIfPossible(max);
     }
 
 }

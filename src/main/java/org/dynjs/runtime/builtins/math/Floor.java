@@ -21,7 +21,7 @@ public class Floor extends AbstractNativeFunction {
         if (Double.isInfinite(arg)) {
             return arg;
         }
-        return (int) java.lang.Math.floor(arg);
+        return (long) java.lang.Math.floor(arg);
     }
 
 }

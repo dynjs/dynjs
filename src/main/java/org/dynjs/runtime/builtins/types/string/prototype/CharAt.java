@@ -15,12 +15,12 @@ public class CharAt extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.4
         String strSelf = Types.toString(context, self);
-        int position = Types.toInteger(context, args[0]);
+        long position = Types.toInteger(context, args[0]);
         if (position < 0 || position > strSelf.length()) {
             return "";
         }
 
-        return "" + strSelf.charAt(position);
+        return "" + strSelf.charAt( (int) position);
     }
 
 }

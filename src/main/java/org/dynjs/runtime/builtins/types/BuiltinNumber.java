@@ -19,7 +19,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
         super(globalObject, "value");
 
         // 15.7.4 Set the prototype
-        final PrimitiveDynObject proto = new DynNumber(globalObject, 0);
+        final PrimitiveDynObject proto = new DynNumber(globalObject, 0L);
         put(null, "prototype", proto, false);
     }
 
@@ -52,7 +52,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
             // called as a ctor
             PrimitiveDynObject numberObject = (PrimitiveDynObject) self;
             if (args[0] == Types.UNDEFINED) {
-                number = 0;
+                number = 0L;
             }
             numberObject.setPrimitiveValue(number);
             return numberObject;

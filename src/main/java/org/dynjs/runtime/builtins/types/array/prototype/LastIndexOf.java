@@ -16,20 +16,20 @@ public class LastIndexOf extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.14
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
-            return -1;
+            return -1L;
         }
 
-        int n = len;
+        long n = len;
         if (args.length >= 2) {
             if (args[1] != Types.UNDEFINED) {
                 n = Types.toInteger(context, args[1]);
             }
         }
 
-        int k = Math.min(n, len-1);
+        long k = Math.min(n, len-1);
         if (n < 0) {
             k = (len - Math.abs(n));
         }
@@ -44,7 +44,7 @@ public class LastIndexOf extends AbstractNativeFunction {
             --k;
         }
         
-        return -1;
+        return -1L;
     }
 
 }

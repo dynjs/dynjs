@@ -40,11 +40,11 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
         JSObject result = (JSObject) eval("r.exec(s)");
 
         assertThat(result).isNotNull();
-        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "length")).isEqualTo(1L);
         assertThat(result.get(getContext(), "0")).isEqualTo("foot");
 
         result = (JSObject) eval("r.exec(s)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "length")).isEqualTo(1L);
         assertThat(result.get(getContext(), "0")).isEqualTo("fool");
     }
 
@@ -55,11 +55,11 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
         JSObject result = (JSObject) eval("r.exec(s)");
 
         assertThat(result).isNotNull();
-        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "length")).isEqualTo(1L);
         assertThat(result.get(getContext(), "0")).isEqualTo("foot");
 
         result = (JSObject) eval("r.exec(s)");
-        assertThat(result.get(getContext(), "length")).isEqualTo(1);
+        assertThat(result.get(getContext(), "length")).isEqualTo(1L);
         assertThat(result.get(getContext(), "0")).isEqualTo("fool");
     }
 

@@ -17,13 +17,13 @@ public class IndexOf extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.14
         JSObject o = Types.toObject(context, self);
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
-            return -1;
+            return -1L;
         }
 
-        int n = 0;
+        long n = 0;
         if (args.length >= 2) {
             if (args[1] != Types.UNDEFINED) {
                 n = Types.toInteger(context, args[1]);
@@ -31,10 +31,10 @@ public class IndexOf extends AbstractNativeFunction {
         }
 
         if (n >= len) {
-            return -1;
+            return -1L;
         }
 
-        int k = n;
+        long k = n;
         if (n < 0) {
             k = (len - Math.abs(n));
             if ( k < 0 ) {
@@ -52,7 +52,7 @@ public class IndexOf extends AbstractNativeFunction {
             ++k;
         }
         
-        return -1;
+        return -1L;
     }
 
 }

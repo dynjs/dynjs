@@ -34,7 +34,7 @@ public class Min extends AbstractNativeFunction {
                 return Double.NaN;
             min = java.lang.Math.min(Math.functionArgToDouble(context, args[i]), min);
         }
-        return Math.coerceIntegerIfPossible(min);
+        return Math.coerceLongIfPossible(min);
     }
 
 }

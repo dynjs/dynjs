@@ -19,7 +19,7 @@ public class ToExponential extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.6 Number.prototype.toExponential (fractionDigits) 
         Number number = Types.toNumber(context, self);
-        Integer fractionDigits = Types.toInteger(context, args[0]);
+        Long fractionDigits = Types.toInteger(context, args[0]);
 
         if (Double.isNaN(number.doubleValue()) || Double.isInfinite(number.doubleValue())) {
             return String.valueOf(number);

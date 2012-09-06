@@ -143,24 +143,26 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testHexValue() {
-        check("var result = 0x16", 22);
+        check("var result = 0x16", 22L);
     }
 
     @Test
     public void testBitwise() {
-        check("var result = 0x000F & 0x2222", 2);
-        check("var result = 0x000F | 0x2222", 8751);
-        check("var result = 0x000F ^ 0x2222", 8749);
-        check("var result = 0x000F; result &= 0x2222", 2);
-        check("var result = 0x000F; result |= 0x2222", 8751);
-        check("var result = 0x000F; result ^= 0x2222", 8749);
+        check("var result = 0x000F & 0x2222", 2L);
+        check("var result = 0x000F | 0x2222", 8751L);
+        check("var result = 0x000F ^ 0x2222", 8749L);
+        check("var result = 0x000F; result &= 0x2222", 2L);
+        check("var result = 0x000F; result |= 0x2222", 8751L);
+        check("var result = 0x000F; result ^= 0x2222", 8749L);
 
-        check("var result = 9 << 2", 36);
-        check("var result = 9 >> 2", 2);
-        check("var result = -1 >>> 2", 1073741823);
-        check("var result = 9; result <<= 2", 36);
-        check("var result = 9; result >>= 2", 2);
-        check("var result = -1; result >>>= 2", 1073741823);
+        check("var result = 9 << 2", 36L);
+        check("var result = 9 >> 2", 2L);
+        check("var result = -1 >>> 2", -1L >>> 2);
+        //check("var result = -1 >>> 2", 1073741823L);
+        check("var result = 9; result <<= 2", 36L);
+        check("var result = 9; result >>= 2", 2L);
+        check("var result = -1; result >>>= 2", -1L >>> 2);
+        //check("var result = -1; result >>>= 2", 1073741823L);
     }
 
     @Test
@@ -180,7 +182,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 "  x+=1;",
                 "}");
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(0);
+        assertThat(x).isEqualTo(0L);
 
         eval("var x = 0;",
                 "do {",
@@ -191,7 +193,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 "  x+=3;",
                 "} while(x < 10)");
         x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(13);
+        assertThat(x).isEqualTo(13L);
 
         eval("var x = 0;",
                 "while(x < 10) {",
@@ -202,7 +204,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
                 "  ;x+=3",
                 "}");
         x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(12);
+        assertThat(x).isEqualTo(12L);
     }
 
     @Test
@@ -277,7 +279,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void testEval() {
         Object result = eval("eval('4+2')");
-        assertThat(result).isEqualTo(6);
+        assertThat(result).isEqualTo(6L);
     }
 
     @Test
@@ -340,8 +342,8 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testUnaryMinusOper() {
-        check("var result = -1 + 1", 0);
-        check("var result = -1", -1);
+        check("var result = -1 + 1", 0L);
+        check("var result = -1", -1L);
         check("var x = 1; var result = -x == -1");
     }
 

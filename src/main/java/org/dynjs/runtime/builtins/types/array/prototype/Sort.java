@@ -21,12 +21,12 @@ public class Sort extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.11
         JSObject o = Types.toObject(context, self);
-        int len = Types.toInteger(context, o.get(context, "length"));
+        long len = Types.toInteger(context, o.get(context, "length"));
 
-        List<Integer> indices = new ArrayList<>();
+        List<Long> indices = new ArrayList<>();
         List<Object> values = new ArrayList<>();
 
-        for (int i = 0; i < len; ++i) {
+        for (long i = 0; i < len; ++i) {
             indices.add(i);
             values.add(o.get(context, "" + i));
         }
@@ -40,8 +40,8 @@ public class Sort extends AbstractNativeFunction {
         }
 
         for ( int i = 0 ; i < len ; ++i ) {
-            Integer index = indices.get( i );
-            Object value = values.get( index );
+            Long index = indices.get( i );
+            Object value = values.get( index.intValue() );
             
             if ( value == Types.UNDEFINED ) {
                 o.delete(context, ""+i, false);

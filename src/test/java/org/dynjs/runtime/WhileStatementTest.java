@@ -13,7 +13,7 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
                 "}");
 
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(10);
+        assertThat(x).isEqualTo(10L);
     }
 
     @Test
@@ -26,7 +26,7 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
                 "  }",
                 "}");
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(10);
+        assertThat(x).isEqualTo(10L);
     }
 
     @Test
@@ -45,10 +45,10 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
                 "}");
 
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(10);
+        assertThat(x).isEqualTo(10L);
 
         Object y = getContext().resolve("y").getValue(getContext());
-        assertThat(y).isEqualTo(5);
+        assertThat(y).isEqualTo(5L);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
                 "}",
                 "x;");
 
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
                 "}",
                 "x;");
 
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class WhileStatementTest extends AbstractDynJSTestSupport {
                 "}",
                 "x;");
 
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(1L);
     }
 
 }

@@ -19,7 +19,7 @@ public class ToLocaleString extends AbstractNativeFunction {
         // 15.4.4.3
         JSObject o = Types.toObject(context, self);
 
-        int len = Types.toUint32(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
             return "";
@@ -30,7 +30,7 @@ public class ToLocaleString extends AbstractNativeFunction {
         StringBuffer str = new StringBuffer();
 
         boolean first = true;
-        for (int i = 0; i < len; ++i) {
+        for (long i = 0; i < len; ++i) {
             if (!first) {
                 str.append(separator);
             }

@@ -59,12 +59,8 @@ public class NumberLiteralExpression extends AbstractExpression {
                         }
                         ldc(realText);
                         bipush(radix);
-                        invokestatic(p(Integer.class), "valueOf", sig(Integer.class, String.class, int.class));
-                        // Integer
-                        invokevirtual(p(Integer.class), "intValue", sig(int.class));
-                        // int
-                        invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
-                        // Integer
+                        invokestatic(p(Long.class), "valueOf", sig(Long.class, String.class, int.class));
+                        // Long
                     }
                 }
             }

@@ -65,33 +65,33 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
                 iftrue(doubleNum);
 
                 // ----------------------------------------
-                // Integer
+                // Long
 
                 // ref number
                 dup2();
-                // ref Integer ref Integer
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
-                // ref Integer ref int
-                iconst_1();
-                // ref Integer ref int 1
+                // ref Long ref Long
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
+                // ref Long ref long
+                ldc( 1L );
+                // ref Long ref long 1
                 if (getOp().equals("++")) {
-                    iadd();
+                    ladd();
                 } else {
-                    isub();
+                    lsub();
                 }
-                // ref Integer(orig) ref int(new)
+                // ref Long(orig) ref long(new)
+                invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
+                // ref Long(orig) ref Long(new)
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // ref Integer(orig) ref int(new) context
+                // ref Long(orig) ref Long(new) context
                 swap();
-                // ref Integer(orig) ref context int(new)
-                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
-                // ref Integer(orig) ref context Integer(new)
+                // ref Long(orig) ref context Long(new)
                 invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
-                // ref Integer(orig)
+                // ref Long(orig)
                 swap();
-                // Integer(orig) ref
+                // Long(orig) ref
                 pop();
-                // Integer(orig)
+                // Long(orig)
                 go_to(end);
 
                 // ----------------------------------------

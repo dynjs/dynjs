@@ -14,7 +14,7 @@ public class DoWhileExpressionTest extends AbstractDynJSTestSupport {
                 "  x = 42;",
                 "} while ( x != 42 );");
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(42);
+        assertThat(x).isEqualTo(42L);
     }
 
     @Test
@@ -22,7 +22,7 @@ public class DoWhileExpressionTest extends AbstractDynJSTestSupport {
         eval("var x = 0",
                 "do x = 42; while ( x != 42 );");
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(42);
+        assertThat(x).isEqualTo(42L);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class DoWhileExpressionTest extends AbstractDynJSTestSupport {
             // expected and correct
         }
         Object x = getContext().resolve("x").getValue(getContext());
-        assertThat(x).isEqualTo(42);
+        assertThat(x).isEqualTo(42L);
     }
 
 }

@@ -33,18 +33,18 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 iftrue(doubleNum);
 
                 // ------------------------------------
-                // Integer
+                // Integral
 
-                // num(Integer)
-                invokevirtual(p(Number.class), "intValue", sig(int.class));
-                // num(int)
+                // num(Long)
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
+                // num(long)
 
-                iconst_m1();
-                // num -1
-                imul();
+                ldc( -1L );
+                // num -1L
+                lmul();
                 // -num
-                invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
-                // -num(Integer)
+                invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
+                // -num(Long)
 
                 go_to(end);
 

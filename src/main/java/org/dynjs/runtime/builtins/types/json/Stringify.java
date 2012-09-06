@@ -36,8 +36,8 @@ public class Stringify extends AbstractNativeFunction {
                 replacerFunction = (JSFunction) jsReplacer;
             } else if (jsReplacer.getClassName().equals("Array")) {
                 propertyList = new ArrayList<>();
-                int len = Types.toInteger(context, jsReplacer.get(context, "length"));
-                for (int i = 0; i < len; ++i) {
+                long len = Types.toInteger(context, jsReplacer.get(context, "length"));
+                for (long i = 0; i < len; ++i) {
                     Object v = jsReplacer.get(context, "" + i);
                     String item = null;
                     if (Types.type(v).equals("string")) {
@@ -72,11 +72,11 @@ public class Stringify extends AbstractNativeFunction {
         String gap = "";
 
         if (Types.type(space).equals("number")) {
-            int spaceInt = Types.toInteger(context, space);
+            long spaceInt = Types.toInteger(context, space);
             if (spaceInt < 10) {
                 spaceInt = 10;
             }
-            for (int i = 0; i < spaceInt; ++i) {
+            for (long i = 0; i < spaceInt; ++i) {
                 gap += " ";
             }
         } else if (Types.type(space).equals("string")) {
@@ -176,9 +176,9 @@ public class Stringify extends AbstractNativeFunction {
 
         List<String> partial = new ArrayList<>();
 
-        int len = Types.toInteger(context, value.get(context, "length"));
+        long len = Types.toInteger(context, value.get(context, "length"));
 
-        for (int i = 0; i < len; ++i) {
+        for (long i = 0; i < len; ++i) {
             String strP = str(context, stack, indent, gap, replacer, propertyList, value, "" + i);
             if (strP == null) {
                 partial.add("null");
