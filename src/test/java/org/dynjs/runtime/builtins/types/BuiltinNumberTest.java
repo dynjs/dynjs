@@ -183,7 +183,6 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = new Number(1E3).valueOf();", 1000.0);
     }
 
-    @Ignore
     @Test
     public void testNumberToFixedDefault() {
         check("var result = new Number(12345.67890123).toFixed()", "12346");
@@ -204,16 +203,14 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         assertThat(eval("new Number(1e+21).toFixed()")).isEqualTo("1e+21");
     }
 
-    @Ignore
     @Test
     public void testBigAssButSmallerNumberToFixed() {
         check("var result = new Number(1E+20).toFixed();", "100000000000000000000");
     }
 
-    @Ignore
     @Test
     public void testRoundedFractionalDigitsToFixed() {
-        check("var result = new Number(13.45).toFixed(1)", "13.5");
+        check("var result = new Number(13.45).toFixed(1)", "13.4");
     }
 
     @Test
@@ -271,10 +268,9 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = new Number(12).toFixed.length", 1);
     }
 
-    @Ignore
     @Test
     public void testToFixedWithPrecision() {
-        check("var result = new Number(12.12345).toFixed(2)", 12.12);
+        check("var result = new Number(12.12345).toFixed(2)", "12.12");
     }
 
     @Test
@@ -282,11 +278,13 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         check("var result = new Number(21).toExponential.length", 1);
     }
 
+    @Test
     @Ignore
     public void testToExponential() {
         check("var result = new Number(14).toExponential()", "1.4e+1");
     }
 
+    @Test
     @Ignore
     public void testNegativeNumberToExponential() {
         check("var result = new Number(-14).toExponential()", "-1.4e+1");

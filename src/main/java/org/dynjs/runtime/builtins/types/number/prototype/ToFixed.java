@@ -1,11 +1,12 @@
 package org.dynjs.runtime.builtins.types.number.prototype;
 
+import java.math.BigDecimal;
+
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToFixed extends AbstractNativeFunction {
 
@@ -19,45 +20,19 @@ public class ToFixed extends AbstractNativeFunction {
         if (args.length > 1) {
             return Types.UNDEFINED;
         }
-        String value = "";
         int digits = Types.toInteger(context, args[0]);
         if (digits < 0 || digits > 20) {
-            throw new ThrowException(context.createRangeError("toFixed() digits argument must be between 0 and 20"));
+            throw new ThrowException(context.createRangeError("Number.prototype.toFixed() digits argument must be between 0 and 20"));
         }
-
-        Object primitiveValue = Double.NaN;
-        if (self instanceof DynNumber) {
-            primitiveValue = ((DynNumber) self).getPrimitiveValue();
-        }
-        if (primitiveValue instanceof Double) {
-            value = doubleToFixed(context, (double) primitiveValue, digits);
+        final Number number = Types.toNumber(context, self);
+        if (Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue()))
+            return String.valueOf(number);
+        else if (number.doubleValue() < 1.0E21) {
+            final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());
+            return bigDecimal.setScale(digits, BigDecimal.ROUND_HALF_UP).toString();
         } else {
-            value = Integer.toString((int) primitiveValue);
+            return rewritePossiblyExponentialValue(String.valueOf(number.doubleValue()));
         }
-        return value;
-    }
-
-    private String doubleToFixed(ExecutionContext context, double _double_, int digits) {
-        String value;
-        if (Double.isNaN(_double_)) {
-            value = "NaN";
-        } else if (Double.isInfinite(_double_)) {
-            if (_double_ > 0) {
-                value = "Infinity";
-            } else {
-                value = "-Infinity";
-            }
-        } else if (_double_ >= 1.0E21) {
-            value = Types.toString(context, _double_);
-        } else {
-            if (digits == 0) {
-                value = String.valueOf(new Integer((int) _double_));
-            } else {
-                value = Double.toString(_double_);
-            }
-        }
-        // TODO: We have to make exponential values look like JS and not Java
-        return rewritePossiblyExponentialValue(value);
     }
 
     private String rewritePossiblyExponentialValue(String value) {
