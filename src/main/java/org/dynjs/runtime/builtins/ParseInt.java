@@ -32,12 +32,9 @@ public class ParseInt extends AbstractNativeFunction {
         Object radixArg = arguments[1];
 
         int radix = 10;
-
         if (radixArg != Types.UNDEFINED) {
-            radix = ((Number) radixArg).intValue();
-            if (radix == 0) {
-                radix = 10;
-            }
+            radix = Types.toInteger(context, radixArg);
+            if (radix == 0) { radix = 10; }
         } else {
             radix = extractRadix(text);
         }

@@ -10,7 +10,6 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;
 import org.dynjs.runtime.builtins.types.number.prototype.ToFixed;
-import org.dynjs.runtime.builtins.types.number.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.number.prototype.ToString;
 import org.dynjs.runtime.builtins.types.number.prototype.ValueOf;
 
@@ -29,7 +28,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
         defineReadOnlyFunction(proto, globalObject, "constructor", this);
         defineReadOnlyFunction(proto, globalObject, "toString", new ToString(globalObject));
-        defineReadOnlyFunction(proto, globalObject, "toLocaleString", new ToLocaleString(globalObject));
+        defineReadOnlyFunction(proto, globalObject, "toLocaleString", new ToString(globalObject));
         defineReadOnlyFunction(proto, globalObject, "valueOf", new ValueOf(globalObject));
         defineReadOnlyFunction(proto, globalObject, "toFixed", new ToFixed(globalObject));
         defineReadOnlyFunction(proto, globalObject, "toExponential", new ToExponential(globalObject));

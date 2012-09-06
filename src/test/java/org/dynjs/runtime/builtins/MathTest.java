@@ -40,6 +40,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testLog10e() {
         assertPrimitive("Math.LOG10E", java.lang.Math.log10(java.lang.Math.E));
     }
+    
+    @Test
+    public void testLog10eDoesNotEnum() {
+        check("var result = false; for (x in Math) { if (x === 'LOG10E') { result = true; } }", false);
+    }
 
     @Test
     public void testMathPi() {
