@@ -7,6 +7,7 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToFixed extends AbstractNativeFunction {
 
@@ -31,17 +32,7 @@ public class ToFixed extends AbstractNativeFunction {
             final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());
             return bigDecimal.setScale(digits, BigDecimal.ROUND_HALF_UP).toString();
         } else {
-            return rewritePossiblyExponentialValue(String.valueOf(number.doubleValue()));
+            return DynNumber.rewritePossiblyExponentialValue(String.valueOf(number.doubleValue()));
         }
-    }
-
-    private String rewritePossiblyExponentialValue(String value) {
-        // Java writes exponential values as 1.0E14 while JS likes
-        // them as 1e+14
-        final int index = value.indexOf(".0E");
-        if (index != -1) {
-            value = value.substring(0, index) + "e+" + value.substring(index + 3);
-        }
-        return value;
     }
 }

@@ -1,10 +1,13 @@
 package org.dynjs.runtime.builtins.types.number.prototype;
 
+import java.math.BigDecimal;
+
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToExponential extends AbstractNativeFunction {
 
@@ -15,36 +18,17 @@ public class ToExponential extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.7.4.6 Number.prototype.toExponential (fractionDigits) 
-        Number x = Types.toNumber(context, self);
-        Integer f = Types.toInteger(context, args[0]);
-        double xd = x.doubleValue();
-        int xi = x.intValue();
+        Number number = Types.toNumber(context, self);
+        Integer fractionDigits = Types.toInteger(context, args[0]);
 
-        if (Double.isNaN(xd)) {
-            return "NaN";
+        if (Double.isNaN(number.doubleValue()) || Double.isInfinite(number.doubleValue())) {
+            return String.valueOf(number);
         }
-
-        String s = "";
-        String m = "0";
-        String c = "+";
-        String d = "0";
-
-        if (xi < 0) {
-            s = "-";
-            xd = -xd;
-            xi = -xi;
+        if (fractionDigits < 0 || fractionDigits > 20) {
+            throw new ThrowException(context.createRangeError("Number.prototype.toExponential() [fractionDigits] must be between 0 and 20"));
         }
-
-        if (Double.isInfinite(xd)) {
-            return s + "Infinity";
-        }
-        if (xi != 0) {
-            // TODO: steps 9-12 
-        }
-
-        if (f < 0 || f > 20) {
-            throw new ThrowException(context.createRangeError("toExponential() digits argument must be between 0 and 20"));
-        }
-        return s + m + "e" + c + d;
+        if (number.doubleValue() == 0) { return "0e+0"; }
+        final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());
+        return DynNumber.rewritePossiblyExponentialValue(bigDecimal.setScale(-1, BigDecimal.ROUND_HALF_UP).toString());
     }
 }

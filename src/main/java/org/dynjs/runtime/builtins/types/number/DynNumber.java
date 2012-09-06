@@ -26,4 +26,15 @@ public class DynNumber extends PrimitiveDynObject {
         return false;
     }
 
+    public static String rewritePossiblyExponentialValue(String value) {
+        // Java writes exponential values as 1.0E14 while JS likes
+        // them as 1e+14
+        int plus = 3;
+        int index = value.indexOf(".0E");
+        if (index < 0) { index = value.indexOf("E+"); plus = 2; }
+        if (index != -1)
+            value = value.substring(0, index) + "e+" + value.substring(index + plus);
+        return value;
+    }
+
 }

@@ -281,7 +281,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     @Ignore
     public void testToExponential() {
-        check("var result = new Number(14).toExponential()", "1.4e+1");
+        check("var result = new Number(144).toExponential()", "1.44e+2");
     }
 
     @Test
