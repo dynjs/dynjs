@@ -193,6 +193,11 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberToFixedWithTooManyParameters() {
         check("var result = new Number(123).toFixed(1,2,3)", Types.UNDEFINED);
     }
+    
+    @Test
+    public void testNumberNaNToFixedWithDouble() {
+        check("result = (Number.NaN.toFixed(0.9) === 'NaN')", true);
+    }
 
     @Test
     public void testBigAssNumberToFixed() {

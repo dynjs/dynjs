@@ -4,7 +4,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
@@ -21,18 +20,13 @@ public class ToFixed extends AbstractNativeFunction {
             return Types.UNDEFINED;
         }
         String value = "";
-        Integer digits = 0;
-        if (args[0] != Types.UNDEFINED) {
-            digits = (Integer) Types.toNumber(context, args[0]);
-        }
+        int digits = Types.toInteger(context, args[0]);
         if (digits < 0 || digits > 20) {
             throw new ThrowException(context.createRangeError("toFixed() digits argument must be between 0 and 20"));
         }
 
         Object primitiveValue = Double.NaN;
-        if (self instanceof PrimitiveDynObject) {
-            primitiveValue = ((PrimitiveDynObject) self).getPrimitiveValue();
-        } else if (self instanceof DynNumber) {
+        if (self instanceof DynNumber) {
             primitiveValue = ((DynNumber) self).getPrimitiveValue();
         }
         if (primitiveValue instanceof Double) {
