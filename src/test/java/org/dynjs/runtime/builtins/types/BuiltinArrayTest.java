@@ -409,8 +409,34 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testLastIndexOfWithInfinity() {
-        eval("var obj = { 0: 0, length: Infinity };",
+        Object result = eval("var obj = { 0: 0, length: Infinity };",
                 "return Array.prototype.lastIndexOf.call(obj, 0) === -1;");
+        
+        assertThat( result ).isEqualTo(true);
+    }
+    
+    @Test
+    public void testEveryTrue() {
+        Object result = eval( "[1,2,3].every(function(e){ e < 10 })");
+        assertThat( result ).isEqualTo(true);
+    }
+    
+    @Test
+    public void testEveryFalse() {
+        Object result = eval( "[1,2,3,4,5,11,6,7,8,9].every(function(e){ e < 10 })");
+        assertThat( result ).isEqualTo(false);
+    }
+    
+    @Test
+    public void testSomeTrue() {
+        Object result = eval( "[1,2,3].some(function(e){ e > 2 })");
+        assertThat( result ).isEqualTo(true);
+    }
+    
+    @Test
+    public void testSomeFalse() {
+        Object result = eval( "[1,2,3,4,5,11,6,7,8,9].some(function(e){ e > 40 })");
+        assertThat( result ).isEqualTo(false);
     }
 
 }

@@ -7,6 +7,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.array.IsArray;
 import org.dynjs.runtime.builtins.types.array.prototype.Concat;
+import org.dynjs.runtime.builtins.types.array.prototype.Every;
 import org.dynjs.runtime.builtins.types.array.prototype.Filter;
 import org.dynjs.runtime.builtins.types.array.prototype.ForEach;
 import org.dynjs.runtime.builtins.types.array.prototype.IndexOf;
@@ -18,6 +19,7 @@ import org.dynjs.runtime.builtins.types.array.prototype.Push;
 import org.dynjs.runtime.builtins.types.array.prototype.Reverse;
 import org.dynjs.runtime.builtins.types.array.prototype.Shift;
 import org.dynjs.runtime.builtins.types.array.prototype.Slice;
+import org.dynjs.runtime.builtins.types.array.prototype.Some;
 import org.dynjs.runtime.builtins.types.array.prototype.Sort;
 import org.dynjs.runtime.builtins.types.array.prototype.Splice;
 import org.dynjs.runtime.builtins.types.array.prototype.ToLocaleString;
@@ -51,6 +53,8 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.put(null, "unshift", new Unshift(globalObject), false);
         proto.put(null, "indexOf", new IndexOf(globalObject), false);
         proto.put(null, "lastIndexOf", new LastIndexOf(globalObject), false);
+        proto.put(null, "every", new Every(globalObject), false);
+        proto.put(null, "some", new Some(globalObject), false);
 
         proto.put(null, "forEach", new ForEach(globalObject), false);
         proto.put(null, "map", new Map(globalObject), false);
