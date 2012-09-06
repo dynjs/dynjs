@@ -88,6 +88,10 @@ public class Types {
             if (str.trim().isEmpty()) {
                 return 0;
             }
+            
+            if ( str.startsWith( "0x" ) ) {
+                return Integer.decode( str );
+            }
             if (str.indexOf(".") > 0) {
                 return Double.valueOf(str);
             } else {
