@@ -8,12 +8,12 @@ import org.dynjs.runtime.PrimitiveDynObject;
 import org.junit.Test;
 
 public class BuiltinStringTest extends AbstractDynJSTestSupport {
-    
+
     @Test
     public void testFromCharCode() {
-        assertThat( eval( "String.fromCharCode(66, 79, 66)") ).isEqualTo( "BOB" );
+        assertThat(eval("String.fromCharCode(66, 79, 66)")).isEqualTo("BOB");
     }
-    
+
     @Test
     public void testConstructorWithString() {
         PrimitiveDynObject o = (PrimitiveDynObject) eval("new String('howdy')");
@@ -57,15 +57,30 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         eval("var obj = { toString:function(){ return new Object(); } };",
                 "String(obj)");
     }
-    
+
     @Test
     public void testCharCodeAt() {
-        assertThat( eval( "'BOB'.charCodeAt(2)" )).isEqualTo(66L);
+        assertThat(eval("'BOB'.charCodeAt(2)")).isEqualTo(66L);
     }
-    
+
     @Test
     public void testConcat() {
-        assertThat( eval( "'bob'.concat( 'lance', 'qmx' )") ).isEqualTo( "boblanceqmx");
+        assertThat(eval("'bob'.concat( 'lance', 'qmx' )")).isEqualTo("boblanceqmx");
+    }
+
+    @Test
+    public void testIndexOf() {
+        assertThat(eval("'bob'.indexOf('o')")).isEqualTo(1L);
+    }
+
+    @Test
+    public void testIndexOfWithPos() {
+        assertThat(eval("'bobobo'.indexOf('o',2)")).isEqualTo(3L);
+    }
+
+    @Test
+    public void testIndexOfNotFound() {
+        assertThat(eval("'bobobo'.indexOf('taco',2)")).isEqualTo(-1L);
     }
 
 }
