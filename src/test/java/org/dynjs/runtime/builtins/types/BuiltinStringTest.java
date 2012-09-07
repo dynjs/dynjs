@@ -82,5 +82,22 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     public void testIndexOfNotFound() {
         assertThat(eval("'bobobo'.indexOf('taco',2)")).isEqualTo(-1L);
     }
+    
+    @Test
+    public void testLastIndexOf() {
+        assertThat( eval( "'bob'.lastIndexOf('b')")).isEqualTo(2L);
+    }
+    
+    @Test
+    public void testLastIndexOfWithPos() {
+        assertThat( eval( "'bob'.lastIndexOf('b',1)")).isEqualTo(0L);
+    }
+    
+    @Test
+    public void testLastIndexOfNotFound() {
+        assertThat(eval("'bobobo'.lastIndexOf('taco',2)")).isEqualTo(-1L);
+    }
+    
+    
 
 }
