@@ -20,7 +20,8 @@ public class BuiltinDate extends AbstractBuiltinType {
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject prototype) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        prototype.put(null, "constructor", this, false);
+        proto
     }
 
     @Override
