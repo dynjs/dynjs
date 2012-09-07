@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.types;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
 import org.dynjs.runtime.builtins.types.date.prototype.Parse;
@@ -29,6 +30,9 @@ public class BuiltinDate extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        if (args[0] == Types.UNDEFINED) {
+
+        }
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

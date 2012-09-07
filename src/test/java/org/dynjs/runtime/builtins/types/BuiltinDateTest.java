@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
@@ -32,5 +33,14 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateParse() {
         assertThat(eval("Date.parse('2012-09-07T18:00:00.000Z')"))
                 .isEqualTo(DateTime.parse("2012-09-07T18:00:00.000Z").toDateTime(DateTimeZone.UTC).getMillis());
+    }
+
+    @Test
+    public void testDateCtor() {
+        final long fixedInstant = 1347051329670L;
+        DateTimeUtils.setCurrentMillisFixed(fixedInstant);
+        final Object date = eval("new Date()");
+        assertThat(date).isNotNull().isInstanceOf(DynDate.class);
+        DateTimeUtils.setCurrentMillisSystem();
     }
 }
