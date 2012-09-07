@@ -27,7 +27,7 @@ public class Freeze extends AbstractNativeFunction {
         JSObject jsObj = (JSObject) o;
 
         NameEnumerator names = jsObj.getOwnPropertyNames();
-
+        
         while (names.hasNext()) {
             String name = names.next();
             Object d = jsObj.getOwnProperty(context, name);
@@ -41,7 +41,7 @@ public class Freeze extends AbstractNativeFunction {
                 }
                 Object isConfigurable = desc.get("Configurable");
                 if (isConfigurable == Boolean.TRUE) {
-                    desc.set("Configurable", false);
+                    desc.setConfigurable(false);
                 }
                 jsObj.defineOwnProperty(context, name, desc, true);
             }

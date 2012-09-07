@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,13 @@ public class PropertyDescriptor {
         }
     };
 
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Object value;
+    private Object set;
+    private Object get;
+    private Object writable;
+    private Object configurable;
+    private Object enumerable;
+    private Object initialized;
 
     public static PropertyDescriptor newAccessorPropertyDescriptor(final boolean withDefaults) {
         return new PropertyDescriptor() {
@@ -55,10 +62,10 @@ public class PropertyDescriptor {
             ((JSFunction) value).setDebugContext("Object." + name);
         }
         PropertyDescriptor d = new PropertyDescriptor();
-        d.set("Value", value);
-        d.set("Writable", true);
-        d.set("Configurable", true);
-        d.set("Enumerable", true);
+        d.value = value;
+        d.writable = Boolean.TRUE;
+        d.configurable = Boolean.TRUE;
+        d.enumerable = Boolean.TRUE;
         return d;
     }
 
@@ -71,9 +78,9 @@ public class PropertyDescriptor {
         } else {
             d = (PropertyDescriptor) orig;
         }
-        d.set("Get", value);
-        d.set("Configurable", true);
-        d.set("Enumerable", true);
+        d.get = value;
+        d.configurable = Boolean.TRUE;
+        d.enumerable = Boolean.TRUE;
         return d;
     }
 
@@ -86,9 +93,9 @@ public class PropertyDescriptor {
         } else {
             d = (PropertyDescriptor) orig;
         }
-        d.set("Set", value);
-        d.set("Configurable", true);
-        d.set("Enumerable", true);
+        d.set = value;
+        d.configurable = Boolean.TRUE;
+        d.enumerable = Boolean.TRUE;
         return d;
     }
 
@@ -96,110 +103,162 @@ public class PropertyDescriptor {
     }
 
     public String toString() {
-        return "[PropertyDescriptor: attributes=" + this.attributes.keySet() + "]";
+        return "[PropertyDescriptor value=" + this.value + "; enumerable=" + this.enumerable + "]";// : attributes=" + this.attributes.keySet() + "]";
     }
 
     public boolean isWritable() {
-        Object v = get("Writable");
-        if (v == null) {
+        if (this.writable == null) {
             return false;
         }
-        return (Boolean) v;
+        if (this.writable == Types.UNDEFINED) {
+            return false;
+        }
+        return (Boolean) this.writable;
     }
 
     public boolean hasWritable() {
-        return this.attributes.containsKey("Writable");
+        return this.writable != null;
     }
 
     public void setWritable(boolean writable) {
-        set("Writable", writable);
+        this.writable = writable;
     }
 
     public boolean isConfigurable() {
-        Object v = get("Configurable");
-        if (v == null) {
+        if (this.configurable == null) {
             return false;
         }
 
-        if (v == Types.UNDEFINED) {
+        if (this.configurable == Types.UNDEFINED) {
             return false;
         }
 
-        return (Boolean) v;
+        return (Boolean) this.configurable;
     }
 
     public boolean hasConfigurable() {
-        return this.attributes.containsKey("Configurable");
+        return this.configurable != null;
     }
 
     public void setConfigurable(boolean configurable) {
-        set("Configurable", configurable);
+        this.configurable = configurable;
     }
 
     public boolean isEnumerable() {
-        Object v = get("Enumerable");
-        if (v == null) {
+        if (this.enumerable == null) {
             return false;
         }
 
-        return (Boolean) v;
+        if (this.enumerable == Types.UNDEFINED) {
+            return false;
+        }
+
+        return (Boolean) this.enumerable;
     }
 
     public void setEnumerable(boolean enumerable) {
-        set("Enumerable", enumerable);
+        this.enumerable = enumerable;
     }
 
     public boolean hasEnumerable() {
-        return this.attributes.containsKey("Configurable");
+        return this.enumerable != null;
     }
 
     public Object getValue() {
-        return get("Value");
+        return this.value;
     }
 
     public void setValue(Object value) {
-        set("Value", value);
+        this.value = value;
     }
 
     public Object getSetter() {
-        return get("Set");
+        return this.set;
     }
 
     public void setSetter(JSFunction setter) {
-        set("Set", setter);
+        this.set = setter;
     }
 
     public Object getGetter() {
-        return get("Get");
+        return this.get;
     }
 
     public void setGetter(JSFunction getter) {
-        set("Get", getter);
+        this.get = getter;
     }
 
     public boolean isEmpty() {
-        return this.attributes.isEmpty();
+        return this.value == null && this.set == null && this.get == null &&
+                this.writable == null && this.configurable == null && this.enumerable == null;
     }
 
     public void set(String name, Object value) {
-        this.attributes.put(name, value);
+        switch (name) {
+        case "Value":
+            this.value = value;
+            break;
+        case "Set":
+            this.set = value;
+            break;
+        case "Get":
+            this.get = value;
+            break;
+        case "Writable":
+            this.writable = value;
+            break;
+        case "Configurable":
+            this.configurable = value;
+            break;
+        case "Enumerable":
+            this.enumerable = value;
+            break;
+        case "Initialized":
+            this.initialized = value;
+            break;
+        }
     }
 
     public Object get(String name) {
-        Object v = this.attributes.get(name);
-        if (v == null) {
-            return Types.UNDEFINED;
+        switch (name) {
+        case "Value":
+            return (this.value != null ? this.value : Types.UNDEFINED);
+        case "Set":
+            return (this.set != null ? this.set : Types.UNDEFINED);
+        case "Get":
+            return (this.get != null ? this.get : Types.UNDEFINED);
+        case "Writable":
+            return (this.writable != null ? this.writable : Types.UNDEFINED);
+        case "Configurable":
+            return (this.configurable != null ? this.configurable : Types.UNDEFINED);
+        case "Enumerable":
+            return (this.enumerable != null ? this.enumerable : Types.UNDEFINED);
+        case "Initialized":
+            return (this.initialized != null ? this.initialized : Types.UNDEFINED);
         }
-
-        return v;
+        return Types.UNDEFINED;
     }
 
     public boolean isPresent(String name) {
-        return this.attributes.containsKey(name);
+        switch (name) {
+        case "Value":
+            return this.value != null;
+        case "Set":
+            return this.set != null;
+        case "Get":
+            return this.get != null;
+        case "Writable":
+            return this.writable != null;
+        case "Configurable":
+            return this.configurable != null;
+        case "Enumerable":
+            return this.enumerable != null;
+        }
+        return false;
     }
 
     public Object getWithDefault(String name) {
-        Object v = this.attributes.get(name);
+        Object v = get(name);
         if (v == null) {
             return DEFAULTS.get(name);
         }
@@ -210,7 +269,26 @@ public class PropertyDescriptor {
     public PropertyDescriptor duplicate(String... attributes) {
         PropertyDescriptor d = new PropertyDescriptor();
         for (int i = 0; i < attributes.length; ++i) {
-            d.set(attributes[i], get(attributes[i]));
+            switch (attributes[i]) {
+            case "Value":
+                d.value = this.value;
+                break;
+            case "Set":
+                d.set = this.set;
+                break;
+            case "Get":
+                d.get = this.get;
+                break;
+            case "Writable":
+                d.writable = this.writable;
+                break;
+            case "Configurable":
+                d.configurable = this.configurable;
+                break;
+            case "Enumerable":
+                d.enumerable = this.enumerable;
+                break;
+            }
         }
         return d;
     }
@@ -218,18 +296,54 @@ public class PropertyDescriptor {
     public PropertyDescriptor duplicateWithDefaults(String... attributes) {
         PropertyDescriptor d = new PropertyDescriptor();
         for (int i = 0; i < attributes.length; ++i) {
-            d.set(attributes[i], getWithDefault(attributes[i]));
+            switch (attributes[i]) {
+            case "Value":
+                d.value = (this.value != null ? this.value : Types.UNDEFINED);
+                break;
+            case "Set":
+                d.set = (this.set != null ? this.set : Types.UNDEFINED);
+                break;
+            case "Get":
+                d.get = (this.get != null ? this.get : Types.UNDEFINED);
+                break;
+            case "Writable":
+                d.writable = (this.writable != null ? this.writable : Boolean.FALSE);
+                break;
+            case "Configurable":
+                d.configurable = (this.configurable != null ? this.configurable : Boolean.FALSE);
+                break;
+            case "Enumerable":
+                d.enumerable = (this.enumerable != null ? this.enumerable : Boolean.FALSE);
+                break;
+            }
         }
         return d;
     }
 
     public void copyAll(PropertyDescriptor from) {
-        attributes.putAll(from.attributes);
+        if (from.value != null) {
+            this.value = from.value;
+        }
+        if (from.set != null) {
+            this.set = from.set;
+        }
+        if (from.get != null) {
+            this.get = from.get;
+        }
+        if (from.writable != null) {
+            this.writable = from.writable;
+        }
+        if (from.configurable != null) {
+            this.configurable = from.configurable;
+        }
+        if (from.enumerable != null) {
+            this.enumerable = from.enumerable;
+        }
     }
 
     public boolean isAccessorDescriptor() {
         // 8.10.1
-        if (attributes.get("Get") == null && attributes.get("Set") == null) {
+        if (this.get == null && this.set == null) {
             return false;
         }
 
@@ -238,7 +352,7 @@ public class PropertyDescriptor {
 
     public boolean isDataDescriptor() {
         // 8.10.2
-        if (attributes.get("Value") == null && attributes.get("Writable") == null) {
+        if (this.value == null && this.writable == null) {
             return false;
         }
 

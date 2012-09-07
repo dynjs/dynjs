@@ -17,11 +17,9 @@ public class ReduceRight extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.22
-        System.err.println( "CALL" );
         JSObject o = Types.toObject(context, self);
         long len = Types.toUint32(context, o.get(context, "length"));
 
-        System.err.println( "len=" + len );
         if (!(args[0] instanceof JSFunction)) {
             throw new ThrowException(context.createTypeError("callbackFn must be a function"));
         }

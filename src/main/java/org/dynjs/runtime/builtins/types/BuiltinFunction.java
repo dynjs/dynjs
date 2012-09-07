@@ -97,7 +97,6 @@ public class BuiltinFunction extends AbstractBuiltinType {
         ES3Parser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();
         if (!errors.isEmpty()) {
-            System.err.println(errors);
             throw new ThrowException(context.createSyntaxError(errors.get(0)));
         }
 

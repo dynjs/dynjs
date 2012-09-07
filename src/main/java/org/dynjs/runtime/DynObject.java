@@ -170,7 +170,7 @@ public class DynObject implements JSObject {
         }
 
         Object desc = getProperty(context, name);
-
+        
         if ((desc != Types.UNDEFINED) && ((PropertyDescriptor) desc).isAccessorDescriptor()) {
             JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get("Set");
             context.call(setter, this, value);
@@ -223,6 +223,9 @@ public class DynObject implements JSObject {
     @Override
     public boolean delete(ExecutionContext context, String name, boolean shouldThrow) {
         // 8.12.7
+        if ( ! this.properties.containsKey(name) ) {
+            return true;
+        }
         Object d = getOwnProperty(context, name);
         if (d == Types.UNDEFINED) {
             return true;
@@ -299,6 +302,7 @@ public class DynObject implements JSObject {
             }
             Object currentEnumerable = current.get("Enumerable");
             Object descEnumerable = desc.get("Enumerable");
+            
 
             if ((currentEnumerable != Types.UNDEFINED && descEnumerable != Types.UNDEFINED) && (currentEnumerable != descEnumerable)) {
                 return reject(context, shouldThrow);
@@ -378,7 +382,7 @@ public class DynObject implements JSObject {
         ArrayList<String> names = new ArrayList<String>();
         for (String name : this.properties.keySet()) {
             PropertyDescriptor desc = this.properties.get(name);
-            if (desc.isEnumerable()) {
+            if (desc.isEnumerable() ) {
                 names.add(name);
             }
         }
