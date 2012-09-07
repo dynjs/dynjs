@@ -189,7 +189,7 @@ public class Types {
     }
 
     private static long modulo(long a, long b) {
-        // because Java modulo doesn't deal with negatives the way the 
+        // because Java modulo doesn't deal with negatives the way the
         // javascript spec assumes it should.
         return (a % b + b) % b;
     }
@@ -230,9 +230,18 @@ public class Types {
     }
 
     public static String toString(ExecutionContext context, Object o) {
-        if (o instanceof JSObject) {
-            return (String) toPrimitive(context, o, "String");
+        if ( o == Types.UNDEFINED ) {
+            return "undefined";
         }
+        
+        if ( o == Types.NULL ) {
+            return "null";
+        }
+        
+        if (o instanceof JSObject) {
+            return (String) toString( context, toPrimitive(context, o, "String") );
+        }
+        
         return o.toString();
     }
 
