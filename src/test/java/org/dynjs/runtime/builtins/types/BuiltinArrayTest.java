@@ -23,6 +23,13 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
         assertThat(x.get(getContext(), "length")).isEqualTo(42L);
     }
+    
+    @Test
+    public void testArrayFunctionWithSizeNonZero() {
+        eval("var x = Array(42);");
+        DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
+        assertThat(x.get(getContext(), "length")).isEqualTo(42L);
+    }
 
     @Test
     public void testArrayConstructorWithSizeNonNumeric() {
@@ -41,6 +48,17 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(x.get(getContext(), "1")).isEqualTo("lol");
         assertThat(x.get(getContext(), "2")).isEqualTo(2L);
     }
+    
+    @Test
+    public void testArrayFunctionWithElementList() {
+        eval("var x = Array(1,'lol', 2);");
+        DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
+        assertThat(x.get(getContext(), "length")).isEqualTo(3L);
+        assertThat(x.get(getContext(), "0")).isEqualTo(1L);
+        assertThat(x.get(getContext(), "1")).isEqualTo("lol");
+        assertThat(x.get(getContext(), "2")).isEqualTo(2L);
+    }
+
 
     @Test
     public void testArrayInstancePrototype() {

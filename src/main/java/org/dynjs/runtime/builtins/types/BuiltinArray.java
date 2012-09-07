@@ -69,26 +69,29 @@ public class BuiltinArray extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, final Object... args) {
-        DynArray arraySelf = (DynArray) self;
 
-        if (self != Types.UNDEFINED) {
-            if (args.length == 1) {
-                final Number possiblyLen = Types.toNumber(context, args[0]);
-                if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
-                    arraySelf.setLength(1);
-                    arraySelf.setElement(0, args[0]);
-                } else {
-                    arraySelf.setLength(possiblyLen.longValue());
-                }
-            } else {
-                arraySelf.setLength(args.length);
-                for (int i = 0; i < args.length; ++i) {
-                    arraySelf.setElement(i, args[i]);
-                }
-            }
-            return null;
+        DynArray arraySelf = null;
+        
+        if (self == Types.UNDEFINED) {
+            arraySelf = new DynArray(context.getGlobalObject());
+        } else {
+            arraySelf = (DynArray) self;
         }
-        return null;
+        if (args.length == 1) {
+            final Number possiblyLen = Types.toNumber(context, args[0]);
+            if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
+                arraySelf.setLength(1);
+                arraySelf.setElement(0, args[0]);
+            } else {
+                arraySelf.setLength(possiblyLen.longValue());
+            }
+        } else {
+            arraySelf.setLength(args.length);
+            for (int i = 0; i < args.length; ++i) {
+                arraySelf.setElement(i, args[i]);
+            }
+        }
+        return arraySelf;
     }
 
     @Override

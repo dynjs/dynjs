@@ -53,4 +53,14 @@ public class AdditiveExpressionTest extends AbstractDynJSTestSupport {
         Object result = eval("3 - 1.1");
         assertThat(result).isEqualTo(1.9);
     }
+    
+    @Test
+    public void testAddStringAndInteger() {
+        assertThat( eval( "'foo' + 42") ).isEqualTo("foo42" );
+    }
+    
+    @Test
+    public void testAddIntegerAndString() {
+        assertThat( eval( "42 + 'foo'") ).isEqualTo("42foo" );
+    }
 }

@@ -114,11 +114,12 @@ public class AdditiveExpression extends AbstractBinaryExpression {
                 // Strings
                 label(stringConcat);
                 // val(lhs) val(rhs)
-                checkcast(p(String.class));
+                append( jsToString() );
+                // val(lhs) str(rhs)
                 swap();
                 // str(rhs) val(lhs)
-                checkcast(p(String.class));
-                // str(rhs) str(lhs)
+                append( jsToString() );
+                // str(lhs) str(lhs)
                 swap();
                 // str(lhs) str(rhs)
                 invokevirtual(p(String.class), "concat", sig(String.class, String.class));
