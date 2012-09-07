@@ -7,5 +7,6 @@ public class DynDate extends DynObject {
 
     public DynDate(GlobalObject globalObject) {
         super(globalObject);
+        setClassName("Date");
     }
 }
