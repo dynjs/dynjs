@@ -88,9 +88,9 @@ public class Types {
             if (str.trim().isEmpty()) {
                 return 0L;
             }
-            
-            if ( str.startsWith( "0x" ) ) {
-                return Long.decode( str );
+
+            if (str.startsWith("0x")) {
+                return Long.decode(str);
             }
             if (str.indexOf(".") > 0) {
                 return Double.valueOf(str);
@@ -149,33 +149,29 @@ public class Types {
     public static Long toUint16(ExecutionContext context, Object o) {
         // 9.7
         Number n = toNumber(context, o);
-        
+
         if (n instanceof Double) {
             if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
                 return 0L;
             }
         }
-        
-        int posInt = (int) (sign(n) * Math.floor( Math.abs( n.intValue() )));
-        
-        return (long) (posInt % 65536) ;
+
+        int posInt = (int) (sign(n) * Math.floor(Math.abs(n.intValue())));
+
+        return modulo(posInt, 65536);
     }
-    
+
     protected static int sign(Number n) {
-        if ( n.doubleValue() < 0 ) {
+        if (n.doubleValue() < 0) {
             return -1;
         }
-        
+
         return 1;
     }
 
     public static Long toUint32(ExecutionContext context, Object o) {
         // 9.5
         Number n = toNumber(context, o);
-
-        if (n instanceof Long) {
-            return (Long) n;
-        }
 
         if (n instanceof Double) {
             if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
@@ -185,11 +181,17 @@ public class Types {
 
         double d = n.doubleValue();
 
-        double posInt = (d < 0 ? -1 : 1) * Math.floor(Math.abs(d));
+        long posInt = (long) ((sign(d)) * Math.floor(Math.abs(d)));
 
-        double int32bit = posInt % Math.pow(2, 32);
+        long int32bit = modulo(posInt, 4294967296L);
 
         return (long) int32bit;
+    }
+
+    private static long modulo(long a, long b) {
+        // because Java modulo doesn't deal with negatives the way the 
+        // javascript spec assumes it should.
+        return (a % b + b) % b;
     }
 
     public static Long toInt32(ExecutionContext context, Object o) {

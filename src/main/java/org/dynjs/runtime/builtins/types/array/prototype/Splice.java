@@ -20,7 +20,7 @@ public class Splice extends AbstractNativeFunction {
         // 15.4.4.11
         JSObject o = Types.toObject(context, self);
 
-        long len = Types.toInteger(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
         long relativeStart = Types.toInteger(context, args[0]);
         long actualStart = relativeStart;
 

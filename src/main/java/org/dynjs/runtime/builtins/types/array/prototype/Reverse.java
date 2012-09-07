@@ -16,7 +16,7 @@ public class Reverse extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.8
         JSObject o = Types.toObject(context, self);
-        long len = Types.toInteger(context, o.get(context, "length"));
+        long len = Types.toUint32(context, o.get(context, "length"));
 
         long middle = (long) Math.floor(len / 2);
         long lower = 0;

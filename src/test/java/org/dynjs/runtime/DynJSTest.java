@@ -157,12 +157,10 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
         check("var result = 9 << 2", 36L);
         check("var result = 9 >> 2", 2L);
-        check("var result = -1 >>> 2", -1L >>> 2);
-        //check("var result = -1 >>> 2", 1073741823L);
+        check("var result = -1 >>> 2", 1073741823L);
         check("var result = 9; result <<= 2", 36L);
         check("var result = 9; result >>= 2", 2L);
-        check("var result = -1; result >>>= 2", -1L >>> 2);
-        //check("var result = -1; result >>>= 2", 1073741823L);
+        check("var result = -1; result >>>= 2", 1073741823L);
     }
 
     @Test
