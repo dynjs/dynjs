@@ -5,6 +5,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
+import org.dynjs.runtime.builtins.types.date.prototype.Parse;
 
 public class BuiltinDate extends AbstractBuiltinType {
 
@@ -22,6 +23,7 @@ public class BuiltinDate extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject prototype) {
         put(null, "now", new Now(globalObject), false);
+        put(null, "parse", new Parse(globalObject), false);
         prototype.put(null, "constructor", this, false);
     }
 
