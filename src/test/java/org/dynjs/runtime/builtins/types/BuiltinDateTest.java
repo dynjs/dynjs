@@ -14,15 +14,18 @@ import static org.fest.assertions.Assertions.assertThat;
 public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     private final long fixedInstant = 1347051329670L;
+    private final DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
 
     @Before
     public void setup() {
         DateTimeUtils.setCurrentMillisFixed(fixedInstant);
+        DateTimeZone.setDefault(DateTimeZone.forID("Brazil/East"));
     }
 
     @After
     public void tearDown() {
         DateTimeUtils.setCurrentMillisSystem();
+        DateTimeZone.setDefault(defaultTimeZone);
     }
 
     @Test
