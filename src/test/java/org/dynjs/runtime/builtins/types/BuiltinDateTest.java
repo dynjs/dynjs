@@ -57,4 +57,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateToISOString() {
         assertThat(eval("new Date().toISOString()")).isEqualTo("2012-09-07T17:55:29.670-03:00");
     }
+
+    @Test
+    public void testDateToString(){
+        assertThat(eval("new Date().toString()")).isEqualTo("Fri Sep 07 2012 17:55:29 GMT-0300 (BRT)");
+    }
 }
