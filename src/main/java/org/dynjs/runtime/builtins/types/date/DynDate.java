@@ -8,5 +8,6 @@ public class DynDate extends PrimitiveDynObject {
     public DynDate(GlobalObject globalObject) {
         super(globalObject);
         setClassName("Date");
+        setExtensible(true);
     }
 }
