@@ -36,11 +36,10 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testDateCtor() {
+    public void testDateValueOf() {
         final long fixedInstant = 1347051329670L;
         DateTimeUtils.setCurrentMillisFixed(fixedInstant);
-        final Object date = eval("new Date()");
-        assertThat(date).isNotNull().isInstanceOf(DynDate.class);
+        assertThat(eval("new Date().valueOf()")).isEqualTo(fixedInstant);
         DateTimeUtils.setCurrentMillisSystem();
     }
 }
