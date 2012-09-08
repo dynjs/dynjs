@@ -8,6 +8,8 @@ import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
 import org.dynjs.runtime.builtins.types.date.prototype.Parse;
 import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 public class BuiltinDate extends AbstractBuiltinType {
 
@@ -32,9 +34,13 @@ public class BuiltinDate extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (args[0] == Types.UNDEFINED) {
-
+        if (args[0] == Types.UNDEFINED) { // 15.9.3.3
+            ((DynDate) self).setPrimitiveValue(UTCnow());
         }
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private long UTCnow() {
+        return DateTime.now(DateTimeZone.UTC).getMillis();
     }
 }
