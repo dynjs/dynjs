@@ -8,8 +8,8 @@ import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
 import org.dynjs.runtime.builtins.types.date.prototype.Parse;
 import org.dynjs.runtime.builtins.types.date.prototype.ToDateString;
-import org.dynjs.runtime.builtins.types.date.prototype.ToString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToISOString;
+import org.dynjs.runtime.builtins.types.date.prototype.ToString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToTimeString;
 import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
 import org.joda.time.DateTime;
@@ -37,7 +37,8 @@ public class BuiltinDate extends AbstractBuiltinType {
         prototype.put(null, "toDateString", new ToDateString(globalObject), false);
         prototype.put(null, "toTimeString", new ToTimeString(globalObject), false);
         prototype.put(null, "toISOString", new ToISOString(globalObject), false);
-        prototype.put(null, "valueOf", new ValueOf(globalObject), false);
+        prototype.put(null, "valueOf", new ValueOf(globalObject), false); // 15.9.5.8
+        prototype.put(null, "getTime", new ValueOf(globalObject), false); // 15.9.5.9 (same impl as above)
     }
 
     @Override
