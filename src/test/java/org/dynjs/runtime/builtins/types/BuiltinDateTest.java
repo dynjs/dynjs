@@ -5,11 +5,25 @@ import org.dynjs.runtime.JSFunction;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class BuiltinDateTest extends AbstractDynJSTestSupport {
+
+    private final long fixedInstant = 1347051329670L;
+
+    @Before
+    public void setup() {
+        DateTimeUtils.setCurrentMillisFixed(fixedInstant);
+    }
+
+    @After
+    public void tearDown() {
+        DateTimeUtils.setCurrentMillisSystem();
+    }
 
     @Test
     public void testDate() {
@@ -20,12 +34,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateNow() {
-        final long fixedInstant = 1347051329670L;
-        DateTimeUtils.setCurrentMillisFixed(fixedInstant);
         assertThat(eval("Date.now()"))
                 .isNotNull()
                 .isEqualTo(fixedInstant);
-        DateTimeUtils.setCurrentMillisSystem();
     }
 
     @Test
@@ -36,17 +47,11 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateValueOf() {
-        final long fixedInstant = 1347051329670L;
-        DateTimeUtils.setCurrentMillisFixed(fixedInstant);
         assertThat(eval("new Date().valueOf()")).isEqualTo(fixedInstant);
-        DateTimeUtils.setCurrentMillisSystem();
     }
 
     @Test
     public void testDateToISOString() {
-        final long fixedInstant = 1347051329670L;
-        DateTimeUtils.setCurrentMillisFixed(fixedInstant);
         assertThat(eval("new Date().toISOString()")).isEqualTo("2012-09-07T17:55:29.670-03:00");
-        DateTimeUtils.setCurrentMillisSystem();
     }
 }
