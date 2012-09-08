@@ -7,6 +7,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
 import org.dynjs.runtime.builtins.types.date.prototype.Parse;
+import org.dynjs.runtime.builtins.types.date.prototype.ToDateString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToISOString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToString;
 import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
@@ -32,6 +33,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         put(null, "parse", new Parse(globalObject), false);
         prototype.put(null, "constructor", this, false);
         prototype.put(null, "toString", new ToString(globalObject), false);
+        prototype.put(null, "toDateString", new ToDateString(globalObject), false);
         prototype.put(null, "toISOString", new ToISOString(globalObject), false);
         prototype.put(null, "valueOf", new ValueOf(globalObject), false);
     }
