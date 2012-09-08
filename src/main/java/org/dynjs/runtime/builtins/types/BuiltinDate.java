@@ -10,6 +10,7 @@ import org.dynjs.runtime.builtins.types.date.prototype.Parse;
 import org.dynjs.runtime.builtins.types.date.prototype.ToDateString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToISOString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToString;
+import org.dynjs.runtime.builtins.types.date.prototype.ToTimeString;
 import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -34,6 +35,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         prototype.put(null, "constructor", this, false);
         prototype.put(null, "toString", new ToString(globalObject), false);
         prototype.put(null, "toDateString", new ToDateString(globalObject), false);
+        prototype.put(null, "toTimeString", new ToTimeString(globalObject), false);
         prototype.put(null, "toISOString", new ToISOString(globalObject), false);
         prototype.put(null, "valueOf", new ValueOf(globalObject), false);
     }
