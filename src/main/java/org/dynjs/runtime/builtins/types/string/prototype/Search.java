@@ -19,6 +19,7 @@ public class Search extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.5.4.12
+        Types.checkObjectCoercible(context, self);
         String s = Types.toString(context, self);
         
         JSObject rx = null;

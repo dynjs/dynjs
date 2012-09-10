@@ -4,7 +4,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.junit.Test;
 
-public class ForVarDeclExpressionTest extends AbstractDynJSTestSupport {
+public class ForVarDeclStatementTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testBasicLoop() {

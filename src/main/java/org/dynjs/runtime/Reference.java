@@ -46,7 +46,7 @@ public class Reference {
         if (isUnresolvableReference()) {
             throw new ThrowException(context.createReferenceError(referencedName + " is not defined"));
         }
-
+        
         if (isPropertyReference()) {
             if (!hasPrimitiveBase()) {
                 value = ((JSObject) this.base).get(context, this.referencedName);

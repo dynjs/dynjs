@@ -71,7 +71,8 @@ public class BuiltinNumber extends AbstractBuiltinType {
     protected static void defineReadOnlyProperty(final DynObject on, final GlobalObject globalObject, String name, final Number value) {
         on.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", new DynNumber(globalObject, value));
+                //set("Value", new DynNumber(globalObject, value));
+                set("Value", value );
                 set("Writable", false);
                 set("Enumerable", false);
                 set("Configurable", false);

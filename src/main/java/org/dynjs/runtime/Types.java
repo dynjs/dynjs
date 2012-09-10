@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.string.DynString;
@@ -8,6 +9,18 @@ public class Types {
 
     public static final Undefined UNDEFINED = new Undefined();
     public static final Null NULL = new Null();
+    
+    public static void checkObjectCoercible(ExecutionContext context, Object o) {
+        if ( o == Types.UNDEFINED ) {
+            throw new ThrowException( context.createTypeError( "undefined cannot be coerced to an object" ));
+        }
+        
+        if ( o == Types.NULL ) {
+            throw new ThrowException( context.createTypeError( "null cannot be coerced to an object" ));
+        }
+        
+        return;
+    }
 
     public static boolean sameValue(Object left, Object right) {
 
@@ -38,6 +51,12 @@ public class Types {
         }
         if (o instanceof Boolean) {
             return new DynBoolean(context.getGlobalObject(), (Boolean) o);
+        }
+        if ( o == Types.UNDEFINED ) {
+            throw new ThrowException( context.createTypeError("undefined cannot be converted to an object" ) );
+        }
+        if ( o == Types.NULL ) {
+            throw new ThrowException( context.createTypeError("null cannot be converted to an object" ) );
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
@@ -128,8 +147,8 @@ public class Types {
             return (((String) o).length() != 0);
         }
 
-        if (o instanceof PrimitiveDynObject) {
-            return toBoolean(((PrimitiveDynObject) o).getPrimitiveValue());
+        if (o instanceof JSObject) {
+            return true;
         }
 
         return true;

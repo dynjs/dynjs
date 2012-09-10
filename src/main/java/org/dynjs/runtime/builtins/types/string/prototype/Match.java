@@ -20,6 +20,7 @@ public class Match extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.5.4.10
+        Types.checkObjectCoercible(context, self);
         String s = Types.toString(context, self);
         JSObject rx = null;
         if (args[0] instanceof JSObject && ((JSObject) args[0]).getClassName().equals("RegExp")) {

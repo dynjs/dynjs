@@ -17,6 +17,22 @@ public class AbstractByteCodeEmitter {
 
     }
 
+    public CodeBlock jsCheckObjectCoercible() {
+        return new CodeBlock() {
+            {
+                // IN: obj
+                dup();
+                // obj obj
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj obj context
+                swap();
+                // obj context obj
+                invokestatic( p(Types.class), "checkObjectCoercible", sig(void.class, ExecutionContext.class, Object.class));
+                // obj
+            }
+        };
+    }
+
     public CodeBlock jsResolve(final String identifier) {
         return new CodeBlock() {
             {
@@ -190,7 +206,7 @@ public class AbstractByteCodeEmitter {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 ldc(message);
-                // obj obj context message 
+                // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createTypeError", sig(JSObject.class, String.class));
                 // obj obj ex
                 invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
@@ -210,7 +226,7 @@ public class AbstractByteCodeEmitter {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 ldc(message);
-                // obj obj context message 
+                // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
                 // obj obj ex
                 invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));

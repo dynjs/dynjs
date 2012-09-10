@@ -14,6 +14,7 @@ public class Concat extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.5
+        Types.checkObjectCoercible(context, self);
         StringBuffer s = new StringBuffer();
         
         s.append( Types.toString(context, self));

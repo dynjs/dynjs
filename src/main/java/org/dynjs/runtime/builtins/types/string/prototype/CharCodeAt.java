@@ -14,6 +14,7 @@ public class CharCodeAt extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.5
+        Types.checkObjectCoercible(context, self);
         String strSelf = Types.toString(context, self);
         long position = Types.toInteger(context, args[0]);
         if (position < 0 || position > strSelf.length()) {

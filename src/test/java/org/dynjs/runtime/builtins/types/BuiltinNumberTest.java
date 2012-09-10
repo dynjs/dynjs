@@ -17,26 +17,24 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNumberPositiveInfinity() {
-        assertThat(eval("Number.POSITIVE_INFINITY")).isInstanceOf(DynNumber.class);
+        assertThat(eval("Number.POSITIVE_INFINITY")).isEqualTo(Double.POSITIVE_INFINITY);
     }
 
     @Test
     public void testNumberNegativeInfinity() {
-        assertThat(eval("Number.NEGATIVE_INFINITY")).isInstanceOf(DynNumber.class);
+        assertThat(eval("Number.NEGATIVE_INFINITY")).isEqualTo(Double.NEGATIVE_INFINITY);
     }
 
     @Test
     public void testMinValue() {
         Object minValue = eval("Number.MIN_VALUE");
-        assertThat(minValue).isInstanceOf(DynNumber.class);
-        assertThat(((PrimitiveDynObject) minValue).getPrimitiveValue()).isEqualTo(Double.MIN_VALUE);
+        assertThat(minValue).isEqualTo( Double.MIN_VALUE);
     }
 
     @Test
     public void testMaxValue() {
         Object minValue = eval("Number.MAX_VALUE");
-        assertThat(minValue).isInstanceOf(DynNumber.class);
-        assertThat(((PrimitiveDynObject) minValue).getPrimitiveValue()).isEqualTo(Double.MAX_VALUE);
+        assertThat(minValue).isEqualTo(Double.MAX_VALUE);
     }
 
     @Test

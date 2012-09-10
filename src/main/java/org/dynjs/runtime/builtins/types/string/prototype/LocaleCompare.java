@@ -14,6 +14,7 @@ public class LocaleCompare extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.5.4.9
+        Types.checkObjectCoercible(context, self);
         String s = Types.toString(context, self);
         String that = Types.toString(context, args[0] );
         

@@ -52,6 +52,12 @@ public class MemberExpression extends AbstractExpression {
                 // context object
                 append(identifierExpr.getCodeBlock());
                 // context object identifier-maybe-reference
+                swap();
+                // context identifier-maybe-reference obj
+                append( jsCheckObjectCoercible() );
+                // context identifier-maybe-reference obj
+                swap();
+                // context object identifier-maybe-reference
                 append(jsGetValue());
                 // context object identifier-obj
                 append(jsToString());
