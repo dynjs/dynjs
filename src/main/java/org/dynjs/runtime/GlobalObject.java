@@ -6,6 +6,8 @@ import java.util.List;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.builtins.DecodeUri;
+import org.dynjs.runtime.builtins.EncodeUri;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
@@ -79,6 +81,9 @@ public class GlobalObject extends DynObject {
         put(null, "isNaN", new IsNaN(this), false);
         put(null, "isFinite", new IsFinite(this), false);
         put(null, "require", new Require(this), false);
+        
+        put(null, "encodeURI", new EncodeUri(this), false);
+        put(null, "decodeURI", new DecodeUri(this), false);
         
         // ----------------------------------------
         // Built-in global objects
