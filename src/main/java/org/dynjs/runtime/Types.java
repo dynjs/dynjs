@@ -104,21 +104,69 @@ public class Types {
         return stringToNumber(o.toString());
     }
 
+    public static String trimString(String value) {
+        int len = value.length();
+        int st = 0;
+        char[] val = value.toCharArray();
+
+        while ((st < len) && (isWhitespace(val[st]))) {
+            st++;
+        }
+        while ((st < len) && (isWhitespace(val[len - 1]))) {
+            len--;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len).trim() : value.trim();
+    }
+
+    public static boolean isWhitespace(char c) {
+        switch (c) {
+        case '\u0009':
+        case '\u000B':
+        case '\u000C':
+        case '\u0020':
+        case '\u00A0':
+        case '\u1680':
+        case '\u180E':
+        case '\u2000':
+        case '\u2001':
+        case '\u2002':
+        case '\u2003':
+        case '\u2004':
+        case '\u2005':
+        case '\u2006':
+        case '\u2007':
+        case '\u2008':
+        case '\u2009':
+        case '\u200A':
+        case '\u2028':
+        case '\u2029':
+        case '\u202F':
+        case '\u205F':
+        case '\u3000':
+        case '\uFEFF':
+            return true;
+
+        }
+        return false;
+    }
+
     public static Number stringToNumber(String str) {
-        str = str.trim();
-        
-        if ( str.equals( "" ) ) {
+        str = trimString(str);
+
+        System.err.println("str [" + str + "]");
+
+        if (str.equals("")) {
             return 0L;
         }
-        
-        if ( str.equals( "Infinity" ) || str.equals( "+Infinity" ) ) {
+
+        if (str.equals("Infinity") || str.equals("+Infinity")) {
             return Math.pow(10, 10000);
         }
-        
-        if ( str.equals( "-Infinity" ) ) {
+
+        if (str.equals("-Infinity")) {
             return -Math.pow(10, 10000);
         }
-        
+
         if (str.startsWith("0x") || str.startsWith("0X")) {
             return Long.decode(str);
         }
