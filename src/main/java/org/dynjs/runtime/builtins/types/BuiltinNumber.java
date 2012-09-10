@@ -44,8 +44,8 @@ public class BuiltinNumber extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Number number = 0;
-        if ( args[0] != null ) {
+        Number number = 0L;
+        if (args[0] != null) {
             number = Types.toNumber(context, args[0]);
         }
         if (self == Types.UNDEFINED) {
@@ -67,12 +67,11 @@ public class BuiltinNumber extends AbstractBuiltinType {
         // 15.7.2.1
         return new DynNumber(context.getGlobalObject());
     }
-    
+
     protected static void defineReadOnlyProperty(final DynObject on, final GlobalObject globalObject, String name, final Number value) {
         on.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                //set("Value", new DynNumber(globalObject, value));
-                set("Value", value );
+                set("Value", value);
                 set("Writable", false);
                 set("Enumerable", false);
                 set("Configurable", false);

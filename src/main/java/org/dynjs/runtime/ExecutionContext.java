@@ -396,6 +396,10 @@ public class ExecutionContext {
     public JSObject createSyntaxError(String message) {
         return createError("SyntaxError", message);
     }
+    
+    public JSObject createUriError(String message) {
+        return createError( "URIError", message );
+    }
 
     public JSObject createError(String type, String message) {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);

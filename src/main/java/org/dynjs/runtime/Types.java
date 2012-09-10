@@ -1,5 +1,7 @@
 package org.dynjs.runtime;
 
+import java.math.BigDecimal;
+
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
@@ -9,16 +11,16 @@ public class Types {
 
     public static final Undefined UNDEFINED = new Undefined();
     public static final Null NULL = new Null();
-    
+
     public static void checkObjectCoercible(ExecutionContext context, Object o) {
-        if ( o == Types.UNDEFINED ) {
-            throw new ThrowException( context.createTypeError( "undefined cannot be coerced to an object" ));
+        if (o == Types.UNDEFINED) {
+            throw new ThrowException(context.createTypeError("undefined cannot be coerced to an object"));
         }
-        
-        if ( o == Types.NULL ) {
-            throw new ThrowException( context.createTypeError( "null cannot be coerced to an object" ));
+
+        if (o == Types.NULL) {
+            throw new ThrowException(context.createTypeError("null cannot be coerced to an object"));
         }
-        
+
         return;
     }
 
@@ -52,11 +54,11 @@ public class Types {
         if (o instanceof Boolean) {
             return new DynBoolean(context.getGlobalObject(), (Boolean) o);
         }
-        if ( o == Types.UNDEFINED ) {
-            throw new ThrowException( context.createTypeError("undefined cannot be converted to an object" ) );
+        if (o == Types.UNDEFINED) {
+            throw new ThrowException(context.createTypeError("undefined cannot be converted to an object"));
         }
-        if ( o == Types.NULL ) {
-            throw new ThrowException( context.createTypeError("null cannot be converted to an object" ) );
+        if (o == Types.NULL) {
+            throw new ThrowException(context.createTypeError("null cannot be converted to an object"));
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
@@ -99,19 +101,38 @@ public class Types {
             return 0L;
         }
 
-        try {
-            String str = o.toString();
-            if (str.equals("Infinity")) {
-                return Math.pow(10, 10000);
-            }
-            if (str.trim().isEmpty()) {
-                return 0L;
-            }
+        return stringToNumber(o.toString());
+    }
 
-            if (str.startsWith("0x")) {
-                return Long.decode(str);
+    public static Number stringToNumber(String str) {
+        str = str.trim();
+        
+        if ( str.equals( "" ) ) {
+            return 0L;
+        }
+        
+        if ( str.equals( "Infinity" ) || str.equals( "+Infinity" ) ) {
+            return Math.pow(10, 10000);
+        }
+        
+        if ( str.equals( "-Infinity" ) ) {
+            return -Math.pow(10, 10000);
+        }
+        
+        if (str.startsWith("0x") || str.startsWith("0X")) {
+            return Long.decode(str);
+        }
+
+        if ((str.indexOf("e") > 0) || (str.indexOf("E") > 0)) {
+            if (str.indexOf(".") >= 0) {
+                str = str.replaceFirst("[eE]", "E");
+            } else {
+                str = str.replaceFirst("[eE]", ".0E");
             }
-            if (str.indexOf(".") > 0) {
+        }
+
+        try {
+            if (str.indexOf(".") >= 0) {
                 return Double.valueOf(str);
             } else {
                 return Long.valueOf(str);
@@ -119,6 +140,7 @@ public class Types {
         } catch (NumberFormatException e) {
             return Double.NaN;
         }
+
     }
 
     public static Boolean toBoolean(Object o) {
@@ -249,18 +271,18 @@ public class Types {
     }
 
     public static String toString(ExecutionContext context, Object o) {
-        if ( o == Types.UNDEFINED ) {
+        if (o == Types.UNDEFINED) {
             return "undefined";
         }
-        
-        if ( o == Types.NULL ) {
+
+        if (o == Types.NULL) {
             return "null";
         }
-        
+
         if (o instanceof JSObject) {
-            return (String) toString( context, toPrimitive(context, o, "String") );
+            return (String) toString(context, toPrimitive(context, o, "String"));
         }
-        
+
         return o.toString();
     }
 

@@ -324,4 +324,10 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberPrototypeIsZero() {
         check("var result = 1/Number.prototype", Double.POSITIVE_INFINITY);
     }
+    
+    @Test
+    public void testFunctionWithHexZero() {
+        assertThat( eval( "Number('0X0')")).isEqualTo(0L);
+    }
+    
 }
