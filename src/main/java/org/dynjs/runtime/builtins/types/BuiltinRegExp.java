@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.types;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.dynjs.runtime.builtins.types.regexp.prototype.Exec;
 
@@ -24,7 +25,16 @@ public class BuiltinRegExp extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        return null;
+        String pattern = Types.toString(context, args[0] );
+        String flags = null;
+        
+        if ( args[1] != Types.UNDEFINED ) {
+            flags = Types.toString( context, args[1] );
+        }
+        
+        ((DynRegExp)self).setPatternAndFlags(pattern, flags);
+        
+        return self;
     }
 
     @Override
@@ -32,9 +42,9 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         return new DynRegExp(context.getGlobalObject());
     }
 
-    public static DynRegExp newRegExp(ExecutionContext context) {
+    public static DynRegExp newRegExp(ExecutionContext context, String pattern, String flags) {
         BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "RegExp");
-        return (DynRegExp) context.construct(ctor);
+        return (DynRegExp) context.construct(ctor, pattern, flags);
     }
 
 }

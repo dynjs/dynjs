@@ -13,6 +13,9 @@ import org.dynjs.runtime.builtins.types.string.prototype.CharCodeAt;
 import org.dynjs.runtime.builtins.types.string.prototype.Concat;
 import org.dynjs.runtime.builtins.types.string.prototype.IndexOf;
 import org.dynjs.runtime.builtins.types.string.prototype.LastIndexOf;
+import org.dynjs.runtime.builtins.types.string.prototype.LocaleCompare;
+import org.dynjs.runtime.builtins.types.string.prototype.Match;
+import org.dynjs.runtime.builtins.types.string.prototype.Search;
 import org.dynjs.runtime.builtins.types.string.prototype.ToString;
 import org.dynjs.runtime.builtins.types.string.prototype.ValueOf;
 
@@ -38,6 +41,9 @@ public class BuiltinString extends AbstractBuiltinType {
         proto.put(null, "concat", new Concat(globalObject), false);
         proto.put(null, "indexOf", new IndexOf(globalObject), false);
         proto.put(null, "lastIndexOf", new LastIndexOf(globalObject), false);
+        proto.put(null, "localeCompare", new LocaleCompare(globalObject), false);
+        proto.put(null, "match", new Match(globalObject), false);
+        proto.put(null, "search", new Search(globalObject), false);
     }
 
     @Override

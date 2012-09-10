@@ -98,6 +98,15 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         assertThat(eval("'bobobo'.lastIndexOf('taco',2)")).isEqualTo(-1L);
     }
     
+    @Test
+    public void testSearchString() {
+        assertThat( eval( "'boblanceqmx'.search('lance')")).isEqualTo(3L);
+    }
+    
+    @Test
+    public void testSearchRegExp() {
+        assertThat( eval( "'boblanceqmx'.search(/[ld]ance/)")).isEqualTo(3L);
+    }
     
 
 }

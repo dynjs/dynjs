@@ -1,7 +1,6 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,15 +67,11 @@ public class RegexpLiteralExpression extends AbstractExpression {
             {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class));
-                // regexp
-                dup();
-                // regexp 
-                ldc(pattern);
-                // regexp regexp str
-                ldc(flags);
-                // regexp regexp str str
-                invokevirtual(p(DynRegExp.class), "setPatternAndFlags", sig(void.class, String.class, String.class));
+                ldc( pattern );
+                // context pattern
+                ldc( flags );
+                // context pattern flags
+                invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class, String.class, String.class));
                 // regexp
             }
         };

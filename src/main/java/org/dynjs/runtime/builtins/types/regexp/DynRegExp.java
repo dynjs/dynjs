@@ -26,30 +26,33 @@ public class DynRegExp extends DynObject {
                 set("Enumerable", false);
             }
         }, false);
-        defineOwnProperty(null, "multiline", new PropertyDescriptor() {
-            {
-                set("Value", flags.contains("m"));
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
-        defineOwnProperty(null, "global", new PropertyDescriptor() {
-            {
-                set("Value", flags.contains("g"));
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
-        defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
-            {
-                set("Value", flags.contains("i"));
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
+
+        if (flags != null) {
+            defineOwnProperty(null, "multiline", new PropertyDescriptor() {
+                {
+                    set("Value", flags.contains("m"));
+                    set("Writable", false);
+                    set("Configurable", false);
+                    set("Enumerable", false);
+                }
+            }, false);
+            defineOwnProperty(null, "global", new PropertyDescriptor() {
+                {
+                    set("Value", flags.contains("g"));
+                    set("Writable", false);
+                    set("Configurable", false);
+                    set("Enumerable", false);
+                }
+            }, false);
+            defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
+                {
+                    set("Value", flags.contains("i"));
+                    set("Writable", false);
+                    set("Configurable", false);
+                    set("Enumerable", false);
+                }
+            }, false);
+        }
         defineOwnProperty(null, "lastIndex", new PropertyDescriptor() {
             {
                 set("Value", 0);
