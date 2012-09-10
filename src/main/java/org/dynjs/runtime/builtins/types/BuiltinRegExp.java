@@ -25,16 +25,25 @@ public class BuiltinRegExp extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String pattern = Types.toString(context, args[0] );
-        String flags = null;
-        
-        if ( args[1] != Types.UNDEFINED ) {
-            flags = Types.toString( context, args[1] );
+
+        if (args[0] instanceof JSObject && ((JSObject) args[0]).getClassName().equals("RegExp")) {
+            return args[0];
         }
-        
-        ((DynRegExp)self).setPatternAndFlags(pattern, flags);
-        
-        return self;
+
+        if (self == Types.UNDEFINED) {
+            return newRegExp(context, Types.toString( context, args[0]), Types.toString( context, args[1]) );
+        } else {
+            String pattern = Types.toString(context, args[0]);
+            String flags = null;
+
+            if (args[1] != Types.UNDEFINED) {
+                flags = Types.toString(context, args[1]);
+            }
+
+            ((DynRegExp) self).setPatternAndFlags(pattern, flags);
+
+            return self;
+        }
     }
 
     @Override
