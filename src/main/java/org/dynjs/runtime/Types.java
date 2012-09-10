@@ -153,8 +153,6 @@ public class Types {
     public static Number stringToNumber(String str) {
         str = trimString(str);
 
-        System.err.println("str [" + str + "]");
-
         if (str.equals("")) {
             return 0L;
         }
