@@ -20,6 +20,7 @@ import org.dynjs.runtime.builtins.ThrowTypeError;
 import org.dynjs.runtime.builtins.types.AbstractBuiltinType;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinBoolean;
+import org.dynjs.runtime.builtins.types.BuiltinDate;
 import org.dynjs.runtime.builtins.types.BuiltinError;
 import org.dynjs.runtime.builtins.types.BuiltinFunction;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
@@ -60,6 +61,7 @@ public class GlobalObject extends DynObject {
         registerBuiltinType("Array", new BuiltinArray(this));
         registerBuiltinType("String", new BuiltinString(this));
         registerBuiltinType("RegExp", new BuiltinRegExp(this));
+        registerBuiltinType("Date", new BuiltinDate(this));
         registerBuiltinType("Error", new BuiltinError(this));
         registerBuiltinType("ReferenceError", new BuiltinReferenceError(this));
         registerBuiltinType("RangeError", new BuiltinRangeError(this));
