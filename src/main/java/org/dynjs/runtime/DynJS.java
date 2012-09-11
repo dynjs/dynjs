@@ -131,6 +131,9 @@ public class DynJS {
     public JSProgram compile(ExecutionContext execContext, String program, String filename, boolean forceStrict) {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
+        if ( statements == null ) {
+            return NullProgram.INSTANCE;
+        }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
         return programObj;
     }
@@ -142,7 +145,10 @@ public class DynJS {
     public JSProgram compile(ExecutionContext execContext, InputStream program, String filename, boolean forceStrict) throws IOException {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
-        JSProgram programObj = compiler.compileProgram(statements, false);
+        if ( statements == null ) {
+            return NullProgram.INSTANCE;
+        }
+        JSProgram programObj = compiler.compileProgram(statements, forceStrict);
         return programObj;
     }
 
@@ -177,7 +183,10 @@ public class DynJS {
             throw new SyntaxError(errors);
         }
         CommonTree tree = (CommonTree) program.getTree();
-        // dump(tree);
+        if ( tree == null ) {
+            return null;
+        }
+        //dump(tree);
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
