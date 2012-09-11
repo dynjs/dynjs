@@ -186,7 +186,9 @@ public class DynJS {
         if ( tree == null ) {
             return null;
         }
-        //dump(tree);
+        System.err.println( ">>>" );
+        dump(tree);
+        System.err.println( "<<<" );
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);

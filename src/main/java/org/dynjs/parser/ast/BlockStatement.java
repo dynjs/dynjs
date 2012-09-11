@@ -177,8 +177,10 @@ public class BlockStatement extends AbstractStatement implements Statement {
         StringBuffer buffer = new StringBuffer();
 
         for (Statement each : this.blockContent) {
-            buffer.append(each.toIndentedString(indent));
-            buffer.append("\n");
+            if (each != null) {
+                buffer.append(each.toIndentedString(indent));
+                buffer.append("\n");
+            }
         }
 
         return buffer.toString();
