@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.dynjs.exception.DynJSException;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.DynObject;
@@ -36,7 +37,7 @@ public class Parse extends AbstractNativeFunction {
             parser.nextToken();
             unfiltered = parse(context, parser);
         } catch (IOException e) {
-            throw new DynJSException(e);
+            throw new ThrowException(e);
         }
 
         Object reviver = args[1];
