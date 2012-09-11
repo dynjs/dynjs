@@ -43,10 +43,16 @@ public class BuiltinDate extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (args[0] == Types.UNDEFINED) { // 15.9.3.3
-            ((DynDate) self).setPrimitiveValue(UTCnow());
+        DynDate date = null;
+        if ( self == Types.UNDEFINED ) {
+            date = new DynDate(context.getGlobalObject());
+        } else {
+            date = (DynDate) self;
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (args[0] == Types.UNDEFINED) { // 15.9.3.3
+            ((DynDate) date).setPrimitiveValue(UTCnow());
+        }
+        return date;
     }
 
     private long UTCnow() {
