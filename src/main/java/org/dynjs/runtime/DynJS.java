@@ -132,7 +132,7 @@ public class DynJS {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
         if ( statements == null ) {
-            return NullProgram.INSTANCE;
+            return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
         return programObj;
@@ -146,7 +146,7 @@ public class DynJS {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
         if ( statements == null ) {
-            return NullProgram.INSTANCE;
+            return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
         return programObj;
