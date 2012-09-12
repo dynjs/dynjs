@@ -18,7 +18,10 @@ import org.dynjs.runtime.builtins.types.string.prototype.Match;
 import org.dynjs.runtime.builtins.types.string.prototype.Search;
 import org.dynjs.runtime.builtins.types.string.prototype.Slice;
 import org.dynjs.runtime.builtins.types.string.prototype.Split;
+import org.dynjs.runtime.builtins.types.string.prototype.Substring;
+import org.dynjs.runtime.builtins.types.string.prototype.ToLowerCase;
 import org.dynjs.runtime.builtins.types.string.prototype.ToString;
+import org.dynjs.runtime.builtins.types.string.prototype.ToUpperCase;
 import org.dynjs.runtime.builtins.types.string.prototype.ValueOf;
 
 public class BuiltinString extends AbstractBuiltinType {
@@ -48,6 +51,9 @@ public class BuiltinString extends AbstractBuiltinType {
         proto.put(null, "search", new Search(globalObject), false);
         proto.put(null, "slice", new Slice(globalObject), false);
         proto.put(null, "split", new Split(globalObject), false);
+        proto.put(null, "substring", new Substring(globalObject), false);
+        proto.put(null, "toLowerCase", new ToLowerCase(globalObject), false);
+        proto.put(null, "toUpperCase", new ToUpperCase(globalObject), false);
     }
 
     @Override
