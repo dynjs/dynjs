@@ -36,7 +36,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
                 return Types.UNDEFINED;
             }
         };
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override

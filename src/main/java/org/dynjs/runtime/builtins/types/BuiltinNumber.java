@@ -20,7 +20,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
 
         // 15.7.4 Set the prototype
         final PrimitiveDynObject proto = new DynNumber(globalObject, 0L);
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override

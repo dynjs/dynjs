@@ -13,7 +13,7 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         super(globalObject, "pattern", "flags");
 
         DynRegExp proto = new DynRegExp(globalObject, "", "");
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override

@@ -16,7 +16,7 @@ public class BuiltinError extends AbstractBuiltinType {
 
         final DynObject proto = new DynObject(globalObject);
         proto.setClassName("Error");
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
 
     }
 

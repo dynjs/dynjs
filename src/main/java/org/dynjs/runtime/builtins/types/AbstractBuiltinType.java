@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.types;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 public abstract class AbstractBuiltinType extends AbstractNativeFunction {
@@ -20,5 +21,16 @@ public abstract class AbstractBuiltinType extends AbstractNativeFunction {
     }
 
     public abstract void initialize(GlobalObject globalObject, JSObject prototype);
+
+    protected void setPrototypeProperty(final JSObject prototype) {
+        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+            {
+                set( "Value", prototype );
+                set( "Writable", false );
+                set( "Configurable", false );
+                set( "Enumerable", false );
+            }
+        }, false);
+    }
 
 }

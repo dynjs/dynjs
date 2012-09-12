@@ -20,7 +20,7 @@ public class BuiltinDate extends AbstractBuiltinType {
     public BuiltinDate(final GlobalObject globalObject) {
         super(globalObject, "year", "month", "date", "hours", "minutes", "seconds", "ms");
         final DynDate proto = new DynDate(globalObject);
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override

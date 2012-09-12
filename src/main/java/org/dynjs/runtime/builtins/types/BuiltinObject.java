@@ -30,7 +30,7 @@ public class BuiltinObject extends AbstractBuiltinType {
         super(globalObject, "value");
 
         final DynObject proto = new DynObject(globalObject);
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override

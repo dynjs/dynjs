@@ -30,9 +30,8 @@ public class BuiltinString extends AbstractBuiltinType {
     public BuiltinString(final GlobalObject globalObject) {
         super(globalObject, "value");
 
-        final DynObject proto = new DynObject(globalObject);
-        proto.setClassName("String");
-        put(null, "prototype", proto, false);
+        final DynString proto = new DynString(globalObject, "");
+        setPrototypeProperty(proto);
     }
 
     public void initialize(GlobalObject globalObject, JSObject proto) {

@@ -34,7 +34,7 @@ public class BuiltinArray extends AbstractBuiltinType {
         super(globalObject);
 
         final DynArray proto = new DynArray(globalObject);
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override

@@ -16,7 +16,7 @@ public class BuiltinBoolean extends AbstractBuiltinType {
 
         // 15.6.4 Set the prototype
         final PrimitiveDynObject proto = new DynBoolean(globalObject, Boolean.FALSE);
-        put(null, "prototype", proto, false);
+        setPrototypeProperty( proto );
     }
 
     @Override
