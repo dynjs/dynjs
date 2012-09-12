@@ -49,7 +49,7 @@ public class GlobalObject extends DynObject {
         super(null);
         this.runtime = runtime;
         this.blockManager = new BlockManager();
-        
+
         // ----------------------------------------
         // Built-in types
         // ----------------------------------------
@@ -68,36 +68,44 @@ public class GlobalObject extends DynObject {
         registerBuiltinType("SyntaxError", new BuiltinSyntaxError(this));
         registerBuiltinType("TypeError", new BuiltinTypeError(this));
         registerBuiltinType("URIError", new BuiltinURIError(this));
-        
+
         initializeBuiltinTypes();
 
         // ----------------------------------------
         // Built-in global functions
         // ----------------------------------------
+
+        defineOwnProperty(null, "undefined", new PropertyDescriptor() {
+            {
+                set("Value", Types.UNDEFINED );
+                set("Writable", false );
+                set("Configurable", false );
+                set("Enumerable", false );
+            }
+        }, false);
         
         put(null, "__throwTypeError", new ThrowTypeError(this), false);
-        put(null, "undefined", Types.UNDEFINED, false);
         put(null, "parseFloat", new ParseFloat(this), false);
         put(null, "parseInt", new ParseInt(this), false);
         put(null, "eval", new Eval(this), false);
         put(null, "isNaN", new IsNaN(this), false);
         put(null, "isFinite", new IsFinite(this), false);
         put(null, "require", new Require(this), false);
-        
+
         put(null, "encodeURI", new EncodeUri(this), false);
         put(null, "decodeURI", new DecodeUri(this), false);
-        
+
         // ----------------------------------------
         // Built-in global objects
         // ----------------------------------------
 
         put(null, "JSON", new JSON(this), false);
         put(null, "Math", new Math(this), false);
-        
+
         // ----------------------------------------
         // Module-provider setup
         // ----------------------------------------
-        
+
         this.moduleProviders.add(new FilesystemModuleProvider(this));
 
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
@@ -111,13 +119,13 @@ public class GlobalObject extends DynObject {
 
     private void registerBuiltinType(String name, AbstractBuiltinType type) {
         put(null, name, type, false);
-        this.builtinTypes.add( type );
+        this.builtinTypes.add(type);
     }
-    
+
     private void initializeBuiltinTypes() {
-        for ( AbstractBuiltinType each : this.builtinTypes ) {
-            each.setPrototype( getPrototypeFor( "Function" ));
-            each.initialize( this );
+        for (AbstractBuiltinType each : this.builtinTypes) {
+            each.setPrototype(getPrototypeFor("Function"));
+            each.initialize(this);
         }
     }
 

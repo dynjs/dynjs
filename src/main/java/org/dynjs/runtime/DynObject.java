@@ -129,22 +129,22 @@ public class DynObject implements JSObject {
     @Override
     public boolean hasProperty(ExecutionContext context, String name) {
         // 8.12.6
-        return ( this.properties.containsKey( name ) || ( this.prototype != null ? this.prototype.hasProperty(context, name ) : false ) );
+        return (this.properties.containsKey(name) || (this.prototype != null ? this.prototype.hasProperty(context, name) : false));
         /*
-        if ( this.properties.containsKey( name ) ) {
-            return true;
-        }
-        
-        if ( this.prototype != null )  {
-            return this.prototype.hasProperty(context, name);
-        }
-        
-        return false;
-        */
-        
+         * if ( this.properties.containsKey( name ) ) {
+         * return true;
+         * }
+         * 
+         * if ( this.prototype != null ) {
+         * return this.prototype.hasProperty(context, name);
+         * }
+         * 
+         * return false;
+         */
+
         /*
-        return (getProperty(context, name) != Types.UNDEFINED);
-        */
+         * return (getProperty(context, name) != Types.UNDEFINED);
+         */
     }
 
     @Override
@@ -170,7 +170,7 @@ public class DynObject implements JSObject {
         }
 
         Object desc = getProperty(context, name);
-        
+
         if ((desc != Types.UNDEFINED) && ((PropertyDescriptor) desc).isAccessorDescriptor()) {
             JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get("Set");
             context.call(setter, this, value);
@@ -223,7 +223,7 @@ public class DynObject implements JSObject {
     @Override
     public boolean delete(ExecutionContext context, String name, boolean shouldThrow) {
         // 8.12.7
-        if ( ! this.properties.containsKey(name) ) {
+        if (!this.properties.containsKey(name)) {
             return true;
         }
         Object d = getOwnProperty(context, name);
@@ -248,43 +248,43 @@ public class DynObject implements JSObject {
     @Override
     public Object defaultValue(ExecutionContext context, String hint) {
         // 8.12.8
-        if ( hint == null ) {
+        if (hint == null) {
             hint = "Number";
         }
         if (hint.equals("String")) {
             Object toString = get(context, "toString");
             if (toString instanceof JSFunction) {
                 Object result = context.call((JSFunction) toString, this);
-                if ( result instanceof String || result instanceof Number || result instanceof Boolean ) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
                     return result;
                 }
             }
-            
-            Object valueOf = get( context, "valueOf" );
-            if ( valueOf instanceof JSFunction ) {
-                Object result = context.call( (JSFunction) valueOf, this );
-                if ( result instanceof String || result instanceof Number || result instanceof Boolean ) {
+
+            Object valueOf = get(context, "valueOf");
+            if (valueOf instanceof JSFunction) {
+                Object result = context.call((JSFunction) valueOf, this);
+                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
                     return result;
                 }
             }
-            throw new ThrowException( context.createTypeError( "String coercion must return a primitive value" ));
-        } else if ( hint.equals( "Number" ) ) {
-            Object valueOf = get( context, "valueOf" );
-            if ( valueOf instanceof JSFunction ) {
-                Object result = context.call( (JSFunction) valueOf, this );
-                if ( result instanceof String || result instanceof Number || result instanceof Boolean ) {
+            throw new ThrowException(context.createTypeError("String coercion must return a primitive value"));
+        } else if (hint.equals("Number")) {
+            Object valueOf = get(context, "valueOf");
+            if (valueOf instanceof JSFunction) {
+                Object result = context.call((JSFunction) valueOf, this);
+                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
                     return result;
                 }
             }
-            
+
             Object toString = get(context, "toString");
             if (toString instanceof JSFunction) {
                 Object result = context.call((JSFunction) toString, this);
-                if ( result instanceof String || result instanceof Number || result instanceof Boolean ) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
                     return result;
                 }
             }
-            throw new ThrowException( context.createTypeError( "String coercion must return a primitive value" ));
+            throw new ThrowException(context.createTypeError("String coercion must return a primitive value"));
         }
 
         return null;
@@ -322,7 +322,6 @@ public class DynObject implements JSObject {
             }
             Object currentEnumerable = current.get("Enumerable");
             Object descEnumerable = desc.get("Enumerable");
-            
 
             if ((currentEnumerable != Types.UNDEFINED && descEnumerable != Types.UNDEFINED) && (currentEnumerable != descEnumerable)) {
                 return reject(context, shouldThrow);
@@ -402,7 +401,7 @@ public class DynObject implements JSObject {
         ArrayList<String> names = new ArrayList<String>();
         for (String name : this.properties.keySet()) {
             PropertyDescriptor desc = this.properties.get(name);
-            if (desc.isEnumerable() ) {
+            if (desc.isEnumerable()) {
                 names.add(name);
             }
         }
