@@ -22,6 +22,7 @@ import org.dynjs.runtime.builtins.types.string.prototype.Substring;
 import org.dynjs.runtime.builtins.types.string.prototype.ToLowerCase;
 import org.dynjs.runtime.builtins.types.string.prototype.ToString;
 import org.dynjs.runtime.builtins.types.string.prototype.ToUpperCase;
+import org.dynjs.runtime.builtins.types.string.prototype.Trim;
 import org.dynjs.runtime.builtins.types.string.prototype.ValueOf;
 
 public class BuiltinString extends AbstractBuiltinType {
@@ -54,6 +55,7 @@ public class BuiltinString extends AbstractBuiltinType {
         proto.put(null, "substring", new Substring(globalObject), false);
         proto.put(null, "toLowerCase", new ToLowerCase(globalObject), false);
         proto.put(null, "toUpperCase", new ToUpperCase(globalObject), false);
+        proto.put(null, "trim", new Trim(globalObject), false);
     }
 
     @Override

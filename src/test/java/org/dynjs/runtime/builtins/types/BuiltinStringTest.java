@@ -143,4 +143,10 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         assertThat( eval( "'BoBLaNcEqMX'.toUpperCase()")).isEqualTo("BOBLANCEQMX");
     }
 
+    
+    @Test
+    public void testTrim()  {
+        assertThat( eval( "' bob\t'.trim()")).isEqualTo("bob");
+    }
+    
 }
