@@ -75,25 +75,19 @@ public class GlobalObject extends DynObject {
         // Built-in global functions
         // ----------------------------------------
 
-        defineOwnProperty(null, "undefined", new PropertyDescriptor() {
-            {
-                set("Value", Types.UNDEFINED );
-                set("Writable", false );
-                set("Configurable", false );
-                set("Enumerable", false );
-            }
-        }, false);
+        defineReadOnlyGlobalProperty("undefined", Types.UNDEFINED );
+        defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
         
-        put(null, "__throwTypeError", new ThrowTypeError(this), false);
-        put(null, "parseFloat", new ParseFloat(this), false);
-        put(null, "parseInt", new ParseInt(this), false);
-        put(null, "eval", new Eval(this), false);
-        put(null, "isNaN", new IsNaN(this), false);
-        put(null, "isFinite", new IsFinite(this), false);
-        put(null, "require", new Require(this), false);
+        defineGlobalProperty("parseFloat", new ParseFloat(this) );
+        defineGlobalProperty("parseInt", new ParseInt(this) );
+        defineGlobalProperty("eval", new Eval(this) );
+        defineGlobalProperty("isNaN", new IsNaN(this) );
+        defineGlobalProperty("isFinite", new IsFinite(this) );
 
-        put(null, "encodeURI", new EncodeUri(this), false);
-        put(null, "decodeURI", new DecodeUri(this), false);
+        defineGlobalProperty("encodeURI", new EncodeUri(this) );
+        defineGlobalProperty("decodeURI", new DecodeUri(this) );
+        
+        defineGlobalProperty("require", new Require(this) );
 
         // ----------------------------------------
         // Built-in global objects
@@ -170,8 +164,20 @@ public class GlobalObject extends DynObject {
             {
                 set("Value", value);
                 set("Writable", true);
+                set("Enumerable", false);
                 set("Configurable", true);
-                set("Enumerable", true);
+            }
+        };
+        defineOwnProperty(null, name, desc, false);
+    }
+    
+    public void defineReadOnlyGlobalProperty(final String name, final Object value) {
+        PropertyDescriptor desc = new PropertyDescriptor() {
+            {
+                set("Value", value);
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", false);
             }
         };
         defineOwnProperty(null, name, desc, false);
