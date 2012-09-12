@@ -1,5 +1,6 @@
 package org.dynjs.runtime.builtins.types.regexp.prototype;
 
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,9 +33,6 @@ public class Exec extends AbstractNativeFunction {
             flags = flags | Pattern.CASE_INSENSITIVE;
         }
 
-        String patternStr = (String) regexp.get(context, "source");
-        Pattern pattern = Pattern.compile(patternStr, flags);
-
         int lastIndex = (int) regexp.get(context, "lastIndex");
         int i = lastIndex;
 
@@ -45,29 +43,31 @@ public class Exec extends AbstractNativeFunction {
         boolean matchSucceeded = false;
         int strLen = str.length();
 
-        Matcher matcher = pattern.matcher(str);
+        MatchResult r = null;
+
         while (!matchSucceeded) {
             if (i < 0 || i > strLen) {
                 regexp.put(context, "lastIndex", 0, true);
                 return Types.NULL;
             }
-            if (matcher.find(i)) {
+            r = regexp.match(str, i);
+            if (r != null) {
                 matchSucceeded = true;
             } else {
                 ++i;
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
-            regexp.put(context, "lastIndex", matcher.end(), true);
+            regexp.put(context, "lastIndex", r.end(), true);
         }
 
         DynArray a = BuiltinArray.newArray(context);
-        a.put(context, "index", matcher.start(), true);
+        a.put(context, "index", r.start(), true);
         a.put(context, "input", str, true);
-        a.put(context, "length", (long) matcher.groupCount() + 1, true);
-        a.put(context, "0", matcher.group(0), true);
-        for (int j = 1; j <= matcher.groupCount(); ++j) {
-            a.put(context, "" + j, matcher.group(j), true);
+        a.put(context, "length", (long) r.groupCount() + 1, true);
+        a.put(context, "0", r.group(0), true);
+        for (int j = 1; j <= r.groupCount(); ++j) {
+            a.put(context, "" + j, r.group(j), true);
         }
 
         return a;

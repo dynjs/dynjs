@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.junit.Test;
 
@@ -106,6 +107,20 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     @Test
     public void testSearchRegExp() {
         assertThat( eval( "'boblanceqmx'.search(/[ld]ance/)")).isEqualTo(3L);
+    }
+    
+    @Test
+    public void testSlice() {
+        assertThat( eval( "'boblanceqmx'.slice(3,8)")).isEqualTo("lance");
+    }
+    
+    @Test
+    public void testSplitString() {
+        JSObject result = (JSObject) eval( "'bob,lance,qmx'.split(',')" );
+        assertThat( result.get( getContext(), "length" ) ).isEqualTo(3L);
+        assertThat( result.get( getContext(), "0" ) ).isEqualTo("bob" );
+        assertThat( result.get( getContext(), "1" ) ).isEqualTo("lance" );
+        assertThat( result.get( getContext(), "2" ) ).isEqualTo("qmx" );
     }
     
 

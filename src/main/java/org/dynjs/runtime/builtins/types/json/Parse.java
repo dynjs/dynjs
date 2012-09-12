@@ -37,7 +37,8 @@ public class Parse extends AbstractNativeFunction {
             parser.nextToken();
             unfiltered = parse(context, parser);
         } catch (IOException e) {
-            throw new ThrowException(e);
+            JSObject error = context.createSyntaxError(e.getMessage());
+            throw new ThrowException( error );
         }
 
         Object reviver = args[1];
