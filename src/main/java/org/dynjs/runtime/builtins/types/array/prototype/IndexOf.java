@@ -16,7 +16,6 @@ public class IndexOf extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.14
-        System.err.println( "SELF: " + self );
         JSObject o = Types.toObject(context, self);
         long len = Types.toUint32(context, o.get(context, "length"));
 
