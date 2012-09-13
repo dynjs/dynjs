@@ -9,7 +9,7 @@ import org.dynjs.parser.ast.VariableDeclaration;
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
-        super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), false, formalParameters);
+        super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
         setDebugContext( "<native function: " + getClass().getName() + ">" );
     }
 
