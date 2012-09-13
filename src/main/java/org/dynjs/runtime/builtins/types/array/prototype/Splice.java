@@ -17,15 +17,17 @@ public class Splice extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        // 15.4.4.11
+        // 15.4.4.12
         JSObject o = Types.toObject(context, self);
 
         long len = Types.toUint32(context, o.get(context, "length"));
         long relativeStart = Types.toInteger(context, args[0]);
-        long actualStart = relativeStart;
+        long actualStart = 0;
 
         if (relativeStart < 0) {
-            actualStart = len + relativeStart;
+            actualStart = Math.max( len + relativeStart, 0 );
+        } else {
+            actualStart = Math.min( relativeStart, len );
         }
 
         long deleteCount = Types.toInteger(context, args[1]);
@@ -76,6 +78,8 @@ public class Splice extends AbstractNativeFunction {
         for (long k = actualStart, i = 0; i < itemCount; ++k, ++i) {
             o.put(context, "" + k, args[ (int) i + 2], true);
         }
+        
+        o.put(context, "length", (len-actualDeleteCount + itemCount), true);
 
         return a;
     }

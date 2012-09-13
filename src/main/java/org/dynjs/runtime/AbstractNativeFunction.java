@@ -10,14 +10,17 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
         super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), false, formalParameters);
+        setDebugContext( "<native function: " + getClass().getName() + ">" );
     }
 
     public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
         super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
+        setDebugContext( "<native function: " + getClass().getSimpleName() + ">" );
     }
 
     public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(null, scope, strict, formalParameters);
+        setDebugContext( "<native function: " + getClass().getSimpleName() + ">" );
     }
 
     @Override

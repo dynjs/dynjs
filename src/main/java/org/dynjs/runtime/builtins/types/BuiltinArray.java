@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins.types;
 
 import java.util.Arrays;
 
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -92,34 +93,38 @@ public class BuiltinArray extends AbstractBuiltinType {
                     set("Configurable", false);
                 }
             }, false);
-        } else if ( args.length == 1 && args[0] == Types.UNDEFINED ) {
-            arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                {
-                    set("Value", 0L );
-                    set("Writable", true);
-                    set("Enumerable", false);
-                    set("Configurable", false);
-                }
-            }, false);
         } else {
-            arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                {
-                    set("Value", (long) args.length);
-                    set("Writable", true);
-                    set("Enumerable", false);
-                    set("Configurable", false);
-                }
-            }, false);
-            for (int i = 0; i < args.length; ++i) {
-                final int finalI = i;
-                arraySelf.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
+            Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+            int numArgs = (int) argsObj.get(context, "length");
+            if (numArgs == 0 ) {
+                arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
                     {
-                        set( "Value", args[finalI] );
-                        set( "Writable", true );
-                        set( "Enumerable", true );
-                        set( "Configurable", true );
+                        set("Value", 0L );
+                        set("Writable", true);
+                        set("Enumerable", false);
+                        set("Configurable", false);
+                    }
+                }, false );
+            } else {
+                arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
+                    {
+                        set("Value", (long) args.length);
+                        set("Writable", true);
+                        set("Enumerable", false);
+                        set("Configurable", false);
                     }
                 }, false);
+                for (int i = 0; i < args.length; ++i) {
+                    final int finalI = i;
+                    arraySelf.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
+                        {
+                            set( "Value", args[finalI] );
+                            set( "Writable", true );
+                            set( "Enumerable", true );
+                            set( "Configurable", true );
+                        }
+                    }, false);
+                }
             }
         }
         return arraySelf;
