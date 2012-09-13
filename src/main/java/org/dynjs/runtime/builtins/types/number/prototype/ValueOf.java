@@ -17,6 +17,9 @@ public class ValueOf extends AbstractNativeFunction {
         if (self instanceof DynNumber) {
             return ((DynNumber) self).getPrimitiveValue();
         }
+        if ( self instanceof Number ) {
+            return self;
+        }
         throw new ThrowException( context.createTypeError( "Number.valueOf() only allowed on Numbers" ));
     }
 }
