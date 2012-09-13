@@ -14,7 +14,6 @@ public class ToString extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        System.err.println( "toString on: " + self );
         // 15.2.4.2
         if (self == Types.UNDEFINED) {
             return "[object Undefined]";

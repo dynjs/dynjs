@@ -125,16 +125,16 @@ public class DynArray extends DynObject {
 
     // ----------------------------------------
 
-    public void setLength(final long len) {
-        defineOwnProperty(null, "length", new PropertyDescriptor() {
+    public void setLength(ExecutionContext context, final long len) {
+        defineOwnProperty(context, "length", new PropertyDescriptor() {
             {
                 set("Value", len);
             }
         }, false);
     }
 
-    public void setElement(final long index, final Object value) {
-        defineOwnProperty(null, "" + index, new PropertyDescriptor() {
+    public void setElement(ExecutionContext context, final long index, final Object value) {
+        defineOwnProperty(context, "" + index, new PropertyDescriptor() {
             {
                 set("Value", value);
             }

@@ -83,15 +83,15 @@ public class BuiltinArray extends AbstractBuiltinType {
         if (args.length == 1) {
             final Number possiblyLen = Types.toNumber(context, args[0]);
             if ((possiblyLen instanceof Double) && ((Double) possiblyLen).isNaN()) {
-                arraySelf.setLength(1);
-                arraySelf.setElement(0, args[0]);
+                arraySelf.setLength(context, 1);
+                arraySelf.setElement(context, 0, args[0]);
             } else {
-                arraySelf.setLength(possiblyLen.longValue());
+                arraySelf.setLength(context, possiblyLen.longValue());
             }
         } else {
-            arraySelf.setLength(args.length);
+            arraySelf.setLength(context, args.length);
             for (int i = 0; i < args.length; ++i) {
-                arraySelf.setElement(i, args[i]);
+                arraySelf.setElement(context, i, args[i]);
             }
         }
         return arraySelf;
