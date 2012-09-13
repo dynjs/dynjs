@@ -53,6 +53,8 @@ public class Math extends DynObject {
         put(null, "pow",    new Pow(globalObject), false);    // 15.8.2.13
         put(null, "random", new Random(globalObject), false); // 15.8.2.14
         put(null, "round",  new Round(globalObject), false);  // 15.8.2.15
+        
+        setClassName( "Math" );
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {
