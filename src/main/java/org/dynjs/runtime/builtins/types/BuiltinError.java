@@ -22,10 +22,10 @@ public class BuiltinError extends AbstractBuiltinType {
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "name", "Error", false);
-        proto.put(null, "message", "", false);
-        proto.put(null, "toString", new ToString(globalObject), false);
+        defineNonEnumerableProperty(proto, "constructor", this );
+        defineNonEnumerableProperty(proto, "name", "Error" );
+        defineNonEnumerableProperty(proto, "message", "" );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
     }
 
     @Override

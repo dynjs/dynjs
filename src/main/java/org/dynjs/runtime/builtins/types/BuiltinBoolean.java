@@ -22,9 +22,9 @@ public class BuiltinBoolean extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "valueOf", new ValueOf(globalObject), false);
+        defineNonEnumerableProperty(proto, "constructor", this );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
     }
 
     @Override

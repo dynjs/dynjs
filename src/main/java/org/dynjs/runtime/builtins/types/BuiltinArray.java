@@ -40,31 +40,34 @@ public class BuiltinArray extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
-        proto.put(null, "concat", new Concat(globalObject), false);
-        proto.put(null, "join", new Join(globalObject), false);
-        proto.put(null, "pop", new Pop(globalObject), false);
-        proto.put(null, "push", new Push(globalObject), false);
-        proto.put(null, "reverse", new Reverse(globalObject), false);
-        proto.put(null, "shift", new Shift(globalObject), false);
-        proto.put(null, "slice", new Slice(globalObject), false);
-        proto.put(null, "sort", new Sort(globalObject), false);
-        proto.put(null, "splice", new Splice(globalObject), false);
-        proto.put(null, "unshift", new Unshift(globalObject), false);
-        proto.put(null, "indexOf", new IndexOf(globalObject), false);
-        proto.put(null, "lastIndexOf", new LastIndexOf(globalObject), false);
-        proto.put(null, "every", new Every(globalObject), false);
-        proto.put(null, "some", new Some(globalObject), false);
+        
+        // Array.prototype.foo()
+        defineNonEnumerableProperty(proto, "constructor", this);
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
+        defineNonEnumerableProperty(proto, "concat", new Concat(globalObject) );
+        defineNonEnumerableProperty(proto, "join", new Join(globalObject) );
+        defineNonEnumerableProperty(proto, "pop", new Pop(globalObject) );
+        defineNonEnumerableProperty(proto, "push", new Push(globalObject) );
+        defineNonEnumerableProperty(proto, "reverse", new Reverse(globalObject) );
+        defineNonEnumerableProperty(proto, "shift", new Shift(globalObject) );
+        defineNonEnumerableProperty(proto, "slice", new Slice(globalObject) );
+        defineNonEnumerableProperty(proto, "sort", new Sort(globalObject) );
+        defineNonEnumerableProperty(proto, "splice", new Splice(globalObject) );
+        defineNonEnumerableProperty(proto, "unshift", new Unshift(globalObject) );
+        defineNonEnumerableProperty(proto, "indexOf", new IndexOf(globalObject) );
+        defineNonEnumerableProperty(proto, "lastIndexOf", new LastIndexOf(globalObject) );
+        defineNonEnumerableProperty(proto, "every", new Every(globalObject) );
+        defineNonEnumerableProperty(proto, "some", new Some(globalObject) );
 
-        proto.put(null, "forEach", new ForEach(globalObject), false);
-        proto.put(null, "map", new Map(globalObject), false);
-        proto.put(null, "filter", new Filter(globalObject), false);
-        proto.put(null, "reduce", new Reduce(globalObject), false);
-        proto.put(null, "reduceRight", new ReduceRight(globalObject), false);
+        defineNonEnumerableProperty(proto, "forEach", new ForEach(globalObject) );
+        defineNonEnumerableProperty(proto, "map", new Map(globalObject) );
+        defineNonEnumerableProperty(proto, "filter", new Filter(globalObject) );
+        defineNonEnumerableProperty(proto, "reduce", new Reduce(globalObject) );
+        defineNonEnumerableProperty(proto, "reduceRight", new ReduceRight(globalObject) );
 
-        put(null, "isArray", new IsArray(globalObject), false);
+        // Array.foo()
+        defineNonEnumerableProperty(this, "isArray", new IsArray(globalObject) );
     }
 
     @Override

@@ -29,16 +29,16 @@ public class BuiltinDate extends AbstractBuiltinType {
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject prototype) {
+    public void initialize(GlobalObject globalObject, JSObject proto) {
         put(null, "now", new Now(globalObject), false);
         put(null, "parse", new Parse(globalObject), false);
-        prototype.put(null, "constructor", this, false);
-        prototype.put(null, "toString", new ToString(globalObject), false);
-        prototype.put(null, "toDateString", new ToDateString(globalObject), false);
-        prototype.put(null, "toTimeString", new ToTimeString(globalObject), false);
-        prototype.put(null, "toISOString", new ToISOString(globalObject), false);
-        prototype.put(null, "valueOf", new ValueOf(globalObject), false); // 15.9.5.8
-        prototype.put(null, "getTime", new ValueOf(globalObject), false); // 15.9.5.9 (same impl as above)
+        defineNonEnumerableProperty(proto, "constructor", this );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject) );
+        defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject) );
+        defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject) );
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
+        defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject) );
     }
 
     @Override

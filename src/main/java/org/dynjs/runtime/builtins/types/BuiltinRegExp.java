@@ -19,8 +19,8 @@ public class BuiltinRegExp extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "exec", new Exec(globalObject), false);
+        defineNonEnumerableProperty(proto, "constructor", this);
+        defineNonEnumerableProperty(proto, "exec", new Exec(globalObject) );
     }
 
     @Override

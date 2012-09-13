@@ -26,12 +26,13 @@ public class BuiltinNumber extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        defineReadOnlyFunction(proto, globalObject, "constructor", this);
-        defineReadOnlyFunction(proto, globalObject, "toString", new ToString(globalObject));
-        defineReadOnlyFunction(proto, globalObject, "toLocaleString", new ToString(globalObject));
-        defineReadOnlyFunction(proto, globalObject, "valueOf", new ValueOf(globalObject));
-        defineReadOnlyFunction(proto, globalObject, "toFixed", new ToFixed(globalObject));
-        defineReadOnlyFunction(proto, globalObject, "toExponential", new ToExponential(globalObject));
+        
+        defineNonEnumerableProperty(proto, "constructor", this);
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToString(globalObject));
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
+        defineNonEnumerableProperty(proto, "toFixed", new ToFixed(globalObject));
+        defineNonEnumerableProperty(proto, "toExponential", new ToExponential(globalObject));
 
         defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
         defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);

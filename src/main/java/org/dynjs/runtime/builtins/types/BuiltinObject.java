@@ -35,25 +35,27 @@ public class BuiltinObject extends AbstractBuiltinType {
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "toLocaleString", new ToLocaleString(globalObject), false);
-        proto.put(null, "hasOwnProperty", new HasOwnProperty(globalObject), false);
-        proto.put(null, "isPrototypeOf", new IsPrototypeOf(globalObject), false);
-        proto.put(null, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject), false);
+        // Object.prototype.foo()
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
+        defineNonEnumerableProperty(proto, "hasOwnProperty", new HasOwnProperty(globalObject) );
+        defineNonEnumerableProperty(proto, "isPrototypeOf", new IsPrototypeOf(globalObject) );
+        defineNonEnumerableProperty(proto, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject) );
 
-        put(null, "getPrototypeOf", new GetPrototypeOf(globalObject), false);
-        put(null, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject), false);
-        put(null, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject), false);
-        put(null, "create", new Create(globalObject), false);
-        put(null, "defineProperty", new DefineProperty(globalObject), false);
-        put(null, "defineProperties", new DefineProperties(globalObject), false);
-        put(null, "seal", new Seal(globalObject), false);
-        put(null, "freeze", new Freeze(globalObject), false);
-        put(null, "preventExtensions", new PreventExtensions(globalObject), false);
-        put(null, "isSealed", new IsSealed(globalObject), false);
-        put(null, "isFrozen", new IsFrozen(globalObject), false);
-        put(null, "isExtensible", new IsExtensible(globalObject), false);
-        put(null, "keys", new Keys(globalObject), false);
+        // Object.foo
+        defineNonEnumerableProperty(this, "getPrototypeOf", new GetPrototypeOf(globalObject) );
+        defineNonEnumerableProperty(this, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject) );
+        defineNonEnumerableProperty(this, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject) );
+        defineNonEnumerableProperty(this, "create", new Create(globalObject) );
+        defineNonEnumerableProperty(this, "defineProperty", new DefineProperty(globalObject) );
+        defineNonEnumerableProperty(this, "defineProperties", new DefineProperties(globalObject) );
+        defineNonEnumerableProperty(this, "seal", new Seal(globalObject) );
+        defineNonEnumerableProperty(this, "freeze", new Freeze(globalObject) );
+        defineNonEnumerableProperty(this, "preventExtensions", new PreventExtensions(globalObject) );
+        defineNonEnumerableProperty(this, "isSealed", new IsSealed(globalObject) );
+        defineNonEnumerableProperty(this, "isFrozen", new IsFrozen(globalObject) );
+        defineNonEnumerableProperty(this, "isExtensible", new IsExtensible(globalObject) );
+        defineNonEnumerableProperty(this, "keys", new Keys(globalObject) );
     }
 
     @Override

@@ -35,26 +35,28 @@ public class BuiltinString extends AbstractBuiltinType {
     }
 
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        put(null, "fromCharCode", new FromCharCode(globalObject), false);
+        // String.foo()
+        defineNonEnumerableProperty(this, "fromCharCode", new FromCharCode(globalObject) );
         
+        // String.prototype.foo()
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "valueOf", new ValueOf(globalObject), false);
-        proto.put(null, "charAt", new CharAt(globalObject), false);
-        proto.put(null, "charCodeAt", new CharCodeAt(globalObject), false);
-        proto.put(null, "concat", new Concat(globalObject), false);
-        proto.put(null, "indexOf", new IndexOf(globalObject), false);
-        proto.put(null, "lastIndexOf", new LastIndexOf(globalObject), false);
-        proto.put(null, "localeCompare", new LocaleCompare(globalObject), false);
-        proto.put(null, "match", new Match(globalObject), false);
-        proto.put(null, "search", new Search(globalObject), false);
-        proto.put(null, "slice", new Slice(globalObject), false);
-        proto.put(null, "split", new Split(globalObject), false);
-        proto.put(null, "substring", new Substring(globalObject), false);
-        proto.put(null, "toLowerCase", new ToLowerCase(globalObject), false);
-        proto.put(null, "toUpperCase", new ToUpperCase(globalObject), false);
-        proto.put(null, "trim", new Trim(globalObject), false);
+        defineNonEnumerableProperty(proto, "constructor", this );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
+        defineNonEnumerableProperty(proto, "charAt", new CharAt(globalObject) );
+        defineNonEnumerableProperty(proto, "charCodeAt", new CharCodeAt(globalObject) );
+        defineNonEnumerableProperty(proto, "concat", new Concat(globalObject) );
+        defineNonEnumerableProperty(proto, "indexOf", new IndexOf(globalObject) );
+        defineNonEnumerableProperty(proto, "lastIndexOf", new LastIndexOf(globalObject) );
+        defineNonEnumerableProperty(proto, "localeCompare", new LocaleCompare(globalObject) );
+        defineNonEnumerableProperty(proto, "match", new Match(globalObject) );
+        defineNonEnumerableProperty(proto, "search", new Search(globalObject) );
+        defineNonEnumerableProperty(proto, "slice", new Slice(globalObject) );
+        defineNonEnumerableProperty(proto, "split", new Split(globalObject) );
+        defineNonEnumerableProperty(proto, "substring", new Substring(globalObject) );
+        defineNonEnumerableProperty(proto, "toLowerCase", new ToLowerCase(globalObject) );
+        defineNonEnumerableProperty(proto, "toUpperCase", new ToUpperCase(globalObject) );
+        defineNonEnumerableProperty(proto, "trim", new Trim(globalObject) );
     }
 
     @Override

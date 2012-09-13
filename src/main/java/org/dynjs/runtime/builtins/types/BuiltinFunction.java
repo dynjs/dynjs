@@ -42,12 +42,11 @@ public class BuiltinFunction extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        proto.put(null, "constructor", this, false);
-        proto.put(null, "toString", new ToString(globalObject), false);
-        proto.put(null, "apply", new Apply(globalObject), false);
-        proto.put(null, "call", new Call(globalObject), false);
-        proto.put(null, "bind", new Bind(globalObject), false);
-        setPrototype(proto);
+        defineNonEnumerableProperty(proto, "constructor", this );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "apply", new Apply(globalObject) );
+        defineNonEnumerableProperty(proto, "call", new Call(globalObject) );
+        defineNonEnumerableProperty(proto, "bind", new Bind(globalObject) );
     }
 
     @Override
