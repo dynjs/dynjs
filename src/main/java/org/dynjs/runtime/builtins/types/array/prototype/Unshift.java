@@ -1,6 +1,7 @@
 package org.dynjs.runtime.builtins.types.array.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -17,23 +18,26 @@ public class Unshift extends AbstractNativeFunction {
         // 15.4.4.9
         JSObject o = Types.toObject(context, self);
         long len = Types.toUint32(context, o.get(context, "length"));
+        
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+        int numArgs = (int) argsObj.get(context, "length");
 
         for (long k = len; k > 0; --k) {
             if (o.hasProperty(context, "" + (k - 1))) {
                 final Object fromValue = o.get(context, "" + (k - 1));
-                o.put(context, "" + (k + args.length - 1), fromValue, true);
+                o.put(context, "" + (k + numArgs - 1), fromValue, true);
             } else {
-                o.delete(context, "" + (k + args.length - 1), true);
+                o.delete(context, "" + (k + numArgs - 1), true);
             }
         }
-
-        for (int j = 0; j < args.length; ++j) {
+        
+        for (int j = 0; j < numArgs; ++j) {
             o.put(context, "" + j, args[j], true);
         }
         
-        o.put( context, "length", len + args.length, true );
+        o.put( context, "length", len + numArgs, true );
         
-        return len + args.length;
+        return len + numArgs;
     }
 
 }
