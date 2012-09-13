@@ -120,7 +120,7 @@
         <dependency>
             <groupId>org.jboss.jreadline</groupId>
             <artifactId>jreadline</artifactId>
-            <version>0.20</version>
+            <version>0.20.incremental.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
