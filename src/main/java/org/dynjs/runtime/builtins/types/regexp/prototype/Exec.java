@@ -33,8 +33,8 @@ public class Exec extends AbstractNativeFunction {
             flags = flags | Pattern.CASE_INSENSITIVE;
         }
 
-        int lastIndex = (int) regexp.get(context, "lastIndex");
-        int i = lastIndex;
+        long lastIndex = (long) regexp.get(context, "lastIndex");
+        long i = lastIndex;
 
         if (regexp.get(context, "global") == Boolean.FALSE) {
             i = 0;
@@ -47,10 +47,10 @@ public class Exec extends AbstractNativeFunction {
 
         while (!matchSucceeded) {
             if (i < 0 || i > strLen) {
-                regexp.put(context, "lastIndex", 0, true);
+                regexp.put(context, "lastIndex", 0L, true);
                 return Types.NULL;
             }
-            r = regexp.match(str, i);
+            r = regexp.match(str, (int) i);
             if (r != null) {
                 matchSucceeded = true;
             } else {
@@ -58,11 +58,11 @@ public class Exec extends AbstractNativeFunction {
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
-            regexp.put(context, "lastIndex", r.end(), true);
+            regexp.put(context, "lastIndex", (long) r.end(), true);
         }
 
         DynArray a = BuiltinArray.newArray(context);
-        a.put(context, "index", r.start(), true);
+        a.put(context, "index", (long) r.start(), true);
         a.put(context, "input", str, true);
         a.put(context, "length", (long) r.groupCount() + 1, true);
         a.put(context, "0", r.group(0), true);

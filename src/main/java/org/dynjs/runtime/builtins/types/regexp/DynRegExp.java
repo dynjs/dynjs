@@ -62,7 +62,7 @@ public class DynRegExp extends DynObject {
         }
         defineOwnProperty(null, "lastIndex", new PropertyDescriptor() {
             {
-                set("Value", 0);
+                set("Value", 0L);
                 set("Writable", true);
                 set("Configurable", false);
                 set("Enumerable", false);

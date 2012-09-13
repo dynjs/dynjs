@@ -17,7 +17,7 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
         assertThat(getPropertyValue(regExp, "global")).isEqualTo(false);
         assertThat(getPropertyValue(regExp, "ignoreCase")).isEqualTo(false);
         assertThat(getPropertyValue(regExp, "multiline")).isEqualTo(false);
-        assertThat(getPropertyValue(regExp, "lastIndex")).isEqualTo(0);
+        assertThat(getPropertyValue(regExp, "lastIndex")).isEqualTo(0L);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
         assertThat(getPropertyValue(regExp, "global")).isEqualTo(true);
         assertThat(getPropertyValue(regExp, "ignoreCase")).isEqualTo(false);
         assertThat(getPropertyValue(regExp, "multiline")).isEqualTo(true);
-        assertThat(getPropertyValue(regExp, "lastIndex")).isEqualTo(0);
+        assertThat(getPropertyValue(regExp, "lastIndex")).isEqualTo(0L);
     }
 
     @Test
