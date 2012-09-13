@@ -123,22 +123,4 @@ public class DynArray extends DynObject {
         return name.equals(Types.toUint32(context, name).toString());
     }
 
-    // ----------------------------------------
-
-    public void setLength(ExecutionContext context, final long len) {
-        defineOwnProperty(context, "length", new PropertyDescriptor() {
-            {
-                set("Value", len);
-            }
-        }, false);
-    }
-
-    public void setElement(ExecutionContext context, final long index, final Object value) {
-        defineOwnProperty(context, "" + index, new PropertyDescriptor() {
-            {
-                set("Value", value);
-            }
-        }, false);
-    }
-
 }
