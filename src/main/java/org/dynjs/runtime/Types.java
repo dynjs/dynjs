@@ -478,10 +478,7 @@ public class Types {
 
     public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
-        String lhsType = type(lhs);
-        String rhsType = type(rhs);
-
-        if (!lhsType.equals(rhsType)) {
+        if (!lhs.getClass().equals(rhs.getClass())) {
             return false;
         }
 
