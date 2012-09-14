@@ -11,7 +11,7 @@ public class ArgGetter extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        return getScope().getIdentifierReference(context, this.name, isStrict());
+        return getScope().getIdentifierReference(context, this.name, isStrict()).getValue(context);
     }
 
 }

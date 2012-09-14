@@ -36,21 +36,21 @@ public class IndexOf extends AbstractNativeFunction {
         long k = n;
         if (n < 0) {
             k = (len - Math.abs(n));
-            if ( k < 0 ) {
+            if (k < 0) {
                 k = 0;
             }
         }
 
-        while ( k < len ) {
-            if (o.hasProperty(context, "" +k )) {
-                Object element = o.get(context, ""+k);
-                if ( Types.compareStrictEquality(context, args[0], element)) {
+        while (k < len) {
+            if (o.hasProperty(context, "" + k)) {
+                Object element = o.get(context, "" + k);
+                if (Types.compareStrictEquality(context, args[0], element)) {
                     return k;
                 }
             }
             ++k;
         }
-        
+
         return -1L;
     }
 
