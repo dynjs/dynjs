@@ -129,22 +129,7 @@ public class DynObject implements JSObject {
     @Override
     public boolean hasProperty(ExecutionContext context, String name) {
         // 8.12.6
-        return (this.properties.containsKey(name) || (this.prototype != null ? this.prototype.hasProperty(context, name) : false));
-        /*
-         * if ( this.properties.containsKey( name ) ) {
-         * return true;
-         * }
-         * 
-         * if ( this.prototype != null ) {
-         * return this.prototype.hasProperty(context, name);
-         * }
-         * 
-         * return false;
-         */
-
-        /*
-         * return (getProperty(context, name) != Types.UNDEFINED);
-         */
+        return (getProperty(context, name) != Types.UNDEFINED);
     }
 
     @Override
