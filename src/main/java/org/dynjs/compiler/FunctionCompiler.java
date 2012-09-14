@@ -37,7 +37,7 @@ public class FunctionCompiler extends AbstractCompiler {
                                 // this statements
                                 aload( 2 );
                                 // this statements scope
-                                pushBoolean( context.isStrict() );
+                                pushBoolean( context.isRootStrict() );
                                 // this statements scope strict
                                 aload( 3 );
                                 // this statements scope strict formal-parameters

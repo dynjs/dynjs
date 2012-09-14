@@ -63,6 +63,14 @@ public class ExecutionContext {
     public boolean isStrict() {
         return this.strict;
     }
+    
+    public boolean isRootStrict() {
+        if ( this.parent != null ) {
+            return this.parent.isRootStrict();
+        }
+        
+        return this.strict;
+    }
 
     void setStrict(boolean strict) {
         this.strict = strict;
