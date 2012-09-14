@@ -22,6 +22,7 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinBoolean;
 import org.dynjs.runtime.builtins.types.BuiltinDate;
 import org.dynjs.runtime.builtins.types.BuiltinError;
+import org.dynjs.runtime.builtins.types.BuiltinEvalError;
 import org.dynjs.runtime.builtins.types.BuiltinFunction;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
@@ -68,6 +69,7 @@ public class GlobalObject extends DynObject {
         registerBuiltinType("SyntaxError", new BuiltinSyntaxError(this));
         registerBuiltinType("TypeError", new BuiltinTypeError(this));
         registerBuiltinType("URIError", new BuiltinURIError(this));
+        registerBuiltinType("EvalError", new BuiltinEvalError(this));
 
         initializeBuiltinTypes();
 
