@@ -220,6 +220,16 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathAtan2NegativeInfinity() {
         assertEval("Math.atan2(-Infinity, Number.NEGATIVE_INFINITY)", -3 * java.lang.Math.PI / 4);
     }
+    
+    @Test
+    public void testMathAtan2NegativeZero() {
+        assertEval("Math.atan2(-0, -0)", -java.lang.Math.PI);
+    }
+
+    @Test
+    public void testMathAtan2PositiveZero() {
+        assertEval("Math.atan2(0, 0)", 0.0);
+    }
 
     @Test
     public void testMathCeil() {
@@ -454,6 +464,21 @@ public class MathTest extends AbstractDynJSTestSupport {
     @Test
     public void testMathRound() {
         assertEval("Math.round(3.5)", 4L);
+    }
+    
+    @Test
+    public void testMathRoundNaN() {
+        assertEval("Math.round(NaN)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathRoundInfinity() {
+        assertEval("Math.round(Infinity)", Double.POSITIVE_INFINITY);
+    }
+    
+    @Test
+    public void testMathRoundNegativeInfinity() {
+        assertEval("Math.round(-Infinity)", Double.NEGATIVE_INFINITY);
     }
     
     @Test

@@ -5,17 +5,15 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.builtins.Math;
 
-public class Round extends AbstractNativeFunction {
+public class Sin extends AbstractNativeFunction {
     
-    public Round(GlobalObject globalObject) {
-        super(globalObject);
+    public Sin(GlobalObject globalObject) {
+        super(globalObject, "x");
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        final Double x = Math.functionArgToDouble(context, args[0]);
-        if (x.isNaN() || x.isInfinite()) { return x; }
-        return Math.coerceLongIfPossible(java.lang.Math.round(x));
+        return Math.coerceLongIfPossible(java.lang.Math.sin(Math.functionArgToDouble(context, args[0])));
     }
 
 }

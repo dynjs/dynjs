@@ -20,6 +20,9 @@ import org.dynjs.runtime.builtins.math.Min;
 import org.dynjs.runtime.builtins.math.Pow;
 import org.dynjs.runtime.builtins.math.Random;
 import org.dynjs.runtime.builtins.math.Round;
+import org.dynjs.runtime.builtins.math.Sin;
+import org.dynjs.runtime.builtins.math.Sqrt;
+import org.dynjs.runtime.builtins.math.Tan;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
@@ -53,6 +56,9 @@ public class Math extends DynObject {
         put(null, "pow",    new Pow(globalObject), false);    // 15.8.2.13
         put(null, "random", new Random(globalObject), false); // 15.8.2.14
         put(null, "round",  new Round(globalObject), false);  // 15.8.2.15
+        put(null, "sin",    new Sin(globalObject), false);    // 15.8.2.16
+        put(null, "sqrt",   new Sqrt(globalObject), false);   // 15.8.2.17
+        put(null, "tan",    new Tan(globalObject), false);    // 15.8.2.18
         
         setClassName( "Math" );
     }

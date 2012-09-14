@@ -20,6 +20,7 @@ public class Atan2 extends AbstractNativeFunction {
         }
         Double y = Math.functionArgToDouble(context, args[0]);
         Double x = Math.functionArgToDouble(context, args[1]);
+        if (x == -0 && y == -0) { return -java.lang.Math.PI; }
         return java.lang.Math.atan2(y, x);
     }
 
