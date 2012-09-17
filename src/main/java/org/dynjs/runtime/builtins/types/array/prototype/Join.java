@@ -9,7 +9,7 @@ import org.dynjs.runtime.Types;
 public class Join extends AbstractNativeFunction {
 
     public Join(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "separator");
     }
 
     @Override
