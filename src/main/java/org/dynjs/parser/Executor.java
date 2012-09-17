@@ -45,6 +45,7 @@ import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
+import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
@@ -228,7 +229,8 @@ public class Executor {
     }
 
     public Expression defineInRelOp(final Tree tree, Expression l, Expression r) {
-        throw new ParserException("not implemented yet", tree);
+        System.err.println( "IN: " + l + " // " + r );
+        return new InOperatorExpression(tree, l, r);
     }
 
     public LogicalExpression defineLorOp(final Tree tree, final Expression l, final Expression r) {

@@ -400,8 +400,8 @@ functionDescriptor returns [FunctionDescriptor value]
 
 callExpression returns [Expression value]
 @init { List<Expression> args = new ArrayList<Expression>(); }
-	: ^( CALL leftHandSideExpression ^( ARGS (expr { args.add($expr.value); } )* ) )
-	{ $value = executor.resolveCallExpr($CALL, $leftHandSideExpression.value, args);  }
+	: ^( CALL expression ^( ARGS (expr { args.add($expr.value); } )* ) )
+	{ $value = executor.resolveCallExpr($CALL, $expression.value, args);  }
 	;
 	
 memberExpression returns [Expression value]
