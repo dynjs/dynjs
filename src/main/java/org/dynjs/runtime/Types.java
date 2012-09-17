@@ -118,6 +118,20 @@ public class Types {
         }
         return ((st > 0) || (len < value.length())) ? value.substring(st, len).trim() : value.trim();
     }
+    
+    public static String trimNumericString(String value) {
+        char[] val = value.toCharArray();
+
+        StringBuffer newStr = new StringBuffer();
+        
+        for ( int i = 0 ; i < val.length ; ++i ) {
+            if ( ! isWhitespace( val[i] ) ) {
+                newStr.append( val[i] );
+            }
+        }
+        
+        return newStr.toString().trim();
+    }
 
     public static boolean isWhitespace(char c) {
         switch (c) {
@@ -152,9 +166,8 @@ public class Types {
     }
 
     public static Number stringToNumber(String str) {
-        str = trimString(str);
+        str = trimNumericString(str);
         
-
         if (str.equals("")) {
             return 0L;
         }
