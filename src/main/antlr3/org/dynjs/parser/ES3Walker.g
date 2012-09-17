@@ -165,7 +165,7 @@ forStatement returns [Statement value]
             $value = executor.forStepExpr($FORSTEP, $stepOpt1.value, $stepOpt2.value, $stepOpt3.value, $statement.value);
         } else if (isIter && isVar) {
             $value = executor.forIterVar($FORITER, $iterVar.value, $iterExpr2.value, $statement.value);
-        } else if (isStep && !isVar) {
+        } else if (isIter && !isVar) {
             $value = executor.forIterExpr($FORITER, $iterExpr1.value, $iterExpr2.value, $statement.value);
         }
     }

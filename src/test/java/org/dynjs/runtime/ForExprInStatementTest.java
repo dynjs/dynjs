@@ -8,11 +8,15 @@ public class ForExprInStatementTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testBasicLoop() {
-        eval("var x = { a: 1, b:2 }",
+        JSObject collector = (JSObject) eval("var x = { a: 1, b:2 }",
+                " var collector = []",
                 "var e;",
                 "for ( e in x ) {",
-                "  print(e);",
-                "}");
+                "  collector.push( e );",
+                "}", 
+                "collector");
+        
+        assertThat( collector.get( getContext(), "length" )).isEqualTo(2L);
     }
-
+    
 }

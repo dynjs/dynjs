@@ -40,7 +40,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
     }
 
     public BlockStatement(final List<Statement> blockContent) {
-        super(blockContent.isEmpty() ? null : blockContent.get(0).getPosition());
+        super(( blockContent == null || blockContent.isEmpty() ) ? null : blockContent.get(0).getPosition());
         this.blockContent = blockContent;
     }
 
