@@ -28,7 +28,10 @@ public class Max extends AbstractNativeFunction {
             return Double.NaN;
         }
 
-        double max = new Double(Types.toNumber(context, args[0]).toString());
+        double max  = new Double(Types.toNumber(context, args[0]).toString());
+        double next = new Double(Types.toNumber(context, args[1]).toString());
+
+        if (max == next && next == 0) { return 0L; }
         for (int i = 1; i < args.length; i++) {
             if (DynNumber.isNaN(args[i]))
                 return Double.NaN;

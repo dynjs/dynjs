@@ -228,7 +228,6 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testMathAtan2PositiveZero() {
         assertEval("Math.atan2(0, 0)", 0.0);
     }
@@ -376,6 +375,30 @@ public class MathTest extends AbstractDynJSTestSupport {
     @Test
     public void testMathMax() {
         assertEval("Math.max(0.5, 2)", 2L);
+    }
+    
+    @Test
+    @Ignore
+    public void strictZeroEquality() {
+        assertEval("Number(0) === -0", true);
+    }
+    
+    @Test
+    @Ignore
+    public void strictZeroInequality() {
+        assertEval("Number(0) !== -0", false);
+    }
+    
+    @Test
+    @Ignore
+    public void testMathMaxNegativeZero() {
+        assertEval("Math.max(-0, +0) !== -0", false);
+    }
+
+    @Test
+    @Ignore
+    public void testMathMaxNegativeZeroReverse() {
+        assertEval("Math.max(+0, -0) !== -0", false);
     }
 
     @Test
