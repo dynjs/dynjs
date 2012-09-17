@@ -7,7 +7,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class MathTest extends AbstractDynJSTestSupport {
@@ -378,25 +377,21 @@ public class MathTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void strictZeroEquality() {
-        assertEval("Number(0) === -0", true);
+        assertEval("0.0 === -0", true);
     }
     
     @Test
-    @Ignore
     public void strictZeroInequality() {
         assertEval("Number(0) !== -0", false);
     }
     
     @Test
-    @Ignore
     public void testMathMaxNegativeZero() {
         assertEval("Math.max(-0, +0) !== -0", false);
     }
 
     @Test
-    @Ignore
     public void testMathMaxNegativeZeroReverse() {
         assertEval("Math.max(+0, -0) !== -0", false);
     }

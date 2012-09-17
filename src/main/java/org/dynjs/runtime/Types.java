@@ -494,7 +494,10 @@ public class Types {
 
     public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
-        if (!lhs.getClass().equals(rhs.getClass())) {
+        if (!lhs.getClass().equals(rhs.getClass()) 
+                // Allow comparison of Doubles and Longs (because 0 === -0 in Javascript
+                // go figure
+                && !(lhs instanceof Number && rhs instanceof Number)) { 
             return false;
         }
 
@@ -512,6 +515,10 @@ public class Types {
             }
             if (rhs instanceof Number && ((Number) rhs).doubleValue() == Double.NaN) {
                 return false;
+            }
+            // This makes 0 === -0 but it surely is ugly
+            if (Double.isInfinite(1/((Number)rhs).doubleValue()) && Double.isInfinite(1/((Number)lhs).doubleValue())) {
+                return true;
             }
             return lhs.equals(rhs);
         }
