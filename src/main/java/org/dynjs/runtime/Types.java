@@ -409,10 +409,7 @@ public class Types {
     public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.3
 
-        String lhsType = type(lhs);
-        String rhsType = type(rhs);
-
-        if (lhsType.equals(rhsType)) {
+        if (lhs.getClass().equals( rhs.getClass() ) ) {
             if (lhs == Types.UNDEFINED) {
 
                 return true;
@@ -449,27 +446,27 @@ public class Types {
             return true;
         }
 
-        if (lhsType.equals("number") && rhsType.equals("string")) {
+        if (lhs instanceof Number && rhs instanceof String ) {
             return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
-        if (lhsType.equals("string") && rhsType.equals("number")) {
+        if (lhs instanceof String && rhs instanceof Number ) {
             return compareEquality(context, toNumber(context, lhs), rhs);
         }
 
-        if (lhsType.equals("boolean")) {
+        if (lhs instanceof Boolean ) {
             return compareEquality(context, toNumber(context, lhs), rhs);
         }
 
-        if (rhsType.equals("boolean")) {
+        if (rhs instanceof Boolean ) {
             return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
-        if ((lhsType.equals("string") || lhsType.equals("number")) && rhsType.equals("object")) {
+        if (( lhs instanceof String ||  lhs instanceof Number ) && rhs instanceof JSObject ) {
             return compareEquality(context, lhs, toPrimitive(context, rhs));
         }
 
-        if (lhsType.equals("object") && (rhsType.equals("string") || rhsType.equals("number"))) {
+        if ( lhs instanceof JSObject && ( rhs instanceof String || rhs instanceof Number )) {
             return compareEquality(context, toPrimitive(context, lhs), rhs);
         }
 
