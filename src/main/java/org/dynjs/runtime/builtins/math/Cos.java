@@ -14,14 +14,7 @@ public class Cos extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (DynNumber.isNaN(args[0])) {
-            return Double.NaN;
-        }
-        final Double arg = Math.functionArgToDouble(context, args[0]);
-        if (arg == 0) {
-            return 1;
-        }
-        return java.lang.Math.cos(arg);
+        return Math.coerceLongIfPossible(java.lang.Math.cos(Math.functionArgToDouble(context, args[0])));
     }
 
 }

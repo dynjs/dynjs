@@ -7,6 +7,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class MathTest extends AbstractDynJSTestSupport {
@@ -268,7 +269,12 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathCosZero() {
-        assertEval("Math.cos(0)", 1);
+        assertEval("Math.cos(0)", 1L);
+    }
+    
+    @Test
+    public void testMathCosStrictEquality() {
+        assertEval("Math.cos(+0) === 1", true);
     }
 
     @Test
@@ -419,6 +425,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     @Test
     public void testMathMaxVeryManyArgsAndOneNaNStuckInTheMiddle() {
         assertEval("Math.max(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
+    }
+    
+    @Test
+    public void testMathMaxNaN() {
+        assertEval("Math.max(0.0, -0.0, NaN)", Double.NaN);
     }
 
     @Test
