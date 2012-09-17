@@ -17,6 +17,7 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
         return new CodeBlock() {
             {
                 LabelNode doubleNum = new LabelNode();
+                LabelNode zero = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 append(getExpr().getCodeBlock());
@@ -29,8 +30,20 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 // num num
                 instance_of(p(Double.class));
                 // num bool
-
                 iftrue(doubleNum);
+                
+                // num
+                dup();
+                // num num
+                invokevirtual(p(Number.class), "longValue", sig(long.class));
+                // num long
+                ldc( 0L );
+                // num long 0L
+                lcmp();
+                // num bool
+                iffalse(zero);
+                
+                
 
                 // ------------------------------------
                 // Integral
@@ -63,8 +76,17 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 // -num
                 invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
                 // -num(Double)
+                
+                go_to(end);
 
                 // ------------------------------------
+                
+                label( zero );
+                // num
+                pop();
+                ldc( -0.0 );
+                invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
+                
 
                 label(end);
                 nop();

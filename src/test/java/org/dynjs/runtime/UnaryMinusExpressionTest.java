@@ -22,7 +22,27 @@ public class UnaryMinusExpressionTest extends AbstractDynJSTestSupport {
     public void testUnaryMinusOnVar() {
         Object result = eval("var x = 1; -x;");
         assertThat(result).isEqualTo(-1L);
-
     }
+    
+    @Test
+    public void testNegativeZero() {
+        assertThat( eval( "-0" ) ).isEqualTo( -0.0 );
+    }
+    
+    @Test
+    public void testNegativeNumberZero() {
+        assertThat( eval( "-Number(0)" ) ).isEqualTo( -0.0 );
+    }
+    
+    @Test
+    public void testNegativeNumberZeroString() {
+        assertThat( eval( "-Number('0')" ) ).isEqualTo( -0.0 );
+    }
+    
+    @Test
+    public void testNegativeNumberZeroString2() {
+        assertThat( eval( "Number('-0')" ) ).isEqualTo( -0.0 );
+    }
+
 
 }

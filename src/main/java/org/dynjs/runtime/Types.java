@@ -90,7 +90,7 @@ public class Types {
         }
 
         if (o == Types.NULL) {
-            return Double.valueOf(0);
+            return 0L;
         }
 
         if (o instanceof Boolean) {
@@ -101,7 +101,8 @@ public class Types {
             return 0L;
         }
 
-        return stringToNumber(o.toString());
+        Number n = stringToNumber(o.toString());
+        return n;
     }
 
     public static String trimString(String value) {
@@ -152,11 +153,16 @@ public class Types {
 
     public static Number stringToNumber(String str) {
         str = trimString(str);
+        
 
         if (str.equals("")) {
             return 0L;
         }
-
+        
+        if ( str.equals( "-0" ) ) {
+            return Double.valueOf( -0.0 );
+        }
+        
         if (str.equals("Infinity") || str.equals("+Infinity")) {
             return Math.pow(10, 10000);
         }
@@ -409,7 +415,7 @@ public class Types {
     public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.3
 
-        if (lhs.getClass().equals( rhs.getClass() ) ) {
+        if (lhs.getClass().equals( rhs.getClass() ) || ( lhs instanceof Number && rhs instanceof Number ) ) {
             if (lhs == Types.UNDEFINED) {
 
                 return true;
@@ -428,7 +434,7 @@ public class Types {
                         return false;
                     }
                 }
-                if (lhs.equals(rhs)) {
+                if ( ((Number)lhs).doubleValue() == ((Number)rhs).doubleValue() ) {
                     return true;
                 }
                 return false;

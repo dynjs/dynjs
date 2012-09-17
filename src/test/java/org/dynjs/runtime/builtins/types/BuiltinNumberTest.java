@@ -49,7 +49,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNegativeZero() {
-        check("var result = -0", 0L);
+        check("var result = -0", -0.0 );
     }
 
     @Test
@@ -334,6 +334,16 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testFunctionWithUnicodeStr() {
         Object result = eval( "Number('\\u0009\\u000C\\u0020\\u00A0\\u000B\\u000A\\u000D\\u2028\\u2029\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000')" );
         System.err.println( result );
+    }
+    
+    @Test
+    public void testDivisionByZero() {
+        assertThat( eval( "1/Number(0)") ).isEqualTo( Double.POSITIVE_INFINITY );
+    }
+    
+    @Test
+    public void testDivisionByNegativeZero() {
+        assertThat( eval( "1/Number(-0)") ).isEqualTo( Double.NEGATIVE_INFINITY );
     }
     
 }
