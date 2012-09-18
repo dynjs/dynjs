@@ -14,11 +14,13 @@ public class Types {
 
     public static void checkObjectCoercible(ExecutionContext context, Object o) {
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(context.createTypeError("undefined cannot be coerced to an object"));
+            throw new ThrowException(
+                    context.createTypeError("undefined cannot be coerced to an object"));
         }
 
         if (o == Types.NULL) {
-            throw new ThrowException(context.createTypeError("null cannot be coerced to an object"));
+            throw new ThrowException(
+                    context.createTypeError("null cannot be coerced to an object"));
         }
 
         return;
@@ -55,10 +57,12 @@ public class Types {
             return new DynBoolean(context.getGlobalObject(), (Boolean) o);
         }
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(context.createTypeError("undefined cannot be converted to an object"));
+            throw new ThrowException(
+                    context.createTypeError("undefined cannot be converted to an object"));
         }
         if (o == Types.NULL) {
-            throw new ThrowException(context.createTypeError("null cannot be converted to an object"));
+            throw new ThrowException(
+                    context.createTypeError("null cannot be converted to an object"));
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
@@ -67,7 +71,8 @@ public class Types {
         return toPrimitive(context, o, null);
     }
 
-    public static Object toPrimitive(ExecutionContext context, Object o, String preferredType) {
+    public static Object toPrimitive(ExecutionContext context, Object o,
+            String preferredType) {
         // 9.1
         if (o instanceof JSObject) {
             return ((JSObject) o).defaultValue(context, preferredType);
@@ -116,20 +121,21 @@ public class Types {
         while ((st < len) && (isWhitespace(val[len - 1]))) {
             len--;
         }
-        return ((st > 0) || (len < value.length())) ? value.substring(st, len).trim() : value.trim();
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len)
+                .trim() : value.trim();
     }
-    
+
     public static String trimNumericString(String value) {
         char[] val = value.toCharArray();
 
         StringBuffer newStr = new StringBuffer();
-        
-        for ( int i = 0 ; i < val.length ; ++i ) {
-            if ( ! isWhitespace( val[i] ) ) {
-                newStr.append( val[i] );
+
+        for (int i = 0; i < val.length; ++i) {
+            if (!isWhitespace(val[i])) {
+                newStr.append(val[i]);
             }
         }
-        
+
         return newStr.toString().trim();
     }
 
@@ -167,15 +173,15 @@ public class Types {
 
     public static Number stringToNumber(String str) {
         str = trimNumericString(str);
-        
+
         if (str.equals("")) {
             return 0L;
         }
-        
-        if ( str.equals( "-0" ) ) {
-            return Double.valueOf( -0.0 );
+
+        if (str.equals("-0")) {
+            return Double.valueOf(-0.0);
         }
-        
+
         if (str.equals("Infinity") || str.equals("+Infinity")) {
             return Math.pow(10, 10000);
         }
@@ -299,11 +305,22 @@ public class Types {
         // javascript spec assumes it should.
         return (a % b + b) % b;
     }
-
+    
     public static Long toInt32(ExecutionContext context, Object o) {
-        long int32bit = toUint32(context, o);
-        if (int32bit > Math.pow(2, 31)) {
-            return (long) (int32bit - Math.pow(2, 32));
+        System.err.println("toInt32: " + o);
+        Number number = toNumber(context, o);
+        if (Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue())) {
+            return 0L;
+        }
+
+        double doubleNum = number.doubleValue();
+
+        long posInt = (long) ((sign(doubleNum)) * Math.floor(Math.abs(doubleNum)));
+
+        long int32bit = modulo(posInt, 4294967296L);
+
+        if (int32bit >= 2147483648L) {
+            int32bit = int32bit - 4294967296L;
         }
         return int32bit;
     }
@@ -365,7 +382,8 @@ public class Types {
         return type(val);
     }
 
-    public static Object compareRelational(ExecutionContext context, Object x, Object y, boolean leftFirst) {
+    public static Object compareRelational(ExecutionContext context, Object x,
+            Object y, boolean leftFirst) {
         // 11.8.5
 
         Object px = null;
@@ -392,7 +410,8 @@ public class Types {
             Number nx = toNumber(context, px);
             Number ny = toNumber(context, py);
 
-            if (nx.doubleValue() == Double.NaN || ny.doubleValue() == Double.NaN) {
+            if (nx.doubleValue() == Double.NaN
+                    || ny.doubleValue() == Double.NaN) {
                 return Types.UNDEFINED;
             }
 
@@ -425,10 +444,12 @@ public class Types {
 
     }
 
-    public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
+    public static boolean compareEquality(ExecutionContext context, Object lhs,
+            Object rhs) {
         // 11.9.3
 
-        if (lhs.getClass().equals( rhs.getClass() ) || ( lhs instanceof Number && rhs instanceof Number ) ) {
+        if (lhs.getClass().equals(rhs.getClass())
+                || (lhs instanceof Number && rhs instanceof Number)) {
             if (lhs == Types.UNDEFINED) {
 
                 return true;
@@ -447,7 +468,8 @@ public class Types {
                         return false;
                     }
                 }
-                if ( ((Number)lhs).doubleValue() == ((Number)rhs).doubleValue() ) {
+                if (((Number) lhs).doubleValue() == ((Number) rhs)
+                        .doubleValue()) {
                     return true;
                 }
                 return false;
@@ -465,39 +487,42 @@ public class Types {
             return true;
         }
 
-        if (lhs instanceof Number && rhs instanceof String ) {
+        if (lhs instanceof Number && rhs instanceof String) {
             return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
-        if (lhs instanceof String && rhs instanceof Number ) {
+        if (lhs instanceof String && rhs instanceof Number) {
             return compareEquality(context, toNumber(context, lhs), rhs);
         }
 
-        if (lhs instanceof Boolean ) {
+        if (lhs instanceof Boolean) {
             return compareEquality(context, toNumber(context, lhs), rhs);
         }
 
-        if (rhs instanceof Boolean ) {
+        if (rhs instanceof Boolean) {
             return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
-        if (( lhs instanceof String ||  lhs instanceof Number ) && rhs instanceof JSObject ) {
+        if ((lhs instanceof String || lhs instanceof Number)
+                && rhs instanceof JSObject) {
             return compareEquality(context, lhs, toPrimitive(context, rhs));
         }
 
-        if ( lhs instanceof JSObject && ( rhs instanceof String || rhs instanceof Number )) {
+        if (lhs instanceof JSObject
+                && (rhs instanceof String || rhs instanceof Number)) {
             return compareEquality(context, toPrimitive(context, lhs), rhs);
         }
 
         return false;
     }
 
-    public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
+    public static boolean compareStrictEquality(ExecutionContext context,
+            Object lhs, Object rhs) {
         // 11.9.6
-        if (!lhs.getClass().equals(rhs.getClass()) 
+        if (!lhs.getClass().equals(rhs.getClass())
                 // Allow comparison of Doubles and Longs (because 0 === -0 in Javascript
                 // go figure
-                && !(lhs instanceof Number && rhs instanceof Number)) { 
+                && !(lhs instanceof Number && rhs instanceof Number)) {
             return false;
         }
 
@@ -513,10 +538,11 @@ public class Types {
             if (((Number) lhs).doubleValue() == Double.NaN) {
                 return false;
             }
-            if (rhs instanceof Number && ((Number) rhs).doubleValue() == Double.NaN) {
+            if (rhs instanceof Number
+                    && ((Number) rhs).doubleValue() == Double.NaN) {
                 return false;
             }
-            return ((Number)lhs).doubleValue() == ((Number)rhs).doubleValue();
+            return ((Number) lhs).doubleValue() == ((Number) rhs).doubleValue();
         }
 
         if (lhs instanceof String || lhs instanceof Boolean) {

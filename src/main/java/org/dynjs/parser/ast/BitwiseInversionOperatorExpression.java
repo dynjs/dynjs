@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -33,18 +34,20 @@ public class BitwiseInversionOperatorExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                LabelNode returnFalse = new LabelNode();
-                LabelNode end = new LabelNode();
-
                 append(expr.getCodeBlock());
                 // obj
                 append(jsGetValue());
                 // val
                 append(jsToInt32());
-                // int
-                iconst_m1();
-                // int -1
-                ixor();
+                // Long
+                invokevirtual(p(Long.class), "longValue", sig(long.class));
+                // long
+                ldc( -1L );
+                // long -1(long)
+                lxor();
+                // long
+                invokestatic( p(Long.class), "valueOf", sig(Long.class, long.class));
+                // Long
             }
         };
     }
