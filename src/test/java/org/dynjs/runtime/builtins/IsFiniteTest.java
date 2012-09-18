@@ -92,5 +92,10 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
     public void testNegativeInfinity() {
         assertThat(eval("-Infinity")).isEqualTo(Double.NEGATIVE_INFINITY);
     }
+    
+    @Test
+    public void testNaN() {
+        assertThat(eval("isFinite(NaN)")).isEqualTo(false);
+    }
 
 }
