@@ -28,7 +28,7 @@ public class ParseInt extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        String text = ((String) arguments[0]).trim();
+        String text = Types.toString(context, arguments[0]).trim();
         Object radixArg = arguments[1];
 
         long radix = 10;
@@ -40,7 +40,7 @@ public class ParseInt extends AbstractNativeFunction {
         }
         text = cleanText(text, radix);
         return parseInt(text, radix);
-    }
+  }
 
     static String cleanText(String text, long radix) {
         if (radix == 16) {
@@ -55,8 +55,6 @@ public class ParseInt extends AbstractNativeFunction {
         int radix = 10;
         if (text.startsWith("0x")) {
             radix = 16;
-        } else if (text.startsWith("0")) {
-            radix = 8;
         }
         return radix;
     }

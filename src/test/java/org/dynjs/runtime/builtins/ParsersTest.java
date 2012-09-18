@@ -84,4 +84,19 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     public void parseIntWithInfiniteRadix() {
         check("var result = parseInt('11', Infinity)", 11);
     }
+    
+    @Test
+    public void parseIntWithBoolean() {
+        check("var result = parseInt(true)", Double.NaN);
+    }
+    
+    @Test
+    public void parseIntWithInteger() {
+        check("var result = parseInt(-1)", -1);
+    }
+    
+    @Test
+    public void parseIntWithInfinity() {
+        check("var result = parseInt(Infinity)", Double.NaN);
+    }
 }
