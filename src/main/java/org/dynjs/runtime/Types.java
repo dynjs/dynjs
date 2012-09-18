@@ -516,11 +516,7 @@ public class Types {
             if (rhs instanceof Number && ((Number) rhs).doubleValue() == Double.NaN) {
                 return false;
             }
-            // This makes 0 === -0 but it surely is ugly
-            if (Double.isInfinite(1/((Number)rhs).doubleValue()) && Double.isInfinite(1/((Number)lhs).doubleValue())) {
-                return true;
-            }
-            return lhs.equals(rhs);
+            return ((Number)lhs).doubleValue() == ((Number)rhs).doubleValue();
         }
 
         if (lhs instanceof String || lhs instanceof Boolean) {
