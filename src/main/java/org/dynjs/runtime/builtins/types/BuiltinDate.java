@@ -21,7 +21,7 @@ public class BuiltinDate extends AbstractBuiltinType {
     public BuiltinDate(final GlobalObject globalObject) {
         super(globalObject, "year", "month", "date", "hours", "minutes", "seconds", "ms");
         final DynDate proto = new DynDate(globalObject);
-        setPrototypeProperty( proto );
+        setPrototypeProperty(proto);
     }
 
     @Override
@@ -33,20 +33,20 @@ public class BuiltinDate extends AbstractBuiltinType {
     public void initialize(GlobalObject globalObject, JSObject proto) {
         put(null, "now", new Now(globalObject), false);
         put(null, "parse", new Parse(globalObject), false);
-        defineNonEnumerableProperty(proto, "constructor", this );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
-        defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject) );
-        defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject) );
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
-        defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject) );
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
-        defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject) );
+        defineNonEnumerableProperty(proto, "constructor", this);
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject));
+        defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject));
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
+        defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
+        defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         DynDate date = null;
-        if ( self == Types.UNDEFINED ) {
+        if (self == Types.UNDEFINED) {
             date = new DynDate(context.getGlobalObject());
         } else {
             date = (DynDate) self;
