@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 public class BuiltinDateTest extends AbstractDynJSTestSupport {
@@ -20,6 +22,7 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void setup() {
         DateTimeUtils.setCurrentMillisFixed(fixedInstant);
         DateTimeZone.setDefault(DateTimeZone.forID("Brazil/East"));
+        Locale.setDefault(Locale.forLanguageTag("en_US"));
     }
 
     @After
