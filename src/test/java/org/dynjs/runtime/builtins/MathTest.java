@@ -7,7 +7,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class MathTest extends AbstractDynJSTestSupport {

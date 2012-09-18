@@ -1,7 +1,7 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.fest.assertions.Assertions.*;
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
@@ -9,7 +9,6 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -344,6 +343,11 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testDivisionByNegativeZero() {
         assertThat( eval( "1/Number(-0)") ).isEqualTo( Double.NEGATIVE_INFINITY );
+    }
+    
+    @Test
+    public void testInfinityStrictEquality() {
+        assertThat( eval( "Infinity === Number.POSITIVE_INFINITY" ) ).isEqualTo(true);
     }
     
 }

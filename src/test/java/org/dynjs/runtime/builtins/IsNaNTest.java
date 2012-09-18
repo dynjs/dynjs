@@ -54,5 +54,10 @@ public class IsNaNTest extends AbstractDynJSTestSupport {
     public void isNaNReturnsTrueForCharacterString() {
         check("var result = isNaN('abc');", true);
     }
+    
+    @Test
+    public void infinityIsNotNaN() {
+        check("var result = isNaN(Infinity)", false);
+    }
 
 }
