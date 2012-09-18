@@ -15,13 +15,17 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
+import org.objectweb.asm.tree.LabelNode;
 
 public class AssignmentExpression extends AbstractExpression {
 
@@ -38,8 +42,18 @@ public class AssignmentExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                LabelNode throwRefError = new LabelNode();
+                LabelNode end = new LabelNode();
+                
                 append(lhs.getCodeBlock());
                 // reference
+                dup();
+                // reference reference
+                instance_of(p(Reference.class) );
+                // reference bool
+                iffalse(throwRefError);
+                // reference
+                checkcast( p(Reference.class));
                 append(rhs.getCodeBlock());
                 // reference expr
                 append(jsGetValue());
@@ -52,6 +66,29 @@ public class AssignmentExpression extends AbstractExpression {
                 // value reference context value
                 invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
                 // value
+                go_to( end );
+                
+                label( throwRefError );
+                // reference
+                pop();
+                
+                newobj(p(ThrowException.class));
+                // ex
+                dup();
+                // ex ex
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // ex ex context
+                ldc( lhs.toString() + " is not a reference" );
+                // ex ex context str
+                invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
+                // ex ex error
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                // ex ex
+                athrow();
+                
+                
+                label(end );
+                nop();
             }
         };
     }
