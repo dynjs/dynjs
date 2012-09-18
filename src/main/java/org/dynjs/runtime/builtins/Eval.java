@@ -15,6 +15,8 @@
  */
 package org.dynjs.runtime.builtins;
 
+import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -30,7 +32,11 @@ public class Eval extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         Object code = args[0];
         if (code != Types.UNDEFINED) {
-            return context.getGlobalObject().getRuntime().evaluate(code.toString());
+            try {
+                return context.getGlobalObject().getRuntime().evaluate(code.toString());
+            } catch (SyntaxError e) {
+                throw new ThrowException(context.createSyntaxError(e.getMessage()));
+            }
         }
         return Types.UNDEFINED;
     }

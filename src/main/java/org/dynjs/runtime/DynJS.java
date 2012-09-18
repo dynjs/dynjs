@@ -16,12 +16,14 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.DynJSException;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.BlockStatement;
+import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 
 public class DynJS {
 
@@ -131,7 +133,7 @@ public class DynJS {
     public JSProgram compile(ExecutionContext execContext, String program, String filename, boolean forceStrict) {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
-        if ( statements == null ) {
+        if (statements == null) {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
@@ -145,7 +147,7 @@ public class DynJS {
     public JSProgram compile(ExecutionContext execContext, InputStream program, String filename, boolean forceStrict) throws IOException {
         JSCompiler compiler = execContext.getCompiler();
         BlockStatement statements = parseSourceCode(execContext, program, filename);
-        if ( statements == null ) {
+        if (statements == null) {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
@@ -183,12 +185,12 @@ public class DynJS {
             throw new SyntaxError(errors);
         }
         CommonTree tree = (CommonTree) program.getTree();
-        if ( tree == null ) {
+        if (tree == null) {
             return null;
         }
-        //System.err.println( ">>>" );
-        //dump(tree);
-        //System.err.println( "<<<" );
+        // System.err.println( ">>>" );
+        // dump(tree);
+        // System.err.println( "<<<" );
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);

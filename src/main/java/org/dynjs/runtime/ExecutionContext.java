@@ -427,10 +427,6 @@ public class ExecutionContext {
         }
     }
 
-    public static void throwSyntaxError() {
-        throw new SyntaxError(new ArrayList<String>());
-    }
-
     public JSObject getPrototypeFor(String type) {
         return getGlobalObject().getPrototypeFor(type);
     }
