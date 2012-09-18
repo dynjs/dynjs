@@ -307,7 +307,6 @@ public class Types {
     }
     
     public static Long toInt32(ExecutionContext context, Object o) {
-        System.err.println("toInt32: " + o);
         Number number = toNumber(context, o);
         if (Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue())) {
             return 0L;

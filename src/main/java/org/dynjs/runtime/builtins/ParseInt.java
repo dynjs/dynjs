@@ -33,7 +33,7 @@ public class ParseInt extends AbstractNativeFunction {
 
         long radix = 10;
         if (radixArg != Types.UNDEFINED) {
-            radix = Types.toInteger(context, radixArg);
+            radix = Types.toInt32(context, radixArg);
             if (radix == 0) { radix = 10; }
         } else {
             radix = extractRadix(text);

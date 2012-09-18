@@ -79,4 +79,9 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     public void parseIntReturnsTheFloorOfAFloat() {
         check("var result = parseInt('12.6');", 12);
     }
+    
+    @Test
+    public void parseIntWithInfiniteRadix() {
+        check("var result = parseInt('11', Infinity)", 11);
+    }
 }
