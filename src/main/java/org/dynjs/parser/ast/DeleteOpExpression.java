@@ -54,6 +54,8 @@ public class DeleteOpExpression extends AbstractExpression {
                 // ref bool
                 iffalse(returnTrue);
                 // ref
+                checkcast(p(Reference.class));
+                // ref
                 dup();
                 // ref ref
                 invokevirtual(p(Reference.class), "isUnresolvableReference", sig(boolean.class));

@@ -22,5 +22,11 @@ public class DeleteOpTest extends AbstractDynJSTestSupport {
         assertThat(result).isEqualTo(true);
         assertThat(x.get(getContext(), "foo")).isEqualTo(Types.UNDEFINED);
     }
+    
+    @Test
+    public void testDeleteThis() {
+        Object result = eval( "delete this" );
+        System.err.println( result );
+    }
 
 }
