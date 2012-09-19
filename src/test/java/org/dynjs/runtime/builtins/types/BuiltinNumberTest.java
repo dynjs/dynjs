@@ -9,6 +9,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
+import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -348,6 +349,11 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testInfinityStrictEquality() {
         assertThat( eval( "Infinity === Number.POSITIVE_INFINITY" ) ).isEqualTo(true);
+    }
+    
+    @Test
+    public void testNumberFunctionIsZero() {
+        assertThat( eval( "Number() === 0" ) ).isEqualTo(true);
     }
     
 }

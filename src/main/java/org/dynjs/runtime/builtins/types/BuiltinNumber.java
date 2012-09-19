@@ -46,7 +46,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         Number number = 0L;
-        if (args[0] != null) {
+        if (args[0] != Types.UNDEFINED) {
             number = Types.toNumber(context, args[0]);
         }
         if (self == Types.UNDEFINED) {
