@@ -26,9 +26,11 @@ import org.dynjs.parser.ast.BitwiseInversionOperatorExpression;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.BooleanLiteralExpression;
 import org.dynjs.parser.ast.BreakStatement;
+import org.dynjs.parser.ast.CaseClause;
 import org.dynjs.parser.ast.CatchClause;
 import org.dynjs.parser.ast.CompoundAssignmentExpression;
 import org.dynjs.parser.ast.ContinueStatement;
+import org.dynjs.parser.ast.DefaultCaseClause;
 import org.dynjs.parser.ast.DeleteOpExpression;
 import org.dynjs.parser.ast.DoWhileStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
@@ -67,6 +69,7 @@ import org.dynjs.parser.ast.RelationalExpression;
 import org.dynjs.parser.ast.ReturnStatement;
 import org.dynjs.parser.ast.StrictEqualityOperatorExpression;
 import org.dynjs.parser.ast.StringLiteralExpression;
+import org.dynjs.parser.ast.SwitchStatement;
 import org.dynjs.parser.ast.TernaryExpression;
 import org.dynjs.parser.ast.ThisExpression;
 import org.dynjs.parser.ast.ThrowStatement;
@@ -408,16 +411,16 @@ public class Executor {
         return new FunctionCallExpression(tree, lhs, args);
     }
 
-    public Statement switchStatement(final Tree tree, Expression expr, Statement _default, List<Statement> cases) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement switchStatement(final Tree tree, Expression expr, List<CaseClause> caseClauses) {
+        return new SwitchStatement(tree, getBlockManager(), expr, caseClauses);
     }
 
-    public Statement switchCaseClause(final Tree tree, Expression expr, List<Statement> statements) {
-        throw new ParserException("not implemented yet", tree);
+    public CaseClause switchCaseClause(final Tree tree, Expression expr, List<Statement> block) {
+        return new CaseClause(expr, new BlockStatement(tree, block));
     }
-
-    public Statement switchDefaultClause(final Tree tree, List<Statement> statements) {
-        throw new ParserException("not implemented yet", tree);
+    
+    public DefaultCaseClause switchDefaultClause(final Tree tree, List<Statement> block) {
+        return new DefaultCaseClause( new BlockStatement( tree, block) );
     }
 
     public Statement throwStatement(final Tree tree, final Expression expression) {

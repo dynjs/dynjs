@@ -207,18 +207,18 @@ labelledStatement returns [Statement value]
 	;
 
 switchStatement returns [Statement value]
-@init { List<Statement> cases = new ArrayList<Statement>(); }
-	: ^( SWITCH expression defaultClause? (caseClause { cases.add($caseClause.value); } )* )
-    { $value = executor.switchStatement($SWITCH, $expression.value, $defaultClause.value, cases); }
+@init { List<CaseClause> caseClauses = new ArrayList<CaseClause>(); }
+	: ^( SWITCH expression (cc=caseClause{ caseClauses.add( $cc.value); } |dc=defaultClause { caseClauses.add( $dc.value); } )* )
+    { $value = executor.switchStatement($SWITCH, $expression.value, caseClauses ); }
 	;
 
-defaultClause returns [Statement value]
+defaultClause returns [DefaultCaseClause value]
 @init { List<Statement> statements = new ArrayList<Statement>(); }
 	: ^( DEFAULT (statement { statements.add($statement.value); } )* )
     { $value = executor.switchDefaultClause($DEFAULT, statements); }
 	;
 
-caseClause returns [Statement value]
+caseClause returns [CaseClause value]
 @init { List<Statement> statements = new ArrayList<Statement>(); }
 	: ^( CASE expression (statement { statements.add($statement.value); } )* )
     { $value = executor.switchCaseClause($CASE, $expression.value, statements); }

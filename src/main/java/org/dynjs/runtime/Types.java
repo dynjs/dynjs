@@ -305,7 +305,7 @@ public class Types {
         // javascript spec assumes it should.
         return (a % b + b) % b;
     }
-    
+
     public static Long toInt32(ExecutionContext context, Object o) {
         Number number = toNumber(context, o);
         if (Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue())) {
@@ -502,8 +502,7 @@ public class Types {
             return compareEquality(context, lhs, toNumber(context, rhs));
         }
 
-        if ((lhs instanceof String || lhs instanceof Number)
-                && rhs instanceof JSObject) {
+        if ((lhs instanceof String || lhs instanceof Number) && rhs instanceof JSObject) {
             return compareEquality(context, lhs, toPrimitive(context, rhs));
         }
 
@@ -515,8 +514,7 @@ public class Types {
         return false;
     }
 
-    public static boolean compareStrictEquality(ExecutionContext context,
-            Object lhs, Object rhs) {
+    public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
         if (!lhs.getClass().equals(rhs.getClass())
                 // Allow comparison of Doubles and Longs (because 0 === -0 in Javascript

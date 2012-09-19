@@ -28,7 +28,7 @@ public class BooleanLiteralExpression extends AbstractExpression {
         super(tree);
         this.value = value;
     }
-
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
