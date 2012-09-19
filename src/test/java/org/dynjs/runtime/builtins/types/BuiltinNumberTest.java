@@ -202,6 +202,11 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberToFixedDefault() {
         check("var result = new Number(12345.67890123).toFixed()", "12346");
     }
+    
+    @Test
+    public void testToFixedWithString() {
+        check("var result = (Number(1e21).toFixed() === String(1e21))", true);
+    }
 
     @Test
     public void testNumberToFixedWithTooManyParameters() {

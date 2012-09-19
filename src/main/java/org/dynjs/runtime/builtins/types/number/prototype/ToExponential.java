@@ -7,7 +7,6 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToExponential extends AbstractNativeFunction {
 
@@ -29,6 +28,6 @@ public class ToExponential extends AbstractNativeFunction {
         }
         if (number.doubleValue() == 0) { return "0e+0"; }
         final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());
-        return DynNumber.rewritePossiblyExponentialValue(bigDecimal.setScale(-1, BigDecimal.ROUND_HALF_UP).toString());
+        return Types.rewritePossiblyExponentialValue(bigDecimal.setScale(-1, BigDecimal.ROUND_HALF_UP).toString());
     }
 }

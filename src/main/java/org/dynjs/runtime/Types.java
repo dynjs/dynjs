@@ -1,7 +1,5 @@
 package org.dynjs.runtime;
 
-import java.math.BigDecimal;
-
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
@@ -363,6 +361,9 @@ public class Types {
         if (o instanceof JSObject) {
             return (String) toString(context, toPrimitive(context, o, "String"));
         }
+        if (o instanceof Number) {
+            return Types.rewritePossiblyExponentialValue(o.toString());
+        }
 
         return o.toString();
     }
@@ -612,5 +613,16 @@ public class Types {
         public String toString() {
             return "null";
         }
+    }
+
+    public static String rewritePossiblyExponentialValue(String value) {
+        // Java writes exponential values as 1.0E14 while JS likes
+        // them as 1e+14
+        int plus = 3;
+        int index = value.indexOf(".0E");
+        if (index < 0) { index = value.indexOf("E+"); plus = 2; }
+        if (index != -1)
+            value = value.substring(0, index) + "e+" + value.substring(index + plus);
+        return value;
     }
 }
