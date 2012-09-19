@@ -15,9 +15,10 @@ public class ToString extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         long radix = Types.toInteger(context, args[0]);
-        if (radix == 0) {
+        if (args[0] == Types.UNDEFINED) {
             radix = 10;
-        } else if (radix < 2 || radix > 36) {
+        }
+        if (radix < 2 || radix > 36 ) {
             throw new ThrowException(context.createRangeError("Number.prototype.toString([radix]) must have a radix between 2 and 36, inclusive."));
         }
 

@@ -9,7 +9,6 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -96,11 +95,29 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         // 15.7.2
         check("var result = Number.prototype.toString()", "0");
     }
-
+    
     @Test
     public void testNumberToString() {
         // 15.7.2
         check("var result = new Number(12); result = result.toString()", "12");
+    }
+    
+    @Test( expected = ThrowException.class )
+    public void testNumberToStringNotOnNumber() {
+        eval("var s1 = new String(); s1.toString = Number.prototype.toString; s1.toString()");
+        fail("Number.toString() on non-Number should throw TypeError");
+    }
+
+    @Test( expected = ThrowException.class )
+    public void testNumberPrototypeToStringWithNullRadix() {
+        eval("Number.prototype.toString(null)");
+        fail("Number.prototype.toString(null) should throw RangeError");
+    }
+
+    @Test( expected = ThrowException.class )
+    public void testNumberPrototypeToStringWithZeroRadix() {
+        eval("Number.prototype.toString(0)");
+        fail("Number.prototype.toString(0) should throw RangeError");
     }
 
     @Test
