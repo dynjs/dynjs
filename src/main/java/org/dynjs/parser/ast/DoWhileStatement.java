@@ -24,7 +24,7 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.objectweb.asm.tree.LabelNode;
 
-public class DoWhileStatement extends AbstractCompilingStatement implements Statement {
+public class DoWhileStatement extends AbstractIteratingStatement {
 
     private final Expression vbool;
     private final Statement vloop;
@@ -42,6 +42,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 LabelNode begin = new LabelNode();
                 LabelNode normalTarget = new LabelNode();
                 LabelNode breakTarget = new LabelNode();
+                LabelNode continueTarget = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 label(begin);
@@ -49,7 +50,7 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 // completion(block)
                 dup();
                 // completion(block) completion(block)
-                append(handleCompletion(normalTarget, breakTarget, normalTarget, end));
+                append(handleCompletion(normalTarget, breakTarget, continueTarget, end));
 
                 // ----------------------------------------
                 // NORMAL
@@ -73,8 +74,32 @@ public class DoWhileStatement extends AbstractCompilingStatement implements Stat
                 // BREAK
                 label(breakTarget);
                 // completion(block,BREAK)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
                 append(convertToNormal());
                 // completion(block,NORMAL)
+                go_to( end );
+                
+                // ----------------------------------------
+                // CONTINUE
+                
+                label( continueTarget );
+                // completion(block,CONTINUE)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
+                go_to( normalTarget );
 
                 // ----------------------------------------
                 label(end);

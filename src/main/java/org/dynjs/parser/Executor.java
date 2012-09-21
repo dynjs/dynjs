@@ -443,8 +443,9 @@ public class Executor {
         return new WithStatement(tree, getBlockManager(), expression, statement);
     }
 
-    public Statement labelledStatement(final Tree tree, String label, Statement statement) {
-        throw new ParserException("not implemented yet", tree);
+    public Statement labelledStatement(String label, Statement statement) {
+        statement.addLabel(label);
+        return statement;
     }
 
     public Expression objectValue(final Tree tree, List<PropertyAssignment> propAssignments) {

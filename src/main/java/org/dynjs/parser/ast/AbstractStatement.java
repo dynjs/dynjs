@@ -18,6 +18,8 @@ package org.dynjs.parser.ast;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.CodeBlock;
@@ -34,6 +36,7 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
     private final static AtomicInteger counter = new AtomicInteger();
     private final Position position;
     private int number;
+    private List<String> labels = new ArrayList<String>();
 
     AbstractStatement(final Tree tree) {
         this.position = new Position(tree);
@@ -51,6 +54,14 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
 
     public int getStatementNumber() {
         return this.number;
+    }
+
+    public void addLabel(String label) {
+        this.labels.add(label);
+    }
+
+    public List<String> getLabels() {
+        return this.labels;
     }
 
     public CodeBlock normalCompletion() {
@@ -158,6 +169,16 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
             {
                 // IN completion
                 getfield(p(Completion.class), "value", ci(Object.class));
+                // value
+            }
+        };
+    }
+    
+    public CodeBlock jsCompletionTarget() {
+        return new CodeBlock() {
+            {
+                // IN completion
+                getfield(p(Completion.class), "target", ci(String.class));
                 // value
             }
         };

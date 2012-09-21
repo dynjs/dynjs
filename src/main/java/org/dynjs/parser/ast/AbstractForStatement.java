@@ -25,7 +25,7 @@ import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
 import org.objectweb.asm.tree.LabelNode;
 
-public abstract class AbstractForStatement extends AbstractCompilingStatement {
+public abstract class AbstractForStatement extends AbstractIteratingStatement {
 
     private final Expression test;
     private final Expression increment;

@@ -25,7 +25,7 @@ import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
 import org.objectweb.asm.tree.LabelNode;
 
-public class WhileStatement extends AbstractCompilingStatement implements Statement {
+public class WhileStatement extends AbstractIteratingStatement {
 
     private final Expression vbool;
     private final Statement vloop;
@@ -42,6 +42,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
             {
                 LabelNode end = new LabelNode();
                 LabelNode breakTarget = new LabelNode();
+                LabelNode continueTarget = new LabelNode();
                 LabelNode begin = new LabelNode();
 
                 append(normalCompletion());
@@ -69,7 +70,7 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
 
                 dup();
                 // completion(block) completion(block)
-                append(handleCompletion(begin, breakTarget, begin, end));
+                append(handleCompletion(begin, breakTarget, continueTarget, end));
 
                 // completion(block)
 
@@ -77,10 +78,33 @@ public class WhileStatement extends AbstractCompilingStatement implements Statem
                 // BREAK
                 label(breakTarget);
                 // completion(block,BREAK)
-
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
                 append(convertToNormal());
                 // completion(block,NORMAL)
-
+                go_to( end );
+                
+                // ----------------------------------------
+                // CONTINUE
+                
+                label( continueTarget );
+                // completion(block,CONTINUE)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
+                go_to( begin );
+                
                 // ----------------------------------------
                 label(end);
                 // completion(block)

@@ -15,6 +15,8 @@
  */
 package org.dynjs.parser;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
 public interface Statement {
@@ -24,8 +26,11 @@ public interface Statement {
     Position getPosition();
 
     int getStatementNumber();
+    
+    void addLabel(String label);
+    List<String> getLabels();
 
     String dump(String indent);
-
+    
     String toIndentedString(String indent);
 }

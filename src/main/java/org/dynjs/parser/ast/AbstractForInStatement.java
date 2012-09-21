@@ -30,7 +30,7 @@ import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.Reference;
 import org.objectweb.asm.tree.LabelNode;
 
-public abstract class AbstractForInStatement extends AbstractCompilingStatement {
+public abstract class AbstractForInStatement extends AbstractIteratingStatement {
 
     private final Expression rhs;
     private final Statement block;

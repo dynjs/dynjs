@@ -203,7 +203,7 @@ withStatement returns [Statement value]
 
 labelledStatement returns [Statement value]
 	: ^( LABELLED Identifier statement )
-    { $value = executor.labelledStatement($LABELLED, $Identifier.text, $statement.value); }
+    { $value = executor.labelledStatement($Identifier.text, $statement.value); }
 	;
 
 switchStatement returns [Statement value]
