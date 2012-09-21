@@ -62,6 +62,7 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
                 LabelNode checkCompletion = new LabelNode();
                 LabelNode doIncrement = new LabelNode();
                 LabelNode doBreak = new LabelNode();
+                LabelNode doContinue = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 append(getFirstChunkCodeBlock());
@@ -127,7 +128,7 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
                 dup();
                 // completion completion
 
-                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doIncrement, /*return*/end));
+                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doContinue, /*return*/end));
 
                 // ----------------------------------------
                 // do increment
@@ -143,10 +144,36 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
 
                 go_to(begin);
 
+                // ----------------------------------------
+                // BREAK
                 label(doBreak);
-                // completion(break)
+                // completion(block,BREAK)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
                 append(convertToNormal());
-                // completion(normal)
+                // completion(block,NORMAL)
+                go_to( end );
+                
+                // ----------------------------------------
+                // CONTINUE
+                
+                label( doContinue );
+                // completion(block,CONTINUE)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
+                go_to( doIncrement );
 
                 label(end);
                 // completion

@@ -59,6 +59,7 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
                 LabelNode checkCompletion = new LabelNode();
                 LabelNode bringForward = new LabelNode();
                 LabelNode doBreak = new LabelNode();
+                LabelNode doContinue = new LabelNode();
                 LabelNode undefEnd = new LabelNode();
                 LabelNode end = new LabelNode();
 
@@ -148,15 +149,39 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
                 // completion(cur) 
                 dup();
                 // completion(cur) completion(cur)
-                append(handleCompletion(nextName, doBreak, nextName, end));
+                append(handleCompletion(nextName, doBreak, doContinue, end));
                 // completion
 
-                // -----------------------------------------------
+                // ----------------------------------------
+                // BREAK
                 label(doBreak);
-                // completion(break)
+                // completion(block,BREAK)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
                 append(convertToNormal());
-                // completion(normal);
-                go_to(end);
+                // completion(block,NORMAL)
+                go_to( end );
+                
+                // ----------------------------------------
+                // CONTINUE
+                
+                label( doContinue );
+                // completion(block,CONTINUE)
+                dup();
+                // completion completion
+                append( jsCompletionTarget() );
+                // completion target
+                append( isInLabelSet() );
+                // completion bool
+                iffalse(end);
+                // completion
+                go_to( nextName );
 
                 // -----------------------------------------------
                 // RHS is undefined
