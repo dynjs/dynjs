@@ -72,6 +72,11 @@ public class ParsersTest extends AbstractDynJSTestSupport {
         eval("new parseInt()");
     }
 
+    @Test( expected = ThrowException.class )
+    public void parseFloatCalledAsConstructor() {
+        eval("new parseFloat()");
+    }
+
     @Test
     public void parseIntHandlesNaNValues() {
         // http://es5.github.com/#x15.1.2.2
