@@ -1,5 +1,6 @@
 package org.dynjs.runtime.builtins;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.junit.Test;
 
@@ -9,11 +10,21 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     public void parsesFloats() {
         check("var result = parseFloat('33.2');", 33.2);
     }
+    
+    @Test
+    public void parseFloatReturnsNaN() {
+        check("var result = parseFloat(true)", Double.NaN);
+    }
 
     @Test
     public void parsesInts() {
         // http://es5.github.com/#x15.1.2.2
         check("var result = parseInt('32');", 32);
+    }
+    
+    @Test( expected = ThrowException.class )
+    public void parseIntCalledAsConstructor() {
+        eval("new parseInt()");
     }
 
     @Test

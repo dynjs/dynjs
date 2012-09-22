@@ -18,7 +18,7 @@ public class ParseFloat extends AbstractNativeFunction {
             try {
                 return Double.parseDouble(f.toString());
             } catch (NumberFormatException e) {
-                // ignore
+                return Double.NaN;
             }
         }
         return Types.UNDEFINED;
