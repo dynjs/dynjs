@@ -12,6 +12,51 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void parseFloatReturnsNaNForEmptyString() {
+        check("var result = parseFloat('')", Double.NaN);
+    }
+    
+    @Test
+    public void parseFloatWorksWithBuiltinNumber() {
+        check("var result = parseFloat(new Number(-1.1))", -1.1);
+    }
+    
+    @Test
+    public void parseFloatWorksWithBuiltinString() {
+        check("var result = parseFloat(new String('-1.1'))", -1.1);
+    }
+    
+    @Test
+    public void parseIntReturnsNaNForUndefined() {
+        check("var result = parseInt(undefined)", Double.NaN);
+    }
+    
+    @Test
+    public void parseIntReturnsNaN() {
+        check("var result = parseInt(true)", Double.NaN);
+    }
+
+    @Test
+    public void parseIntReturnsNaNForEmptyString() {
+        check("var result = parseInt('')", Double.NaN);
+    }
+    
+    @Test
+    public void parseIntWorksWithBuiltinNumber() {
+        check("var result = parseInt(new Number(-1))", -1);
+    }
+    
+    @Test
+    public void parseIntWorksWithBuiltinString() {
+        check("var result = parseInt(new String('-1'))", -1);
+    }
+    
+    @Test
+    public void parseFloatReturnsNaNForUndefined() {
+        check("var result = parseFloat(undefined)", Double.NaN);
+    }
+    
+    @Test
     public void parseFloatReturnsNaN() {
         check("var result = parseFloat(true)", Double.NaN);
     }

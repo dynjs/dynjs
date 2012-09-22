@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
 
 public class ParseFloat extends AbstractNativeFunction {
@@ -13,15 +14,12 @@ public class ParseFloat extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Object f = args[0];
-        if (f != Types.UNDEFINED) {
-            try {
-                return Double.parseDouble(f.toString());
-            } catch (NumberFormatException e) {
-                return Double.NaN;
-            }
+        String text = Types.toString(context, args[0]).trim();
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return Double.NaN;
         }
-        return Types.UNDEFINED;
     }
 
 }
