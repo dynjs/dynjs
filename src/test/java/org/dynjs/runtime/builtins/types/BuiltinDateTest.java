@@ -90,4 +90,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateToLocaleTimeString() {
         assertThat(eval("new Date().toLocaleTimeString()")).isEqualTo("17:55:29");
     }
+
+    @Test
+    public void testDateGetMonth() {
+        assertThat(eval("new Date().getMonth()")).isEqualTo(9);
+    }
 }

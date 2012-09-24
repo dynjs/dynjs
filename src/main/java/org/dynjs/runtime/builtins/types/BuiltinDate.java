@@ -1,5 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
+import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -44,6 +45,12 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
+        defineNonEnumerableProperty(proto, "getMonth", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).monthOfYear().get();
+            }
+        });
     }
 
     @Override
