@@ -40,6 +40,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject));
         defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
         defineNonEnumerableProperty(proto, "toLocaleDateString", new DateTimeFormatter(globalObject, "MM/dd/YYYY"));
+        defineNonEnumerableProperty(proto, "toLocaleTimeString", new DateTimeFormatter(globalObject, "HH:mm:ss"));
         defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
