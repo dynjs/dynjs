@@ -92,6 +92,11 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testDateGetFullYear() {
+        assertThat(eval("new Date().getFullYear()")).isEqualTo(2012);
+    }
+
+    @Test
     public void testDateGetMonth() {
         assertThat(eval("new Date().getMonth()")).isEqualTo(9);
     }

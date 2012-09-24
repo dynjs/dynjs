@@ -45,6 +45,12 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
+        defineNonEnumerableProperty(proto, "getFullYear", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).year().get();
+            }
+        });
         defineNonEnumerableProperty(proto, "getMonth", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
