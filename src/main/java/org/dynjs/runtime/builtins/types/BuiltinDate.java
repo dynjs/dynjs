@@ -5,6 +5,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.DynDate;
+import org.dynjs.runtime.builtins.types.date.prototype.DateTimeFormatter;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
 import org.dynjs.runtime.builtins.types.date.prototype.Parse;
 import org.dynjs.runtime.builtins.types.date.prototype.ToDateString;
@@ -38,6 +39,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject));
         defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject));
         defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
+        defineNonEnumerableProperty(proto, "toLocaleDateString", new DateTimeFormatter(globalObject, "MM/dd/YYYY"));
         defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
