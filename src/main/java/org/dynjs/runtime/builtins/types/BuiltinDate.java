@@ -48,27 +48,31 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "getFullYear", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).year().get();
+                return getDateTime(self).year().get();
             }
         });
         defineNonEnumerableProperty(proto, "getMonth", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).monthOfYear().get();
+                return getDateTime(self).monthOfYear().get();
             }
         });
         defineNonEnumerableProperty(proto, "getDay", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).dayOfWeek().get();
+                return getDateTime(self).dayOfWeek().get();
             }
         });
         defineNonEnumerableProperty(proto, "getHours", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).hourOfDay().get();
+                return getDateTime((DynDate) self).hourOfDay().get();
             }
         });
+    }
+
+    private DateTime getDateTime(Object self) {
+        return new DateTime((Long) ((DynDate) self).getPrimitiveValue());
     }
 
     @Override
