@@ -68,18 +68,30 @@
     </licenses>
 
     <repositories>
-      <repository>
-        <id>projectodd-upstream</id>
-        <name>project:odd Upstream Builds</name>
-        <url>https://repository-projectodd.forge.cloudbees.com/upstream</url>
-        <layout>default</layout>
-        <releases>
-          <enabled>true</enabled>
-        </releases>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-      </repository>
+        <repository>
+            <id>projectodd-upstream</id>
+            <name>project:odd Upstream Builds</name>
+            <url>https://repository-projectodd.forge.cloudbees.com/upstream</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>projectodd-snapshot</id>
+            <name>project:odd snapshot Builds</name>
+            <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <dependencies>
