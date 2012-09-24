@@ -63,6 +63,12 @@ public class BuiltinDate extends AbstractBuiltinType {
                 return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).dayOfWeek().get();
             }
         });
+        defineNonEnumerableProperty(proto, "getHours", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).hourOfDay().get();
+            }
+        });
     }
 
     @Override
