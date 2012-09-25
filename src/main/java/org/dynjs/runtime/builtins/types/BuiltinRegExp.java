@@ -42,7 +42,7 @@ public class BuiltinRegExp extends AbstractBuiltinType {
                 flags = Types.toString(context, args[1]);
             }
 
-            ((DynRegExp) self).setPatternAndFlags(pattern, flags);
+            ((DynRegExp) self).setPatternAndFlags(context, pattern, flags);
 
             return self;
         }

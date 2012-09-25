@@ -3,8 +3,11 @@ package org.dynjs.runtime.builtins.types.regexp;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
 
@@ -20,11 +23,15 @@ public class DynRegExp extends DynObject {
 
     public DynRegExp(GlobalObject globalObject, final String pattern, final String flags) {
         this(globalObject);
-        setPatternAndFlags(pattern, flags);
+        setPatternAndFlags(null, pattern, flags);
     }
 
-    public void setPatternAndFlags(final String pattern, final String flags) {
-        this.pattern = Pattern.compile(pattern);
+    public void setPatternAndFlags(ExecutionContext context, final String pattern, final String flags) {
+        try {
+            this.pattern = Pattern.compile(pattern);
+        } catch (PatternSyntaxException e) {
+            throw new ThrowException( context.createSyntaxError( e.getMessage() ) );
+        }
         defineOwnProperty(null, "source", new PropertyDescriptor() {
             {
                 set("Value", pattern);
