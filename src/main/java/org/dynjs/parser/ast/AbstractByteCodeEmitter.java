@@ -23,11 +23,11 @@ public class AbstractByteCodeEmitter {
                 // IN: obj
                 dup();
                 // obj obj
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 swap();
                 // obj context obj
-                invokestatic( p(Types.class), "checkObjectCoercible", sig(void.class, ExecutionContext.class, Object.class));
+                invokestatic(p(Types.class), "checkObjectCoercible", sig(void.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -147,7 +147,7 @@ public class AbstractByteCodeEmitter {
         return jsGetValue(null);
     }
 
-    public CodeBlock jsGetValue(Class<?> throwIfNot) {
+    public CodeBlock jsGetValue(final Class<?> throwIfNot) {
         return new CodeBlock() {
             {
                 // IN: reference
@@ -157,7 +157,19 @@ public class AbstractByteCodeEmitter {
                 // context reference
                 invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
                 // value
-                // FIXME: handle throwing a TypeError if not throwIfNot
+                if (throwIfNot != null) {
+                    LabelNode end = new LabelNode();
+                    dup();
+                    // value value
+                    instance_of(p(throwIfNot));
+                    // value bool
+                    iftrue(end);
+                    // value
+                    pop();
+                    append(jsThrowTypeError("expected " + throwIfNot.getName()));
+                    label(end);
+                    nop();
+                }
             }
         };
     }
