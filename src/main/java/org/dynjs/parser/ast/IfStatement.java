@@ -47,6 +47,8 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
 
                 append(vbool.getCodeBlock());
                 // value
+                append( jsGetValue() );
+                // value
                 append(jsToBoolean());
                 // Boolean
                 invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
