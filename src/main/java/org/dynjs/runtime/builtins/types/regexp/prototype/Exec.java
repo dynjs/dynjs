@@ -1,10 +1,9 @@
 package org.dynjs.runtime.builtins.types.regexp.prototype;
 
 import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractPrototypeFunction;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -12,10 +11,10 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
-public class Exec extends AbstractNativeFunction {
+public class Exec extends AbstractPrototypeFunction {
 
     public Exec(GlobalObject globalObject) {
-        super(globalObject, true, "string");
+        super(globalObject, "string");
     }
 
     @Override

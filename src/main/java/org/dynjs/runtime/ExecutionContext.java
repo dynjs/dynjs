@@ -62,12 +62,12 @@ public class ExecutionContext {
     public boolean isStrict() {
         return this.strict;
     }
-    
+
     public boolean isRootStrict() {
-        if ( this.parent != null ) {
+        if (this.parent != null) {
             return this.parent.isRootStrict();
         }
-        
+
         return this.strict;
     }
 
@@ -117,6 +117,11 @@ public class ExecutionContext {
     }
 
     public JSObject construct(JSFunction function, Object... args) {
+
+        if (!function.isConstructor()) {
+            throw new ThrowException(createTypeError("not a constructor"));
+        }
+
         // 13.2.2
         // 1. create the new object
         JSObject obj = function.createNewObject(this);
@@ -260,7 +265,7 @@ public class ExecutionContext {
     private Arguments createArgumentsObject(final JSFunction function, final Object[] arguments) {
         // 10.6
 
-        Arguments obj = new Arguments( getGlobalObject() );
+        Arguments obj = new Arguments(getGlobalObject());
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
                 set("Value", arguments.length);
@@ -273,7 +278,7 @@ public class ExecutionContext {
 
         String[] names = function.getFormalParameters();
 
-        DynObject map = new DynObject( getGlobalObject() );
+        DynObject map = new DynObject(getGlobalObject());
         List<String> mappedNames = new ArrayList<>();
 
         final LexicalEnvironment env = getVariableEnvironment();
@@ -403,9 +408,9 @@ public class ExecutionContext {
     public JSObject createSyntaxError(String message) {
         return createError("SyntaxError", message);
     }
-    
+
     public JSObject createUriError(String message) {
-        return createError( "URIError", message );
+        return createError("URIError", message);
     }
 
     public JSObject createError(String type, String message) {

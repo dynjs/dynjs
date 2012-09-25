@@ -7,6 +7,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.dynjs.runtime.builtins.types.regexp.prototype.Exec;
 import org.dynjs.runtime.builtins.types.regexp.prototype.Test;
+import org.dynjs.runtime.builtins.types.regexp.prototype.ToString;
 
 public class BuiltinRegExp extends AbstractBuiltinType {
 
@@ -23,6 +24,7 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "constructor", this);
         defineNonEnumerableProperty(proto, "exec", new Exec(globalObject) );
         defineNonEnumerableProperty(proto, "test", new Test(globalObject) );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
     }
 
     @Override

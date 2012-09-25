@@ -49,6 +49,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public boolean isStrict() {
         return this.strict;
     }
+    
+    public boolean isConstructor() {
+        return true;
+    }
 
     @Override
     public String[] getFormalParameters() {

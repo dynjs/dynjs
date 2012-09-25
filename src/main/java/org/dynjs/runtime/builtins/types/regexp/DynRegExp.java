@@ -66,6 +66,31 @@ public class DynRegExp extends DynObject {
                     set("Enumerable", false);
                 }
             }, false);
+        } else {
+            defineOwnProperty(null, "multiline", new PropertyDescriptor() {
+                {
+                    set("Value", false );
+                    set("Writable", false);
+                    set("Configurable", false);
+                    set("Enumerable", false);
+                }
+            }, false);
+            defineOwnProperty(null, "global", new PropertyDescriptor() {
+                {
+                    set("Value", false );
+                    set("Writable", false);
+                    set("Configurable", false);
+                    set("Enumerable", false);
+                }
+            }, false);
+            defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
+                {
+                    set("Value", false );
+                    set("Writable", false);
+                    set("Configurable", false);
+                    set("Enumerable", false);
+                }
+            }, false);
         }
         defineOwnProperty(null, "lastIndex", new PropertyDescriptor() {
             {
