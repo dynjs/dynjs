@@ -18,29 +18,29 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathE() {
-        assertPrimitive("Math.E", java.lang.Math.E);
+        assertThat(eval("Math.E")).isEqualTo(java.lang.Math.E);
     }
 
     @Test
     public void testLn10() {
-        assertPrimitive("Math.LN10", java.lang.Math.log(10));
+        assertThat(eval("Math.LN10")).isEqualTo(java.lang.Math.log(10));
     }
 
     @Test
     public void testLn2() {
-        assertPrimitive("Math.LN2", java.lang.Math.log(2));
+        assertThat(eval("Math.LN2")).isEqualTo(java.lang.Math.log(2));
     }
 
     @Test
     public void testLog2e() {
-        assertPrimitive("Math.LOG2E", java.lang.Math.log(java.lang.Math.E) / java.lang.Math.log(2));
+        assertThat(eval("Math.LOG2E")).isEqualTo(java.lang.Math.log(java.lang.Math.E) / java.lang.Math.log(2));
     }
 
     @Test
     public void testLog10e() {
-        assertPrimitive("Math.LOG10E", java.lang.Math.log10(java.lang.Math.E));
+        assertThat(eval("Math.LOG10E")).isEqualTo(java.lang.Math.log10(java.lang.Math.E));
     }
-    
+
     @Test
     public void testLog10eDoesNotEnum() {
         check("var result = false; for (x in Math) { if (x === 'LOG10E') { result = true; } }", false);
@@ -48,17 +48,17 @@ public class MathTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testMathPi() {
-        assertPrimitive("Math.PI", java.lang.Math.PI);
+        assertThat(eval("Math.PI")).isEqualTo(java.lang.Math.PI);
     }
 
     @Test
     public void testMathSqrt1_2() {
-        assertPrimitive("Math.SQRT1_2", java.lang.Math.sqrt(0.5f));
+        assertThat(eval("Math.SQRT1_2")).isEqualTo(java.lang.Math.sqrt(0.5f));
     }
 
     @Test
     public void testMathSqrt2() {
-        assertPrimitive("Math.SQRT2", java.lang.Math.sqrt(2.0f));
+        assertThat(eval("Math.SQRT2")).isEqualTo(java.lang.Math.sqrt(2.0f));
     }
 
     @Test
@@ -220,7 +220,7 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathAtan2NegativeInfinity() {
         assertEval("Math.atan2(-Infinity, Number.NEGATIVE_INFINITY)", -3 * java.lang.Math.PI / 4);
     }
-    
+
     @Test
     public void testMathAtan2NegativeZero() {
         assertEval("Math.atan2(-0, -0)", -java.lang.Math.PI);
@@ -270,7 +270,7 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathCosZero() {
         assertEval("Math.cos(0)", 1L);
     }
-    
+
     @Test
     public void testMathCosStrictEquality() {
         assertEval("Math.cos(+0) === 1", true);
@@ -380,17 +380,17 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathMax() {
         assertEval("Math.max(0.5, 2)", 2L);
     }
-    
+
     @Test
     public void strictZeroEquality() {
         assertEval("0.0 === -0", true);
     }
-    
+
     @Test
     public void strictZeroInequality() {
         assertEval("Number(0) !== -0", false);
     }
-    
+
     @Test
     public void testMathMaxNegativeZero() {
         assertEval("Math.max(-0, +0) !== -0", false);
@@ -425,7 +425,7 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathMaxVeryManyArgsAndOneNaNStuckInTheMiddle() {
         assertEval("Math.max(1,4,6,12,4,987,Number.NaN,12.34,98765.45)", Double.NaN);
     }
-    
+
     @Test
     public void testMathMaxNaN() {
         assertEval("Math.max(0.0, -0.0, NaN)", Double.NaN);
@@ -470,17 +470,17 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathPow() {
         assertEval("Math.pow(12,12.123)", java.lang.Math.pow(12, 12.123));
     }
-    
+
     @Test
     public void testMathPowWithYNaN() {
         assertEval("Math.pow(12, NaN)", Double.NaN);
     }
-    
+
     @Test
     public void testMathPowXNaNYZero() {
         assertEval("Math.pow(NaN, 0)", 1L);
     }
-    
+
     @Test
     public void testMathRandom() {
         assertEval("Math.random() > 0", true);
@@ -490,37 +490,37 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathRandomLessThanOne() {
         assertEval("Math.random() < 1", true);
     }
-    
+
     @Test
     public void testMathRound() {
         assertEval("Math.round(3.5)", 4L);
     }
-    
+
     @Test
     public void testMathRoundNaN() {
         assertEval("Math.round(NaN)", Double.NaN);
     }
-    
+
     @Test
     public void testMathRoundInfinity() {
         assertEval("Math.round(Infinity)", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathRoundNegativeInfinity() {
         assertEval("Math.round(-Infinity)", Double.NEGATIVE_INFINITY);
     }
-    
+
     @Test
     public void testMathRoundDown() {
         assertEval("Math.round(3.4)", 3L);
     }
-    
+
     @Test
     public void testMathRoundNegative() {
         assertEval("Math.round(-3.5)", -3L);
     }
-    
+
     @Test
     public void testMathFunction() {
         try {

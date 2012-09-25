@@ -232,7 +232,6 @@ public class Executor {
     }
 
     public Expression defineInRelOp(final Tree tree, Expression l, Expression r) {
-        System.err.println( "IN: " + l + " // " + r );
         return new InOperatorExpression(tree, l, r);
     }
 

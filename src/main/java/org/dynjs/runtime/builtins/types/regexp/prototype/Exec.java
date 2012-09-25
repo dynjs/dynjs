@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.types.regexp.prototype;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractPrototypeFunction;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
@@ -20,6 +21,10 @@ public class Exec extends AbstractPrototypeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String str = Types.toString(context, args[0]);
+
+        if (!(self instanceof DynRegExp)) {
+            throw new ThrowException(context.createTypeError("only applicable to a RegExp"));
+        }
 
         DynRegExp regexp = (DynRegExp) self;
         int flags = 0;

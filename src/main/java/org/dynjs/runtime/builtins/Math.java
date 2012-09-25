@@ -66,7 +66,8 @@ public class Math extends DynObject {
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {
         this.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", new DynNumber(globalObject, value));
+                //set("Value", new DynNumber(globalObject, value));
+                set("Value", value );
                 set("Writable", false);
                 set("Enumerable", false);
                 set("Configurable", false);
