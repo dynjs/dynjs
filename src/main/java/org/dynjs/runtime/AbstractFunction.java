@@ -100,14 +100,20 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     }
 
     @Override
-    public boolean hasInstance(Object v) {
+    public boolean hasInstance(ExecutionContext context, Object v) {
         if (!(v instanceof JSObject)) {
             return false;
         }
 
-        JSObject o = (JSObject) get(null, "prototype");
+        Object o = get(null, "prototype");
+        if ( ! ( o instanceof JSObject ) ) {
+            
+            throw new ThrowException( context, context.createTypeError( "prototype must be an object" ) );
+        }
+        
+        JSObject proto = (JSObject) get(null, "prototype");
 
-        if (o == null || v == Types.UNDEFINED) {
+        if (proto == null || v == Types.UNDEFINED) {
             return false;
         }
 
@@ -116,7 +122,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             if (v == null || v == Types.UNDEFINED) {
                 return false;
             }
-            if (v == o) {
+            if (v == proto) {
                 return true;
             }
         }

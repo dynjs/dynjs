@@ -69,9 +69,9 @@ public class BoundFunction extends AbstractNativeFunction {
     }
 
     @Override
-    public boolean hasInstance(Object v) {
+    public boolean hasInstance(ExecutionContext context, Object v) {
         // 15.3.4.5.3
-        return target.hasInstance(v);
+        return target.hasInstance(context, v);
     }
 
 }

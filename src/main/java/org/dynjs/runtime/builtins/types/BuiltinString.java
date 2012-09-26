@@ -60,7 +60,7 @@ public class BuiltinString extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (self != Types.UNDEFINED) {
+        if (self != Types.UNDEFINED && self != Types.NULL ) {
             // Constructor
             String value = "";
             if (args[0] != Types.UNDEFINED) {

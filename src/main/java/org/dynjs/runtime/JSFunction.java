@@ -5,7 +5,7 @@ public interface JSFunction extends JSObject, JSCallable, JSCode {
 
     LexicalEnvironment getScope();
 
-    boolean hasInstance(Object obj);
+    boolean hasInstance(ExecutionContext context, Object obj);
 
     JSObject createNewObject(ExecutionContext context);
 

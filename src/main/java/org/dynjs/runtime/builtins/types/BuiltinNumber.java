@@ -49,7 +49,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
         if (args[0] != Types.UNDEFINED) {
             number = Types.toNumber(context, args[0]);
         }
-        if (self == Types.UNDEFINED) {
+        if (self == Types.UNDEFINED || self == Types.NULL ) {
             // called as a function
             return number;
         } else {

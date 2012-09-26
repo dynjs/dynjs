@@ -59,7 +59,11 @@ public class InstanceofExpression extends AbstractBinaryExpression {
                 // val(lhs) fn(rhs)
                 swap();
                 // fn(rhs) val(lhs)
-                invokeinterface(p(JSFunction.class), "hasInstance", sig(boolean.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // fn(rhs) val(lhs) context
+                swap();
+                // fn(fhs) context val(lhs)
+                invokeinterface(p(JSFunction.class), "hasInstance", sig(boolean.class, ExecutionContext.class, Object.class));
                 // bool
                 go_to(end);
 

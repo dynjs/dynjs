@@ -25,9 +25,9 @@ public class Apply extends AbstractNativeFunction {
         Object argArray = args[1];
 
         if (argArray == Types.UNDEFINED || argArray == Types.NULL) {
-
+            return context.call((JSFunction) self, thisArg);
         }
-
+        
         if (!Types.type(argArray).equals("object")) {
             throw new ThrowException(context, context.createTypeError("argArray must be an object"));
         }
