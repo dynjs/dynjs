@@ -133,8 +133,11 @@ public class ExecutionContext {
         // 7. If prototype is not an object set to the standard builtin object prototype 15.2.4 [AbstractJavascriptFunction]
         // [AbstractJavascriptFunction] handles #7, subclasses may handle #6 if necessary (see BuiltinArray#createNewObject)
         Object p = function.get(this, "prototype");
-        if (p != Types.UNDEFINED) {
+        if (p != Types.UNDEFINED && p instanceof JSObject) {
             obj.setPrototype((JSObject) p);
+        } else {
+            JSObject defaultObjectProto = getPrototypeFor("Object");
+            obj.setPrototype(defaultObjectProto);
         }
 
         // 8. Call the function with obj as self
