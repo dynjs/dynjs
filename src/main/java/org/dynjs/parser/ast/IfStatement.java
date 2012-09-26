@@ -15,8 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
@@ -37,6 +42,16 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
         this.velse = velse;
     }
 
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        List<VariableDeclaration> decls = new ArrayList<>();
+        decls.addAll( this.vthen.getVariableDeclarations() );
+        if ( this.velse != null ) {
+            decls.addAll( this.velse.getVariableDeclarations() );
+        }
+        return decls;
+    }
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {

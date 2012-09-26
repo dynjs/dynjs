@@ -1,5 +1,8 @@
 package org.dynjs.parser.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dynjs.parser.Statement;
 import org.objectweb.asm.tree.LabelNode;
 
@@ -32,6 +35,15 @@ public class CaseClause {
     public LabelNode getFallThroughLabel() {
         return this.fallThroughLabel;
     }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        if ( this.block == null ) {
+            return Collections.emptyList();
+        }
+        
+        return this.block.getVariableDeclarations();
+    }
+
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();

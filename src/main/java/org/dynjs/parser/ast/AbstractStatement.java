@@ -19,6 +19,7 @@ package org.dynjs.parser.ast;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -62,6 +63,10 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
 
     public List<String> getLabels() {
         return this.labels;
+    }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return Collections.emptyList();
     }
 
     public CodeBlock normalCompletion() {

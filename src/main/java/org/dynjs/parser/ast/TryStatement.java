@@ -1,6 +1,12 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -26,6 +32,18 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
         this.finallyBlock = finallyBlock;
     }
 
+    public List<VariableDeclaration> getVariableDeclarations() {
+        List<VariableDeclaration> decls = new ArrayList<>();
+        decls.addAll( this.tryBlock.getVariableDeclarations() );
+        if ( this.catchClause != null ) {
+            decls.addAll( this.catchClause.getVariableDeclarations() );
+        }
+        if ( this.finallyBlock != null ) {
+            decls.addAll( this.finallyBlock.getVariableDeclarations() );
+        }
+        return decls;
+    }
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {

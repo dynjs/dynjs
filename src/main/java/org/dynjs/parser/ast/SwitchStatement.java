@@ -19,6 +19,7 @@ import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,6 +54,17 @@ public class SwitchStatement extends AbstractCompilingStatement implements State
                 caseIter.remove();
             }
         }
+    }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        List<VariableDeclaration> decls = new ArrayList<>();
+        for ( CaseClause each : caseClauses ) {
+            decls.addAll( each.getVariableDeclarations() );
+        }
+        if ( this.defaultClause != null ) {
+            decls.addAll( this.defaultClause.getVariableDeclarations() );
+        }
+        return decls;
     }
 
     @Override

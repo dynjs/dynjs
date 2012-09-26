@@ -15,6 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
@@ -37,6 +39,10 @@ public class WithStatement extends AbstractCompilingStatement implements Stateme
         super(tree, blockManager);
         this.expr = expr;
         this.block = block;
+    }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return this.block.getVariableDeclarations();
     }
 
     @Override

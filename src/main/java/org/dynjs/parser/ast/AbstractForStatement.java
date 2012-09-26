@@ -16,6 +16,9 @@
 package org.dynjs.parser.ast;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -51,6 +54,11 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
     protected Statement getBlock() {
         return this.block;
     }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return this.block.getVariableDeclarations();
+    }
+
 
     @Override
     public CodeBlock getCodeBlock() {

@@ -70,6 +70,8 @@ public class BlockStatement extends AbstractStatement implements Statement {
             if (each instanceof VariableDeclarationStatement) {
                 VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
                 decls.addAll(statement.getVariableDeclarations());
+            } else if ( ! ( each instanceof FunctionDeclaration ) ) {
+                decls.addAll( each.getVariableDeclarations() );
             }
         }
         return decls;

@@ -16,6 +16,9 @@
 package org.dynjs.parser.ast;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -34,6 +37,10 @@ public class WhileStatement extends AbstractIteratingStatement {
         super(tree, blockManager);
         this.vbool = vbool;
         this.vloop = vloop;
+    }
+    
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return this.vloop.getVariableDeclarations();
     }
 
     @Override

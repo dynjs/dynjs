@@ -17,6 +17,8 @@ package org.dynjs.parser;
 
 import java.util.List;
 
+import org.dynjs.parser.ast.VariableDeclaration;
+
 import me.qmx.jitescript.CodeBlock;
 
 public interface Statement {
@@ -33,4 +35,7 @@ public interface Statement {
     String dump(String indent);
     
     String toIndentedString(String indent);
+    
+    List<VariableDeclaration> getVariableDeclarations();
+
 }
