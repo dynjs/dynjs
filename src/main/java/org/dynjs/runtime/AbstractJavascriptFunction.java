@@ -11,10 +11,23 @@ public abstract class AbstractJavascriptFunction extends AbstractFunction {
     public AbstractJavascriptFunction(final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(body, scope, strict, formalParameters);
 
-        DynObject proto = new DynObject(scope.getGlobalObject());
-        proto.put(null, "constructor", this, false);
-
-        put(null, "prototype", proto, false);
+        final DynObject proto = new DynObject(scope.getGlobalObject());
+        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
+            {
+                set("Value", this);
+                set("Writable", true);
+                set("Enumerable", false);
+                set("Configurable", true);
+            }
+        }, false);
+        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+            {
+                set( "Value", proto );
+                set( "Writable", true );
+                set( "Enumerable", false );
+                set( "Configurable", false );
+            }
+        }, false);
     }
 
 }

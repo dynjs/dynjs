@@ -36,6 +36,8 @@ public class BuiltinObject extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         // Object.prototype.foo()
+        defineNonEnumerableProperty(proto, "constructor", this );
+        
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
         defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
         defineNonEnumerableProperty(proto, "hasOwnProperty", new HasOwnProperty(globalObject) );
