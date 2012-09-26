@@ -17,7 +17,7 @@ public class ToString extends AbstractNativeFunction {
         // 15.4.4.2
         PrimitiveDynObject str = (PrimitiveDynObject) self;
         if (!str.getClassName().equals("String")) {
-            throw new ThrowException(context.createTypeError("String.toString() only allowed on strings"));
+            throw new ThrowException(context, context.createTypeError("String.toString() only allowed on strings"));
         }
 
         return str.getPrimitiveValue();

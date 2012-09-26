@@ -27,7 +27,7 @@ public class Arguments extends DynObject {
         if (d == Types.UNDEFINED) {
             Object v = super.get(context, name);
             if (name.equals("caller") && (v instanceof JSFunction) && ((JSFunction) v).isStrict()) {
-                throw new ThrowException(context.createTypeError("may not reference 'caller'"));
+                throw new ThrowException(context, context.createTypeError("may not reference 'caller'"));
             }
             return v;
         }

@@ -22,7 +22,7 @@ public class ValueOf extends AbstractNativeFunction {
         if (self instanceof DynString) {
             return ((DynString) self).getPrimitiveValue();
         }
-        throw new ThrowException(context.createTypeError("String.valueOf() only allowed on strings"));
+        throw new ThrowException(context, context.createTypeError("String.valueOf() only allowed on strings"));
 
     }
 

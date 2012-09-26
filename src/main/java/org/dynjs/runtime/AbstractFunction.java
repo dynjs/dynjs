@@ -70,7 +70,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public Object get(ExecutionContext context, String name) {
         // 15.3.5.4
         if (name.equals("caller") && this.strict) {
-            throw new ThrowException(context.createTypeError("may not reference 'caller'"));
+            throw new ThrowException(context, context.createTypeError("may not reference 'caller'"));
         }
         return super.get(context, name);
     }

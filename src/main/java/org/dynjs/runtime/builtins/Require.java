@@ -45,7 +45,7 @@ public class Require extends AbstractNativeFunction {
         DynObject exports = null;
 
         if (arguments[0] == Types.UNDEFINED) {
-            throw new ThrowException(context.createError("Error", "no module identifier provided"));
+            throw new ThrowException(context, context.createError("Error", "no module identifier provided"));
         }
 
         String moduleName = (String) arguments[0];
@@ -60,7 +60,7 @@ public class Require extends AbstractNativeFunction {
         }
 
         if (exports == null) {
-            throw new ThrowException(context.createError("Error", "cannot find module: " + moduleName));
+            throw new ThrowException(context, context.createError("Error", "cannot find module: " + moduleName));
         }
 
         return exports;

@@ -22,7 +22,7 @@ public class ToFixed extends AbstractNativeFunction {
         }
         long digits = Types.toInteger(context, args[0]);
         if (digits < 0L || digits > 20L) {
-            throw new ThrowException(context.createRangeError("Number.prototype.toFixed() digits argument must be between 0 and 20"));
+            throw new ThrowException(context, context.createRangeError("Number.prototype.toFixed() digits argument must be between 0 and 20"));
         }
         final Number number = Types.toNumber(context, self);
         if (Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue()))

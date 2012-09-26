@@ -32,6 +32,6 @@ public class ThrowTypeError extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
         JSObject err = context.createTypeError(null);
-        throw new ThrowException(err);
+        throw new ThrowException(context, err);
     }
 }

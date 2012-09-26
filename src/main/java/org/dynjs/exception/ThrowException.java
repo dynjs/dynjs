@@ -1,7 +1,6 @@
 package org.dynjs.exception;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
@@ -14,17 +13,15 @@ public class ThrowException extends DynJSException {
     private Object value;
     private ArrayList<StackElement> stack;
 
-    public ThrowException(Object value) {
-        this.value = value;
-    }
-
     public ThrowException(final ExecutionContext context, Object value) {
-        this(value);
+        this.value = value;
         this.stack = new ArrayList<StackElement>();
         context.collectStackElements(this.stack);
+        
+        StackTraceElement[] javaElements = getStackTrace();
 
-        StackTraceElement[] elements = new StackTraceElement[this.stack.size()];
-        for (int i = 0; i < elements.length; ++i) {
+        StackTraceElement[] elements = new StackTraceElement[javaElements.length + this.stack.size()];
+        for (int i = 0; i < this.stack.size(); ++i) {
             StackElement e = stack.get(i);
             String cn = "<global>";
             String fn = null;
@@ -36,6 +33,9 @@ public class ThrowException extends DynJSException {
                 fn = e.debugContext;
             }
             elements[i] = new StackTraceElement(cn, fn, e.fileName, e.lineNumber);
+        }
+        for ( int i = 0 ; i < javaElements.length ; ++i ) {
+            elements[i+this.stack.size()] = javaElements[i];
         }
         setStackTrace(elements);
 

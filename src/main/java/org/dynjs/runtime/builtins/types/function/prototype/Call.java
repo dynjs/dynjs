@@ -16,7 +16,7 @@ public class Call extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.4
         if (!(self instanceof JSFunction)) {
-            throw new ThrowException(context.createTypeError("Function.call() only allowed on callable objects"));
+            throw new ThrowException(context, context.createTypeError("Function.call() only allowed on callable objects"));
         }
 
         Object thisArg = args[0];

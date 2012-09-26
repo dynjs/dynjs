@@ -17,7 +17,7 @@ public class Bind extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.5
         if (!(self instanceof JSFunction)) {
-            throw new ThrowException(context.createTypeError("Function.bind() only allowed on callable objects"));
+            throw new ThrowException(context, context.createTypeError("Function.bind() only allowed on callable objects"));
         }
 
         JSFunction target = (JSFunction) self;

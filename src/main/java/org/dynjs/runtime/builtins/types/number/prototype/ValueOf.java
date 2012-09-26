@@ -20,6 +20,6 @@ public class ValueOf extends AbstractNativeFunction {
         if ( self instanceof Number ) {
             return self;
         }
-        throw new ThrowException( context.createTypeError( "Number.valueOf() only allowed on Numbers" ));
+        throw new ThrowException( context, context.createTypeError( "Number.valueOf() only allowed on Numbers" ));
     }
 }

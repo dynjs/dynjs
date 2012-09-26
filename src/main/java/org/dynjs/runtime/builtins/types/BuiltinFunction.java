@@ -81,7 +81,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
             function.setPrototype(getPrototype());
             return function;
         } catch (RecognitionException e) {
-            throw new ThrowException(context.createSyntaxError(e.getMessage()));
+            throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         }
 
     }
@@ -96,7 +96,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         ES3Parser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();
         if (!errors.isEmpty()) {
-            throw new ThrowException(context.createSyntaxError(errors.get(0)));
+            throw new ThrowException(context, context.createSyntaxError(errors.get(0)));
         }
 
         CommonTree tree = (CommonTree) function.getTree();

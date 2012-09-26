@@ -21,7 +21,7 @@ public class IsExtensible extends AbstractNativeFunction {
         Object o = args[0];
 
         if (!(o instanceof JSObject)) {
-            throw new ThrowException(context.createTypeError("must be an object"));
+            throw new ThrowException(context, context.createTypeError("must be an object"));
         }
 
         JSObject jsObj = (JSObject) o;

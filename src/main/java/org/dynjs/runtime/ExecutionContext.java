@@ -119,7 +119,7 @@ public class ExecutionContext {
     public JSObject construct(JSFunction function, Object... args) {
 
         if (!function.isConstructor()) {
-            throw new ThrowException(createTypeError("not a constructor"));
+            throw new ThrowException(this, createTypeError("not a constructor"));
         }
 
         // 13.2.2
@@ -347,7 +347,7 @@ public class ExecutionContext {
                     };
                     globalObject.defineOwnProperty(this, identifier, newProp, true);
                 } else if (existingProp.isAccessorDescriptor() || (!existingProp.isWritable() && !existingProp.isEnumerable())) {
-                    throw new ThrowException(createTypeError("unable to bind function '" + identifier + "'"));
+                    throw new ThrowException(this, createTypeError("unable to bind function '" + identifier + "'"));
                 }
             }
             JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock());

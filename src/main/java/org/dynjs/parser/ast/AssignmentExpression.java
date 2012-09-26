@@ -82,7 +82,11 @@ public class AssignmentExpression extends AbstractExpression {
                 // ex ex context str
                 invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
                 // ex ex error
-                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // ex ex error context
+                swap();
+                // ex ex context error
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, ExecutionContext.class, Object.class));
                 // ex ex
                 athrow();
                 

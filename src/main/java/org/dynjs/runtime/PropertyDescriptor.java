@@ -437,7 +437,7 @@ public class PropertyDescriptor {
     public static PropertyDescriptor toPropertyDescriptor(ExecutionContext context, Object o) {
         // 8.10.5
         if (!(o instanceof JSObject)) {
-            throw new ThrowException(context.createTypeError("attribtues must be an object"));
+            throw new ThrowException(context, context.createTypeError("attribtues must be an object"));
         }
 
         JSObject obj = (JSObject) o;
@@ -458,21 +458,21 @@ public class PropertyDescriptor {
         if (obj.hasProperty(context, "get")) {
             Object getter = obj.get(context, "get");
             if ((!Types.isCallable(getter)) && (getter != Types.UNDEFINED)) {
-                throw new ThrowException(context.createTypeError("get must be callable"));
+                throw new ThrowException(context, context.createTypeError("get must be callable"));
             }
             d.set("Get", getter);
         }
         if (obj.hasProperty(context, "set")) {
             Object setter = obj.get(context, "set");
             if ((!Types.isCallable(setter)) && (setter != Types.UNDEFINED)) {
-                throw new ThrowException(context.createTypeError("set must be callable"));
+                throw new ThrowException(context, context.createTypeError("set must be callable"));
             }
             d.set("Set", setter);
         }
 
         if ((d.get("Get") != Types.UNDEFINED) || (d.get("Set") != Types.UNDEFINED)) {
             if ((d.get("Writable") != Types.UNDEFINED) || (d.get("Value") != Types.UNDEFINED)) {
-                throw new ThrowException(context.createTypeError("may not be both a data property and an accessor property"));
+                throw new ThrowException(context, context.createTypeError("may not be both a data property and an accessor property"));
             }
         }
 

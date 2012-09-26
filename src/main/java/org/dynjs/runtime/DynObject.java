@@ -137,7 +137,7 @@ public class DynObject implements JSObject {
         // 8.12.5
         if (!canPut(context, name)) {
             if (shouldThrow) {
-                throw new ThrowException(context.createTypeError("cannot put property '" + name + "'"));
+                throw new ThrowException(context, context.createTypeError("cannot put property '" + name + "'"));
             }
             return;
         }
@@ -224,7 +224,7 @@ public class DynObject implements JSObject {
         }
 
         if (shouldThrow) {
-            throw new ThrowException(context.createTypeError("cannot delete unconfigurable property '" + name + "'"));
+            throw new ThrowException(context, context.createTypeError("cannot delete unconfigurable property '" + name + "'"));
         }
 
         return false;
@@ -252,7 +252,7 @@ public class DynObject implements JSObject {
                     return result;
                 }
             }
-            throw new ThrowException(context.createTypeError("String coercion must return a primitive value"));
+            throw new ThrowException(context, context.createTypeError("String coercion must return a primitive value"));
         } else if (hint.equals("Number")) {
             Object valueOf = get(context, "valueOf");
             if (valueOf instanceof JSFunction) {
@@ -269,7 +269,7 @@ public class DynObject implements JSObject {
                     return result;
                 }
             }
-            throw new ThrowException(context.createTypeError("String coercion must return a primitive value"));
+            throw new ThrowException(context, context.createTypeError("String coercion must return a primitive value"));
         }
 
         return null;
@@ -376,7 +376,7 @@ public class DynObject implements JSObject {
 
     protected boolean reject(ExecutionContext context, boolean shouldThrow) {
         if (shouldThrow) {
-            throw new ThrowException(context.createTypeError("unable to perform operation"));
+            throw new ThrowException(context, context.createTypeError("unable to perform operation"));
         }
         return false;
     }

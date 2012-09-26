@@ -77,7 +77,7 @@ public class ParseInt extends AbstractNativeFunction {
     
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-      throw new ThrowException(context.createTypeError("parseInt() cannot be used as a constructor"));
+      throw new ThrowException(context, context.createTypeError("parseInt() cannot be used as a constructor"));
     }
 
 }

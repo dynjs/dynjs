@@ -38,7 +38,7 @@ public class DecodeUri extends AbstractNativeFunction {
         try {
             return URLDecoder.decode(uri, "UTF-8" );
         } catch (UnsupportedEncodingException e) {
-            throw new ThrowException( context.createUriError("uable to decode uri '" + uri + "'") );
+            throw new ThrowException( context, context.createUriError("uable to decode uri '" + uri + "'") );
         }
     }
 }

@@ -35,7 +35,7 @@ public class Eval extends AbstractNativeFunction {
             try {
                 return context.getGlobalObject().getRuntime().evaluate(code.toString());
             } catch (SyntaxError e) {
-                throw new ThrowException(context.createSyntaxError(e.getMessage()));
+                throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
             }
         }
         return Types.UNDEFINED;

@@ -21,6 +21,6 @@ public class ToString extends AbstractNativeFunction {
             return ((DynBoolean) self).getPrimitiveValue().toString();
         }
 
-        throw new ThrowException(context.createTypeError("not a boolean"));
+        throw new ThrowException(context, context.createTypeError("not a boolean"));
     }
 }

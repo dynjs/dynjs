@@ -19,12 +19,12 @@ public class ToString extends AbstractNativeFunction {
             radix = 10;
         }
         if (radix < 2 || radix > 36 ) {
-            throw new ThrowException(context.createRangeError("Number.prototype.toString([radix]) must have a radix between 2 and 36, inclusive."));
+            throw new ThrowException(context, context.createRangeError("Number.prototype.toString([radix]) must have a radix between 2 and 36, inclusive."));
         }
 
         if (self instanceof DynNumber) {
             return Types.toNumber(context, self).toString();
         }
-        throw new ThrowException(context.createTypeError("Number.prototype.toString() only allowed on Numbers"));
+        throw new ThrowException(context, context.createTypeError("Number.prototype.toString() only allowed on Numbers"));
     }
 }

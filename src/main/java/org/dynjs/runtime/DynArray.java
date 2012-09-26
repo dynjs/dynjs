@@ -48,7 +48,7 @@ public class DynArray extends DynObject {
             PropertyDescriptor newLenDesc = desc;
             Long newLen = Types.toUint32(context, desc.getValue());
             if (!newLen.equals(Types.toNumber(context, desc.getValue()))) {
-                throw new ThrowException(context.createRangeError("invalid length: " + newLen));
+                throw new ThrowException(context, context.createRangeError("invalid length: " + newLen));
             }
             newLenDesc.setValue(newLen);
             if (newLen >= oldLen) {

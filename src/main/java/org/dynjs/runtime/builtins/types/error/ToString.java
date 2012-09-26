@@ -17,7 +17,7 @@ public class ToString extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.11.4.4
         if (!(self instanceof JSObject)) {
-            throw new ThrowException(context.createTypeError("'this' must be an object"));
+            throw new ThrowException(context, context.createTypeError("'this' must be an object"));
         }
 
         JSObject jsSelf = (JSObject) self;

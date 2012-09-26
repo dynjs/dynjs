@@ -21,6 +21,6 @@ public class ValueOf extends AbstractNativeFunction {
         if (self instanceof PrimitiveDynObject) {
             return ((PrimitiveDynObject) self).getPrimitiveValue();
         }
-        throw new ThrowException(context.createTypeError("not a boolean"));
+        throw new ThrowException(context, context.createTypeError("not a boolean"));
     }
 }

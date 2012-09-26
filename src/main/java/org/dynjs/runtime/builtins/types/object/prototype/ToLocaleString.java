@@ -21,7 +21,7 @@ public class ToLocaleString extends AbstractNativeFunction {
 
         Object toString = o.get(context, "toString");
         if (!(toString instanceof JSFunction)) {
-            throw new ThrowException(context.createTypeError("toString must be callable"));
+            throw new ThrowException(context, context.createTypeError("toString must be callable"));
         }
 
         return context.call((JSFunction) toString, o);

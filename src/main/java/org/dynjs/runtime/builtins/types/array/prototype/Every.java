@@ -21,7 +21,7 @@ public class Every extends AbstractNativeFunction {
         long len = Types.toUint32(context, o.get(context, "length"));
 
         if (!(args[0] instanceof JSFunction)) {
-            throw new ThrowException(context.createTypeError("callbackFn must be a function"));
+            throw new ThrowException(context, context.createTypeError("callbackFn must be a function"));
         }
 
         JSFunction callbackFn = (JSFunction) args[0];

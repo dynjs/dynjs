@@ -168,7 +168,7 @@ public class Stringify extends AbstractNativeFunction {
             JSFunction replacer, List<String> propertyList,
             DynArray value) {
         if (stack.contains(value)) {
-            throw new ThrowException(context.createTypeError("cyclic structure"));
+            throw new ThrowException(context, context.createTypeError("cyclic structure"));
         }
         stack.add(value);
         String stepback = indent;
@@ -230,7 +230,7 @@ public class Stringify extends AbstractNativeFunction {
             JSObject value) {
 
         if (stack.contains(value)) {
-            throw new ThrowException(context.createTypeError("cyclic structure"));
+            throw new ThrowException(context, context.createTypeError("cyclic structure"));
         }
         stack.add(value);
         String stepback = indent;

@@ -44,7 +44,7 @@ public class Reference {
         // 8.7.1
         Object value = null;
         if (isUnresolvableReference()) {
-            throw new ThrowException(context.createReferenceError(referencedName + " is not defined"));
+            throw new ThrowException(context, context.createReferenceError(referencedName + " is not defined"));
         }
         
         if (isPropertyReference()) {
@@ -84,7 +84,7 @@ public class Reference {
         // 8.7.2
         if (isUnresolvableReference()) {
             if (isStrictReference()) {
-                throw new ThrowException(context.createReferenceError(referencedName + " is not defined"));
+                throw new ThrowException(context, context.createReferenceError(referencedName + " is not defined"));
             } else {
                 this.globalObject.put(context, this.referencedName, value, false);
             }

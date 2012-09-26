@@ -21,13 +21,13 @@ public class Reduce extends AbstractNativeFunction {
         long len = Types.toUint32(context, o.get(context, "length"));
 
         if (!(args[0] instanceof JSFunction)) {
-            throw new ThrowException(context.createTypeError("callbackFn must be a function"));
+            throw new ThrowException(context, context.createTypeError("callbackFn must be a function"));
         }
 
         JSFunction callbackFn = (JSFunction) args[0];
 
         if (len == 0 && args.length < 2) {
-            throw new ThrowException(context.createTypeError("length is 0 and no initial value provided"));
+            throw new ThrowException(context, context.createTypeError("length is 0 and no initial value provided"));
         }
 
         Object accumulator = null;
@@ -47,7 +47,7 @@ public class Reduce extends AbstractNativeFunction {
             }
 
             if (!kPresent) {
-                throw new ThrowException(context.createTypeError("no initial value and no first value in array"));
+                throw new ThrowException(context, context.createTypeError("no initial value and no first value in array"));
             }
         }
 

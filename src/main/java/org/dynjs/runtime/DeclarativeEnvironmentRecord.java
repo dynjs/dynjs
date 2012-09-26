@@ -46,7 +46,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
 
         if (strict) {
-            throw new ThrowException(context.createTypeError("attempt to change immutable binding is not allowed"));
+            throw new ThrowException(context, context.createTypeError("attempt to change immutable binding is not allowed"));
         }
     }
 
@@ -61,7 +61,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         PropertyDescriptor desc = this.immutableBindings.get(name);
         if ((desc != null) && (desc.get("Initialized") == null)) {
             if (strict) {
-                throw new ThrowException(context.createTypeError(name + " is not initialized"));
+                throw new ThrowException(context, context.createTypeError(name + " is not initialized"));
             }
             return Types.UNDEFINED;
         }

@@ -27,11 +27,6 @@ public class DynRegExp extends DynObject {
     }
 
     public void setPatternAndFlags(ExecutionContext context, final String pattern, final String flags) {
-        try {
-            this.pattern = Pattern.compile(pattern);
-        } catch (PatternSyntaxException e) {
-            throw new ThrowException( context.createSyntaxError( e.getMessage() ) );
-        }
         defineOwnProperty(null, "source", new PropertyDescriptor() {
             {
                 set("Value", pattern);
@@ -100,6 +95,21 @@ public class DynRegExp extends DynObject {
                 set("Enumerable", false);
             }
         }, false);
+        
+        int flagsInt = 0;
+
+        if (get(context, "multiline") == Boolean.TRUE) {
+            flagsInt = flagsInt | Pattern.MULTILINE;
+        }
+
+        if (get(context, "ignoreCase") == Boolean.TRUE) {
+            flagsInt = flagsInt | Pattern.CASE_INSENSITIVE;
+        }
+        try {
+            this.pattern = Pattern.compile(pattern, flagsInt );
+        } catch (PatternSyntaxException e) {
+            throw new ThrowException( context, context.createSyntaxError( e.getMessage() ) );
+        }
     }
 
     public MatchResult match(String str, int from) {

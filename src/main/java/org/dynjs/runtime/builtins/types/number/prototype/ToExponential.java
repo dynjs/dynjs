@@ -24,7 +24,7 @@ public class ToExponential extends AbstractNativeFunction {
             return String.valueOf(number);
         }
         if (fractionDigits < 0 || fractionDigits > 20) {
-            throw new ThrowException(context.createRangeError("Number.prototype.toExponential() [fractionDigits] must be between 0 and 20"));
+            throw new ThrowException(context, context.createRangeError("Number.prototype.toExponential() [fractionDigits] must be between 0 and 20"));
         }
         if (number.doubleValue() == 0) { return "0e+0"; }
         final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());

@@ -18,7 +18,7 @@ public class Apply extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.3
         if (!(self instanceof JSFunction)) {
-            throw new ThrowException(context.createTypeError("Function.apply() only allowed on callable objects"));
+            throw new ThrowException(context, context.createTypeError("Function.apply() only allowed on callable objects"));
         }
 
         Object thisArg = args[0];
@@ -29,7 +29,7 @@ public class Apply extends AbstractNativeFunction {
         }
 
         if (!Types.type(argArray).equals("object")) {
-            throw new ThrowException(context.createTypeError("argArray must be an object"));
+            throw new ThrowException(context, context.createTypeError("argArray must be an object"));
         }
 
         long len = Types.toUint32(context, ((JSObject) argArray).get(context, "length"));

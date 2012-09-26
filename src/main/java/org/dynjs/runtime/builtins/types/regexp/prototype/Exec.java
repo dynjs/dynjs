@@ -23,19 +23,10 @@ public class Exec extends AbstractPrototypeFunction {
         String str = Types.toString(context, args[0]);
 
         if (!(self instanceof DynRegExp)) {
-            throw new ThrowException(context.createTypeError("only applicable to a RegExp"));
+            throw new ThrowException(context, context.createTypeError("only applicable to a RegExp"));
         }
 
         DynRegExp regexp = (DynRegExp) self;
-        int flags = 0;
-
-        if (regexp.get(context, "multiline") == Boolean.TRUE) {
-            flags = flags | Pattern.MULTILINE;
-        }
-
-        if (regexp.get(context, "ignoreCase") == Boolean.TRUE) {
-            flags = flags | Pattern.CASE_INSENSITIVE;
-        }
 
         long lastIndex = (long) regexp.get(context, "lastIndex");
         long i = lastIndex;

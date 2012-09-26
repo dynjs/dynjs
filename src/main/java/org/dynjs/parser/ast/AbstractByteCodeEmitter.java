@@ -221,7 +221,11 @@ public class AbstractByteCodeEmitter {
                 // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createTypeError", sig(JSObject.class, String.class));
                 // obj obj ex
-                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                // obj obj ex context
+                swap();
+                // obj obj context ex
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, ExecutionContext.class, Object.class));
                 // obj
                 athrow();
             }
@@ -241,7 +245,11 @@ public class AbstractByteCodeEmitter {
                 // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
                 // obj obj ex
-                invokespecial(p(ThrowException.class), "<init>", sig(void.class, Object.class));
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                // obj obj ex context
+                swap();
+                // obj obj context ex
+                invokespecial(p(ThrowException.class), "<init>", sig(void.class, ExecutionContext.class, Object.class));
                 // obj
                 athrow();
             }

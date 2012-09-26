@@ -52,7 +52,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
         Object d = this.object.getProperty(context, name);
         if (d == Types.UNDEFINED) {
             if (strict) {
-                throw new ThrowException(context.createReferenceError(name + " is not defined"));
+                throw new ThrowException(context, context.createReferenceError(name + " is not defined"));
             }
             return Types.UNDEFINED;
         }

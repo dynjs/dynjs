@@ -12,13 +12,11 @@ public class Types {
 
     public static void checkObjectCoercible(ExecutionContext context, Object o) {
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(
-                    context.createTypeError("undefined cannot be coerced to an object"));
+            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object"));
         }
 
         if (o == Types.NULL) {
-            throw new ThrowException(
-                    context.createTypeError("null cannot be coerced to an object"));
+            throw new ThrowException(context, context.createTypeError("null cannot be coerced to an object"));
         }
 
         return;
@@ -55,12 +53,10 @@ public class Types {
             return new DynBoolean(context.getGlobalObject(), (Boolean) o);
         }
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(
-                    context.createTypeError("undefined cannot be converted to an object"));
+            throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
         }
         if (o == Types.NULL) {
-            throw new ThrowException(
-                    context.createTypeError("null cannot be converted to an object"));
+            throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
@@ -620,7 +616,10 @@ public class Types {
         // them as 1e+14
         int plus = 3;
         int index = value.indexOf(".0E");
-        if (index < 0) { index = value.indexOf("E+"); plus = 2; }
+        if (index < 0) {
+            index = value.indexOf("E+");
+            plus = 2;
+        }
         if (index != -1)
             value = value.substring(0, index) + "e+" + value.substring(index + plus);
         return value;
