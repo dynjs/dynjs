@@ -39,6 +39,8 @@ public class ExpressionStatement extends AbstractStatement {
             {
                 append(expr.getCodeBlock());
                 // value
+                append( jsGetValue() );
+                // value
                 append(normalCompletionWithValue());
                 // Completion
             }
