@@ -14,7 +14,7 @@ public abstract class AbstractJavascriptFunction extends AbstractFunction {
         final DynObject proto = new DynObject(scope.getGlobalObject());
         proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
             {
-                set("Value", this);
+                set("Value", AbstractJavascriptFunction.this);
                 set("Writable", true);
                 set("Enumerable", false);
                 set("Configurable", true);

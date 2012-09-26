@@ -103,7 +103,7 @@ public class PropertyDescriptor {
     }
 
     public String toString() {
-        return "[PropertyDescriptor value=" + this.value + "; enumerable=" + this.enumerable + "]";// : attributes=" + this.attributes.keySet() + "]";
+        return "[PropertyDescriptor]"; 
     }
 
     public boolean isWritable() {
