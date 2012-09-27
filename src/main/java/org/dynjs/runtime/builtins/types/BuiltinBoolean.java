@@ -29,7 +29,7 @@ public class BuiltinBoolean extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (self == Types.UNDEFINED) {
+        if (self == Types.UNDEFINED || self == Types.NULL ) {
             // 15.6.1
             return Types.toBoolean(args[0]);
         } else {

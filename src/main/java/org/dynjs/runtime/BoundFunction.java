@@ -74,4 +74,10 @@ public class BoundFunction extends AbstractNativeFunction {
         return target.hasInstance(context, v);
     }
 
+    @Override
+    public JSObject createNewObject(ExecutionContext context) {
+        return target.createNewObject(context);
+    }
+    
+
 }

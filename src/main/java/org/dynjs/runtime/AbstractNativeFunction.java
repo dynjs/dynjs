@@ -71,7 +71,8 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("function(");
+        buffer.append("function " );
+        buffer.append( getClass().getSimpleName() ).append("(" );
         String[] params = getFormalParameters();
         for (int i = 0; i < params.length; ++i) {
             if (i > 0) {

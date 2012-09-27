@@ -17,6 +17,7 @@ public class Apply extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.3
+        
         if (!(self instanceof JSFunction)) {
             throw new ThrowException(context, context.createTypeError("Function.apply() only allowed on callable objects"));
         }
@@ -28,7 +29,7 @@ public class Apply extends AbstractNativeFunction {
             return context.call((JSFunction) self, thisArg);
         }
         
-        if (!Types.type(argArray).equals("object")) {
+        if (! ( argArray instanceof JSObject ) ) {
             throw new ThrowException(context, context.createTypeError("argArray must be an object"));
         }
 
