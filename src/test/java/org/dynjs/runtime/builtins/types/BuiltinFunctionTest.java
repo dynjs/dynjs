@@ -78,7 +78,7 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
     @Test
     public void testBindFunction() {
         Object result = eval("var self = { z: 10 };",
-                "var f = function(x,y) { this.z + x + y };",
+                "var f = function(x,y) { return this.z + x + y };",
                 "var b = f.bind(self, 20);",
                 "b(42);");
 

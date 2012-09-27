@@ -36,17 +36,17 @@ public class BuiltinFunction extends AbstractBuiltinType {
                 return Types.UNDEFINED;
             }
         };
-        setPrototypeProperty( proto );
+        setPrototypeProperty(proto);
     }
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        defineNonEnumerableProperty(proto, "constructor", this );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
-        defineNonEnumerableProperty(proto, "apply", new Apply(globalObject) );
-        defineNonEnumerableProperty(proto, "call", new Call(globalObject) );
-        defineNonEnumerableProperty(proto, "bind", new Bind(globalObject) );
+        defineNonEnumerableProperty(proto, "constructor", this);
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        defineNonEnumerableProperty(proto, "apply", new Apply(globalObject));
+        defineNonEnumerableProperty(proto, "call", new Call(globalObject));
+        defineNonEnumerableProperty(proto, "bind", new Bind(globalObject));
     }
 
     @Override

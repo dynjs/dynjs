@@ -1,6 +1,8 @@
 package org.dynjs.compiler;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +18,8 @@ import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.Types;
+import org.objectweb.asm.tree.LabelNode;
 
 public class FunctionCompiler extends AbstractCompiler {
 
@@ -49,6 +53,26 @@ public class FunctionCompiler extends AbstractCompiler {
                 defineMethod( "call", ACC_PUBLIC, CALL, new CodeBlock() {
                     {
                         append( body.getCodeBlock() );
+                        // completion
+                        dup();
+                        // completion completion 
+                        getfield(p(Completion.class), "type", ci(Completion.Type.class));
+                        // completion type
+                        invokevirtual(p(Completion.Type.class), "ordinal", sig(int.class));
+                        // completion type
+                        ldc( Completion.Type.RETURN.ordinal() );
+                        // completion type RETURN
+                        
+                        LabelNode returnValue = new LabelNode();
+                        if_icmpeq( returnValue );
+                        // completion
+                        pop();
+                        getstatic(p(Types.class), "UNDEFINED", ci(Types.Undefined.class));
+                        // UNDEF
+                        areturn();
+                        
+                        label( returnValue );
+                        // completion
                         getfield( p( Completion.class ), "value", ci( Object.class ) );
                         areturn();
                     }

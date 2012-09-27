@@ -19,4 +19,11 @@ public class FunctionCallExpressionTest extends AbstractDynJSTestSupport {
         eval("var x = {}; x();");
     }
 
+    @Test
+    public void testFunctionWithoutReturn() {
+        Object result = eval( "var f = function(){ 42; };",
+                "f()" );
+        assertThat( result ).isEqualTo( Types.UNDEFINED );
+                
+    }
 }

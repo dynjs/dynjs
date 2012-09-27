@@ -435,25 +435,25 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testEveryTrue() {
-        Object result = eval("[1,2,3].every(function(e){ e < 10 })");
+        Object result = eval("[1,2,3].every(function(e){ return e < 10 })");
         assertThat(result).isEqualTo(true);
     }
 
     @Test
     public void testEveryFalse() {
-        Object result = eval("[1,2,3,4,5,11,6,7,8,9].every(function(e){ e < 10 })");
+        Object result = eval("[1,2,3,4,5,11,6,7,8,9].every(function(e){ return e < 10 })");
         assertThat(result).isEqualTo(false);
     }
 
     @Test
     public void testSomeTrue() {
-        Object result = eval("[1,2,3].some(function(e){ e > 2 })");
+        Object result = eval("[1,2,3].some(function(e){ return e > 2 })");
         assertThat(result).isEqualTo(true);
     }
 
     @Test
     public void testSomeFalse() {
-        Object result = eval("[1,2,3,4,5,11,6,7,8,9].some(function(e){ e > 40 })");
+        Object result = eval("[1,2,3,4,5,11,6,7,8,9].some(function(e){ return e > 40 })");
         assertThat(result).isEqualTo(false);
     }
 
