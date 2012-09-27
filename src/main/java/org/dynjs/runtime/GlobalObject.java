@@ -115,6 +115,7 @@ public class GlobalObject extends DynObject {
 
     private void registerBuiltinType(String name, AbstractBuiltinType type) {
         put(null, name, type, false);
+        put(null, "__Builtin_" + name, type, false);
         this.builtinTypes.add(type);
     }
 

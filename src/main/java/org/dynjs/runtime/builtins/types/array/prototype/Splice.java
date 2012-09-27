@@ -33,7 +33,7 @@ public class Splice extends AbstractNativeFunction {
         long deleteCount = Types.toInteger(context, args[1]);
         long actualDeleteCount = Math.min(Math.max(deleteCount, 0), len - actualStart);
 
-        DynArray a = BuiltinArray.newArray(context);
+        JSObject a = BuiltinArray.newArray(context);
 
         for (long k = 0; k < actualDeleteCount; ++k) {
             if (o.hasProperty(context, "" + (actualStart + k))) {

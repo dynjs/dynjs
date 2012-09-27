@@ -56,7 +56,7 @@ public class BuiltinRegExp extends AbstractBuiltinType {
     }
 
     public static DynRegExp newRegExp(ExecutionContext context, String pattern, String flags) {
-        BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "RegExp");
+        BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "__Builtin_RegExp");
         return (DynRegExp) context.construct(ctor, pattern, flags);
     }
 

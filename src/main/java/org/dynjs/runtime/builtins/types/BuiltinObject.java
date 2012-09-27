@@ -76,7 +76,7 @@ public class BuiltinObject extends AbstractBuiltinType {
     }
 
     public static DynObject newObject(ExecutionContext context) {
-        BuiltinObject ctor = (BuiltinObject) context.getGlobalObject().get(context, "Object");
+        BuiltinObject ctor = (BuiltinObject) context.getGlobalObject().get(context, "__Builtin_Object");
         return (DynObject) context.construct(ctor);
     }
 

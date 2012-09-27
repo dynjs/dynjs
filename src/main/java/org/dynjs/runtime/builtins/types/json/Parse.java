@@ -101,7 +101,7 @@ public class Parse extends AbstractNativeFunction {
     }
 
     protected Object parseArray(ExecutionContext context, JsonParser p) throws JsonParseException, IOException {
-        DynArray array = BuiltinArray.newArray(context);
+        JSObject array = BuiltinArray.newArray(context);
         int i = 0;
         while (p.nextToken() != JsonToken.END_ARRAY) {
             Object value = parse(context, p);

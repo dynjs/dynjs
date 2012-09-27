@@ -1,11 +1,10 @@
 package org.dynjs.runtime.builtins.types;
 
-import java.util.Arrays;
-
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
@@ -138,7 +137,7 @@ public class BuiltinArray extends AbstractBuiltinType {
     // ----------------------------------------------------------------------
 
     public static DynArray newArray(ExecutionContext context) {
-        BuiltinArray ctor = (BuiltinArray) context.getGlobalObject().get(context, "Array");
+        JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct(ctor);
     }
 }

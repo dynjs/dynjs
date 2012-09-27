@@ -1,13 +1,12 @@
 package org.dynjs.runtime.builtins.types.regexp.prototype;
 
 import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractPrototypeFunction;
-import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
@@ -56,7 +55,7 @@ public class Exec extends AbstractPrototypeFunction {
             regexp.put(context, "lastIndex", (long) r.end(), true);
         }
 
-        DynArray a = BuiltinArray.newArray(context);
+        JSObject a = BuiltinArray.newArray(context);
         a.put(context, "index", (long) r.start(), true);
         a.put(context, "input", str, true);
         a.put(context, "length", (long) r.groupCount() + 1, true);

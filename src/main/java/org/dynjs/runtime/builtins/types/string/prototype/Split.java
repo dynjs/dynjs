@@ -25,7 +25,7 @@ public class Split extends AbstractNativeFunction {
         Types.checkObjectCoercible(context, self);
         final String s = Types.toString(context, self);
 
-        DynArray a = BuiltinArray.newArray(context);
+        JSObject a = BuiltinArray.newArray(context);
 
         long lengthA = 0;
 

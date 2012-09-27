@@ -55,10 +55,4 @@ public class BuiltinError extends AbstractBuiltinType {
         return o;
     }
 
-    // ----------------------------------------------------------------------
-
-    public static DynArray newArrayLiteral(ExecutionContext context) {
-        BuiltinError ctor = (BuiltinError) context.getGlobalObject().get(context, "Array");
-        return (DynArray) context.construct(ctor);
-    }
 }

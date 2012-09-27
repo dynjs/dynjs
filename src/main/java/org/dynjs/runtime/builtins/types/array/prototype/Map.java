@@ -34,7 +34,7 @@ public class Map extends AbstractNativeFunction {
             t = args[1];
         }
 
-        DynArray a = BuiltinArray.newArray(context);
+        JSObject a = BuiltinArray.newArray(context);
 
         for (long k = 0; k < len; ++k) {
             boolean kPresent = o.hasProperty(context, "" + k);

@@ -38,7 +38,7 @@ public class Match extends AbstractNativeFunction {
 
         rx.put(context, "lastIndex", 0, false);
 
-        DynArray a = BuiltinArray.newArray(context);
+        JSObject a = BuiltinArray.newArray(context);
         long previousLastIndex = 0;
         long n = 0;
         boolean lastMatch = true;

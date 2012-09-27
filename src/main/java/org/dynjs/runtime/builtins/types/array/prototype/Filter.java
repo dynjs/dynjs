@@ -34,7 +34,7 @@ public class Filter extends AbstractNativeFunction {
             t = args[1];
         }
 
-        DynArray a = BuiltinArray.newArray(context);
+        JSObject a = BuiltinArray.newArray(context);
 
         int to = 0;
 
