@@ -1,13 +1,11 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractPrototypeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
-public class ParseFloat extends AbstractNativeFunction {
+public class ParseFloat extends AbstractPrototypeFunction {
 
     public ParseFloat(GlobalObject globalObject) {
         super(globalObject, "f");
@@ -21,10 +19,5 @@ public class ParseFloat extends AbstractNativeFunction {
         } catch (NumberFormatException e) {
             return Double.NaN;
         }
-    }
-
-    @Override
-    public JSObject createNewObject(ExecutionContext context) {
-      throw new ThrowException(context.createTypeError("parseInt() cannot be used as a constructor"));
     }
 }
