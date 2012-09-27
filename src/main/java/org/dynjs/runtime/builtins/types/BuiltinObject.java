@@ -23,6 +23,7 @@ import org.dynjs.runtime.builtins.types.object.prototype.IsPrototypeOf;
 import org.dynjs.runtime.builtins.types.object.prototype.PropertyIsEnumerable;
 import org.dynjs.runtime.builtins.types.object.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.object.prototype.ToString;
+import org.dynjs.runtime.builtins.types.object.prototype.ValueOf;
 
 public class BuiltinObject extends AbstractBuiltinType {
 
@@ -43,6 +44,7 @@ public class BuiltinObject extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "hasOwnProperty", new HasOwnProperty(globalObject) );
         defineNonEnumerableProperty(proto, "isPrototypeOf", new IsPrototypeOf(globalObject) );
         defineNonEnumerableProperty(proto, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject) );
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
 
         // Object.foo
         defineNonEnumerableProperty(this, "getPrototypeOf", new GetPrototypeOf(globalObject) );
