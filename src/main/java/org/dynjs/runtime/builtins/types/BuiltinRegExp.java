@@ -15,16 +15,16 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         super(globalObject, "pattern", "flags");
 
         DynRegExp proto = new DynRegExp(globalObject, "", "");
-        setPrototypeProperty( proto );
+        setPrototypeProperty(proto);
     }
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
         defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "exec", new Exec(globalObject) );
-        defineNonEnumerableProperty(proto, "test", new Test(globalObject) );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "exec", new Exec(globalObject));
+        defineNonEnumerableProperty(proto, "test", new Test(globalObject));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
     }
 
     @Override
@@ -34,10 +34,14 @@ public class BuiltinRegExp extends AbstractBuiltinType {
             return args[0];
         }
 
+        String pattern = "";
+        if (args[0] != Types.UNDEFINED) {
+            pattern = Types.toString(context, args[0]);
+        }
+        
         if (self == Types.UNDEFINED) {
-            return newRegExp(context, Types.toString( context, args[0]), Types.toString( context, args[1]) );
+            return newRegExp(context, pattern, Types.toString(context, args[1]));
         } else {
-            String pattern = Types.toString(context, args[0]);
             String flags = null;
 
             if (args[1] != Types.UNDEFINED) {

@@ -26,7 +26,11 @@ public class Match extends AbstractNativeFunction {
         if (args[0] instanceof JSObject && ((JSObject) args[0]).getClassName().equals("RegExp")) {
             rx = (JSObject) args[0];
         } else {
+            if ( args[0] == Types.UNDEFINED ) {
+            rx = BuiltinRegExp.newRegExp(context, "", null );
+            } else {
             rx = BuiltinRegExp.newRegExp(context, Types.toString( context, args[0]), null );
+            }
         }
 
         Object global = rx.get(context, "global");
@@ -36,7 +40,7 @@ public class Match extends AbstractNativeFunction {
             return context.call(execFn, rx, s);
         }
 
-        rx.put(context, "lastIndex", 0, false);
+        rx.put(context, "lastIndex", 0L, false);
 
         JSObject a = BuiltinArray.newArray(context);
         long previousLastIndex = 0;
