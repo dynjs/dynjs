@@ -71,8 +71,7 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("function " );
-        buffer.append( getClass().getSimpleName() ).append("(" );
+        buffer.append("function(" );
         String[] params = getFormalParameters();
         for (int i = 0; i < params.length; ++i) {
             if (i > 0) {
@@ -81,7 +80,7 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
             buffer.append(params[i]);
         }
         buffer.append("){\n");
-        buffer.append("  <native code>\n");
+        buffer.append("  <native code in: " ).append( getClass().getName() ).append( ">\n" );
         buffer.append("}");
 
         return buffer.toString();

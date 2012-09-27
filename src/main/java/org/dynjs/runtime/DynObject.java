@@ -233,14 +233,16 @@ public class DynObject implements JSObject {
     @Override
     public Object defaultValue(ExecutionContext context, String hint) {
         // 8.12.8
+        
         if (hint == null) {
             hint = "Number";
         }
+        
         if (hint.equals("String")) {
             Object toString = get(context, "toString");
             if (toString instanceof JSFunction) {
                 Object result = context.call((JSFunction) toString, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
                     return result;
                 }
             }
@@ -248,7 +250,8 @@ public class DynObject implements JSObject {
             Object valueOf = get(context, "valueOf");
             if (valueOf instanceof JSFunction) {
                 Object result = context.call((JSFunction) valueOf, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
+                System.err.println( "result: " + result );
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
                     return result;
                 }
             }
@@ -257,7 +260,7 @@ public class DynObject implements JSObject {
             Object valueOf = get(context, "valueOf");
             if (valueOf instanceof JSFunction) {
                 Object result = context.call((JSFunction) valueOf, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
                     return result;
                 }
             }
@@ -265,7 +268,7 @@ public class DynObject implements JSObject {
             Object toString = get(context, "toString");
             if (toString instanceof JSFunction) {
                 Object result = context.call((JSFunction) toString, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
                     return result;
                 }
             }

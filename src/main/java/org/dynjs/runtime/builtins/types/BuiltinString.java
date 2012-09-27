@@ -1,5 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -60,10 +61,13 @@ public class BuiltinString extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+        int numArgs = (int) argsObj.get(context, "length");
+        
         if (self != Types.UNDEFINED && self != Types.NULL ) {
             // Constructor
             String value = "";
-            if (args[0] != Types.UNDEFINED) {
+            if (numArgs != 0 ) {
                 value = Types.toString( context, args[0] );
             }
             PrimitiveDynObject primSelf = (PrimitiveDynObject) self;
@@ -71,6 +75,9 @@ public class BuiltinString extends AbstractBuiltinType {
             return primSelf;
         } else {
             // As function
+            if ( numArgs == 0 ) {
+                return "";
+            }
             return Types.toString(context, args[0]);
         }
     }
