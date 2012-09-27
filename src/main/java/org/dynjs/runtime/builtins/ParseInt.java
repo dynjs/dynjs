@@ -15,14 +15,12 @@
  */
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractPrototypeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
-public class ParseInt extends AbstractNativeFunction {
+public class ParseInt extends AbstractPrototypeFunction {
 
     public ParseInt(GlobalObject globalObject) {
         super(globalObject, "text", "radix");
@@ -50,7 +48,10 @@ public class ParseInt extends AbstractNativeFunction {
                 return text.substring(2);
             }
         }
-        return text;
+        // Java considers Unicode non-breaking space
+        // to be a non-whitespace character.
+        // Silly Java
+        return text.replaceAll("\\p{javaSpaceChar}", " ").trim();
     }
 
     static int extractRadix(String text) {
@@ -73,11 +74,6 @@ public class ParseInt extends AbstractNativeFunction {
             // ignore
         }
         return Double.NaN;
-    }
-    
-    @Override
-    public JSObject createNewObject(ExecutionContext context) {
-      throw new ThrowException(context, context.createTypeError("parseInt() cannot be used as a constructor"));
     }
 
 }

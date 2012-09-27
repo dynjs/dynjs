@@ -12,6 +12,10 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void parsesUnicodes() {
+        check("var result = parseInt('\u00A01')", 1);
+    }
+    @Test
     public void parseFloatReturnsNaNForEmptyString() {
         check("var result = parseFloat('')", Double.NaN);
     }
