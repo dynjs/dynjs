@@ -31,7 +31,6 @@ public class Arguments extends DynObject {
             }
             return v;
         }
-        Object mapV= this.map.get(context, name);
         return this.map.get(context, name);
     }
 

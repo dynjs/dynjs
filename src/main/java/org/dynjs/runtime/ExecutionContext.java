@@ -108,12 +108,18 @@ public class ExecutionContext {
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
         ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
-        Object result = function.call(fnContext);
-        if (result == null) {
-            return Types.UNDEFINED;
-        }
+        try {
+            Object result = function.call(fnContext);
+            if (result == null) {
+                return Types.UNDEFINED;
+            }
 
-        return result;
+            return result;
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ThrowException(this, e);
+        }
     }
 
     public JSObject construct(JSFunction function, Object... args) {
@@ -292,7 +298,7 @@ public class ExecutionContext {
                 {
                     set("Value", val);
                     set("Writable", true);
-                    set("Enumerable", false);
+                    set("Enumerable", true);
                     set("Configurable", true);
                 }
             };
@@ -353,7 +359,7 @@ public class ExecutionContext {
                     throw new ThrowException(this, createTypeError("unable to bind function '" + identifier + "'"));
                 }
             }
-            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), isRootStrict() );
+            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), isRootStrict());
             function.setDebugContext(identifier);
             env.setMutableBinding(this, identifier, function, code.isStrict());
         }

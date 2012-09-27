@@ -46,6 +46,20 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("new String(42).toString()");
         assertThat(o).isEqualTo("42");
     }
+    
+    @Test
+    public void testToString_SpecWeirdness1() {
+        Object o = eval( "new Object().valueOf().toString()");
+        assertThat( o ).isEqualTo( "[object Object]" );
+    }
+    
+    @Test
+    public void testToString_SpecWeirdness2() {
+        Object o = eval( "var to_string_result = '[object '+ 'Object' +']';",
+                "to_string_result.toString()" );
+        assertThat( o ).isEqualTo( "[object Object]" );
+    }
+
 
     @Test
     public void testCharAtWithinBounds() {

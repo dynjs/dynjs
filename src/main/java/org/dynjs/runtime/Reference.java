@@ -56,6 +56,7 @@ public class Reference {
         } else {
             value = ((EnvironmentRecord) this.base).getBindingValue(context, this.referencedName, this.strict);
         }
+        
         return value;
     }
 

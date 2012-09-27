@@ -13,8 +13,17 @@ public class ThrowException extends DynJSException {
     private Object value;
     private ArrayList<StackElement> stack;
 
+    public ThrowException(final ExecutionContext context, Throwable value) {
+        super(value);
+        setUpStackElements(context);
+    }
+    
     public ThrowException(final ExecutionContext context, Object value) {
         this.value = value;
+        setUpStackElements(context);
+    }
+    
+    protected void setUpStackElements(final ExecutionContext context) {
         this.stack = new ArrayList<StackElement>();
         context.collectStackElements(this.stack);
         
@@ -56,6 +65,7 @@ public class ThrowException extends DynJSException {
                 }
             }, false);
         }
+        
     }
 
     public String getMessage() {

@@ -64,17 +64,18 @@ public class BuiltinObject extends AbstractBuiltinType {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        if (self != null) {
+
+        if ( args[0] != Types.UNDEFINED ) {
             if (args[0] instanceof JSObject) {
                 return args[0];
             }
-
             if (args[0] instanceof String || args[0] instanceof Boolean || args[0] instanceof Number) {
-                return Types.toObject(context, args[0]);
+                JSObject result = Types.toObject(context, args[0]);
+                return result;
             }
         }
 
-        return null;
+        return new DynObject(context.getGlobalObject() );
     }
 
     public static DynObject newObject(ExecutionContext context) {

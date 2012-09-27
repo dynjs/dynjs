@@ -45,7 +45,7 @@ public class IsFrozen extends AbstractNativeFunction {
                 }
             }
         }
-
+        
         if (!jsObj.isExtensible()) {
             return true;
         }
