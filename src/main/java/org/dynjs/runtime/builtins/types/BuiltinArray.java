@@ -78,7 +78,7 @@ public class BuiltinArray extends AbstractBuiltinType {
 
         DynArray arraySelf = null;
 
-        if (self == Types.UNDEFINED) {
+        if (self == Types.UNDEFINED || self == Types.NULL ) {
             arraySelf = new DynArray(context.getGlobalObject());
         } else {
             arraySelf = (DynArray) self;
