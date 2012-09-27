@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ParsersTest extends AbstractDynJSTestSupport {
@@ -12,9 +13,31 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    public void parsesUnicodes() {
+    public void parsesIntWithUnicodes() {
         check("var result = parseInt('\u00A01')", 1);
     }
+    
+    @Test
+    public void parsesFloatWithUnicodeNBSP() {
+        check("var result = parseFloat('\u00A01.1')", 1.1);        
+    }
+    
+    @Test
+    @Ignore
+    public void parsesFloatWithUnicodeLineBreak() {
+        check("var result = parseFloat('\u20281.1')", 1.1);        
+    }
+    
+    @Test
+    public void parseIntWithBase2() {
+        check("var result = parseInt('0123456789', 2)", 1);
+    }
+    
+    @Test
+    public void parseIntWithBase6() {
+        check("var result = parseInt('01234567890', 6)", 1865);
+    }
+    
     @Test
     public void parseFloatReturnsNaNForEmptyString() {
         check("var result = parseFloat('')", Double.NaN);

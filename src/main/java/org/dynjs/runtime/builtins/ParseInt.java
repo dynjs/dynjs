@@ -51,7 +51,15 @@ public class ParseInt extends AbstractPrototypeFunction {
         // Java considers Unicode non-breaking space
         // to be a non-whitespace character.
         // Silly Java
-        return text.replaceAll("\\p{javaSpaceChar}", " ").trim();
+        text = text.replaceAll("\\p{javaSpaceChar}", "").trim();
+        /**
+         * If S contains any character that is not a radix-R digit,
+         * then let Z be the substring of S consisting of all characters before
+         * the first such character; otherwise, let Z be S
+         */
+        String regex = "[^-.0-" + (radix-1) + "].*";
+        text = text.replaceAll(regex, "");
+        return text;
     }
 
     static int extractRadix(String text) {

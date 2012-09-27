@@ -13,9 +13,10 @@ public class ParseFloat extends AbstractPrototypeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String text = Types.toString(context, args[0]).trim();
+        String text = Types.toString(context, args[0]);
+        text = text.replaceAll("\\p{javaSpaceChar}", " ");
         try {
-            return Double.parseDouble(text);
+            return Double.parseDouble(text.trim());
         } catch (NumberFormatException e) {
             return Double.NaN;
         }
