@@ -353,7 +353,7 @@ public class ExecutionContext {
                     throw new ThrowException(this, createTypeError("unable to bind function '" + identifier + "'"));
                 }
             }
-            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock());
+            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), isRootStrict() );
             function.setDebugContext(identifier);
             env.setMutableBinding(this, identifier, function, code.isStrict());
         }

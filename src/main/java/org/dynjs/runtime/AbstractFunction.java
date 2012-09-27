@@ -1,7 +1,9 @@
 package org.dynjs.runtime;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
@@ -49,7 +51,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public boolean isStrict() {
         return this.strict;
     }
-    
+
     public boolean isConstructor() {
         return true;
     }
@@ -106,11 +108,11 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         }
 
         Object o = get(null, "prototype");
-        if ( ! ( o instanceof JSObject ) ) {
-            
-            throw new ThrowException( context, context.createTypeError( "prototype must be an object" ) );
+        if (!(o instanceof JSObject)) {
+
+            throw new ThrowException(context, context.createTypeError("prototype must be an object"));
         }
-        
+
         JSObject proto = (JSObject) get(null, "prototype");
 
         if (proto == null || v == Types.UNDEFINED) {

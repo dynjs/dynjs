@@ -211,8 +211,13 @@ public class CodeBlockUtils {
                 // compiler context statement params
                 swap();
                 // compiler context statement params
+                
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // compiler context statement params context
+                
+                invokevirtual(p(ExecutionContext.class), "isRootStrict", sig(boolean.class));
 
-                invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, Statement.class));
+                invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, Statement.class, boolean.class ));
                 // fn
 
                 dup();

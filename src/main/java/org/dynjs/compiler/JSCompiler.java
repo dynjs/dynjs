@@ -31,8 +31,8 @@ public class JSCompiler {
         return this.programCompiler.compile(statement, forceStrict);
     }
 
-    public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body) {
-        return this.functionCompiler.compile(context, formalParameters, body);
+    public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body, boolean containedInStrictCode) {
+        return this.functionCompiler.compile(context, formalParameters, body, containedInStrictCode );
     }
 
     public BasicBlock compileBasicBlock(String grist, Statement body) {

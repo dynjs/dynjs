@@ -1,21 +1,16 @@
 package org.dynjs.compiler;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.BlockStatement;
-import org.dynjs.parser.ast.Expression;
-import org.dynjs.parser.ast.ExpressionStatement;
-import org.dynjs.parser.ast.StringLiteralExpression;
 import org.dynjs.runtime.BaseProgram;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
@@ -73,27 +68,4 @@ public class ProgramCompiler extends AbstractCompiler {
         }
     }
 
-    public boolean isStrict(Statement statement) {
-        boolean isStrict = false;
-
-        if (statement instanceof BlockStatement) {
-            BlockStatement block = (BlockStatement) statement;
-            for (Statement each : block.getBlockContent()) {
-                if (each instanceof ExpressionStatement) {
-                    Expression expr = ((ExpressionStatement) each).getExpr();
-                    if (expr instanceof StringLiteralExpression) {
-                        if (((StringLiteralExpression) expr).getLiteral().equals("use strict")) {
-                            isStrict = true;
-                        }
-                    } else {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
-
-        return isStrict;
-    }
 }

@@ -1,6 +1,8 @@
 package org.dynjs.runtime.builtins.types;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -61,11 +63,19 @@ public class BuiltinFunction extends AbstractBuiltinType {
         StringBuffer formalParams = new StringBuffer();
         boolean first = true;
 
+        Set<String> seenParams = new HashSet<>();
+        boolean duplicateFormalParams = false;
+
         for (int i = 0; i < numArgs - 1; ++i) {
             if (!first) {
                 formalParams.append(",");
             }
-            formalParams.append(Types.toString(context, args[i]));
+            String param = Types.toString(context, args[i]);
+            if (seenParams.contains(param)) {
+                duplicateFormalParams = true;
+            }
+            seenParams.add(param);
+            formalParams.append(param);
             first = false;
         }
 
@@ -77,7 +87,10 @@ public class BuiltinFunction extends AbstractBuiltinType {
         try {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
-            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameters(), descriptor.getBlock());
+            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameters(), descriptor.getBlock(), false );
+            if (function.isStrict() && duplicateFormalParams) {
+                throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
+            }
             function.setPrototype(getPrototype());
             return function;
         } catch (RecognitionException e) {
