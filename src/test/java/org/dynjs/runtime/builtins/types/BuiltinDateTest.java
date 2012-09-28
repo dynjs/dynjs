@@ -122,6 +122,11 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testDateGetUTCFullYear() {
+        assertThat(eval("new Date().getUTCFullYear()")).isEqualTo(2012);
+    }
+
+    @Test
     public void testDateGetUTCMonth() {
         assertThat(eval("new Date().getUTCMonth()")).isEqualTo(9);
     }
