@@ -14,7 +14,7 @@ import org.dynjs.runtime.Types;
 public class Concat extends AbstractNativeFunction {
 
     public Concat(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "item1");
     }
 
     @Override

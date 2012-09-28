@@ -179,6 +179,12 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "4")).isEqualTo("e");
 
         assertThat(eval("a.length")).isEqualTo(5L);
+        
+    }
+    
+    @Test
+    public void testPushReturnsCorrectLengthEvenWhenNothingIsPushed() {
+        assertThat(eval("var x = new Array(); x.push()")).isEqualTo(0L);
     }
 
     @Test

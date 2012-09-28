@@ -19,8 +19,10 @@ public class Push extends AbstractNativeFunction {
         long n = Types.toUint32(context, array.get(context, "length"));
 
         for (Object each : args) {
-            array.put(context, "" + n, each, true);
-            ++n;
+            if (each != Types.UNDEFINED) {
+                array.put(context, "" + n, each, true);
+                ++n;
+            }
         }
 
         return n;
