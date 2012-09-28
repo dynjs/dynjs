@@ -117,6 +117,12 @@ public class BuiltinDate extends AbstractBuiltinType {
                 return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).secondOfMinute().get();
             }
         });
+        defineNonEnumerableProperty(proto, "getTimezoneOffset", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return getDateTime((DynDate) self).toDateTime().getZone().toTimeZone().getRawOffset();
+            }
+        });
     }
 
     private DateTime getDateTime(Object self) {
@@ -140,4 +146,5 @@ public class BuiltinDate extends AbstractBuiltinType {
     private long UTCnow() {
         return DateTime.now(DateTimeZone.UTC).getMillis();
     }
+
 }

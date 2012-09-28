@@ -150,4 +150,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateGetUTCSeconds() {
         assertThat(eval("new Date().getUTCSeconds()")).isEqualTo(29);
     }
+
+    @Test
+    public void testDateGetTimezoneOffset() {
+        assertThat(eval("new Date().getTimezoneOffset()")).isEqualTo(-10800000);
+    }
 }
