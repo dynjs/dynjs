@@ -34,7 +34,7 @@ public class ParseInt extends AbstractPrototypeFunction {
         long radix = 10;
         if (radixArg != Types.UNDEFINED) {
             radix = Types.toInt32(context, radixArg);
-            if (radix == 0) { radix = 10; }
+            if (radix == 0) { radix = extractRadix(text); }
         } else {
             radix = extractRadix(text);
         }

@@ -25,7 +25,13 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     @Test
     @Ignore
     public void parsesFloatWithUnicodeLineBreak() {
-        check("var result = parseFloat('\u20281.1')", 1.1);        
+        // This seems to break the parser
+        check("var result = parseFloat(\"\u20281.1\")", 1.1);        
+    }
+    
+    @Test
+    public void parseIntForcesHex() {
+        check("var result = parseInt('0x1', 0)", 1);
     }
     
     @Test
