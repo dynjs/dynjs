@@ -126,7 +126,7 @@ public class BuiltinDate extends AbstractBuiltinType {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         DynDate date = null;
-        if (self == Types.UNDEFINED || self == Types.NULL ) {
+        if (self == Types.UNDEFINED || self == Types.NULL) {
             date = new DynDate(context.getGlobalObject());
         } else {
             date = (DynDate) self;
