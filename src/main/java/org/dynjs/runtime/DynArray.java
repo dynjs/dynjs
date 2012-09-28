@@ -41,7 +41,7 @@ public class DynArray extends DynObject {
         long oldLen = (long) oldLenDesc.getValue();
 
         if (name.equals("length")) {
-            if (desc.getValue() == Types.UNDEFINED) {
+            if (desc.getValue() == null ) {
                 return super.defineOwnProperty(context, "length", desc, shouldThrow);
             }
 

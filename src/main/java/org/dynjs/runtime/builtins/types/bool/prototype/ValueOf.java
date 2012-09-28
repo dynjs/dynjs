@@ -18,8 +18,8 @@ public class ValueOf extends AbstractNativeFunction {
         if (self instanceof DynBoolean) {
             return ((DynBoolean) self).getPrimitiveValue();
         }
-        if (self instanceof PrimitiveDynObject) {
-            return ((PrimitiveDynObject) self).getPrimitiveValue();
+        if (self instanceof Boolean) {
+            return self;
         }
         throw new ThrowException(context, context.createTypeError("not a boolean"));
     }
