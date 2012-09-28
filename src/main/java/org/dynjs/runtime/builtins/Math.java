@@ -39,6 +39,8 @@ public class Math extends DynObject {
         defineReadOnlyProperty(globalObject, "PI", java.lang.Math.PI); // 15.8.1.6
         defineReadOnlyProperty(globalObject, "SQRT1_2", java.lang.Math.sqrt(0.5f)); // 15.8.1.7
         defineReadOnlyProperty(globalObject, "SQRT2", java.lang.Math.sqrt(2.0f)); // 15.8.1.8
+        
+        defineReadOnlyProperty(globalObject, "NaN", Double.NaN );
 
         // Math functions 15.8.2
         put(null, "abs",    new Abs(globalObject), false);    // 15.8.2.1

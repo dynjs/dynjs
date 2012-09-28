@@ -27,7 +27,7 @@ public class Exec extends AbstractPrototypeFunction {
 
         DynRegExp regexp = (DynRegExp) self;
 
-        long lastIndex = (long) regexp.get(context, "lastIndex");
+        long lastIndex = (long) Types.toInteger(context, regexp.get(context, "lastIndex") );
         long i = lastIndex;
 
         if (regexp.get(context, "global") == Boolean.FALSE) {
