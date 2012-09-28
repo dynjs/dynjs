@@ -122,6 +122,11 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testDateGetUTCDay() {
+        assertThat(eval("new Date().getUTCDay()")).isEqualTo(5);
+    }
+
+    @Test
     public void testDateGetUTCHours() {
         assertThat(eval("new Date().getUTCHours()")).isEqualTo(20);
     }
