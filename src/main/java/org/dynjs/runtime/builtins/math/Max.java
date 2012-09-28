@@ -33,7 +33,7 @@ public class Max extends AbstractNativeFunction {
         for (int i = 1; i < args.length; i++) {
             if (DynNumber.isNaN(args[i]))
                 return Double.NaN;
-            max = java.lang.Math.max(Math.functionArgToDouble(context, args[i]), max);
+            max = java.lang.Math.max(Types.toNumber(context, args[i]).doubleValue(), max);
         }
         return Math.coerceLongIfPossible(max);
     }

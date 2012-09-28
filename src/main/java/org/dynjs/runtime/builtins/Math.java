@@ -85,8 +85,4 @@ public class Math extends DynObject {
             return (long) d;
     }
 
-    public static Double functionArgToDouble(ExecutionContext context, Object arg) {
-        return new Double(Types.toNumber(context, arg).toString());
-    }
-
 }

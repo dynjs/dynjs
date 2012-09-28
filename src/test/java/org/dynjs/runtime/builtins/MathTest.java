@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.junit.Test;
 
 public class MathTest extends AbstractDynJSTestSupport {
@@ -530,14 +529,24 @@ public class MathTest extends AbstractDynJSTestSupport {
             // expected
         }
     }
+    
+    @Test
+    public void testMathTanInfinityIsNaN() {
+        assertEval("isNaN(Math.tan(+Infinity))", true);
+    }
+
+    @Test
+    public void testMathTanNegativeInfinityIsNaN() {
+        assertEval("isNaN(Math.tan(-Infinity))", true);
+    }
+
+    @Test
+    public void testMathTanNaNIsNaN() {
+        assertEval("isNaN(Math.tan(NaN))", true);
+    }
 
     private void assertEval(String javascript, Object expected) {
         assertThat(eval(javascript)).isEqualTo(expected);
     }
 
-    private void assertPrimitive(String javascript, Number value) {
-        final Object result = eval(javascript);
-        assertThat(result).isInstanceOf(DynNumber.class);
-        assertThat(((DynNumber) result).getPrimitiveValue()).isEqualTo(value);
-    }
 }

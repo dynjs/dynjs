@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.math;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
@@ -18,8 +19,8 @@ public class Atan2 extends AbstractNativeFunction {
         if (DynNumber.isNaN(args[0]) || DynNumber.isNaN(args[1])) {
             return Double.NaN;
         }
-        Double y = Math.functionArgToDouble(context, args[0]);
-        Double x = Math.functionArgToDouble(context, args[1]);
+        Double y = Types.toNumber(context, args[0]).doubleValue();
+        Double x = Types.toNumber(context, args[1]).doubleValue();
         if (x.equals(-0.0) && y.equals(-0.0)) { return -java.lang.Math.PI; }
         return java.lang.Math.atan2(y, x);
     }

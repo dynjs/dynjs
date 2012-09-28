@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.math;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.Math;
 
 public class Tan extends AbstractNativeFunction {
@@ -13,7 +14,11 @@ public class Tan extends AbstractNativeFunction {
     
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        return Math.coerceLongIfPossible(java.lang.Math.sqrt(Math.functionArgToDouble(context, args[0])));
+        final Double arg = Types.toNumber(context, args[0]).doubleValue();
+        if (arg.isInfinite() || arg.isNaN()) {
+            return Double.NaN;
+        }
+        return Math.coerceLongIfPossible(java.lang.Math.tan(arg));
     }
 
 }

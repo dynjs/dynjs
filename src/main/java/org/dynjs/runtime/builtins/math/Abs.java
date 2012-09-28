@@ -3,6 +3,7 @@ package org.dynjs.runtime.builtins.math;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.Math;
 
 public class Abs extends AbstractNativeFunction {
@@ -13,7 +14,7 @@ public class Abs extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        return Math.coerceLongIfPossible(java.lang.Math.abs(Math.functionArgToDouble(context, args[0])));
+        return Math.coerceLongIfPossible(java.lang.Math.abs(Types.toNumber(context, args[0]).doubleValue()));
     }
 
 }

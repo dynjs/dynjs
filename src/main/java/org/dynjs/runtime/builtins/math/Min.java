@@ -32,7 +32,7 @@ public class Min extends AbstractNativeFunction {
         for (int i = 1; i < args.length; i++) {
             if (DynNumber.isNaN(args[i]))
                 return Double.NaN;
-            min = java.lang.Math.min(Math.functionArgToDouble(context, args[i]), min);
+            min = java.lang.Math.min(Types.toNumber(context, args[i]).doubleValue(), min);
         }
         return Math.coerceLongIfPossible(min);
     }
