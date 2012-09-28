@@ -1,5 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -53,7 +54,7 @@ public class BuiltinRegExp extends AbstractBuiltinType {
             return self;
         }
     }
-
+    
     @Override
     public JSObject createNewObject(ExecutionContext context) {
         return new DynRegExp(context.getGlobalObject());

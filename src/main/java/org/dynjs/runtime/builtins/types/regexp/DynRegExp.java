@@ -27,6 +27,8 @@ public class DynRegExp extends DynObject {
     }
 
     public void setPatternAndFlags(ExecutionContext context, final String pattern, final String flags) {
+        checkSyntaxOfFlags(context, flags);
+
         defineOwnProperty(null, "source", new PropertyDescriptor() {
             {
                 set("Value", pattern);
@@ -64,7 +66,7 @@ public class DynRegExp extends DynObject {
         } else {
             defineOwnProperty(null, "multiline", new PropertyDescriptor() {
                 {
-                    set("Value", false );
+                    set("Value", false);
                     set("Writable", false);
                     set("Configurable", false);
                     set("Enumerable", false);
@@ -72,7 +74,7 @@ public class DynRegExp extends DynObject {
             }, false);
             defineOwnProperty(null, "global", new PropertyDescriptor() {
                 {
-                    set("Value", false );
+                    set("Value", false);
                     set("Writable", false);
                     set("Configurable", false);
                     set("Enumerable", false);
@@ -80,7 +82,7 @@ public class DynRegExp extends DynObject {
             }, false);
             defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
                 {
-                    set("Value", false );
+                    set("Value", false);
                     set("Writable", false);
                     set("Configurable", false);
                     set("Enumerable", false);
@@ -95,7 +97,7 @@ public class DynRegExp extends DynObject {
                 set("Enumerable", false);
             }
         }, false);
-        
+
         int flagsInt = 0;
 
         if (get(context, "multiline") == Boolean.TRUE) {
@@ -106,9 +108,49 @@ public class DynRegExp extends DynObject {
             flagsInt = flagsInt | Pattern.CASE_INSENSITIVE;
         }
         try {
-            this.pattern = Pattern.compile(pattern, flagsInt );
+            this.pattern = Pattern.compile(pattern, flagsInt);
         } catch (PatternSyntaxException e) {
-            throw new ThrowException( context, context.createSyntaxError( e.getMessage() ) );
+            throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
+        }
+    }
+
+    private void checkSyntaxOfFlags(ExecutionContext context, String flags) {
+        if (flags == null || flags.equals("")) {
+            return;
+        }
+
+        for (int i = 0; i < flags.length(); ++i) {
+            switch (flags.charAt(i)) {
+            case 'm':
+            case 'i':
+            case 'g':
+                break;
+            default:
+                throw new ThrowException(context, context.createSyntaxError("invalid flag '" + flags.charAt(i) + "'" ) );
+            }
+        }
+
+        int index = -1;
+
+        index = flags.indexOf('m');
+        if (index >= 0) {
+            if (flags.indexOf('m', index + 1) >= 0) {
+                throw new ThrowException(context, context.createSyntaxError("'m' flag specified more than once"));
+            }
+        }
+
+        index = flags.indexOf('i');
+        if (index >= 0) {
+            if (flags.indexOf('i', index + 1) >= 0) {
+                throw new ThrowException(context, context.createSyntaxError("'i' flag specified more than once"));
+            }
+        }
+
+        index = flags.indexOf('g');
+        if (index >= 0) {
+            if (flags.indexOf('g', index + 1) >= 0) {
+                throw new ThrowException(context, context.createSyntaxError("'g' flag specified more than once"));
+            }
         }
     }
 
