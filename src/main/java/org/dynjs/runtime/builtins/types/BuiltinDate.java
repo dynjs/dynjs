@@ -150,13 +150,13 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "setTime", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillis();
+                return getDateTime((DynDate) self).getMillis();
             }
         });
         defineNonEnumerableProperty(proto, "setSeconds", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillis();
+                return getDateTime((DynDate) self).getMillis();
             }
         });
         defineNonEnumerableProperty(proto, "setUTCSeconds", new AbstractNativeFunction(globalObject) {
@@ -168,7 +168,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "setMinutes", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillis();
+                return getDateTime((DynDate) self).getMillis();
             }
         });
         defineNonEnumerableProperty(proto, "setUTCMinutes", new AbstractNativeFunction(globalObject) {
@@ -180,13 +180,19 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "setHours", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillis();
+                return getDateTime((DynDate) self).getMillis();
             }
         });
         defineNonEnumerableProperty(proto, "setUTCHours", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
                 return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
+            }
+        });
+        defineNonEnumerableProperty(proto, "setDate", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return getDateTime((DynDate) self).getMillis();
             }
         });
     }
