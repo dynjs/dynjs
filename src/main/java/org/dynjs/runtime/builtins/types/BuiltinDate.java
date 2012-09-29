@@ -195,6 +195,12 @@ public class BuiltinDate extends AbstractBuiltinType {
                 return getDateTime((DynDate) self).getMillis();
             }
         });
+        defineNonEnumerableProperty(proto, "getDate", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return getDateTime((DynDate) self).dayOfMonth().get();
+            }
+        });
     }
 
     private DateTime getDateTime(Object self) {
