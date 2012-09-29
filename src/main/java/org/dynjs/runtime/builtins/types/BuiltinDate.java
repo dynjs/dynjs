@@ -14,6 +14,7 @@ import org.dynjs.runtime.builtins.types.date.prototype.ToISOString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToTimeString;
+import org.dynjs.runtime.builtins.types.date.prototype.ToUTCString;
 import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -43,6 +44,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toLocaleDateString", new DateTimeFormatter(globalObject, "MM/dd/YYYY"));
         defineNonEnumerableProperty(proto, "toLocaleTimeString", new DateTimeFormatter(globalObject, "HH:mm:ss"));
         defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
+        defineNonEnumerableProperty(proto, "toUTCString", new ToUTCString(globalObject));
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getFullYear", new AbstractNativeFunction(globalObject) {

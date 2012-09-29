@@ -230,4 +230,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateGetUTCDate() {
         assertThat(eval("new Date().getUTCDate()")).isEqualTo(7);
     }
+
+    @Test
+    public void testDateToUTCString() {
+        assertThat(eval("new Date().toUTCString()")).isEqualTo("Fri, 07 Sep 2012 20:55:29 GMT");
+    }
 }
