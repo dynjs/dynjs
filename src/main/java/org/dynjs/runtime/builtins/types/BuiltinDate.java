@@ -120,19 +120,19 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "getTimezoneOffset", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getZone().toTimeZone().getRawOffset();
+                return getDateTime((DynDate) self).getZone().toTimeZone().getRawOffset();
             }
         });
         defineNonEnumerableProperty(proto, "getMilliseconds", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillisOfSecond();
+                return getDateTime((DynDate) self).millisOfSecond().get();
             }
         });
         defineNonEnumerableProperty(proto, "setMilliseconds", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillis();
+                return getDateTime((DynDate) self).getMillis();
             }
         });
         defineNonEnumerableProperty(proto, "getUTCMilliseconds", new AbstractNativeFunction(globalObject) {
