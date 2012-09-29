@@ -183,5 +183,8 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateSetSeconds() {
         assertThat(eval("new Date().setSeconds(29)")).isEqualTo(fixedInstant);
     }
-
+    @Test
+    public void testDateSetUTCSeconds() {
+        assertThat(eval("new Date().setUTCSeconds(29)")).isEqualTo(fixedInstant);
+    }
 }
