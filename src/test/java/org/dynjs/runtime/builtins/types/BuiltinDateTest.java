@@ -158,6 +158,6 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateGetMilliseconds() {
-        assertThat(eval("new Date().getMilliseconds()")).isEqualTo(fixedInstant);
+        assertThat(eval("new Date().getMilliseconds()")).isEqualTo(670);
     }
 }

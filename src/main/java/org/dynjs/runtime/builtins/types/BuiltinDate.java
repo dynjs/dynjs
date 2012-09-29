@@ -126,7 +126,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "getMilliseconds", new AbstractNativeFunction(globalObject) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime().getMillis();
+                return getDateTime((DynDate) self).toDateTime().getMillisOfSecond();
             }
         });
     }
