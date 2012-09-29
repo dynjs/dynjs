@@ -155,4 +155,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateGetTimezoneOffset() {
         assertThat(eval("new Date().getTimezoneOffset()")).isEqualTo(-10800000);
     }
+
+    @Test
+    public void testDateGetMilliseconds() {
+        assertThat(eval("new Date().getMilliseconds()")).isEqualTo(fixedInstant);
+    }
 }
