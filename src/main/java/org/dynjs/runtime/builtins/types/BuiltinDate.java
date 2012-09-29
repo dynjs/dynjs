@@ -153,6 +153,12 @@ public class BuiltinDate extends AbstractBuiltinType {
                 return getDateTime((DynDate) self).toDateTime().getMillis();
             }
         });
+        defineNonEnumerableProperty(proto, "setSeconds", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return getDateTime((DynDate) self).toDateTime().getMillis();
+            }
+        });
     }
 
     private DateTime getDateTime(Object self) {
