@@ -235,4 +235,9 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
     public void testDateToUTCString() {
         assertThat(eval("new Date().toUTCString()")).isEqualTo("Fri, 07 Sep 2012 20:55:29 GMT");
     }
+
+    @Test
+    public void testDateSetMonth() {
+        assertThat(eval("new Date().setMonth(9)")).isEqualTo(fixedInstant);
+    }
 }
