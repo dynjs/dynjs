@@ -227,6 +227,12 @@ public class BuiltinDate extends AbstractBuiltinType {
                 return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
             }
         });
+        defineNonEnumerableProperty(proto, "setFullYear", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                return getDateTime((DynDate) self).getMillis();
+            }
+        });
     }
 
     private DateTime getDateTime(Object self) {
