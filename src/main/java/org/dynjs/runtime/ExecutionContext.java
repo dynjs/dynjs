@@ -205,6 +205,7 @@ public class ExecutionContext {
 
     public Completion executeCatch(BasicBlock block, String identifier, Object thrown) {
         // 12.14
+        System.err.println( "catch " + thrown + " as " + identifier );
         LexicalEnvironment oldEnv = this.lexicalEnvironment;
         LexicalEnvironment catchEnv = LexicalEnvironment.newDeclarativeEnvironment(oldEnv);
         catchEnv.getRecord().createMutableBinding(this, identifier, false);

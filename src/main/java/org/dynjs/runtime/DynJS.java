@@ -101,6 +101,9 @@ public class DynJS {
     public Object execute(String program, String filename, int lineNumber, boolean forceStrict) {
         JSProgram programObj = compile(this.context, program, filename, forceStrict);
         Completion completion = this.context.execute(programObj);
+        if ( completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE ) {
+            throw new ThrowException( this.context, this.context.createSyntaxError( "illegal break or continue" ));
+        }
         Object v = completion.value;
         if (v instanceof Reference) {
             return ((Reference) v).getValue(context);
