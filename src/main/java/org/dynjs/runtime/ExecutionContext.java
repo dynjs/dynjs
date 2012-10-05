@@ -97,7 +97,13 @@ public class ExecutionContext {
         setStrict(program.isStrict());
         this.fileName = program.getFileName();
         performDeclarationBindingInstantiation(program);
-        return program.execute(this);
+        try {
+            return program.execute(this);
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new ThrowException(this, t);
+        }
     }
 
     public Object eval(JSEval eval) {
@@ -206,6 +212,10 @@ public class ExecutionContext {
         try {
             this.lexicalEnvironment = catchEnv;
             return block.call(this);
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new ThrowException(this, t);
         } finally {
             this.lexicalEnvironment = oldEnv;
         }

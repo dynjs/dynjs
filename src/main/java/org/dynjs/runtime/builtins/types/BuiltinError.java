@@ -1,5 +1,7 @@
 package org.dynjs.runtime.builtins.types;
 
+import java.util.Arrays;
+
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
@@ -16,24 +18,24 @@ public class BuiltinError extends AbstractBuiltinType {
 
         final DynObject proto = new DynObject(globalObject);
         proto.setClassName("Error");
-        setPrototypeProperty( proto );
+        setPrototypeProperty(proto);
 
     }
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        defineNonEnumerableProperty(proto, "constructor", this );
-        defineNonEnumerableProperty(proto, "name", "Error" );
-        defineNonEnumerableProperty(proto, "message", "" );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
+        defineNonEnumerableProperty(proto, "constructor", this);
+        defineNonEnumerableProperty(proto, "name", "Error");
+        defineNonEnumerableProperty(proto, "message", "");
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
     }
 
     @Override
-    public Object call(ExecutionContext context, Object self, final Object... args) {
+    public Object call(final ExecutionContext context, Object self, final Object... args) {
         JSObject o = null;
-
         if (self == Types.UNDEFINED) {
-            o = context.createError((String) ((JSObject) get(context, "prototype")).get(null, "name"), null);
+            String errorType = (String) ((JSObject) get(context, "prototype")).get(context, "name");
+            o = context.createError(errorType, args[0] == Types.UNDEFINED ? null : Types.toString( context, args[0]) );
         } else {
             o = (JSObject) self;
         }
@@ -41,10 +43,11 @@ public class BuiltinError extends AbstractBuiltinType {
         if (args[0] != Types.UNDEFINED) {
             o.defineOwnProperty(context, "message", new PropertyDescriptor() {
                 {
-                    set("Value", args[0]);
+                    set("Value", Types.toString( context, args[0]) );
                 }
             }, false);
         }
+
         return o;
     }
 

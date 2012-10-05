@@ -29,11 +29,12 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
     }
 
     @Override
-    public Object call(ExecutionContext context, Object self, final Object... args) {
+    public Object call(final ExecutionContext context, Object self, final Object... args) {
         JSObject o = null;
 
         if (self == Types.UNDEFINED) {
-            o = context.createError((String) ((JSObject) get(context, "prototype")).get(null, "name"), null);
+            String errorType = (String) ((JSObject) get(context, "prototype")).get(context, "name");
+            o = context.createError(errorType, args[0] == Types.UNDEFINED ? null : Types.toString( context, args[0]) );
         } else {
             o = (JSObject) self;
         }
@@ -41,7 +42,7 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
         if (args[0] != Types.UNDEFINED) {
             o.defineOwnProperty(context, "message", new PropertyDescriptor() {
                 {
-                    set("Value", args[0]);
+                    set("Value", Types.toString( context, args[0]) );
                 }
             }, false);
         }
