@@ -43,6 +43,8 @@ public class TernaryExpression extends AbstractExpression {
 
                 append(vbool.getCodeBlock());
                 // val
+                append(jsGetValue());
+                // val
                 append(jsToBoolean());
                 // Boolean
                 invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
