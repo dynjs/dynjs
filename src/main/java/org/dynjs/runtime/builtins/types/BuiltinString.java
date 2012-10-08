@@ -19,6 +19,8 @@ import org.dynjs.runtime.builtins.types.string.prototype.Search;
 import org.dynjs.runtime.builtins.types.string.prototype.Slice;
 import org.dynjs.runtime.builtins.types.string.prototype.Split;
 import org.dynjs.runtime.builtins.types.string.prototype.Substring;
+import org.dynjs.runtime.builtins.types.string.prototype.ToLocaleLowerCase;
+import org.dynjs.runtime.builtins.types.string.prototype.ToLocaleUpperCase;
 import org.dynjs.runtime.builtins.types.string.prototype.ToLowerCase;
 import org.dynjs.runtime.builtins.types.string.prototype.ToString;
 import org.dynjs.runtime.builtins.types.string.prototype.ToUpperCase;
@@ -56,6 +58,8 @@ public class BuiltinString extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "substring", new Substring(globalObject) );
         defineNonEnumerableProperty(proto, "toLowerCase", new ToLowerCase(globalObject) );
         defineNonEnumerableProperty(proto, "toUpperCase", new ToUpperCase(globalObject) );
+        defineNonEnumerableProperty(proto, "toLocaleLowerCase", new ToLocaleLowerCase(globalObject) );
+        defineNonEnumerableProperty(proto, "toLocaleUpperCase", new ToLocaleUpperCase(globalObject) );
         defineNonEnumerableProperty(proto, "trim", new Trim(globalObject) );
     }
 

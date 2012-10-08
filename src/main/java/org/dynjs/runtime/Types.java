@@ -358,6 +358,9 @@ public class Types {
             return (String) toString(context, toPrimitive(context, o, "String"));
         }
         if (o instanceof Number) {
+            if ( ((Number) o).doubleValue() == -0 ) {
+                return "0";
+            }
             return Types.rewritePossiblyExponentialValue(o.toString());
         }
 
