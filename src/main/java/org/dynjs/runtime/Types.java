@@ -365,16 +365,27 @@ public class Types {
                 return "0";
             }
             String result = Types.rewritePossiblyExponentialValue(o.toString());
-            Pattern expPattern = Pattern.compile("^(.*)e\\+([0-9]+)$");
+            Pattern expPattern = Pattern.compile("^(.*)e([+-])([0-9]+)$");
             Matcher matcher = expPattern.matcher(result);
             if (matcher.matches()) {
-                int expValue = Integer.parseInt( matcher.group(2));
-                if ( expValue <= 20 ) {
-                    StringBuffer newResult = new StringBuffer().append( matcher.group(1) );
-                    for ( int i = 0 ; i < expValue ; ++i ) {
-                        newResult.append( "0" );
+                int expValue = Integer.parseInt(matcher.group(3));
+                if (matcher.group(2).equals("+")) {
+                    if (expValue <= 20) {
+                        StringBuffer newResult = new StringBuffer().append(matcher.group(1));
+                        for (int i = 0; i < expValue; ++i) {
+                            newResult.append("0");
+                        }
+                        result = newResult.toString();
                     }
-                    result = newResult.toString();
+                } else {
+                    if (expValue <= 6) {
+                        StringBuffer newResult = new StringBuffer().append("0.");
+                        for (int i = 0; i < (expValue - 1); ++i) {
+                            newResult.append(0);
+                        }
+                        newResult.append(matcher.group(1));
+                        result = newResult.toString();
+                    }
                 }
             }
             return result;
@@ -633,14 +644,20 @@ public class Types {
     public static String rewritePossiblyExponentialValue(String value) {
         // Java writes exponential values as 1.0E14 while JS likes
         // them as 1e+14
-        int plus = 3;
-        int index = value.indexOf(".0E");
-        if (index < 0) {
-            index = value.indexOf("E+");
-            plus = 2;
+
+        Pattern regexp = Pattern.compile("^(.*)(\\.0)E([+-])?([0-9]+)");
+        Matcher matcher = regexp.matcher(value);
+
+        if (matcher.matches()) {
+            String num = matcher.group(1);
+            String sign = matcher.group(3);
+            String exp = matcher.group(4);
+            if (sign == null ) {
+                sign = "+";
+            }
+            return num + "e" + sign + exp;
         }
-        if (index != -1)
-            value = value.substring(0, index) + "e+" + value.substring(index + plus);
+
         return value;
     }
 }
