@@ -14,7 +14,7 @@ import org.dynjs.runtime.builtins.types.error.ToString;
 public class BuiltinError extends AbstractBuiltinType {
 
     public BuiltinError(final GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "message" );
 
         final DynObject proto = new DynObject(globalObject);
         proto.setClassName("Error");
