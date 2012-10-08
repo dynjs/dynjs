@@ -1,5 +1,8 @@
 package org.dynjs.runtime;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
@@ -358,10 +361,23 @@ public class Types {
             return (String) toString(context, toPrimitive(context, o, "String"));
         }
         if (o instanceof Number) {
-            if ( ((Number) o).doubleValue() == -0 ) {
+            if (((Number) o).doubleValue() == -0) {
                 return "0";
             }
-            return Types.rewritePossiblyExponentialValue(o.toString());
+            String result = Types.rewritePossiblyExponentialValue(o.toString());
+            Pattern expPattern = Pattern.compile("^(.*)e\\+([0-9]+)$");
+            Matcher matcher = expPattern.matcher(result);
+            if (matcher.matches()) {
+                int expValue = Integer.parseInt( matcher.group(2));
+                if ( expValue <= 20 ) {
+                    StringBuffer newResult = new StringBuffer().append( matcher.group(1) );
+                    for ( int i = 0 ; i < expValue ; ++i ) {
+                        newResult.append( "0" );
+                    }
+                    result = newResult.toString();
+                }
+            }
+            return result;
         }
 
         return o.toString();
