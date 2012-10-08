@@ -79,14 +79,14 @@ public class DynObject implements JSObject {
         PropertyDescriptor desc = (PropertyDescriptor) d;
         if (desc.isDataDescriptor()) {
             Object value = desc.getValue();
-            if ( value == null ) {
+            if (value == null) {
                 value = Types.UNDEFINED;
             }
             return value;
         }
 
         Object g = desc.getGetter();
-        if (g == Types.UNDEFINED) {
+        if (g == null || g == Types.UNDEFINED) {
             return Types.UNDEFINED;
         }
 
@@ -237,16 +237,16 @@ public class DynObject implements JSObject {
     @Override
     public Object defaultValue(ExecutionContext context, String hint) {
         // 8.12.8
-        
+
         if (hint == null) {
             hint = "Number";
         }
-        
+
         if (hint.equals("String")) {
             Object toString = get(context, "toString");
             if (toString instanceof JSFunction) {
                 Object result = context.call((JSFunction) toString, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL) {
                     return result;
                 }
             }
@@ -254,8 +254,7 @@ public class DynObject implements JSObject {
             Object valueOf = get(context, "valueOf");
             if (valueOf instanceof JSFunction) {
                 Object result = context.call((JSFunction) valueOf, this);
-                System.err.println( "result: " + result );
-                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL) {
                     return result;
                 }
             }
@@ -264,7 +263,7 @@ public class DynObject implements JSObject {
             Object valueOf = get(context, "valueOf");
             if (valueOf instanceof JSFunction) {
                 Object result = context.call((JSFunction) valueOf, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL) {
                     return result;
                 }
             }
@@ -272,7 +271,7 @@ public class DynObject implements JSObject {
             Object toString = get(context, "toString");
             if (toString instanceof JSFunction) {
                 Object result = context.call((JSFunction) toString, this);
-                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL ) {
+                if (result instanceof String || result instanceof Number || result instanceof Boolean || result == Types.UNDEFINED || result == Types.NULL) {
                     return result;
                 }
             }
@@ -373,6 +372,7 @@ public class DynObject implements JSObject {
                 newDesc.set("Writable", current.get("Writable"));
             }
 
+            newDesc.copyAll(current);
             newDesc.copyAll(desc);
             this.properties.put(name, newDesc);
             return true;
