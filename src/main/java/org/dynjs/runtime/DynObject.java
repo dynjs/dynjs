@@ -78,7 +78,11 @@ public class DynObject implements JSObject {
 
         PropertyDescriptor desc = (PropertyDescriptor) d;
         if (desc.isDataDescriptor()) {
-            return desc.getValue();
+            Object value = desc.getValue();
+            if ( value == null ) {
+                value = Types.UNDEFINED;
+            }
+            return value;
         }
 
         Object g = desc.getGetter();

@@ -124,7 +124,7 @@ public class ExecutionContext {
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ThrowException(this, e);
+            throw new ThrowException(fnContext, e);
         }
     }
 

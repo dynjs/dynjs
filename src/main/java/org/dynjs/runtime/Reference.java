@@ -69,7 +69,11 @@ public class Reference {
 
         PropertyDescriptor desc = (PropertyDescriptor) d;
         if (desc.isDataDescriptor()) {
-            return desc.getValue();
+            Object value = desc.getValue();
+            if ( value == null ) {
+                value = Types.UNDEFINED;
+            }
+            return value;
         }
 
         Object getter = desc.get("Get");
