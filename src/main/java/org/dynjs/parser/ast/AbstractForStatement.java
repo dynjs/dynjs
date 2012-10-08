@@ -181,6 +181,8 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
                 // completion bool
                 iffalse(end);
                 // completion
+                append(convertToNormal());
+                // completion(block,NORMAL)
                 go_to( doIncrement );
 
                 label(end);
