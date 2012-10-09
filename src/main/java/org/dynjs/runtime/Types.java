@@ -470,14 +470,11 @@ public class Types {
 
     }
 
-    public static boolean compareEquality(ExecutionContext context, Object lhs,
-            Object rhs) {
+    public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.3
-
-        if (lhs.getClass().equals(rhs.getClass())
-                || (lhs instanceof Number && rhs instanceof Number)) {
+        
+        if (lhs.getClass().equals(rhs.getClass()) || (lhs instanceof Number && rhs instanceof Number)) {
             if (lhs == Types.UNDEFINED) {
-
                 return true;
             }
             if (lhs == Types.NULL) {
@@ -502,6 +499,9 @@ public class Types {
             }
             if (lhs instanceof String || lhs instanceof Boolean) {
                 return lhs.equals(rhs);
+            }
+            if ( lhs == rhs ) {
+                return true;
             }
         }
 
@@ -533,8 +533,7 @@ public class Types {
             return compareEquality(context, lhs, toPrimitive(context, rhs));
         }
 
-        if (lhs instanceof JSObject
-                && (rhs instanceof String || rhs instanceof Number)) {
+        if (lhs instanceof JSObject && (rhs instanceof String || rhs instanceof Number)) {
             return compareEquality(context, toPrimitive(context, lhs), rhs);
         }
 
