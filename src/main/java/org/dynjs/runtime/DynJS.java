@@ -140,6 +140,7 @@ public class DynJS {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
+        programObj.checkStrictCompliance(execContext);
         return programObj;
     }
 
@@ -154,6 +155,7 @@ public class DynJS {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
+        programObj.checkStrictCompliance(execContext);
         return programObj;
     }
 

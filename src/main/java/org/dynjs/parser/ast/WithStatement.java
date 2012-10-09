@@ -15,14 +15,17 @@
  */
 package org.dynjs.parser.ast;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
+
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
@@ -43,6 +46,14 @@ public class WithStatement extends AbstractCompilingStatement implements Stateme
     
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
+    }
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        if ( strict ) {
+            throw new ThrowException( context, context.createSyntaxError( "with() statements not allowed in strict mode" ) );
+        } else {
+            this.block.checkStrictCompliance(context, strict);
+        }
     }
 
     @Override

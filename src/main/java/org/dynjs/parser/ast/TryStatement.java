@@ -44,6 +44,17 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
         return decls;
     }
     
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        this.tryBlock.checkStrictCompliance(context, strict);
+        if ( this.catchClause != null ) {
+            this.catchClause.checkStrictCompliance(context, strict);
+        }
+        
+        if ( this.finallyBlock != null ) {
+            this.finallyBlock.checkStrictCompliance(context, strict);
+        }
+    }
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {

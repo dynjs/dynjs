@@ -16,7 +16,9 @@
 
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractStatement extends AbstractByteCodeEmitter implements Statement {
@@ -67,6 +70,10 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
     
     public List<VariableDeclaration> getVariableDeclarations() {
         return Collections.emptyList();
+    }
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        // nothing!
     }
 
     public CodeBlock normalCompletion() {

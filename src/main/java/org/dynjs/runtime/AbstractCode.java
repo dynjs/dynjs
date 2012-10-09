@@ -31,6 +31,10 @@ public abstract class AbstractCode implements JSCode {
     public void setStrict(boolean strict) {
         this.strict = strict;
     }
+    
+    public void checkStrictCompliance(ExecutionContext context) {
+        block.checkStrictCompliance( context, this.strict );
+    }
 
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {

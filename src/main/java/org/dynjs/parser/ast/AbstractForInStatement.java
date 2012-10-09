@@ -55,7 +55,10 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }
-
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        block.checkStrictCompliance(context, strict);
+    }
 
     public abstract CodeBlock getFirstChunkCodeBlock();
 

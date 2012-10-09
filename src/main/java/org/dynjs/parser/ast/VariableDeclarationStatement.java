@@ -20,6 +20,7 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 
 public class VariableDeclarationStatement extends AbstractStatement {
 
@@ -32,6 +33,12 @@ public class VariableDeclarationStatement extends AbstractStatement {
 
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.declExprs;
+    }
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        for ( VariableDeclaration each : this.declExprs ) {
+            each.checkStrictCompliance( context, strict );
+        }
     }
 
     @Override

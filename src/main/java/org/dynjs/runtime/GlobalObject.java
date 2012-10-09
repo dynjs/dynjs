@@ -77,19 +77,19 @@ public class GlobalObject extends DynObject {
         // Built-in global functions
         // ----------------------------------------
 
-        defineReadOnlyGlobalProperty("undefined", Types.UNDEFINED );
+        defineReadOnlyGlobalProperty("undefined", Types.UNDEFINED);
         defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
-        
-        defineGlobalProperty("parseFloat", new ParseFloat(this) );
-        defineGlobalProperty("parseInt", new ParseInt(this) );
-        defineGlobalProperty("eval", new Eval(this) );
-        defineGlobalProperty("isNaN", new IsNaN(this) );
-        defineGlobalProperty("isFinite", new IsFinite(this) );
 
-        defineGlobalProperty("encodeURI", new EncodeUri(this) );
-        defineGlobalProperty("decodeURI", new DecodeUri(this) );
-        
-        defineGlobalProperty("require", new Require(this) );
+        defineGlobalProperty("parseFloat", new ParseFloat(this));
+        defineGlobalProperty("parseInt", new ParseInt(this));
+        defineGlobalProperty("eval", new Eval(this));
+        defineGlobalProperty("isNaN", new IsNaN(this));
+        defineGlobalProperty("isFinite", new IsFinite(this));
+
+        defineGlobalProperty("encodeURI", new EncodeUri(this));
+        defineGlobalProperty("decodeURI", new DecodeUri(this));
+
+        defineGlobalProperty("require", new Require(this));
 
         // ----------------------------------------
         // Built-in global objects
@@ -113,8 +113,15 @@ public class GlobalObject extends DynObject {
 
     }
 
-    private void registerBuiltinType(String name, AbstractBuiltinType type) {
-        put(null, name, type, false);
+    private void registerBuiltinType(String name, final AbstractBuiltinType type) {
+        defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                set( "Value", type );
+                set( "Enumerable", false );
+                set( "Writable", true );
+                set( "Configurable", true );
+            }
+        }, false);
         put(null, "__Builtin_" + name, type, false);
         this.builtinTypes.add(type);
     }
@@ -173,7 +180,7 @@ public class GlobalObject extends DynObject {
         };
         defineOwnProperty(null, name, desc, false);
     }
-    
+
     public void defineReadOnlyGlobalProperty(final String name, final Object value) {
         PropertyDescriptor desc = new PropertyDescriptor() {
             {

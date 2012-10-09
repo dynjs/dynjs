@@ -76,6 +76,12 @@ public class BlockStatement extends AbstractStatement implements Statement {
         }
         return decls;
     }
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        for ( Statement each : this.blockContent ) {
+            each.checkStrictCompliance(context, strict);
+        }
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

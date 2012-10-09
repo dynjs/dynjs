@@ -27,6 +27,7 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class IfStatement extends AbstractCompilingStatement implements Statement {
@@ -50,6 +51,13 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
             decls.addAll( this.velse.getVariableDeclarations() );
         }
         return decls;
+    }
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        this.vthen.checkStrictCompliance(context, strict);
+        if ( this.velse != null ) {
+            this.velse.checkStrictCompliance(context, strict);
+        }
     }
     
     @Override

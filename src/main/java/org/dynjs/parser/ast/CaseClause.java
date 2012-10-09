@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class CaseClause {
@@ -43,7 +44,10 @@ public class CaseClause {
         
         return this.block.getVariableDeclarations();
     }
-
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        this.block.checkStrictCompliance(context, strict);
+    }
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();

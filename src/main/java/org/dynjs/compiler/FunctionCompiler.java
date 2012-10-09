@@ -84,6 +84,7 @@ public class FunctionCompiler extends AbstractCompiler {
             Constructor<AbstractFunction> ctor = functionClass.getDeclaredConstructor( Statement.class, LexicalEnvironment.class, String[].class );
             AbstractFunction function = ctor.newInstance( body, context.getLexicalEnvironment(), formalParameters );
             function.setDebugContext("<anonymous>");
+            function.checkStrictCompliance(context);
             return function;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException( e );

@@ -11,7 +11,7 @@ public abstract class BaseProgram extends AbstractCode implements JSProgram {
     public BaseProgram(Statement block, boolean strict) {
         super(block, strict);
     }
-
+    
     public String toString() {
         return "[Program: fileName=" + getFileName() + "]";
     }

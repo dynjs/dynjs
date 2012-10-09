@@ -7,6 +7,8 @@ import org.dynjs.parser.ast.VariableDeclaration;
 
 public interface JSCode {
     boolean isStrict();
+    
+    void checkStrictCompliance(ExecutionContext context);
 
     List<FunctionDeclaration> getFunctionDeclarations();
 

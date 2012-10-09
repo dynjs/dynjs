@@ -66,6 +66,16 @@ public class SwitchStatement extends AbstractCompilingStatement implements State
         }
         return decls;
     }
+    
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        for ( CaseClause each : caseClauses ) {
+            each.checkStrictCompliance(context, strict);
+        }
+        
+        if ( this.defaultClause != null ) {
+            this.defaultClause.checkStrictCompliance(context, strict);
+        }
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

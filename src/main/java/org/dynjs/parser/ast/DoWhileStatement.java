@@ -15,7 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class DoWhileStatement extends AbstractIteratingStatement {
@@ -37,9 +39,13 @@ public class DoWhileStatement extends AbstractIteratingStatement {
         this.vbool = vbool;
         this.vloop = vloop;
     }
-    
+
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.vloop.getVariableDeclarations();
+    }
+
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        this.vloop.checkStrictCompliance(context, strict);
     }
 
     @Override
@@ -83,30 +89,30 @@ public class DoWhileStatement extends AbstractIteratingStatement {
                 // completion(block,BREAK)
                 dup();
                 // completion completion
-                append( jsCompletionTarget() );
+                append(jsCompletionTarget());
                 // completion target
-                append( isInLabelSet() );
+                append(isInLabelSet());
                 // completion bool
                 iffalse(end);
                 // completion
                 append(convertToNormal());
                 // completion(block,NORMAL)
-                go_to( end );
-                
+                go_to(end);
+
                 // ----------------------------------------
                 // CONTINUE
-                
-                label( continueTarget );
+
+                label(continueTarget);
                 // completion(block,CONTINUE)
                 dup();
                 // completion completion
-                append( jsCompletionTarget() );
+                append(jsCompletionTarget());
                 // completion target
-                append( isInLabelSet() );
+                append(isInLabelSet());
                 // completion bool
                 iffalse(end);
                 // completion
-                go_to( normalTarget );
+                go_to(normalTarget);
 
                 // ----------------------------------------
                 label(end);

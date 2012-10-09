@@ -15,7 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractForStatement extends AbstractIteratingStatement {
@@ -54,11 +57,14 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
     protected Statement getBlock() {
         return this.block;
     }
-    
+
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }
 
+    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+        this.block.checkStrictCompliance(context, strict);
+    }
 
     @Override
     public CodeBlock getCodeBlock() {
@@ -88,7 +94,7 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
                     invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
                     // completion bool
                     iffalse(end);
-                    // completion 
+                    // completion
                 }
 
                 // completion(prev)
@@ -136,7 +142,7 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
                 dup();
                 // completion completion
 
-                append(handleCompletion(doIncrement, /*break*/doBreak, /*continue*/doContinue, /*return*/end));
+                append(handleCompletion(doIncrement, /* break */doBreak, /* continue */doContinue, /* return */end));
 
                 // ----------------------------------------
                 // do increment
@@ -158,32 +164,32 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
                 // completion(block,BREAK)
                 dup();
                 // completion completion
-                append( jsCompletionTarget() );
+                append(jsCompletionTarget());
                 // completion target
-                append( isInLabelSet() );
+                append(isInLabelSet());
                 // completion bool
                 iffalse(end);
                 // completion
                 append(convertToNormal());
                 // completion(block,NORMAL)
-                go_to( end );
-                
+                go_to(end);
+
                 // ----------------------------------------
                 // CONTINUE
-                
-                label( doContinue );
+
+                label(doContinue);
                 // completion(block,CONTINUE)
                 dup();
                 // completion completion
-                append( jsCompletionTarget() );
+                append(jsCompletionTarget());
                 // completion target
-                append( isInLabelSet() );
+                append(isInLabelSet());
                 // completion bool
                 iffalse(end);
                 // completion
                 append(convertToNormal());
                 // completion(block,NORMAL)
-                go_to( doIncrement );
+                go_to(doIncrement);
 
                 label(end);
                 // completion
