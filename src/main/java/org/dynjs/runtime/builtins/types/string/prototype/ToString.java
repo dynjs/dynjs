@@ -5,6 +5,7 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PrimitiveDynObject;
+import org.dynjs.runtime.builtins.types.string.DynString;
 
 public class ToString extends AbstractNativeFunction {
 
@@ -19,10 +20,11 @@ public class ToString extends AbstractNativeFunction {
             return self;
         }
         
-        PrimitiveDynObject str = (PrimitiveDynObject) self;
-        if (!str.getClassName().equals("String")) {
+        if ( ! ( self instanceof DynString ) ) {
             throw new ThrowException(context, context.createTypeError("String.toString() only allowed on strings"));
         }
+        
+        PrimitiveDynObject str = (PrimitiveDynObject) self;
 
         return str.getPrimitiveValue();
     }
