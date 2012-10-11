@@ -1,0 +1,32 @@
+package org.dynjs.runtime.builtins.types.date.prototype;
+
+import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.date.DynDate;
+
+public class SetMilliseconds extends AbstractDateFunction {
+
+    public SetMilliseconds(GlobalObject globalObject) {
+        super(globalObject, "ms" );
+    }
+
+    @Override
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        if (!(self instanceof DynDate)) {
+            throw new ThrowException(context, context.createTypeError("setMilliseconds(...) may only be used with Dates"));
+        }
+
+        DynDate dateObj = (DynDate) self;
+
+        long t = localTime(context, dateObj.getTimeValue());
+
+        Number time = makeTime(context, hourFromTime(t), minFromTime(t), secFromTime(t), Types.toNumber(context, args[0]));
+        Number u = timeClip(context, utc(context, makeDate(context, day(t), time)));
+
+        dateObj.setTimeValue(u);
+
+        return u;
+    }
+}

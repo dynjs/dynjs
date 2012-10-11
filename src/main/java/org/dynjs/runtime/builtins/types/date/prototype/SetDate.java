@@ -1,0 +1,37 @@
+package org.dynjs.runtime.builtins.types.date.prototype;
+
+import java.util.Calendar;
+
+import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.builtins.types.date.DynDate;
+
+public class SetDate extends AbstractDateFunction {
+
+    public SetDate(GlobalObject globalObject) {
+        super(globalObject, "date" );
+    }
+
+    @Override
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        if (!(self instanceof DynDate)) {
+            throw new ThrowException(context, context.createTypeError("setDate(...) may only be used with Dates"));
+        }
+
+        DynDate dateObj = (DynDate) self;
+
+        long t = localTime(context, dateObj.getTimeValue());
+
+        Number dt = Types.toNumber(context, args[0]);
+        
+        Number newDate = makeDate(context, makeDay(context, yearFromTime(t), monthFromTime(t), dt), timeWithinDay(t));
+        
+        Number u = timeClip(context, utc(context, newDate));
+
+        dateObj.setTimeValue(u);
+
+        return u;
+    }
+}

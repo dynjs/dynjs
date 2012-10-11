@@ -1,14 +1,13 @@
 package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
-public abstract class DateTimeFormatter extends AbstractDateFunction {
+public class GetMonth extends AbstractDateFunction {
 
-    public DateTimeFormatter(GlobalObject globalObject) {
+    public GetMonth(GlobalObject globalObject) {
         super(globalObject);
     }
 
@@ -18,14 +17,13 @@ public abstract class DateTimeFormatter extends AbstractDateFunction {
             throw new ThrowException(context, context.createTypeError("getMonth() may only be used with Dates"));
         }
 
-        DynDate dateObj = (DynDate) self;
+        DynDate date = (DynDate) self;
 
-        if (dateObj.isNaN()) {
-            return "NaN";
+        if (date.isNaN()) {
+            return Double.NaN;
         }
 
-        return format(context, dateObj.getTimeValue());
+        long t = date.getTimeValue();
+        return (long) monthFromTime(localTime(context, t));
     }
-
-    public abstract String format(ExecutionContext context, long t);
 }

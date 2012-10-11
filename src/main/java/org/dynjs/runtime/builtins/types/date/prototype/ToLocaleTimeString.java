@@ -5,8 +5,8 @@ import java.util.Calendar;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 
-public class ToTimeString extends DateTimeFormatter {
-    public ToTimeString(GlobalObject globalObject) {
+public class ToLocaleTimeString extends DateTimeFormatter {
+    public ToLocaleTimeString(GlobalObject globalObject) {
         super(globalObject);
     }
 
@@ -14,6 +14,6 @@ public class ToTimeString extends DateTimeFormatter {
     public String format(ExecutionContext context, long t) {
         Calendar c = Calendar.getInstance(context.getTimeZone());
         c.setTimeInMillis(t);
-        return String.format("%1$tH:%1$tM:%1$tS GMT%1$tz (%1$tZ)", c );
+        return String.format("%1$tH:%1$tM:%1$tS", c );
     }
 }

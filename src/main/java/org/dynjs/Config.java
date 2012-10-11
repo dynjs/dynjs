@@ -1,6 +1,7 @@
 package org.dynjs;
 
 import java.io.PrintStream;
+import java.util.TimeZone;
 
 import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
@@ -12,6 +13,8 @@ public class Config {
 
     private boolean debug = false;
     private final ClassLoader classLoader;
+    private Clock clock = SystemClock.INSTANCE;
+    private TimeZone timeZone = TimeZone.getDefault();
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
@@ -27,6 +30,22 @@ public class Config {
 
     public ClassLoader getClassLoader() {
         return this.classLoader;
+    }
+    
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+    
+    public Clock getClock() {
+        return this.clock;
+    }
+    
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
+    
+    public TimeZone getTimeZone() {
+        return this.timeZone;
     }
 
     public void setBasePackage(String basePackage) {

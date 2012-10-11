@@ -1,24 +1,22 @@
 package org.dynjs.runtime.builtins.types.date.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.builtins.types.date.DynDate;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
-
-public class ToUTCString extends AbstractNativeFunction {
+public class ToUTCString extends DateTimeFormatter {
 
     public ToUTCString(GlobalObject globalObject) {
         super(globalObject);
     }
 
     @Override
-    public Object call(ExecutionContext context, Object self, Object... args) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss 'GMT'").withZoneUTC();
-        return new DateTime((Long) ((DynDate) self).getPrimitiveValue()).toString(formatter);
-    }
+    public String format(ExecutionContext context, long t) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        c.setTimeInMillis(t);
+        return String.format("%1$ta, %1$td %1$tb %1$tY %1$tH:%1$tM:%1$tS GMT",  c );
 
+    }
 }

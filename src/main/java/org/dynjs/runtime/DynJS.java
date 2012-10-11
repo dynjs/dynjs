@@ -15,7 +15,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
@@ -23,7 +22,6 @@ import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.BlockStatement;
-import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 
 public class DynJS {
 

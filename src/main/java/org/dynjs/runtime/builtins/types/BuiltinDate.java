@@ -1,23 +1,68 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.makeDate;
+import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.makeDay;
+import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.makeTime;
+import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.timeClip;
+import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.utc;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.DynDate;
-import org.dynjs.runtime.builtins.types.date.prototype.DateTimeFormatter;
+import org.dynjs.runtime.builtins.types.date.prototype.GetDate;
+import org.dynjs.runtime.builtins.types.date.prototype.GetDay;
+import org.dynjs.runtime.builtins.types.date.prototype.GetFullYear;
+import org.dynjs.runtime.builtins.types.date.prototype.GetHours;
+import org.dynjs.runtime.builtins.types.date.prototype.GetMilliseconds;
+import org.dynjs.runtime.builtins.types.date.prototype.GetMinutes;
+import org.dynjs.runtime.builtins.types.date.prototype.GetMonth;
+import org.dynjs.runtime.builtins.types.date.prototype.GetSeconds;
+import org.dynjs.runtime.builtins.types.date.prototype.GetTimezoneOffset;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCDate;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCDay;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCFullYear;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCHours;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCMilliseconds;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCMinutes;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCMonth;
+import org.dynjs.runtime.builtins.types.date.prototype.GetUTCSeconds;
+import org.dynjs.runtime.builtins.types.date.prototype.GetYear;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
 import org.dynjs.runtime.builtins.types.date.prototype.Parse;
+import org.dynjs.runtime.builtins.types.date.prototype.SetDate;
+import org.dynjs.runtime.builtins.types.date.prototype.SetFullYear;
+import org.dynjs.runtime.builtins.types.date.prototype.SetHours;
+import org.dynjs.runtime.builtins.types.date.prototype.SetMilliseconds;
+import org.dynjs.runtime.builtins.types.date.prototype.SetMinutes;
+import org.dynjs.runtime.builtins.types.date.prototype.SetMonth;
+import org.dynjs.runtime.builtins.types.date.prototype.SetSeconds;
+import org.dynjs.runtime.builtins.types.date.prototype.SetTime;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCDate;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCFullYear;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCHours;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCMilliseconds;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCMinutes;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCMonth;
+import org.dynjs.runtime.builtins.types.date.prototype.SetUTCSeconds;
+import org.dynjs.runtime.builtins.types.date.prototype.SetYear;
 import org.dynjs.runtime.builtins.types.date.prototype.ToDateString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToISOString;
+import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleDateString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleString;
+import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleTimeString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToTimeString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToUTCString;
 import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 public class BuiltinDate extends AbstractBuiltinType {
 
@@ -34,233 +79,120 @@ public class BuiltinDate extends AbstractBuiltinType {
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
+        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+
         put(null, "now", new Now(globalObject), false);
-        put(null, "parse", new Parse(globalObject), false);
+        defineNonEnumerableProperty(this, "parse", new Parse(globalObject));
         defineNonEnumerableProperty(proto, "constructor", this);
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
         defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject));
         defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject));
         defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleDateString", new DateTimeFormatter(globalObject, "MM/dd/YYYY"));
-        defineNonEnumerableProperty(proto, "toLocaleTimeString", new DateTimeFormatter(globalObject, "HH:mm:ss"));
+        defineNonEnumerableProperty(proto, "toLocaleDateString", new ToLocaleDateString(globalObject));
+        defineNonEnumerableProperty(proto, "toLocaleTimeString", new ToLocaleTimeString(globalObject));
         defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
         defineNonEnumerableProperty(proto, "toUTCString", new ToUTCString(globalObject));
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "getFullYear", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime(self).year().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getMonth", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime(self).monthOfYear().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getDay", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime(self).dayOfWeek().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getHours", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).hourOfDay().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getMinutes", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).minuteOfHour().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getSeconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).secondOfMinute().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCFullYear", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime(self).toDateTime(DateTimeZone.UTC).year().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCMonth", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime(self).toDateTime(DateTimeZone.UTC).monthOfYear().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCDay", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime(self).toDateTime(DateTimeZone.UTC).dayOfWeek().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCHours", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).hourOfDay().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCMinutes", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).minuteOfHour().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCSeconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).secondOfMinute().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getTimezoneOffset", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getZone().toTimeZone().getRawOffset();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getMilliseconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).millisOfSecond().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setMilliseconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCMilliseconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillisOfSecond();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCMilliseconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setTime", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setSeconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCSeconds", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setMinutes", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCMinutes", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setHours", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCHours", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setDate", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getDate", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).dayOfMonth().get();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCDate", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "getUTCDate", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getDayOfMonth();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setMonth", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCMonth", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setFullYear", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).getMillis();
-            }
-        });
-        defineNonEnumerableProperty(proto, "setUTCFullYear", new AbstractNativeFunction(globalObject) {
-            @Override
-            public Object call(ExecutionContext context, Object self, Object... args) {
-                return getDateTime((DynDate) self).toDateTime(DateTimeZone.UTC).getMillis();
-            }
-        });
-    }
+        defineNonEnumerableProperty(proto, "getFullYear", new GetFullYear(globalObject));
+        defineNonEnumerableProperty(proto, "getMonth", new GetMonth(globalObject));
+        defineNonEnumerableProperty(proto, "getDay", new GetDay(globalObject));
+        defineNonEnumerableProperty(proto, "getHours", new GetHours(globalObject));
+        defineNonEnumerableProperty(proto, "getMinutes", new GetMinutes(globalObject));
+        defineNonEnumerableProperty(proto, "getSeconds", new GetSeconds(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCFullYear", new GetUTCFullYear(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCMonth", new GetUTCMonth(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCDay", new GetUTCDay(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCHours", new GetUTCHours(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCMinutes", new GetUTCMinutes(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCSeconds", new GetUTCSeconds(globalObject));
+        defineNonEnumerableProperty(proto, "getTimezoneOffset", new GetTimezoneOffset(globalObject));
+        defineNonEnumerableProperty(proto, "getMilliseconds", new GetMilliseconds(globalObject));
+        defineNonEnumerableProperty(proto, "setMilliseconds", new SetMilliseconds(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCMilliseconds", new GetUTCMilliseconds(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCMilliseconds", new SetUTCMilliseconds(globalObject));
+        defineNonEnumerableProperty(proto, "setTime", new SetTime(globalObject));
+        defineNonEnumerableProperty(proto, "setSeconds", new SetSeconds(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCSeconds", new SetUTCSeconds(globalObject));
+        defineNonEnumerableProperty(proto, "setMinutes", new SetMinutes(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCMinutes", new SetUTCMinutes(globalObject));
+        defineNonEnumerableProperty(proto, "setHours", new SetHours(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCHours", new SetUTCHours(globalObject));
+        defineNonEnumerableProperty(proto, "setDate", new SetDate(globalObject));
+        defineNonEnumerableProperty(proto, "getDate", new GetDate(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCDate", new SetUTCDate(globalObject));
+        defineNonEnumerableProperty(proto, "getUTCDate", new GetUTCDate(globalObject));
+        defineNonEnumerableProperty(proto, "setMonth", new SetMonth(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCMonth", new SetUTCMonth(globalObject));
+        defineNonEnumerableProperty(proto, "setFullYear", new SetFullYear(globalObject));
+        defineNonEnumerableProperty(proto, "setUTCFullYear", new SetUTCFullYear(globalObject));
 
-    private DateTime getDateTime(Object self) {
-        return new DateTime((Long) ((DynDate) self).getPrimitiveValue());
+        defineNonEnumerableProperty(proto, "getYear", new GetYear(globalObject));
+        defineNonEnumerableProperty(proto, "setYear", new SetYear(globalObject));
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        DynDate date = null;
         if (self == Types.UNDEFINED || self == Types.NULL) {
-            date = new DynDate(context.getGlobalObject());
+            DynDate now = new DynDate(context.getGlobalObject());
+            JSFunction toString = (JSFunction) now.get(context, "toString");
+            return context.call(toString, now);
+        }
+
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+        int numArgs = (int) argsObj.get(context, "length");
+
+        DynDate date = (DynDate) self;
+
+        if (numArgs == 0) {
+            date.setTimeValue(context.getClock().currentTimeMillis());
+        } else if (numArgs == 1) {
+            Object v = Types.toPrimitive(context, args[0]);
+            if (v instanceof String) {
+                date.setTimeValue(timeClip(context, Parse.parse(context, (String) v)));
+            } else {
+                date.setTimeValue(timeClip(context, Types.toNumber(context, v)));
+            }
         } else {
-            date = (DynDate) self;
+            Number y = Types.toNumber(context, args[0]);
+            Number m = Types.toNumber(context, args[1]);
+            Number dt = 1;
+            Number h = 0;
+            Number min = 0;
+            Number s = 0;
+            Number milli = 0;
+            if (numArgs >= 3) {
+                dt = Types.toNumber(context, args[2]);
+            }
+            if (numArgs >= 4) {
+                h = Types.toNumber(context, args[3]);
+            }
+            if (numArgs >= 5) {
+                min = Types.toNumber(context, args[4]);
+            }
+            if (numArgs >= 6) {
+                s = Types.toNumber(context, args[5]);
+            }
+            if (numArgs >= 7) {
+                milli = Types.toNumber(context, args[6]);
+            }
+
+            Number yr = y;
+
+            if (!Double.isNaN(y.doubleValue())) {
+                long longYr = yr.longValue();
+                yr = Types.toInteger(context, y);
+                if (longYr >= 0 && longYr <= 99) {
+                    yr = longYr + 1900;
+                }
+            }
+
+            Number finalDate = makeDate(context, makeDay(context, yr, m, dt), makeTime(context, h, min, s, milli));
+            Number clipped = timeClip(context, utc(context, finalDate));
+
+            date.setTimeValue(clipped);
         }
-        if (args[0] == Types.UNDEFINED) { // 15.9.3.3
-            ((DynDate) date).setPrimitiveValue(UTCnow());
-        }
+
         return date;
     }
-
-    private long UTCnow() {
-        return DateTime.now(DateTimeZone.UTC).getMillis();
-    }
-
 }

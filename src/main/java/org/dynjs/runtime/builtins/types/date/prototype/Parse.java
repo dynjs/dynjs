@@ -1,14 +1,15 @@
 package org.dynjs.runtime.builtins.types.date.prototype;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 public class Parse extends AbstractNativeFunction {
 
@@ -18,7 +19,63 @@ public class Parse extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        final long UTCmillis = DateTime.parse(args[0].toString(), ISODateTimeFormat.dateTime()).toDateTime(DateTimeZone.UTC).getMillis();
-        return Types.toNumber(context, UTCmillis);
+        String text = Types.toString(context, args[0]);
+        return parse(context, text);
+    }
+
+    public static long parse(ExecutionContext context, String text) {
+        Date date = null;
+
+        if (text.startsWith("T")) {
+            date = attemptParse(text, "'T'HH:mm:ss.SSSZ");
+            if (date != null) {
+                return date.getTime();
+            }
+            date = attemptParse(text, "'T'HH:mm:ssZ");
+            if (date != null) {
+                return date.getTime();
+            }
+            date = attemptParse(text, "'T'HH:mmZ");
+            if (date != null) {
+                return date.getTime();
+            }
+            date = attemptParse(text, "'T'HHZ");
+            if (date != null) {
+                return date.getTime();
+            }
+        } else {
+            date = attemptParse(text, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            if (date != null) {
+                return date.getTime();
+            }
+            date = attemptParse(text, "yyyy-MM-dd");
+            if (date != null) {
+                return date.getTime();
+            }
+            date = attemptParse(text, "yyyy-MM");
+            if (date != null) {
+                return date.getTime();
+            }
+            date = attemptParse(text, "yyyy");
+            if (date != null) {
+                return date.getTime();
+            }
+        }
+
+        throw new ThrowException(context, context.createSyntaxError("unable to parse date"));
+    }
+
+    protected static Date attemptParse(String text, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        try {
+            Date result = format.parse(text);
+            System.err.println("TZ: " + format.getTimeZone().getDisplayName());
+            return result;
+        } catch (ParseException e) {
+            return null;
+        }
+
     }
 }

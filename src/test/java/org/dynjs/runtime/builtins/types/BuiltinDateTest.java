@@ -1,35 +1,13 @@
 package org.dynjs.runtime.builtins.types;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.joda.time.DateTimeZone;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Locale;
-
-import static org.fest.assertions.Assertions.assertThat;
-
 public class BuiltinDateTest extends AbstractDynJSTestSupport {
-
-    private final long fixedInstant = 1347051329670L;
-    private final DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
-
-    @Before
-    public void setup() {
-        DateTimeUtils.setCurrentMillisFixed(fixedInstant);
-        DateTimeZone.setDefault(DateTimeZone.forID("Brazil/East"));
-        Locale.setDefault(Locale.forLanguageTag("en_US"));
-    }
-
-    @After
-    public void tearDown() {
-        DateTimeUtils.setCurrentMillisSystem();
-        DateTimeZone.setDefault(defaultTimeZone);
-    }
 
     @Test
     public void testDate() {
@@ -47,8 +25,14 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateParse() {
-        assertThat(eval("Date.parse('2012-09-07T18:00:00.000Z')"))
-                .isEqualTo(DateTime.parse("2012-09-07T18:00:00.000Z").toDateTime(DateTimeZone.UTC).getMillis());
+        assertThat(eval("new Date(Date.parse('2012-09-07T17:55:29.670-0300')).toISOString()"))
+                .isEqualTo("2012-09-07T20:55:29.670Z");
+    }
+    
+    @Test
+    public void testDateParsePartial() {
+        assertThat(eval("new Date(Date.parse('2012')).toISOString()"))
+                .isEqualTo("2012-01-01T00:00:00.000Z");
     }
 
     @Test
@@ -58,9 +42,19 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateToISOString() {
-        assertThat(eval("new Date().toISOString()")).isEqualTo("2012-09-07T17:55:29.670-03:00");
+        assertThat(eval("new Date().toISOString()")).isEqualTo("2012-09-07T20:55:29.670Z");
+    }
+    
+    @Test
+    public void testDateToUTCString() {
+        assertThat(eval("new Date().toUTCString()")).isEqualTo("Fri, 07 Sep 2012 20:55:29 GMT");
     }
 
+    @Test
+    public void testDateToString_epoch() {
+        assertThat(eval("new Date(0).toString()")).isEqualTo("Wed Dec 31 1969 21:00:00 GMT-0300 (BRT)");
+    } 
+    
     @Test
     public void testDateToString() {
         assertThat(eval("new Date().toString()")).isEqualTo("Fri Sep 07 2012 17:55:29 GMT-0300 (BRT)");
@@ -78,12 +72,12 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateToLocaleString() {
-        assertThat(eval("new Date().toLocaleString()")).isEqualTo("Fri Sep 07 17:55:29 2012");
+        assertThat(eval("new Date().toLocaleString()")).isEqualTo("Fri Sep 07 2012 17:55:29 GMT-0300 (BRT)");
     }
 
     @Test
     public void testDateToLocaleDateString() {
-        assertThat(eval("new Date().toLocaleDateString()")).isEqualTo("09/07/2012");
+        assertThat(eval("new Date().toLocaleDateString()")).isEqualTo("Friday, September 07, 2012");
     }
 
     @Test
@@ -93,67 +87,67 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateGetFullYear() {
-        assertThat(eval("new Date().getFullYear()")).isEqualTo(2012);
+        assertThat(eval("new Date().getFullYear()")).isEqualTo(2012L);
     }
 
     @Test
     public void testDateGetMonth() {
-        assertThat(eval("new Date().getMonth()")).isEqualTo(9);
+        assertThat(eval("new Date().getMonth()")).isEqualTo(8L);
     }
 
     @Test
     public void testDateGetDay() {
-        assertThat(eval("new Date().getDay()")).isEqualTo(5);
+        assertThat(eval("new Date().getDay()")).isEqualTo(5L);
     }
 
     @Test
     public void testDateGetHours() {
-        assertThat(eval("new Date().getHours()")).isEqualTo(17);
+        assertThat(eval("new Date().getHours()")).isEqualTo(17L);
     }
 
     @Test
     public void testDateGetMinutes() {
-        assertThat(eval("new Date().getMinutes()")).isEqualTo(55);
+        assertThat(eval("new Date().getMinutes()")).isEqualTo(55L);
     }
 
     @Test
     public void testDateGetSeconds() {
-        assertThat(eval("new Date().getSeconds()")).isEqualTo(29);
+        assertThat(eval("new Date().getSeconds()")).isEqualTo(29L);
     }
 
     @Test
     public void testDateGetUTCFullYear() {
-        assertThat(eval("new Date().getUTCFullYear()")).isEqualTo(2012);
+        assertThat(eval("new Date().getUTCFullYear()")).isEqualTo(2012L);
     }
 
     @Test
     public void testDateGetUTCMonth() {
-        assertThat(eval("new Date().getUTCMonth()")).isEqualTo(9);
+        assertThat(eval("new Date().getUTCMonth()")).isEqualTo(8L);
     }
 
     @Test
     public void testDateGetUTCDay() {
-        assertThat(eval("new Date().getUTCDay()")).isEqualTo(5);
+        assertThat(eval("new Date().getUTCDay()")).isEqualTo(5L);
     }
 
     @Test
     public void testDateGetUTCHours() {
-        assertThat(eval("new Date().getUTCHours()")).isEqualTo(20);
+        assertThat(eval("new Date().getUTCHours()")).isEqualTo(20L);
     }
 
     @Test
     public void testDateGetUTCMinutes() {
-        assertThat(eval("new Date().getUTCMinutes()")).isEqualTo(55);
+        assertThat(eval("new Date().getUTCMinutes()")).isEqualTo(55L);
     }
 
     @Test
     public void testDateGetUTCSeconds() {
-        assertThat(eval("new Date().getUTCSeconds()")).isEqualTo(29);
+        assertThat(eval("new Date().getUTCSeconds()")).isEqualTo(29L);
     }
 
     @Test
     public void testDateGetTimezoneOffset() {
-        assertThat(eval("new Date().getTimezoneOffset()")).isEqualTo(-10800000);
+        assertThat(eval("new Date().getTimezoneOffset()")).isEqualTo(180L);
     }
 
     @Test
@@ -218,7 +212,7 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateGetDate() {
-        assertThat(eval("new Date().getDate()")).isEqualTo(7);
+        assertThat(eval("new Date().getDate()")).isEqualTo(7L);
     }
 
     @Test
@@ -228,22 +222,17 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testDateGetUTCDate() {
-        assertThat(eval("new Date().getUTCDate()")).isEqualTo(7);
-    }
-
-    @Test
-    public void testDateToUTCString() {
-        assertThat(eval("new Date().toUTCString()")).isEqualTo("Fri, 07 Sep 2012 20:55:29 GMT");
+        assertThat(eval("new Date().getUTCDate()")).isEqualTo(7L);
     }
 
     @Test
     public void testDateSetMonth() {
-        assertThat(eval("new Date().setMonth(9)")).isEqualTo(fixedInstant);
+        assertThat(eval("new Date().setMonth(8)")).isEqualTo(fixedInstant);
     }
 
     @Test
     public void testDateSetUTCMonth() {
-        assertThat(eval("new Date().setUTCMonth(9)")).isEqualTo(fixedInstant);
+        assertThat(eval("new Date().setUTCMonth(8)")).isEqualTo(fixedInstant);
     }
 
     @Test

@@ -2,11 +2,12 @@ package org.dynjs.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -17,6 +18,8 @@ public class ExecutionContext {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
         ExecutionContext context = new ExecutionContext(null, env, env, env.getGlobalObject(), false);
+        context.clock = runtime.getConfig().getClock();
+        context.timeZone = runtime.getConfig().getTimeZone();
         return context;
     }
 
@@ -34,6 +37,9 @@ public class ExecutionContext {
     private int lineNumber;
     private String fileName;
     private String debugContext = "<eval>";
+    
+    private Clock clock;
+    private TimeZone timeZone;
 
     public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.parent = parent;
@@ -69,6 +75,21 @@ public class ExecutionContext {
         }
 
         return this.strict;
+    }
+    
+    public Clock getClock() {
+        if ( this.parent != null ) {
+            return this.parent.getClock();
+        }
+        return this.clock;
+    }
+    
+    public TimeZone getTimeZone() {
+        if ( this.parent != null ) {
+            return this.parent.getTimeZone();
+        }
+        
+        return this.timeZone;
     }
 
     void setStrict(boolean strict) {

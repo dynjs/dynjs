@@ -1,11 +1,13 @@
 package org.dynjs.runtime.builtins.types;
 
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;
@@ -46,7 +48,11 @@ public class BuiltinNumber extends AbstractBuiltinType {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         Number number = 0L;
-        if (args[0] != Types.UNDEFINED) {
+        Arguments argsObj = (Arguments) context.resolve("arguments" ).getValue(context);
+        int numArgs = (int) argsObj.get(context, "length");
+
+        
+        if ( numArgs != 0 ) {
             number = Types.toNumber(context, args[0]);
         }
         if (self == Types.UNDEFINED || self == Types.NULL ) {

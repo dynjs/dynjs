@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
+import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.string.DynString;
 
@@ -596,11 +597,11 @@ public class Types {
         if (o instanceof JSFunction) {
             return "function";
         }
-
+        
         if (o instanceof JSObject) {
             return "object";
         }
-
+        
         if (o instanceof String) {
             return "string";
         }
