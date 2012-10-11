@@ -3,13 +3,36 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class ToISOString extends DateTimeFormatter {
 
     public ToISOString(GlobalObject globalObject) {
         super(globalObject);
+    }
+    
+    @Override
+    public Object call(ExecutionContext context, Object self, Object... args) {
+        if (!(self instanceof DynDate)) {
+            throw new ThrowException(context, context.createTypeError("toISOString() may only be used with Dates"));
+        }
+
+        DynDate dateObj = (DynDate) self;
+
+        if (dateObj.isNaN() ) {
+            throw new ThrowException( context, context.createRangeError( "date is out of range" ));
+        }
+        
+        long t = dateObj.getTimeValue();
+        
+        if ( t > 8640000000000000L || t <  -8640000000000000L) {
+            throw new ThrowException( context, context.createRangeError( "date is out of range" ));
+        }
+        
+        return format(context, dateObj.getTimeValue());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.dynjs.runtime.builtins.types.date.prototype;
+package org.dynjs.runtime.builtins.types.date;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -70,9 +70,7 @@ public class Parse extends AbstractNativeFunction {
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         try {
-            Date result = format.parse(text);
-            System.err.println("TZ: " + format.getTimeZone().getDisplayName());
-            return result;
+            return format.parse(text);
         } catch (ParseException e) {
             return null;
         }

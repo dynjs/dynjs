@@ -1,15 +1,10 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.makeDate;
-import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.makeDay;
-import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.makeTime;
-import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.timeClip;
-import static org.dynjs.runtime.builtins.types.date.prototype.AbstractDateFunction.utc;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.makeDate;
+import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.makeDay;
+import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.makeTime;
+import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.timeClip;
+import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.utc;
 
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
@@ -18,6 +13,8 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.DynDate;
+import org.dynjs.runtime.builtins.types.date.Parse;
+import org.dynjs.runtime.builtins.types.date.UTC;
 import org.dynjs.runtime.builtins.types.date.prototype.GetDate;
 import org.dynjs.runtime.builtins.types.date.prototype.GetDay;
 import org.dynjs.runtime.builtins.types.date.prototype.GetFullYear;
@@ -37,7 +34,6 @@ import org.dynjs.runtime.builtins.types.date.prototype.GetUTCMonth;
 import org.dynjs.runtime.builtins.types.date.prototype.GetUTCSeconds;
 import org.dynjs.runtime.builtins.types.date.prototype.GetYear;
 import org.dynjs.runtime.builtins.types.date.prototype.Now;
-import org.dynjs.runtime.builtins.types.date.prototype.Parse;
 import org.dynjs.runtime.builtins.types.date.prototype.SetDate;
 import org.dynjs.runtime.builtins.types.date.prototype.SetFullYear;
 import org.dynjs.runtime.builtins.types.date.prototype.SetHours;
@@ -56,6 +52,7 @@ import org.dynjs.runtime.builtins.types.date.prototype.SetUTCSeconds;
 import org.dynjs.runtime.builtins.types.date.prototype.SetYear;
 import org.dynjs.runtime.builtins.types.date.prototype.ToDateString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToISOString;
+import org.dynjs.runtime.builtins.types.date.prototype.ToJSON;
 import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleDateString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.date.prototype.ToLocaleTimeString;
@@ -81,8 +78,9 @@ public class BuiltinDate extends AbstractBuiltinType {
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
 
-        put(null, "now", new Now(globalObject), false);
+        defineNonEnumerableProperty(this, "now", new Now(globalObject) );
         defineNonEnumerableProperty(this, "parse", new Parse(globalObject));
+        defineNonEnumerableProperty(this, "UTC", new UTC(globalObject) );
         defineNonEnumerableProperty(proto, "constructor", this);
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
         defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject));
@@ -126,6 +124,7 @@ public class BuiltinDate extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "setUTCMonth", new SetUTCMonth(globalObject));
         defineNonEnumerableProperty(proto, "setFullYear", new SetFullYear(globalObject));
         defineNonEnumerableProperty(proto, "setUTCFullYear", new SetUTCFullYear(globalObject));
+        defineNonEnumerableProperty(proto, "toJSON", new ToJSON(globalObject));
 
         defineNonEnumerableProperty(proto, "getYear", new GetYear(globalObject));
         defineNonEnumerableProperty(proto, "setYear", new SetYear(globalObject));
@@ -178,10 +177,9 @@ public class BuiltinDate extends AbstractBuiltinType {
             }
 
             Number yr = y;
-
+            
             if (!Double.isNaN(y.doubleValue())) {
                 long longYr = yr.longValue();
-                yr = Types.toInteger(context, y);
                 if (longYr >= 0 && longYr <= 99) {
                     yr = longYr + 1900;
                 }
