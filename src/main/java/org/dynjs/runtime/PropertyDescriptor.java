@@ -103,7 +103,7 @@ public class PropertyDescriptor {
     }
 
     public String toString() {
-        return "[PropertyDescriptor writable=" + this.writable + "; enumerable=" + this.enumerable + "; setter=" + this.set+ "; getter=" + this.get + "]"; 
+        return "[PropertyDescriptor writable=" + this.writable + "; enumerable=" + this.enumerable + "; configurable=" + this.configurable + "; setter=" + this.set+ "; getter=" + this.get + "]"; 
     }
 
     public boolean isWritable() {

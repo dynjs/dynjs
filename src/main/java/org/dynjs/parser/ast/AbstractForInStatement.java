@@ -97,7 +97,7 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
 
                 // -----------------------------------------------
                 // completion jsObj
-                invokeinterface(p(JSObject.class), "getOwnPropertyNames", sig(NameEnumerator.class));
+                invokeinterface(p(JSObject.class), "getAllEnumerablePropertyNames", sig(NameEnumerator.class));
                 // completion name-enum
                 astore(4);
                 // completion

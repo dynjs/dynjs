@@ -29,7 +29,7 @@ public class Keys extends AbstractNativeFunction {
         JSObject array = BuiltinArray.newArray(context);
 
         int i = 0;
-        NameEnumerator names = jsObj.getOwnPropertyNames();
+        NameEnumerator names = jsObj.getOwnEnumerablePropertyNames();
         while (names.hasNext()) {
             final String name = names.next();
             array.defineOwnProperty(context, "" + i, new PropertyDescriptor() {

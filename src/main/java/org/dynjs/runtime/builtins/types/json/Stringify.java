@@ -240,7 +240,7 @@ public class Stringify extends AbstractNativeFunction {
 
         List<String> k = null;
         if (propertyList == null || propertyList.isEmpty()) {
-            k = value.getOwnPropertyNames().toList();
+            k = value.getOwnEnumerablePropertyNames().toList();
         } else {
             k = propertyList;
         }

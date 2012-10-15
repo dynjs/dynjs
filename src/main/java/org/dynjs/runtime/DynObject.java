@@ -296,6 +296,7 @@ public class DynObject implements JSObject {
                 } else {
                     newDesc = desc.duplicateWithDefaults("Get", "Set", "Enumerable", "Configurable");
                 }
+
                 this.properties.put(name, newDesc);
                 return true;
             }
@@ -392,9 +393,35 @@ public class DynObject implements JSObject {
     public NameEnumerator getOwnPropertyNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (String name : this.properties.keySet()) {
+            names.add(name);
+        }
+        return new NameEnumerator(names);
+    }
+
+    @Override
+    public NameEnumerator getOwnEnumerablePropertyNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        for (String name : this.properties.keySet()) {
             PropertyDescriptor desc = this.properties.get(name);
             if (desc.isEnumerable()) {
                 names.add(name);
+            }
+        }
+        return new NameEnumerator(names);
+    }
+
+    @Override
+    public NameEnumerator getAllEnumerablePropertyNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        if (this.prototype != null) {
+            names.addAll(this.prototype.getAllEnumerablePropertyNames().toList());
+        }
+        for (String name : this.properties.keySet()) {
+            PropertyDescriptor desc = this.properties.get(name);
+            if (desc.isEnumerable()) {
+                names.add(name);
+            } else {
+                names.remove(name);
             }
         }
         return new NameEnumerator(names);
