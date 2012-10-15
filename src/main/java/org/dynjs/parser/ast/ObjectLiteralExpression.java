@@ -15,18 +15,21 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 
 public class ObjectLiteralExpression extends AbstractExpression {
@@ -40,6 +43,7 @@ public class ObjectLiteralExpression extends AbstractExpression {
 
     @Override
     public CodeBlock getCodeBlock() {
+        checkForSyntaxError();
         return new CodeBlock() {
             {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
@@ -56,6 +60,33 @@ public class ObjectLiteralExpression extends AbstractExpression {
                 // obj
             }
         };
+    }
+    
+    protected void checkForSyntaxError() {
+        Set<String> values = new HashSet<>();
+        Set<String> setters = new HashSet<>();
+        Set<String> getters = new HashSet<>();
+        
+        for ( PropertyAssignment each : this.propertyAssignments ) {
+            if ( each instanceof NamedValue ) {
+                if ( setters.contains( each.getName() ) || getters.contains( each.getName() ) ) {
+                    throw new SyntaxError( Collections.singletonList("conflicting descriptors" ) );
+                }
+                values.add( each.getName() );
+            }
+            if ( each instanceof PropertyGet ) {
+                if ( values.contains( each.getName() ) || getters.contains( each.getName()) ) {
+                    throw new SyntaxError( Collections.singletonList("conflicting descriptors" ) );
+                }
+                getters.add( each.getName() );
+            }
+            if ( each instanceof PropertySet ) {
+                if ( values.contains( each.getName() ) || setters.contains( each.getName() ) ) {
+                    throw new SyntaxError( Collections.singletonList("conflicting descriptors" ) );
+                }
+                setters.add( each.getName() );
+            }
+        }
     }
 
     public String toString() {
