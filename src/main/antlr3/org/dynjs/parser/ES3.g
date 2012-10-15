@@ -947,6 +947,7 @@ propertyName
 	: Identifier
 	| StringLiteral
 	| numericLiteral
+	| reservedWord -> ^(Identifier[$reservedWord.text])
 	;
 	
 propertyGet
@@ -995,6 +996,7 @@ leftHandSideExpression
 		arguments			-> ^( CALL $leftHandSideExpression arguments )
 		| LBRACK expression RBRACK	-> ^( BYINDEX $leftHandSideExpression expression )
 		| DOT Identifier		-> ^( BYFIELD $leftHandSideExpression Identifier )
+		| DOT reservedWord      -> ^( BYFIELD $leftHandSideExpression ^( Identifier[$reservedWord.text] ) )
 	)*
 	;
 
