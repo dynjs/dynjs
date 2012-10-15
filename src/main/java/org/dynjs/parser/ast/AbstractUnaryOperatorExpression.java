@@ -1,6 +1,7 @@
 package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 
 public abstract class AbstractUnaryOperatorExpression extends AbstractExpression {
 
@@ -19,6 +20,10 @@ public abstract class AbstractUnaryOperatorExpression extends AbstractExpression
 
     public Expression getExpr() {
         return this.expr;
+    }
+    
+    public void verify(ExecutionContext context, boolean strict) {
+        this.expr.verify(context, strict);
     }
 
 }

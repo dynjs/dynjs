@@ -15,11 +15,12 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class LogicalNotOperatorExpression extends AbstractExpression {
@@ -29,6 +30,11 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
     public LogicalNotOperatorExpression(final Tree tree, final Expression expr) {
         super(tree);
         this.expr = expr;
+    }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.expr.verify(context, strict);
     }
 
     @Override

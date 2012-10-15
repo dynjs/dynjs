@@ -19,6 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.runtime.ExecutionContext;
 
 /**
  * Access a property with dot notation
@@ -37,6 +38,12 @@ public class MemberExpression extends AbstractExpression {
         super(tree);
         this.memberExpr = memberExpr;
         this.identifierExpr = identifierExpr;
+    }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.memberExpr.verify(context, strict);
+        this.identifierExpr.verify(context, strict);
     }
 
     @Override

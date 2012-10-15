@@ -122,6 +122,15 @@ public class DynJS {
         }
         return execute(fullCode.toString(), null, 0);
     }
+    
+    public Object evaluate(String code, boolean forceStrict) {
+        return execute(code, null, 0, forceStrict);
+    }
+    
+    public Object evaluate(ExecutionContext context, String code, boolean forceStrict) {
+        JSProgram program = compile( context, code, "<eval>", forceStrict );
+        return context.eval( program );
+    }
 
     public JSProgram compile(String program) {
         return compile(this.context, program, null, false);
@@ -138,7 +147,7 @@ public class DynJS {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
-        programObj.checkStrictCompliance(execContext);
+        programObj.verify(execContext);
         return programObj;
     }
 
@@ -153,7 +162,7 @@ public class DynJS {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
-        programObj.checkStrictCompliance(execContext);
+        programObj.verify(execContext);
         return programObj;
     }
 

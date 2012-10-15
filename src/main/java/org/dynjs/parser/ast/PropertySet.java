@@ -20,6 +20,10 @@ public class PropertySet extends PropertyAccessor {
         super(blockManager, name, block);
         this.identifier = identifier;
     }
+    
+    public String getIdentifier() {
+        return this.identifier;
+    }
 
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {

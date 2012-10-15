@@ -32,8 +32,8 @@ public abstract class AbstractCode implements JSCode {
         this.strict = strict;
     }
     
-    public void checkStrictCompliance(ExecutionContext context) {
-        block.checkStrictCompliance( context, this.strict );
+    public void verify(ExecutionContext context) {
+        block.verify( context, this.strict );
     }
 
     @Override

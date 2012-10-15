@@ -59,6 +59,11 @@ public class CompoundAssignmentExpression extends AbstractExpression {
             }
         };
     }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.rootExpr.verify( context, strict);
+    }
 
     public String toString() {
         return rootExpr.getLhs() + " " + rootExpr.getOp() + "=" + rootExpr.getRhs();

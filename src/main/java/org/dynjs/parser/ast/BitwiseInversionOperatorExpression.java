@@ -19,6 +19,7 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class BitwiseInversionOperatorExpression extends AbstractExpression {
@@ -28,6 +29,10 @@ public class BitwiseInversionOperatorExpression extends AbstractExpression {
     public BitwiseInversionOperatorExpression(final Tree tree, final Expression expr) {
         super(tree);
         this.expr = expr;
+    }
+    
+    public void verify(ExecutionContext context, boolean strict) {
+        this.expr.verify( context, strict );
     }
 
     @Override

@@ -127,9 +127,10 @@ public class ExecutionContext {
         }
     }
 
-    public Object eval(JSEval eval) {
+    public Object eval(JSProgram eval) {
         ExecutionContext evalContext = createEvalExecutionContext(eval);
-        return eval.evaluate(evalContext);
+        Completion result = eval.execute(evalContext);
+        return result.value;
     }
 
     public Object call(JSFunction function, Object self, Object... args) {
@@ -185,7 +186,7 @@ public class ExecutionContext {
 
     // ----------------------------------------------------------------------
 
-    public ExecutionContext createEvalExecutionContext(JSEval eval) {
+    public ExecutionContext createEvalExecutionContext(JSProgram eval) {
         // 10.4.2 (with caller)
         ExecutionContext context = null;
         if (!eval.isStrict()) {

@@ -75,6 +75,12 @@ public class ArrayLiteralExpression extends AbstractExpression {
             }
         };
     }
+    
+    public void verify(ExecutionContext context, boolean strict) {
+        for ( Expression each : exprs ) {
+            each.verify(context, strict);
+        }
+    }
 
     public String toString() {
         StringBuffer buf = new StringBuffer();

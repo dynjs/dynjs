@@ -35,9 +35,9 @@ public class VariableDeclarationStatement extends AbstractStatement {
         return this.declExprs;
     }
     
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+    public void verify(ExecutionContext context, boolean strict) {
         for ( VariableDeclaration each : this.declExprs ) {
-            each.checkStrictCompliance( context, strict );
+            each.verify( context, strict );
         }
     }
 

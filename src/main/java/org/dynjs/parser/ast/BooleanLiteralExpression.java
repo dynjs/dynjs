@@ -19,6 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 
 public class BooleanLiteralExpression extends AbstractExpression {
 

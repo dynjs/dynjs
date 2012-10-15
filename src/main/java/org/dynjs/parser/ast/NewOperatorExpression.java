@@ -38,6 +38,14 @@ public class NewOperatorExpression extends AbstractExpression {
         this.newExpr = newExpr;
         this.argExprs = argExprs;
     }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.newExpr.verify(context, strict);
+        for ( Expression each : argExprs ) {
+            each.verify(context, strict);
+        }
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

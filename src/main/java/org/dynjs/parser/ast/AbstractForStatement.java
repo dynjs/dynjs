@@ -62,8 +62,16 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
         return this.block.getVariableDeclarations();
     }
 
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
-        this.block.checkStrictCompliance(context, strict);
+    public void verify(ExecutionContext context, boolean strict) {
+        if (this.test != null) {
+            this.test.verify(context, strict);
+        }
+        if (this.increment != null) {
+            this.increment.verify(context, strict);
+        }
+        if (this.block != null) {
+            this.block.verify(context, strict);
+        }
     }
 
     @Override

@@ -44,8 +44,8 @@ public class DoWhileStatement extends AbstractIteratingStatement {
         return this.vloop.getVariableDeclarations();
     }
 
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
-        this.vloop.checkStrictCompliance(context, strict);
+    public void verify(ExecutionContext context, boolean strict) {
+        this.vloop.verify(context, strict);
     }
 
     @Override

@@ -19,6 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class TernaryExpression extends AbstractExpression {
@@ -32,6 +33,13 @@ public class TernaryExpression extends AbstractExpression {
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
+    }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.vbool.verify(context, strict);
+        this.vthen.verify(context, strict);
+        this.velse.verify(context, strict);
     }
 
     @Override

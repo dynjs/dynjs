@@ -1,6 +1,7 @@
 package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 
 public abstract class AbstractBinaryExpression extends AbstractExpression {
 
@@ -13,6 +14,11 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;
+    }
+    
+    public void verify(ExecutionContext context, boolean strict) {
+        this.lhs.verify( context, strict);
+        this.rhs.verify( context, strict);
     }
 
     public Expression getLhs() {

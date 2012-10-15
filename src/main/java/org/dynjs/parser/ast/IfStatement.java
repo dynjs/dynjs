@@ -53,10 +53,10 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
         return decls;
     }
     
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
-        this.vthen.checkStrictCompliance(context, strict);
+    public void verify(ExecutionContext context, boolean strict) {
+        this.vthen.verify(context, strict);
         if ( this.velse != null ) {
-            this.velse.checkStrictCompliance(context, strict);
+            this.velse.verify(context, strict);
         }
     }
     

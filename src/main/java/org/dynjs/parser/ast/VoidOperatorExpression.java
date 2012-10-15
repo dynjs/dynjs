@@ -19,6 +19,7 @@ package org.dynjs.parser.ast;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.runtime.ExecutionContext;
 
 public class VoidOperatorExpression extends AbstractExpression {
 
@@ -27,6 +28,11 @@ public class VoidOperatorExpression extends AbstractExpression {
     public VoidOperatorExpression(final Tree tree, final Expression expr) {
         super(tree);
         this.expr = expr;
+    }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.expr.verify(context, strict);
     }
 
     @Override

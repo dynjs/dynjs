@@ -48,11 +48,11 @@ public class WithStatement extends AbstractCompilingStatement implements Stateme
         return this.block.getVariableDeclarations();
     }
     
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+    public void verify(ExecutionContext context, boolean strict) {
         if ( strict ) {
             throw new ThrowException( context, context.createSyntaxError( "with() statements not allowed in strict mode" ) );
         } else {
-            this.block.checkStrictCompliance(context, strict);
+            this.block.verify(context, strict);
         }
     }
 

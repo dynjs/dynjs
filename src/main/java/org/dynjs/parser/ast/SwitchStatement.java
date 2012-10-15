@@ -67,7 +67,7 @@ public class SwitchStatement extends AbstractCompilingStatement implements State
         return decls;
     }
     
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
+    public void verify(ExecutionContext context, boolean strict) {
         for ( CaseClause each : caseClauses ) {
             each.checkStrictCompliance(context, strict);
         }

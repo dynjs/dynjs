@@ -18,6 +18,7 @@ package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Position;
+import org.dynjs.runtime.ExecutionContext;
 
 public abstract class AbstractExpression extends AbstractByteCodeEmitter implements Expression {
 
@@ -38,4 +39,11 @@ public abstract class AbstractExpression extends AbstractByteCodeEmitter impleme
     public String dump(String indent) {
         return indent + getClass().getName() + "\n";
     }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        //System.err.println( "NOP VERIFY: " + this.getClass().getSimpleName() );
+    }
+    
+
 }

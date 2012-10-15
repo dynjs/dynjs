@@ -46,7 +46,7 @@ public class CaseClause {
     }
     
     public void checkStrictCompliance(ExecutionContext context, boolean strict) {
-        this.block.checkStrictCompliance(context, strict);
+        this.block.verify(context, strict);
     }
 
     public String toIndentedString(String indent) {

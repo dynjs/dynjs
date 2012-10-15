@@ -19,6 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionExpression extends AbstractExpression {
 
@@ -33,6 +34,12 @@ public class FunctionExpression extends AbstractExpression {
 
     public FunctionDescriptor getDescriptor() {
         return this.descriptor;
+    }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        // descriptor will be verifyed when its block is compiled,
+        // with locally-appropriate strictness.
     }
 
     public CodeBlock getCodeBlock() {

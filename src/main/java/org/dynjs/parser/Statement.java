@@ -39,6 +39,6 @@ public interface Statement {
     
     List<VariableDeclaration> getVariableDeclarations();
 
-    void checkStrictCompliance(ExecutionContext context, boolean strict);
+    void verify(ExecutionContext context, boolean strict);
 
 }

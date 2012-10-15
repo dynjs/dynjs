@@ -40,6 +40,14 @@ public class FunctionCallExpression extends AbstractExpression {
         this.memberExpr = memberExpr;
         this.argExprs = argExprs;
     }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.memberExpr.verify( context, strict );
+        for ( Expression each : argExprs ) {
+            each.verify( context, strict );
+        }
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

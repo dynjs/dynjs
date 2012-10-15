@@ -15,10 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import java.util.List;
-
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
 
@@ -55,4 +51,5 @@ public class FunctionDescriptor {
     public String toString() {
         return "function " + this.identifier + "(...){...}";
     }
+
 }

@@ -15,18 +15,20 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 
 public class VariableDeclaration extends AbstractExpression {
-    
-    private static final Set<String> FUTURE_RESERVED_WORDS = new HashSet<String>() {{
-        add( "implements");
-        add( "let");
-        add( "private");
-        add( "public");
-        add( "yield");
-        add( "interface");
-        add( "package");
-        add( "protected");
-        add( "static");
-    }};
+
+    private static final Set<String> FUTURE_RESERVED_WORDS = new HashSet<String>() {
+        {
+            add("implements");
+            add("let");
+            add("private");
+            add("public");
+            add("yield");
+            add("interface");
+            add("package");
+            add("protected");
+            add("static");
+        }
+    };
 
     private String identifier;
     private Expression initializer;
@@ -40,12 +42,16 @@ public class VariableDeclaration extends AbstractExpression {
     public String getIdentifier() {
         return this.identifier;
     }
-    
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
-        if ( strict ) {
-            if ( FUTURE_RESERVED_WORDS.contains( this.identifier ) ) {
-                throw new ThrowException(context, context.createSyntaxError( "'" + this.identifier + "' is not allowed as an identifier in strict-mode code" ) );
+
+    public void verify(ExecutionContext context, boolean strict) {
+        if (strict) {
+            if (FUTURE_RESERVED_WORDS.contains(this.identifier)) {
+                throw new ThrowException(context, context.createSyntaxError("'" + this.identifier + "' is not allowed as an identifier in strict-mode code"));
             }
+        }
+
+        if (this.initializer != null) {
+            this.initializer.verify(context, strict);
         }
     }
 
@@ -67,7 +73,7 @@ public class VariableDeclaration extends AbstractExpression {
                     append(jsGetValue());
                     // reference context val
                     invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
-                    // reference 
+                    // reference
                     ldc(identifier);
                     // str
                 }
@@ -85,6 +91,5 @@ public class VariableDeclaration extends AbstractExpression {
 
         return buf.toString();
     }
-
 
 }

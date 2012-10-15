@@ -32,6 +32,11 @@ public class TypeOfOpExpression extends AbstractExpression {
         super(tree);
         this.expr = expr;
     }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.expr.verify(context, strict);
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

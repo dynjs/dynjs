@@ -15,6 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
+import org.dynjs.runtime.ExecutionContext;
+
 import me.qmx.jitescript.CodeBlock;
 
 public class ExpressionStatement extends AbstractStatement {
@@ -28,6 +30,10 @@ public class ExpressionStatement extends AbstractStatement {
 
     public Expression getExpr() {
         return this.expr;
+    }
+    
+    public void verify(ExecutionContext context, boolean strict) {
+        this.expr.verify(context, strict);
     }
 
     @Override

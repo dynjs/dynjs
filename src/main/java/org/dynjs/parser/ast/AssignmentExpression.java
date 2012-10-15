@@ -37,6 +37,12 @@ public class AssignmentExpression extends AbstractExpression {
         this.lhs = lhs;
         this.rhs = rhs;
     }
+    
+    @Override
+    public void verify(ExecutionContext context, boolean strict) {
+        this.lhs.verify(context, strict);
+        this.rhs.verify(context, strict);
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

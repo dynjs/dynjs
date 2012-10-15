@@ -44,8 +44,8 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         setPrototype(scope.getGlobalObject().getPrototypeFor("Function"));
     }
     
-    public void checkStrictCompliance(ExecutionContext context) {
-        this.body.checkStrictCompliance(context, this.strict);
+    public void verify(ExecutionContext context) {
+        this.body.verify(context, this.strict);
     }
 
     public LexicalEnvironment getScope() {
