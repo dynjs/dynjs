@@ -366,6 +366,7 @@ public class Types {
                 return "0";
             }
             String result = Types.rewritePossiblyExponentialValue(o.toString());
+
             Pattern expPattern = Pattern.compile("^(.*)e([+-])([0-9]+)$");
             Matcher matcher = expPattern.matcher(result);
             if (matcher.matches()) {
@@ -384,7 +385,14 @@ public class Types {
                         for (int i = 0; i < (expValue - 1); ++i) {
                             newResult.append(0);
                         }
-                        newResult.append(matcher.group(1));
+
+                        String digits = matcher.group(1);
+                        if (digits.startsWith("-")) {
+                            newResult.append(digits.substring(1));
+                            newResult.insert( 0, "-");
+                        } else {
+                            newResult.append(digits);
+                        }
                         result = newResult.toString();
                     }
                 }
@@ -473,7 +481,7 @@ public class Types {
 
     public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.3
-        
+
         if (lhs.getClass().equals(rhs.getClass()) || (lhs instanceof Number && rhs instanceof Number)) {
             if (lhs == Types.UNDEFINED) {
                 return true;
@@ -501,7 +509,7 @@ public class Types {
             if (lhs instanceof String || lhs instanceof Boolean) {
                 return lhs.equals(rhs);
             }
-            if ( lhs == rhs ) {
+            if (lhs == rhs) {
                 return true;
             }
         }
@@ -597,11 +605,11 @@ public class Types {
         if (o instanceof JSFunction) {
             return "function";
         }
-        
+
         if (o instanceof JSObject) {
             return "object";
         }
-        
+
         if (o instanceof String) {
             return "string";
         }
@@ -652,7 +660,7 @@ public class Types {
             String num = matcher.group(1);
             String sign = matcher.group(3);
             String exp = matcher.group(4);
-            if (sign == null ) {
+            if (sign == null) {
                 sign = "+";
             }
             return num + "e" + sign + exp;

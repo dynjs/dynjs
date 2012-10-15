@@ -22,13 +22,13 @@ public class BuiltinNumber extends AbstractBuiltinType {
 
         // 15.7.4 Set the prototype
         final PrimitiveDynObject proto = new DynNumber(globalObject, 0L);
-        setPrototypeProperty( proto );
+        setPrototypeProperty(proto);
     }
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        
+
         defineNonEnumerableProperty(proto, "constructor", this);
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
         defineNonEnumerableProperty(proto, "toLocaleString", new ToString(globalObject));
@@ -48,20 +48,19 @@ public class BuiltinNumber extends AbstractBuiltinType {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         Number number = 0L;
-        Arguments argsObj = (Arguments) context.resolve("arguments" ).getValue(context);
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
         int numArgs = (int) argsObj.get(context, "length");
 
-        
-        if ( numArgs != 0 ) {
+        if (numArgs != 0) {
             number = Types.toNumber(context, args[0]);
         }
-        if (self == Types.UNDEFINED || self == Types.NULL ) {
+        if (self == Types.UNDEFINED || self == Types.NULL) {
             // called as a function
             return number;
         } else {
             // called as a ctor
             PrimitiveDynObject numberObject = (PrimitiveDynObject) self;
-            if (args[0] == Types.UNDEFINED) {
+            if (numArgs == 0) {
                 number = 0L;
             }
             numberObject.setPrimitiveValue(number);
