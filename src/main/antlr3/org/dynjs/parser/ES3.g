@@ -110,37 +110,37 @@ tokens
 	WITH 		= 'with' ;
 
 // Future reserved words
-	ABSTRACT	= 'abstract' ;
-	BOOLEAN 	= 'boolean' ;
-	BYTE 		= 'byte' ;
-	CHAR 		= 'char' ;
+	//ABSTRACT	= 'abstract' ;
+	//BOOLEAN 	= 'boolean' ;
+	//BYTE 		= 'byte' ;
+	//CHAR 		= 'char' ;
 	CLASS 		= 'class' ;
 	CONST 		= 'const' ;
 	DEBUGGER 	= 'debugger' ;
-	DOUBLE		= 'double' ;
+	//DOUBLE		= 'double' ;
 	ENUM 		= 'enum' ;
 	EXPORT 		= 'export' ;
 	EXTENDS		= 'extends' ;
-	FINAL 		= 'final' ;
-	FLOAT 		= 'float' ;
-	GOTO 		= 'goto' ;
+	//FINAL 		= 'final' ;
+	//FLOAT 		= 'float' ;
+	//GOTO 		= 'goto' ;
 	//IMPLEMENTS 	= 'implements' ;
 	IMPORT		= 'import' ;
-	INT 		= 'int' ;
+	//INT 		= 'int' ;
 	//INTERFACE 	= 'interface' ;
-	LONG 		= 'long' ;
-	NATIVE 		= 'native' ;
+	//LONG 		= 'long' ;
+	//NATIVE 		= 'native' ;
 	//PACKAGE 	= 'package' ;
 	//PRIVATE 	= 'private' ;
 	//PROTECTED 	= 'protected' ;
 	//PUBLIC		= 'public' ;
-	SHORT 		= 'short' ;
+	//SHORT 		= 'short' ;
 	//STATIC 		= 'static' ;
 	SUPER 		= 'super' ;
-	SYNCHRONIZED 	= 'synchronized' ;
-	THROWS 		= 'throws' ;
-	TRANSIENT 	= 'transient' ;
-	VOLATILE 	= 'volatile' ;
+	//SYNCHRONIZED 	= 'synchronized' ;
+	//THROWS 		= 'throws' ;
+	//TRANSIENT 	= 'transient' ;
+	//VOLATILE 	= 'volatile' ;
 
 // Punctuators
 	LBRACE		= '{' ;
