@@ -10,6 +10,7 @@ public class VerifierUtils {
     
     private static Set<String> DISALLOWED_STRICT_IDENTIFIERS = new HashSet<String>() {{
         add( "eval" );
+        add( "arguments" );
     }};
     
     private static final Set<String> FUTURE_RESERVED_WORDS = new HashSet<String>() {

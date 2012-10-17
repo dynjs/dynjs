@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.VerifierUtils;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 
@@ -63,6 +64,13 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     @Override
     public void verify(ExecutionContext context, boolean strict) {
         this.rootExpr.verify( context, strict);
+        if ( strict ) {
+            Expression lhs = this.rootExpr.getLhs();
+            if ( lhs instanceof IdentifierReferenceExpression ) {
+                String ident = ((IdentifierReferenceExpression)lhs).getIdentifier();
+                VerifierUtils.verifyStrictIdentifier(context, ident);
+            }
+        }
     }
 
     public String toString() {
