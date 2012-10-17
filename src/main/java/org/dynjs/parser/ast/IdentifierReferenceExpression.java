@@ -42,6 +42,10 @@ public class IdentifierReferenceExpression extends AbstractExpression {
         super(tree);
         this.identifier = identifier;
     }
+    
+    public String getIdentifier() {
+        return this.identifier;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

@@ -11,24 +11,11 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.VerifierUtils;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 
 public class VariableDeclaration extends AbstractExpression {
-
-    private static final Set<String> FUTURE_RESERVED_WORDS = new HashSet<String>() {
-        {
-            add("implements");
-            add("let");
-            add("private");
-            add("public");
-            add("yield");
-            add("interface");
-            add("package");
-            add("protected");
-            add("static");
-        }
-    };
 
     private String identifier;
     private Expression initializer;
@@ -45,9 +32,7 @@ public class VariableDeclaration extends AbstractExpression {
 
     public void verify(ExecutionContext context, boolean strict) {
         if (strict) {
-            if (FUTURE_RESERVED_WORDS.contains(this.identifier)) {
-                throw new ThrowException(context, context.createSyntaxError("'" + this.identifier + "' is not allowed as an identifier in strict-mode code"));
-            }
+            VerifierUtils.verifyStrictIdentifier(context, identifier);
         }
 
         if (this.initializer != null) {
@@ -84,7 +69,7 @@ public class VariableDeclaration extends AbstractExpression {
     public String dump(String indent) {
         StringBuffer buf = new StringBuffer();
 
-        buf.append(indent + "var " + this.identifier + "\n" );
+        buf.append(indent + "var " + this.identifier + "\n");
         if (this.initializer != null) {
             buf.append(this.initializer.dump(indent + "  "));
         }
