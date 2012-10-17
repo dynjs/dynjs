@@ -642,37 +642,37 @@ keyword
 // $<	Future reserved words (7.5.3)
 
 futureReservedWord
-	: ABSTRACT
-	| BOOLEAN
-	| BYTE
-	| CHAR
-	| CLASS
+	: //ABSTRACT
+	//| BOOLEAN
+	//| BYTE
+	//| CHAR
+	CLASS
 	| CONST
 	| DEBUGGER
-	| DOUBLE
+	//| DOUBLE
 	| ENUM
 	| EXPORT
 	| EXTENDS
-	| FINAL
-	| FLOAT
-	| GOTO
-	| IMPLEMENTS
+	//| FINAL
+	//| FLOAT
+	//| GOTO
+	//| IMPLEMENTS
 	| IMPORT
-	| INT
-	| INTERFACE
-	| LONG
-	| NATIVE
-	| PACKAGE
-	| PRIVATE
-	| PROTECTED
-	| PUBLIC
-	| SHORT
-	| STATIC
+	//| INT
+	//| INTERFACE
+	//| LONG
+	//| NATIVE
+	//| PACKAGE
+	//| PRIVATE
+	//| PROTECTED
+	//| PUBLIC
+	//| SHORT
+	//| STATIC
 	| SUPER
-	| SYNCHRONIZED
-	| THROWS
-	| TRANSIENT
-	| VOLATILE
+	//| SYNCHRONIZED
+	//| THROWS
+	//| TRANSIENT
+	//| VOLATILE
 	;
 
 // $>
