@@ -17,10 +17,7 @@ import static me.qmx.jitescript.util.CodegenUtils.p;
 
 public class DynJSBootstrapper {
 
-    public static final Handle BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
-            p(DynJSBootstrapper.class), "bootstrap",
-            methodType(CallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class)
-                    .toMethodDescriptorString());
+    public static final Handle BOOTSTRAP;
     public static final Object[] BOOTSTRAP_ARGS = new Object[0];
 
     private static DynamicLinker linker;
@@ -30,6 +27,10 @@ public class DynJSBootstrapper {
         factory.setPrioritizedLinkers(new DynJSLinker());
         factory.setFallbackLinkers(new BeansLinker());
         linker = factory.createLinker();
+        BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
+                p(DynJSBootstrapper.class), "bootstrap",
+                methodType(CallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class)
+                        .toMethodDescriptorString());
     }
 
     public static CallSite bootstrap(MethodHandles.Lookup caller, String name, MethodType type) {
