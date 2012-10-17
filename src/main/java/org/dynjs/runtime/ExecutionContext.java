@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -33,11 +34,12 @@ public class ExecutionContext {
     private LexicalEnvironment variableEnvironment;
     private Object thisBinding;
     private boolean strict;
+    private List<CallContext> callContexts = new ArrayList<>();
 
     private int lineNumber;
     private String fileName;
     private String debugContext = "<eval>";
-    
+
     private Clock clock;
     private TimeZone timeZone;
 
@@ -47,6 +49,7 @@ public class ExecutionContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+        pushCallContext();
     }
 
     public ExecutionContext getParent() {
@@ -76,19 +79,19 @@ public class ExecutionContext {
 
         return this.strict;
     }
-    
+
     public Clock getClock() {
-        if ( this.parent != null ) {
+        if (this.parent != null) {
             return this.parent.getClock();
         }
         return this.clock;
     }
-    
+
     public TimeZone getTimeZone() {
-        if ( this.parent != null ) {
+        if (this.parent != null) {
             return this.parent.getTimeZone();
         }
-        
+
         return this.timeZone;
     }
 
@@ -133,27 +136,43 @@ public class ExecutionContext {
         return result.value;
     }
 
+    public void incrementPendingConstructorCount() {
+        this.callContexts.get(this.callContexts.size() - 1).incrementPendingConstructorCount();
+    }
+
+    public void decrementPendingConstructorCount() {
+        this.callContexts.get(this.callContexts.size() - 1).decrementPendingConstructorCount();
+    }
+
+    public int getPendingConstructorCount() {
+        return this.callContexts.get(this.callContexts.size() - 1).getPendingConstructorCount();
+    }
+
+    public void pushCallContext() {
+        this.callContexts.add(new CallContext());
+    }
+
+    public void popCallContext() {
+        this.callContexts.remove(this.callContexts.size() - 1);
+    }
+
     public Object call(JSFunction function, Object self, Object... args) {
         // 13.2.1
-        ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
-        try {
-            Object result = function.call(fnContext);
-            if (result == null) {
-                return Types.UNDEFINED;
-            }
-
-            return result;
-        } catch (ThrowException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new ThrowException(fnContext, e);
+        if (getPendingConstructorCount() > 0) {
+            return construct(function, args);
         }
+
+        return internalCall(function, self, args);
     }
 
     public JSObject construct(JSFunction function, Object... args) {
 
         if (!function.isConstructor()) {
             throw new ThrowException(this, createTypeError("not a constructor"));
+        }
+
+        if (getPendingConstructorCount() > 0) {
+            decrementPendingConstructorCount();
         }
 
         // 13.2.2
@@ -175,13 +194,31 @@ public class ExecutionContext {
         }
 
         // 8. Call the function with obj as self
-        Object result = call(function, obj, args);
+        Object result = internalCall(function, obj, args);
         // 9. If result is a JSObject return it
         if (result instanceof JSObject) {
             return (JSObject) result;
         }
         // Otherwise return obj
         return obj;
+    }
+    
+    public Object internalCall(JSFunction function, Object self, Object... args) {
+        // 13.2.1
+
+        ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
+        try {
+            Object result = function.call(fnContext);
+            if (result == null) {
+                return Types.UNDEFINED;
+            }
+
+            return result;
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ThrowException(fnContext, e);
+        }
     }
 
     // ----------------------------------------------------------------------

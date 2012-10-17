@@ -16,7 +16,8 @@
 
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
+import org.objectweb.asm.tree.LabelNode;
 
 public class NewOperatorExpression extends AbstractExpression {
 
@@ -51,14 +53,34 @@ public class NewOperatorExpression extends AbstractExpression {
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
+                LabelNode end = new LabelNode();
                 // 11.2.2
+                
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append(newExpr.getCodeBlock());
-                // context reference
+                invokevirtual(p(ExecutionContext.class), "incrementPendingConstructorCount", sig(void.class));
+                // <empty>
+                
+                append( newExpr.getCodeBlock() );
+                // obj
+                
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj context
+                invokevirtual(p(ExecutionContext.class), "getPendingConstructorCount", sig(int.class));
+                // obj count
+                iffalse( end );
+                
+                // obj
+                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+                // obj context
+                swap();
+                // context obj
                 append(jsGetValue(JSFunction.class));
                 // context ctor-fn
 
+                bipush(0);
+                anewarray(p(Object.class));
+                /*
                 int numArgs = argExprs.size();
                 bipush(numArgs);
                 anewarray(p(Object.class));
@@ -70,9 +92,13 @@ public class NewOperatorExpression extends AbstractExpression {
                     append(jsGetValue());
                     aastore();
                 }
+                 */
                 // context function array
                 invokevirtual(p(ExecutionContext.class), "construct", sig(JSObject.class, JSFunction.class, Object[].class));
                 // obj
+                
+                label( end );
+                nop();
             }
         };
     }
@@ -91,5 +117,10 @@ public class NewOperatorExpression extends AbstractExpression {
         }
         buf.append(")");
         return buf.toString();
+    }
+    
+    public String dump(String indent) {
+        return super.dump(indent) + this.newExpr.dump( indent + "  " );
+                
     }
 }

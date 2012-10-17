@@ -17,12 +17,12 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.SyntaxError;
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class Eval extends AbstractNativeFunction {
+public class Eval extends AbstractNonConstructorFunction {
 
     public Eval(GlobalObject globalObject) {
         super(globalObject, "code");

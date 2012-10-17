@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.types.regexp.prototype;
 import java.util.regex.MatchResult;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractPrototypeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -11,7 +11,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
-public class Exec extends AbstractPrototypeFunction {
+public class Exec extends AbstractNonConstructorFunction {
 
     public Exec(GlobalObject globalObject) {
         super(globalObject, "string");

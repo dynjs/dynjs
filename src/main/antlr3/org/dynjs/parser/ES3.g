@@ -974,11 +974,11 @@ all the expressions surrounding member selection and calls have been moved to le
 memberExpression
 	: primaryExpression
 	| functionExpression
-	| newExpression
+	//| newExpression
 	;
 
 newExpression
-	: NEW^ memberExpression ( arguments )?
+	: NEW^ leftHandSideExpression 
 	;
 
 	
@@ -989,6 +989,7 @@ arguments
 	
 leftHandSideExpression
 	:
+	( newExpression) | (
 	(
 		memberExpression 		-> memberExpression
 	)
@@ -997,7 +998,7 @@ leftHandSideExpression
 		| LBRACK expression RBRACK	-> ^( BYINDEX $leftHandSideExpression expression )
 		| DOT Identifier		-> ^( BYFIELD $leftHandSideExpression Identifier )
 		| DOT reservedWord      -> ^( BYFIELD $leftHandSideExpression ^( Identifier[$reservedWord.text] ) )
-	)*
+	)* )
 	;
 
 // $>

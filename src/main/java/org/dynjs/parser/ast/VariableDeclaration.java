@@ -84,7 +84,7 @@ public class VariableDeclaration extends AbstractExpression {
     public String dump(String indent) {
         StringBuffer buf = new StringBuffer();
 
-        buf.append("var " + this.identifier);
+        buf.append(indent + "var " + this.identifier + "\n" );
         if (this.initializer != null) {
             buf.append(this.initializer.dump(indent + "  "));
         }

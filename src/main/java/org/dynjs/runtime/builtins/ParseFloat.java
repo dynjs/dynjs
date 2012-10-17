@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.runtime.AbstractPrototypeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class ParseFloat extends AbstractPrototypeFunction {
+public class ParseFloat extends AbstractNonConstructorFunction {
 
     public ParseFloat(GlobalObject globalObject) {
         super(globalObject, "f");

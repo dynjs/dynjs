@@ -200,9 +200,9 @@ public class DynJS {
         if (tree == null) {
             return null;
         }
-        // System.err.println( ">>>" );
-        // dump(tree);
-        // System.err.println( "<<<" );
+        //System.err.println( ">>>" );
+        //dump(tree);
+        //System.err.println( "<<<" );
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
@@ -211,7 +211,9 @@ public class DynJS {
         executor.setBlockManager(context.getBlockManager());
         walker.setExecutor(executor);
         walker.program();
-        return walker.getResult();
+        BlockStatement result = walker.getResult();
+        //System.err.println( result.dump("") );
+        return result;
     }
 
     private void dump(CommonTree tree) {

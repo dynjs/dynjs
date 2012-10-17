@@ -41,6 +41,14 @@ public class FunctionCallExpression extends AbstractExpression {
         this.argExprs = argExprs;
     }
     
+    public List<Expression> getArgumentExpressions() {
+        return this.argExprs;
+    }
+    
+    public Expression getMemberExpression() {
+        return this.memberExpr;
+    }
+    
     @Override
     public void verify(ExecutionContext context, boolean strict) {
         this.memberExpr.verify( context, strict );
@@ -135,6 +143,11 @@ public class FunctionCallExpression extends AbstractExpression {
 
                 label(doCall);
                 // context function self
+                
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context function self context
+                invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
+                // context function self 
 
                 int numArgs = argExprs.size();
                 bipush(numArgs);
@@ -148,6 +161,12 @@ public class FunctionCallExpression extends AbstractExpression {
                     aastore();
                 }
                 // context function self array
+                
+                aload(JSCompiler.Arities.EXECUTION_CONTEXT );
+                // context function self array context
+                invokevirtual(p(ExecutionContext.class), "popCallContext", sig(void.class));
+                // context function self array
+                
                 // call ExecutionContext#call(fn, self, args) -> Object
                 invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, JSFunction.class, Object.class, Object[].class));
                 // obj
@@ -169,5 +188,9 @@ public class FunctionCallExpression extends AbstractExpression {
         }
         buf.append(")");
         return buf.toString();
+    }
+    
+    public String dump(String indent) {
+        return super.dump(indent) + this.memberExpr.dump( indent + "  " );
     }
 }

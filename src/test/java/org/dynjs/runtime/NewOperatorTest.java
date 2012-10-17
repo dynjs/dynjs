@@ -1,15 +1,22 @@
 package org.dynjs.runtime;
 
+import org.dynjs.exception.ThrowException;
 import org.junit.Test;
 import static org.fest.assertions.Assertions.*;
 
 public class NewOperatorTest extends AbstractDynJSTestSupport {
 
+    @Test(expected=ThrowException.class)
+    public void testInvalidNew() {
+        eval( "new new Boolean(true)" );
+    }
+    
     @Test
     public void testNew() {
         eval("var y;",
                 "function Thing(){ y = this };",
-                "var x = new Thing();");
+                " var z = { ctor: Thing };",
+                "var x = new z.ctor(42);");
 
         JSObject x = (JSObject) getContext().resolve("x").getValue(getContext());
         JSFunction thing = (JSFunction) getContext().resolve("Thing").getValue(getContext());

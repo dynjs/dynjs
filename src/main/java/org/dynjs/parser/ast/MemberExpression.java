@@ -78,4 +78,8 @@ public class MemberExpression extends AbstractExpression {
     public String toString() {
         return this.memberExpr + "." + this.identifierExpr;
     }
+    
+    public String dump(String indent) {
+        return super.dump(indent) + this.memberExpr.dump( indent + "  " ) + this.identifierExpr.dump( indent + "  " );
+    }
 }
