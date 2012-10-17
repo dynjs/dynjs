@@ -1,6 +1,7 @@
 package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.VerifierUtils;
 import org.dynjs.runtime.ExecutionContext;
 
 public abstract class AbstractUnaryOperatorExpression extends AbstractExpression {
@@ -21,9 +22,15 @@ public abstract class AbstractUnaryOperatorExpression extends AbstractExpression
     public Expression getExpr() {
         return this.expr;
     }
-    
+
     public void verify(ExecutionContext context, boolean strict) {
         this.expr.verify(context, strict);
+        if (strict) {
+            if (this.expr instanceof IdentifierReferenceExpression) {
+                String ident = ((IdentifierReferenceExpression)this.expr).getIdentifier();
+                VerifierUtils.verifyStrictIdentifier(context, ident);
+            }
+        }
     }
 
 }
