@@ -26,7 +26,6 @@ public class DeleteOpTest extends AbstractDynJSTestSupport {
     @Test
     public void testDeleteThis() {
         Object result = eval( "delete this" );
-        System.err.println( result );
     }
 
 }

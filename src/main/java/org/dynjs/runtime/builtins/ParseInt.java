@@ -34,13 +34,15 @@ public class ParseInt extends AbstractNonConstructorFunction {
         long radix = 10;
         if (radixArg != Types.UNDEFINED) {
             radix = Types.toInt32(context, radixArg);
-            if (radix == 0) { radix = extractRadix(text); }
+            if (radix == 0) {
+                radix = extractRadix(text);
+            }
         } else {
             radix = extractRadix(text);
         }
         text = cleanText(text, radix);
         return parseInt(text, radix);
-  }
+    }
 
     static String cleanText(String text, long radix) {
         if (radix == 16) {
@@ -57,9 +59,33 @@ public class ParseInt extends AbstractNonConstructorFunction {
          * then let Z be the substring of S consisting of all characters before
          * the first such character; otherwise, let Z be S
          */
-        String regex = "[^-.0-" + (radix-1) + "].*";
-        text = text.replaceAll(regex, "");
-        return text;
+        StringBuffer cleanText = new StringBuffer();
+        int numChars = text.length();
+        for ( int i = 0 ; i < numChars ; ++i  ) {
+            if ( isRadixDigit(text.charAt(i), radix) ) {
+                cleanText.append( text.charAt(i) );
+            } else {
+                break;
+            }
+        }
+            
+        return cleanText.toString();
+    }
+
+    static boolean isRadixDigit(char c, long radix) {
+        if (c == '-' || c == '.') {
+            return true;
+        }
+
+        try {
+            int i = Integer.parseInt("" + c, (int) radix);
+            if ( i < radix ) {
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return false;
     }
 
     static int extractRadix(String text) {

@@ -88,7 +88,6 @@ public class JSONTest extends AbstractDynJSTestSupport {
                 "}");
 
         String result = (String) eval("JSON.stringify(x)");
-        System.err.println(result);
         assertThat(result).contains("\"fish\":\"taco\"");
         assertThat(result).contains("\"foo\":42");
         assertThat(result).startsWith("{");
