@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 
@@ -64,5 +65,10 @@ public class IdentifierReferenceExpression extends AbstractExpression {
 
     public String toString() {
         return this.identifier;
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

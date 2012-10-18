@@ -20,6 +20,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
 import org.objectweb.asm.tree.LabelNode;
@@ -143,5 +144,10 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
 
     public String toString() {
         return getExpr() + getOp();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

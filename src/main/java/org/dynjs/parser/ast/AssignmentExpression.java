@@ -22,34 +22,21 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.VerifierUtils;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.objectweb.asm.tree.LabelNode;
 
-public class AssignmentExpression extends AbstractExpression {
-
-    private final Expression lhs;
-    private final Expression rhs;
+public class AssignmentExpression extends AbstractBinaryExpression {
 
     public AssignmentExpression(final Tree tree, final Expression lhs, final Expression rhs) {
-        super(tree);
-        this.lhs = lhs;
-        this.rhs = rhs;
+        super(tree, lhs, rhs, "=" );
     }
-
+    
     @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.lhs.verify(context, strict);
-        this.rhs.verify(context, strict);
-
-        if (strict) {
-            if (lhs instanceof IdentifierReferenceExpression) {
-                String ident = ((IdentifierReferenceExpression) lhs).getIdentifier();
-                VerifierUtils.verifyStrictIdentifier(context, ident);
-            }
-        }
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit(context, this, strict);
     }
 
     @Override
@@ -59,7 +46,7 @@ public class AssignmentExpression extends AbstractExpression {
                 LabelNode throwRefError = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append(lhs.getCodeBlock());
+                append(getLhs().getCodeBlock());
                 // reference
                 dup();
                 // reference reference
@@ -68,7 +55,7 @@ public class AssignmentExpression extends AbstractExpression {
                 iffalse(throwRefError);
                 // reference
                 checkcast(p(Reference.class));
-                append(rhs.getCodeBlock());
+                append(getRhs().getCodeBlock());
                 // reference expr
                 append(jsGetValue());
                 // reference value
@@ -92,7 +79,7 @@ public class AssignmentExpression extends AbstractExpression {
                 // ex ex
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // ex ex context
-                ldc(lhs.toString() + " is not a reference");
+                ldc(getLhs().toString() + " is not a reference");
                 // ex ex context str
                 invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
                 // ex ex error
@@ -111,6 +98,6 @@ public class AssignmentExpression extends AbstractExpression {
     }
 
     public String toString() {
-        return lhs + " = " + rhs;
+        return getLhs() + " = " + getRhs();
     }
 }

@@ -5,6 +5,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
@@ -65,5 +66,10 @@ public class PropertySet extends PropertyAccessor {
                 // <EMPTY>
             }
         };
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

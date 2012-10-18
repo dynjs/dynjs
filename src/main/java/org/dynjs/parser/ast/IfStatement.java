@@ -25,6 +25,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
@@ -42,7 +43,18 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
         this.vthen = vthen;
         this.velse = velse;
     }
-
+    
+    public Expression getTest() {
+        return this.vbool;
+    }
+    
+    public Statement getThenBlock() {
+        return this.vthen;
+    }
+    
+    public Statement getElseBlock() {
+        return this.velse;
+    }
     
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
@@ -51,13 +63,6 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
             decls.addAll( this.velse.getVariableDeclarations() );
         }
         return decls;
-    }
-    
-    public void verify(ExecutionContext context, boolean strict) {
-        this.vthen.verify(context, strict);
-        if ( this.velse != null ) {
-            this.velse.verify(context, strict);
-        }
     }
     
     @Override
@@ -123,5 +128,11 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
         buf.append(indent).append("}");
 
         return buf.toString();
+    }
+
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

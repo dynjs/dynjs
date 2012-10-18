@@ -15,11 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.VerifierUtils;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
@@ -31,6 +33,10 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     public CompoundAssignmentExpression(Tree tree, AbstractBinaryExpression rootExpr) {
         super(tree);
         this.rootExpr = rootExpr;
+    }
+    
+    public AbstractBinaryExpression getRootExpr() {
+        return this.rootExpr;
     }
 
     @Override
@@ -61,19 +67,13 @@ public class CompoundAssignmentExpression extends AbstractExpression {
         };
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.rootExpr.verify( context, strict);
-        if ( strict ) {
-            Expression lhs = this.rootExpr.getLhs();
-            if ( lhs instanceof IdentifierReferenceExpression ) {
-                String ident = ((IdentifierReferenceExpression)lhs).getIdentifier();
-                VerifierUtils.verifyStrictIdentifier(context, ident);
-            }
-        }
-    }
-
     public String toString() {
         return rootExpr.getLhs() + " " + rootExpr.getOp() + "=" + rootExpr.getRhs();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict);
+        
     }
 }

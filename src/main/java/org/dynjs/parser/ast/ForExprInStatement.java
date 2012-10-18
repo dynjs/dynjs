@@ -18,8 +18,10 @@ package org.dynjs.parser.ast;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.ExecutionContext;
 
 public class ForExprInStatement extends AbstractForInStatement {
 
@@ -28,6 +30,10 @@ public class ForExprInStatement extends AbstractForInStatement {
     public ForExprInStatement(final Tree tree, final BlockManager blockManager, final Expression expr, final Expression rhs, final Statement block) {
         super(tree, blockManager, rhs, block);
         this.expr = expr;
+    }
+    
+    public Expression getExpr() {
+        return this.expr;
     }
 
     @Override
@@ -41,6 +47,11 @@ public class ForExprInStatement extends AbstractForInStatement {
         buf.append(getBlock().toIndentedString(indent + "  "));
         buf.append(indent).append("}");
         return buf.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

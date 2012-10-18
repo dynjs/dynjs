@@ -1,9 +1,12 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.ExecutionContext;
 
 public class BitwiseExpression extends AbstractBinaryExpression {
 
@@ -58,6 +61,11 @@ public class BitwiseExpression extends AbstractBinaryExpression {
                 // Long
             }
         };
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

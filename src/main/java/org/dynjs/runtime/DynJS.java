@@ -35,7 +35,7 @@ public class DynJS {
 
     public DynJS(Config config) {
         this.config = config;
-        this.compiler = new JSCompiler(config);
+        this.compiler = new JSCompiler(this, config);
         this.context = ExecutionContext.createGlobalExecutionContext(this);
     }
 
@@ -146,8 +146,7 @@ public class DynJS {
         if (statements == null) {
             return new NullProgram(filename);
         }
-        JSProgram programObj = compiler.compileProgram(statements, forceStrict);
-        programObj.verify(execContext);
+        JSProgram programObj = compiler.compileProgram(execContext, statements, forceStrict);
         return programObj;
     }
 
@@ -162,7 +161,6 @@ public class DynJS {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(statements, forceStrict);
-        programObj.verify(execContext);
         return programObj;
     }
 

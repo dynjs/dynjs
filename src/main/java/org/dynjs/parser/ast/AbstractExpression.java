@@ -40,10 +40,5 @@ public abstract class AbstractExpression extends AbstractByteCodeEmitter impleme
         return indent + getClass().getName() + "\n";
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        //System.err.println( "NOP VERIFY: " + this.getClass().getSimpleName() );
-    }
-    
 
 }

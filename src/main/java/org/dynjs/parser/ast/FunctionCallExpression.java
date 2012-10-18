@@ -23,6 +23,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -49,14 +50,6 @@ public class FunctionCallExpression extends AbstractExpression {
         return this.memberExpr;
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.memberExpr.verify( context, strict );
-        for ( Expression each : argExprs ) {
-            each.verify( context, strict );
-        }
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
@@ -192,5 +185,11 @@ public class FunctionCallExpression extends AbstractExpression {
     
     public String dump(String indent) {
         return super.dump(indent) + this.memberExpr.dump( indent + "  " );
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
+        
     }
 }

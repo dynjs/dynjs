@@ -10,19 +10,31 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.VerifyingVisitor;
 import org.dynjs.runtime.BaseProgram;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
 
 public class ProgramCompiler extends AbstractCompiler {
 
-    public ProgramCompiler(Config config) {
-        super(config, "Program");
+    public ProgramCompiler(DynJS runtime, Config config) {
+        super(runtime, config, "Program");
     }
 
     public JSProgram compile(final Statement statement, boolean forceStrict) {
+        ExecutionContext verifyContext = ExecutionContext.createGlobalExecutionContext(getRuntime());
+        return compile(verifyContext, statement, forceStrict);
+    }
+
+    public JSProgram compile(final ExecutionContext verifyContext, final Statement statement, boolean forceStrict) {
+        final boolean strict = isStrict(statement) || forceStrict;
+        VerifyingVisitor visitor = new VerifyingVisitor();
+        statement.accept(verifyContext, visitor, strict);
+
         JiteClass jiteClass = new JiteClass(nextClassName(), p(BaseProgram.class), new String[0]) {
             {
                 defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Statement.class),
@@ -30,7 +42,7 @@ public class ProgramCompiler extends AbstractCompiler {
                             {
                                 aload(0);
                                 aload(1);
-                                if (isStrict(statement)) {
+                                if (strict) {
                                     iconst_1();
                                     i2b();
                                 } else {
@@ -59,9 +71,6 @@ public class ProgramCompiler extends AbstractCompiler {
         try {
             Constructor<BaseProgram> ctor = cls.getDeclaredConstructor(Statement.class);
             BaseProgram program = ctor.newInstance(statement);
-            if ( forceStrict ) {
-                program.setStrict( true );
-            }
             return program;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);

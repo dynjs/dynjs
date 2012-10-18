@@ -18,6 +18,8 @@ package org.dynjs.parser.ast;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.ExecutionContext;
 
 public class StringLiteralExpression extends AbstractExpression {
 
@@ -43,5 +45,10 @@ public class StringLiteralExpression extends AbstractExpression {
 
     public String toString() {
         return this.literal;
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

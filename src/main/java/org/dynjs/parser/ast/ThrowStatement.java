@@ -22,22 +22,27 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ThrowStatement extends AbstractStatement {
 
-    private final Expression expression;
+    private final Expression expr;
 
-    public ThrowStatement(final Tree tree, Expression expression) {
+    public ThrowStatement(final Tree tree, Expression expr) {
         super(tree);
-        this.expression = expression;
+        this.expr = expr;
+    }
+    
+    public Expression getExpr()  {
+        return this.expr;
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append(expression.getCodeBlock());
+                append(expr.getCodeBlock());
                 append(jsGetValue());
                 // val
                 newobj(p(ThrowException.class));
@@ -58,7 +63,12 @@ public class ThrowStatement extends AbstractStatement {
     }
 
     public String toIndentedString(String indent) {
-        return indent + "throw " + this.expression.toString();
+        return indent + "throw " + this.expr.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

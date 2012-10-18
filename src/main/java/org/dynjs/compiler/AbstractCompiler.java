@@ -12,6 +12,7 @@ import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.StringLiteralExpression;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
@@ -19,16 +20,22 @@ import org.objectweb.asm.util.CheckClassAdapter;
 public class AbstractCompiler {
 
     private final AtomicInteger counter = new AtomicInteger();
+    private DynJS runtime;
     private Config config;
     private String type;
 
-    public AbstractCompiler(Config config, String type) {
+    public AbstractCompiler(DynJS runtime, Config config, String type) {
+        this.runtime = runtime;
         this.config = config;
         this.type = type;
     }
 
     public Config getConfig() {
         return this.config;
+    }
+    
+    public DynJS getRuntime() {
+        return this.runtime;
     }
 
     public int nextCounterValue() {

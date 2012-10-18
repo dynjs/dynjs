@@ -19,6 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
@@ -35,11 +36,16 @@ public class TernaryExpression extends AbstractExpression {
         this.velse = velse;
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.vbool.verify(context, strict);
-        this.vthen.verify(context, strict);
-        this.velse.verify(context, strict);
+    public Expression getTest() {
+        return this.vbool;
+    }
+    
+    public Expression getThenExpr() {
+        return this.vthen;
+    }
+    
+    public Expression getElseExpr() {
+        return this.velse;
     }
 
     @Override
@@ -74,5 +80,10 @@ public class TernaryExpression extends AbstractExpression {
 
     public String toString() {
         return this.vbool + " ? " + this.vthen + " : " + this.velse;
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

@@ -3,6 +3,7 @@ package org.dynjs.parser.ast;
 import java.util.Collections;
 import java.util.List;
 
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
@@ -45,8 +46,8 @@ public class CaseClause {
         return this.block.getVariableDeclarations();
     }
     
-    public void checkStrictCompliance(ExecutionContext context, boolean strict) {
-        this.block.verify(context, strict);
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
     public String toIndentedString(String indent) {

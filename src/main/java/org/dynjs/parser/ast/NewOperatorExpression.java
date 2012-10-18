@@ -25,30 +25,18 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.objectweb.asm.tree.LabelNode;
 
-public class NewOperatorExpression extends AbstractExpression {
+public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    private final Expression newExpr;
-    private final List<Expression> argExprs;
-
-    public NewOperatorExpression(final Tree tree, final Expression newExpr, final List<Expression> argExprs) {
-        super(tree);
-        this.newExpr = newExpr;
-        this.argExprs = argExprs;
+    public NewOperatorExpression(final Tree tree, final Expression expr, final List<Expression> argExprs) {
+        super(tree, expr, "new" );
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.newExpr.verify(context, strict);
-        for ( Expression each : argExprs ) {
-            each.verify(context, strict);
-        }
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
@@ -61,7 +49,7 @@ public class NewOperatorExpression extends AbstractExpression {
                 invokevirtual(p(ExecutionContext.class), "incrementPendingConstructorCount", sig(void.class));
                 // <empty>
                 
-                append( newExpr.getCodeBlock() );
+                append( getExpr().getCodeBlock() );
                 // obj
                 
                 aload( JSCompiler.Arities.EXECUTION_CONTEXT );
@@ -104,23 +92,16 @@ public class NewOperatorExpression extends AbstractExpression {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append(this.newExpr).append("(");
-        boolean first = true;
-        for (Expression each : this.argExprs) {
-            if (!first) {
-                buf.append(", ");
-            }
-            buf.append(each.toString());
-            first = false;
-
-        }
-        buf.append(")");
-        return buf.toString();
+        return "new " + getExpr();
     }
     
     public String dump(String indent) {
-        return super.dump(indent) + this.newExpr.dump( indent + "  " );
+        return super.dump(indent) + "new " + getExpr().dump( indent + "  " );
                 
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict);
     }
 }

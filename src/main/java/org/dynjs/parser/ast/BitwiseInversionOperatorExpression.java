@@ -15,31 +15,29 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
 
-public class BitwiseInversionOperatorExpression extends AbstractExpression {
-
-    private final Expression expr;
+public class BitwiseInversionOperatorExpression extends AbstractUnaryOperatorExpression {
 
     public BitwiseInversionOperatorExpression(final Tree tree, final Expression expr) {
-        super(tree);
-        this.expr = expr;
+        super(tree, expr, "~");
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        this.expr.verify( context, strict );
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
-                append(expr.getCodeBlock());
+                append(getExpr().getCodeBlock());
                 // obj
                 append(jsGetValue());
                 // val
@@ -58,7 +56,7 @@ public class BitwiseInversionOperatorExpression extends AbstractExpression {
     }
 
     public String toString() {
-        return "~" + expr;
+        return "~" + getExpr();
     }
 
 }

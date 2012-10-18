@@ -28,14 +28,14 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
-public class SwitchStatement extends AbstractCompilingStatement implements Statement {
+public class SwitchStatement extends AbstractCompilingStatement {
 
     private Expression expr;
     private List<CaseClause> caseClauses;
@@ -56,6 +56,18 @@ public class SwitchStatement extends AbstractCompilingStatement implements State
         }
     }
     
+    public Expression getExpr() {
+        return this.expr;
+    }
+    
+    public List<CaseClause> getCaseClauses() {
+        return this.caseClauses;
+    }
+    
+    public DefaultCaseClause getDefaultCaseClause() {
+        return this.defaultClause;
+    }
+    
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         for ( CaseClause each : caseClauses ) {
@@ -67,16 +79,6 @@ public class SwitchStatement extends AbstractCompilingStatement implements State
         return decls;
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        for ( CaseClause each : caseClauses ) {
-            each.checkStrictCompliance(context, strict);
-        }
-        
-        if ( this.defaultClause != null ) {
-            this.defaultClause.checkStrictCompliance(context, strict);
-        }
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
@@ -240,5 +242,10 @@ public class SwitchStatement extends AbstractCompilingStatement implements State
         buf.append(indent).append("}");
 
         return buf.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

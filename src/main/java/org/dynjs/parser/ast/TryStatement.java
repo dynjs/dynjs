@@ -13,6 +13,7 @@ import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
@@ -20,7 +21,7 @@ import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
-public class TryStatement extends AbstractCompilingStatement implements Statement {
+public class TryStatement extends AbstractCompilingStatement {
     private final Statement tryBlock;
     private final CatchClause catchClause;
     private final Statement finallyBlock;
@@ -30,6 +31,18 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
         this.tryBlock = tryBlock;
         this.catchClause = catchClause;
         this.finallyBlock = finallyBlock;
+    }
+    
+    public Statement getTryBlock() {
+        return this.tryBlock;
+    }
+    
+    public CatchClause getCatchClause() {
+        return this.catchClause;
+    }
+    
+    public Statement getFinallyBlock() {
+        return this.finallyBlock;
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
@@ -42,17 +55,6 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
             decls.addAll( this.finallyBlock.getVariableDeclarations() );
         }
         return decls;
-    }
-    
-    public void verify(ExecutionContext context, boolean strict) {
-        this.tryBlock.verify(context, strict);
-        if ( this.catchClause != null ) {
-            this.catchClause.verify(context, strict);
-        }
-        
-        if ( this.finallyBlock != null ) {
-            this.finallyBlock.verify(context, strict);
-        }
     }
     
     @Override
@@ -249,16 +251,6 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
         };
     }
 
-    protected CodeBlock getFinallyBlock() {
-        if (finallyBlock == null) {
-            // IN: x
-            // OUT: x
-            return new CodeBlock();
-        }
-
-        return CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", finallyBlock);
-    }
-
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(indent).append("try {\n");
@@ -273,6 +265,11 @@ public class TryStatement extends AbstractCompilingStatement implements Statemen
             buf.append(indent).append("}");
         }
         return buf.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict);
     }
 
 }

@@ -9,6 +9,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.ParserException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
@@ -79,5 +80,10 @@ public class RegexpLiteralExpression extends AbstractExpression {
 
     public String toString() {
         return "/" + this.pattern + "/" + this.flags;
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

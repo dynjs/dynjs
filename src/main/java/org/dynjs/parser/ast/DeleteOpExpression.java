@@ -16,29 +16,29 @@
 
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.objectweb.asm.tree.LabelNode;
 
-public class DeleteOpExpression extends AbstractExpression {
-
-    private final Expression expr;
+public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
 
     public DeleteOpExpression(final Tree tree, final Expression expr) {
-        super(tree);
-        this.expr = expr;
+        super(tree, expr, "delete" );
     }
-
+    
     @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.expr.verify( context, strict );
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
     
     @Override
@@ -51,7 +51,7 @@ public class DeleteOpExpression extends AbstractExpression {
                 LabelNode end = new LabelNode();
                 // ----------------------------------------
 
-                append(expr.getCodeBlock());
+                append(getExpr().getCodeBlock());
                 // ref
                 dup();
                 // ref ref
@@ -169,7 +169,7 @@ public class DeleteOpExpression extends AbstractExpression {
     }
 
     public String toString() {
-        return "delete " + this.expr;
+        return "delete " + getExpr();
     }
 
 }

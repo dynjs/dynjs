@@ -4,6 +4,8 @@ import me.qmx.jitescript.CodeBlock;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
@@ -31,19 +33,17 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 instance_of(p(Double.class));
                 // num bool
                 iftrue(doubleNum);
-                
+
                 // num
                 dup();
                 // num num
                 invokevirtual(p(Number.class), "longValue", sig(long.class));
                 // num long
-                ldc( 0L );
+                ldc(0L);
                 // num long 0L
                 lcmp();
                 // num bool
                 iffalse(zero);
-                
-                
 
                 // ------------------------------------
                 // Integral
@@ -52,7 +52,7 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 invokevirtual(p(Number.class), "longValue", sig(long.class));
                 // num(long)
 
-                ldc( -1L );
+                ldc(-1L);
                 // num -1L
                 lmul();
                 // -num
@@ -76,17 +76,16 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
                 // -num
                 invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
                 // -num(Double)
-                
+
                 go_to(end);
 
                 // ------------------------------------
-                
-                label( zero );
+
+                label(zero);
                 // num
                 pop();
-                ldc( -0.0 );
+                ldc(-0.0);
                 invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
-                
 
                 label(end);
                 nop();
@@ -96,5 +95,11 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
 
     public String toString() {
         return "-" + getExpr();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit(context, this, strict);
+
     }
 }

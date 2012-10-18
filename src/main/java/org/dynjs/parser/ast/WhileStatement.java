@@ -24,6 +24,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
@@ -40,14 +41,18 @@ public class WhileStatement extends AbstractIteratingStatement {
         this.vloop = vloop;
     }
     
+    public Expression getTest() {
+        return this.vbool;
+    }
+    
+    public Statement getBlock() {
+        return this.vloop;
+    }
+    
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.vloop.getVariableDeclarations();
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        this.vloop.verify(context, strict);
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
@@ -133,5 +138,10 @@ public class WhileStatement extends AbstractIteratingStatement {
         buf.append(indent).append("}");
 
         return buf.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

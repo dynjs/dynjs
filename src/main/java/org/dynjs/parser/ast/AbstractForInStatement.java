@@ -15,7 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
@@ -44,11 +47,11 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
         this.block = block;
     }
 
-    protected Expression getRhs() {
+    public Expression getRhs() {
         return this.rhs;
     }
 
-    protected Statement getBlock() {
+    public Statement getBlock() {
         return this.block;
     }
     
@@ -56,11 +59,6 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
         return this.block.getVariableDeclarations();
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        rhs.verify( context, strict);
-        block.verify(context, strict);
-    }
-
     public abstract CodeBlock getFirstChunkCodeBlock();
 
     @Override

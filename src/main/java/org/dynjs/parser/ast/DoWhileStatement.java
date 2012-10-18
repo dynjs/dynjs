@@ -24,6 +24,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
@@ -31,21 +32,29 @@ import org.objectweb.asm.tree.LabelNode;
 
 public class DoWhileStatement extends AbstractIteratingStatement {
 
-    private final Expression vbool;
-    private final Statement vloop;
+    private final Expression test;
+    private final Statement block;
 
-    public DoWhileStatement(final Tree tree, BlockManager blockManager, final Expression vbool, final Statement vloop) {
+    public DoWhileStatement(final Tree tree, BlockManager blockManager, final Expression test, final Statement block) {
         super(tree, blockManager);
-        this.vbool = vbool;
-        this.vloop = vloop;
+        this.test = test;
+        this.block = block;
+    }
+    
+    public Expression getTest() {
+        return this.test;
+    }
+    
+    public Statement getBlock() {
+        return this.block;
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
-        return this.vloop.getVariableDeclarations();
+        return this.block.getVariableDeclarations();
     }
 
-    public void verify(ExecutionContext context, boolean strict) {
-        this.vloop.verify(context, strict);
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
     @Override
@@ -59,7 +68,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
                 LabelNode end = new LabelNode();
 
                 label(begin);
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", vloop));
+                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", block));
                 // completion(block)
                 dup();
                 // completion(block) completion(block)
@@ -70,7 +79,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
                 label(normalTarget);
                 // completion(block)
 
-                append(vbool.getCodeBlock());
+                append(test.getCodeBlock());
                 // completion(block) result
                 append(jsGetValue());
                 // completion(block) result
@@ -126,7 +135,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(indent).append("do {\n");
-        buf.append(indent).append("} while (").append(vbool.toString()).append(")");
+        buf.append(indent).append("} while (").append(test.toString()).append(")");
         return buf.toString();
     }
 }

@@ -15,7 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -35,6 +37,10 @@ public class ArrayLiteralExpression extends AbstractExpression {
     public ArrayLiteralExpression(final Tree tree, final List<Expression> exprs) {
         super(tree);
         this.exprs = exprs;
+    }
+    
+    public List<Expression> getExprs() {
+        return this.exprs;
     }
 
     @Override
@@ -76,10 +82,8 @@ public class ArrayLiteralExpression extends AbstractExpression {
         };
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        for ( Expression each : exprs ) {
-            each.verify(context, strict);
-        }
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
     public String toString() {

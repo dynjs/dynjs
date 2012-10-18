@@ -18,6 +18,8 @@ package org.dynjs.parser.ast;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.ExecutionContext;
 
 public class ReturnStatement extends AbstractStatement {
 
@@ -28,6 +30,10 @@ public class ReturnStatement extends AbstractStatement {
         this.expr = expr;
     }
 
+    public Expression getExpr() {
+        return this.expr;
+    }
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
@@ -46,5 +52,10 @@ public class ReturnStatement extends AbstractStatement {
 
     public String toIndentedString(String indent) {
         return indent + "return" + (this.expr == null ? "" : " " + this.expr.toString());
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit(context, this, strict);
     }
 }

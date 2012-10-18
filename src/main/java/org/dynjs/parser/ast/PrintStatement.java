@@ -22,7 +22,9 @@ import java.io.PrintStream;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
 
 public class PrintStatement extends AbstractStatement implements Statement {
 
@@ -31,6 +33,10 @@ public class PrintStatement extends AbstractStatement implements Statement {
     public PrintStatement(final Tree tree, final Expression expr) {
         super(tree);
         this.expr = expr;
+    }
+    
+    public Expression getExpr() {
+        return this.expr;
     }
 
     @Override
@@ -54,5 +60,10 @@ public class PrintStatement extends AbstractStatement implements Statement {
 
     public String toIndentedString(String indent) {
         return indent + "print(" + this.expr.toString() + ")";
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

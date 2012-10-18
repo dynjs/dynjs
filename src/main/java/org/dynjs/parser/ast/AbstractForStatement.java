@@ -25,6 +25,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
@@ -46,32 +47,20 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
 
     public abstract CodeBlock getFirstChunkCodeBlock();
 
-    protected Expression getTest() {
+    public Expression getTest() {
         return this.test;
     }
 
-    protected Expression getIncrement() {
+    public Expression getIncrement() {
         return this.increment;
     }
 
-    protected Statement getBlock() {
+    public Statement getBlock() {
         return this.block;
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
-    }
-
-    public void verify(ExecutionContext context, boolean strict) {
-        if (this.test != null) {
-            this.test.verify(context, strict);
-        }
-        if (this.increment != null) {
-            this.increment.verify(context, strict);
-        }
-        if (this.block != null) {
-            this.block.verify(context, strict);
-        }
     }
 
     @Override

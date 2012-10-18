@@ -11,6 +11,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.VerifierUtils;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
@@ -18,26 +19,20 @@ import org.dynjs.runtime.Reference;
 public class VariableDeclaration extends AbstractExpression {
 
     private String identifier;
-    private Expression initializer;
+    private Expression expr;
 
-    public VariableDeclaration(Tree tree, String identifier, Expression initializer) {
+    public VariableDeclaration(Tree tree, String identifier, Expression initializerExpr) {
         super(tree);
         this.identifier = identifier;
-        this.initializer = initializer;
+        this.expr = initializerExpr;
+    }
+    
+    public Expression getExpr() {
+        return this.expr;
     }
 
     public String getIdentifier() {
         return this.identifier;
-    }
-
-    public void verify(ExecutionContext context, boolean strict) {
-        if (strict) {
-            VerifierUtils.verifyStrictIdentifier(context, identifier);
-        }
-
-        if (this.initializer != null) {
-            this.initializer.verify(context, strict);
-        }
     }
 
     @Override
@@ -45,7 +40,7 @@ public class VariableDeclaration extends AbstractExpression {
         return new CodeBlock() {
             {
                 // 12.2
-                if (initializer == null) {
+                if (expr == null) {
                     ldc(identifier);
                     // str
                 } else {
@@ -53,7 +48,7 @@ public class VariableDeclaration extends AbstractExpression {
                     // reference
                     aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                     // reference context
-                    append(initializer.getCodeBlock());
+                    append(expr.getCodeBlock());
                     // reference context val
                     append(jsGetValue());
                     // reference context val
@@ -70,11 +65,16 @@ public class VariableDeclaration extends AbstractExpression {
         StringBuffer buf = new StringBuffer();
 
         buf.append(indent + "var " + this.identifier + "\n");
-        if (this.initializer != null) {
-            buf.append(this.initializer.dump(indent + "  "));
+        if (this.expr != null) {
+            buf.append(this.expr.dump(indent + "  "));
         }
 
         return buf.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

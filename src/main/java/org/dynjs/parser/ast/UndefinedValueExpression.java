@@ -19,6 +19,8 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 
 public class UndefinedValueExpression extends AbstractExpression {
@@ -34,5 +36,10 @@ public class UndefinedValueExpression extends AbstractExpression {
 
     public String toString() {
         return "undefined";
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit(context, this, strict);
     }
 }

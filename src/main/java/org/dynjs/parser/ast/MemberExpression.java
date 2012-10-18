@@ -19,6 +19,7 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 /**
@@ -29,23 +30,12 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Douglas Campos
  * @author Bob McWhirter
  */
-public class MemberExpression extends AbstractExpression {
-
-    private Expression memberExpr;
-    private Expression identifierExpr;
+public class MemberExpression extends AbstractBinaryExpression {
 
     public MemberExpression(final Tree tree, final Expression memberExpr, final Expression identifierExpr) {
-        super(tree);
-        this.memberExpr = memberExpr;
-        this.identifierExpr = identifierExpr;
+        super(tree, memberExpr, identifierExpr, "." );
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.memberExpr.verify(context, strict);
-        this.identifierExpr.verify(context, strict);
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         // 11.2.1
@@ -53,11 +43,11 @@ public class MemberExpression extends AbstractExpression {
             {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append(memberExpr.getCodeBlock());
+                append(getLhs().getCodeBlock());
                 // context reference
                 append(jsGetValue());
                 // context object
-                append(identifierExpr.getCodeBlock());
+                append(getRhs().getCodeBlock());
                 // context object identifier-maybe-reference
                 swap();
                 // context identifier-maybe-reference obj
@@ -76,10 +66,15 @@ public class MemberExpression extends AbstractExpression {
     }
 
     public String toString() {
-        return this.memberExpr + "." + this.identifierExpr;
+        return getLhs() + "." + getRhs();
     }
     
     public String dump(String indent) {
-        return super.dump(indent) + this.memberExpr.dump( indent + "  " ) + this.identifierExpr.dump( indent + "  " );
+        return super.dump(indent) + getLhs().dump( indent + "  " ) + getRhs().dump( indent + "  " );
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 import me.qmx.jitescript.CodeBlock;
@@ -32,8 +33,8 @@ public class ExpressionStatement extends AbstractStatement {
         return this.expr;
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        this.expr.verify(context, strict);
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict);
     }
 
     @Override

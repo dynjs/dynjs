@@ -72,10 +72,6 @@ public abstract class AbstractStatement extends AbstractByteCodeEmitter implemen
         return Collections.emptyList();
     }
     
-    public void verify(ExecutionContext context, boolean strict) {
-        //System.err.println( "NOP VERIFY: " + this.getClass().getSimpleName() );
-    }
-
     public CodeBlock normalCompletion() {
         return new CodeBlock() {
             {

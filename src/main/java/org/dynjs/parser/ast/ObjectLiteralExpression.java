@@ -28,6 +28,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
@@ -40,6 +41,10 @@ public class ObjectLiteralExpression extends AbstractExpression {
     public ObjectLiteralExpression(final Tree tree, final List<PropertyAssignment> propertyAssignments) {
         super(tree);
         this.propertyAssignments = propertyAssignments;
+    }
+    
+    public List<PropertyAssignment> getPropertyAssignments() {
+        return this.propertyAssignments;
     }
 
     @Override
@@ -114,5 +119,10 @@ public class ObjectLiteralExpression extends AbstractExpression {
         buf.append(" }");
 
         return buf.toString();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 }

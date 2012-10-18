@@ -20,23 +20,16 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
-public class LogicalNotOperatorExpression extends AbstractExpression {
-
-    private final Expression expr;
+public class LogicalNotOperatorExpression extends AbstractUnaryOperatorExpression {
 
     public LogicalNotOperatorExpression(final Tree tree, final Expression expr) {
-        super(tree);
-        this.expr = expr;
+        super(tree, expr, "!" );
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.expr.verify(context, strict);
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
@@ -44,7 +37,7 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
                 LabelNode returnFalse = new LabelNode();
                 LabelNode end = new LabelNode();
 
-                append(expr.getCodeBlock());
+                append(getExpr().getCodeBlock());
                 // obj
                 append(jsGetValue());
                 // val
@@ -65,7 +58,12 @@ public class LogicalNotOperatorExpression extends AbstractExpression {
     }
 
     public String toString() {
-        return "! " + this.expr;
+        return "! " + getExpr();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict);
     }
 
 }

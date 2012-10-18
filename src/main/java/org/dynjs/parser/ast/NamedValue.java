@@ -3,6 +3,7 @@ package org.dynjs.parser.ast;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -56,6 +57,11 @@ public class NamedValue extends PropertyAssignment {
                 // obj
             }
         };
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

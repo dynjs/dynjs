@@ -18,6 +18,7 @@ package org.dynjs.parser.ast;
 import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.compiler.CodeBlockUtils;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
 
@@ -34,12 +35,6 @@ public class FunctionExpression extends AbstractExpression {
 
     public FunctionDescriptor getDescriptor() {
         return this.descriptor;
-    }
-    
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        // descriptor will be verifyed when its block is compiled,
-        // with locally-appropriate strictness.
     }
 
     public CodeBlock getCodeBlock() {
@@ -61,6 +56,11 @@ public class FunctionExpression extends AbstractExpression {
         buf.append("}");
         return buf.toString();
 
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

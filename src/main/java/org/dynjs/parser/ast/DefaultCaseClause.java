@@ -1,8 +1,11 @@
 package org.dynjs.parser.ast;
 
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.runtime.ExecutionContext;
 
-public class DefaultCaseClause extends CaseClause{
+public class DefaultCaseClause extends CaseClause {
+
 
     public DefaultCaseClause(Statement block) {
         super( null, block );
@@ -15,6 +18,11 @@ public class DefaultCaseClause extends CaseClause{
             buf.append(getBlock().toIndentedString("  " + indent));
         }
         return buf.toString();
+    }
+    
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

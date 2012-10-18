@@ -21,30 +21,23 @@ import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 
-public class TypeOfOpExpression extends AbstractExpression {
-
-    private final Expression expr;
+public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
 
     public TypeOfOpExpression(final Tree tree, final Expression expr) {
-        super(tree);
-        this.expr = expr;
+        super(tree, expr, "typeof");
     }
     
-    @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        this.expr.verify(context, strict);
-    }
-
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
             {
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // context
-                append(expr.getCodeBlock());
+                append(getExpr().getCodeBlock());
                 // context obj
                 invokestatic(p(Types.class), "typeof", sig(String.class, ExecutionContext.class, Object.class));
                 // string
@@ -53,7 +46,12 @@ public class TypeOfOpExpression extends AbstractExpression {
     }
 
     public String toString() {
-        return "typeof " + this.expr;
+        return "typeof " + getExpr();
+    }
+
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
 }

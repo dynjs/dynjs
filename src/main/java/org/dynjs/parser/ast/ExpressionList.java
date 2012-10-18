@@ -21,6 +21,7 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ExpressionList extends AbstractExpression {
@@ -31,12 +32,14 @@ public class ExpressionList extends AbstractExpression {
         super(tree);
         this.exprList = exprList;
     }
+    
+    public List<Expression> getExprList() {
+        return this.exprList;
+    }
 
     @Override
-    public void verify(ExecutionContext context, boolean strict) {
-        for (Expression each : exprList) {
-            each.verify(context, strict);
-        }
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
     @Override
