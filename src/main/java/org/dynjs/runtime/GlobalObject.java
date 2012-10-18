@@ -38,6 +38,7 @@ import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.JavaClassModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
+import org.dynjs.runtime.modules.UtilModule;
 
 public class GlobalObject extends DynObject {
 
@@ -108,6 +109,7 @@ public class GlobalObject extends DynObject {
 
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
         javaClassModuleProvider.addModule(new ConsoleModule());
+        javaClassModuleProvider.addModule(new UtilModule());
 
         this.moduleProviders.add(javaClassModuleProvider);
 
