@@ -9,7 +9,6 @@ import org.dynalang.dynalink.linker.LinkerServices;
 import org.dynalang.dynalink.support.Guards;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
 
 import java.lang.invoke.MethodHandle;
 
@@ -22,8 +21,8 @@ public class DynJSLinker implements GuardingDynamicLinker {
     static {
         try {
             GET_VALUE = Binder.from(Object.class, Object.class, ExecutionContext.class)
-                    .permute(1, 0)
-                    .invokeStatic(lookup(), Types.class, "getValue");
+                    .convert(Object.class, Reference.class, ExecutionContext.class)
+                    .invokeVirtual(lookup(), "getValue");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -33,9 +32,8 @@ public class DynJSLinker implements GuardingDynamicLinker {
     public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
         final CallSiteDescriptor callSiteDescriptor = linkRequest.getCallSiteDescriptor();
         if ("GetValue".equals(callSiteDescriptor.getName())) {
-            final MethodHandle guard = Guards.isInstance(Reference.class, 0, callSiteDescriptor.getMethodType());
             if (Reference.class.isAssignableFrom(linkRequest.getReceiver().getClass())) {
-                return new GuardedInvocation(GET_VALUE, guard);
+                return new GuardedInvocation(GET_VALUE, Guards.isInstance(Reference.class, 0, callSiteDescriptor.getMethodType()));
             } else {
                 final MethodHandle identity = Binder.from(callSiteDescriptor.getMethodType())
                         .drop(1)
