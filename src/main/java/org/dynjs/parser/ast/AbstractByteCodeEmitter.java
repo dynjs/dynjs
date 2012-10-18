@@ -1,15 +1,18 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;
-
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.tree.LabelNode;
+
+import static me.qmx.jitescript.util.CodegenUtils.ci;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class AbstractByteCodeEmitter {
 
@@ -153,9 +156,7 @@ public class AbstractByteCodeEmitter {
                 // IN: reference
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // reference context
-                swap();
-                // context reference
-                invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
+                invokedynamic("GetValue", sig(Object.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
                 // value
                 if (throwIfNot != null) {
                     LabelNode end = new LabelNode();
