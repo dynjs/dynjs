@@ -6,8 +6,11 @@ import org.dynjs.parser.ast.CompoundAssignmentExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
+import org.dynjs.parser.ast.NamedValue;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
+import org.dynjs.parser.ast.PropertyGet;
+import org.dynjs.parser.ast.PropertySet;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.ExecutionContext;
@@ -28,6 +31,14 @@ public class VerifyingVisitor extends DefaultVisitor {
      */
 
     @Override
+    public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
+        if (strict) {
+            VerifierUtils.verifyStrictIdentifier(context, propertySet.getIdentifier() );
+        }
+        super.visit(context, propertySet, strict);
+    }
+
+    @Override
     public void visit(ExecutionContext context, VariableDeclaration expr, boolean strict) {
         if (strict) {
             String ident = expr.getIdentifier();
@@ -38,8 +49,8 @@ public class VerifyingVisitor extends DefaultVisitor {
 
     @Override
     public void visit(ExecutionContext context, WithStatement statement, boolean strict) {
-        if ( strict ) {
-            throw new ThrowException( context, context.createSyntaxError( "with() not allowed within strict code" ) );
+        if (strict) {
+            throw new ThrowException(context, context.createSyntaxError("with() not allowed within strict code"));
         }
     }
 
@@ -94,7 +105,5 @@ public class VerifyingVisitor extends DefaultVisitor {
         }
         super.visit(context, expr, strict);
     }
-    
-    
 
 }
