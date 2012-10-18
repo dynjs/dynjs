@@ -156,9 +156,7 @@ public class AbstractByteCodeEmitter {
                 // IN: reference
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // reference context
-                swap();
-                // context reference
-                invokedynamic("GetValue", sig(Object.class, ExecutionContext.class, Object.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
+                invokedynamic("GetValue", sig(Object.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
                 // value
                 if (throwIfNot != null) {
                     LabelNode end = new LabelNode();
