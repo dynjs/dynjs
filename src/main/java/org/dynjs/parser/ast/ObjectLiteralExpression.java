@@ -67,42 +67,6 @@ public class ObjectLiteralExpression extends AbstractExpression {
         };
     }
 
-    public void verify(ExecutionContext context, boolean strict) {
-        Set<String> values = new HashSet<>();
-        Set<String> setters = new HashSet<>();
-        Set<String> getters = new HashSet<>();
-
-        for (PropertyAssignment each : this.propertyAssignments) {
-            if (each instanceof NamedValue) {
-                if (strict) {
-                    if (values.contains(each.getName())) {
-                        throw new ThrowException(context, context.createSyntaxError("duplicate data properties not allowed in strict code: " + each.getName()));
-                    }
-                }
-                if (setters.contains(each.getName()) || getters.contains(each.getName())) {
-                    throw new ThrowException(context, context.createSyntaxError("data property conflicts with accessor property: " + each.getName()));
-                }
-                values.add(each.getName());
-            }
-            if (each instanceof PropertyGet) {
-                if (values.contains(each.getName()) || getters.contains(each.getName())) {
-                    throw new ThrowException(context, context.createSyntaxError("accessor property conflicts with accessor property: " + each.getName()));
-                }
-                getters.add(each.getName());
-            }
-            if (each instanceof PropertySet) {
-                if (values.contains(each.getName()) || setters.contains(each.getName())) {
-                    throw new ThrowException(context, context.createSyntaxError("accessor property conflicts with accessor property: " + each.getName()));
-                }
-                String identifier = ((PropertySet) each).getIdentifier();
-                if (strict && ( identifier.equals("eval") || identifier.equals("arguments")) ) {
-                    throw new ThrowException(context, context.createSyntaxError( identifier + " is not allowed as a parameter name in strict code" ) );
-                }
-                setters.add(each.getName());
-            }
-        }
-    }
-
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append("{ ");
