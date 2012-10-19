@@ -56,6 +56,9 @@ public class DynJSLinker implements GuardingDynamicLinker {
 
     private GuardedInvocation ToObject(LinkRequest linkRequest, CallSiteDescriptor callSiteDescriptor) {
         final Object receiver = linkRequest.getReceiver();
+        if (receiver instanceof JSObject) {
+            return new GuardedInvocation(identityMH(callSiteDescriptor), Guards.getIdentityGuard(receiver));
+        }
         return new GuardedInvocation(TO_OBJECT, Guards.getIdentityGuard(receiver));
     }
 
