@@ -19,7 +19,7 @@ public class IsNaN extends AbstractNativeFunction {
             if (Double.isInfinite(doubleValue)) return false;
             else return Double.isNaN( doubleValue );
         } else {
-            return Types.UNDEFINED;
+            return true;
         }
     }
 }

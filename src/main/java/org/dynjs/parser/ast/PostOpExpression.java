@@ -133,7 +133,7 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
                 // Invalid
                 label(invalid);
                 // ref
-                append(jsThrowSyntaxError());
+                append(jsThrowSyntaxError( "invalid operation"));
 
                 label(end);
                 nop();

@@ -122,7 +122,7 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
 
                 label(invalid);
                 // ref
-                append(jsThrowSyntaxError());
+                append(jsThrowSyntaxError( "invalid operation" ));
                 label(end);
                 nop();
 

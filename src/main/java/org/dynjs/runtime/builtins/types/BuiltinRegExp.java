@@ -41,7 +41,11 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         }
         
         if (self == Types.UNDEFINED) {
-            return newRegExp(context, pattern, Types.toString(context, args[1]));
+            String flags = null;
+            if ( args[1] != Types.UNDEFINED ) {
+                flags = Types.toString( context, args[1]);
+            }
+            return newRegExp(context, pattern, flags );
         } else {
             String flags = null;
 
