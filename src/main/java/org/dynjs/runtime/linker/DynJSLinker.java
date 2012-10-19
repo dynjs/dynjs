@@ -50,15 +50,18 @@ public class DynJSLinker implements GuardingDynamicLinker {
         if (Reference.class.isAssignableFrom(receiver.getClass())) {
             return new GuardedInvocation(GET_VALUE, Guards.isInstance(Reference.class, 0, callSiteDescriptor.getMethodType()));
         } else {
-            final MethodHandle identity = Binder.from(callSiteDescriptor.getMethodType())
-                    .drop(1)
-                    .identity();
-            return new GuardedInvocation(identity, Guards.getIdentityGuard(receiver));
+            return new GuardedInvocation(identityMH(callSiteDescriptor), Guards.getIdentityGuard(receiver));
         }
     }
 
     private GuardedInvocation ToObject(LinkRequest linkRequest, CallSiteDescriptor callSiteDescriptor) {
         final Object receiver = linkRequest.getReceiver();
         return new GuardedInvocation(TO_OBJECT, Guards.getIdentityGuard(receiver));
+    }
+
+    private MethodHandle identityMH(CallSiteDescriptor callSiteDescriptor) {
+        return Binder.from(callSiteDescriptor.getMethodType())
+                        .drop(1)
+                        .identity();
     }
 }
