@@ -29,7 +29,6 @@ public class UtilModuleTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-//    @Ignore
     public void formatEvaluation() {
         assertThat(eval("require('util').format('1 2 3')")).isEqualTo("1 2 3");
     }
