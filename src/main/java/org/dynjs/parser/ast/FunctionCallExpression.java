@@ -67,20 +67,7 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context ref ref
                 append(jsGetValue());
                 // context ref function
-                dup();
-                // context ref function function
-                invokestatic(p(Types.class), "isCallable", sig(boolean.class, Object.class));
-                // context ref function bool
-                iftrue(isCallable);
-                // context ref function 
-                append(jsThrowTypeError(memberExpr + " is not a function"));
-                // THROWN!
 
-                // ----------------------------------------
-                // Is Callable
-
-                label(isCallable);
-                // context ref function
                 swap();
                 // context function ref
                 dup();
@@ -141,11 +128,14 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context function self context
                 invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
                 // context function self 
+                
+                swap();
+                // context self function
 
                 int numArgs = argExprs.size();
                 bipush(numArgs);
                 anewarray(p(Object.class));
-                // context function self array
+                // context self function array
                 for (int i = 0; i < numArgs; ++i) {
                     dup();
                     bipush(i);
@@ -153,6 +143,20 @@ public class FunctionCallExpression extends AbstractExpression {
                     append(jsGetValue());
                     aastore();
                 }
+                // context self function array
+                
+                swap();
+                // context self array function
+                dup_x2();
+                // context function self array function
+                invokestatic(p(Types.class), "isCallable", sig(boolean.class, Object.class));
+                // context function self array  bool
+                iftrue(isCallable);
+                // context function self array
+                append(jsThrowTypeError(memberExpr + " is not a function"));
+                // THROWN!
+
+                label(isCallable);
                 // context function self array
                 
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT );
