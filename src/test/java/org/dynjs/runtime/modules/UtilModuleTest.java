@@ -2,10 +2,11 @@ package org.dynjs.runtime.modules;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class UtilModuleTest {
+public class UtilModuleTest extends AbstractDynJSTestSupport {
     
     private UtilModule module = new UtilModule();
 
@@ -25,5 +26,12 @@ public class UtilModuleTest {
     public void formatWithNoFormatString() {
         assertThat(module.format(null, null, 1, 2, 3)).isEqualTo("1 2 3");
     }
+
+    @Test
+    @Ignore
+    public void formatEvaluation() {
+        assertThat(eval("require('util').format('1 2 3')")).isEqualTo("1 2 3");
+    }
+
 
 }
