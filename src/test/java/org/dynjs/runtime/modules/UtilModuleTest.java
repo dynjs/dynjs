@@ -71,4 +71,18 @@ public class UtilModuleTest extends AbstractDynJSTestSupport {
         assertThat(eval("require('util').isRegExp({})")).isEqualTo(false);
     }
 
+    @Test
+    public void testIsDate() {
+        assertThat(eval("require('util').isDate(new Date())")).isEqualTo(true);
+        assertThat(eval("require('util').isDate(Date())")).isEqualTo(false); // without new, Date() returns a string
+        assertThat(eval("require('util').isDate({})")).isEqualTo(false);
+    }
+
+    @Test
+    public void testIsError() {
+        assertThat(eval("require('util').isError(new Error())")).isEqualTo(true);
+        assertThat(eval("require('util').isError(new TypeError())")).isEqualTo(true);
+        assertThat(eval("require('util').isError({ name: 'Error', message: 'an error occurred' })")).isEqualTo(false);
+    }
+
 }

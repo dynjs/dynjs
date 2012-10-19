@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
 @Module(name = "util")
@@ -64,6 +65,16 @@ public class UtilModule {
     @Export
     public boolean isRegExp(Object thing) {
         return thing instanceof DynRegExp;
+    }
+
+    @Export
+    public boolean isDate(Object thing) {
+        return thing instanceof DynDate;
+    }
+    
+    @Export
+    public boolean isError(Object thing) {
+        return thing instanceof DynObject && ((DynObject)thing).getClassName().equals("Error");
     }
 
 }
