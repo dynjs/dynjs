@@ -138,9 +138,7 @@ public class AbstractByteCodeEmitter {
                 // IN obj
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT);
                 // obj context
-                swap();
-                // context obj
-                invokestatic(p(Types.class), "toObject", sig(JSObject.class, ExecutionContext.class, Object.class));
+                invokedynamic("ToObject", sig(JSObject.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
                 // obj
             }
         };
