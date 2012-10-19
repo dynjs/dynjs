@@ -24,4 +24,9 @@ public class MultiplicativeExpressionTest extends AbstractDynJSTestSupport {
                 "var name='foo';");
         assertThat(eval("x[name]")).isEqualTo("bar");
     }
+    
+    @Test
+    public void testModuloAroundNull() {
+        Object result = eval( "var x = null; x %= null;");
+    }
 }

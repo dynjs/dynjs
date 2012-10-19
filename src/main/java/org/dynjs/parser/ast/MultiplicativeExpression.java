@@ -19,6 +19,7 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
         return new CodeBlock() {
             {
                 LabelNode doubleNums = new LabelNode();
+                LabelNode returnNaN = new LabelNode();
                 LabelNode end = new LabelNode();
 
                 append(getLhs().getCodeBlock());
@@ -29,6 +30,13 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                 // val(rhs)
                 append(jsGetValue());
                 append(jsToNumber());
+                // val(lhs) val(rhs)
+                
+                append( ifEitherIsNaN(returnNaN) );
+                
+                if ( getOp().equals( "%" ) ) {
+                    append( ifTopIsZero(returnNaN) );
+                }
 
                 if (!getOp().equals("/")) {
                     append(ifEitherIsDouble(doubleNums));
@@ -46,6 +54,7 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
 
                     label(doubleNums);
                 }
+                
                 append(convertTopTwoToPrimitiveDoubles());
 
                 if (getOp().equals("*")) {
@@ -56,6 +65,14 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
                     drem();
                 }
                 append(convertTopToDouble());
+                
+                go_to(end);
+                
+                label( returnNaN );
+                pop();
+                pop();
+                getstatic(p(Double.class), "NaN", ci(double.class));
+                invokestatic( p(Double.class), "valueOf", sig(Double.class, double.class));
 
                 label(end);
                 nop();

@@ -306,6 +306,57 @@ public class AbstractByteCodeEmitter {
             }
         };
     }
+    
+    public CodeBlock ifEitherIsNaN(final LabelNode target) {
+        // IN: Number Number
+        return new CodeBlock() {
+            {
+                // Number(x) Number(y)
+                checkcast(p(Number.class));
+                // val(x) Number(y)
+                dup_x1();
+                // Number(y) val(x) Number(y)
+                swap();
+                // Number(y) Number(y) val(x)
+                checkcast(p(Number.class));
+                // Number(y) Number(y) Number(x)
+                dup_x2();
+                // Number(x) Number(y) Number(y) Number(x)
+                swap();
+                // Number(x) Number(y) Number(x) Number(y)
+                invokestatic(p(AbstractByteCodeEmitter.class), "isEitherNaN", sig( boolean.class, Number.class, Number.class ) );
+                // Number(x) Number(y) bool
+                iftrue(target);
+                // Number(x) Number(y)
+            }
+        };
+    }
+    
+    public CodeBlock ifTopIsZero(final LabelNode target) {
+        // IN: Number 
+        return new CodeBlock() {
+            {
+                // Number
+                checkcast(p(Number.class));
+                // Number
+                dup();
+                // Number Number
+                invokestatic(p(AbstractByteCodeEmitter.class), "isZero", sig( boolean.class, Number.class) );
+                // Number bool
+                iftrue(target);
+                // Number
+            }
+        };
+    }
+    
+    public static boolean isEitherNaN(Number lhs, Number rhs) {
+        return ( Double.isNaN( lhs.doubleValue() ) || Double.isNaN( rhs.doubleValue() ) );
+    }
+    
+    public static boolean isZero(Number num) {
+        return ( num.doubleValue() == 0.0 );
+    }
+
 
     public CodeBlock ifBothAreString(final LabelNode target) {
         return new CodeBlock() {
