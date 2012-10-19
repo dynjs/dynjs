@@ -44,10 +44,9 @@ public class JavaFunction extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        List<Object> newArgs = buildArguments(context, self, arguments);
-
         try {
-            return this.handle.invokeWithArguments(newArgs);
+            List<Object> newArgs = buildArguments(context, self, arguments);
+            return this.handle.invokeWithArguments(newArgs.toArray());
         } catch (Throwable e) {
             throw new DynJSException(e);
         }
@@ -63,9 +62,15 @@ public class JavaFunction extends AbstractNativeFunction {
                 newArgs.add(self);
             }
         }
-
-        for (Object arg : args) {
-            newArgs.add(arg);
+        
+        if (methodParamTypes.length > 0) {
+            if (methodParamTypes[methodParamTypes.length-1].equals(Object[].class)) {
+                newArgs.add(args);
+            } else {
+                for (Object arg : args) {
+                    newArgs.add(arg);
+                }
+            }
         }
 
         int additionalNulls = methodParamTypes.length - newArgs.size();
