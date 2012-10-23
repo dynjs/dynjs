@@ -15,6 +15,7 @@ import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
+import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
@@ -87,7 +88,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         try {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
-            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameters(), descriptor.getBlock(), false );
+            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameters(), descriptor.getBlock(), descriptor.isStrict() );
             if (function.isStrict() && duplicateFormalParams) {
                 throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
             }
@@ -104,7 +105,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         ES3Lexer lexer = new ES3Lexer(stream);
 
         CommonTokenStream lexerStream = new CommonTokenStream(lexer);
-        ES3Parser parser = new ES3Parser(lexerStream);
+        JavascriptParser parser = new JavascriptParser(lexerStream);
 
         ES3Parser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();

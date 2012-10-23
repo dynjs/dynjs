@@ -51,14 +51,14 @@ import org.dynjs.parser.ast.*;
 
 @members {
 
-    BlockStatement result = null;
+    Program result = null;
     Executor executor = null;
 
     public void setExecutor(Executor executor){
         this.executor = executor;
     }
     
-    public BlockStatement getResult(){
+    public Program getResult(){
         return result;
     }
 }
@@ -68,9 +68,13 @@ import org.dynjs.parser.ast.*;
 Note: functionDeclaration is reachable via statement->expression as functionExpression and functionDeclaration are combined.
 */
 program
-@init { List<Statement> blockContent = new ArrayList<Statement>(); }
-        : (st=statement {blockContent.add($st.value);})*
-        {   result = executor.program(blockContent);   }
+@init { 
+  List<Statement> blockContent = new ArrayList<Statement>(); 
+}
+        : ^(p=PROGRAM 
+             (st=statement 
+               {blockContent.add($st.value);} )* ) 
+        {   result = executor.program( ((JavascriptTree)p).isStrict(), blockContent);   }
 	;
 
 statement returns [Statement value] 

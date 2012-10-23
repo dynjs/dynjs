@@ -38,7 +38,7 @@ public class FunctionExpression extends AbstractExpression {
     }
 
     public CodeBlock getCodeBlock() {
-        return CodeBlockUtils.compiledFunction(blockManager, descriptor.getFormalParameters(), descriptor.getBlock());
+        return CodeBlockUtils.compiledFunction(blockManager, descriptor.getFormalParameters(), descriptor.getBlock(), descriptor.isStrict());
     }
 
     public String toString() {

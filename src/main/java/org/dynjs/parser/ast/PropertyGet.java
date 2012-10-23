@@ -33,7 +33,7 @@ public class PropertyGet extends PropertyAccessor {
                 // obj obj context name
                 invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
                 // obj desc(orig)
-                append(CodeBlockUtils.compiledFunction(getBlockManager(), EMPTY_STRING_ARRAY, getBlock()));
+                append(CodeBlockUtils.compiledFunction(getBlockManager(), EMPTY_STRING_ARRAY, getBlock(), false));
                 // obj desc(orig) fn
                 ldc(getName());
                 // obj desc(orig) fn name

@@ -147,7 +147,7 @@ public class CodeBlockUtils {
 
     }
 
-    public static CodeBlock compiledFunction(final BlockManager blockManager, final String[] formalParams, final Statement block) {
+    public static CodeBlock compiledFunction(final BlockManager blockManager, final String[] formalParams, final Statement block, final boolean strict) {
         return new CodeBlock() {
             {
                 LabelNode skipCompile = new LabelNode();
@@ -210,13 +210,16 @@ public class CodeBlockUtils {
                 }
                 // compiler context statement params
                 swap();
-                // compiler context statement params
+                // compiler context params statement
                 
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                // compiler context statement params context
+                if ( strict ) {
+                    iconst_1();
+                } else {
+                    iconst_0();
+                }
                 
-                invokevirtual(p(ExecutionContext.class), "isRootStrict", sig(boolean.class));
-
+                // compiler context params statement bool
+                
                 invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, Statement.class, boolean.class ));
                 // fn
 

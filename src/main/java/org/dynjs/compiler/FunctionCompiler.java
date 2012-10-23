@@ -32,8 +32,7 @@ public class FunctionCompiler extends AbstractCompiler {
         super(runtime, config, "Function");
     }
 
-    public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body, final boolean containedInStrictCode) {
-        final boolean strict = isStrict(body) || containedInStrictCode;
+    public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body, final boolean strict) {
         VerifyingVisitor visitor = new VerifyingVisitor();
         body.accept(context, visitor, strict);
 

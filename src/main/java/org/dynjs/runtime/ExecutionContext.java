@@ -72,14 +72,6 @@ public class ExecutionContext {
         return this.strict;
     }
 
-    public boolean isRootStrict() {
-        if (this.parent != null) {
-            return this.parent.isRootStrict();
-        }
-
-        return this.strict;
-    }
-
     public Clock getClock() {
         if (this.parent != null) {
             return this.parent.getClock();
@@ -428,7 +420,7 @@ public class ExecutionContext {
                     throw new ThrowException(this, createTypeError("unable to bind function '" + identifier + "'"));
                 }
             }
-            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), isRootStrict());
+            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), each.isStrict() );
             function.setDebugContext(identifier);
             env.setMutableBinding(this, identifier, function, code.isStrict());
         }

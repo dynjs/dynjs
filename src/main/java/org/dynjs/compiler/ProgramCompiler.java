@@ -13,6 +13,7 @@ import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.VerifyingVisitor;
+import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BaseProgram;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynJS;
@@ -25,15 +26,15 @@ public class ProgramCompiler extends AbstractCompiler {
         super(runtime, config, "Program");
     }
 
-    public JSProgram compile(final Statement statement, boolean forceStrict) {
+    public JSProgram compile(final Program program, boolean forceStrict) {
         ExecutionContext verifyContext = ExecutionContext.createGlobalExecutionContext(getRuntime());
-        return compile(verifyContext, statement, forceStrict);
+        return compile(verifyContext, program, forceStrict);
     }
 
-    public JSProgram compile(final ExecutionContext verifyContext, final Statement statement, boolean forceStrict) {
-        final boolean strict = isStrict(statement) || forceStrict;
+    public JSProgram compile(final ExecutionContext verifyContext, final Program program, boolean forceStrict) {
+        final boolean strict = program.isStrict() || forceStrict;
         VerifyingVisitor visitor = new VerifyingVisitor();
-        statement.accept(verifyContext, visitor, strict);
+        program.accept(verifyContext, visitor, strict);
 
         JiteClass jiteClass = new JiteClass(nextClassName(), p(BaseProgram.class), new String[0]) {
             {
@@ -60,7 +61,7 @@ public class ProgramCompiler extends AbstractCompiler {
             private CodeBlock getCodeBlock() {
                 return new CodeBlock() {
                     {
-                        append(statement.getCodeBlock());
+                        append(program.getCodeBlock());
                         areturn();
                     }
                 };
@@ -70,8 +71,8 @@ public class ProgramCompiler extends AbstractCompiler {
         Class<BaseProgram> cls = (Class<BaseProgram>) defineClass(jiteClass);
         try {
             Constructor<BaseProgram> ctor = cls.getDeclaredConstructor(Statement.class);
-            BaseProgram program = ctor.newInstance(statement);
-            return program;
+            BaseProgram compiledProgram = ctor.newInstance(program);
+            return compiledProgram;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }

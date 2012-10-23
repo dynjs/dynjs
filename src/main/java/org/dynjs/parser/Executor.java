@@ -61,6 +61,7 @@ import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
 import org.dynjs.parser.ast.PrintStatement;
+import org.dynjs.parser.ast.Program;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.PropertyGet;
 import org.dynjs.parser.ast.PropertySet;
@@ -99,8 +100,8 @@ public class Executor {
         return this.blockManager;
     }
 
-    public BlockStatement program(final List<Statement> blockContent) {
-        return new BlockStatement(blockContent);
+    public Program program(boolean strict, final List<Statement> blockContent) {
+        return new Program(strict, blockContent);
     }
 
     public BlockStatement block(final Tree tree, final List<Statement> blockContent) {

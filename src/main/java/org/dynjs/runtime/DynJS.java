@@ -17,11 +17,12 @@ import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ES3Lexer;
-import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
 import org.dynjs.parser.Executor;
+import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.BlockStatement;
+import org.dynjs.parser.ast.Program;
 
 public class DynJS {
 
@@ -142,11 +143,11 @@ public class DynJS {
 
     public JSProgram compile(ExecutionContext execContext, String program, String filename, boolean forceStrict) {
         JSCompiler compiler = execContext.getCompiler();
-        BlockStatement statements = parseSourceCode(execContext, program, filename);
-        if (statements == null) {
+        Program programTree = parseSourceCode(execContext, program, filename, forceStrict );
+        if (programTree == null) {
             return new NullProgram(filename);
         }
-        JSProgram programObj = compiler.compileProgram(execContext, statements, forceStrict);
+        JSProgram programObj = compiler.compileProgram(execContext, programTree, forceStrict);
         return programObj;
     }
 
@@ -154,45 +155,46 @@ public class DynJS {
         return compile(this.context, program, filename, false);
     }
 
-    public JSProgram compile(ExecutionContext execContext, InputStream program, String filename, boolean forceStrict) throws IOException {
+    public JSProgram compile(ExecutionContext execContext, InputStream programSource, String filename, boolean forceStrict) throws IOException {
         JSCompiler compiler = execContext.getCompiler();
-        BlockStatement statements = parseSourceCode(execContext, program, filename);
-        if (statements == null) {
+        Program program = parseSourceCode(execContext, programSource, filename, forceStrict);
+        if (program == null) {
             return new NullProgram(filename);
         }
-        JSProgram programObj = compiler.compileProgram(statements, forceStrict);
-        return programObj;
+        JSProgram compiledProgram = compiler.compileProgram(program, forceStrict);
+        return compiledProgram;
     }
 
-    private BlockStatement parseSourceCode(ExecutionContext context, String code, String filename) {
+    private Program parseSourceCode(ExecutionContext context, String code, String filename, boolean forceStrict) {
         try {
             final ANTLRStringStream stream = new ANTLRStringStream(code);
             stream.name = filename;
             ES3Lexer lexer = new ES3Lexer(stream);
-            return parseSourceCode(context, lexer);
+            return parseSourceCode(context, lexer, forceStrict);
         } catch (RecognitionException e) {
-            throw new SyntaxError(e);
+            throw new ThrowException( context, context.createSyntaxError( e.getMessage() ) );
         }
     }
 
-    private BlockStatement parseSourceCode(ExecutionContext context, InputStream code, String filename) throws IOException {
+    private Program parseSourceCode(ExecutionContext context, InputStream code, String filename, boolean forceStrict) throws IOException {
         try {
             final ANTLRStringStream stream = new ANTLRInputStream(code);
             stream.name = filename;
             ES3Lexer lexer = new ES3Lexer(stream);
-            return parseSourceCode(context, lexer);
+            return parseSourceCode(context, lexer, forceStrict);
         } catch (RecognitionException e) {
-            throw new SyntaxError(e);
+            throw new ThrowException( context, context.createSyntaxError( e.getMessage() ) );
         }
     }
 
-    private BlockStatement parseSourceCode(ExecutionContext context, ES3Lexer lexer) throws RecognitionException, SyntaxError {
+    private Program parseSourceCode(ExecutionContext context, ES3Lexer lexer, boolean forceStrict) throws RecognitionException, SyntaxError {
         CommonTokenStream stream = new CommonTokenStream(lexer);
-        ES3Parser parser = new ES3Parser(stream);
-        ES3Parser.program_return program = parser.program();
+        JavascriptParser parser = new JavascriptParser(stream);
+        parser.getWatcher().setStrict( forceStrict );
+        JavascriptParser.program_return program = parser.program();
         List<String> errors = parser.getErrors();
         if (!errors.isEmpty()) {
-            throw new SyntaxError(errors);
+            throw new ThrowException( context, context.createSyntaxError( errors.toString() ) );
         }
         CommonTree tree = (CommonTree) program.getTree();
         if (tree == null) {
@@ -209,7 +211,7 @@ public class DynJS {
         executor.setBlockManager(context.getBlockManager());
         walker.setExecutor(executor);
         walker.program();
-        BlockStatement result = walker.getResult();
+        Program result = walker.getResult();
         //System.err.println( result.dump("") );
         return result;
     }

@@ -16,6 +16,7 @@
 package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.JavascriptTree;
 import org.dynjs.parser.Statement;
 
 public class FunctionDescriptor {
@@ -24,12 +25,14 @@ public class FunctionDescriptor {
     private final String identifier;
     private final String[] formalParameters;
     private Statement block;
+    private boolean strict;
 
     public FunctionDescriptor(final Tree tree, final String identifier, final String[] formalParameters, final Statement block) {
         this.tree = tree;
         this.identifier = identifier;
         this.formalParameters = formalParameters;
         this.block = block;
+        this.strict = ((JavascriptTree)tree).isStrict();
     }
 
     public Tree getTree() {
@@ -46,6 +49,10 @@ public class FunctionDescriptor {
 
     public Statement getBlock() {
         return this.block;
+    }
+    
+    public boolean isStrict() {
+        return this.strict;
     }
 
     public String toString() {

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
-    @Test(expected = ParserException.class)
+    @Test(expected = ThrowException.class)
     public void testSyntaxErrorThrows() {
         getRuntime().execute("var f ( {;");
     }

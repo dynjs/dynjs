@@ -1,7 +1,8 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
 
+import org.dynjs.exception.ThrowException;
 import org.junit.Test;
 
 public class StringLiteralTest extends AbstractDynJSTestSupport {
@@ -31,5 +32,24 @@ public class StringLiteralTest extends AbstractDynJSTestSupport {
         assertThat(eval("'foo\\nbar\\rbaz\\t'")).isEqualTo("foo\nbar\rbaz\t");
         assertThat(eval("'\\x59\\x5A'")).isEqualTo("YZ");
         assertThat(eval("'\\u0062\\u006f\\u0062'")).isEqualTo("bob");
+    }
+    
+    @Test
+    public void testEmbeddedNewlines() {
+        String result = (String) eval( "'howdy\\\n  bob'");
+        assertThat( result ).isEqualTo( "howdy  bob");
+    }
+    
+    @Test
+    public void testEmbeddedNewlinesDoubleQuotes() {
+        String result = (String) eval( "\"howdy\\\n  bob\"");
+        assertThat( result ).isEqualTo( "howdy  bob");
+    }
+    
+    @Test
+    public void testWeirdSpec() {
+        String script = "'use strict';\neval(\"function foo(){\\\r}\");";
+        
+        eval( script );
     }
 }

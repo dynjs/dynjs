@@ -213,6 +213,7 @@ tokens
 	PDEC ;
 	PINC ;
 	POS ;
+	PROGRAM ;
 
 // Soft Keywords
 
@@ -232,11 +233,6 @@ package org.dynjs.parser;
 @lexer::members
 {
 private Token last;
-private EscapeHandler escapeHandler = new EscapeHandler();
-
-private String handleEscape(String es) {
-  return escapeHandler.handle( es );
-}
 
 private final boolean areRegularExpressionsEnabled()
 {
@@ -317,6 +313,10 @@ public Token nextToken()
 
 @parser::members
 {
+
+public ParserWatcher getWatcher() {
+  return (ParserWatcher) ((Object)getTreeAdaptor());
+}
 	
 private List<String> errors = new ArrayList<String>();
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) 
@@ -831,7 +831,7 @@ HexIntegerLiteral
 
 numericLiteral
 	: DecimalLiteral
-	| OctalIntegerLiteral
+	| { ! getWatcher().isStrict() }? OctalIntegerLiteral
 	| HexIntegerLiteral
 	;
 
@@ -853,6 +853,11 @@ EscapeSequence
 	| 'u' HexDigit HexDigit HexDigit HexDigit 
 	)
 	;
+	
+LineContinuation
+    :
+    BSLASH EOL
+    ;
 
 StringLiteral
 @init{
@@ -861,12 +866,14 @@ StringLiteral
 	: 
 	( SQUOTE 
 	  ( ch=~( SQUOTE | BSLASH | LineTerminator ) {buf.append( (char) $ch ); }
-	  | es=EscapeSequence {buf.append( handleEscape( $es.getText() ) ); }
+	  | es=EscapeSequence {buf.append( $es.getText() ); }
+	  | lc=LineContinuation 
 	  )* 
 	  SQUOTE
 	| DQUOTE 
 	  ( ch=~( DQUOTE | BSLASH | LineTerminator ) {buf.append( (char) $ch ); }
-	  | es=EscapeSequence {buf.append( handleEscape( $es.getText() ) ); }
+	  | es=EscapeSequence {buf.append( $es.getText() ); }
+	  | lc=LineContinuation
 	  )* 
 	  DQUOTE)
 	  //{ setText(input.substring($start+1, $stop - 1)); }
@@ -1259,7 +1266,8 @@ options
 {
 	k = 1 ;
 }
-	: { input.LA(1) == LBRACE }? block
+	: 
+	{ input.LA(1) == LBRACE }? block
 	| printStatement
 	| statementTail
 	;
@@ -1511,7 +1519,7 @@ returnStatement
 // $<The with statement (12.10)
 
 withStatement
-	: WITH^ LPAREN! expression RPAREN! statement
+	: { ! getWatcher().isStrict() }? WITH^ LPAREN! expression RPAREN! statement
 	;
 
 // $>
@@ -1594,12 +1602,25 @@ finallyClause
 // $<	Function Definition (13)
 
 functionDeclaration
+@init {
+  getWatcher().startFunctionDeclaration(); 
+}
+@after {
+  getWatcher().endFunctionDeclaration( retval ); 
+}
 	: FUNCTION name=Identifier formalParameterList functionBody
 	-> ^( FUNCTION $name formalParameterList functionBody )
 	;
 
 functionExpression
-	: FUNCTION name=Identifier? formalParameterList functionBody
+@init {
+  getWatcher().startFunctionExpression(); 
+}
+@after {
+  getWatcher().endFunctionExpression( retval ); 
+}
+	: 
+	FUNCTION name=Identifier? formalParameterList functionBody
 	-> ^( FUNCTION $name? formalParameterList functionBody )
 	;
 
@@ -1609,7 +1630,11 @@ formalParameterList
 	;
 
 functionBody
-	: lb=LBRACE sourceElement* RBRACE
+	: lb=LBRACE 
+	    (se=sourceElement 
+	      { getWatcher().sourceElement( se ); } 
+	    )* 
+	  RBRACE
 	-> ^( BLOCK[$lb, "BLOCK"] sourceElement* )
 	;
 
@@ -1618,7 +1643,16 @@ functionBody
 // $<	Program (14)
 
 program
-	: sourceElement*
+@init{
+  getWatcher().startProgram( retval );
+}
+@after {
+  getWatcher().endProgram( retval );
+}
+	: (se=sourceElement 
+	    { getWatcher().sourceElement( se ); } 
+	  )* 
+	-> ^( PROGRAM["PROGRAM"] sourceElement* )
 	;
 
 /*

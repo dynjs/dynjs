@@ -60,28 +60,4 @@ public class AbstractCompiler {
         return new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
     
-    public boolean isStrict(Statement statement) {
-        boolean isStrict = false;
-
-        if (statement instanceof BlockStatement) {
-            BlockStatement block = (BlockStatement) statement;
-            for (Statement each : block.getBlockContent()) {
-                if (each instanceof ExpressionStatement) {
-                    Expression expr = ((ExpressionStatement) each).getExpr();
-                    if (expr instanceof StringLiteralExpression) {
-                        if (((StringLiteralExpression) expr).getLiteral().equals("use strict")) {
-                            isStrict = true;
-                        }
-                    } else {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
-
-        return isStrict;
-    }
-
 }

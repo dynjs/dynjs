@@ -20,4 +20,8 @@ public class ProgramCompilerTest extends AbstractDynJSTestSupport {
         assertThat(program.isStrict()).isTrue();
     }
 
+    @Test
+    public void testStrictCompilationOfFunctions() {
+        JSProgram program = getRuntime().compile("var v = function() { 'use strict'; var x = 42; }");
+    }
 }

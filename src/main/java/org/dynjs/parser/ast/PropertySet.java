@@ -38,7 +38,7 @@ public class PropertySet extends PropertyAccessor {
                 // obj obj context name
                 invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
                 // obj desc(orig)
-                append(CodeBlockUtils.compiledFunction(getBlockManager(), new String[] { identifier }, getBlock()));
+                append(CodeBlockUtils.compiledFunction(getBlockManager(), new String[] { identifier }, getBlock(), false ));
                 // obj desc(orig) fn
                 ldc(getName());
                 // obj desc(orig) fn name

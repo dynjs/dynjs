@@ -2,6 +2,7 @@ package org.dynjs.compiler;
 
 import org.dynjs.Config;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
@@ -30,12 +31,12 @@ public class JSCompiler {
         this.basicBlockCompiler = new BasicBlockCompiler(runtime, this.config);
     }
 
-    public JSProgram compileProgram(Statement statement, boolean forceStrict) {
-        return this.programCompiler.compile(statement, forceStrict);
+    public JSProgram compileProgram(Program program, boolean forceStrict) {
+        return this.programCompiler.compile(program, forceStrict);
     }
     
-    public JSProgram compileProgram(ExecutionContext context, Statement statement, boolean forceStrict) {
-        return this.programCompiler.compile(context, statement, forceStrict);
+    public JSProgram compileProgram(ExecutionContext context, Program program, boolean forceStrict) {
+        return this.programCompiler.compile(context, program, forceStrict);
     }
 
     public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body, boolean containedInStrictCode) {

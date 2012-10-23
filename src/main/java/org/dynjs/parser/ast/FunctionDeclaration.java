@@ -47,6 +47,10 @@ public class FunctionDeclaration extends AbstractStatement {
         // decl, no generated code here.
         return normalCompletion();
     }
+    
+    public boolean isStrict() {
+        return this.descriptor.isStrict();
+    }
 
     public String toString() {
         return this.descriptor.toString();
