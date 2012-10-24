@@ -27,8 +27,15 @@ public class VerifierUtils {
         }
     };
     
-    public static void verifyStrictIdentifier(ExecutionContext context, String identifier) {
+    public static boolean isStrictIdentifier(String identifier) {
         if ( DISALLOWED_STRICT_IDENTIFIERS.contains( identifier ) || FUTURE_RESERVED_WORDS.contains( identifier ) ) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static void verifyStrictIdentifier(ExecutionContext context, String identifier) {
+        if ( ! isStrictIdentifier(identifier) ) {
             throw new ThrowException(context, context.createSyntaxError( identifier + " not allowed as an identifier in strict-mode" ) );
         }
     }

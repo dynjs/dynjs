@@ -22,6 +22,14 @@ public class ParserWatcher extends CommonTreeAdaptor {
         this.state.add(new WatcherState());
         this.context = context;
     }
+    
+    public boolean isValidIdentifier(String ident) {
+        if ( ! isStrict() ) {
+            return true;
+        }
+        
+        return VerifierUtils.isStrictIdentifier(ident);
+    }
 
     @Override
     public Object create(Token payload) {

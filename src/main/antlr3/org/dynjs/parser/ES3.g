@@ -317,6 +317,14 @@ public Token nextToken()
 public ParserWatcher getWatcher() {
   return (ParserWatcher) ((Object)getTreeAdaptor());
 }
+
+public boolean isStrict() {
+  return getWatcher().isStrict();
+}
+
+public boolean isValidIdentifier(String ident) {
+  return getWatcher().isValidIdentifier(ident);
+}
 	
 private List<String> errors = new ArrayList<String>();
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) 
@@ -831,7 +839,7 @@ HexIntegerLiteral
 
 numericLiteral
 	: DecimalLiteral
-	| { ! getWatcher().isStrict() }? OctalIntegerLiteral
+	| { ! isStrict() }? OctalIntegerLiteral
 	| HexIntegerLiteral
 	;
 
@@ -1519,7 +1527,7 @@ returnStatement
 // $<The with statement (12.10)
 
 withStatement
-	: { ! getWatcher().isStrict() }? WITH^ LPAREN! expression RPAREN! statement
+	: { ! isStrict() }? WITH^ LPAREN! expression RPAREN! statement
 	;
 
 // $>
@@ -1584,7 +1592,7 @@ tryStatement
 	;
 	
 catchClause
-	: CATCH^ LPAREN! Identifier RPAREN! block
+	: CATCH^ LPAREN! id=Identifier { isValidIdentifier( id.getText() ) }? RPAREN! block
 	;
 	
 finallyClause
@@ -1625,7 +1633,7 @@ functionExpression
 	;
 
 formalParameterList
-	: LPAREN ( Identifier ( COMMA Identifier )* )? RPAREN
+	: LPAREN ( id1=Identifier { isValidIdentifier( id1.getText() ) }? ( COMMA id2=Identifier { isValidIdentifier( id2.getText() ) }? )* )? RPAREN
 	-> ^( ARGS Identifier* )
 	;
 

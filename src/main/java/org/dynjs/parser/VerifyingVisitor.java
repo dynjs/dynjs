@@ -51,9 +51,11 @@ public class VerifyingVisitor extends DefaultVisitor {
                     throw new ThrowException(context, context.createSyntaxError("accessor property conflicts with accessor property: " + each.getName()));
                 }
                 String identifier = ((PropertySet) each).getIdentifier();
+                /*
                 if (strict && ( identifier.equals("eval") || identifier.equals("arguments")) ) {
                     throw new ThrowException(context, context.createSyntaxError( identifier + " is not allowed as a parameter name in strict code" ) );
                 }
+                */
                 setters.add(each.getName());
             }
         }
