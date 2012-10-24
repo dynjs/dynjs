@@ -194,7 +194,7 @@ public class ExecutionContext {
         // Otherwise return obj
         return obj;
     }
-    
+
     public Object internalCall(JSFunction function, Object self, Object... args) {
         // 13.2.1
 
@@ -391,6 +391,39 @@ public class ExecutionContext {
             obj.setParameterMap(map);
         }
 
+        if (function.isStrict()) {
+            final JSFunction thrower = (JSFunction) getGlobalObject().get(this, "__throwTypeError");
+
+            obj.defineOwnProperty(this, "caller", new PropertyDescriptor() {
+                {
+                    set( "Get", thrower );
+                    set( "Set", thrower );
+                    set( "Enumerable", false );
+                    set( "Configurable", false );
+                }
+            }, false);
+            
+            obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
+                {
+                    set( "Get", thrower );
+                    set( "Set", thrower );
+                    set( "Enumerable", false );
+                    set( "Configurable", false );
+                }
+            }, false);
+            
+        } else {
+            obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
+                {
+                    set("Value", function);
+                    set("Writable", true);
+                    set("Enumerable", false);
+                    set("Configurable", true);
+                }
+            }, false);
+
+        }
+
         return obj;
     }
 
@@ -420,7 +453,7 @@ public class ExecutionContext {
                     throw new ThrowException(this, createTypeError("unable to bind function '" + identifier + "'"));
                 }
             }
-            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), each.isStrict() );
+            JSFunction function = getCompiler().compileFunction(this, each.getFormalParameters(), each.getBlock(), each.isStrict());
             function.setDebugContext(identifier);
             env.setMutableBinding(this, identifier, function, code.isStrict());
         }
