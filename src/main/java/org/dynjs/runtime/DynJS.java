@@ -128,9 +128,9 @@ public class DynJS {
         return execute(code, null, 0, forceStrict);
     }
     
-    public Object evaluate(ExecutionContext context, String code, boolean forceStrict) {
+    public Object evaluate(ExecutionContext context, String code, boolean forceStrict, boolean direct) {
         JSProgram program = compile( context, code, "<eval>", forceStrict );
-        return context.eval( program );
+        return context.eval( program, direct );
     }
 
     public JSProgram compile(String program) {

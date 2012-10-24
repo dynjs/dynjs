@@ -18,8 +18,10 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNonConstructorFunction {
@@ -30,10 +32,19 @@ public class Eval extends AbstractNonConstructorFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        boolean direct = false;
+        if (context.getFunctionReference() != null) {
+            if (context.getFunctionReference() instanceof Reference) {
+                Reference ref = (Reference) context.getFunctionReference();
+                if (ref.getBase() instanceof EnvironmentRecord) {
+                    direct = ref.getReferencedName().equals("eval");
+                }
+            }
+        }
         Object code = args[0];
         if (code != Types.UNDEFINED) {
             try {
-                Object result = context.getGlobalObject().getRuntime().evaluate(context.getParent(), code.toString(), context.getParent().isStrict() );
+                Object result = context.getGlobalObject().getRuntime().evaluate(context.getParent(), code.toString(), context.getParent().isStrict(), direct );
                 return result;
             } catch (SyntaxError e) {
                 throw new ThrowException(context, context.createSyntaxError(e.getMessage()));

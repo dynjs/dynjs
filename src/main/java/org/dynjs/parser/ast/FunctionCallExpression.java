@@ -72,70 +72,72 @@ public class FunctionCallExpression extends AbstractExpression {
                 // context function ref
                 dup();
                 // context function ref ref
+                dup_x2();
+                // context ref function ref ref 
                 instance_of(p(Reference.class));
-                // context function ref isref?
+                // context ref function ref isref?
                 iffalse(noSelf);
 
                 // ----------------------------------------
                 // Reference
 
-                // context function ref
+                // context ref function ref
                 checkcast(p(Reference.class));
 
                 dup();
-                // context function ref ref
+                // context ref function ref ref
                 invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
-                // context function ref bool(is-prop)
+                // context ref function ref bool(is-prop)
 
                 iftrue(propertyRef);
 
                 // ----------------------------------------
                 // Environment Record
 
-                // context function ref
+                // context ref function ref
                 append(jsGetBase());
-                // context function base
+                // context ref function base
                 checkcast(p(EnvironmentRecord.class));
-                // context function env-rec
+                // context ref function env-rec
                 invokeinterface(p(EnvironmentRecord.class), "implicitThisValue", sig(Object.class));
-                // context function self
+                // context ref function self
                 go_to(doCall);
 
                 // ----------------------------------------
                 // Property Reference
                 label(propertyRef);
-                // context function ref
+                // context ref function ref
                 append(jsGetBase());
-                // context function self
+                // context ref function self
                 go_to(doCall);
 
                 // ------------------------------------------
                 // No self
                 label(noSelf);
-                // context function ref
+                // context ref function ref
                 pop();
-                // context function
+                // context ref function
                 append(jsPushUndefined());
-                // context function UNDEFINED
+                // context ref function UNDEFINED
 
                 // ------------------------------------------
                 // call()
 
                 label(doCall);
-                // context function self
+                // context ref function self
                 
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT );
-                // context function self context
+                // context ref function self context
                 invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
-                // context function self 
+                // context ref function self 
                 
                 swap();
-                // context self function
+                // context ref self function
 
                 int numArgs = argExprs.size();
                 bipush(numArgs);
                 anewarray(p(Object.class));
-                // context self function array
+                // context ref self function array
                 for (int i = 0; i < numArgs; ++i) {
                     dup();
                     bipush(i);
@@ -143,29 +145,29 @@ public class FunctionCallExpression extends AbstractExpression {
                     append(jsGetValue());
                     aastore();
                 }
-                // context self function array
+                // context ref self function array
                 
                 swap();
-                // context self array function
+                // context ref self array function
                 dup_x2();
-                // context function self array function
+                // context ref function self array function
                 invokestatic(p(Types.class), "isCallable", sig(boolean.class, Object.class));
-                // context function self array  bool
+                // context ref function self array  bool
                 iftrue(isCallable);
-                // context function self array
+                // context ref function self array
                 append(jsThrowTypeError(memberExpr + " is not a function"));
                 // THROWN!
 
                 label(isCallable);
-                // context function self array
+                // context ref function self array
                 
                 aload(JSCompiler.Arities.EXECUTION_CONTEXT );
-                // context function self array context
+                // context ref function self array context
                 invokevirtual(p(ExecutionContext.class), "popCallContext", sig(void.class));
-                // context function self array
+                // context ref function self array
                 
                 // call ExecutionContext#call(fn, self, args) -> Object
-                invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, JSFunction.class, Object.class, Object[].class));
+                invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, Object.class, JSFunction.class, Object.class, Object[].class));
                 // obj
             }
         };

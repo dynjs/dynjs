@@ -42,6 +42,7 @@ public class ExecutionContext {
 
     private Clock clock;
     private TimeZone timeZone;
+    private Object functionReference;
 
     public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.parent = parent;
@@ -50,6 +51,10 @@ public class ExecutionContext {
         this.thisBinding = thisBinding;
         this.strict = strict;
         pushCallContext();
+    }
+
+    public Object getFunctionReference() {
+        return this.functionReference;
     }
 
     public ExecutionContext getParent() {
@@ -122,8 +127,8 @@ public class ExecutionContext {
         }
     }
 
-    public Object eval(JSProgram eval) {
-        ExecutionContext evalContext = createEvalExecutionContext(eval);
+    public Object eval(JSProgram eval, boolean direct) {
+        ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
         Completion result = eval.execute(evalContext);
         return result.value;
     }
@@ -149,12 +154,16 @@ public class ExecutionContext {
     }
 
     public Object call(JSFunction function, Object self, Object... args) {
+        return call(null, function, self, args);
+    }
+
+    public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
         if (getPendingConstructorCount() > 0) {
             return construct(function, args);
         }
 
-        return internalCall(function, self, args);
+        return internalCall(functionReference, function, self, args);
     }
 
     public JSObject construct(JSFunction function, Object... args) {
@@ -186,7 +195,7 @@ public class ExecutionContext {
         }
 
         // 8. Call the function with obj as self
-        Object result = internalCall(function, obj, args);
+        Object result = internalCall(null, function, obj, args);
         // 9. If result is a JSObject return it
         if (result instanceof JSObject) {
             return (JSObject) result;
@@ -195,10 +204,10 @@ public class ExecutionContext {
         return obj;
     }
 
-    public Object internalCall(JSFunction function, Object self, Object... args) {
+    public Object internalCall(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
 
-        ExecutionContext fnContext = createFunctionExecutionContext(function, self, args);
+        ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
         try {
             Object result = function.call(fnContext);
             if (result == null) {
@@ -215,21 +224,37 @@ public class ExecutionContext {
 
     // ----------------------------------------------------------------------
 
-    public ExecutionContext createEvalExecutionContext(JSProgram eval) {
+    public ExecutionContext createEvalExecutionContext(JSProgram eval, boolean direct) {
         // 10.4.2 (with caller)
         ExecutionContext context = null;
-        if (!eval.isStrict()) {
-            context = new ExecutionContext(this, this.getLexicalEnvironment(), this.getVariableEnvironment(), this.getThisBinding(), false);
+
+        Object evalThisBinding = null;
+        LexicalEnvironment evalLexEnv = null;
+        LexicalEnvironment evalVarEnv = null;
+        
+        if (!direct) {
+            evalThisBinding = getGlobalObject();
+            evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject().getRuntime());
+            evalVarEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject().getRuntime());
         } else {
-            LexicalEnvironment strictVarEnv = LexicalEnvironment.newDeclarativeEnvironment(this.getLexicalEnvironment());
-            context = new ExecutionContext(this, strictVarEnv, strictVarEnv, this.getThisBinding(), true);
+            evalThisBinding = this.thisBinding;
+            evalLexEnv = this.getLexicalEnvironment();
+            evalVarEnv = this.getVariableEnvironment();
         }
+
+        if (eval.isStrict()) {
+            LexicalEnvironment strictVarEnv = LexicalEnvironment.newDeclarativeEnvironment(this.getLexicalEnvironment());
+            evalLexEnv = strictVarEnv;
+            evalVarEnv = strictVarEnv;
+        }
+
+        context = new ExecutionContext(this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
         return context;
     }
 
-    public ExecutionContext createFunctionExecutionContext(JSFunction function, Object thisArg, Object... arguments) {
+    public ExecutionContext createFunctionExecutionContext(Object functionReference, JSFunction function, Object thisArg, Object... arguments) {
         // 10.4.3
         Object thisBinding = null;
         if (function.isStrict()) {
@@ -251,6 +276,7 @@ public class ExecutionContext {
         context.performDeclarationBindingInstantiation(function, arguments);
         context.fileName = function.getFileName();
         context.debugContext = function.getDebugContext();
+        context.functionReference = functionReference;
         return context;
     }
 
@@ -396,22 +422,22 @@ public class ExecutionContext {
 
             obj.defineOwnProperty(this, "caller", new PropertyDescriptor() {
                 {
-                    set( "Get", thrower );
-                    set( "Set", thrower );
-                    set( "Enumerable", false );
-                    set( "Configurable", false );
+                    set("Get", thrower);
+                    set("Set", thrower);
+                    set("Enumerable", false);
+                    set("Configurable", false);
                 }
             }, false);
-            
+
             obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
                 {
-                    set( "Get", thrower );
-                    set( "Set", thrower );
-                    set( "Enumerable", false );
-                    set( "Configurable", false );
+                    set("Get", thrower);
+                    set("Set", thrower);
+                    set("Enumerable", false);
+                    set("Configurable", false);
                 }
             }, false);
-            
+
         } else {
             obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
                 {
