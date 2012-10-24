@@ -10,21 +10,24 @@ import org.dynjs.parser.ES3Parser.functionDeclaration_return;
 import org.dynjs.parser.ES3Parser.functionExpression_return;
 import org.dynjs.parser.ES3Parser.program_return;
 import org.dynjs.parser.ES3Parser.sourceElement_return;
+import org.dynjs.runtime.ExecutionContext;
 
 public class ParserWatcher extends CommonTreeAdaptor {
 
     private EscapeHandler escapeHandler = new EscapeHandler();
     private List<WatcherState> state = new ArrayList<>();
+    private ExecutionContext context;
 
-    public ParserWatcher() {
+    public ParserWatcher(ExecutionContext context) {
         this.state.add(new WatcherState());
+        this.context = context;
     }
 
     @Override
     public Object create(Token payload) {
         if (payload != null) {
             if (payload.getType() == JavascriptParser.StringLiteral) {
-                payload.setText(escapeHandler.unescape(payload.getText()));
+                payload.setText(escapeHandler.unescape(this.context, payload.getText(), isStrict()));
             }
         }
         return new JavascriptTree(payload);

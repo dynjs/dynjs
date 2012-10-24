@@ -1,12 +1,15 @@
 package org.dynjs.parser;
 
+import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.ExecutionContext;
+
 public class EscapeHandler {
 
     public EscapeHandler() {
 
     }
 
-    public String unescape(String in) {
+    public String unescape(ExecutionContext context, String in, boolean strict) {
         StringBuffer out = new StringBuffer();
 
         int len = in.length();
@@ -52,6 +55,19 @@ public class EscapeHandler {
                     out.append(handleUnicodeEscape(in.substring(slashLoc + 2, slashLoc + 6)));
                     cur = slashLoc + 6;
                     break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if ( strict ) {
+                        throw new ThrowException(context, context.createSyntaxError( "octal not allowed in strict mode" ));
+                    }
                 default:
                     cur = slashLoc + 1;
                 }

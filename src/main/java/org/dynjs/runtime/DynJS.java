@@ -189,7 +189,7 @@ public class DynJS {
 
     private Program parseSourceCode(ExecutionContext context, ES3Lexer lexer, boolean forceStrict) throws RecognitionException, SyntaxError {
         CommonTokenStream stream = new CommonTokenStream(lexer);
-        JavascriptParser parser = new JavascriptParser(stream);
+        JavascriptParser parser = new JavascriptParser(context, stream);
         parser.getWatcher().setStrict( forceStrict );
         JavascriptParser.program_return program = parser.program();
         List<String> errors = parser.getErrors();

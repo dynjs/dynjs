@@ -105,7 +105,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         ES3Lexer lexer = new ES3Lexer(stream);
 
         CommonTokenStream lexerStream = new CommonTokenStream(lexer);
-        JavascriptParser parser = new JavascriptParser(lexerStream);
+        JavascriptParser parser = new JavascriptParser(context, lexerStream);
 
         ES3Parser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();
