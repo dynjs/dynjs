@@ -76,5 +76,7 @@ public class UtilModule {
     public boolean isError(Object thing) {
         return thing instanceof DynObject && ((DynObject)thing).getClassName().equals("Error");
     }
+    
+    // TODO: util.inherits and util.inspect http://nodejs.org/api/util.html
 
 }

@@ -3,6 +3,7 @@ package org.dynjs.runtime.modules;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
@@ -24,6 +25,13 @@ public class FilesystemModuleProvider implements ModuleProvider {
         globalObject.addLoadPath(System.getProperty("user.home") + "/.node_libraries/");
         globalObject.addLoadPath("/usr/local/lib/node/");
         globalObject.addLoadPath("/usr/local/lib/node_modules/");
+        if (System.getenv("DYNJS_REQUIRE_PATH") != null) {
+            StringTokenizer tokenizer = new StringTokenizer(System.getenv("DYNJS_REQUIRE_PATH"), ":");
+            while(tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                globalObject.addLoadPath(token);
+            }
+        }
     }
 
     @Override
@@ -64,6 +72,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
     private File findFile(ExecutionContext context, String fileName) {
         List<String> loadPaths = context.getGlobalObject().getLoadPaths();
         for (String loadPath : loadPaths) {
+            System.err.println("Looking for " + fileName + " in " + loadPath);
             File file = new File(loadPath, fileName);
             if (file.exists()) {
                 return file;

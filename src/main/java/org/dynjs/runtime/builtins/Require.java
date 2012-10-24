@@ -60,7 +60,7 @@ public class Require extends AbstractNativeFunction {
         }
 
         if (exports == null) {
-            throw new ThrowException(context, context.createError("Error", "cannot find module: " + moduleName));
+            throw new ThrowException(context, context.createError("Error", "cannot find module " + moduleName));
         }
 
         return exports;

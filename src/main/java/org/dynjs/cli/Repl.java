@@ -60,8 +60,9 @@ public class Repl {
                         Object object = runtime.evaluate(statement);
                         console.pushToStdOut(object.toString() + "\n");
                     } catch (DynJSException e) {
-                        console.pushToStdErr("Error parsing statement: " + statement + "\n");
+                        console.pushToStdErr(e.getLocalizedMessage() + "\n");
                     } catch (IncompatibleClassChangeError e) {
+                        console.pushToStdErr("ERROR> " + e.getLocalizedMessage() + "\n");
                         console.pushToStdErr("Error parsing statement: " + statement + "\n");
                     } catch (Exception e) {
                         e.printStackTrace(new PrintWriter(out));
