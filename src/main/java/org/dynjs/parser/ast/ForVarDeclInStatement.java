@@ -16,6 +16,9 @@
 package org.dynjs.parser.ast;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
+
+import java.util.List;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
@@ -37,6 +40,13 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
     
     public VariableDeclarationStatement getDeclaration() {
         return this.decl;
+    }
+    
+    @Override
+    public List<VariableDeclaration> getVariableDeclarations() {
+        List<VariableDeclaration> decls = super.getVariableDeclarations();
+        decls.addAll( decl.getVariableDeclarations() );
+        return decls;
     }
 
     @Override
