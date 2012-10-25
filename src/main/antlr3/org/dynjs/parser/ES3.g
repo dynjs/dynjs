@@ -924,7 +924,7 @@ RegularExpressionLiteral
 
 primaryExpression
 	: THIS
-	| Identifier
+	| Identifier 
 	| literal
 	| arrayLiteral
 	| objectLiteral
@@ -942,36 +942,47 @@ arrayItem
 	;
 
 objectLiteral
-	: lb=LBRACE ( propertyAssignment ( COMMA propertyAssignment )* COMMA? )? RBRACE
+@init {
+  ObjectLiteralWatcher watcher = new ObjectLiteralWatcher();
+}
+	: lb=LBRACE ( propertyAssignment[watcher] ( COMMA propertyAssignment[watcher] )* COMMA? )? RBRACE
 	-> ^( OBJECT[$lb, "OBJECT"] propertyAssignment* )
 	;
 	
-propertyAssignment
+propertyAssignment[ObjectLiteralWatcher watcher]
     : 
-      { input.LT(1).getText().equals( "get" ) }?=>propertyGet
-    | { input.LT(1).getText().equals( "set" ) }?=>propertySet
-    | nameValuePair 
+      { input.LT(1).getText().equals( "get" ) }?=>propertyGet[watcher]
+    | { input.LT(1).getText().equals( "set" ) }?=>propertySet[watcher]
+    | nameValuePair[watcher]
     ;
 	
-nameValuePair
-	: propertyName COLON assignmentExpression
+nameValuePair[ObjectLiteralWatcher watcher]
+	: pn=propertyName { watcher.addValue( $pn.name ) }? COLON assignmentExpression
 	-> ^( NAMEDVALUE propertyName assignmentExpression )
 	;
 
-propertyName
-	: Identifier
-	| StringLiteral
-	| numericLiteral
-	| reservedWord -> ^(Identifier[$reservedWord.text])
+propertyName returns [String name]
+	: id=Identifier     { $name = id.getText(); }
+	| sl=StringLiteral  { $name = sl.getText(); }
+	| nl=numericLiteral { $name = ((CommonTree)nl.getTree()).getText(); }
+	| rw=reservedWord   { $name = ((CommonTree)rw.getTree()).getText(); } -> ^(Identifier[$reservedWord.text]) 
 	;
 	
-propertyGet
-	: get=Identifier propertyName LPAREN RPAREN functionBody
+propertyGet[ObjectLiteralWatcher watcher]
+	: get=Identifier 
+	  pn=propertyName { watcher.addGetter( $pn.name ) }? 
+	  LPAREN RPAREN 
+	    functionBody
 	-> ^(PROPERTYGET[$get] propertyName functionBody)
 	;
   
-propertySet
-    : set=Identifier propertyName LPAREN id=Identifier RPAREN functionBody
+propertySet[ObjectLiteralWatcher watcher]
+    : set=Identifier 
+        pn=propertyName { watcher.addSetter( $pn.name ) }? 
+        LPAREN 
+          id=Identifier { isValidIdentifier( $id.getText() ) }?
+        RPAREN 
+          functionBody
 	-> ^(PROPERTYSET[$set] propertyName $id functionBody)
     ;
     
@@ -1327,11 +1338,11 @@ variableStatement
 	;
 
 variableDeclaration
-	: Identifier ( ASSIGN^ assignmentExpression )?
+	: id=Identifier { isValidIdentifier( id.getText() ) }? ( ASSIGN^ assignmentExpression )?
 	;
 	
 variableDeclarationNoIn
-	: Identifier ( ASSIGN^ assignmentExpressionNoIn )?
+	: id=Identifier { isValidIdentifier( id.getText() ) }? ( ASSIGN^ assignmentExpressionNoIn )?
 	;
 
 // $>
