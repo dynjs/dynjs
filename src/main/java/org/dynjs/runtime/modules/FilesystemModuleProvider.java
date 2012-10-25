@@ -3,7 +3,6 @@ package org.dynjs.runtime.modules;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
@@ -25,11 +24,11 @@ public class FilesystemModuleProvider implements ModuleProvider {
         globalObject.addLoadPath(System.getProperty("user.home") + "/.node_libraries/");
         globalObject.addLoadPath("/usr/local/lib/node/");
         globalObject.addLoadPath("/usr/local/lib/node_modules/");
-        if (System.getenv("DYNJS_REQUIRE_PATH") != null) {
-            StringTokenizer tokenizer = new StringTokenizer(System.getenv("DYNJS_REQUIRE_PATH"), ":");
-            while(tokenizer.hasMoreTokens()) {
-                String token = tokenizer.nextToken();
-                globalObject.addLoadPath(token);
+        String customRequirePath = this.getCustomRequirePath();
+        if (customRequirePath != null) {
+            String[] paths = customRequirePath.split(":");
+            for(String path : paths) {
+                globalObject.addLoadPath(path);
             }
         }
     }
@@ -87,6 +86,13 @@ public class FilesystemModuleProvider implements ModuleProvider {
             return originalName;
         }
         return originalName + ".js";
+    }
+    
+    private String getCustomRequirePath() {
+        if (System.getenv("DYNJS_REQUIRE_PATH") != null) {
+            return System.getenv("DYNJS_REQUIRE_PATH");
+        }
+        return System.getProperty("dynjs.require.path");
     }
 
 }
