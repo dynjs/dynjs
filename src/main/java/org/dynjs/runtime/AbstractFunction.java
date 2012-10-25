@@ -33,18 +33,40 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.scope = scope;
         this.strict = strict;
         setClassName("Function");
-        PropertyDescriptor desc = new PropertyDescriptor() {
+        defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
                 set("Value", (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
                 set("Writable", false);
                 set("Configurable", false);
                 set("Enumerable", false);
             }
-        };
-        defineOwnProperty(null, "length", desc, false);
+        }, false);
+
+        if (strict) {
+            final Object thrower = scope.getGlobalObject().get(null, "__throwTypeError");
+            if (thrower != null) {
+                defineOwnProperty(null, "caller", new PropertyDescriptor() {
+                    {
+                        set("Set", thrower);
+                        set("Get", thrower);
+                        set("Configurable", false);
+                        set("Enumerable", false);
+                    }
+                }, false);
+                defineOwnProperty(null, "arguments", new PropertyDescriptor() {
+                    {
+                        set("Set", thrower);
+                        set("Get", thrower);
+                        set("Configurable", false);
+                        set("Enumerable", false);
+                    }
+                }, true);
+            }
+        }
+
         setPrototype(scope.getGlobalObject().getPrototypeFor("Function"));
     }
-    
+
     public void verify(ExecutionContext context) {
         VerifyingVisitor visitor = new VerifyingVisitor();
         this.body.accept(context, visitor, this.strict);

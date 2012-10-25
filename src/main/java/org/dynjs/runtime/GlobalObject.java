@@ -53,6 +53,8 @@ public class GlobalObject extends DynObject {
         this.runtime = runtime;
         this.blockManager = new BlockManager();
 
+        defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
+        
         // ----------------------------------------
         // Built-in types
         // ----------------------------------------
@@ -80,7 +82,6 @@ public class GlobalObject extends DynObject {
         // ----------------------------------------
 
         defineReadOnlyGlobalProperty("undefined", Types.UNDEFINED);
-        defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
 
         defineGlobalProperty("parseFloat", new ParseFloat(this));
         defineGlobalProperty("parseInt", new ParseInt(this));
