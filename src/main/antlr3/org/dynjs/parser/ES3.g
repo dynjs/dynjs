@@ -1206,8 +1206,7 @@ assignmentExpression
 {
 	Object[] isLhs = new Object[1];
 }
-	: lhs=conditionalExpression
-	( { isLeftHandSideAssign(lhs, isLhs) }? assignmentOperator^ assignmentExpression )?	
+	: lhs=conditionalExpression ( { isLeftHandSideAssign(lhs, isLhs) && isValidIdentifier(((CommonTree)lhs.getTree()).getText()) }? assignmentOperator^ assignmentExpression )?	
 	;
 
 assignmentOperator
