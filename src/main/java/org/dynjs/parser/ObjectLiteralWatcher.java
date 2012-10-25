@@ -5,15 +5,25 @@ import java.util.Set;
 
 public class ObjectLiteralWatcher {
     
-    private Set<String> values = new HashSet<>();
-    private Set<String> getters = new HashSet<>();
-    private Set<String> setters = new HashSet<>();
+    private boolean strict;
+    private Set<String> values;
+    private Set<String> getters;
+    private Set<String> setters;
     
-    public ObjectLiteralWatcher() {
-        
+    public ObjectLiteralWatcher(boolean strict) {
+        this.strict = strict;
+        if ( strict ) {
+            this.values = new HashSet<>();
+            this.getters = new HashSet<>();
+            this.setters = new HashSet<>();
+        }
     }
     
     public boolean addValue(String name) {
+        if ( ! strict ) {
+            return true;
+        }
+        
         if ( this.values.contains( name ) || this.setters.contains(name) || this.setters.contains(name)) {
             return false;
         }
@@ -22,6 +32,10 @@ public class ObjectLiteralWatcher {
     }
     
     public boolean addSetter(String name) {
+        if ( ! strict ) {
+            return true;
+        }
+        
         if ( this.values.contains(name) || this.setters.contains(name)) {
             return false;
         }
@@ -31,6 +45,10 @@ public class ObjectLiteralWatcher {
     }
     
     public boolean addGetter(String name) {
+        if ( ! strict ) {
+            return true;
+        }
+        
         if ( this.values.contains(name) || this.getters.contains(name)) {
             return false;
         }

@@ -226,8 +226,10 @@ package org.dynjs.parser;
 
 @parser::header {
 package org.dynjs.parser;
-}
 
+import java.util.Set;
+import java.util.HashSet;
+}
 
 
 @lexer::members
@@ -323,6 +325,9 @@ public boolean isStrict() {
 }
 
 public boolean isValidIdentifier(String ident) {
+  if ( ident == null ) {
+    return true;
+  }
   return getWatcher().isValidIdentifier(ident);
 }
 	
@@ -943,7 +948,7 @@ arrayItem
 
 objectLiteral
 @init {
-  ObjectLiteralWatcher watcher = new ObjectLiteralWatcher();
+  ObjectLiteralWatcher watcher = new ObjectLiteralWatcher( isStrict() );
 }
 	: lb=LBRACE ( propertyAssignment[watcher] ( COMMA propertyAssignment[watcher] )* COMMA? )? RBRACE
 	-> ^( OBJECT[$lb, "OBJECT"] propertyAssignment* )
@@ -1626,7 +1631,7 @@ functionDeclaration
 @after {
   getWatcher().endFunctionDeclaration( retval ); 
 }
-	: FUNCTION name=Identifier formalParameterList functionBody
+	: FUNCTION name=Identifier { isValidIdentifier( name.getText() ) }? formalParameterList functionBody
 	-> ^( FUNCTION $name formalParameterList functionBody )
 	;
 
@@ -1638,12 +1643,18 @@ functionExpression
   getWatcher().endFunctionExpression( retval ); 
 }
 	: 
-	FUNCTION name=Identifier? formalParameterList functionBody
+	FUNCTION name=Identifier? { ( (name == null) ? true : isValidIdentifier( name.getText() ) ) }? formalParameterList functionBody
 	-> ^( FUNCTION $name? formalParameterList functionBody )
 	;
 
 formalParameterList
-	: LPAREN ( id1=Identifier { isValidIdentifier( id1.getText() ) }? ( COMMA id2=Identifier { isValidIdentifier( id2.getText() ) }? )* )? RPAREN
+@init {
+  Set<String> paramNames = new HashSet<>();
+}
+	: LPAREN 
+	    ( id1=Identifier { isValidIdentifier( id1.getText() ) }? { paramNames.add( id1.getText() ); } 
+	      ( COMMA id2=Identifier { isValidIdentifier( id2.getText() ) }? { ( ! isStrict() ) || ( ! paramNames.contains( id2.getText() ) ) }?  )* )? 
+	  RPAREN
 	-> ^( ARGS Identifier* )
 	;
 
