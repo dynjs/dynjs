@@ -359,8 +359,9 @@ public class DefaultVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, ReturnStatement statement, boolean strict) {
-        statement.getExpr().accept(context, this, strict);
-
+        if (statement.getExpr() != null) {
+            statement.getExpr().accept(context, this, strict);
+        }
     }
 
     @Override
