@@ -8,7 +8,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
-@Module(name = "util")
+@Module(name = "dyn_util")
 public class UtilModule {
 
     @Export

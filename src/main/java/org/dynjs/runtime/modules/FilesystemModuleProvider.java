@@ -71,7 +71,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
     private File findFile(ExecutionContext context, String fileName) {
         List<String> loadPaths = context.getGlobalObject().getLoadPaths();
         for (String loadPath : loadPaths) {
-            System.err.println("Looking for " + fileName + " in " + loadPath);
+//            System.err.println("Looking for " + fileName + " in " + loadPath);
             File file = new File(loadPath, fileName);
             if (file.exists()) {
                 return file;

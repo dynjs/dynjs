@@ -8,7 +8,7 @@ import java.util.List;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.StackElement;
 
-@Module(name = "console")
+@Module(name = "dyn_console")
 public class ConsoleModule {
 
     @Export

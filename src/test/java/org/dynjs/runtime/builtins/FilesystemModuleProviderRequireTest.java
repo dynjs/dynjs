@@ -44,6 +44,11 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
     public void testReturnsExportsWhenTheFileIsFound() {
         check("var result = require('my_module').message;", "Hello world");
     }
+    
+    @Test
+    public void testHasGlobalBuiltinVisibility() {
+        check("var result = require('my_module').myParseInt('55');", 65L);
+    }
 
     @Test
     public void testAllowsFileExtension() {

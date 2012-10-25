@@ -19,6 +19,10 @@ exports.sayHello = function() {
   return "Hello again";
 }
 
+exports.myParseInt = function(string) {
+  return parseInt(string) + privateExtra;
+}
+
 var sayGoodbye = function() {
   return "Goodbye, cruel world."
 }
@@ -26,3 +30,4 @@ var sayGoodbye = function() {
 exports.farewell = sayGoodbye;
 
 var privateVariable = "Something not null";
+var privateExtra    = parseInt("10");
