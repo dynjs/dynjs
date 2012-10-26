@@ -56,6 +56,7 @@ public class BuiltinString extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "slice", new Slice(globalObject) );
         defineNonEnumerableProperty(proto, "split", new Split(globalObject) );
         defineNonEnumerableProperty(proto, "substring", new Substring(globalObject) );
+        defineNonEnumerableProperty(proto, "substr", new Substring(globalObject) ); // Alias, 'cause node likes this
         defineNonEnumerableProperty(proto, "toLowerCase", new ToLowerCase(globalObject) );
         defineNonEnumerableProperty(proto, "toUpperCase", new ToUpperCase(globalObject) );
         defineNonEnumerableProperty(proto, "toLocaleLowerCase", new ToLocaleLowerCase(globalObject) );

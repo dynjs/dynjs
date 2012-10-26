@@ -6,6 +6,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinStringTest extends AbstractDynJSTestSupport {
@@ -27,6 +28,13 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         PrimitiveDynObject o = (PrimitiveDynObject) eval("new String(42)");
         assertThat(o.getClassName()).isEqualTo("String");
         assertThat(o.getPrimitiveValue()).isEqualTo("42");
+    }
+    
+    @Test
+    @Ignore
+    public void testReplace() {
+        Object o = eval("String('fat').replace('f', 'ph')");
+        assertThat(o).isEqualTo("phat");
     }
 
     @Test
