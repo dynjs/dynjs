@@ -1059,7 +1059,7 @@ We only must promote EOLs when the la is INC or DEC because this production is c
 In other words: only promote EOL when we are really in a postfix expression. A check on the la will ensure this.
 */
 postfixExpression
-	: leftHandSideExpression { if (input.LA(1) == INC || input.LA(1) == DEC) promoteEOL(null); } ( postfixOperator^ )?
+	: lhs=leftHandSideExpression { if (input.LA(1) == INC || input.LA(1) == DEC) promoteEOL(null); } ( postfixOperator^ { isValidIdentifier(((CommonTree)lhs.getTree()).getText()) }? )?
 	;
 	
 postfixOperator
