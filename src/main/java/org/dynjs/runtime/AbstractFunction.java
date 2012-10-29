@@ -1,13 +1,10 @@
 package org.dynjs.runtime;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.VerifyingVisitor;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -65,11 +62,6 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         }
         
         setPrototype(scope.getGlobalObject().getPrototypeFor("Function"));
-    }
-
-    public void verify(ExecutionContext context) {
-        VerifyingVisitor visitor = new VerifyingVisitor();
-        this.body.accept(context, visitor, this.strict);
     }
 
     public LexicalEnvironment getScope() {

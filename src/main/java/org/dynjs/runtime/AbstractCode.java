@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.VerifyingVisitor;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -32,11 +31,6 @@ public abstract class AbstractCode implements JSCode {
         this.strict = strict;
     }
     
-    public void verify(ExecutionContext context) {
-        VerifyingVisitor visitor = new VerifyingVisitor();
-        block.accept(context, visitor, this.strict );
-    }
-
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
         if (this.block instanceof BlockStatement) {

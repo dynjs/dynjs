@@ -11,9 +11,7 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.VerifyingVisitor;
 import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.AbstractJavascriptFunction;
 import org.dynjs.runtime.Completion;
@@ -33,8 +31,6 @@ public class FunctionCompiler extends AbstractCompiler {
     }
 
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body, final boolean strict) {
-        VerifyingVisitor visitor = new VerifyingVisitor();
-        body.accept(context, visitor, strict);
 
         JiteClass jiteClass = new JiteClass(nextClassName(), p(AbstractJavascriptFunction.class), new String[0]) {
             {

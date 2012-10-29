@@ -10,9 +10,7 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.VerifyingVisitor;
 import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BaseProgram;
 import org.dynjs.runtime.Completion;
@@ -27,14 +25,12 @@ public class ProgramCompiler extends AbstractCompiler {
     }
 
     public JSProgram compile(final Program program, boolean forceStrict) {
-        ExecutionContext verifyContext = ExecutionContext.createGlobalExecutionContext(getRuntime());
-        return compile(verifyContext, program, forceStrict);
+        ExecutionContext context = ExecutionContext.createGlobalExecutionContext(getRuntime());
+        return compile(context, program, forceStrict);
     }
 
-    public JSProgram compile(final ExecutionContext verifyContext, final Program program, boolean forceStrict) {
+    public JSProgram compile(final ExecutionContext context, final Program program, boolean forceStrict) {
         final boolean strict = program.isStrict() || forceStrict;
-        VerifyingVisitor visitor = new VerifyingVisitor();
-        program.accept(verifyContext, visitor, strict);
 
         JiteClass jiteClass = new JiteClass(nextClassName(), p(BaseProgram.class), new String[0]) {
             {

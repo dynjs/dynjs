@@ -7,11 +7,6 @@ import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.BlockStatement;
-import org.dynjs.parser.ast.Expression;
-import org.dynjs.parser.ast.ExpressionStatement;
-import org.dynjs.parser.ast.StringLiteralExpression;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.ClassReader;
