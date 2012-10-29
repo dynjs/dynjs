@@ -31,7 +31,6 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testReplace() {
         Object o = eval("String('fat').replace('f', 'ph')");
         assertThat(o).isEqualTo("phat");

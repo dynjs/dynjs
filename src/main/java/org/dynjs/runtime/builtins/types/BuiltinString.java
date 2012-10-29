@@ -15,6 +15,7 @@ import org.dynjs.runtime.builtins.types.string.prototype.IndexOf;
 import org.dynjs.runtime.builtins.types.string.prototype.LastIndexOf;
 import org.dynjs.runtime.builtins.types.string.prototype.LocaleCompare;
 import org.dynjs.runtime.builtins.types.string.prototype.Match;
+import org.dynjs.runtime.builtins.types.string.prototype.Replace;
 import org.dynjs.runtime.builtins.types.string.prototype.Search;
 import org.dynjs.runtime.builtins.types.string.prototype.Slice;
 import org.dynjs.runtime.builtins.types.string.prototype.Split;
@@ -62,6 +63,7 @@ public class BuiltinString extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toLocaleLowerCase", new ToLocaleLowerCase(globalObject) );
         defineNonEnumerableProperty(proto, "toLocaleUpperCase", new ToLocaleUpperCase(globalObject) );
         defineNonEnumerableProperty(proto, "trim", new Trim(globalObject) );
+        defineNonEnumerableProperty(proto, "replace", new Replace(globalObject) ); // http://es5.github.com/#x15.5.4.11
     }
 
     @Override
