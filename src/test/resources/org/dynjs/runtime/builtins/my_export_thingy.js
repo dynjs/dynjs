@@ -5,4 +5,4 @@ aThingy.doesSomething = function() {
   return "A thingy!";
 }
 
-exports = aThingy;
+module.exports = aThingy;

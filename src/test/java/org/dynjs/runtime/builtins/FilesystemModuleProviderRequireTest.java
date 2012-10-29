@@ -85,6 +85,13 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
     public void testSupportsNestedRequires() {
         assertThat(eval("x = require('outer'); x.quadruple(4);")).isEqualTo(16L);
     }
+    
+    @Test
+    public void testSupportsModuleDotExportNotation() {
+        Object o = eval("x = require('module_dot_export')");
+        assertThat(eval("x.AnObject")).isNotEqualTo(Types.UNDEFINED);
+        assertThat(eval("x.a_function()")).isEqualTo("hello!");
+    }
 
     /*
     @Test
