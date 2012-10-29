@@ -148,7 +148,7 @@ public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
 
                 label(throwSyntax);
                 // ref
-                invokestatic(p(ExecutionContext.class), "throwSyntaxError", sig(void.class));
+                append( jsThrowSyntaxError( "unable to delete" ) );
                 // ref
                 go_to(end);
 

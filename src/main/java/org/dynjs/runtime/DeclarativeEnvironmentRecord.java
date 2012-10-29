@@ -82,6 +82,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     @Override
     public boolean deleteBinding(ExecutionContext context, String name) {
         // 10.2.1.1.5
+        System.err.println( "**** delete binding: " + name );
         PropertyDescriptor desc = this.immutableBindings.get(name);
         if (desc == null) {
             desc = this.mutableBindings.get(name);
