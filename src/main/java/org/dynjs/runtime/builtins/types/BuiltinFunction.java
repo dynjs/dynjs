@@ -33,12 +33,13 @@ public class BuiltinFunction extends AbstractBuiltinType {
     public BuiltinFunction(final GlobalObject globalObject) {
         super(globalObject, "args");
 
-        final JSFunction proto = new AbstractNativeFunction(globalObject) {
+        final JSFunction proto = new AbstractNativeFunction(globalObject, false) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
                 return Types.UNDEFINED;
             }
         };
+        
         setPrototypeProperty(proto);
     }
 

@@ -214,7 +214,8 @@ tokens
 	PINC ;
 	POS ;
 	PROGRAM ;
-
+	ContinuedStringLiteral;
+	
 // Soft Keywords
 
 	SK_PRINT;
@@ -255,6 +256,7 @@ private final boolean areRegularExpressionsEnabled()
 		case DecimalLiteral:
 		case HexIntegerLiteral:
 		case StringLiteral:
+		case ContinuedStringLiteral:
 	// member access ending 
 		case RBRACK:
 	// function call or nested expression ending
@@ -329,6 +331,10 @@ public boolean isValidIdentifier(String ident) {
     return true;
   }
   return getWatcher().isValidIdentifier(ident);
+}
+
+public boolean areValidParameterNames(List<String> names) {
+  return getWatcher().areValidParameterNames( names );
 }
 	
 private List<String> errors = new ArrayList<String>();
@@ -424,6 +430,7 @@ private final static boolean isLeftHandSideExpression(RuleReturnScope lhs)
 			case OctalIntegerLiteral:
 			case HexIntegerLiteral:
 			case StringLiteral:
+			case ContinuedStringLiteral:
 			case RegularExpressionLiteral:
 			case ARRAY:
 			case OBJECT:
@@ -607,6 +614,7 @@ token
 	| punctuator
 	| numericLiteral
 	| StringLiteral
+	| ContinuedStringLiteral
 	;
 
 // $<	Reserved words (7.5.1)
@@ -792,6 +800,7 @@ literal
 	| booleanLiteral
 	| numericLiteral
 	| StringLiteral
+	| ContinuedStringLiteral 
 	| RegularExpressionLiteral
 	;
 
@@ -875,22 +884,28 @@ LineContinuation
 StringLiteral
 @init{
   StringBuffer buf = new StringBuffer();
+  boolean continuation = false;
 }
 	: 
 	( SQUOTE 
 	  ( ch=~( SQUOTE | BSLASH | LineTerminator ) {buf.append( (char) $ch ); }
 	  | es=EscapeSequence {buf.append( $es.getText() ); }
-	  | lc=LineContinuation 
+	  | lc=LineContinuation { continuation = true; }
 	  )* 
 	  SQUOTE
 	| DQUOTE 
 	  ( ch=~( DQUOTE | BSLASH | LineTerminator ) {buf.append( (char) $ch ); }
 	  | es=EscapeSequence {buf.append( $es.getText() ); }
-	  | lc=LineContinuation
+	  | lc=LineContinuation { continuation = true; }
 	  )* 
 	  DQUOTE)
 	  //{ setText(input.substring($start+1, $stop - 1)); }
-	  { setText( buf.toString() ); }
+	  { 
+	    setText( buf.toString() );
+	    if ( continuation ) {
+	      $type = ContinuedStringLiteral; 
+	    }
+	  }
 	;
 
 // $>
@@ -969,6 +984,7 @@ nameValuePair[ObjectLiteralWatcher watcher]
 propertyName returns [String name]
 	: id=Identifier     { $name = id.getText(); }
 	| sl=StringLiteral  { $name = sl.getText(); }
+	| csl=ContinuedStringLiteral  { $name = csl.getText(); }
 	| nl=numericLiteral { $name = ((CommonTree)nl.getTree()).getText(); }
 	| rw=reservedWord   { $name = ((CommonTree)rw.getTree()).getText(); } -> ^(Identifier[$reservedWord.text]) 
 	;
@@ -1354,7 +1370,7 @@ variableDeclarationNoIn
 // $<Empty statement (12.3)
 
 emptyStatement
-	: SEMIC!
+	: SEMIC! { getWatcher().emptyStatement(); }
 	;
 
 // $>
@@ -1631,7 +1647,8 @@ functionDeclaration
 @after {
   getWatcher().endFunctionDeclaration( retval ); 
 }
-	: FUNCTION name=Identifier { isValidIdentifier( name.getText() ) }? formalParameterList functionBody
+	: FUNCTION name=Identifier { isValidIdentifier( name.getText() ) }? fpl=formalParameterList functionBody
+	{ areValidParameterNames( $fpl.names ) }?
 	-> ^( FUNCTION $name formalParameterList functionBody )
 	;
 
@@ -1643,18 +1660,20 @@ functionExpression
   getWatcher().endFunctionExpression( retval ); 
 }
 	: 
-	FUNCTION name=Identifier? { ( (name == null) ? true : isValidIdentifier( name.getText() ) ) }? formalParameterList functionBody
+	FUNCTION name=Identifier? { ( (name == null) ? true : isValidIdentifier( name.getText() ) ) }? fpl=formalParameterList functionBody 
+	{ areValidParameterNames( $fpl.names ) }?
 	-> ^( FUNCTION $name? formalParameterList functionBody )
 	;
 
-formalParameterList
+formalParameterList returns[List<String> names ]
 @init {
-  Set<String> paramNames = new HashSet<>();
+  List<String> paramNames = new ArrayList<>();
 }
 	: LPAREN 
-	    ( id1=Identifier { isValidIdentifier( id1.getText() ) }? { paramNames.add( id1.getText() ); } 
-	      ( COMMA id2=Identifier { isValidIdentifier( id2.getText() ) }? { ( ! isStrict() ) || ( ! paramNames.contains( id2.getText() ) ) }?  )* )? 
+	    ( ident=Identifier { paramNames.add( ident.getText() ); } 
+	      ( COMMA ident=Identifier { paramNames.add( ident.getText() ); } )* )? 
 	  RPAREN
+	  { $names = paramNames; }
 	-> ^( ARGS Identifier* )
 	;
 
