@@ -15,6 +15,10 @@ public class BreakStatement extends AbstractStatement implements Statement {
         super(tree);
         this.target = target;
     }
+    
+    public String getTarget() {
+        return this.target;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

@@ -9,8 +9,10 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.ast.AbstractByteCodeEmitter;
+import org.dynjs.parser.ast.AdditiveExpression;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
@@ -19,17 +21,39 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
-    
+
+    public static interface Arities {
+        int THIS = 0;
+        int EXECUTION_CONTEXT = 1;
+        int COMPLETION = 2;
+    }
+
     private BlockManager blockManager;
 
     public AbstractCodeGeneratingVisitor(BlockManager blockManager) {
         this.blockManager = blockManager;
     }
-    
+
     public BlockManager getBlockManager() {
         return this.blockManager;
     }
     
+    
+    
+    @Override
+    public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
+        if ( expr.getOp().equals( "+" ) ) {
+            visitPlus( context, expr, strict );
+        } else {
+            visitMinus( context, expr, strict );
+        }
+    }
+    
+    public abstract void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict);
+    public abstract void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict);
+    
+    
+
     public CodeBlock jsCheckObjectCoercible() {
         return new CodeBlock() {
             {
@@ -316,7 +340,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
             }
         };
     }
-    
+
     public CodeBlock ifEitherIsNaN(final LabelNode target) {
         // IN: Number Number
         return new CodeBlock() {
@@ -334,16 +358,16 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // Number(x) Number(y) Number(y) Number(x)
                 swap();
                 // Number(x) Number(y) Number(x) Number(y)
-                invokestatic(p(AbstractByteCodeEmitter.class), "isEitherNaN", sig( boolean.class, Number.class, Number.class ) );
+                invokestatic(p(AbstractByteCodeEmitter.class), "isEitherNaN", sig(boolean.class, Number.class, Number.class));
                 // Number(x) Number(y) bool
                 iftrue(target);
                 // Number(x) Number(y)
             }
         };
     }
-    
+
     public CodeBlock ifTopIsZero(final LabelNode target) {
-        // IN: Number 
+        // IN: Number
         return new CodeBlock() {
             {
                 // Number
@@ -351,22 +375,21 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // Number
                 dup();
                 // Number Number
-                invokestatic(p(AbstractByteCodeEmitter.class), "isZero", sig( boolean.class, Number.class) );
+                invokestatic(p(AbstractByteCodeEmitter.class), "isZero", sig(boolean.class, Number.class));
                 // Number bool
                 iftrue(target);
                 // Number
             }
         };
     }
-    
+
     public static boolean isEitherNaN(Number lhs, Number rhs) {
-        return ( Double.isNaN( lhs.doubleValue() ) || Double.isNaN( rhs.doubleValue() ) );
-    }
-    
-    public static boolean isZero(Number num) {
-        return ( num.doubleValue() == 0.0 );
+        return (Double.isNaN(lhs.doubleValue()) || Double.isNaN(rhs.doubleValue()));
     }
 
+    public static boolean isZero(Number num) {
+        return (num.doubleValue() == 0.0);
+    }
 
     public CodeBlock ifBothAreString(final LabelNode target) {
         return new CodeBlock() {
@@ -453,24 +476,102 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
             }
         };
     }
-    
+
     // ----------------------------------------
-    
-    public CodeBlock normalCompletion() {
+
+    public CodeBlock jsCompletionValue() {
         return new CodeBlock() {
             {
-                invokestatic(p(Completion.class), "createNormal", sig(Completion.class));
+                // IN completion
+                getfield(p(Completion.class), "value", ci(Object.class));
+                // value
             }
         };
     }
 
-    public CodeBlock normalCompletionWithValue() {
+    public CodeBlock handleCompletion(
+            final LabelNode normalTarget,
+            final LabelNode breakTarget,
+            final LabelNode continueTarget,
+            final LabelNode returnTarget) {
         return new CodeBlock() {
             {
-                // IN: val
-                invokestatic(p(Completion.class), "createNormal", sig(Completion.class, Object.class));
+                // IN: completion
+                append(jsCompletionType());
+                lookupswitch(normalTarget,
+                        new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal() },
+                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget });
+
             }
         };
+    }
+
+    public CodeBlock jsCompletionTarget() {
+        return new CodeBlock() {
+            {
+                // IN completion
+                getfield(p(Completion.class), "target", ci(String.class));
+                // value
+            }
+        };
+    }
+
+    public CodeBlock jsCompletionType() {
+        return new CodeBlock() {
+            {
+                // IN completion
+                getfield(p(Completion.class), "type", ci(Completion.Type.class));
+                // type
+                invokevirtual(p(Completion.Type.class), "ordinal", sig(int.class));
+            }
+        };
+    }
+
+    public void breakCompletion(final String target) {
+        // <EMPTY>
+        if (target == null) {
+            aconst_null();
+        } else {
+            ldc(target);
+        }
+        // target
+        invokestatic(p(Completion.class), "createBreak", sig(Completion.class, String.class));
+        // completion
+    }
+
+    public void continueCompletion(final String target) {
+        // <EMPTY>
+        if (target == null) {
+            aconst_null();
+        } else {
+            ldc(target);
+        }
+        // target
+        invokestatic(p(Completion.class), "createContinue", sig(Completion.class, String.class));
+        // completion
+    }
+
+    public void normalCompletion() {
+        invokestatic(p(Completion.class), "createNormal", sig(Completion.class));
+    }
+
+    public void normalCompletionWithValue() {
+        // IN: val
+        invokestatic(p(Completion.class), "createNormal", sig(Completion.class, Object.class));
+    }
+    
+    public void returnCompletion() {
+        invokestatic(p(Completion.class), "createReturn", sig(Completion.class, Object.class));
+    }
+    
+    public void convertToNormalCompletion() {
+        // IN: completion
+        dup();
+        // completion completion
+        getstatic(p(Completion.Type.class), "NORMAL", ci(Type.class));
+        // completion completion NORMAL
+        putfield(p(Completion.class), "type", ci(Type.class));
+        // completion
     }
 
 }

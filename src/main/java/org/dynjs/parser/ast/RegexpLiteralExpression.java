@@ -61,6 +61,15 @@ public class RegexpLiteralExpression extends AbstractExpression {
         this.pattern = parser.getPattern();
         this.flags = parser.getFlags();
     }
+    
+    public String getPattern() {
+        return this.pattern;
+    }
+    
+    public String getFlags() {
+        return this.flags;
+    }
+    
 
     @Override
     public CodeBlock getCodeBlock() {

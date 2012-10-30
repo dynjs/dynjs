@@ -36,6 +36,10 @@ public class NumberLiteralExpression extends AbstractExpression {
     public String getText() {
         return this.text;
     }
+    
+    public int getRadix() {
+        return this.radix;
+    }
 
     @Override
     public CodeBlock getCodeBlock() {

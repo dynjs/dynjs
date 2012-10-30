@@ -31,6 +31,10 @@ public class BooleanLiteralExpression extends AbstractExpression {
         this.value = value;
     }
     
+    public boolean getValue() {
+        return this.value;
+    }
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {

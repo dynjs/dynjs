@@ -30,6 +30,10 @@ public class ContinueStatement extends AbstractStatement {
         this.target = target;
     }
 
+    public String getTarget() {
+        return this.target;
+    }
+    
     @Override
     public CodeBlock getCodeBlock() {
         return new CodeBlock() {
