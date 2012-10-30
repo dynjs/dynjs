@@ -18,9 +18,8 @@ package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Position;
-import org.dynjs.runtime.ExecutionContext;
 
-public abstract class AbstractExpression extends AbstractByteCodeEmitter implements Expression {
+public abstract class AbstractExpression implements Expression {
 
     private final Position position;
 

@@ -11,6 +11,7 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
+import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.AbstractJavascriptFunction;
@@ -31,6 +32,9 @@ public class FunctionCompiler extends AbstractCompiler {
     }
 
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final Statement body, final boolean strict) {
+        
+        final BasicBytecodeGeneratingVisitor byteCodeGenerator = new BasicBytecodeGeneratingVisitor(context.getBlockManager());
+        body.accept(context, byteCodeGenerator, strict);
 
         JiteClass jiteClass = new JiteClass(nextClassName(), p(AbstractJavascriptFunction.class), new String[0]) {
             {
@@ -54,7 +58,7 @@ public class FunctionCompiler extends AbstractCompiler {
                         });
                 defineMethod("call", ACC_PUBLIC, CALL, new CodeBlock() {
                     {
-                        append(body.getCodeBlock());
+                        append(byteCodeGenerator);
                         // completion
                         dup();
                         // completion completion

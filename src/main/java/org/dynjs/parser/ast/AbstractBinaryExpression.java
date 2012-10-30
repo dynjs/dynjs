@@ -1,8 +1,6 @@
 package org.dynjs.parser.ast;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.CodeVisitor;
-import org.dynjs.runtime.ExecutionContext;
 
 public abstract class AbstractBinaryExpression extends AbstractExpression {
 
@@ -17,8 +15,6 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
         this.op = op;
     }
     
-
-
     public Expression getLhs() {
         return this.lhs;
     }

@@ -15,10 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
@@ -36,35 +33,6 @@ public class MemberExpression extends AbstractBinaryExpression {
         super(tree, memberExpr, identifierExpr, "." );
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        // 11.2.1
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                append(getLhs().getCodeBlock());
-                // context reference
-                append(jsGetValue());
-                // context object
-                append(getRhs().getCodeBlock());
-                // context object identifier-maybe-reference
-                swap();
-                // context identifier-maybe-reference obj
-                append( jsCheckObjectCoercible() );
-                // context identifier-maybe-reference obj
-                swap();
-                // context object identifier-maybe-reference
-                append(jsGetValue());
-                // context object identifier-obj
-                append(jsToString());
-                // context object identifier-str
-                append(jsCreatePropertyReference());
-                // reference
-            }
-        };
-    }
-
     public String toString() {
         return getLhs() + "." + getRhs();
     }

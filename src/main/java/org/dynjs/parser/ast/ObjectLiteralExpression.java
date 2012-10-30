@@ -15,24 +15,11 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.SyntaxError;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.builtins.types.BuiltinObject;
 
 public class ObjectLiteralExpression extends AbstractExpression {
 
@@ -45,26 +32,6 @@ public class ObjectLiteralExpression extends AbstractExpression {
     
     public List<PropertyAssignment> getPropertyAssignments() {
         return this.propertyAssignments;
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-
-                invokestatic(p(BuiltinObject.class), "newObject", sig(DynObject.class, ExecutionContext.class));
-                // obj
-
-                for (PropertyAssignment each : propertyAssignments) {
-                    dup();
-                    // obj obj
-                    append(each.getCodeBlock());
-                }
-                // obj
-            }
-        };
     }
 
     public String toString() {

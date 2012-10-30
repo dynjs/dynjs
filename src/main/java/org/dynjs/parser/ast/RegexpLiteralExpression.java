@@ -1,19 +1,12 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.ParserException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.builtins.types.BuiltinRegExp;
-import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
 public class RegexpLiteralExpression extends AbstractExpression {
 
@@ -70,23 +63,6 @@ public class RegexpLiteralExpression extends AbstractExpression {
         return this.flags;
     }
     
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                ldc( pattern );
-                // context pattern
-                ldc( flags );
-                // context pattern flags
-                invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class, String.class, String.class));
-                // regexp
-            }
-        };
-    }
-
     public String toString() {
         return "/" + this.pattern + "/" + this.flags;
     }

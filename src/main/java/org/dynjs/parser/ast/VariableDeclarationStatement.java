@@ -17,8 +17,6 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -36,21 +34,6 @@ public class VariableDeclarationStatement extends AbstractStatement {
         return this.declExprs;
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                for (VariableDeclaration each : declExprs) {
-                    append(each.getCodeBlock());
-                    // identifier
-                    pop();
-                    // <EMPTY>
-                }
-                append(normalCompletion());
-            }
-        };
-    }
-
     public String dump(String indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(super.dump(indent));

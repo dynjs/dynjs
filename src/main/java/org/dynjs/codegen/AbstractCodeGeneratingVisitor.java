@@ -8,12 +8,16 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.ast.AbstractByteCodeEmitter;
+import org.dynjs.parser.Position;
+import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AdditiveExpression;
+import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
@@ -37,22 +41,19 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
     public BlockManager getBlockManager() {
         return this.blockManager;
     }
-    
-    
-    
+
     @Override
     public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
-        if ( expr.getOp().equals( "+" ) ) {
-            visitPlus( context, expr, strict );
+        if (expr.getOp().equals("+")) {
+            visitPlus(context, expr, strict);
         } else {
-            visitMinus( context, expr, strict );
+            visitMinus(context, expr, strict);
         }
     }
-    
+
     public abstract void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict);
+
     public abstract void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict);
-    
-    
 
     public CodeBlock jsCheckObjectCoercible() {
         return new CodeBlock() {
@@ -60,7 +61,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // IN: obj
                 dup();
                 // obj obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 swap();
                 // obj context obj
@@ -74,7 +75,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // <EMPTY>
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 ldc(identifier);
                 invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
                 // reference
@@ -102,7 +103,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN: obj preferredType
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj preferredType context
                 dup_x2();
                 // context obj preferredType context
@@ -118,7 +119,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -142,7 +143,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -156,7 +157,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -170,7 +171,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj context
                 invokedynamic("ToObject", sig(JSObject.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
                 // obj
@@ -186,7 +187,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN: reference
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // reference context
                 invokedynamic("GetValue", sig(Object.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
                 // value
@@ -222,7 +223,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return new CodeBlock() {
             {
                 // IN: obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj context
                 swap();
                 // context obj
@@ -248,13 +249,13 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // obj
                 dup();
                 // obj obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 ldc(message);
                 // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createTypeError", sig(JSObject.class, String.class));
                 // obj obj ex
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj ex context
                 swap();
                 // obj obj context ex
@@ -272,13 +273,13 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // obj
                 dup();
                 // obj obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 ldc(message);
                 // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
                 // obj obj ex
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj ex context
                 swap();
                 // obj obj context ex
@@ -296,13 +297,13 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // obj
                 dup();
                 // obj obj
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj context
                 ldc(message);
                 // obj obj context message
                 invokevirtual(p(ExecutionContext.class), "createSyntaxError", sig(JSObject.class, String.class));
                 // obj obj ex
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // obj obj ex context
                 swap();
                 // obj obj context ex
@@ -358,7 +359,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // Number(x) Number(y) Number(y) Number(x)
                 swap();
                 // Number(x) Number(y) Number(x) Number(y)
-                invokestatic(p(AbstractByteCodeEmitter.class), "isEitherNaN", sig(boolean.class, Number.class, Number.class));
+                invokestatic(p(AbstractCodeGeneratingVisitor.class), "isEitherNaN", sig(boolean.class, Number.class, Number.class));
                 // Number(x) Number(y) bool
                 iftrue(target);
                 // Number(x) Number(y)
@@ -375,7 +376,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // Number
                 dup();
                 // Number Number
-                invokestatic(p(AbstractByteCodeEmitter.class), "isZero", sig(boolean.class, Number.class));
+                invokestatic(p(AbstractCodeGeneratingVisitor.class), "isZero", sig(boolean.class, Number.class));
                 // Number bool
                 iftrue(target);
                 // Number
@@ -559,11 +560,11 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         // IN: val
         invokestatic(p(Completion.class), "createNormal", sig(Completion.class, Object.class));
     }
-    
+
     public void returnCompletion() {
         invokestatic(p(Completion.class), "createReturn", sig(Completion.class, Object.class));
     }
-    
+
     public void convertToNormalCompletion() {
         // IN: completion
         dup();
@@ -572,6 +573,219 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         // completion completion NORMAL
         putfield(p(Completion.class), "type", ci(Type.class));
         // completion
+    }
+
+    public static void injectLineNumber(CodeBlock block, Statement statement) {
+        Position position = statement.getPosition();
+        if (position != null) {
+            LabelNode lineLabel = new LabelNode();
+            block.line(position.getLine(), lineLabel);
+            block.label(lineLabel);
+        }
+    }
+
+    public void invokeCompiledStatementBlock(final String grist, final Statement block) {
+        compiledStatementBlock(grist, block);
+        // basic-block
+        aload(Arities.EXECUTION_CONTEXT);
+        // basic-block context
+        // invokevirtual( p( BasicBlock.class ), "call", sig( Completion.class, ExecutionContext.class ) );
+        invokeinterface(p(BasicBlock.class), "call", sig(Completion.class, ExecutionContext.class));
+        // completion
+    }
+
+    public void compiledStatementBlock(final String grist, final Statement block) {
+        LabelNode skipCompile = new LabelNode();
+        LabelNode end = new LabelNode();
+
+        int statementNumber = block.getStatementNumber();
+        Entry entry = blockManager.retrieve(statementNumber);
+
+        // Stash statement if required
+        if (entry.statement == null) {
+            entry.statement = block;
+        }
+
+        // ----------------------------------------
+        // ----------------------------------------
+
+        aload(Arities.EXECUTION_CONTEXT);
+        ldc(statementNumber);
+        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
+        dup();
+        // entry entry
+        invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
+        // entry object
+        dup();
+        // entry object object
+
+        ifnonnull(skipCompile);
+        // entry object
+        pop();
+        // entry
+
+        aload(Arities.EXECUTION_CONTEXT);
+        // entry context
+
+        invokevirtual(p(ExecutionContext.class), "getCompiler", sig(JSCompiler.class));
+        // entry compiler
+
+        swap();
+        // compiler entry
+
+        aload(Arities.EXECUTION_CONTEXT);
+        // compiler entry context
+
+        swap();
+        // compiler context entry
+
+        ldc(grist);
+        // compiler context entry grist
+
+        swap();
+        // compiler context grist entry
+
+        getfield(p(Entry.class), "statement", ci(Statement.class));
+        // compiler context grist statement
+
+        invokevirtual(p(JSCompiler.class), "compileBasicBlock", sig(BasicBlock.class, ExecutionContext.class, String.class, Statement.class));
+        // basic-block
+
+        dup();
+        // basic-block basic-block
+
+        aload(Arities.EXECUTION_CONTEXT);
+        // basic-block basic-block context
+
+        ldc(statementNumber);
+        // basic-block basic-block context statement-number
+
+        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
+        // basic-block basic-block entry
+
+        swap();
+        // basic-block entry basic-block
+
+        invokevirtual(p(Entry.class), "setCompiled", sig(void.class, Object.class));
+        // basic-block
+
+        go_to(end);
+
+        label(skipCompile);
+        // entry basic-block
+        swap();
+        // basic-block entry
+        pop();
+        // basic-block
+
+        label(end);
+        // basic-block
+
+    }
+
+    public void compiledFunction(final String[] formalParams, final Statement block, final boolean strict) {
+        LabelNode skipCompile = new LabelNode();
+        LabelNode end = new LabelNode();
+
+        int statementNumber = block.getStatementNumber();
+        Entry entry = blockManager.retrieve(statementNumber);
+
+        // Stash statement if required
+        if (entry.statement == null) {
+            entry.statement = block;
+        }
+
+        // ----------------------------------------
+        // ----------------------------------------
+
+        aload(Arities.EXECUTION_CONTEXT);
+        ldc(statementNumber);
+        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
+        dup();
+        // entry entry
+        invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
+        // entry object
+        dup();
+        // entry object object
+
+        ifnonnull(skipCompile);
+        // entry object
+
+        pop();
+        // entry
+
+        aload(Arities.EXECUTION_CONTEXT);
+        // entry context
+
+        invokevirtual(p(ExecutionContext.class), "getCompiler", sig(JSCompiler.class));
+        // entry compiler
+
+        swap();
+        // compiler entry
+
+        getfield(p(Entry.class), "statement", ci(Statement.class));
+        // compiler statement
+
+        aload(Arities.EXECUTION_CONTEXT);
+        // compiler statement context
+        swap();
+        // compiler context statement
+
+        bipush(formalParams.length);
+        // compiler context statement params-en
+        anewarray(p(String.class));
+        // compiler context statement params
+
+        for (int i = 0; i < formalParams.length; ++i) {
+            dup();
+            bipush(i);
+            ldc(formalParams[i]);
+            aastore();
+        }
+        // compiler context statement params
+        swap();
+        // compiler context params statement
+
+        if (strict) {
+            iconst_1();
+        } else {
+            iconst_0();
+        }
+
+        // compiler context params statement bool
+
+        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, Statement.class, boolean.class));
+        // fn
+
+        dup();
+        // fn fn
+
+        aload(Arities.EXECUTION_CONTEXT);
+        // fn fn context
+
+        ldc(statementNumber);
+        // fn fn context statement-number
+
+        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
+        // fn fn context entry
+
+        swap();
+        // fn entry fn
+
+        invokevirtual(p(Entry.class), "setCompiled", sig(void.class, Object.class));
+        // fn
+
+        go_to(end);
+
+        label(skipCompile);
+        // entry fn
+        swap();
+        // fn entry
+        pop();
+        // fn
+
+        label(end);
+        // fn
     }
 
 }

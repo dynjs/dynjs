@@ -15,56 +15,31 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
 
 public class ForVarDeclInStatement extends AbstractForInStatement {
 
     private final VariableDeclarationStatement decl;
 
-    public ForVarDeclInStatement(final Tree tree, final BlockManager blockManager, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
-        super(tree, blockManager, rhs, block);
+    public ForVarDeclInStatement(final Tree tree, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
+        super(tree, rhs, block);
         this.decl = decl;
     }
-    
+
     public VariableDeclarationStatement getDeclaration() {
         return this.decl;
     }
-    
+
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = super.getVariableDeclarations();
-        decls.addAll( decl.getVariableDeclarations() );
+        decls.addAll(decl.getVariableDeclarations());
         return decls;
-    }
-
-    @Override
-    public CodeBlock getFirstChunkCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(decl.getCodeBlock());
-                // completion
-                pop();
-                // <EMPTY>
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                ldc(decl.getVariableDeclarations().get(0).getIdentifier());
-                // context identifier
-                invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
-                // reference
-            }
-        };
     }
 
     public String toIndentedString(String indent) {
@@ -77,7 +52,7 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
 
 }

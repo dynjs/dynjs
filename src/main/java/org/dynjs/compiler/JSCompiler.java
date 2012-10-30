@@ -11,12 +11,6 @@ import org.dynjs.runtime.JSProgram;
 
 public class JSCompiler {
 
-    public static interface Arities {
-        int THIS = 0;
-        int EXECUTION_CONTEXT = 1;
-        int COMPLETION = 2;
-    }
-
     private Config config;
     private ProgramCompiler programCompiler;
     private FunctionCompiler functionCompiler;
@@ -31,10 +25,6 @@ public class JSCompiler {
         this.basicBlockCompiler = new BasicBlockCompiler(runtime, this.config);
     }
 
-    public JSProgram compileProgram(Program program, boolean forceStrict) {
-        return this.programCompiler.compile(program, forceStrict);
-    }
-    
     public JSProgram compileProgram(ExecutionContext context, Program program, boolean forceStrict) {
         return this.programCompiler.compile(context, program, forceStrict);
     }
@@ -43,8 +33,8 @@ public class JSCompiler {
         return this.functionCompiler.compile(context, formalParameters, body, containedInStrictCode );
     }
 
-    public BasicBlock compileBasicBlock(String grist, Statement body) {
-        return this.basicBlockCompiler.compile(grist, body);
+    public BasicBlock compileBasicBlock(ExecutionContext context, String grist, Statement body) {
+        return this.basicBlockCompiler.compile(context, grist, body);
     }
 
 }

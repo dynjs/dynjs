@@ -15,14 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
 
 public class LogicalNotOperatorExpression extends AbstractUnaryOperatorExpression {
 
@@ -30,33 +25,6 @@ public class LogicalNotOperatorExpression extends AbstractUnaryOperatorExpressio
         super(tree, expr, "!" );
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                LabelNode returnFalse = new LabelNode();
-                LabelNode end = new LabelNode();
-
-                append(getExpr().getCodeBlock());
-                // obj
-                append(jsGetValue());
-                // val
-                append(jsToBoolean());
-                // Boolean
-                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-                // bool
-                iftrue(returnFalse);
-                iconst_1();
-                go_to(end);
-                label(returnFalse);
-                iconst_0();
-                label(end);
-                invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
-                nop();
-            }
-        };
-    }
-
     public String toString() {
         return "! " + getExpr();
     }

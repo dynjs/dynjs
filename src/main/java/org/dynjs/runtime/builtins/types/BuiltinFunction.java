@@ -120,7 +120,6 @@ public class BuiltinFunction extends AbstractBuiltinType {
         ES3Walker walker = new ES3Walker(treeNodeStream);
 
         Executor executor = new Executor();
-        executor.setBlockManager(context.getBlockManager());
         walker.setExecutor(executor);
         FunctionDescriptor descriptor = walker.functionDescriptor();
         return descriptor;

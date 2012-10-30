@@ -1,7 +1,5 @@
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
@@ -18,15 +16,6 @@ public class BreakStatement extends AbstractStatement implements Statement {
     
     public String getTarget() {
         return this.target;
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(breakCompletion(target));
-            }
-        };
     }
 
     public String toIndentedString(String indent) {

@@ -15,36 +15,29 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
 
 public class DoWhileStatement extends AbstractIteratingStatement {
 
     private final Expression test;
     private final Statement block;
 
-    public DoWhileStatement(final Tree tree, BlockManager blockManager, final Expression test, final Statement block) {
-        super(tree, blockManager);
+    public DoWhileStatement(final Tree tree, final Expression test, final Statement block) {
+        super(tree);
         this.test = test;
         this.block = block;
     }
-    
+
     public Expression getTest() {
         return this.test;
     }
-    
+
     public Statement getBlock() {
         return this.block;
     }
@@ -54,82 +47,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     }
 
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                LabelNode begin = new LabelNode();
-                LabelNode normalTarget = new LabelNode();
-                LabelNode breakTarget = new LabelNode();
-                LabelNode continueTarget = new LabelNode();
-                LabelNode end = new LabelNode();
-
-                label(begin);
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", block));
-                // completion(block)
-                dup();
-                // completion(block) completion(block)
-                append(handleCompletion(normalTarget, breakTarget, continueTarget, end));
-
-                // ----------------------------------------
-                // NORMAL
-                label(normalTarget);
-                // completion(block)
-
-                append(test.getCodeBlock());
-                // completion(block) result
-                append(jsGetValue());
-                // completion(block) result
-                append(jsToBoolean());
-                // completion(block) Boolean
-                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-                // completion(block) bool
-                iffalse(end);
-                pop();
-                // <EMPTY>
-                go_to(begin);
-
-                // ----------------------------------------
-                // BREAK
-                label(breakTarget);
-                // completion(block,BREAK)
-                dup();
-                // completion completion
-                append(jsCompletionTarget());
-                // completion target
-                append(isInLabelSet());
-                // completion bool
-                iffalse(end);
-                // completion
-                append(convertToNormal());
-                // completion(block,NORMAL)
-                go_to(end);
-
-                // ----------------------------------------
-                // CONTINUE
-
-                label(continueTarget);
-                // completion(block,CONTINUE)
-                dup();
-                // completion completion
-                append(jsCompletionTarget());
-                // completion target
-                append(isInLabelSet());
-                // completion bool
-                iffalse(end);
-                // completion
-                go_to(normalTarget);
-
-                // ----------------------------------------
-                label(end);
-                // completion(block)
-                nop();
-                // completion(block)
-            }
-        };
+        visitor.visit(context, this, strict);
     }
 
     public String toIndentedString(String indent) {

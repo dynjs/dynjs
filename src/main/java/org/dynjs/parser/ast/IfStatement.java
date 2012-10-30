@@ -15,106 +15,46 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
 
-public class IfStatement extends AbstractCompilingStatement implements Statement {
+public class IfStatement extends AbstractStatement {
 
     private final Expression vbool;
     private final Statement vthen;
     private final Statement velse;
 
-    public IfStatement(final Tree tree, final BlockManager blockManager, final Expression vbool, final Statement vthen, final Statement velse) {
-        super(tree, blockManager);
+    public IfStatement(final Tree tree, final Expression vbool, final Statement vthen, final Statement velse) {
+        super(tree);
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
     }
-    
+
     public Expression getTest() {
         return this.vbool;
     }
-    
+
     public Statement getThenBlock() {
         return this.vthen;
     }
-    
+
     public Statement getElseBlock() {
         return this.velse;
     }
-    
+
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
-        decls.addAll( this.vthen.getVariableDeclarations() );
-        if ( this.velse != null ) {
-            decls.addAll( this.velse.getVariableDeclarations() );
+        decls.addAll(this.vthen.getVariableDeclarations());
+        if (this.velse != null) {
+            decls.addAll(this.velse.getVariableDeclarations());
         }
         return decls;
-    }
-    
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                LabelNode elseBranch = new LabelNode();
-                LabelNode noElseBranch = new LabelNode();
-                LabelNode end = new LabelNode();
-
-                append(vbool.getCodeBlock());
-                // value
-                append( jsGetValue() );
-                // value
-                append(jsToBoolean());
-                // Boolean
-                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-                // bool
-
-                if (velse == null) {
-                    // completion bool
-                    iffalse(noElseBranch);
-                } else {
-                    iffalse(elseBranch);
-                }
-                // <empty>
-
-                // ----------------------------------------
-                // THEN
-
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Then", vthen));
-                // completion
-                go_to(end);
-
-                // ----------------------------------------
-                // ELSE
-                if (velse == null) {
-                    label(noElseBranch);
-                    append(normalCompletion());
-                } else {
-                    label(elseBranch);
-                    // <empty>
-                    append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Else", velse));
-                    // completion
-                }
-
-                label(end);
-                // completion
-
-                nop();
-            }
-        };
     }
 
     public String toIndentedString(String indent) {
@@ -130,9 +70,8 @@ public class IfStatement extends AbstractCompilingStatement implements Statement
         return buf.toString();
     }
 
-
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
 }

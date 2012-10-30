@@ -15,20 +15,11 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class ArrayLiteralExpression extends AbstractExpression {
 
@@ -43,45 +34,6 @@ public class ArrayLiteralExpression extends AbstractExpression {
         return this.exprs;
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                invokestatic(p(BuiltinArray.class), "newArray", sig(DynArray.class, ExecutionContext.class));
-                // array
-
-                int index = 0;
-
-                for (Expression each : exprs) {
-                    dup();
-                    // array array
-                    aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                    // array array context
-                    ldc(index + "");
-                    // array array context name
-                    append(each.getCodeBlock());
-                    // array array context name val
-                    append(jsGetValue());
-                    // array array context name val
-                    invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
-                    // array array context name desc
-                    iconst_0();
-                    i2b();
-                    // array array context name desc bool
-                    invokevirtual(p(DynArray.class), "defineOwnProperty", sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class,
-                            boolean.class));
-                    // array bool
-                    pop();
-                    // array
-                    ++index;
-                }
-                // array
-            }
-        };
-    }
-    
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
     }

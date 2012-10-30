@@ -16,8 +16,6 @@
 
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -28,18 +26,6 @@ public class VoidOperatorExpression extends AbstractUnaryOperatorExpression {
         super(tree, expr, "void" );
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(getExpr().getCodeBlock());
-                append(jsGetValue());
-                pop();
-                append(jsPushUndefined());
-            }
-        };
-    }
-
     public String toString() {
         return "void " + getExpr();
     }

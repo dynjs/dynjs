@@ -15,30 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
-import org.dynjs.compiler.CodeBlockUtils;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionExpression extends AbstractExpression {
 
-    private BlockManager blockManager;
     private FunctionDescriptor descriptor;
 
-    public FunctionExpression(BlockManager blockManager, FunctionDescriptor descriptor) {
+    public FunctionExpression(FunctionDescriptor descriptor) {
         super(descriptor.getTree());
-        this.blockManager = blockManager;
         this.descriptor = descriptor;
     }
 
     public FunctionDescriptor getDescriptor() {
         return this.descriptor;
-    }
-
-    public CodeBlock getCodeBlock() {
-        return CodeBlockUtils.compiledFunction(blockManager, descriptor.getFormalParameters(), descriptor.getBlock(), descriptor.isStrict());
     }
 
     public String toString() {

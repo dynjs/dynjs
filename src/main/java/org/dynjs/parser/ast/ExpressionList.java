@@ -16,14 +16,10 @@
 
 package org.dynjs.parser.ast;
 
-import java.util.Iterator;
 import java.util.List;
-
-import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ExpressionList extends AbstractExpression {
@@ -44,18 +40,4 @@ public class ExpressionList extends AbstractExpression {
         visitor.visit( context, this, strict );
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                Iterator<Expression> exprs = exprList.iterator();
-                while ( exprs.hasNext() ) {
-                    append(exprs.next().getCodeBlock() );
-                    if ( exprs.hasNext() ) {
-                        pop();
-                    }
-                }
-            }
-        };
-    }
 }

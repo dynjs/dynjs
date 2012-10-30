@@ -16,14 +16,9 @@
 
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Types;
 
 public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
 
@@ -31,20 +26,6 @@ public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
         super(tree, expr, "typeof");
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                append(getExpr().getCodeBlock());
-                // context obj
-                invokestatic(p(Types.class), "typeof", sig(String.class, ExecutionContext.class, Object.class));
-                // string
-            }
-        };
-    }
-
     public String toString() {
         return "typeof " + getExpr();
     }

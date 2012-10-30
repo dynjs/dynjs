@@ -15,23 +15,14 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
 
 public class BlockStatement extends AbstractStatement implements Statement {
 
@@ -82,93 +73,6 @@ public class BlockStatement extends AbstractStatement implements Statement {
     
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                // 12.1
-                LabelNode abrupt = new LabelNode();
-                LabelNode end = new LabelNode();
-
-                append(normalCompletion());
-                // completion
-                astore(JSCompiler.Arities.COMPLETION);
-                // <empty>
-
-                for (Statement statement : blockContent) {
-                    if (statement == null) {
-                        continue;
-                    }
-                    LabelNode nonAbrupt = new LabelNode();
-                    LabelNode bringForwardValue = new LabelNode();
-                    LabelNode nextStatement = new LabelNode();
-
-                    if (statement.getPosition() != null) {
-                        line(statement.getPosition().getLine());
-                        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                        // context
-                        ldc(statement.getPosition().getLine());
-                        // context line
-                        invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
-                        // <empty>
-                    }
-                    append(statement.getCodeBlock());
-                    // completion(cur)
-                    dup();
-                    // completion(cur) completion(cur)
-                    append(handleCompletion(nonAbrupt, abrupt, abrupt, abrupt));
-
-                    // ----------------------------------------
-                    // Non-abrupt
-
-                    label(nonAbrupt);
-                    // completion(cur);
-                    dup();
-                    // completion(cur) completion(cur)
-                    append(jsCompletionValue());
-                    // completion(cur) value
-                    ifnull(bringForwardValue);
-                    // completion(cur)
-                    astore(JSCompiler.Arities.COMPLETION);
-                    // <empty>
-                    go_to(nextStatement);
-
-                    // ----------------------------------------
-
-                    label(bringForwardValue);
-                    // completion(cur)
-                    dup();
-                    // completion(cur) completion(cur)
-                    aload(JSCompiler.Arities.COMPLETION);
-                    // completion(cur) completion(cur) completion(prev)
-                    append(jsCompletionValue());
-                    // completion(cur) completion(cur) val(prev)
-                    putfield(p(Completion.class), "value", ci(Object.class));
-                    // completion(cur)
-                    astore(JSCompiler.Arities.COMPLETION);
-                    // <empty>
-                    label(nextStatement);
-                }
-
-                go_to(end);
-
-                // ----------------------------------------
-                // ABRUPT
-
-                label(abrupt);
-                // completion(cur)
-                astore(JSCompiler.Arities.COMPLETION);
-                // <empty>
-
-                // ----------------------------------------
-                // END
-                label(end);
-                // <empty>
-                aload(JSCompiler.Arities.COMPLETION);
-            }
-        };
     }
 
     public String dump(String indent) {

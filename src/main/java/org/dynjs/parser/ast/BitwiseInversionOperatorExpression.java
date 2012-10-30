@@ -15,10 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -31,28 +27,6 @@ public class BitwiseInversionOperatorExpression extends AbstractUnaryOperatorExp
     
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(getExpr().getCodeBlock());
-                // obj
-                append(jsGetValue());
-                // val
-                append(jsToInt32());
-                // Long
-                invokevirtual(p(Long.class), "longValue", sig(long.class));
-                // long
-                ldc( -1L );
-                // long -1(long)
-                lxor();
-                // long
-                invokestatic( p(Long.class), "valueOf", sig(Long.class, long.class));
-                // Long
-            }
-        };
     }
 
     public String toString() {

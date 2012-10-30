@@ -87,17 +87,7 @@ import org.dynjs.runtime.BlockManager;
 
 public class Executor {
 
-    private BlockManager blockManager;
-
     public Executor() {
-    }
-
-    public void setBlockManager(BlockManager blockManager) {
-        this.blockManager = blockManager;
-    }
-
-    public BlockManager getBlockManager() {
-        return this.blockManager;
     }
 
     public Program program(boolean strict, final List<Statement> blockContent) {
@@ -356,7 +346,7 @@ public class Executor {
     }
 
     public FunctionExpression functionExpression(FunctionDescriptor descriptor) {
-        return new FunctionExpression(getBlockManager(), descriptor);
+        return new FunctionExpression(descriptor);
     }
 
     public NewOperatorExpression newOperatorExpression(final Tree tree, final Expression expr, final List<Expression> argExprs) {
@@ -364,31 +354,31 @@ public class Executor {
     }
 
     public IfStatement ifStatement(final Tree tree, Expression vbool, Statement vthen, Statement velse) {
-        return new IfStatement(tree, getBlockManager(), vbool, vthen, velse);
+        return new IfStatement(tree, vbool, vthen, velse);
     }
 
     public Statement doStatement(final Tree tree, final Expression vbool, final Statement vloop) {
-        return new DoWhileStatement(tree, getBlockManager(), vbool, vloop);
+        return new DoWhileStatement(tree, vbool, vloop);
     }
 
     public Statement whileStatement(final Tree tree, final Expression vbool, final Statement vloop) {
-        return new WhileStatement(tree, getBlockManager(), vbool, vloop);
+        return new WhileStatement(tree, vbool, vloop);
     }
 
     public Statement forStepVar(final Tree tree, final VariableDeclarationStatement varDef, final Expression test, final Expression incr, Statement block) {
-        return new ForVarDeclStatement(tree, getBlockManager(), varDef, test, incr, block);
+        return new ForVarDeclStatement(tree, varDef, test, incr, block);
     }
 
     public Statement forStepExpr(final Tree tree, final Expression init, final Expression test, final Expression incr, final Statement block) {
-        return new ForExprStatement(tree, getBlockManager(), init, test, incr, block);
+        return new ForExprStatement(tree, init, test, incr, block);
     }
 
     public Statement forIterVar(final Tree tree, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
-        return new ForVarDeclInStatement(tree, getBlockManager(), decl, rhs, block);
+        return new ForVarDeclInStatement(tree, decl, rhs, block);
     }
 
     public Statement forIterExpr(final Tree tree, final Expression init, final Expression rhs, final Statement block) {
-        return new ForExprInStatement(tree, getBlockManager(), init, rhs, block);
+        return new ForExprInStatement(tree, init, rhs, block);
     }
 
     public Statement continueStatement(final Tree tree, String id) {
@@ -412,7 +402,7 @@ public class Executor {
     }
 
     public Statement switchStatement(final Tree tree, Expression expr, List<CaseClause> caseClauses) {
-        return new SwitchStatement(tree, getBlockManager(), expr, caseClauses);
+        return new SwitchStatement(tree, expr, caseClauses);
     }
 
     public CaseClause switchCaseClause(final Tree tree, Expression expr, List<Statement> block) {
@@ -428,7 +418,7 @@ public class Executor {
     }
 
     public TryStatement tryStatement(final Tree tree, Statement tryBlock, CatchClause catchBlock, Statement finallyBlock) {
-        return new TryStatement(tree, getBlockManager(), tryBlock, catchBlock, finallyBlock);
+        return new TryStatement(tree, tryBlock, catchBlock, finallyBlock);
     }
 
     public CatchClause tryCatchClause(final Tree tree, String id, Statement block) {
@@ -440,7 +430,7 @@ public class Executor {
     }
 
     public Statement withStatement(final Tree tree, Expression expression, Statement statement) {
-        return new WithStatement(tree, getBlockManager(), expression, statement);
+        return new WithStatement(tree, expression, statement);
     }
 
     public Statement labelledStatement(String label, Statement statement) {
@@ -461,11 +451,11 @@ public class Executor {
     }
 
     public PropertySet propertySet(final Tree tree, final String name, final String identifier, Statement block) {
-        return new PropertySet(getBlockManager(), name, identifier, block);
+        return new PropertySet(name, identifier, block);
     }
 
     public PropertyGet propertyGet(final Tree tree, final String name, Statement block) {
-        return new PropertyGet(getBlockManager(), name, block);
+        return new PropertyGet( name, block);
     }
 
     public Expression arrayLiteral(final Tree tree, final List<Expression> exprs) {

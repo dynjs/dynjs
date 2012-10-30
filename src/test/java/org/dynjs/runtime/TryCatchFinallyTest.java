@@ -1,8 +1,7 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
 
-import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ThrowException;
 import org.junit.Test;
 

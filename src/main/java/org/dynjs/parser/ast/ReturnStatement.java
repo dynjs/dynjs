@@ -15,8 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -34,22 +32,6 @@ public class ReturnStatement extends AbstractStatement {
         return this.expr;
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                // 12.9
-                if (expr == null) {
-                    append(jsPushUndefined());
-                } else {
-                    append(expr.getCodeBlock());
-                    append(jsGetValue());
-                }
-                append(returnCompletion());
-            }
-        };
-    }
-
     public String toIndentedString(String indent) {
         return indent + "return" + (this.expr == null ? "" : " " + this.expr.toString());
     }

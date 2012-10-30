@@ -15,8 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
@@ -42,12 +40,6 @@ public class FunctionDeclaration extends AbstractStatement {
         return this.descriptor.getBlock();
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        // decl, no generated code here.
-        return normalCompletion();
-    }
-    
     public boolean isStrict() {
         return this.descriptor.isStrict();
     }

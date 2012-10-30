@@ -16,74 +16,14 @@
 
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
-import org.objectweb.asm.tree.LabelNode;
 
 public class InOperatorExpression extends AbstractBinaryExpression {
 
     public InOperatorExpression(final Tree tree, final Expression l, final Expression r) {
         super(tree, l, r, "in");
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                LabelNode typeError = new LabelNode();
-                LabelNode end = new LabelNode();
-                
-                append(getLhs().getCodeBlock());
-                // obj(lhs)
-                append(jsGetValue());
-                // val(lhs)
-
-                append(getRhs().getCodeBlock());
-                // val(lhs) obj(rhs)
-                append(jsGetValue());
-                // val(lhs) val(rhs)
-
-                dup();
-                // val(lhs) val(rhs) val(rhs)
-                instance_of(p(JSObject.class));
-                // val(lhs) val(rhs) bool
-
-                iffalse(typeError);
-                // val(lhs) val(rhs)
-                checkcast(p(JSObject.class));
-                // val(lhs) obj(rhs)
-                swap();
-                // obj(rhs) val(lhs)
-                append( jsToString() );
-                // obj(rhs) str(lhs)
-                aload( JSCompiler.Arities.EXECUTION_CONTEXT );
-                // obj(rhs) str(lhs) context
-                swap();
-                // object(rhs) context str(lhs);
-                invokeinterface(p(JSObject.class), "hasProperty", sig(boolean.class, ExecutionContext.class, String.class));
-                // bool
-                go_to(end);
-
-                label(typeError);
-                // val(lhs) val(rhs)
-                pop();
-                pop();
-                iconst_0();
-                i2b();
-                //bool
-                append(jsThrowTypeError("not an object"));
-
-                label(end);
-                invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
-                // Boolean
-            }
-        };
     }
 
     @Override

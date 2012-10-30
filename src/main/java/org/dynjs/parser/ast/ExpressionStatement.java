@@ -18,8 +18,6 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
-import me.qmx.jitescript.CodeBlock;
-
 public class ExpressionStatement extends AbstractStatement {
 
     private final Expression expr;
@@ -35,23 +33,6 @@ public class ExpressionStatement extends AbstractStatement {
     
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict);
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        if (expr instanceof FunctionDeclaration) {
-            return normalCompletion();
-        }
-        return new CodeBlock() {
-            {
-                append(expr.getCodeBlock());
-                // value
-                append( jsGetValue() );
-                // value
-                append(normalCompletionWithValue());
-                // Completion
-            }
-        };
     }
 
     public String toIndentedString(String indent) {

@@ -11,10 +11,10 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BlockManager;
 import org.objectweb.asm.tree.LabelNode;
 
-public abstract class AbstractIteratingStatement extends AbstractCompilingStatement implements Statement {
+public abstract class AbstractIteratingStatement extends AbstractStatement {
 
-    public AbstractIteratingStatement(Tree tree, BlockManager blockManager) {
-        super(tree, blockManager);
+    public AbstractIteratingStatement(Tree tree) {
+        super(tree);
     }
 
     public CodeBlock isInLabelSet() {

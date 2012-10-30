@@ -15,9 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -35,19 +32,6 @@ public class BooleanLiteralExpression extends AbstractExpression {
         return this.value;
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                if (value) {
-                    getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
-                } else {
-                    getstatic(p(Boolean.class), "FALSE", ci(Boolean.class));
-                }
-            }
-        };
-    }
-
     public String toString() {
         return "" + this.value;
     }

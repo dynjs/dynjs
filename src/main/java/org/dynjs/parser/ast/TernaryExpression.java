@@ -15,13 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
 
 public class TernaryExpression extends AbstractExpression {
 
@@ -46,36 +42,6 @@ public class TernaryExpression extends AbstractExpression {
     
     public Expression getElseExpr() {
         return this.velse;
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                LabelNode elseBranch = new LabelNode();
-                LabelNode end = new LabelNode();
-
-                append(vbool.getCodeBlock());
-                // val
-                append(jsGetValue());
-                // val
-                append(jsToBoolean());
-                // Boolean
-                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-                // bool
-                iffalse(elseBranch);
-                // <empty>
-                append(vthen.getCodeBlock());
-                // thenval
-                go_to(end);
-
-                label(elseBranch);
-                append(velse.getCodeBlock());
-                // elseval
-                label(end);
-                nop();
-            }
-        };
     }
 
     public String toString() {

@@ -15,8 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -34,15 +32,6 @@ public class ContinueStatement extends AbstractStatement {
         return this.target;
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(continueCompletion(target));
-            }
-        };
-    }
-
     public String toIndentedString(String indent) {
         return indent + "continue" + (this.target == null ? ";" : this.target + ";");
     }

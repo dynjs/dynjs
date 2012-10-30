@@ -32,10 +32,9 @@ import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
-import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
-public abstract class AbstractStatement extends AbstractByteCodeEmitter implements Statement {
+public abstract class AbstractStatement implements Statement {
 
     private final static AtomicInteger counter = new AtomicInteger();
     private final Position position;

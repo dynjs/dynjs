@@ -10,11 +10,8 @@ import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
-import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.AbstractForInStatement;
 import org.dynjs.parser.ast.AbstractForStatement;
 import org.dynjs.parser.ast.AdditiveExpression;
 import org.dynjs.parser.ast.ArrayLiteralExpression;
@@ -98,10 +95,13 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
 
 public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisitor {
-    
+
     private static final String[] EMPTY_STRING_ARRAY = {};
 
     public BasicBytecodeGeneratingVisitor(BlockManager blockManager) {
@@ -109,14 +109,14 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     }
 
     public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
-        
+
         LabelNode doubleNums = new LabelNode();
 
         LabelNode stringConcatByLeft = new LabelNode();
         LabelNode stringConcat = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         // ref(lhs)
         append(jsGetValue());
         // val(lhs)
@@ -130,7 +130,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // val(lhs) bool
         iftrue(stringConcatByLeft);
 
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         // val(lhs) ref(rhs)
         append(jsGetValue());
         // val(lhs) val(rhs)
@@ -146,12 +146,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         // ----------------------------------------
         // Numbers
-        
-        
+
         // val(lhs) val(rhs)
-        append( jsToNumber() );
+        append(jsToNumber());
         swap();
-        append( jsToNumber() );
+        append(jsToNumber());
         swap();
         // num(lhs) num(rhs)
 
@@ -186,7 +185,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // Strings forced by LHS
         label(stringConcatByLeft);
         // val(lhs)
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         // val(lhs) ref(rhs)
         append(jsGetValue());
         // val(lhs) val(rhs)
@@ -199,11 +198,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // Strings
         label(stringConcat);
         // val(lhs) val(rhs)
-        append( jsToString() );
+        append(jsToString());
         // val(lhs) str(rhs)
         swap();
         // str(rhs) val(lhs)
-        append( jsToString() );
+        append(jsToString());
         // str(lhs) str(lhs)
         swap();
         // str(lhs) str(rhs)
@@ -215,18 +214,18 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         nop();
 
     }
-    
+
     public void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
-        
+
         LabelNode doubleNums = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         // obj(lhs)
         append(jsGetValue());
         // val(lhs)
         append(jsToNumber());
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         // val(lhs) obj(rhs)
         append(jsGetValue());
         // val(lhs) val(rhs)
@@ -256,7 +255,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, BitwiseExpression expr, boolean strict) {
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         append(jsGetValue());
         if (expr.getOp().equals(">>>")) {
             append(jsToUint32());
@@ -265,7 +264,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         }
         invokevirtual(p(Number.class), "longValue", sig(long.class));
 
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         append(jsGetValue());
         append(jsToUint32());
         invokevirtual(p(Number.class), "longValue", sig(long.class));
@@ -385,7 +384,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, BitwiseInversionOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         // obj
         append(jsGetValue());
         // val
@@ -393,11 +392,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // Long
         invokevirtual(p(Long.class), "longValue", sig(long.class));
         // long
-        ldc( -1L );
+        ldc(-1L);
         // long -1(long)
         lxor();
         // long
-        invokestatic( p(Long.class), "valueOf", sig(Long.class, long.class));
+        invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
         // Long
     }
 
@@ -456,13 +455,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             // completion(cur)
             dup();
             // completion(cur) completion(cur)
-            aload(JSCompiler.Arities.COMPLETION);
+            aload(Arities.COMPLETION);
             // completion(cur) completion(cur) completion(prev)
             append(jsCompletionValue());
             // completion(cur) completion(cur) val(prev)
             putfield(p(Completion.class), "value", ci(Object.class));
             // completion(cur)
-            astore(JSCompiler.Arities.COMPLETION);
+            astore(Arities.COMPLETION);
             // <empty>
             label(nextStatement);
         }
@@ -474,14 +473,14 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         label(abrupt);
         // completion(cur)
-        astore(JSCompiler.Arities.COMPLETION);
+        astore(Arities.COMPLETION);
         // <empty>
 
         // ----------------------------------------
         // END
         label(end);
         // <empty>
-        aload(JSCompiler.Arities.COMPLETION);
+        aload(Arities.COMPLETION);
 
     }
 
@@ -501,28 +500,28 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, CaseClause clause, boolean strict) {
-        // nothing specific
+        clause.getBlock().accept(context, this, strict);
     }
 
     @Override
     public void visit(ExecutionContext context, DefaultCaseClause clause, boolean strict) {
-        // nothing specific
+        clause.getBlock().accept(context, this, strict);
     }
 
     @Override
     public void visit(ExecutionContext context, CatchClause clause, boolean strict) {
-        // nothing specific
+        clause.getBlock().accept(context, this, strict);
     }
 
     @Override
     public void visit(ExecutionContext context, CompoundAssignmentExpression expr, boolean strict) {
-        expr.getRootExpr().accept( context, this, strict );
+        expr.getRootExpr().accept(context, this, strict);
         // value
 
         dup();
         // value value
 
-        expr.getRootExpr().getLhs().accept( context, this, strict );
+        expr.getRootExpr().getLhs().accept(context, this, strict);
         // value value reference
 
         swap();
@@ -596,7 +595,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ref obj
         swap();
         // obj ref
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // obj ref context
         swap();
         // obj context ref
@@ -636,7 +635,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // env-rec ref
         invokevirtual(p(Reference.class), "getReferencedName", sig(String.class));
         // env-rec name
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // env-rec name context
         swap();
         // env-rec context name
@@ -676,7 +675,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode end = new LabelNode();
 
         label(begin);
-        append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", statement.getBlock()));
+        invokeCompiledStatementBlock("Do", statement.getBlock());
         // completion(block)
         dup();
         // completion(block) completion(block)
@@ -751,11 +750,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         aload(Arities.EXECUTION_CONTEXT);
         // context
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         // context obj(lhs)
         append(jsGetValue());
         // context val(lhs)
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         // context val(lhs) obj(rhs)
         append(jsGetValue());
         // context val(lhs) val(rhs)
@@ -809,15 +808,6 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
-        visitForIn( context, statement, strict );
-    }
-
-    @Override
-    public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
-        visitForIn( context, statement, strict );
-    }
-    
-    public void visitForIn(ExecutionContext context, AbstractForInStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
         LabelNode bringForward = new LabelNode();
@@ -860,35 +850,35 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         invokevirtual(p(NameEnumerator.class), "hasNext", sig(boolean.class));
         // completion bool
         iffalse(end);
-        // completion 
+        // completion
         aload(4);
         // completion name-enum
         invokevirtual(p(NameEnumerator.class), "next", sig(String.class));
         // completion str
 
-        append(statement.getFirstChunkCodeBlock());
+        statement.getExpr().accept(context, this, strict);
         // completion str ref
         swap();
         // completion ref str
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // completion ref str context
         swap();
         // completion ref context str
         invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
-        // completion 
-        append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "For", statement.getBlock()));
+        // completion
+        invokeCompiledStatementBlock("For", statement.getBlock());
         // completion(prev) completion(cur)
         dup();
         // completion(prev) completion(cur) completion(cur)
         append(jsCompletionValue());
         // completion(prev) completion(cur) val(cur)
         ifnull(bringForward);
-        // completion(prev) completion(cur) 
+        // completion(prev) completion(cur)
 
         // ----------------------------------
         // has value
         swap();
-        // completion(cur) completion(prev) 
+        // completion(cur) completion(prev)
         pop();
         // completion(cur)
         go_to(checkCompletion);
@@ -897,19 +887,19 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // bring previous value forward
 
         label(bringForward);
-        // completion(prev) completion(cur) 
+        // completion(prev) completion(cur)
         dup_x1();
-        // completion(cur) completion(prev) completion(cur) 
+        // completion(cur) completion(prev) completion(cur)
         swap();
         // completion(cur) completion(cur) completion(prev)
         append(jsGetValue());
         // completion(cur) completion(cur) val(prev)
         putfield(p(Completion.class), "value", ci(Object.class));
-        // completion(cur) 
+        // completion(cur)
 
         // -----------------------------------------------
         label(checkCompletion);
-        // completion(cur) 
+        // completion(cur)
         dup();
         // completion(cur) completion(cur)
         append(handleCompletion(nextName, doBreak, doContinue, end));
@@ -921,30 +911,185 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // completion(block,BREAK)
         dup();
         // completion completion
-        append( jsCompletionTarget() );
+        append(jsCompletionTarget());
         // completion target
-        append( statement.isInLabelSet() );
+        append(statement.isInLabelSet());
         // completion bool
         iffalse(end);
         // completion
         convertToNormalCompletion();
         // completion(block,NORMAL)
-        go_to( end );
-        
+        go_to(end);
+
         // ----------------------------------------
         // CONTINUE
-        
-        label( doContinue );
+
+        label(doContinue);
         // completion(block,CONTINUE)
         dup();
         // completion completion
-        append( jsCompletionTarget() );
+        append(jsCompletionTarget());
         // completion target
-        append( statement.isInLabelSet() );
+        append(statement.isInLabelSet());
         // completion bool
         iffalse(end);
         // completion
-        go_to( nextName );
+        go_to(nextName);
+
+        // -----------------------------------------------
+        // RHS is undefined
+        // completion undef
+        label(undefEnd);
+        // completion undef
+        pop();
+        // completion
+
+        // -----------------------------------------------
+
+        label(end);
+        // completion
+        nop();
+    }
+
+    @Override
+    public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
+        LabelNode nextName = new LabelNode();
+        LabelNode checkCompletion = new LabelNode();
+        LabelNode bringForward = new LabelNode();
+        LabelNode doBreak = new LabelNode();
+        LabelNode doContinue = new LabelNode();
+        LabelNode undefEnd = new LabelNode();
+        LabelNode end = new LabelNode();
+
+        normalCompletion();
+        // completion
+        statement.getRhs().accept(context, this, strict);
+        // completion val
+        append(jsGetValue());
+        // completion val
+        dup();
+        // completion val val
+        append(jsPushUndefined());
+        // completion val val UNDEF
+        if_acmpeq(undefEnd);
+        // completion val
+        dup();
+        // completion val val
+        append(jsPushNull());
+        // completion val val NULL
+        if_acmpeq(undefEnd);
+        // completion val
+        append(jsToObject());
+        // completion jsObj
+
+        // -----------------------------------------------
+        // completion jsObj
+        invokeinterface(p(JSObject.class), "getAllEnumerablePropertyNames", sig(NameEnumerator.class));
+        // completion name-enum
+        astore(4);
+        // completion
+        label(nextName);
+        // completion
+        aload(4);
+        // completion name-enum
+        invokevirtual(p(NameEnumerator.class), "hasNext", sig(boolean.class));
+        // completion bool
+        iffalse(end);
+        // completion
+        aload(4);
+        // completion name-enum
+        invokevirtual(p(NameEnumerator.class), "next", sig(String.class));
+        // completion str
+
+        statement.getDeclaration().accept(context, this, strict);
+        // completion
+        pop();
+        // <EMPTY>
+        aload(Arities.EXECUTION_CONTEXT);
+        // context
+        ldc(statement.getDeclaration().getVariableDeclarations().get(0).getIdentifier());
+        // context identifier
+        invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
+        // reference
+
+        // completion str ref
+        swap();
+        // completion ref str
+        aload(Arities.EXECUTION_CONTEXT);
+        // completion ref str context
+        swap();
+        // completion ref context str
+        invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
+        // completion
+        invokeCompiledStatementBlock("For", statement.getBlock());
+        // completion(prev) completion(cur)
+        dup();
+        // completion(prev) completion(cur) completion(cur)
+        append(jsCompletionValue());
+        // completion(prev) completion(cur) val(cur)
+        ifnull(bringForward);
+        // completion(prev) completion(cur)
+
+        // ----------------------------------
+        // has value
+        swap();
+        // completion(cur) completion(prev)
+        pop();
+        // completion(cur)
+        go_to(checkCompletion);
+
+        // ----------------------------------------
+        // bring previous value forward
+
+        label(bringForward);
+        // completion(prev) completion(cur)
+        dup_x1();
+        // completion(cur) completion(prev) completion(cur)
+        swap();
+        // completion(cur) completion(cur) completion(prev)
+        append(jsGetValue());
+        // completion(cur) completion(cur) val(prev)
+        putfield(p(Completion.class), "value", ci(Object.class));
+        // completion(cur)
+
+        // -----------------------------------------------
+        label(checkCompletion);
+        // completion(cur)
+        dup();
+        // completion(cur) completion(cur)
+        append(handleCompletion(nextName, doBreak, doContinue, end));
+        // completion
+
+        // ----------------------------------------
+        // BREAK
+        label(doBreak);
+        // completion(block,BREAK)
+        dup();
+        // completion completion
+        append(jsCompletionTarget());
+        // completion target
+        append(statement.isInLabelSet());
+        // completion bool
+        iffalse(end);
+        // completion
+        convertToNormalCompletion();
+        // completion(block,NORMAL)
+        go_to(end);
+
+        // ----------------------------------------
+        // CONTINUE
+
+        label(doContinue);
+        // completion(block,CONTINUE)
+        dup();
+        // completion completion
+        append(jsCompletionTarget());
+        // completion target
+        append(statement.isInLabelSet());
+        // completion bool
+        iffalse(end);
+        // completion
+        go_to(nextName);
 
         // -----------------------------------------------
         // RHS is undefined
@@ -963,14 +1108,23 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
-        visitFor( context, statement, strict );
+        if (statement.getExpr() != null) {
+            statement.getExpr().accept(context, this, strict);
+            pop();
+        }
+        visitFor(context, statement, strict);
     }
-    
+
     @Override
     public void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict) {
-        visitFor( context, statement, strict );
+        List<VariableDeclaration> decls = statement.getVariableDeclarations();
+        for (VariableDeclaration each : decls) {
+            each.accept(context, this, strict);
+            pop();
+        }
+        visitFor(context, statement, strict);
     }
-    
+
     public void visitFor(ExecutionContext context, AbstractForStatement statement, boolean strict) {
         LabelNode begin = new LabelNode();
         LabelNode bringForward = new LabelNode();
@@ -981,16 +1135,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode doContinue = new LabelNode();
         LabelNode end = new LabelNode();
 
-        append(statement.getFirstChunkCodeBlock());
-        // <empty>
-
         normalCompletion();
         // completion
 
         label(begin);
 
         if (statement.getTest() != null) {
-            statement.getTest().accept( context, this, strict );
+            statement.getTest().accept(context, this, strict);
             append(jsGetValue());
             append(jsToBoolean());
             invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
@@ -1000,7 +1151,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         }
 
         // completion(prev)
-        append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "For", statement.getBlock()));
+        invokeCompiledStatementBlock("For", statement.getBlock());
         // completion(prev) completion(cur)
         dup();
         // completion(prev) completion(cur) completion(cur)
@@ -1052,7 +1203,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         label(doIncrement);
         // completion
         if (statement.getIncrement() != null) {
-            statement.getIncrement().accept( context, this, strict );
+            statement.getIncrement().accept(context, this, strict);
             append(jsGetValue());
             pop();
         }
@@ -1104,7 +1255,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode doCall = new LabelNode();
         LabelNode isCallable = new LabelNode();
         // 11.2.3
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // context
         expr.getMemberExpression().accept(context, this, strict);
         // context ref
@@ -1171,7 +1322,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         label(doCall);
         // context ref function self
 
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // context ref function self context
         invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
         // context ref function self
@@ -1208,7 +1359,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         label(isCallable);
         // context ref function self array
 
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // context ref function self array context
         invokevirtual(p(ExecutionContext.class), "popCallContext", sig(void.class));
         // context ref function self array
@@ -1225,7 +1376,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        CodeBlockUtils.compiledFunction(getBlockManager(), expr.getDescriptor().getFormalParameters(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
+        compiledFunction(expr.getDescriptor().getFormalParameters(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
     }
 
     @Override
@@ -1264,7 +1415,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ----------------------------------------
         // THEN
 
-        append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Then", statement.getThenBlock()));
+        invokeCompiledStatementBlock("Then", statement.getThenBlock());
         // completion
         go_to(end);
 
@@ -1276,7 +1427,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         } else {
             label(elseBranch);
             // <empty>
-            append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Else", statement.getElseBlock()));
+            invokeCompiledStatementBlock("Else", statement.getElseBlock());
             // completion
         }
 
@@ -1291,8 +1442,8 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
         LabelNode typeError = new LabelNode();
         LabelNode end = new LabelNode();
-        
-        expr.getLhs().accept( context, this, strict );
+
+        expr.getLhs().accept(context, this, strict);
         // obj(lhs)
         append(jsGetValue());
         // val(lhs)
@@ -1313,9 +1464,9 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // val(lhs) obj(rhs)
         swap();
         // obj(rhs) val(lhs)
-        append( jsToString() );
+        append(jsToString());
         // obj(rhs) str(lhs)
-        aload( JSCompiler.Arities.EXECUTION_CONTEXT );
+        aload(Arities.EXECUTION_CONTEXT);
         // obj(rhs) str(lhs) context
         swap();
         // object(rhs) context str(lhs);
@@ -1329,13 +1480,12 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         pop();
         iconst_0();
         i2b();
-        //bool
+        // bool
         append(jsThrowTypeError("not an object"));
 
         label(end);
         invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
         // Boolean
-
 
     }
 
@@ -1365,7 +1515,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // val(lhs) fn(rhs)
         swap();
         // fn(rhs) val(lhs)
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // fn(rhs) val(lhs) context
         swap();
         // fn(fhs) context val(lhs)
@@ -1392,7 +1542,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
         LabelNode end = new LabelNode();
 
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         append(jsGetValue());
         dup();
         // val(lhs) val(lhs)
@@ -1407,10 +1557,10 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             iftrue(end);
         }
         pop();
-        
+
         // <empty>
 
-        expr.getRhs().accept( context, this, strict);
+        expr.getRhs().accept(context, this, strict);
         // val(rhs)
         append(jsGetValue());
         // val(rhs)
@@ -1428,7 +1578,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         // obj
         append(jsGetValue());
         // val
@@ -1476,20 +1626,20 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode returnNaN = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         // val(lhs)
         append(jsGetValue());
         append(jsToNumber());
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         // val(rhs)
         append(jsGetValue());
         append(jsToNumber());
         // val(lhs) val(rhs)
-        
-        append( ifEitherIsNaN(returnNaN) );
-        
-        if ( expr.getOp().equals( "%" ) ) {
-            append( ifTopIsZero(returnNaN) );
+
+        append(ifEitherIsNaN(returnNaN));
+
+        if (expr.getOp().equals("%")) {
+            append(ifTopIsZero(returnNaN));
         }
 
         if (!expr.getOp().equals("/")) {
@@ -1508,7 +1658,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
             label(doubleNums);
         }
-        
+
         append(convertTopTwoToPrimitiveDoubles());
 
         if (expr.getOp().equals("*")) {
@@ -1519,14 +1669,14 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             drem();
         }
         append(convertTopToDouble());
-        
+
         go_to(end);
-        
-        label( returnNaN );
+
+        label(returnNaN);
         pop();
         pop();
         getstatic(p(Double.class), "NaN", ci(double.class));
-        invokestatic( p(Double.class), "valueOf", sig(Double.class, double.class));
+        invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
 
         label(end);
         nop();
@@ -1628,7 +1778,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode invalid = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         // obj
         dup();
         // obj obj
@@ -1643,7 +1793,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         iffalse(invalid);
         // ref
         dup();
-        // ref ref 
+        // ref ref
         append(jsGetValue());
         // ref value
         append(jsToNumber());
@@ -1662,7 +1812,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ref Long ref Long
         invokevirtual(p(Number.class), "longValue", sig(long.class));
         // ref Long ref long
-        ldc( 1L );
+        ldc(1L);
         // ref Long ref long 1
         if (expr.getOp().equals("++")) {
             ladd();
@@ -1672,7 +1822,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ref Long(orig) ref long(new)
         invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
         // ref Long(orig) ref Long(new)
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // ref Long(orig) ref Long(new) context
         swap();
         // ref Long(orig) ref context Long(new)
@@ -1706,7 +1856,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ref Double(orig) ref double(new)
         invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
         // ref Double(orig) ref Double(new)
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // ref Double(orig) ref Double(new) context
         swap();
         // ref Double(orig) ref context Double(new)
@@ -1722,7 +1872,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // Invalid
         label(invalid);
         // ref
-        append(jsThrowSyntaxError( "invalid operation"));
+        append(jsThrowSyntaxError("invalid operation"));
 
         label(end);
         nop();
@@ -1736,7 +1886,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode invalid = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         // obj
         dup();
         // obj obj
@@ -1772,7 +1922,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ref ref number
         invokevirtual(p(Number.class), "longValue", sig(long.class));
         // ref ref long
-        ldc( 1L );
+        ldc(1L);
         // ref ref long 1L
         if (expr.getOp().equals("++")) {
             ladd();
@@ -1806,7 +1956,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         label(storeNewValue);
         // ref ref newval
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // ref ref newval context
         swap();
         // ref ref context newval
@@ -1818,7 +1968,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         label(invalid);
         // ref
-        append(jsThrowSyntaxError( "invalid operation" ));
+        append(jsThrowSyntaxError("invalid operation"));
         label(end);
         nop();
 
@@ -1826,7 +1976,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, PrintStatement statement, boolean strict) {
-        statement.getExpr().accept( context, this, strict );
+        statement.getExpr().accept(context, this, strict);
         // obj
         append(jsGetValue());
         // val
@@ -1844,13 +1994,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // IN obj
         dup();
         // obj obj
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // obj obj context
         ldc(propertyGet.getName());
         // obj obj context name
         invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
         // obj desc(orig)
-        append(CodeBlockUtils.compiledFunction(getBlockManager(), EMPTY_STRING_ARRAY, propertyGet.getBlock(), false));
+        compiledFunction(EMPTY_STRING_ARRAY, propertyGet.getBlock(), false);
         // obj desc(orig) fn
         ldc(propertyGet.getName());
         // obj desc(orig) fn name
@@ -1859,7 +2009,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializerGet", sig(PropertyDescriptor.class, Object.class, String.class,
                 JSFunction.class));
         // obj desc(new)
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // obj desc(new) context
         swap();
         // obj context desc(new)
@@ -1884,13 +2034,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // IN obj
         dup();
         // obj obj
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // obj obj context
         ldc(propertySet.getName());
         // obj obj context name
         invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
         // obj desc(orig)
-        append(CodeBlockUtils.compiledFunction(getBlockManager(), new String[] { propertySet.getIdentifier() }, propertySet.getBlock(), false ));
+        compiledFunction(new String[] { propertySet.getIdentifier() }, propertySet.getBlock(), false);
         // obj desc(orig) fn
         ldc(propertySet.getName());
         // obj desc(orig) fn name
@@ -1899,7 +2049,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializerSet", sig(PropertyDescriptor.class, Object.class, String.class,
                 JSFunction.class));
         // obj desc(new)
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // obj desc(new) context
         swap();
         // obj context desc(new)
@@ -1916,7 +2066,6 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // bool
         pop();
         // <EMPTY>
-
 
     }
 
@@ -1953,9 +2102,9 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, RegexpLiteralExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
-        ldc( expr.getPattern() );
+        ldc(expr.getPattern());
         // context pattern
-        ldc( expr.getFlags() );
+        ldc(expr.getFlags());
         // context pattern flags
         invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class, String.class, String.class));
         // regexp
@@ -1966,10 +2115,10 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
 
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-        expr.getLhs().accept( context, this, strict);
+        aload(Arities.EXECUTION_CONTEXT);
+        expr.getLhs().accept(context, this, strict);
         append(jsGetValue());
-        expr.getRhs().accept( context, this, strict);
+        expr.getRhs().accept(context, this, strict);
         append(jsGetValue());
         // context lhs rhs
 
@@ -2028,7 +2177,6 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         label(end);
         nop();
 
-
     }
 
     @Override
@@ -2037,7 +2185,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         if (statement.getExpr() == null) {
             append(jsPushUndefined());
         } else {
-            statement.getExpr().accept( context, this, strict );
+            statement.getExpr().accept(context, this, strict);
             append(jsGetValue());
         }
         returnCompletion();
@@ -2049,13 +2197,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
 
-        aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+        aload(Arities.EXECUTION_CONTEXT);
         // context
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         // context obj(lhs)
         append(jsGetValue());
         // context val(lhs)
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         // context val(lhs) obj(rhs)
         append(jsGetValue());
         // context val(lhs) val(rhs)
@@ -2083,7 +2231,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, StringLiteralExpression expr, boolean strict) {
-        ldc( expr.getLiteral() );
+        ldc(expr.getLiteral());
     }
 
     @Override
@@ -2092,7 +2240,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         normalCompletion();
         // completion
-        astore(JSCompiler.Arities.COMPLETION);
+        astore(Arities.COMPLETION);
         // <empty>
 
         statement.getExpr().accept(context, this, strict);
@@ -2100,7 +2248,9 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         append(jsGetValue());
         // switchval
 
-        for (CaseClause eachCase : statement.getCaseClauses()) {
+        List<CaseClause> caseClauses = statement.getCaseClauses();
+
+        for (CaseClause eachCase : caseClauses) {
             dup();
             // switchval switchval
             if (eachCase.getExpression() == null) {
@@ -2108,11 +2258,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
                 // switchval
                 go_to(eachCase.getEntranceLabel());
             } else {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+                aload(Arities.EXECUTION_CONTEXT);
                 // switchval switchval context
                 swap();
                 // switchval context switchval
-                append(eachCase.getExpression().getCodeBlock());
+                eachCase.getExpression().accept(context, this, strict);
                 // switchval context switchval caseref
                 append(jsGetValue());
                 // switchval context switchval caseval
@@ -2123,7 +2273,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             }
         }
 
-        // <empty>
+        // switchval
         if (statement.getDefaultCaseClause() != null) {
             go_to(statement.getDefaultCaseClause().getEntranceLabel());
         } else {
@@ -2134,7 +2284,6 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         int curCase = 0;
 
-        List<CaseClause> caseClauses = statement.getCaseClauses();
         while (curCase < caseClauses.size()) {
             CaseClause eachCase = caseClauses.get(curCase);
             CaseClause nextCase = null;
@@ -2142,98 +2291,93 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
                 nextCase = caseClauses.get(curCase + 1);
             }
 
-            append(getCodeBlock(end, eachCase, nextCase, statement.getDefaultCaseClause()));
+            caseCodeBlock(end, eachCase, nextCase, statement.getDefaultCaseClause());
 
             ++curCase;
         }
 
         if (statement.getDefaultCaseClause() != null) {
-            append(getCodeBlock(end, statement.getDefaultCaseClause(), null, null));
+            caseCodeBlock(end, statement.getDefaultCaseClause(), null, null);
         }
 
         label(end);
         // <empty>
-        aload(JSCompiler.Arities.COMPLETION);
+        aload(Arities.COMPLETION);
         // completion
 
     }
-    
-    protected CodeBlock getCodeBlock(final LabelNode end, final CaseClause curCase, final CaseClause nextCase, final CaseClause defaultCase) {
-        return new CodeBlock() {
-            {
 
-                LabelNode normal = new LabelNode();
-                LabelNode blockEnd = new LabelNode();
-                LabelNode broke = new LabelNode();
-                LabelNode abrupt = new LabelNode();
+    protected void caseCodeBlock(final LabelNode end, final CaseClause curCase, final CaseClause nextCase, final CaseClause defaultCase) {
+        LabelNode normal = new LabelNode();
+        LabelNode blockEnd = new LabelNode();
+        LabelNode broke = new LabelNode();
+        LabelNode abrupt = new LabelNode();
 
-                label(curCase.getEntranceLabel());
-                // switchval
-                pop();
-                label(curCase.getFallThroughLabel());
-                // <empty>
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Case", curCase.getBlock()));
-                // completion
-                dup();
-                // completion completion
-                append(handleCompletion(normal, broke, abrupt, abrupt));
+        label(curCase.getEntranceLabel());
+        // switchval
+        pop();
+        label(curCase.getFallThroughLabel());
+        // <empty>
+        invokeCompiledStatementBlock("Case", curCase.getBlock());
+        // completion
 
-                // ----------------------------------------
-                // ----------------------------------------
-                // NORMAL (fall-through)
-                label(normal);
-                // completion
-                dup();
-                // completion completion
-                append(jsCompletionValue());
-                // completion value
-                ifnonnull(blockEnd);
-                // completion
+        dup();
+        // completion completion
+        append(handleCompletion(normal, broke, abrupt, abrupt));
 
-                // ----------------------------------------
-                // BRING FORWARD (fall-through)
-                dup();
-                // completion completion
-                aload(JSCompiler.Arities.COMPLETION);
-                // completion completion completion(prev)
-                append(jsCompletionValue());
-                // completion completion value(prev)
-                putfield(p(Completion.class), "value", ci(Object.class));
-                // completion
-                go_to(blockEnd);
+        // ----------------------------------------
+        // ----------------------------------------
+        // NORMAL (fall-through)
+        label(normal);
+        // completion
+        dup();
+        // completion completion
+        append(jsCompletionValue());
+        // completion value
+        ifnonnull(blockEnd);
+        // completion
 
-                // ----------------------------------------
-                // BREAK (fall-through)
-                label(broke);
-                // completion
-                convertToNormalCompletion();
-                // completion
+        // ----------------------------------------
+        // BRING FORWARD (fall-through)
+        dup();
+        // completion completion
+        aload(Arities.COMPLETION);
+        // completion completion completion(prev)
+        append(jsCompletionValue());
+        // completion completion value(prev)
+        putfield(p(Completion.class), "value", ci(Object.class));
+        // completion
+        go_to(blockEnd);
 
-                // ----------------------------------------
-                // ABRUPT
-                label(abrupt);
-                // completion
-                astore(JSCompiler.Arities.COMPLETION);
-                // <empty>
-                go_to(end);
+        // ----------------------------------------
+        // BREAK (fall-through)
+        label(broke);
+        // completion
+        convertToNormalCompletion();
+        // completion
 
-                // ----------------------------------------
-                // BLOCK END
-                label(blockEnd);
-                // completion
-                astore(JSCompiler.Arities.COMPLETION);
-                // <empty>
+        // ----------------------------------------
+        // ABRUPT
+        label(abrupt);
+        // completion
+        astore(Arities.COMPLETION);
+        // <empty>
+        go_to(end);
 
-                if (nextCase != null) {
-                    go_to(nextCase.getFallThroughLabel());
-                }  else if ( defaultCase != null ) {
-                    go_to(defaultCase.getFallThroughLabel());
-                } else {
-                    go_to( end );
-                }
-            }
-        };
+        // ----------------------------------------
+        // BLOCK END
+        label(blockEnd);
+        // completion
+        astore(Arities.COMPLETION);
+        // <empty>
 
+        if (nextCase != null) {
+            go_to(nextCase.getFallThroughLabel());
+        } else if (defaultCase != null) {
+            go_to(defaultCase.getFallThroughLabel());
+        } else {
+            go_to(end);
+        }
     }
 
     @Override
@@ -2241,7 +2385,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode elseBranch = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getTest().accept( context, this, strict );
+        expr.getTest().accept(context, this, strict);
         // val
         append(jsGetValue());
         // val
@@ -2251,12 +2395,12 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // bool
         iffalse(elseBranch);
         // <empty>
-        expr.getThenExpr().accept( context, this, strict );
+        expr.getThenExpr().accept(context, this, strict);
         // thenval
         go_to(end);
 
         label(elseBranch);
-        expr.getElseExpr().accept( context, this, strict );
+        expr.getElseExpr().accept(context, this, strict);
         // elseval
         label(end);
         nop();
@@ -2271,7 +2415,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
-        statement.getExpr().accept( context, this, strict );
+        statement.getExpr().accept(context, this, strict);
         append(jsGetValue());
         // val
         newobj(p(ThrowException.class));
@@ -2300,13 +2444,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode outerCatchHandler = new LabelNode();
 
         label(tryStart);
-        append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Try", statement.getTryBlock() ));
+        invokeCompiledStatementBlock("Try", statement.getTryBlock());
         label(tryEnd);
         // completion(try)
 
         if (statement.getFinallyBlock() != null) {
             // completion(try)
-            append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", statement.getFinallyBlock()));
+            invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
             // completion(try) completion(finally)
             dup();
             // completion(try) completion(finally) completion(finally)
@@ -2351,11 +2495,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             // ex
             invokevirtual(p(ThrowException.class), "getValue", sig(Object.class));
             // thrown
-            aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+            aload(Arities.EXECUTION_CONTEXT);
             // thrown context
             swap();
             // context thrown
-            append(CodeBlockUtils.compiledStatementBlock(getBlockManager(), "Catch", statement.getCatchClause()));
+            compiledStatementBlock("Catch", statement.getCatchClause());
             // context thrown catchblock
             swap();
             // context catchblock thrown
@@ -2370,7 +2514,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
             if (statement.getFinallyBlock() != null) {
                 // completion(catch)
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", statement.getFinallyBlock()));
+                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
                 // completion(catch) completion(finally)
                 dup();
                 // completion(catch) completion(finally) completion(finally)
@@ -2411,7 +2555,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
                 label(catchCatchHandler);
                 // ex
 
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", statement.getFinallyBlock()));
+                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
                 // ex completion(finally)
                 dup();
                 // ex completion(finally) completion(finally)
@@ -2439,7 +2583,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             // ex
             if (statement.getFinallyBlock() != null) {
                 // ex
-                append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Finally", statement.getFinallyBlock()));
+                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
                 // ex completion(finally)
                 dup();
                 // ex completion(finally) completion(finally)
@@ -2483,7 +2627,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, TypeOfOpExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         // context obj
         invokestatic(p(Types.class), "typeof", sig(String.class, ExecutionContext.class, Object.class));
         // string
@@ -2495,7 +2639,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         LabelNode zero = new LabelNode();
         LabelNode end = new LabelNode();
 
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         // val
         append(jsGetValue());
         // val
@@ -2568,7 +2712,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     @Override
     public void visit(ExecutionContext context, UnaryPlusExpression expr, boolean strict) {
         // 11.4.6
-        expr.getExpr().accept( context, this, strict);
+        expr.getExpr().accept(context, this, strict);
         // val
         append(jsGetValue());
         // val
@@ -2577,7 +2721,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, UndefinedValueExpression expr, boolean strict) {
-        append( jsPushUndefined() );
+        append(jsPushUndefined());
     }
 
     @Override
@@ -2588,7 +2732,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         } else {
             append(jsResolve(expr.getIdentifier()));
             // reference
-            aload(JSCompiler.Arities.EXECUTION_CONTEXT);
+            aload(Arities.EXECUTION_CONTEXT);
             // reference context
             expr.getExpr().accept(context, this, strict);
             // reference context val
@@ -2603,8 +2747,8 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, VariableDeclarationStatement statement, boolean strict) {
-        for (VariableDeclaration each : statement.getVariableDeclarations() ) {
-            each.accept( context, this, strict );
+        for (VariableDeclaration each : statement.getVariableDeclarations()) {
+            each.accept(context, this, strict);
             // identifier
             pop();
             // <EMPTY>
@@ -2614,7 +2758,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
     @Override
     public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept( context, this, strict );
+        expr.getExpr().accept(context, this, strict);
         append(jsGetValue());
         pop();
         append(jsPushUndefined());
@@ -2643,7 +2787,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         iffalse(end);
         // completion(block)
 
-        append(CodeBlockUtils.invokeCompiledStatementBlock(getBlockManager(), "Do", statement.getBlock()));
+        invokeCompiledStatementBlock("Do", statement.getBlock());
         // completion(block,prev) completion(block,cur)
         swap();
         // completion(block,cur) completion(block,prev)
@@ -2662,36 +2806,35 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // completion(block,BREAK)
         dup();
         // completion completion
-        append( jsCompletionTarget() );
+        append(jsCompletionTarget());
         // completion target
-        append( statement.isInLabelSet() );
+        append(statement.isInLabelSet());
         // completion bool
         iffalse(end);
         // completion
         convertToNormalCompletion();
         // completion(block,NORMAL)
-        go_to( end );
-        
+        go_to(end);
+
         // ----------------------------------------
         // CONTINUE
-        
-        label( continueTarget );
+
+        label(continueTarget);
         // completion(block,CONTINUE)
         dup();
         // completion completion
-        append( jsCompletionTarget() );
+        append(jsCompletionTarget());
         // completion target
-        append( statement.isInLabelSet() );
+        append(statement.isInLabelSet());
         // completion bool
         iffalse(end);
         // completion
-        go_to( begin );
-        
+        go_to(begin);
+
         // ----------------------------------------
         label(end);
         // completion(block)
         nop();
-
 
     }
 
@@ -2699,13 +2842,13 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, WithStatement statement, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
-        statement.getExpr().accept( context, this, strict );
+        statement.getExpr().accept(context, this, strict);
         // context val
         append(jsGetValue());
         // context val
         append(jsToObject());
         // context obj
-        append(CodeBlockUtils.compiledStatementBlock(getBlockManager(), "With", statement.getBlock() ));
+        compiledStatementBlock("With", statement.getBlock());
         // context obj block
         invokevirtual(p(ExecutionContext.class), "executeWith", sig(Completion.class, JSObject.class, BasicBlock.class));
         // completion

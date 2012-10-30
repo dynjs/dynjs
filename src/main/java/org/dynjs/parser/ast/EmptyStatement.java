@@ -15,8 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
@@ -25,11 +23,6 @@ public class EmptyStatement extends AbstractStatement {
 
     public EmptyStatement(final Tree tree) {
         super(tree);
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return normalCompletion();
     }
 
     public String toIndentedString(String indent) {

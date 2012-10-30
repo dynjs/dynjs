@@ -15,18 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Reference;
-import org.objectweb.asm.tree.LabelNode;
 
 public class AssignmentExpression extends AbstractBinaryExpression {
 
@@ -37,64 +28,6 @@ public class AssignmentExpression extends AbstractBinaryExpression {
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                LabelNode throwRefError = new LabelNode();
-                LabelNode end = new LabelNode();
-
-                append(getLhs().getCodeBlock());
-                // reference
-                dup();
-                // reference reference
-                instance_of(p(Reference.class));
-                // reference bool
-                iffalse(throwRefError);
-                // reference
-                checkcast(p(Reference.class));
-                append(getRhs().getCodeBlock());
-                // reference expr
-                append(jsGetValue());
-                // reference value
-                dup_x1();
-                // value reference value
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // value reference value context
-                swap();
-                // value reference context value
-                invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
-                // value
-                go_to(end);
-
-                label(throwRefError);
-                // reference
-                pop();
-
-                newobj(p(ThrowException.class));
-                // ex
-                dup();
-                // ex ex
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // ex ex context
-                ldc(getLhs().toString() + " is not a reference");
-                // ex ex context str
-                invokevirtual(p(ExecutionContext.class), "createReferenceError", sig(JSObject.class, String.class));
-                // ex ex error
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // ex ex error context
-                swap();
-                // ex ex context error
-                invokespecial(p(ThrowException.class), "<init>", sig(void.class, ExecutionContext.class, Object.class));
-                // ex ex
-                athrow();
-
-                label(end);
-                nop();
-            }
-        };
     }
 
     public String toString() {

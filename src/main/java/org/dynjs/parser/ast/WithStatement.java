@@ -15,32 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.CodeBlockUtils;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BasicBlock;
-import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
 
-public class WithStatement extends AbstractCompilingStatement implements Statement {
+public class WithStatement extends AbstractStatement {
 
     private final Expression expr;
     private final Statement block;
 
-    public WithStatement(final Tree tree, BlockManager blockManager, Expression expr, Statement block) {
-        super(tree, blockManager);
+    public WithStatement(final Tree tree, Expression expr, Statement block) {
+        super(tree);
         this.expr = expr;
         this.block = block;
     }
@@ -57,26 +45,6 @@ public class WithStatement extends AbstractCompilingStatement implements Stateme
         return this.block.getVariableDeclarations();
     }
     
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                append(expr.getCodeBlock());
-                // context val
-                append(jsGetValue());
-                // context val
-                append(jsToObject());
-                // context obj
-                append(CodeBlockUtils.compiledStatementBlock(getBlockManager(), "With", block));
-                // context obj block
-                invokevirtual(p(ExecutionContext.class), "executeWith", sig(Completion.class, JSObject.class, BasicBlock.class));
-                // completion
-            }
-        };
-    }
-
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
 

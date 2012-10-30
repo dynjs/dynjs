@@ -16,12 +16,7 @@
 
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
@@ -36,30 +31,6 @@ public class ThrowStatement extends AbstractStatement {
     
     public Expression getExpr()  {
         return this.expr;
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(expr.getCodeBlock());
-                append(jsGetValue());
-                // val
-                newobj(p(ThrowException.class));
-                // val ex
-                dup_x1();
-                // ex val ex
-                swap();
-                // ex ex val
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // ex ex val context
-                swap();
-                // ex ex context val
-                invokespecial(p(ThrowException.class), "<init>", sig(void.class, ExecutionContext.class, Object.class));
-                // ex
-                athrow();
-            }
-        };
     }
 
     public String toIndentedString(String indent) {

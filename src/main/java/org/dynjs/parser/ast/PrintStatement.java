@@ -15,12 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import java.io.PrintStream;
-
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
@@ -37,25 +31,6 @@ public class PrintStatement extends AbstractStatement implements Statement {
     
     public Expression getExpr() {
         return this.expr;
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(expr.getCodeBlock());
-                // obj
-                append(jsGetValue());
-                // val
-                getstatic(p(System.class), "err", ci(PrintStream.class));
-                // val System.out
-                swap();
-                // System.out val
-                invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class));
-                // <empty>
-                append(normalCompletion());
-            }
-        };
     }
 
     public String toIndentedString(String indent) {

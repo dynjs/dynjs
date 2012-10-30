@@ -161,7 +161,7 @@ public class DynJS {
         if (program == null) {
             return new NullProgram(filename);
         }
-        JSProgram compiledProgram = compiler.compileProgram(program, forceStrict);
+        JSProgram compiledProgram = compiler.compileProgram(execContext, program, forceStrict);
         return compiledProgram;
     }
 
@@ -208,7 +208,6 @@ public class DynJS {
         ES3Walker walker = new ES3Walker(treeNodeStream);
 
         Executor executor = new Executor();
-        executor.setBlockManager(context.getBlockManager());
         walker.setExecutor(executor);
         walker.program();
         Program result = walker.getResult();

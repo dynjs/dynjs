@@ -15,30 +15,22 @@
  */
 package org.dynjs.parser.ast;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ForExprInStatement extends AbstractForInStatement {
 
     private final Expression expr;
 
-    public ForExprInStatement(final Tree tree, final BlockManager blockManager, final Expression expr, final Expression rhs, final Statement block) {
-        super(tree, blockManager, rhs, block);
+    public ForExprInStatement(final Tree tree, final Expression expr, final Expression rhs, final Statement block) {
+        super(tree, rhs, block);
         this.expr = expr;
     }
     
     public Expression getExpr() {
         return this.expr;
-    }
-
-    @Override
-    public CodeBlock getFirstChunkCodeBlock() {
-        return expr.getCodeBlock();
     }
 
     public String toIndentedString(String indent) {

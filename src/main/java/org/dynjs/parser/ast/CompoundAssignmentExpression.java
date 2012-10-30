@@ -15,16 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.VerifierUtils;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
 
 public class CompoundAssignmentExpression extends AbstractExpression {
 
@@ -39,34 +32,6 @@ public class CompoundAssignmentExpression extends AbstractExpression {
         return this.rootExpr;
     }
 
-    @Override
-    public CodeBlock getCodeBlock() {
-        return new CodeBlock() {
-            {
-                append(rootExpr.getCodeBlock());
-                // value
-
-                dup();
-                // value value
-
-                append(rootExpr.getLhs().getCodeBlock());
-                // value value reference
-
-                swap();
-                // value reference value
-
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // value reference value context
-
-                swap();
-                // value reference context value
-
-                invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
-                // value
-            }
-        };
-    }
-    
     public String toString() {
         return rootExpr.getLhs() + " " + rootExpr.getOp() + "=" + rootExpr.getRhs();
     }

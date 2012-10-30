@@ -15,14 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-import me.qmx.jitescript.CodeBlock;
-
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
 
 /**
  * An Identifier is evaluated by performing Identifier Resolution as specified
@@ -46,21 +41,6 @@ public class IdentifierReferenceExpression extends AbstractExpression {
     
     public String getIdentifier() {
         return this.identifier;
-    }
-
-    @Override
-    public CodeBlock getCodeBlock() {
-        // 10.3.1
-        return new CodeBlock() {
-            {
-                aload(JSCompiler.Arities.EXECUTION_CONTEXT);
-                // context
-                ldc(identifier);
-                // context identifier
-                invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
-                // reference
-            }
-        };
     }
 
     public String toString() {

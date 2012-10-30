@@ -5,11 +5,13 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
+import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BaseProgram;
@@ -17,6 +19,7 @@ import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
+import org.objectweb.asm.tree.InsnNode;
 
 public class ProgramCompiler extends AbstractCompiler {
 
@@ -24,14 +27,13 @@ public class ProgramCompiler extends AbstractCompiler {
         super(runtime, config, "Program");
     }
 
-    public JSProgram compile(final Program program, boolean forceStrict) {
-        ExecutionContext context = ExecutionContext.createGlobalExecutionContext(getRuntime());
-        return compile(context, program, forceStrict);
-    }
-
     public JSProgram compile(final ExecutionContext context, final Program program, boolean forceStrict) {
+        
         final boolean strict = program.isStrict() || forceStrict;
-
+        
+        final BasicBytecodeGeneratingVisitor byteCodeGenerator = new BasicBytecodeGeneratingVisitor(context.getBlockManager());
+        program.accept(context, byteCodeGenerator, strict);
+        
         JiteClass jiteClass = new JiteClass(nextClassName(), p(BaseProgram.class), new String[0]) {
             {
                 defineMethod("<init>", ACC_PUBLIC | ACC_VARARGS, sig(void.class, Statement.class),
@@ -57,13 +59,13 @@ public class ProgramCompiler extends AbstractCompiler {
             private CodeBlock getCodeBlock() {
                 return new CodeBlock() {
                     {
-                        append(program.getCodeBlock());
+                        append( byteCodeGenerator );
                         areturn();
                     }
                 };
             }
         };
-
+        
         Class<BaseProgram> cls = (Class<BaseProgram>) defineClass(jiteClass);
         try {
             Constructor<BaseProgram> ctor = cls.getDeclaredConstructor(Statement.class);
@@ -73,5 +75,4 @@ public class ProgramCompiler extends AbstractCompiler {
             throw new IllegalStateException(e);
         }
     }
-
 }

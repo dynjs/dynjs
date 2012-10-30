@@ -17,14 +17,10 @@ package org.dynjs.parser;
 
 import java.util.List;
 
-import me.qmx.jitescript.CodeBlock;
-
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.ExecutionContext;
 
 public interface Statement {
-
-    CodeBlock getCodeBlock();
 
     Position getPosition();
 
