@@ -18,7 +18,7 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Walker;
-import org.dynjs.parser.Executor;
+import org.dynjs.parser.ASTFactory;
 import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.SyntaxError;
 import org.dynjs.parser.ast.BlockStatement;
@@ -207,8 +207,8 @@ public class DynJS {
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
 
-        Executor executor = new Executor();
-        walker.setExecutor(executor);
+        ASTFactory astFactory = new ASTFactory();
+        walker.setASTFactory(astFactory);
         walker.program();
         Program result = walker.getResult();
         //System.err.println( result.dump("") );

@@ -14,7 +14,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ES3Lexer;
 import org.dynjs.parser.ES3Parser;
 import org.dynjs.parser.ES3Walker;
-import org.dynjs.parser.Executor;
+import org.dynjs.parser.ASTFactory;
 import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.runtime.AbstractNativeFunction;
@@ -119,8 +119,8 @@ public class BuiltinFunction extends AbstractBuiltinType {
         treeNodeStream.setTokenStream(lexerStream);
         ES3Walker walker = new ES3Walker(treeNodeStream);
 
-        Executor executor = new Executor();
-        walker.setExecutor(executor);
+        ASTFactory astFactory = new ASTFactory();
+        walker.setASTFactory(astFactory);
         FunctionDescriptor descriptor = walker.functionDescriptor();
         return descriptor;
     }

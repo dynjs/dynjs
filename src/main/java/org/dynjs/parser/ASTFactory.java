@@ -83,11 +83,10 @@ import org.dynjs.parser.ast.VariableDeclarationStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
-import org.dynjs.runtime.BlockManager;
 
-public class Executor {
+public class ASTFactory {
 
-    public Executor() {
+    public ASTFactory() {
     }
 
     public Program program(boolean strict, final List<Statement> blockContent) {
