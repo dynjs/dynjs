@@ -22,29 +22,35 @@ public class Replace extends AbstractNativeFunction {
         String original     = Types.toString(context, self);
         String result       = original;        
         if (args.length >= 2) {
+            final Object replaceWith = args[1];
             if (args[0] instanceof DynRegExp) {
                 regExp = (DynRegExp) args[0];
                 Match match = new Match(context.getGlobalObject());
                 matches = (DynArray) match.call(context, original, regExp);
                 for ( int i = 0 ; i < Types.toInteger(context, matches.get(context, "length")); ++i ) {
                     String nextMatch = Types.toString(context, matches.get(context, ""+i));
-                    String newString = "";                    
-                    if (args[1] instanceof JSFunction) {
-                        Object[] functionArgs = {nextMatch};
-                        newString = (String) context.call( (JSFunction)args[1], null, functionArgs);
-                    } else {
-                        // TODO: Handle text symbol substitution on newstring
-                        newString = Types.toString(context, args[1]);
-                    }
-                    result = result.replaceFirst(nextMatch, newString);
+                    result = result.replaceFirst(nextMatch, replaceMatch(context, nextMatch, replaceWith));
                 }
             } else {
                 String searchString = Types.toString(context, args[0]);
-                result = original.replaceFirst(searchString, Types.toString(context, args[1]));
+                String match = replaceMatch(context, searchString, replaceWith);
+                result = original.replaceFirst(searchString, match);
             }
             
         }
         return result;
+    }
+
+    protected String replaceMatch(ExecutionContext context, String nextMatch, final Object replaceWith) {
+        String newString = "";
+        if (replaceWith instanceof JSFunction) {
+            Object[] functionArgs = {nextMatch};
+            newString = (String) context.call( (JSFunction)replaceWith, null, functionArgs);
+        } else {
+            // TODO: Handle text symbol substitution on newstring
+            newString = Types.toString(context, replaceWith);
+        }
+        return newString;
     }
 
 }

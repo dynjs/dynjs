@@ -66,10 +66,17 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    public void testReplaceUsingAFunction() {
+    public void testReplaceWithRegExpUsingAFunction() {
         eval("var upperToHyphenLower = function(match) { return '-'+match.toLowerCase(); }");
         Object o = eval("String('ABCDE abcde').replace(/[A-Z]/g, upperToHyphenLower)");
         assertThat(o).isEqualTo("-a-b-c-d-e abcde");
+    }
+
+    @Test
+    public void testReplaceUsingAFunction() {
+        eval("var upperToHyphenLower = function(match) { return '-'+match.toLowerCase(); }");
+        Object o = eval("String('ABCDE abcde').replace('ABCDE', upperToHyphenLower)");
+        assertThat(o).isEqualTo("-abcde abcde");
     }
 
     @Test
