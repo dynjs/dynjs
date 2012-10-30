@@ -25,8 +25,8 @@ public class Replace extends AbstractNativeFunction {
             final Object replaceWith = args[1];
             if (args[0] instanceof DynRegExp) {
                 regExp = (DynRegExp) args[0];
-                Match match = new Match(context.getGlobalObject());
-                matches = (DynArray) match.call(context, original, regExp);
+                JSFunction fn = (JSFunction) context.getGlobalObject().getPrototypeFor( "String" ).get( context, "match" );
+                matches = (DynArray) context.call(fn, original, regExp);
                 for ( int i = 0 ; i < Types.toInteger(context, matches.get(context, "length")); ++i ) {
                     String nextMatch = Types.toString(context, matches.get(context, ""+i));
                     result = result.replaceFirst(nextMatch, replaceMatch(context, nextMatch, replaceWith));
