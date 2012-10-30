@@ -35,6 +35,42 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("String('fat').replace('f', 'ph')");
         assertThat(o).isEqualTo("phat");
     }
+    
+    @Test
+    public void testReplaceOnce() {
+        assertThat(eval("'If the police police the police...'.replace('police', 'sekretpolice')")).isEqualTo("If the sekretpolice police the police...");
+    }
+
+    @Test
+    public void testReplaceOnceWithRegexp() {
+        Object o = eval("String('fat freddie').replace(/f/, 'ph')");
+        assertThat(o).isEqualTo("phat freddie");
+    }
+    
+    @Test
+    public void testReplaceGlobalWithRegexp() {
+        Object o = eval("String('fat freddie').replace(/f/g, 'ph')");
+        assertThat(o).isEqualTo("phat phreddie");
+    }
+    
+    @Test
+    public void testReplaceIgnoringCase() {
+        Object o = eval("String('Now is the winter').replace(/n/i, '_N_')");
+        assertThat(o).isEqualTo("_N_ow is the winter");
+    }
+    
+    @Test
+    public void testReplaceGloballyIgnoringCase() {
+        Object o = eval("String('Now is the winter').replace(/n/ig, '_N_')");
+        assertThat(o).isEqualTo("_N_ow is the wi_N_ter");
+    }
+    
+    @Test
+    public void testReplaceUsingAFunction() {
+        eval("var upperToHyphenLower = function(match) { return '-'+match.toLowerCase(); }");
+        Object o = eval("String('ABCDE abcde').replace(/[A-Z]/g, upperToHyphenLower)");
+        assertThat(o).isEqualTo("-a-b-c-d-e abcde");
+    }
 
     @Test
     public void testValueOf() {
