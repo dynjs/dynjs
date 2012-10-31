@@ -1729,7 +1729,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict) {
         String text = expr.getText();
 
-        if ( text.indexOf( '.' ) == 0 ) {
+        if (text.indexOf('.') == 0) {
             ldc("0" + text);
             invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
         } else if (text.indexOf(".") > 0) {
@@ -1737,23 +1737,27 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
             // Double
         } else {
-            final int index = text.toLowerCase().indexOf('e');
-            if (index > 0) {
-                // scientific notation, but without the java-friendlyness. E.g. 1E21 instead of 1.0e21
-                String base = text.substring(0, index);
-                String exponent = text.substring(index);
-                String javafied = base + ".0" + exponent;
-                ldc(javafied);
-                invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
-            } else {
-                String realText = text;
-                if (text.startsWith("0x") || text.startsWith("0X")) {
-                    realText = text.substring(2);
-                }
+            if (text.startsWith("0x") || text.startsWith("0X")) {
+                String realText = text.substring(2);
                 ldc(realText);
                 bipush(expr.getRadix());
                 invokestatic(p(Long.class), "valueOf", sig(Long.class, String.class, int.class));
                 // Long
+            } else {
+                final int index = text.toLowerCase().indexOf('e');
+                if (index > 0) {
+                    // scientific notation, but without the java-friendlyness. E.g. 1E21 instead of 1.0e21
+                    String base = text.substring(0, index);
+                    String exponent = text.substring(index);
+                    String javafied = base + ".0" + exponent;
+                    ldc(javafied);
+                    invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
+                } else {
+                    ldc(text);
+                    bipush(expr.getRadix());
+                    invokestatic(p(Long.class), "valueOf", sig(Long.class, String.class, int.class));
+                    // Long
+                }
             }
         }
     }
