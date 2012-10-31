@@ -1,12 +1,18 @@
 package org.dynjs.compiler;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
+import org.dynjs.exception.ClassFileOutputException;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.ClassReader;
@@ -52,7 +58,19 @@ public class AbstractCompiler {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
+        String name = jiteClass.getClassName();
+        String className = name.replace('/', '.');
+        File outDir = config.getBytecodeOutputDir();
+        if (outDir != null) {
+            File byteFile = new File(outDir, name + ".class");
+            byteFile.getParentFile().mkdirs();
+            try {
+                Files.write(byteFile.toPath(), bytecode, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            } catch (IOException e) {
+                throw new ClassFileOutputException(className, e);
+            }
+        }
+        return new DynamicClassLoader(config.getClassLoader()).define(className, bytecode);
     }
     
 }

@@ -1,5 +1,6 @@
 package org.dynjs;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.TimeZone;
 
@@ -19,6 +20,7 @@ public class Config {
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
+    private File bytecodeOutputDir = null;
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
@@ -88,4 +90,11 @@ public class Config {
         this.globalObjectFactory = globalObjectFactory;
     }
 
+    public File getBytecodeOutputDir() {
+        return bytecodeOutputDir;
+    }
+
+    public void setBytecodeOutputDir(File bytecodeOutputDir) {
+        this.bytecodeOutputDir = bytecodeOutputDir;
+    }
 }
