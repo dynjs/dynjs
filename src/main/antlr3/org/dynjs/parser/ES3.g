@@ -333,6 +333,10 @@ public boolean isValidIdentifier(String ident) {
   return getWatcher().isValidIdentifier(ident);
 }
 
+public boolean isValidIdentifierIfIdentifier(CommonTree tree) {
+  return getWatcher().isValidIdentifierIfIdentifier(tree);
+}
+
 public boolean areValidParameterNames(List<String> names) {
   return getWatcher().areValidParameterNames( names );
 }
@@ -1073,7 +1077,7 @@ postfixOperator
 
 unaryExpression
 	: postfixExpression
-	| unaryOperator^ unaryExpression
+	| unaryOperator^ ue=unaryExpression { isValidIdentifierIfIdentifier( (CommonTree) ue.getTree() ) }?
 	;
 	
 unaryOperator

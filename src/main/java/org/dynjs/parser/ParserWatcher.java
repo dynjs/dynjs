@@ -32,6 +32,14 @@ public class ParserWatcher extends CommonTreeAdaptor {
 
         return VerifierUtils.isStrictIdentifier(ident);
     }
+    
+    public boolean isValidIdentifierIfIdentifier(CommonTree tree) {
+        if ( tree.getType() == JavascriptParser.Identifier ) {
+            return isValidIdentifier( tree.getText() );
+        }
+        
+        return true;
+    }
 
     public boolean areValidParameterNames(List<String> names) {
         if (isStrict()) {
