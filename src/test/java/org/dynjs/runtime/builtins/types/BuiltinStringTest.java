@@ -78,6 +78,45 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("String('ABCDE abcde').replace('ABCDE', upperToHyphenLower)");
         assertThat(o).isEqualTo("-abcde abcde");
     }
+    
+    @Test
+    @Ignore
+    public void testReplaceWithTextSubstitution() {
+        Object o = eval("\"$1,$2\".replace(/(\\$(\\d))/g, \"$$1-$1$2\")");
+        assertThat(o).isEqualTo("$1-$11,$1-$22");
+    }
+    
+    @Test
+    public void testReplaceDollarDollar() {
+        Object o = eval("new String('foo').replace('foo', '$$')");
+        assertThat(o).isEqualTo("$");
+    }
+    
+    @Test
+    public void testReplaceDollarAmpersand() {
+        Object o = eval("new String('foo').replace(/o+/, '$&')");
+        assertThat(o).isEqualTo("foo");
+    }
+
+    @Test
+    @Ignore
+    public void testReplaceDollarBacktick() {
+        Object o = eval("new String('foo').replace(/o+/, '$`')");
+        assertThat(o).isEqualTo("ff");
+    }
+
+    @Test
+    @Ignore
+    public void testReplaceDollarApostrophe() {
+        Object o = eval("new String('foobar').replace(/o+/, \"$'\")");
+        assertThat(o).isEqualTo("fbarbar");
+    }
+    
+    @Test
+    public void testReplaceDollarN() {
+        Object o = eval("new String('foobar').replace(/(f)o+(b.+)/, \"$2\")");
+        assertThat(o).isEqualTo("bar");        
+    }
 
     @Test
     public void testValueOf() {
