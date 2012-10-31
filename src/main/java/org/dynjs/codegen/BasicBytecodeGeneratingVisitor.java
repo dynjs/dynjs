@@ -1729,7 +1729,10 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict) {
         String text = expr.getText();
 
-        if (text.indexOf(".") > 0) {
+        if ( text.indexOf( '.' ) == 0 ) {
+            ldc("0" + text);
+            invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
+        } else if (text.indexOf(".") > 0) {
             ldc(text);
             invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
             // Double
