@@ -13,6 +13,10 @@ public class LexicalEnvironment {
     public static LexicalEnvironment newGlobalEnvironment(DynJS runtime) {
         return new LexicalEnvironment(new ObjectEnvironmentRecord(GlobalObject.newGlobalObject(runtime), false), null);
     }
+    
+    public static LexicalEnvironment newGlobalEnvironment(GlobalObject globalObject) {
+        return new LexicalEnvironment(new ObjectEnvironmentRecord(globalObject, false), null);
+    }
 
     private LexicalEnvironment outer;
     private EnvironmentRecord record;

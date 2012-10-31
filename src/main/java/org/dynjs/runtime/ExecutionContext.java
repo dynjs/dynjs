@@ -234,8 +234,8 @@ public class ExecutionContext {
         
         if (!direct) {
             evalThisBinding = getGlobalObject();
-            evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject().getRuntime());
-            evalVarEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject().getRuntime());
+            evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject());
+            evalVarEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject());
         } else {
             evalThisBinding = this.thisBinding;
             evalLexEnv = this.getLexicalEnvironment();
@@ -247,7 +247,7 @@ public class ExecutionContext {
             evalLexEnv = strictVarEnv;
             evalVarEnv = strictVarEnv;
         }
-
+        
         context = new ExecutionContext(this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);

@@ -13,7 +13,7 @@ public abstract class BaseProgram extends AbstractCode implements JSProgram {
     }
     
     public String toString() {
-        return "[Program: fileName=" + getFileName() + "]";
+        return "[Program: fileName=" + getFileName() + "; strict=" + isStrict() + "]";
     }
 
 }
