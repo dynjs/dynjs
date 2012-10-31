@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class IsFinite extends AbstractNativeFunction {
+public class IsFinite extends AbstractNonConstructorFunction {
 
     public IsFinite(GlobalObject globalObject) {
         super(globalObject, "text");
@@ -21,7 +21,7 @@ public class IsFinite extends AbstractNativeFunction {
             }
             return true;
         } else {
-            return Types.UNDEFINED;
+            return false;
         }
     }
 }

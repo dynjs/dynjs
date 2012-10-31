@@ -32,12 +32,12 @@ public class ParserWatcher extends CommonTreeAdaptor {
 
         return VerifierUtils.isStrictIdentifier(ident);
     }
-    
+
     public boolean isValidIdentifierIfIdentifier(CommonTree tree) {
-        if ( tree.getType() == JavascriptParser.Identifier ) {
-            return isValidIdentifier( tree.getText() );
+        if (tree.getType() == JavascriptParser.Identifier) {
+            return isValidIdentifier(tree.getText());
         }
-        
+
         return true;
     }
 
@@ -45,13 +45,13 @@ public class ParserWatcher extends CommonTreeAdaptor {
         if (isStrict()) {
             Set<String> seen = new HashSet<>();
             for (String name : names) {
-                if ( seen.contains(name) ) {
+                if (seen.contains(name)) {
                     return false;
                 }
                 if (!isValidIdentifier(name)) {
                     return false;
                 }
-                seen.add( name );
+                seen.add(name);
             }
         }
         return true;
@@ -73,6 +73,8 @@ public class ParserWatcher extends CommonTreeAdaptor {
                 }
                 payload = new StringLiteralToken(payload, text, continued, escaped);
                 return new JavascriptTree(payload);
+            } else if ( payload.getType() == JavascriptParser.Identifier ) {
+                payload.setText( escapeHandler.unescape(this.context, payload.getText(), isStrict()) );
             }
         }
         return new JavascriptTree(payload);

@@ -64,8 +64,8 @@ public class IsFiniteTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void returnsUndefinedWhenCalledWithZeroParameters() {
-        check("var result = isFinite();", Types.UNDEFINED);
+    public void returnsFalseWhenCalledWithZeroParameters() {
+        check("var result = isFinite();", false );
     }
 
     @Test
