@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class IsNaN extends AbstractNativeFunction {
+public class IsNaN extends AbstractNonConstructorFunction {
 
     public IsNaN(GlobalObject globalObject) {
         super(globalObject, "text");

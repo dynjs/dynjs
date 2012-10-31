@@ -1,12 +1,12 @@
 package org.dynjs.runtime.builtins.types.function.prototype;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 
-public class Call extends AbstractNativeFunction {
+public class Call extends AbstractNonConstructorFunction {
 
     public Call(GlobalObject globalObject) {
         super(globalObject, "thisArg");

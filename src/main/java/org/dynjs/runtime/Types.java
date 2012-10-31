@@ -69,8 +69,7 @@ public class Types {
         return toPrimitive(context, o, null);
     }
 
-    public static Object toPrimitive(ExecutionContext context, Object o,
-            String preferredType) {
+    public static Object toPrimitive(ExecutionContext context, Object o, String preferredType) {
         // 9.1
         if (o instanceof JSObject) {
             return ((JSObject) o).defaultValue(context, preferredType);

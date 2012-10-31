@@ -63,7 +63,6 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public boolean deleteBinding(ExecutionContext context, String name) {
         // 10.2.1.2.4
-        System.err.println( "****** obj> delete binding: " + name );
         return this.object.delete(context, name, false);
     }
 
