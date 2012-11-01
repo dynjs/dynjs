@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -11,7 +11,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
-public class Concat extends AbstractNativeFunction {
+public class Concat extends AbstractNonConstructorFunction {
 
     public Concat(GlobalObject globalObject) {
         super(globalObject, "item1");

@@ -1,7 +1,6 @@
 package org.dynjs.runtime.builtins.types.array.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynArray;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -9,7 +8,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
-public class Slice extends AbstractNativeFunction {
+public class Slice extends AbstractNonConstructorFunction {
 
     public Slice(GlobalObject globalObject) {
         super(globalObject, "start", "end");

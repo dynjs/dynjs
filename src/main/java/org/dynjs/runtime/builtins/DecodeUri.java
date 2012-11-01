@@ -20,12 +20,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class DecodeUri extends AbstractNativeFunction {
+public class DecodeUri extends AbstractNonConstructorFunction {
 
     public DecodeUri(GlobalObject globalObject) {
         super(globalObject, "uri");
