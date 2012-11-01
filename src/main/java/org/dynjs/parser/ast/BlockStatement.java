@@ -34,7 +34,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
     }
 
     public BlockStatement(final List<Statement> blockContent) {
-        super(( blockContent == null || blockContent.isEmpty() ) ? null : blockContent.get(0).getPosition());
+        super((blockContent == null || blockContent.isEmpty()) ? null : blockContent.get(0).getPosition());
         this.blockContent = blockContent;
     }
 
@@ -53,6 +53,7 @@ public class BlockStatement extends AbstractStatement implements Statement {
             if (each instanceof FunctionDeclaration) {
                 decls.add((FunctionDeclaration) each);
             }
+            decls.addAll(each.getFunctionDeclarations());
         }
 
         return decls;
@@ -64,15 +65,15 @@ public class BlockStatement extends AbstractStatement implements Statement {
             if (each instanceof VariableDeclarationStatement) {
                 VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
                 decls.addAll(statement.getVariableDeclarations());
-            } else if ( ! ( each instanceof FunctionDeclaration ) ) {
-                decls.addAll( each.getVariableDeclarations() );
+            } else if (!(each instanceof FunctionDeclaration)) {
+                decls.addAll(each.getVariableDeclarations());
             }
         }
         return decls;
     }
-    
+
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
 
     public String dump(String indent) {

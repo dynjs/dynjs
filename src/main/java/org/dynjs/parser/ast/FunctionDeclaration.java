@@ -15,6 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.List;
+
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
@@ -46,6 +48,10 @@ public class FunctionDeclaration extends AbstractStatement {
 
     public String toString() {
         return this.descriptor.toString();
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return descriptor.getBlock().getFunctionDeclarations();
     }
 
     public String toIndentedString(String indent) {

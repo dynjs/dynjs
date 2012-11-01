@@ -31,6 +31,10 @@ public class TryStatement extends AbstractStatement {
     public Statement getFinallyBlock() {
         return this.finallyBlock;
     }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.tryBlock.getFunctionDeclarations();
+    }
 
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();

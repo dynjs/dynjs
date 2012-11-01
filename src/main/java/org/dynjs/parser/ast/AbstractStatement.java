@@ -67,6 +67,10 @@ public abstract class AbstractStatement implements Statement {
         return this.labels;
     }
     
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return Collections.emptyList();
+    }
+    
     public List<VariableDeclaration> getVariableDeclarations() {
         return Collections.emptyList();
     }

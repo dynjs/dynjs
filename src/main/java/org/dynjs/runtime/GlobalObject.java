@@ -54,7 +54,7 @@ public class GlobalObject extends DynObject {
         this.blockManager = new BlockManager();
 
         defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
-        
+
         // ----------------------------------------
         // Built-in types
         // ----------------------------------------
@@ -100,7 +100,7 @@ public class GlobalObject extends DynObject {
         // ----------------------------------------
 
         put(null, "JSON", new JSON(this), false);
-        put(null, "Math", new Math(this), false);
+        defineGlobalProperty("Math", new Math(this));
 
         // ----------------------------------------
         // Module-provider setup
@@ -121,10 +121,10 @@ public class GlobalObject extends DynObject {
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
         defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set( "Value", type );
-                set( "Enumerable", false );
-                set( "Writable", true );
-                set( "Configurable", true );
+                set("Value", type);
+                set("Enumerable", false);
+                set("Writable", true);
+                set("Configurable", true);
             }
         }, false);
         put(null, "__Builtin_" + name, type, false);

@@ -456,7 +456,7 @@ public class ExecutionContext {
     private void performFunctionDeclarationBindings(final JSCode code, final boolean configurableBindings) {
         // 10.5 Function Declaration Binding
         List<FunctionDeclaration> decls = code.getFunctionDeclarations();
-
+        
         EnvironmentRecord env = this.variableEnvironment.getRecord();
         for (FunctionDeclaration each : decls) {
             String identifier = each.getIdentifier();

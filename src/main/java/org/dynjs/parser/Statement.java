@@ -17,6 +17,7 @@ package org.dynjs.parser;
 
 import java.util.List;
 
+import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.ExecutionContext;
 
@@ -33,6 +34,7 @@ public interface Statement {
     
     String toIndentedString(String indent);
     
+    List<FunctionDeclaration> getFunctionDeclarations();
     List<VariableDeclaration> getVariableDeclarations();
 
     void accept(ExecutionContext context, CodeVisitor visitor, boolean strict);

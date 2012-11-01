@@ -1,14 +1,13 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BlockManager;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractIteratingStatement extends AbstractStatement {
