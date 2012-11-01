@@ -23,14 +23,14 @@ public class Config {
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
-        if (System.getProperty("disable.indy") != null) {
+        if (System.getProperty("dynjs.disable.indy") != null) {
             this.invokeDynamicEnabled = false;
         }
     }
 
     public Config(ClassLoader parentClassLoader) {
         this.classLoader = new DynamicClassLoader(parentClassLoader);
-        if (System.getProperty("disable.indy") != null) {
+        if (System.getProperty("dynjs.disable.indy") != null) {
             this.invokeDynamicEnabled = false;
         }
     }
