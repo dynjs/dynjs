@@ -19,31 +19,42 @@ public class Config {
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
+    private boolean invokeDynamicEnabled = true;
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
+        if (System.getProperty("disable.indy") != null) {
+            this.invokeDynamicEnabled = false;
+        }
     }
 
     public Config(ClassLoader parentClassLoader) {
         this.classLoader = new DynamicClassLoader(parentClassLoader);
+        if (System.getProperty("disable.indy") != null) {
+            this.invokeDynamicEnabled = false;
+        }
+    }
+
+    public boolean isInvokeDynamicEnabled() {
+        return this.invokeDynamicEnabled;
     }
 
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
-    
+
     public void setClock(Clock clock) {
         this.clock = clock;
     }
-    
+
     public Clock getClock() {
         return this.clock;
     }
-    
+
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
-    
+
     public TimeZone getTimeZone() {
         return this.timeZone;
     }

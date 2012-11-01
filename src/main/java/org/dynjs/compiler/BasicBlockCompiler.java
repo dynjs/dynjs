@@ -5,13 +5,12 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
+import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.AbstractBasicBlock;
 import org.dynjs.runtime.BasicBlock;
@@ -23,13 +22,13 @@ public class BasicBlockCompiler extends AbstractCompiler {
 
     private final String INVOKE = sig(Completion.class, ExecutionContext.class);
 
-    public BasicBlockCompiler(DynJS runtime, Config config) {
-        super(runtime, config, "Block");
+    public BasicBlockCompiler(Class<? extends AbstractCodeGeneratingVisitor> codeGenClass, DynJS runtime, Config config) {
+        super(codeGenClass, runtime, config, "Block");
     }
 
     public BasicBlock compile(ExecutionContext context, final String grist, final Statement body) {
 
-        final BasicBytecodeGeneratingVisitor byteCodeGenerator = new BasicBytecodeGeneratingVisitor(context.getBlockManager());
+        final AbstractCodeGeneratingVisitor byteCodeGenerator = newCodeGeneratingVisitor(context);
         body.accept(context, byteCodeGenerator, false);
 
         JiteClass jiteClass = new JiteClass(nextClassName(grist), p(AbstractBasicBlock.class), new String[0]) {

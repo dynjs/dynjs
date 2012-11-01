@@ -183,30 +183,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return jsGetValue(null);
     }
 
-    public CodeBlock jsGetValue(final Class<?> throwIfNot) {
-        return new CodeBlock() {
-            {
-                // IN: reference
-                aload(Arities.EXECUTION_CONTEXT);
-                // reference context
-                invokedynamic("GetValue", sig(Object.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
-                // value
-                if (throwIfNot != null) {
-                    LabelNode end = new LabelNode();
-                    dup();
-                    // value value
-                    instance_of(p(throwIfNot));
-                    // value bool
-                    iftrue(end);
-                    // value
-                    pop();
-                    append(jsThrowTypeError("expected " + throwIfNot.getName()));
-                    label(end);
-                    nop();
-                }
-            }
-        };
-    }
+    public abstract CodeBlock jsGetValue(final Class<?> throwIfNot);
 
     public CodeBlock jsGetBase() {
         return new CodeBlock() {

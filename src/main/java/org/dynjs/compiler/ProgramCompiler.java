@@ -5,12 +5,12 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
+import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
 import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.Program;
@@ -19,19 +19,18 @@ import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
-import org.objectweb.asm.tree.InsnNode;
 
 public class ProgramCompiler extends AbstractCompiler {
 
-    public ProgramCompiler(DynJS runtime, Config config) {
-        super(runtime, config, "Program");
+    public ProgramCompiler(Class<? extends AbstractCodeGeneratingVisitor> codeGenClass, DynJS runtime, Config config) {
+        super(codeGenClass, runtime, config, "Program");
     }
 
     public JSProgram compile(final ExecutionContext context, final Program program, boolean forceStrict) {
         
         final boolean strict = program.isStrict() || forceStrict;
         
-        final BasicBytecodeGeneratingVisitor byteCodeGenerator = new BasicBytecodeGeneratingVisitor(context.getBlockManager());
+        final AbstractCodeGeneratingVisitor byteCodeGenerator = newCodeGeneratingVisitor(context);
         program.accept(context, byteCodeGenerator, strict);
         
         JiteClass jiteClass = new JiteClass(nextClassName(), p(BaseProgram.class), new String[0]) {

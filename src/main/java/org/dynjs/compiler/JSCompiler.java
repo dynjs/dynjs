@@ -1,6 +1,9 @@
 package org.dynjs.compiler;
 
 import org.dynjs.Config;
+import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
+import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
+import org.dynjs.codegen.InvokeDynamicBytecodeGeneratingVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BasicBlock;
@@ -20,9 +23,15 @@ public class JSCompiler {
     public JSCompiler(DynJS runtime, Config config) {
         this.runtime = runtime;
         this.config = config;
-        this.programCompiler = new ProgramCompiler(runtime, this.config);
-        this.functionCompiler = new FunctionCompiler(runtime, this.config);
-        this.basicBlockCompiler = new BasicBlockCompiler(runtime, this.config);
+        Class<? extends AbstractCodeGeneratingVisitor> codeGenClass = null;
+        if ( config.isInvokeDynamicEnabled() ) {
+            codeGenClass = InvokeDynamicBytecodeGeneratingVisitor.class;
+        } else {
+            codeGenClass = BasicBytecodeGeneratingVisitor.class;
+        }
+        this.programCompiler = new ProgramCompiler(codeGenClass, runtime, this.config);
+        this.functionCompiler = new FunctionCompiler(codeGenClass, runtime, this.config);
+        this.basicBlockCompiler = new BasicBlockCompiler(codeGenClass, runtime, this.config);
     }
 
     public JSProgram compileProgram(ExecutionContext context, Program program, boolean forceStrict) {
