@@ -31,8 +31,8 @@ public class PropertyDescriptor {
         return new PropertyDescriptor() {
             {
                 if (withDefaults) {
-                    set("Value", DEFAULTS.get("Value"));
-                    set("Writable", DEFAULTS.get("Writable"));
+                    set("Set", DEFAULTS.get("Set"));
+                    set("Get", DEFAULTS.get("Get"));
                     set("Configurable", DEFAULTS.get("Configurable"));
                     set("Enumerable", DEFAULTS.get("Enumerable"));
                 }
@@ -44,10 +44,10 @@ public class PropertyDescriptor {
         return new PropertyDescriptor() {
             {
                 if (withDefaults) {
-                    set("Set", DEFAULTS.get("Set"));
-                    set("Get", DEFAULTS.get("Get"));
+                    set("Value", DEFAULTS.get("Value"));
+                    set("Writable", DEFAULTS.get("Writable"));
                     set("Configurable", DEFAULTS.get("Configurable"));
-                    set("Enumerable", DEFAULTS.get("Enumerable"));
+                    set("Enumerable", DEFAULTS.get("Enumerable")); 
                 }
             }
         };
@@ -103,7 +103,7 @@ public class PropertyDescriptor {
     }
 
     public String toString() {
-        return "[PropertyDescriptor writable=" + this.writable + "; enumerable=" + this.enumerable + "; configurable=" + this.configurable + "; setter=" + this.set+ "; getter=" + this.get + "]"; 
+        return "[PropertyDescriptor value=" + this.value + "; writable=" + this.writable + "; enumerable=" + this.enumerable + "; configurable=" + this.configurable + "; setter=" + this.set+ "; getter=" + this.get + "]"; 
     }
 
     public boolean isWritable() {
@@ -171,6 +171,10 @@ public class PropertyDescriptor {
     public void setValue(Object value) {
         this.value = value;
     }
+    
+    public boolean hasValue() {
+        return this.value != null;
+    }
 
     public Object getSetter() {
         return this.set;
@@ -179,6 +183,10 @@ public class PropertyDescriptor {
     public void setSetter(JSFunction setter) {
         this.set = setter;
     }
+    
+    public boolean hasSet() {
+        return this.set != null;
+    }
 
     public Object getGetter() {
         return this.get;
@@ -186,6 +194,10 @@ public class PropertyDescriptor {
 
     public void setGetter(JSFunction getter) {
         this.get = getter;
+    }
+    
+    public boolean hasGet() {
+        return this.get != null;
     }
 
     public boolean isEmpty() {

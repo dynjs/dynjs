@@ -28,6 +28,8 @@ public class GetOwnPropertyDescriptor extends AbstractNativeFunction {
         String name = Types.toString(context, args[1]);
 
         Object desc = jsObj.getOwnProperty(context, name);
+        
+        //System.err.println( jsObj + " get: " + name + " > " + desc );
 
         return PropertyDescriptor.fromPropertyDescriptor(context, desc);
     }
