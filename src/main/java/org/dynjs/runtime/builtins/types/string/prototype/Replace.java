@@ -19,53 +19,66 @@ public class Replace extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Types.checkObjectCoercible(context, self);
-        DynRegExp regExp    = null;
-        DynArray matches    = null;
-        String original     = Types.toString(context, self);
-        String result       = original;        
-        if (args.length >= 2) {
-            final Object replaceWith = args[1];
-            if (args[0] instanceof DynRegExp) {
-                regExp = (DynRegExp) args[0];
-                // We can reuse the global String.prototype.match function - let's look it up and call it
-                JSFunction fn = (JSFunction) context.getGlobalObject().getPrototypeFor( "String" ).get( context, "match" );
-                matches = (DynArray) context.call(fn, original, regExp);
-                for ( int i = 0 ; i < Types.toInteger(context, matches.get(context, "length")); ++i ) {
-                    String nextMatch = Types.toString(context, matches.get(context, ""+i));
-                    result = result.replaceFirst(nextMatch, replacementString(context, nextMatch, replaceWith, matches));
-                }
+        // We can reuse the global String.prototype.match function to match the regexp
+        JSFunction matchFunction = (JSFunction) context.getGlobalObject().getPrototypeFor( "String" ).get( context, "match" );
+        String string = Types.UNDEFINED.toString();        
+        
+        if (args.length == 2) {
+            Object searchValue  = args[0];
+            Object replaceValue = args[1];
+            DynArray matches    = null;
+            boolean globalFlag  = false;
+            
+            Types.checkObjectCoercible(context, self);
+            string = Types.toString(context, self);
+            
+            int m = 0;
+            if (searchValue instanceof DynRegExp) {
+                DynRegExp regExp = (DynRegExp) searchValue;
+                matches = (DynArray) context.call(matchFunction, string, regExp);
+                Pattern pattern = Pattern.compile(".*\\(.+\\).*");
+                Matcher matcher = pattern.matcher(Types.toString(context, searchValue));
+                m = matcher.groupCount();
             } else {
-                String searchString = Types.toString(context, args[0]);
-                String match = replacementString(context, searchString, replaceWith, null);
-                result = original.replaceFirst(searchString, match);
+                String searchString = Types.toString(context, searchValue);
+                matches = new DynArray(context.getGlobalObject());
+                matches.put(context, "0", searchString, false);
             }
             
-        }
-        return result;
-    }
-
-    protected String replacementString(ExecutionContext context, String nextMatch, final Object replaceWith, DynArray matches) {
-        String newString = "";
-        if (replaceWith instanceof JSFunction) {
-            Object[] functionArgs = {nextMatch};
-            newString = (String) context.call( (JSFunction)replaceWith, null, functionArgs);
-        } else {
-            // TODO: Handle $` and $' substitution on newstring            
-            newString = Types.toString(context, replaceWith);
-            newString = newString.replaceAll("\\$\\$", Matcher.quoteReplacement("\\$"));
-            if (matches != null) {
-                newString = newString.replaceAll("\\$&", Matcher.quoteReplacement((String) matches.get(context, "0")));
-                // Deal with $n string substitution
-                Pattern pattern = Pattern.compile("\\$(\\d+)");
-                Matcher matcher = pattern.matcher(newString);
-                if (matcher.matches()) {
-                    final String group = matcher.group(1);
-                    newString = newString.replaceAll("\\$"+group, Matcher.quoteReplacement((String) matches.get(context, group)));
+            Long matchCount = Types.toInteger(context, matches.get(context, "length"));
+            if (replaceValue instanceof JSFunction) {
+                for ( int i = 0 ; i < matchCount; ++i ) {
+                    String nextMatch = Types.toString(context, matches.get(context, ""+i));
+                    // TODO: Include MatchResult captures and match index in function args
+                    Object[] functionArgs = {matches.get(context, ""+i), Types.UNDEFINED, 0, string};
+                    String replacement = (String) context.call( (JSFunction)replaceValue, null, functionArgs);
+                    string = string.replaceFirst(nextMatch, Matcher.quoteReplacement(replacement));
+                }
+            } else {
+                String newString = Types.toString(context, replaceValue);
+                for ( int i = 1; i <= matchCount; ++i ) {
+                    string = string.replaceFirst((String)matches.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, matches, i)));
                 }
             }
         }
-        return newString;
+        return string;
+    }
+
+    protected String buildReplacementString(ExecutionContext context, String replaceWith, DynArray matches, int matchIndex) {
+        // TODO: Handle $` and $' substitution on newstring            
+        replaceWith = replaceWith.replaceAll("\\$\\$", Matcher.quoteReplacement("$"));
+        replaceWith = replaceWith.replaceAll("\\$&", Matcher.quoteReplacement((String) matches.get(context, "0")));
+        // Deal with $n string substitution
+        Pattern pattern = Pattern.compile("(?:.*(?:\\$(\\d+)).*)");
+        Matcher matcher = pattern.matcher(replaceWith);
+        while (matcher.matches()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                final String group = matcher.group(i);
+                replaceWith = replaceWith.replaceAll("\\$"+group, Matcher.quoteReplacement((String) matches.get(context, group)));
+                matcher = pattern.matcher(replaceWith);
+            }
+        }
+        return replaceWith;
     }
 
 }
