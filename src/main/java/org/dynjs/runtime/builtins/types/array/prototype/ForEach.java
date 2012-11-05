@@ -35,7 +35,7 @@ public class ForEach extends AbstractNativeFunction {
             boolean kPresent = o.hasProperty(context, "" + k);
             if (kPresent) {
                 Object kValue = o.get(context, "" + k);
-                context.call(callbackFn, t, kValue, o);
+                context.call(callbackFn, t, kValue, k, o);
             }
         }
 
