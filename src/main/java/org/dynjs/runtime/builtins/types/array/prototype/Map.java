@@ -40,7 +40,7 @@ public class Map extends AbstractNativeFunction {
             boolean kPresent = o.hasProperty(context, "" + k);
             if (kPresent) {
                 Object kValue = o.get(context, "" + k);
-                final Object mappedValue = context.call(callbackFn, t, kValue, o);
+                final Object mappedValue = context.call(callbackFn, t, kValue, k, o);
                 a.defineOwnProperty(context, "" + k, new PropertyDescriptor() {
                     {
                         set("Value", mappedValue);
