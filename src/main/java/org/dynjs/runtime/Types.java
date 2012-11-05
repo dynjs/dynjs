@@ -79,12 +79,12 @@ public class Types {
 
     public static Number toNumber(ExecutionContext context, Object o) {
         // 9.3
-        if (o instanceof JSObject) {
-            return toNumber(context, toPrimitive(context, o, "Number"));
-        }
-
         if (o instanceof Number) {
             return (Number) o;
+        }
+
+        if (o instanceof JSObject) {
+            return toNumber(context, toPrimitive(context, o, "Number"));
         }
 
         if (o == Types.UNDEFINED) {
