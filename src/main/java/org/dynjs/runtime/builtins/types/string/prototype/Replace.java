@@ -1,7 +1,6 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynArray;
@@ -42,7 +41,8 @@ public class Replace extends AbstractNativeFunction {
                     if (object == Types.NULL || object == Types.UNDEFINED) { // It was not a match
                         matches.put(context, "length", 0L, false);
                     } else {
-                        matches = (DynArray) object;
+                        matches.put(context, "length", 1L, false);
+                        matches.put(context, "0", object, false);
                     }
                     m = Types.toInteger(context, matches.get(context, "length")).intValue()-1;
                 } else {
@@ -76,44 +76,56 @@ public class Replace extends AbstractNativeFunction {
             } else {
                 final String searchString = Types.toString(context, searchValue);
                 long index = string.indexOf(searchString);
-                matches.put(context, "input", string, false);
-                matches.put(context, "index", (long) index, false);
-                matches.put(context, "0", searchString, false);
-                matches.put(context, "length", 1L, false);
+                if (index >= 0) {
+                    matches.put(context, "length", 1L, false);
+                    final DynArray singleMatch = new DynArray(context.getGlobalObject());
+                    singleMatch.put(context, "input", string, false);
+                    singleMatch.put(context, "index", (long) index, false);
+                    singleMatch.put(context, "0", searchString, false);
+                    singleMatch.put(context, "length", 1L, false);
+                    matches.put(context, "0", singleMatch, false);
+                }
             }
 
             Long matchCount = Types.toInteger(context, matches.get(context, "length"));
             if (matchCount > 0) {
                 if (replaceValue instanceof JSFunction) {
                     for (int i = 0; i < matchCount; ++i) {
-                        String nextMatch = Types.toString(context, matches.get(context, "" + i));
+                        final DynArray nextMatch = (DynArray) matches.get(context, "" + i);
                         Object[] functionArgs = new Object[(int) (m + 3)];
-                        functionArgs[0] = nextMatch;
+                        functionArgs[0] = Types.toString(context, nextMatch.get(context, "0"));
                         if (m == 0) {
-                            functionArgs[1] = matches.get(context, "index");
+                            functionArgs[1] = nextMatch.get(context, "index");
                             functionArgs[2] = string;
                         } else {
                             for (int j = 1; j < m; j++) {
-                                functionArgs[j] = matches.get(context, "" + j);
+                                functionArgs[j] = nextMatch.get(context, "" + j);
                             }
                         }
                         String replacement = Types.toString(context, context.call((JSFunction) replaceValue, Types.UNDEFINED, functionArgs));
-                        string = string.replaceFirst(nextMatch, Matcher.quoteReplacement(replacement));
+                        string = string.replaceFirst((String) functionArgs[0], Matcher.quoteReplacement(replacement));
                     }
                 } else {
                     String newString = Types.toString(context, replaceValue);
-                    if (global != Boolean.TRUE) {
-                        string = string.replaceFirst((String) matches.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, matches)));
-                    } else {
-                        for (int i=0; i<matchCount.intValue(); i++) {
-                            DynArray match = (DynArray) matches.get(context, ""+i);
-                            string = string.replaceFirst((String) match.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, match)));
-                        }
+                    for (int i = 0; i < matchCount.intValue(); i++) {
+                        DynArray match = (DynArray) matches.get(context, "" + i);
+                        String toReplace = Matcher.quoteReplacement(Types.toString(context, match.get(context, "0")));
+                        String quotedReplacement = Matcher.quoteReplacement(buildReplacementString(context, newString, match));
+                        string = string.replaceFirst(toReplace, quotedReplacement);
                     }
                 }
             }
         }
         return string;
+    }
+
+    protected DynArray buildSingleMatch(ExecutionContext context, String inputString, final String searchString, long startIndex) {
+        final DynArray singleMatch = new DynArray(context.getGlobalObject());
+        singleMatch.put(context, "input", inputString, false);
+        singleMatch.put(context, "index", (long) startIndex, false);
+        singleMatch.put(context, "0", searchString, false);
+        singleMatch.put(context, "length", 1L, false);
+        return singleMatch;
     }
 
     protected String buildReplacementString(ExecutionContext context, String replaceWith, DynArray matches) {

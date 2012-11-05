@@ -1,12 +1,11 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinStringTest extends AbstractDynJSTestSupport {
@@ -106,7 +105,6 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testReplaceWithTextSubstitution() {
         Object o = eval("\"$1,$2\".replace(/(\\$(\\d))/g, \"$$1-$1$2\")");
         assertThat(o).isEqualTo("$1-$11,$1-$22");
