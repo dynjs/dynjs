@@ -458,8 +458,16 @@ numericLiteral returns [Expression value]
 	;
 
 arrayLiteral returns [Expression value]
-@init { List<Expression> exprs = new ArrayList<Expression>(); }
-	: ^( ARRAY ( ^( ITEM expr? { exprs.add($expr.value); } ) )* )
+@init { 
+  List<Expression> exprs = new ArrayList<Expression>(); 
+  Expression item = null;
+}
+	: ^( ARRAY 
+	      ( 
+	         ^( ITEM { item = null; } expr? { item = $expr.value; } ) 
+	         { exprs.add( item ); }
+	      )* 
+	   )
 	{ $value = astFactory.arrayLiteral($ARRAY, exprs);  }
 	;
 

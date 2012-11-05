@@ -104,8 +104,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
     public BasicBytecodeGeneratingVisitor(BlockManager blockManager) {
         super(blockManager);
     }
-    
-    
+
     @Override
     public CodeBlock jsGetValue(final Class<?> throwIfNot) {
         return new CodeBlock() {
@@ -133,10 +132,6 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             }
         };
     }
-    
-    
-    
-    
 
     public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
 
@@ -338,7 +333,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             // array array context
             ldc(index + "");
             // array array context name
-            each.accept(context, this, strict);
+            if (each != null) {
+                each.accept(context, this, strict);
+            } else {
+                append( jsPushUndefined() );
+            }
             // array array context name val
             append(jsGetValue());
             // array array context name val
