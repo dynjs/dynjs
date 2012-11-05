@@ -961,7 +961,7 @@ arrayLiteral
 	;
 
 arrayItem
-	: ( expr=assignmentExpression | { input.LA(1) == COMMA }? )
+	: ( expr=assignmentExpression | { input.LA(1) == COMMA || input.LA(1) == RBRACK }? )
 	-> ^( ITEM $expr? )
 	;
 
