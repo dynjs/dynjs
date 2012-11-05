@@ -122,14 +122,12 @@ public class Replace extends AbstractNativeFunction {
         replaceWith = replaceWith.replaceAll("\\$\\$", Matcher.quoteReplacement("$"));
         replaceWith = replaceWith.replaceAll("\\$&", Matcher.quoteReplacement(Types.toString(context, matches.get(context, "0"))));
         // Deal with $n string substitution
-        Pattern pattern = Pattern.compile("(?:.*(?:\\$(\\d+)).*)");
+        Pattern pattern = Pattern.compile(".*\\$(\\d+).*");
         Matcher matcher = pattern.matcher(replaceWith);
-        if (matcher.matches()) {
-            for (int i = 0; i < matcher.groupCount(); i++) {
-                final String group = matcher.group(i);
-                replaceWith = replaceWith.replaceAll("\\$" + group, Matcher.quoteReplacement(Types.toString(context, matches.get(context, group))));
-                matcher = pattern.matcher(replaceWith);
-            }
+        while (matcher.find()) {
+            final String group = matcher.group(1);
+            replaceWith = replaceWith.replaceAll("\\$" + group, Matcher.quoteReplacement(Types.toString(context, matches.get(context, group))));
+            matcher = pattern.matcher(replaceWith);
         }
         return replaceWith;
     }

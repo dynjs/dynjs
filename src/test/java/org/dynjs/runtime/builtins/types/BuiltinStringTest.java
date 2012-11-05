@@ -60,7 +60,6 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testReplaceGloballyIgnoringCase() {
         Object o = eval("String('Now is the winter').replace(/n/ig, '_N_')");
         assertThat(o).isEqualTo("_N_ow is the wi_N_ter");
@@ -140,7 +139,6 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testReplaceDollarN() {
         Object o = eval("new String('foobar').replace(/(fo+)(b.+)/, \"$2$1\")");
         assertThat(o).isEqualTo("barfoo");        
