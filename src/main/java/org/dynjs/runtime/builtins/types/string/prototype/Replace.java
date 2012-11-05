@@ -124,6 +124,9 @@ public class Replace extends AbstractNativeFunction {
         while (fromIndex <= endIndex) {
             char nextChar;
             if ((nextChar = replaceWith.charAt(fromIndex)) == '$' && fromIndex != endIndex) {
+                String input    = Types.toString(context, matches.get(context, "input"));
+                String matched  = Types.toString(context, matches.get(context, "0"));
+                int matchBegins = Types.toInteger(context, matches.get(context, "index")).intValue();
                 switch(replaceWith.charAt(fromIndex+1)) {
                 case '$':
                     replacement.append("$");
@@ -134,9 +137,11 @@ public class Replace extends AbstractNativeFunction {
                     fromIndex++;
                     break;
                 case '`':
-                    String input = Types.toString(context, matches.get(context, "input"));
-                    int end      = Types.toInteger(context, matches.get(context, "index")).intValue();
-                    replacement.append(input.substring(0, end));
+                    replacement.append(input.substring(0, matchBegins));
+                    fromIndex++;
+                    break;
+                case '\'':
+                    replacement.append(input.substring(matchBegins+matched.length()));
                     fromIndex++;
                     break;
                 case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':

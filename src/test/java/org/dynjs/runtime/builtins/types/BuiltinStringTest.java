@@ -106,7 +106,7 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-//    @Ignore
+    @Ignore
     public void testReplaceWithTextSubstitution() {
         Object o = eval("\"$1,$2\".replace(/(\\$(\\d))/g, \"$$1-$1$2\")");
         assertThat(o).isEqualTo("$1-$11,$1-$22");
@@ -141,7 +141,6 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testReplaceDollarApostrophe() {
         Object o = eval("new String('foobar').replace(/o+/, \"$'\")");
         assertThat(o).isEqualTo("fbarbar");
