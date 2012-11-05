@@ -76,6 +76,7 @@ public class Replace extends AbstractNativeFunction {
             } else {
                 final String searchString = Types.toString(context, searchValue);
                 long index = string.indexOf(searchString);
+                matches.put(context, "input", string, false);
                 matches.put(context, "index", (long) index, false);
                 matches.put(context, "0", searchString, false);
                 matches.put(context, "length", 1L, false);
@@ -102,11 +103,11 @@ public class Replace extends AbstractNativeFunction {
                 } else {
                     String newString = Types.toString(context, replaceValue);
                     if (global != Boolean.TRUE) {
-                        string = string.replaceFirst((String) matches.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, matches, 0)));
+                        string = string.replaceFirst((String) matches.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, matches)));
                     } else {
-                        for (int i=0; i<Types.toInteger(context, matches.get(context, "length")).intValue(); i++) {
+                        for (int i=0; i<matchCount.intValue(); i++) {
                             DynArray match = (DynArray) matches.get(context, ""+i);
-                            string = string.replaceFirst((String) match.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, match, i)));
+                            string = string.replaceFirst((String) match.get(context, "0"), Matcher.quoteReplacement(buildReplacementString(context, newString, match)));
                         }
                     }
                 }
@@ -115,20 +116,47 @@ public class Replace extends AbstractNativeFunction {
         return string;
     }
 
-    protected String buildReplacementString(ExecutionContext context, String replaceWith, DynArray matches, int matchIndex) {
-        // TODO: Handle $` and $' substitution on newstring
-        replaceWith = replaceWith.replaceAll("\\$\\$", Matcher.quoteReplacement("$"));
-        replaceWith = replaceWith.replaceAll("\\$&", Matcher.quoteReplacement(Types.toString(context, matches.get(context, "0"))));
-        // Deal with $n string substitution
-        Pattern pattern = Pattern.compile("\\$(\\d+)");
-        Matcher matcher = pattern.matcher(replaceWith);
-        int lastIndex   = 0;
-        while (matcher.find(lastIndex)) {
-            final String group = matcher.group(1);
-            replaceWith = replaceWith.replaceAll("\\$" + group, Matcher.quoteReplacement(Types.toString(context, matches.get(context, group))));
-            lastIndex = matcher.end();
+    protected String buildReplacementString(ExecutionContext context, String replaceWith, DynArray matches) {
+        int fromIndex            = 0;
+        int endIndex             = replaceWith.length()-1;
+        StringBuffer replacement = new StringBuffer();
+        
+        while (fromIndex <= endIndex) {
+            char nextChar;
+            if ((nextChar = replaceWith.charAt(fromIndex)) == '$' && fromIndex != endIndex) {
+                switch(replaceWith.charAt(fromIndex+1)) {
+                case '$':
+                    replacement.append("$");
+                    fromIndex++;
+                    break;
+                case '&':
+                    replacement.append(Types.toString(context,  matches.get(context, "0")));
+                    fromIndex++;
+                    break;
+                case '`':
+                    String input = Types.toString(context, matches.get(context, "input"));
+                    int end      = Types.toInteger(context, matches.get(context, "index")).intValue();
+                    replacement.append(input.substring(0, end));
+                    fromIndex++;
+                    break;
+                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+                    final String backreference = Character.toString(replaceWith.charAt(fromIndex+1));
+                    if (matches.get(context, backreference) != Types.UNDEFINED) {
+                        replacement.append(Types.toString(context, matches.get(context, backreference)));
+                        fromIndex++;
+                    } else {
+                        replacement.append(nextChar);
+                    }
+                    break;
+                default:
+                    replacement.append(nextChar);
+                }
+            } else {
+                replacement.append(nextChar);
+            }
+            fromIndex++;
         }
-        return replaceWith;
+        return replacement.toString();
     }
 
 }

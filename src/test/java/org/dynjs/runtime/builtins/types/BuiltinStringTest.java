@@ -106,10 +106,20 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
+//    @Ignore
     public void testReplaceWithTextSubstitution() {
         Object o = eval("\"$1,$2\".replace(/(\\$(\\d))/g, \"$$1-$1$2\")");
         assertThat(o).isEqualTo("$1-$11,$1-$22");
+    }
+    
+    @Test
+    public void testNoSubstitution() {
+        assertThat(eval("new String('foobar').replace('oo', '$1')")).isEqualTo("f$1bar");
+    }
+    
+    @Test
+    public void testRegExpNoSubstitution() {
+        assertThat(eval("new String('foobar').replace(/oo/, '$1')")).isEqualTo("f$1bar");
     }
     
     @Test
@@ -125,10 +135,9 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testReplaceDollarBacktick() {
-        Object o = eval("new String('foo').replace(/o+/, '$`')");
-        assertThat(o).isEqualTo("ff");
+        Object o = eval("new String('foobar').replace(/oo/, '$`')");
+        assertThat(o).isEqualTo("ffbar");
     }
 
     @Test
