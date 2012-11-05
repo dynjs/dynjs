@@ -327,30 +327,28 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         int index = 0;
 
         for (Expression each : expr.getExprs()) {
-            dup();
-            // array array
-            aload(Arities.EXECUTION_CONTEXT);
-            // array array context
-            ldc(index + "");
-            // array array context name
             if (each != null) {
+                dup();
+                // array array
+                aload(Arities.EXECUTION_CONTEXT);
+                // array array context
+                ldc(index + "");
+                // array array context name
                 each.accept(context, this, strict);
-            } else {
-                append( jsPushUndefined() );
+                // array array context name val
+                append(jsGetValue());
+                // array array context name val
+                invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
+                // array array context name desc
+                iconst_0();
+                i2b();
+                // array array context name desc bool
+                invokevirtual(p(DynArray.class), "defineOwnProperty",
+                        sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class));
+                // array bool
+                pop();
+                // array
             }
-            // array array context name val
-            append(jsGetValue());
-            // array array context name val
-            invokestatic(p(PropertyDescriptor.class), "newPropertyDescriptorForObjectInitializer", sig(PropertyDescriptor.class, Object.class));
-            // array array context name desc
-            iconst_0();
-            i2b();
-            // array array context name desc bool
-            invokevirtual(p(DynArray.class), "defineOwnProperty",
-                    sig(boolean.class, ExecutionContext.class, String.class, PropertyDescriptor.class, boolean.class));
-            // array bool
-            pop();
-            // array
             ++index;
         }
         // array

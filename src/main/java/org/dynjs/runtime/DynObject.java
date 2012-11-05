@@ -145,9 +145,9 @@ public class DynObject implements JSObject {
     @Override
     public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
         // 8.12.5
-        //System.err.println("PUT " + name + " > " + value);
+        // System.err.println("PUT " + name + " > " + value);
         if (!canPut(context, name)) {
-            //System.err.println("CANNOT PUT");
+            // System.err.println("CANNOT PUT");
             if (shouldThrow) {
                 throw new ThrowException(context, context.createTypeError("cannot put property '" + name + "'"));
             }
@@ -157,7 +157,7 @@ public class DynObject implements JSObject {
         Object ownDesc = getOwnProperty(context, name);
 
         if ((ownDesc != Types.UNDEFINED) && ((PropertyDescriptor) ownDesc).isDataDescriptor()) {
-            //System.err.println("setting value on non-UNDEF");
+            // System.err.println("setting value on non-UNDEF");
             PropertyDescriptor newDesc = new PropertyDescriptor() {
                 {
                     set("Value", value);
@@ -197,20 +197,20 @@ public class DynObject implements JSObject {
             }
         }
 
-        //System.err.println("canPut?: " + name + " > " + d);
+        // System.err.println("canPut?: " + name + " > " + d);
 
         // If either has it, deal with descriptor appropriately
         if (d != Types.UNDEFINED) {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             if (desc.isAccessorDescriptor()) {
                 if (desc.get("Set") == Types.UNDEFINED) {
-                    //System.err.println("NO SET");
+                    // System.err.println("NO SET");
                     return false;
                 }
                 return true;
             } else {
                 Object writable = desc.get("Writable");
-                //System.err.println("writable? " + writable);
+                // System.err.println("writable? " + writable);
                 if (writable == Types.UNDEFINED) {
                     return true;
                 }
@@ -299,8 +299,8 @@ public class DynObject implements JSObject {
         // 8.12.9
         Object c = getOwnProperty(context, name);
 
-        //System.err.println("DEF.start: " + name + " > " + desc);
-        //System.err.println("DEF.orig: " + name + " > " + c);
+        // System.err.println("DEF.start: " + name + " > " + desc);
+        // System.err.println("DEF.orig: " + name + " > " + c);
 
         if (c == Types.UNDEFINED) {
             if (!isExtensible()) {
@@ -313,7 +313,7 @@ public class DynObject implements JSObject {
                     newDesc = desc.duplicateWithDefaults("Get", "Set", "Enumerable", "Configurable");
                 }
 
-                //System.err.println("DEF.initial: " + name + " > " + newDesc);
+                // System.err.println("DEF.initial: " + name + " > " + newDesc);
                 this.properties.put(name, newDesc);
                 return true;
             }
@@ -368,12 +368,12 @@ public class DynObject implements JSObject {
                 }
             }
             newDesc = PropertyDescriptor.newDataPropertyDescriptor(true);
-            
-            if ( current.hasValue() ) {
-                newDesc.set( "Value", current.get( "Value" ) );
+
+            if (current.hasValue()) {
+                newDesc.set("Value", current.get("Value"));
             }
-            if ( current.hasWritable() ) {
-                newDesc.set( "Writable", current.get( "Writable" ) );
+            if (current.hasWritable()) {
+                newDesc.set("Writable", current.get("Writable"));
             }
             // System.err.println("DEF.data: " + name + " > " + newDesc);
         } else if (current.isAccessorDescriptor() && desc.isAccessorDescriptor()) {
@@ -388,11 +388,11 @@ public class DynObject implements JSObject {
                 }
             }
             newDesc = PropertyDescriptor.newAccessorPropertyDescriptor(true);
-            if ( current.hasSet() ) {
-                newDesc.set( "Set", current.get( "Set" ) );
+            if (current.hasSet()) {
+                newDesc.set("Set", current.get("Set"));
             }
-            if ( current.hasGet() ) {
-                newDesc.set( "Get", current.get( "Get" ) );
+            if (current.hasGet()) {
+                newDesc.set("Get", current.get("Get"));
             }
             // System.err.println("DEF.accessor: " + name + " > " + newDesc);
         }
