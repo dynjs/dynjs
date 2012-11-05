@@ -86,8 +86,6 @@ public class Replace extends AbstractNativeFunction {
                 if (replaceValue instanceof JSFunction) {
                     for (int i = 0; i < matchCount; ++i) {
                         String nextMatch = Types.toString(context, matches.get(context, "" + i));
-                        // TODO: Include MatchResult captures and match index in
-                        // function args
                         Object[] functionArgs = new Object[(int) (m + 3)];
                         functionArgs[0] = nextMatch;
                         if (m == 0) {
@@ -122,12 +120,13 @@ public class Replace extends AbstractNativeFunction {
         replaceWith = replaceWith.replaceAll("\\$\\$", Matcher.quoteReplacement("$"));
         replaceWith = replaceWith.replaceAll("\\$&", Matcher.quoteReplacement(Types.toString(context, matches.get(context, "0"))));
         // Deal with $n string substitution
-        Pattern pattern = Pattern.compile(".*\\$(\\d+).*");
+        Pattern pattern = Pattern.compile("\\$(\\d+)");
         Matcher matcher = pattern.matcher(replaceWith);
-        while (matcher.find()) {
+        int lastIndex   = 0;
+        while (matcher.find(lastIndex)) {
             final String group = matcher.group(1);
             replaceWith = replaceWith.replaceAll("\\$" + group, Matcher.quoteReplacement(Types.toString(context, matches.get(context, group))));
-            matcher = pattern.matcher(replaceWith);
+            lastIndex = matcher.end();
         }
         return replaceWith;
     }
