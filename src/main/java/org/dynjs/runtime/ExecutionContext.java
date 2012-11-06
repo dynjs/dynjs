@@ -97,7 +97,8 @@ public class ExecutionContext {
     }
 
     public Reference resolve(String name) {
-        return this.lexicalEnvironment.getIdentifierReference(this, name, isStrict());
+        Reference result = this.lexicalEnvironment.getIdentifierReference(this, name, isStrict());
+        return result;
     }
 
     public void setLineNumber(int lineNumber) {
@@ -231,7 +232,7 @@ public class ExecutionContext {
         Object evalThisBinding = null;
         LexicalEnvironment evalLexEnv = null;
         LexicalEnvironment evalVarEnv = null;
-        
+
         if (!direct) {
             evalThisBinding = getGlobalObject();
             evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject());
@@ -247,7 +248,7 @@ public class ExecutionContext {
             evalLexEnv = strictVarEnv;
             evalVarEnv = strictVarEnv;
         }
-        
+
         context = new ExecutionContext(this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
@@ -456,7 +457,7 @@ public class ExecutionContext {
     private void performFunctionDeclarationBindings(final JSCode code, final boolean configurableBindings) {
         // 10.5 Function Declaration Binding
         List<FunctionDeclaration> decls = code.getFunctionDeclarations();
-        
+
         EnvironmentRecord env = this.variableEnvironment.getRecord();
         for (FunctionDeclaration each : decls) {
             String identifier = each.getIdentifier();

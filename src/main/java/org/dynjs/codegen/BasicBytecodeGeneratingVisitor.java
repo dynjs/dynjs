@@ -1635,9 +1635,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // context object identifier-maybe-reference
         swap();
         // context identifier-maybe-reference obj
-        append(jsCheckObjectCoercible());
+        append(jsCheckObjectCoercible( expr.getLhs().toString() ));
         // context identifier-maybe-reference obj
         swap();
+        ldc( "-----------------" );
+        pop();
         // context object identifier-maybe-reference
         append(jsGetValue());
         // context object identifier-obj

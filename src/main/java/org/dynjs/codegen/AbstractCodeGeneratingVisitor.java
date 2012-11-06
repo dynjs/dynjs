@@ -2,7 +2,11 @@ package org.dynjs.codegen;
 
 import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.params;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
+
+import java.io.PrintStream;
+
 import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.compiler.JSCompiler;
@@ -42,6 +46,25 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         return this.blockManager;
     }
 
+    
+    protected void emitDebug(String message) {
+        ldc( message );
+        aprintln();
+        pop();
+    }
+    
+    protected void emitTop() {
+        aprintln();
+    }
+    
+    public CodeBlock aprintln() {
+        dup();
+        getstatic(p(System.class), "err", ci(PrintStream.class));
+        swap();
+        invokevirtual(p(PrintStream.class), "println", sig(void.class, params(Object.class)));
+        return this;
+    }
+    
     @Override
     public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         if (expr.getOp().equals("+")) {
@@ -55,7 +78,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
 
     public abstract void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict);
 
-    public CodeBlock jsCheckObjectCoercible() {
+    public CodeBlock jsCheckObjectCoercible(final String debug) {
         return new CodeBlock() {
             {
                 // IN: obj
@@ -65,7 +88,8 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // obj obj context
                 swap();
                 // obj context obj
-                invokestatic(p(Types.class), "checkObjectCoercible", sig(void.class, ExecutionContext.class, Object.class));
+                ldc( debug );
+                invokestatic(p(Types.class), "checkObjectCoercible", sig(void.class, ExecutionContext.class, Object.class, String.class));
                 // obj
             }
         };

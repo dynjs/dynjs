@@ -69,10 +69,18 @@ public class ArrayLiteralTest extends AbstractDynJSTestSupport {
         assertThat(x.get(getContext(), "2")).isEqualTo(Types.UNDEFINED);
         assertThat(x.get(getContext(), "3")).isEqualTo(Types.UNDEFINED);
     }
-    
+
     @Test
     public void testArrayLiteralWithFullyElidedItems() {
-        Object result = eval( "[,,,,]" );
+        Object result = eval("[,,,,]");
+    }
+
+    @Test
+    public void testChainedArrays() {
+        Object result = eval("a = [ [1,2,3], [4,5,6] ]",
+                "a[0][2]");
+        
+        assertThat( result ).isEqualTo(3L);
     }
 
 }

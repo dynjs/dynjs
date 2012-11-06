@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
@@ -38,8 +39,9 @@ public class ForVarDeclStatement extends AbstractForStatement {
 
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
-        List<VariableDeclaration> decls = super.getVariableDeclarations();
+        List<VariableDeclaration> decls = new ArrayList<>();
         decls.addAll(declList.getVariableDeclarations());
+        decls.addAll(super.getVariableDeclarations() );
         return decls;
     }
 

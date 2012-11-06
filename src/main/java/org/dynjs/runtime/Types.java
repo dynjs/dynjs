@@ -16,11 +16,23 @@ public class Types {
 
     public static void checkObjectCoercible(ExecutionContext context, Object o) {
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object"));
+            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object" ) );
         }
 
         if (o == Types.NULL) {
             throw new ThrowException(context, context.createTypeError("null cannot be coerced to an object"));
+        }
+
+        return;
+    }
+    
+    public static void checkObjectCoercible(ExecutionContext context, Object o, String debug) {
+        if (o == Types.UNDEFINED) {
+            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object: " + debug ));
+        }
+
+        if (o == Types.NULL) {
+            throw new ThrowException(context, context.createTypeError("null cannot be coerced to an object: " + debug ));
         }
 
         return;
