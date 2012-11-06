@@ -14,11 +14,11 @@ public class ParseFloat extends AbstractNonConstructorFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String text = Types.toString(context, args[0]);
-        
-        if ( text.equals( "" ) ) {
+
+        if (text.equals("")) {
             return Double.NaN;
         }
-        
+
         int len = text.length();
         int firstNonWhitespace = 0;
 
@@ -31,15 +31,14 @@ public class ParseFloat extends AbstractNonConstructorFunction {
                 break;
             }
         }
-        
-        if ( text.substring( firstNonWhitespace ).equals( "Infinity" ) || text.substring( firstNonWhitespace ).equals( "+Infinity" ) ) {
+
+        if (text.substring(firstNonWhitespace).startsWith("Infinity") || text.substring(firstNonWhitespace).startsWith("+Infinity")) {
             return Double.POSITIVE_INFINITY;
         }
-        
-        if ( text.substring( firstNonWhitespace ).equals( "-Infinity" ) ) {
+
+        if (text.substring(firstNonWhitespace).startsWith("-Infinity")) {
             return Double.NEGATIVE_INFINITY;
         }
-        
 
         int digitSearchStart = firstNonWhitespace;
         int lastDigit = firstNonWhitespace;
@@ -48,12 +47,19 @@ public class ParseFloat extends AbstractNonConstructorFunction {
             ++digitSearchStart;
         }
 
+        boolean dotSeen = false;
+
         for (int i = digitSearchStart; i < len; ++i) {
             char c = text.charAt(i);
-            if (Types.isDigitOrDot(c)) {
+            if (c >= '0' && c <= '9') {
                 lastDigit = i;
             } else {
-                break;
+                if (!dotSeen && c == '.') {
+                    lastDigit = i;
+                    dotSeen = true;
+                } else {
+                    break;
+                }
             }
         }
 

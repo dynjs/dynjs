@@ -148,10 +148,6 @@ public class Types {
         return newStr.toString().trim();
     }
     
-    public static boolean isDigitOrDot(char c) {
-        return ( c >= '0' && c <= '9' ) || ( c == '.' );
-    }
-
     public static boolean isWhitespace(char c) {
         switch (c) {
         case '\u0009':
