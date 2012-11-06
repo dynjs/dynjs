@@ -42,15 +42,16 @@ public class Eval extends AbstractNonConstructorFunction {
             }
         }
         Object code = args[0];
-        if (code != Types.UNDEFINED) {
+        if (code instanceof String) {
             try {
                 Object result = context.getGlobalObject().getRuntime().evaluate(context.getParent(), code.toString(), context.getParent().isStrict() && direct, direct );
                 return result;
             } catch (SyntaxError e) {
                 throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
             }
+        } else {
+            return code;
         }
-        return Types.UNDEFINED;
     }
 
 }
