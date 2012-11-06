@@ -14,9 +14,71 @@ public class ParseFloat extends AbstractNonConstructorFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String text = Types.toString(context, args[0]);
-        text = text.replaceAll("\\p{javaSpaceChar}", " ");
+        
+        if ( text.equals( "" ) ) {
+            return Double.NaN;
+        }
+        
+        int len = text.length();
+        int firstNonWhitespace = 0;
+
+        for (int i = 0; i < len; ++i) {
+            char c = text.charAt(i);
+            if (Types.isWhitespace(c)) {
+                // nothing
+            } else {
+                firstNonWhitespace = i;
+                break;
+            }
+        }
+        
+        if ( text.substring( firstNonWhitespace ).equals( "Infinity" ) || text.substring( firstNonWhitespace ).equals( "+Infinity" ) ) {
+            return Double.POSITIVE_INFINITY;
+        }
+        
+        if ( text.substring( firstNonWhitespace ).equals( "-Infinity" ) ) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        
+
+        int digitSearchStart = firstNonWhitespace;
+        int lastDigit = firstNonWhitespace;
+
+        if ((text.charAt(firstNonWhitespace) == '-') || (text.charAt(firstNonWhitespace) == '+')) {
+            ++digitSearchStart;
+        }
+
+        for (int i = digitSearchStart; i < len; ++i) {
+            char c = text.charAt(i);
+            if (Types.isDigitOrDot(c)) {
+                lastDigit = i;
+            } else {
+                break;
+            }
+        }
+
+        if (text.length() > (lastDigit + 1)) {
+            digitSearchStart = lastDigit + 1;
+            if (text.charAt(digitSearchStart) == 'e' || text.charAt(digitSearchStart) == 'E') {
+                ++digitSearchStart;
+                if ((text.charAt(digitSearchStart) == '-') || (text.charAt(digitSearchStart) == '+')) {
+                    ++digitSearchStart;
+                }
+                for (int i = digitSearchStart; i < len; ++i) {
+                    char c = text.charAt(i);
+                    if (c >= '0' && c <= '9') {
+                        lastDigit = i;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        text = text.substring(firstNonWhitespace, lastDigit + 1);
+
         try {
-            return Double.parseDouble(text.trim());
+            return Double.parseDouble(text);
         } catch (NumberFormatException e) {
             return Double.NaN;
         }
