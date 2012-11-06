@@ -14,7 +14,7 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     
     @Test
     public void parsesIntWithUnicodes() {
-        check("var result = parseInt('\u00A01')", 1);
+        check("var result = parseInt('\u00A01')", 1L);
     }
     
     @Test
@@ -31,17 +31,17 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     
     @Test
     public void parseIntForcesHex() {
-        check("var result = parseInt('0x1', 0)", 1);
+        check("var result = parseInt('0x1', 0)", 1L);
     }
     
     @Test
     public void parseIntWithBase2() {
-        check("var result = parseInt('0123456789', 2)", 1);
+        check("var result = parseInt('0123456789', 2)", 1L);
     }
     
     @Test
     public void parseIntWithBase6() {
-        check("var result = parseInt('01234567890', 6)", 1865);
+        check("var result = parseInt('01234567890', 6)", 1865L);
     }
     
     @Test
@@ -76,12 +76,12 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     
     @Test
     public void parseIntWorksWithBuiltinNumber() {
-        check("var result = parseInt(new Number(-1))", -1);
+        check("var result = parseInt(new Number(-1))", -1L);
     }
     
     @Test
     public void parseIntWorksWithBuiltinString() {
-        check("var result = parseInt(new String('-1'))", -1);
+        check("var result = parseInt(new String('-1'))", -1L);
     }
     
     @Test
@@ -97,7 +97,7 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     @Test
     public void parsesInts() {
         // http://es5.github.com/#x15.1.2.2
-        check("var result = parseInt('32');", 32);
+        check("var result = parseInt('32');", 32L);
     }
     
     @Test( expected = ThrowException.class )
@@ -125,25 +125,25 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     @Test
     public void parseIntHandlesNegativeValues() {
         // http://es5.github.com/#x15.1.2.2
-        check("var result = parseInt('-32');", -32);
+        check("var result = parseInt('-32');", -32L);
     }
 
     @Test
     public void parseIntHandlesLeadingWhiteSpace() {
         // http://es5.github.com/#x15.1.2.2
-        check("var result = parseInt(' 32');", 32);
+        check("var result = parseInt(' 32');", 32L);
     }
 
     @Test
     public void parseIntHandlesTrailingWhiteSpace() {
         // http://es5.github.com/#x15.1.2.2
-        check("var result = parseInt('32 ');", 32);
+        check("var result = parseInt('32 ');", 32L);
     }
 
     @Test
     public void parseIntHandlesHexValues() {
         // http://es5.github.com/#x15.1.2.2
-        check("var result = parseInt('0x32', 16);", 50);
+        check("var result = parseInt('0x32', 16);", 50L);
     }
 
     @Test
@@ -161,22 +161,22 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     @Test
     public void parseIntHandlesRadixOfZero() {
         // http://es5.github.com/#x15.1.2.2
-        check("var result = parseInt('32', 0);", 32);
+        check("var result = parseInt('32', 0);", 32L);
     }
 
     @Test
     public void parseIntIgnoresMoreThanTwoParameters() {
-        check("var result = parseInt('123', 10, 20);", 123);
+        check("var result = parseInt('123', 10, 20);", 123L);
     }
 
     @Test
     public void parseIntReturnsTheFloorOfAFloat() {
-        check("var result = parseInt('12.6');", 12);
+        check("var result = parseInt('12.6');", 12L);
     }
     
     @Test
     public void parseIntWithInfiniteRadix() {
-        check("var result = parseInt('11', Infinity)", 11);
+        check("var result = parseInt('11', Infinity)", 11L);
     }
     
     @Test
@@ -186,7 +186,7 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     
     @Test
     public void parseIntWithInteger() {
-        check("var result = parseInt(-1)", -1);
+        check("var result = parseInt(-1)", -1L);
     }
     
     @Test

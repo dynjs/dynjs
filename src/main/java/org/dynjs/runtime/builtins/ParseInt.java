@@ -28,86 +28,94 @@ public class ParseInt extends AbstractNonConstructorFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        String text = Types.toString(context, arguments[0]).trim();
-        Object radixArg = arguments[1];
+        String inputString = Types.toString(context, arguments[0]);
 
-        long radix = 10;
-        if (radixArg != Types.UNDEFINED) {
-            radix = Types.toInt32(context, radixArg);
-            if (radix == 0) {
-                radix = extractRadix(text);
-            }
-        } else {
-            radix = extractRadix(text);
-        }
-        text = cleanText(text, radix);
-        return parseInt(text, radix);
-    }
+        int len = inputString.length();
+        int firstNonWhitespace = -1;
 
-    static String cleanText(String text, long radix) {
-        if (radix == 16) {
-            if (text.startsWith("0x") || text.startsWith("0X")) {
-                return text.substring(2);
-            }
-        }
-        // Java considers Unicode non-breaking space
-        // to be a non-whitespace character.
-        // Silly Java
-        text = text.replaceAll("\\p{javaSpaceChar}", "").trim();
-        /**
-         * If S contains any character that is not a radix-R digit,
-         * then let Z be the substring of S consisting of all characters before
-         * the first such character; otherwise, let Z be S
-         */
-        StringBuffer cleanText = new StringBuffer();
-        int numChars = text.length();
-        for ( int i = 0 ; i < numChars ; ++i  ) {
-            if ( isRadixDigit(text.charAt(i), radix) ) {
-                cleanText.append( text.charAt(i) );
+        for (int i = 0; i < len; ++i) {
+            char c = inputString.charAt(i);
+            if (Types.isWhitespace(c)) {
+                // nothing
             } else {
+                firstNonWhitespace = i;
                 break;
             }
         }
-            
-        return cleanText.toString();
+
+        String s = null;
+        int sign = 1;
+
+        if (firstNonWhitespace < 0) {
+            s = "";
+        } else {
+            s = inputString.substring(firstNonWhitespace);
+            char c = s.charAt(0);
+            if (c == '-') {
+                sign = -1;
+            }
+            if (c == '-' || c == '+') {
+                s = s.substring(1);
+            }
+        }
+
+        long r = Types.toInt32(context, arguments[1]);
+
+        boolean stripPrefix = true;
+
+        if (r != 0) {
+            if (r < 2 || r > 36) {
+                return Double.NaN;
+            }
+            if (r != 16) {
+                stripPrefix = false;
+            }
+        } else {
+            r = 10;
+        }
+
+        if (stripPrefix) {
+            if (s.startsWith("0X") || s.startsWith("0x")) {
+                s = s.substring(2);
+                r = 16;
+            }
+        }
+
+        len = s.length();
+        int firstInvalidDigit = -1;
+
+        for (int i = 0; i < len; ++i) {
+            char c = s.charAt(i);
+            if (!isRadixDigit(c, r)) {
+                firstInvalidDigit = i;
+                break;
+            }
+        }
+
+        String z = null;
+        if (firstInvalidDigit < 0) {
+            z = s;
+        } else {
+            z = s.substring(0, firstInvalidDigit);
+        }
+
+        if (z.equals("")) {
+            return Double.NaN;
+        }
+
+        return sign * Long.parseLong(z, (int) r);
     }
 
     static boolean isRadixDigit(char c, long radix) {
-        if (c == '-' || c == '.') {
-            return true;
-        }
-
         try {
             int i = Integer.parseInt("" + c, (int) radix);
-            if ( i < radix ) {
+            if (i < radix) {
                 return true;
             }
         } catch (NumberFormatException e) {
             return false;
         }
         return false;
-    }
-
-    static int extractRadix(String text) {
-        int radix = 10;
-        if (text.startsWith("0x") || text.startsWith( "0X" ) ) {
-            radix = 16;
-        }
-        return radix;
-    }
-
-    static Object parseInt(String text, long radix) {
-        int dotLoc = text.indexOf('.');
-        if (dotLoc >= 0) {
-            text = text.substring(0, dotLoc);
-        }
-
-        try {
-            return Integer.parseInt(text, (int) radix);
-        } catch (NumberFormatException e) {
-            // ignore
-        }
-        return Double.NaN;
     }
 
 }
