@@ -150,6 +150,8 @@ public class Types {
     
     public static boolean isWhitespace(char c) {
         switch (c) {
+        case '\n': 
+        case '\r': 
         case '\u0009':
         case '\u000B':
         case '\u000C':

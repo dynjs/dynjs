@@ -81,7 +81,9 @@ public class ParseFloat extends AbstractNonConstructorFunction {
             }
         }
 
+        //System.err.println( "in[" + text + "]" );
         text = text.substring(firstNonWhitespace, lastDigit + 1);
+        //System.err.println( "out[" + text + "]" );
 
         try {
             return Double.parseDouble(text);
