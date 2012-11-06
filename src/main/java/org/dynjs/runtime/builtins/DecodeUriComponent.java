@@ -21,17 +21,17 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class DecodeUri extends AbstractNonConstructorFunction {
+public class DecodeUriComponent extends AbstractNonConstructorFunction {
 
-    public DecodeUri(GlobalObject globalObject) {
-        super(globalObject, "uri");
+    public DecodeUriComponent(GlobalObject globalObject) {
+        super(globalObject, "uriComonent");
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String uri = Types.toString( context, args[0] );
+        String uriComponent = Types.toString( context, args[0] );
         
-        String result = URLCodec.decode(context, uri, URLCodec.URI_RESERVED_SET + "#" );
+        String result = URLCodec.decode(context, uriComponent, "" );
         
         return result;
     }

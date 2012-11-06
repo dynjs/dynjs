@@ -21,7 +21,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
 public class ParseInt extends AbstractNonConstructorFunction {
-
+    
     public ParseInt(GlobalObject globalObject) {
         super(globalObject, "text", "radix");
     }
@@ -58,6 +58,7 @@ public class ParseInt extends AbstractNonConstructorFunction {
                 s = s.substring(1);
             }
         }
+        
 
         long r = Types.toInt32(context, arguments[1]);
 
@@ -102,20 +103,16 @@ public class ParseInt extends AbstractNonConstructorFunction {
         if (z.equals("")) {
             return Double.NaN;
         }
-
+        
         return sign * Long.parseLong(z, (int) r);
     }
 
     static boolean isRadixDigit(char c, long radix) {
-        try {
-            int i = Integer.parseInt("" + c, (int) radix);
-            if (i < radix) {
-                return true;
-            }
-        } catch (NumberFormatException e) {
-            return false;
+        if ( radix <= 10 ) {
+            return ( c >= '0' && c <= ('0' + ( radix -1 )) );
+        } else {
+            return ( ( c >= '0' ) && ( c <= '9' ) || ( ( c >= 'a' ) && ( c <= ( 'a' + radix - 11) ) ) ) || ( ( c >= 'A' ) && ( c <= ( 'A' + radix - 11) ) );
         }
-        return false;
     }
 
 }

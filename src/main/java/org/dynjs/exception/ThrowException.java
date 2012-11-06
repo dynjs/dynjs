@@ -15,6 +15,7 @@ public class ThrowException extends DynJSException {
 
     public ThrowException(final ExecutionContext context, Throwable value) {
         super(value);
+        this.value = value;
         setUpStackElements(context);
     }
     
