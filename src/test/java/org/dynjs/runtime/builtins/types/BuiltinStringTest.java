@@ -6,6 +6,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinStringTest extends AbstractDynJSTestSupport {
@@ -121,6 +122,11 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testReplaceEmptyRegExp() {
+        assertThat(eval("new String('asdf').replace(new RegExp('', 'g'), '1')")).isEqualTo("1a1s1d1f1");
+    }
+    
+    @Test
     public void testReplaceDollarDollar() {
         Object o = eval("new String('foo').replace('foo', '$$')");
         assertThat(o).isEqualTo("$");
@@ -148,6 +154,13 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     public void testReplaceDollarN() {
         Object o = eval("new String('foobar').replace(/(fo+)(b.+)/, \"$2$1\")");
         assertThat(o).isEqualTo("barfoo");        
+    }
+
+    @Test
+    @Ignore
+    public void testReplaceDollarNN() {
+        Object o = eval("new String('supercalifragilisticexpialidocious').replace(/(s)(u)(p)(e)(r)(c)(a)(l)(i)(f)(r)(a)/, \"$11\")");
+        assertThat(o).isEqualTo("rgilisticexpialidocious");        
     }
 
     @Test

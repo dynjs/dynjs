@@ -111,6 +111,10 @@ public class Replace extends AbstractNativeFunction {
                         DynArray match = (DynArray) matches.get(context, "" + i);
                         String toReplace = Matcher.quoteReplacement(Types.toString(context, match.get(context, "0")));
                         String quotedReplacement = Matcher.quoteReplacement(buildReplacementString(context, newString, match));
+                        if (toReplace.equals("")) {
+                            string = string.replaceAll(toReplace, quotedReplacement);
+                            break;
+                        }
                         string = string.replaceFirst(toReplace, quotedReplacement);
                     }
                 }
@@ -157,7 +161,7 @@ public class Replace extends AbstractNativeFunction {
                     fromIndex++;
                     break;
                 case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
-                    final String backreference = Character.toString(replaceWith.charAt(fromIndex+1));
+                    String backreference = Character.toString(replaceWith.charAt(fromIndex+1));
                     if (matches.get(context, backreference) != Types.UNDEFINED) {
                         replacement.append(Types.toString(context, matches.get(context, backreference)));
                         fromIndex++;
