@@ -90,7 +90,7 @@ public class ParseInt extends AbstractNonConstructorFunction {
 
     static int extractRadix(String text) {
         int radix = 10;
-        if (text.startsWith("0x")) {
+        if (text.startsWith("0x") || text.startsWith( "0X" ) ) {
             radix = 16;
         }
         return radix;
