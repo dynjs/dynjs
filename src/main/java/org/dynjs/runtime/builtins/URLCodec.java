@@ -178,6 +178,7 @@ public class URLCodec {
             }
 
             r.append(s);
+            ++k;
         }
 
     }
