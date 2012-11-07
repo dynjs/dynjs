@@ -16,7 +16,7 @@ public class Types {
 
     public static void checkObjectCoercible(ExecutionContext context, Object o) {
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object" ) );
+            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object"));
         }
 
         if (o == Types.NULL) {
@@ -25,14 +25,14 @@ public class Types {
 
         return;
     }
-    
+
     public static void checkObjectCoercible(ExecutionContext context, Object o, String debug) {
         if (o == Types.UNDEFINED) {
-            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object: " + debug ));
+            throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object: " + debug));
         }
 
         if (o == Types.NULL) {
-            throw new ThrowException(context, context.createTypeError("null cannot be coerced to an object: " + debug ));
+            throw new ThrowException(context, context.createTypeError("null cannot be coerced to an object: " + debug));
         }
 
         return;
@@ -147,11 +147,11 @@ public class Types {
 
         return newStr.toString().trim();
     }
-    
+
     public static boolean isWhitespace(char c) {
         switch (c) {
-        case '\n': 
-        case '\r': 
+        case '\n':
+        case '\r':
         case '\u0009':
         case '\u000B':
         case '\u000C':
@@ -402,7 +402,7 @@ public class Types {
                         String digits = matcher.group(1);
                         if (digits.startsWith("-")) {
                             newResult.append(digits.substring(1));
-                            newResult.insert( 0, "-");
+                            newResult.insert(0, "-");
                         } else {
                             newResult.append(digits);
                         }
@@ -458,8 +458,7 @@ public class Types {
             Number nx = toNumber(context, px);
             Number ny = toNumber(context, py);
 
-            if (nx.doubleValue() == Double.NaN
-                    || ny.doubleValue() == Double.NaN) {
+            if (Double.isNaN(nx.doubleValue()) || Double.isNaN(ny.doubleValue())) {
                 return Types.UNDEFINED;
             }
 
