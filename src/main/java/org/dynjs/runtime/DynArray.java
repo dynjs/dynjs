@@ -36,7 +36,6 @@ public class DynArray extends DynObject {
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 15.4.5.1
-
         PropertyDescriptor oldLenDesc = (PropertyDescriptor) getOwnProperty(context, "length");
         long oldLen = (long) oldLenDesc.getValue();
 

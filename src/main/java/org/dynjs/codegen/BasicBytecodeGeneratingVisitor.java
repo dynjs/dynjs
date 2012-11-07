@@ -326,8 +326,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
 
         int index = 0;
 
+        boolean someNonNull = false;
+
         for (Expression each : expr.getExprs()) {
             if (each != null) {
+                someNonNull = true;
                 dup();
                 // array array
                 aload(Arities.EXECUTION_CONTEXT);
@@ -351,7 +354,24 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
             }
             ++index;
         }
+
         // array
+        dup();
+        // array array
+        aload(Arities.EXECUTION_CONTEXT);
+        // array array context
+        ldc("length");
+        // array array context name
+        ldc((long) expr.getExprs().size());
+        // array array context name size
+        invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
+        // array array context name size
+        iconst_0();
+        i2b();
+        // array array context name size bool
+        invokeinterface(p(JSObject.class), "put", sig(void.class, ExecutionContext.class, String.class, Object.class, boolean.class));
+        // array
+
     }
 
     @Override
@@ -1635,10 +1655,10 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // context object identifier-maybe-reference
         swap();
         // context identifier-maybe-reference obj
-        append(jsCheckObjectCoercible( expr.getLhs().toString() ));
+        append(jsCheckObjectCoercible(expr.getLhs().toString()));
         // context identifier-maybe-reference obj
         swap();
-        ldc( "-----------------" );
+        ldc("-----------------");
         pop();
         // context object identifier-maybe-reference
         append(jsGetValue());

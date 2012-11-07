@@ -28,14 +28,17 @@ public class ArrayLiteralExpression extends AbstractExpression {
     public ArrayLiteralExpression(final Tree tree, final List<Expression> exprs) {
         super(tree);
         this.exprs = exprs;
+        if (this.exprs.get(this.exprs.size() - 1) == null) {
+            this.exprs.remove(this.exprs.size() - 1);
+        }
     }
-    
+
     public List<Expression> getExprs() {
         return this.exprs;
     }
 
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
 
     public String toString() {
