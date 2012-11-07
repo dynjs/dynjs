@@ -53,7 +53,7 @@ public class URLCodec {
 
                     v = ((c - 0xD800) * 0x400 + (kChar - 0xDC00) + 0x10000);
                 }
-                
+
                 ByteBuffer buf = ByteBuffer.allocate(6);
                 buf.putLong(v);
 
@@ -68,10 +68,10 @@ public class URLCodec {
                 }
 
                 for (int j = 0; j < l + 1; ++j) {
-                    r.append( "%" ).append( Integer.toHexString( octets[j] ) );
+                    r.append("%").append(Integer.toHexString(octets[j]));
                 }
             }
-            
+
             ++k;
         }
     }
@@ -96,10 +96,10 @@ public class URLCodec {
             } else {
                 int start = k;
                 if ((k + 2) >= len) {
-                    throw new ThrowException(context, context.createUriError("invalid escape"));
+                    throw new ThrowException(context, context.createUriError("invalid escape (not enough chars follow %)"));
                 }
                 if (!isHexDigit(str.charAt(k + 1)) || !isHexDigit(str.charAt(k + 2))) {
-                    throw new ThrowException(context, context.createUriError("invalid escape"));
+                    throw new ThrowException(context, context.createUriError("invalid escape (non-hex follow %)"));
                 }
                 int b = Integer.parseInt(str.substring(k + 1, k + 3), 16);
                 k = k + 2;
@@ -120,28 +120,31 @@ public class URLCodec {
                     }
 
                     if (n == 1 || n > 4) {
-                        throw new ThrowException(context, context.createUriError("invalid escape"));
+                        throw new ThrowException(context, context.createUriError("invalid escape (too many hex sequences)"));
                     }
 
                     int[] octets = new int[n];
                     octets[0] = b;
 
                     if ((k + (3 * (n - 1))) >= len) {
-                        throw new ThrowException(context, context.createUriError("invalid escape"));
+                        throw new ThrowException(context, context.createUriError("invalid escape (too many hex sequences)"));
                     }
 
                     for (int j = 1; j < n; ++j) {
                         ++k;
                         if (str.charAt(k) != '%') {
-                            throw new ThrowException(context, context.createUriError("invalid escape"));
+                            throw new ThrowException(context, context.createUriError("invalid escape (multiple hex sequences expected)"));
                         }
                         if (!isHexDigit(str.charAt(k + 1)) || !isHexDigit(str.charAt(k + 2))) {
-                            throw new ThrowException(context, context.createUriError("invalid escape"));
+                            throw new ThrowException(context, context.createUriError("invalid escape (following sequences do not contain hex sequences)"));
                         }
                         b = Integer.parseInt(str.substring(k + 1, k + 3), 16);
 
-                        if (((b & 0x80) != 0) || ((b ^ 0x40) != 1)) {
-                            throw new ThrowException(context, context.createUriError("invalid escape"));
+                        if ((b & 0x80) == 0) {
+                            throw new ThrowException(context, context.createUriError("invalid escape (first significant bit must be 1)"));
+                        }
+                        if ((b & 0x40) != 0) {
+                            throw new ThrowException(context, context.createUriError("invalid escape (second significant bit must be 0)"));
                         }
                         k = k + 2;
                         octets[j] = b;
@@ -149,6 +152,7 @@ public class URLCodec {
 
                     int v = 0;
 
+                    // FIXME: strip high-order bits.
                     for (int i = 0; i < octets.length; ++i) {
                         if (i == 0) {
                             v = octets[i];
