@@ -9,6 +9,7 @@ import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.builtins.DecodeUri;
 import org.dynjs.runtime.builtins.DecodeUriComponent;
 import org.dynjs.runtime.builtins.EncodeUri;
+import org.dynjs.runtime.builtins.EncodeUriComponent;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.Include;
 import org.dynjs.runtime.builtins.IsFinite;
@@ -92,6 +93,7 @@ public class GlobalObject extends DynObject {
 
         defineGlobalProperty("encodeURI", new EncodeUri(this));
         defineGlobalProperty("decodeURI", new DecodeUri(this));
+        defineGlobalProperty("encodeURIComponent", new EncodeUriComponent(this));
         defineGlobalProperty("decodeURIComponent", new DecodeUriComponent(this));
 
         defineGlobalProperty("require", new Require(this));

@@ -21,17 +21,17 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class EncodeUri extends AbstractNonConstructorFunction {
+public class EncodeUriComponent extends AbstractNonConstructorFunction {
 
-    public EncodeUri(GlobalObject globalObject) {
-        super(globalObject, "uri");
+    public EncodeUriComponent(GlobalObject globalObject) {
+        super(globalObject, "uriComponent");
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String uri = Types.toString( context, args[0] );
+        String uriComponent = Types.toString( context, args[0] );
         
-        String result = URLCodec.encode(context, uri, URLCodec.URI_RESERVED_SET + URLCodec.URI_UNESCAPED_SET + "#");
+        String result = URLCodec.encode(context, uriComponent, URLCodec.URI_UNESCAPED_SET );
         
         return result;
     }
