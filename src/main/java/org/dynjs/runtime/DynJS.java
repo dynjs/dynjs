@@ -144,7 +144,7 @@ public class DynJS {
     public JSProgram compile(ExecutionContext execContext, String program, String filename, boolean forceStrict) {
         JSCompiler compiler = execContext.getCompiler();
         Program programTree = parseSourceCode(execContext, program, filename, forceStrict );
-        if (programTree == null) {
+        if (programTree == null || programTree.isEmpty() ) {
             return new NullProgram(filename);
         }
         JSProgram programObj = compiler.compileProgram(execContext, programTree, forceStrict);
