@@ -237,6 +237,18 @@ import java.util.HashSet;
 {
 private Token last;
 
+private List<String> errors = new ArrayList<String>();
+public void displayRecognitionError(String[] tokenNames, RecognitionException e) 
+{
+    String hdr = getErrorHeader(e);
+    String msg = getErrorMessage(e, tokenNames);
+    errors.add(hdr + " " + msg);
+}
+
+public List<String> getErrors() {
+  return this.errors;
+}
+
 private final boolean areRegularExpressionsEnabled()
 {
 	if (last == null)
@@ -760,6 +772,10 @@ as first character in ranges other than ASCII and consumes further characters be
 IdentifierPart rule above.
 */
 Identifier
+@after {
+  //System.err.println( $text );
+  
+}
 	: IdentifierNameASCIIStart
 	| { consumeIdentifierUnicodeStart(); }
 	;

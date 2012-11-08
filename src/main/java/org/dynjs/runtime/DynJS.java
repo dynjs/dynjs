@@ -192,7 +192,11 @@ public class DynJS {
         JavascriptParser parser = new JavascriptParser(context, stream);
         parser.getWatcher().setStrict( forceStrict );
         JavascriptParser.program_return program = parser.program();
-        List<String> errors = parser.getErrors();
+        List<String> errors = lexer.getErrors();
+        if (!errors.isEmpty()) {
+            throw new ThrowException( context, context.createSyntaxError( errors.toString() ) );
+        }
+        errors = parser.getErrors();
         if (!errors.isEmpty()) {
             throw new ThrowException( context, context.createSyntaxError( errors.toString() ) );
         }
