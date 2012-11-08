@@ -105,14 +105,16 @@ public class URLCodec {
                 k = k + 2;
 
                 if ((b & 0x80) == 0) {
-                    if (!reservedSet.contains("" + b)) {
-                        s = "" + b;
+                    String charStr = new String(new char[] { (char) b });
+
+                    if (!reservedSet.contains(charStr)) {
+                        s = charStr;
                     } else {
                         s = str.substring(start, k + 1);
                     }
                 } else {
-                    int n = 0;
-                    for (int nPos = 0; nPos < 8; ++nPos) {
+                    int n = 1;
+                    for (int nPos = 1; nPos < 8; ++nPos) {
                         if (((b << nPos) & 0x80) == 0) {
                             n = nPos;
                             break;
@@ -151,16 +153,20 @@ public class URLCodec {
                     }
 
                     int v = 0;
-
+                    
                     switch (octets.length) {
                     case 1:
                         v = octets[0] & 0x7F;
+                        break;
                     case 2:
                         v = octets[0] & 0x3F;
+                        break;
                     case 3:
                         v = octets[0] & 0x1F;
+                        break;
                     case 4:
                         v = octets[0] & 0x0F;
+                        break;
                     }
 
                     for (int i = 1; i < octets.length; ++i) {
@@ -171,10 +177,11 @@ public class URLCodec {
                     if (!Character.isValidCodePoint(v)) {
                         throw new ThrowException(context, context.createUriError("invalid code-point: " + v));
                     }
-                    
+
                     if (v < 0x10000) {
-                        if (!reservedSet.contains("" + v)) {
-                            s = new String( new char[] { (char) v } );
+                        String charStr = new String(new char[] { (char) v });
+                        if (!reservedSet.contains(charStr)) {
+                            s = charStr;
                         } else {
                             s = str.substring(start, k + 1);
                         }
