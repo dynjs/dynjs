@@ -50,7 +50,9 @@ public class IfStatement extends AbstractStatement {
 
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
-        decls.addAll(this.vthen.getVariableDeclarations());
+        if (this.vthen != null) {
+            decls.addAll(this.vthen.getVariableDeclarations());
+        }
         if (this.velse != null) {
             decls.addAll(this.velse.getVariableDeclarations());
         }

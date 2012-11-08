@@ -33,6 +33,7 @@ import org.dynjs.parser.ast.ContinueStatement;
 import org.dynjs.parser.ast.DefaultCaseClause;
 import org.dynjs.parser.ast.DeleteOpExpression;
 import org.dynjs.parser.ast.DoWhileStatement;
+import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionList;
@@ -91,6 +92,10 @@ public class ASTFactory {
 
     public Program program(boolean strict, final List<Statement> blockContent) {
         return new Program(strict, blockContent);
+    }
+    
+    public EmptyStatement emptyStatement(final Tree tree) {
+        return new EmptyStatement(tree);
     }
 
     public BlockStatement block(final Tree tree, final List<Statement> blockContent) {

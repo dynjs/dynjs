@@ -1462,7 +1462,11 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // ----------------------------------------
         // THEN
 
-        invokeCompiledStatementBlock("Then", statement.getThenBlock());
+        if (statement.getThenBlock() != null) {
+            invokeCompiledStatementBlock("Then", statement.getThenBlock());
+        } else {
+            normalCompletion();
+        }
         // completion
         go_to(end);
 

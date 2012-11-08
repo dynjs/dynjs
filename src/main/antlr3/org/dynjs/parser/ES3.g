@@ -1374,7 +1374,7 @@ variableDeclarationNoIn
 // $<Empty statement (12.3)
 
 emptyStatement
-	: SEMIC! { getWatcher().emptyStatement(); }
+	: SEMIC^ { getWatcher().emptyStatement(); }
 	;
 
 // $>

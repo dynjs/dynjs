@@ -114,6 +114,8 @@ statement returns [Statement value]
         { $value = $throwStatement.value; }
 	| tryStatement
         { $value = $tryStatement.value; }
+    | emptyStatement
+        { $value = $emptyStatement.value; }
 	;
 
 block returns [Statement value]
@@ -121,7 +123,12 @@ block returns [Statement value]
 	: ^( BLOCK (st=statement {blockContent.add($st.value);})* )
 	{  $value = astFactory.block($BLOCK, blockContent);  }
 	;
-
+	
+emptyStatement returns [Statement value]
+	: SEMIC
+	{  $value = astFactory.emptyStatement($SEMIC); }
+	;
+	
 printStatement returns [Statement value]
 	: ^( SK_PRINT expression )
 	{  $value = astFactory.printStatement($SK_PRINT, $expression.value);  }
