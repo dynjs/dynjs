@@ -1,6 +1,7 @@
 package org.dynjs.runtime.builtins;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
@@ -31,7 +32,7 @@ public class URLCodec {
                 r.append(c);
             } else {
 
-                if (c >= 0xDC00 && c <= 0xDFFF) {
+                if ((!(c < 0xDC00)) && (!(c > 0xDFFF))) {
                     throw new ThrowException(context, context.createUriError("invalid escape"));
                 }
 
@@ -54,21 +55,23 @@ public class URLCodec {
                     v = ((c - 0xD800) * 0x400 + (kChar - 0xDC00) + 0x10000);
                 }
 
-                ByteBuffer buf = ByteBuffer.allocate(6);
-                buf.putLong(v);
-
-                byte[] octets = buf.array();
-
-                int l = 0;
-
-                for (int i = 0; i < octets.length; ++i) {
-                    if (octets[i] != 0) {
-                        l = i;
-                    }
-                }
-
-                for (int j = 0; j < l + 1; ++j) {
-                    r.append("%").append(Integer.toHexString(octets[j]));
+                if (v < 0x80) {
+                    r.append(String.format("%%%02X", v));
+                } else if (v < 0x800) {
+                    int o1 = (int) ((v >> 6) | 0xC0);
+                    int o2 = (int) ((v & 0x3F) | 0x80);
+                    r.append(String.format("%%%02X%%%02X", o1, o2));
+                } else if (v <= 0xFFFF) {
+                    int o1 = (int) (((v >> 12) & 0x1F) | 0xE0);
+                    int o2 = (int) (((v >> 6) & 0x3F) | 0x80);
+                    int o3 = (int) ((v & 0x3F) | 0x80);
+                    r.append(String.format("%%%02X%%%02X%%%02X", o1, o2, o3));
+                } else if (v <= 0x10FFFF) {
+                    int o1 = (int) (((v >> 18) & 0x07) | 0xF0);
+                    int o2 = (int) (((v >> 12) & 0x3F) | 0x80);
+                    int o3 = (int) (((v >> 6) & 0x3F) | 0x80);
+                    int o4 = (int) ((v & 0x3F) | 0x80);
+                    r.append(String.format("%%%02X%%%02X%%%02X%%%02X", o1, o2, o3, o4));
                 }
             }
 
@@ -153,7 +156,7 @@ public class URLCodec {
                     }
 
                     int v = 0;
-                    
+
                     switch (octets.length) {
                     case 1:
                         v = octets[0] & 0x7F;

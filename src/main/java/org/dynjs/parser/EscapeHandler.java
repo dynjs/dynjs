@@ -5,6 +5,8 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class EscapeHandler {
 
+    private static final String VERTICAL_TAB = new String(new char[] { 11 });
+
     public EscapeHandler() {
 
     }
@@ -47,6 +49,10 @@ public class EscapeHandler {
                     out.append("\t");
                     cur = slashLoc + 2;
                     break;
+                case 'v':
+                    out.append(VERTICAL_TAB);
+                    cur = slashLoc + 2;
+                    break;
                 case 'x':
                     out.append(handleHexEscape(in.substring(slashLoc + 2, slashLoc + 4)));
                     cur = slashLoc + 4;
@@ -65,8 +71,8 @@ public class EscapeHandler {
                 case '7':
                 case '8':
                 case '9':
-                    if ( strict ) {
-                        throw new ThrowException(context, context.createSyntaxError( "octal not allowed in strict mode" ));
+                    if (strict) {
+                        throw new ThrowException(context, context.createSyntaxError("octal not allowed in strict mode"));
                     }
                 default:
                     cur = slashLoc + 1;
@@ -76,8 +82,8 @@ public class EscapeHandler {
                 break;
             }
         }
-        
-        out.append( in.substring( cur ) );
+
+        out.append(in.substring(cur));
 
         return out.toString();
     }

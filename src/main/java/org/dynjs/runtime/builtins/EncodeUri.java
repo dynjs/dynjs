@@ -31,7 +31,9 @@ public class EncodeUri extends AbstractNonConstructorFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         String uri = Types.toString( context, args[0] );
         
+        //System.err.println( "ENCODE: " + uri );
         String result = URLCodec.encode(context, uri, URLCodec.URI_RESERVED_SET + URLCodec.URI_UNESCAPED_SET + "#");
+        //System.err.println( "RESULT: " + result );
         
         return result;
     }
