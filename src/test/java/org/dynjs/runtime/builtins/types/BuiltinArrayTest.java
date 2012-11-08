@@ -434,7 +434,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     @Test
     public void testLastIndexOfWithInfinity() {
         Object result = eval("var obj = { 0: 0, length: Infinity };",
-                "return Array.prototype.lastIndexOf.call(obj, 0) === -1;");
+                "Array.prototype.lastIndexOf.call(obj, 0) === -1;");
 
         assertThat(result).isEqualTo(true);
     }

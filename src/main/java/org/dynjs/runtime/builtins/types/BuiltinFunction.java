@@ -86,7 +86,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         code.append("function(" + formalParams.toString() + "){\n");
         code.append(body);
         code.append("}");
-
+        
         try {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
@@ -108,6 +108,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
 
         CommonTokenStream lexerStream = new CommonTokenStream(lexer);
         JavascriptParser parser = new JavascriptParser(context, lexerStream);
+        parser.getWatcher().pushState();
 
         ES3Parser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();

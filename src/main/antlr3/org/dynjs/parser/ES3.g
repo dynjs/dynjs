@@ -326,6 +326,30 @@ public boolean isStrict() {
   return getWatcher().isStrict();
 }
 
+public void enterLabel(String label) {
+  getWatcher().enterLabel( label );
+}
+
+public void exitLabel() {
+  getWatcher().exitLabel();
+}
+
+public void enterIteration() {
+  getWatcher().enterIteration();
+}
+
+public void exitIteration() {
+  getWatcher().exitIteration();
+}
+
+public boolean isValidIteration(String label) {
+  return getWatcher().isValidIteration(label);
+}
+
+public boolean isValidReturn() {
+  return getWatcher().isValidReturn();
+}
+
 public boolean isValidIdentifier(String ident) {
   if ( ident == null ) {
     return true;
@@ -974,6 +998,12 @@ objectLiteral
 	;
 	
 propertyAssignment[ObjectLiteralWatcher watcher]
+@init {
+  getWatcher().startPropertyAssignment();
+}
+@after {
+  getWatcher().endPropertyAssignment(retval);
+}
     : 
       { input.LT(1).getText().equals( "get" ) }?=>propertyGet[watcher]
     | { input.LT(1).getText().equals( "set" ) }?=>propertySet[watcher]
@@ -1406,6 +1436,12 @@ ifStatement
 // $<Iteration statements (12.6)
 
 iterationStatement
+@init{
+  enterIteration();
+}
+@after{
+  exitIteration();
+}
 	: doStatement
 	| whileStatement
 	| forStatement
@@ -1521,6 +1557,7 @@ As an optimization we check the la first to decide whether there is an identier 
 */
 continueStatement
 	: CONTINUE^ { if (input.LA(1) == Identifier) promoteEOL(null); } Identifier? semic!
+      { isValidIteration( $Identifier == null ? null : $Identifier.getText() ) }?
 	;
 
 // $>
@@ -1534,6 +1571,7 @@ As an optimization we check the la first to decide whether there is an identier 
 */
 breakStatement
 	: BREAK^ { if (input.LA(1) == Identifier) promoteEOL(null); } Identifier? semic!
+	  { isValidIteration( $Identifier == null ? null : $Identifier.getText() ) }?
 	;
 
 // $>
@@ -1555,6 +1593,7 @@ return;
 */
 returnStatement
 	: RETURN^ { promoteEOL(null); } expression? semic!
+	{ isValidReturn() }?
 	;
 
 // $>
@@ -1572,7 +1611,11 @@ withStatement
 switchStatement
 @init
 {
-	int defaultClauseCount = 0;
+  int defaultClauseCount = 0;
+  enterIteration();
+}
+@after{
+  exitIteration();
 }
 	: SWITCH LPAREN expression RPAREN LBRACE ( { defaultClauseCount == 0 }?=> defaultClause { defaultClauseCount++; } | caseClause )* RBRACE
 	-> ^( SWITCH expression defaultClause? caseClause* )
@@ -1591,7 +1634,7 @@ defaultClause
 // $<Labelled statements (12.12)
 
 labelledStatement
-	: Identifier COLON statement
+	: Identifier { enterLabel( $Identifier.getText() ); } COLON statement { exitLabel(); }
 	-> ^( LABELLED[$COLON] Identifier statement )
 	;
 

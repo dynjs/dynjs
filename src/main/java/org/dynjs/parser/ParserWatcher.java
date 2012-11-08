@@ -11,6 +11,7 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.dynjs.parser.ES3Parser.functionDeclaration_return;
 import org.dynjs.parser.ES3Parser.functionExpression_return;
 import org.dynjs.parser.ES3Parser.program_return;
+import org.dynjs.parser.ES3Parser.propertyAssignment_return;
 import org.dynjs.parser.ES3Parser.sourceElement_return;
 import org.dynjs.runtime.ExecutionContext;
 
@@ -23,6 +24,30 @@ public class ParserWatcher extends CommonTreeAdaptor {
     public ParserWatcher(ExecutionContext context) {
         this.state.add(new WatcherState());
         this.context = context;
+    }
+    
+    public void enterIteration() {
+        getTopState().enterIteration();
+    }
+    
+    public void exitIteration() {
+        getTopState().exitIteration();
+    }
+    
+    public void enterLabel(String label) {
+        getTopState().enterLabel( label );
+    }
+    
+    public void exitLabel() {
+        getTopState().exitLabel();
+    }
+    
+    public boolean isValidIteration(String label) {
+        return getTopState().isValidIteration(label);
+    }
+    
+    public boolean isValidReturn() {
+        return this.state.size() > 2;
     }
 
     public boolean isValidIdentifier(String ident) {
@@ -131,6 +156,17 @@ public class ParserWatcher extends CommonTreeAdaptor {
         }
         popState();
     }
+    
+    public void startPropertyAssignment() {
+        pushState();
+    }
+    
+    public void endPropertyAssignment(propertyAssignment_return ret) {
+        if (isStrict()) {
+            ((JavascriptTree) ret.getTree()).setStrict(true);
+        }
+        popState();
+    }
 
     public void pushState() {
         this.state.add(new WatcherState(getTopState()));
@@ -164,6 +200,8 @@ public class ParserWatcher extends CommonTreeAdaptor {
 
         public boolean inDirectiveProlog = true;
         public boolean strict = false;
+        public List<String> labels = new ArrayList<>();
+        public int iterations = 0;
 
         WatcherState() {
 
@@ -171,6 +209,29 @@ public class ParserWatcher extends CommonTreeAdaptor {
 
         WatcherState(WatcherState parent) {
             this.strict = parent.strict;
+        }
+        
+        void enterLabel(String label) {
+            this.labels.add( label );
+        }
+        
+        void exitLabel() {
+            this.labels.remove( this.labels.size() - 1 );
+        }
+        
+        void enterIteration() {
+            ++iterations;
+        }
+        
+        void exitIteration() {
+            --iterations;
+        }
+        
+        boolean isValidIteration(String label) {
+            if ( label == null ) {
+                return (iterations > 0);
+            }
+            return labels.contains(label);
         }
 
     }
