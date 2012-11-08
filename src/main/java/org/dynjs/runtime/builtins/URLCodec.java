@@ -152,23 +152,29 @@ public class URLCodec {
 
                     int v = 0;
 
-                    // FIXME: strip high-order bits.
-                    for (int i = 0; i < octets.length; ++i) {
-                        if (i == 0) {
-                            v = octets[i];
-                        } else {
-                            v = v << 8;
-                            v = v & octets[i];
-                        }
+                    switch (octets.length) {
+                    case 1:
+                        v = octets[0] & 0x7F;
+                    case 2:
+                        v = octets[0] & 0x3F;
+                    case 3:
+                        v = octets[0] & 0x1F;
+                    case 4:
+                        v = octets[0] & 0x0F;
+                    }
+
+                    for (int i = 1; i < octets.length; ++i) {
+                        v = v << 6;
+                        v = v | (octets[i] & 0x3F);
                     }
 
                     if (!Character.isValidCodePoint(v)) {
                         throw new ThrowException(context, context.createUriError("invalid code-point: " + v));
                     }
-
+                    
                     if (v < 0x10000) {
                         if (!reservedSet.contains("" + v)) {
-                            s = "" + b;
+                            s = new String( new char[] { (char) v } );
                         } else {
                             s = str.substring(start, k + 1);
                         }
