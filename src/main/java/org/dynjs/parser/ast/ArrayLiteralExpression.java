@@ -49,7 +49,9 @@ public class ArrayLiteralExpression extends AbstractExpression {
             if (!first) {
                 buf.append(", ");
             }
-            buf.append(each.toString());
+            if (each != null) {
+                buf.append(each.toString());
+            }
         }
         buf.append("]");
         return buf.toString();
