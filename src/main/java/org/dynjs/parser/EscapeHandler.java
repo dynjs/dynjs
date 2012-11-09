@@ -64,7 +64,7 @@ public class EscapeHandler {
                 case '0':
                     if (in.length() > slashLoc + 2) {
                         char followChar = in.charAt(slashLoc + 2);
-                        if (!(followChar >= 0 && followChar <= 9)) {
+                        if (!(followChar >= '0' && followChar <= '9')) {
                             out.append(new String(new char[] { 0 }));
                             cur = slashLoc + 2;
                             break;

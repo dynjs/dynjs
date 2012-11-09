@@ -204,9 +204,10 @@ public class DynJS {
         if (tree == null) {
             return null;
         }
-        //System.err.println( ">>>" );
+        if ( lexer.nextToken().getType() != ES3Lexer.EOF ) {
+            throw new ThrowException( context, context.createSyntaxError( "unable to fully parse script" ) );
+        }
         //dump(tree);
-        //System.err.println( "<<<" );
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ES3Walker walker = new ES3Walker(treeNodeStream);

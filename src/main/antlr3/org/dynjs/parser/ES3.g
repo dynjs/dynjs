@@ -772,10 +772,6 @@ as first character in ranges other than ASCII and consumes further characters be
 IdentifierPart rule above.
 */
 Identifier
-@after {
-  //System.err.println( $text );
-  
-}
 	: IdentifierNameASCIIStart
 	| { consumeIdentifierUnicodeStart(); }
 	;
@@ -897,7 +893,7 @@ HexIntegerLiteral
 
 numericLiteral
 	: DecimalLiteral
-	| { ! isStrict() }? OctalIntegerLiteral
+	| { ! isStrict() }? OctalIntegerLiteral 
 	| HexIntegerLiteral
 	;
 
@@ -1464,7 +1460,8 @@ iterationStatement
 	;
 	
 doStatement
-	: DO statement semic? WHILE LPAREN expression RPAREN semic
+	//: DO statement semic? WHILE LPAREN expression RPAREN semic
+	: DO statement WHILE LPAREN expression RPAREN semic
 	-> ^( DO statement expression )
 	;
 	
