@@ -43,8 +43,8 @@ public class Replace extends AbstractNativeFunction {
                     } else {
                         matches.put(context, "length", 1L, false);
                         matches.put(context, "0", object, false);
+                        m = Types.toInteger(context, ((JSObject)object).get(context, "length")).intValue()-1;
                     }
-                    m = Types.toInteger(context, matches.get(context, "length")).intValue()-1;
                 } else {
                     regExp.put(context, "lastIndex", 0L, false);
                     long previousLastIndex = 0;
@@ -98,7 +98,7 @@ public class Replace extends AbstractNativeFunction {
                             functionArgs[1] = nextMatch.get(context, "index");
                             functionArgs[2] = string;
                         } else {
-                            for (int j = 1; j < m; j++) {
+                            for (int j = 1; j <= m; j++) {
                                 functionArgs[j] = nextMatch.get(context, "" + j);
                             }
                         }
