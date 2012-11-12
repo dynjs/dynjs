@@ -178,6 +178,14 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testReplace_A4_T2() {
+        eval("var __str = \"abc12 def34\";");
+        eval("var __pattern = /([a-z]+)([0-9]+)/g;");
+        eval("function __replFN() { return arguments[2] + arguments[1]; }");
+        assertThat(eval("__str.replace(__pattern, __replFN)")).isEqualTo("12abc 34def");
+    }
+
+    @Test
     public void testValueOf() {
         Object o = eval("new String(42).valueOf()");
         assertThat(o).isEqualTo("42");

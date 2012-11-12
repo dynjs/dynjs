@@ -98,7 +98,8 @@ public class Replace extends AbstractNativeFunction {
                             functionArgs[1] = nextMatch.get(context, "index");
                             functionArgs[2] = string;
                         } else {
-                            for (int j = 1; j <= m; j++) {
+                            int matchLength = Types.toInteger(context, nextMatch.get(context, "length")).intValue();
+                            for (int j = 1; j <= matchLength; j++) {
                                 functionArgs[j] = nextMatch.get(context, "" + j);
                             }
                         }
