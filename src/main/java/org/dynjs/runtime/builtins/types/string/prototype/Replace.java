@@ -107,15 +107,18 @@ public class Replace extends AbstractNativeFunction {
                     }
                 } else {
                     String newString = Types.toString(context, replaceValue);
+                    int startIndex = 0;
                     for (int i = 0; i < matchCount.intValue(); i++) {
                         DynArray match = (DynArray) matches.get(context, "" + i);
-                        String toReplace = Matcher.quoteReplacement(Types.toString(context, match.get(context, "0")));
+                        String toReplace = Types.toString(context, match.get(context, "0"));
                         String quotedReplacement = Matcher.quoteReplacement(buildReplacementString(context, newString, match));
                         if (toReplace.equals("")) {
-                            string = string.replaceAll(toReplace, quotedReplacement);
-                            break;
+                            return string.replaceAll(toReplace, quotedReplacement);
                         }
-                        string = string.replaceFirst(toReplace, quotedReplacement);
+                        int idx = string.indexOf(toReplace, startIndex);
+                        string = string.substring(0, idx) 
+                                + string.substring(idx).replaceFirst(Matcher.quoteReplacement(toReplace), quotedReplacement);
+                        startIndex = idx+quotedReplacement.length()-1;
                     }
                 }
             }

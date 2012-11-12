@@ -162,6 +162,12 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("new String('supercalifragilisticexpialidocious').replace(/(s)(u)(p)(e)(r)(c)(a)(l)(i)(f)(r)(a)/, \"$11\")");
         assertThat(o).isEqualTo("rgilisticexpialidocious");        
     }
+    
+    @Test
+    public void testReplace_A1_T8() {
+        eval("var __obj = {toString:function(){}};");
+        assertThat(eval("String(__obj).replace(/e/g,void 0)")).isEqualTo("undundefinedfinundefinedd");
+    }
 
     @Test
     public void testValueOf() {
