@@ -668,17 +668,21 @@ public class Types {
         // Java writes exponential values as 1.0E14 while JS likes
         // them as 1e+14
 
-        Pattern regexp = Pattern.compile("^(.*)(\\.0)E([+-])?([0-9]+)");
+        Pattern regexp = Pattern.compile("^(.*?)(\\.\\d*)*E([+-])?(\\d+)");
         Matcher matcher = regexp.matcher(value);
 
         if (matcher.matches()) {
-            String num = matcher.group(1);
-            String sign = matcher.group(3);
-            String exp = matcher.group(4);
+            String decimal  = matcher.group(1);
+            String fraction = matcher.group(2);
+            String sign     = matcher.group(3);
+            String exponent = matcher.group(4);
+            if (fraction == null || ".0".equals(fraction)) {
+                fraction = "";
+            }
             if (sign == null) {
                 sign = "+";
             }
-            return num + "e" + sign + exp;
+            return decimal + fraction + "e" + sign + exponent;
         }
 
         return value;

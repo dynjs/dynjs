@@ -31,6 +31,12 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testConstructorWithExponentialNumber() {
+        PrimitiveDynObject o = (PrimitiveDynObject) eval("new  String(.00000012345);");
+        assertThat(o.getPrimitiveValue()).isEqualTo("1.2345e-7");
+    }
+    
+    @Test
     public void testReplace() {
         Object o = eval("String('fat').replace('f', 'ph')");
         assertThat(o).isEqualTo("phat");
