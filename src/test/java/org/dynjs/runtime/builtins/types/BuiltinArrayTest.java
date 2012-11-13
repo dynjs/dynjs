@@ -412,6 +412,17 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         Object result = eval("['bob', 'lance', 'qmx', 'bob', 'lance', 'qmx' ].indexOf('lance',-3)");
         assertThat(result).isEqualTo(4L);
     }
+    
+    @Test
+    public void testIndexOfWithLargeArrays() {
+        eval("var a = new Array(0,1);",
+                "a[4294967294] = 2;",
+                "a[4294967295] = 3;",
+                "a[4294967296] = 4;",
+                "a[4294967297] = 5;");
+        assertThat(eval("a.indexOf(2,4294967290) === 4294967294")).isEqualTo(true);
+        assertThat(eval("a.indexOf(3,4294967290) === -1")).isEqualTo(true);
+    }
 
     @Test
     public void testLastIndexOfNoStart() {

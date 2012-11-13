@@ -108,7 +108,7 @@ public class DynArray extends DynObject {
                 return reject(context, shouldThrow);
             }
 
-            if (index.longValue() >= oldLen) {
+            if (index.longValue() >= oldLen && index.longValue() < 4294967295L) {
                 oldLenDesc.setValue(index.longValue() + 1);
                 super.defineOwnProperty(context, "length", oldLenDesc, false);
             }
