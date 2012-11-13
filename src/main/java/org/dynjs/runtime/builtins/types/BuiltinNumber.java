@@ -11,6 +11,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;
 import org.dynjs.runtime.builtins.types.number.prototype.ToFixed;
+import org.dynjs.runtime.builtins.types.number.prototype.ToPrecision;
 import org.dynjs.runtime.builtins.types.number.prototype.ToString;
 import org.dynjs.runtime.builtins.types.number.prototype.ValueOf;
 
@@ -34,6 +35,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
         defineNonEnumerableProperty(proto, "toFixed", new ToFixed(globalObject));
         defineNonEnumerableProperty(proto, "toExponential", new ToExponential(globalObject));
+        defineNonEnumerableProperty(proto, "toPrecision", new ToPrecision(globalObject));
 
         defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
         defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);

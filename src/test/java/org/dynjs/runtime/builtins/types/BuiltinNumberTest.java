@@ -26,7 +26,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testMinValue() {
         Object minValue = eval("Number.MIN_VALUE");
-        assertThat(minValue).isEqualTo( Double.MIN_VALUE);
+        assertThat(minValue).isEqualTo(Double.MIN_VALUE);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNegativeZero() {
-        check("var result = -0", -0.0 );
+        check("var result = -0", -0.0);
     }
 
     @Test
@@ -94,26 +94,26 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         // 15.7.2
         check("var result = Number.prototype.toString()", "0");
     }
-    
+
     @Test
     public void testNumberToString() {
         // 15.7.2
         check("var result = new Number(12); result = result.toString()", "12");
     }
-    
-    @Test( expected = ThrowException.class )
+
+    @Test(expected = ThrowException.class)
     public void testNumberToStringNotOnNumber() {
         eval("var s1 = new String(); s1.toString = Number.prototype.toString; s1.toString()");
         fail("Number.toString() on non-Number should throw TypeError");
     }
 
-    @Test( expected = ThrowException.class )
+    @Test(expected = ThrowException.class)
     public void testNumberPrototypeToStringWithNullRadix() {
         eval("Number.prototype.toString(null)");
         fail("Number.prototype.toString(null) should throw RangeError");
     }
 
-    @Test( expected = ThrowException.class )
+    @Test(expected = ThrowException.class)
     public void testNumberPrototypeToStringWithZeroRadix() {
         eval("Number.prototype.toString(0)");
         fail("Number.prototype.toString(0) should throw RangeError");
@@ -201,7 +201,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberToFixedDefault() {
         check("var result = new Number(12345.67890123).toFixed()", "12346");
     }
-    
+
     @Test
     public void testToFixedWithString() {
         check("var result = (Number(1e21).toFixed() === String(1e21))", true);
@@ -211,7 +211,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberToFixedWithTooManyParameters() {
         check("var result = new Number(123).toFixed(1,2,3)", Types.UNDEFINED);
     }
-    
+
     @Test
     public void testNumberNaNToFixedWithDouble() {
         check("result = (Number.NaN.toFixed(0.9) === 'NaN')", true);
@@ -321,18 +321,18 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testDoubleZeroToExponential() {
         check("var result = new Number(0.0).toExponential()", "0e+0");
     }
-    
-    @Test( expected = ThrowException.class )
+
+    @Test(expected = ThrowException.class)
     public void testNumberValueOfNotOnNumber() {
         eval("var s1 = new String(); s1.valueOf = Number.prototype.valueOf; s1.valueOf()");
         fail("Number.valueOf() on non-Number should throw TypeError");
     }
-    
+
     @Test
     public void testDivideByZeroIsPositiveInfinity() {
         check("var result = (1/0 == Infinity)", true);
     }
-    
+
     @Test
     public void testDivideByZeroIsStrictlyPositiveInfinity() {
         check("var result = (1/0 === Infinity)", true);
@@ -342,35 +342,44 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberPrototypeIsZero() {
         check("var result = 1/Number.prototype", Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testFunctionWithHexZero() {
-        assertThat( eval( "Number('0X0')")).isEqualTo(0L);
+        assertThat(eval("Number('0X0')")).isEqualTo(0L);
     }
-    
+
     @Test
     public void testFunctionWithUnicodeStr() {
-        eval( "Number('\\u0009\\u000C\\u0020\\u00A0\\u000B\\u000A\\u000D\\u2028\\u2029\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000')" );
+        eval("Number('\\u0009\\u000C\\u0020\\u00A0\\u000B\\u000A\\u000D\\u2028\\u2029\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000')");
     }
-    
+
+    @Test
+    public void testToPrecision() {
+        assertThat(eval("NaN.toPrecision()")).isEqualTo("NaN");
+        assertThat(eval("Number(13.3714).toPrecision()")).isEqualTo("13.3714");
+        assertThat(eval("Number(13.3714).toPrecision(2)")).isEqualTo("13");
+        assertThat(eval("Number(13.3714).toPrecision(3)")).isEqualTo("13.4");
+        assertThat(eval("Number(13.3714).toPrecision(10)")).isEqualTo("13.37140000");
+    }
+
     @Test
     public void testDivisionByZero() {
-        assertThat( eval( "1/Number(0)") ).isEqualTo( Double.POSITIVE_INFINITY );
+        assertThat(eval("1/Number(0)")).isEqualTo(Double.POSITIVE_INFINITY);
     }
-    
+
     @Test
     public void testDivisionByNegativeZero() {
-        assertThat( eval( "1/Number(-0)") ).isEqualTo( Double.NEGATIVE_INFINITY );
+        assertThat(eval("1/Number(-0)")).isEqualTo(Double.NEGATIVE_INFINITY);
     }
-    
+
     @Test
     public void testInfinityStrictEquality() {
-        assertThat( eval( "Infinity === Number.POSITIVE_INFINITY" ) ).isEqualTo(true);
+        assertThat(eval("Infinity === Number.POSITIVE_INFINITY")).isEqualTo(true);
     }
-    
+
     @Test
     public void testNumberFunctionIsZero() {
-        assertThat( eval( "Number() === 0" ) ).isEqualTo(true);
+        assertThat(eval("Number() === 0")).isEqualTo(true);
     }
-    
+
 }
