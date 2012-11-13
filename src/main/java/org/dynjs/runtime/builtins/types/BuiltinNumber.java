@@ -7,7 +7,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;

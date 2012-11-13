@@ -1,6 +1,6 @@
 package org.dynjs.runtime.builtins.types.number.prototype;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
@@ -16,7 +16,7 @@ public class ToExponential extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        // 15.7.4.6 Number.prototype.toExponential (fractionDigits) 
+        // 15.7.4.6 Number.prototype.toExponential (fractionDigits)
         Number number = Types.toNumber(context, self);
         Long fractionDigits = Types.toInteger(context, args[0]);
 
@@ -26,8 +26,8 @@ public class ToExponential extends AbstractNativeFunction {
         if (fractionDigits < 0 || fractionDigits > 20) {
             throw new ThrowException(context, context.createRangeError("Number.prototype.toExponential() [fractionDigits] must be between 0 and 20"));
         }
-        if (number.doubleValue() == 0) { return "0e+0"; }
-        final BigDecimal bigDecimal = new BigDecimal(number.doubleValue());
-        return Types.rewritePossiblyExponentialValue(bigDecimal.setScale(-1, BigDecimal.ROUND_HALF_UP).toString());
+        DecimalFormat decimalFormat = new DecimalFormat("0.00##################E0");
+        decimalFormat.setMinimumFractionDigits(fractionDigits.intValue());
+        return Types.rewritePossiblyExponentialValue(decimalFormat.format(number.doubleValue()));
     }
 }

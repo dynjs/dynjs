@@ -9,7 +9,6 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinNumberTest extends AbstractDynJSTestSupport {
@@ -299,13 +298,11 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testToExponential() {
         check("var result = new Number(144).toExponential()", "1.44e+2");
     }
 
     @Test
-    @Ignore
     public void testNegativeNumberToExponential() {
         check("var result = new Number(-14).toExponential()", "-1.4e+1");
     }
@@ -337,7 +334,6 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testDivideByZeroIsStrictlyPositiveInfinity() {
         check("var result = (1/0 === Infinity)", true);
     }
@@ -354,7 +350,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testFunctionWithUnicodeStr() {
-        Object result = eval( "Number('\\u0009\\u000C\\u0020\\u00A0\\u000B\\u000A\\u000D\\u2028\\u2029\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000')" );
+        eval( "Number('\\u0009\\u000C\\u0020\\u00A0\\u000B\\u000A\\u000D\\u2028\\u2029\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000')" );
     }
     
     @Test
