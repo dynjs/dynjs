@@ -2,7 +2,6 @@ package org.dynjs.runtime.builtins.types.number.prototype;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
@@ -30,10 +29,6 @@ public class ToPrecision extends AbstractNativeFunction {
         if (precision < 1 || precision > 21) {
             throw new ThrowException(context, context.createRangeError("Number.prototype.toPrecision() [precision] must be between 0 and 20"));
         }
-        return new BigDecimal(number.doubleValue(), new MathContext(precision.intValue())).toString();
-    }
-
-    protected Object toPrecision(Number number, Long precision) {
         return new BigDecimal(number.doubleValue(), new MathContext(precision.intValue())).toString();
     }
 }
