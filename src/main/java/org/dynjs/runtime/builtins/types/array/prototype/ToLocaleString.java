@@ -36,7 +36,7 @@ public class ToLocaleString extends AbstractNonConstructorFunction {
             }
             first = false;
             Object element = o.get(context, "" + i);
-            if (element != Types.UNDEFINED || element != Types.NULL) {
+            if (element != Types.UNDEFINED && element != Types.NULL) {
                 JSObject jsElement = Types.toObject(context, element);
                 Object toLocaleString = jsElement.get(context, "toLocaleString");
 

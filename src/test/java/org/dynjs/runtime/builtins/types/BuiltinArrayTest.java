@@ -498,5 +498,14 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         
         assertThat( result ).isEqualTo(true);
     }
+    
+    @Test
+    public void testToLocaleString() {
+        assertThat(eval("var n = 0;",
+            "var obj = {toLocaleString: function() {n++}};",
+            "var arr = [undefined, obj, null, obj, obj];",
+            "arr.toLocaleString();",
+            "n")).isEqualTo(3L);
+    }
 
 }
