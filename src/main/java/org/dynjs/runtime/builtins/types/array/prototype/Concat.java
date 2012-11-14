@@ -27,8 +27,10 @@ public class Concat extends AbstractNonConstructorFunction {
         List<Object> items = new ArrayList<>();
         items.add(o);
 
-        for (int i = 0; i < args.length; ++i) {
-            items.add(args[i]);
+        if (args[0] != Types.UNDEFINED) {
+            for (int i = 0; i < args.length; ++i) {
+                items.add(args[i]);
+            }
         }
 
         int n = 0;
@@ -39,17 +41,15 @@ public class Concat extends AbstractNonConstructorFunction {
                 long len = Types.toInteger(context, jsE.get(context, "length"));
 
                 for (long k = 0; k < len; ++k) {
-                    if (jsE.hasProperty(context, "" + k)) {
-                        final Object subElement = jsE.get(context, "" + k);
-                        array.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                            {
-                                set( "Value", subElement);
-                                set( "Writable", true);
-                                set( "Configurable", true);
-                                set( "Enumerable", true);
-                            }
-                        }, false);
-                    }
+                    final Object subElement = jsE.get(context, "" + k);
+                    array.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
+                        {
+                            set( "Value", subElement);
+                            set( "Writable", true);
+                            set( "Configurable", true);
+                            set( "Enumerable", true);
+                        }
+                    }, false);
                     ++n;
                 }
             } else {

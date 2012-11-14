@@ -235,6 +235,9 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         // obj(concat)
 
         // ----------------------------------------
+        // TODO: Arrays
+
+        // ----------------------------------------
         label(end);
         nop();
 

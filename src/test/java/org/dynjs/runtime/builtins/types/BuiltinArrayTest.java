@@ -139,6 +139,25 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "5")).isEqualTo(6L);
         assertThat(result.get(getContext(), "6")).isEqualTo(7L);
     }
+    
+    @Test
+    public void testConcatWithNoArgs() {
+        eval("var x = [1,2,3]");
+        eval("var y = x.concat()");
+        assertThat(eval("y.length")).isEqualTo(3L);
+        // TODO: Strict equality on arrays fails
+//        assertThat(eval("y === x")).isEqualTo(true);
+    }
+
+    @Test
+    public void testConcatWithEmptyArrays() {
+        eval("var x = [,1]");
+        eval("var y = x.concat([],[,])");
+        assertThat(eval("y[0]")).isEqualTo(Types.UNDEFINED);
+        assertThat(eval("y[1]")).isEqualTo(1L);
+        assertThat(eval("y[2]")).isEqualTo(Types.UNDEFINED);
+        assertThat(eval("y.length")).isEqualTo(3L);
+    }
 
     @Test
     public void testPop() {
