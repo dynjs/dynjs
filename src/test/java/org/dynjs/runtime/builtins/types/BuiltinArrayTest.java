@@ -423,6 +423,14 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(eval("a.indexOf(2,4294967290) === 4294967294")).isEqualTo(true);
         assertThat(eval("a.indexOf(3,4294967290) === -1")).isEqualTo(true);
     }
+    
+    @Test
+    public void testLastIndexOfWithFromIndexUndefined() {
+        eval("var a = new Array(1,2,1);");
+        assertThat(eval("a.lastIndexOf(2, undefined) === -1")).isEqualTo(true);
+        assertThat(eval("a.lastIndexOf(1, undefined) ==- 0")).isEqualTo(true);
+        assertThat(eval("a.lastIndexOf(1) === 2")).isEqualTo(true);
+    }
 
     @Test
     public void testLastIndexOfNoStart() {

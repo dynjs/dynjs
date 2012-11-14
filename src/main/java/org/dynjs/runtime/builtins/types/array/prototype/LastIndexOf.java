@@ -26,6 +26,8 @@ public class LastIndexOf extends AbstractNativeFunction {
         if (args.length >= 2) {
             if (args[1] != Types.UNDEFINED) {
                 n = Types.toInteger(context, args[1]);
+            } else {
+                n = (long)Double.NaN;  // http://es5.github.com/rev1/x15.4.4.15.html
             }
         }
 
