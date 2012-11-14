@@ -4,7 +4,7 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.dynjs.runtime.ExecutionContext;
 
-public class JavascriptParser extends ES3Parser {
+public class JavascriptParser extends ECMAScriptParser {
 
     public JavascriptParser(ExecutionContext context, TokenStream input) {
         this(context, input, new RecognizerSharedState());

@@ -11,9 +11,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.ES3Lexer;
-import org.dynjs.parser.ES3Parser;
-import org.dynjs.parser.ES3Walker;
+import org.dynjs.parser.ECMAScriptLexer;
+import org.dynjs.parser.ECMAScriptParser;
+import org.dynjs.parser.ECMAScriptWalker;
 import org.dynjs.parser.ASTFactory;
 import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.ast.FunctionDescriptor;
@@ -104,13 +104,13 @@ public class BuiltinFunction extends AbstractBuiltinType {
 
     public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws RecognitionException {
         final ANTLRStringStream stream = new ANTLRStringStream(code);
-        ES3Lexer lexer = new ES3Lexer(stream);
+        ECMAScriptLexer lexer = new ECMAScriptLexer(stream);
 
         CommonTokenStream lexerStream = new CommonTokenStream(lexer);
         JavascriptParser parser = new JavascriptParser(context, lexerStream);
         parser.getWatcher().pushState();
 
-        ES3Parser.functionExpression_return function = parser.functionExpression();
+        ECMAScriptParser.functionExpression_return function = parser.functionExpression();
         List<String> errors = parser.getErrors();
         if (!errors.isEmpty()) {
             throw new ThrowException(context, context.createSyntaxError(errors.get(0)));
@@ -119,7 +119,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         CommonTree tree = (CommonTree) function.getTree();
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(lexerStream);
-        ES3Walker walker = new ES3Walker(treeNodeStream);
+        ECMAScriptWalker walker = new ECMAScriptWalker(treeNodeStream);
 
         ASTFactory astFactory = new ASTFactory();
         walker.setASTFactory(astFactory);

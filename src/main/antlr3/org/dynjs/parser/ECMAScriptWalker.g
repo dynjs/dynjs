@@ -35,12 +35,12 @@ Original work by Patrick Hulsmeijer.
 
 */
 
-tree grammar ES3Walker ;
+tree grammar ECMAScriptWalker ;
 
 options
 {
 	ASTLabelType = CommonTree ;
-	tokenVocab = ES3 ;
+	tokenVocab = ECMAScript ;
 }
 
 @header {

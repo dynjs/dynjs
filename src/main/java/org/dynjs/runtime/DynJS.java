@@ -16,8 +16,8 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.ES3Lexer;
-import org.dynjs.parser.ES3Walker;
+import org.dynjs.parser.ECMAScriptLexer;
+import org.dynjs.parser.ECMAScriptWalker;
 import org.dynjs.parser.ASTFactory;
 import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.SyntaxError;
@@ -169,7 +169,7 @@ public class DynJS {
         try {
             final ANTLRStringStream stream = new ANTLRStringStream(code);
             stream.name = filename;
-            ES3Lexer lexer = new ES3Lexer(stream);
+            ECMAScriptLexer lexer = new ECMAScriptLexer(stream);
             return parseSourceCode(context, lexer, forceStrict);
         } catch (RecognitionException e) {
             throw new ThrowException( context, context.createSyntaxError( e.getMessage() ) );
@@ -180,14 +180,14 @@ public class DynJS {
         try {
             final ANTLRStringStream stream = new ANTLRInputStream(code);
             stream.name = filename;
-            ES3Lexer lexer = new ES3Lexer(stream);
+            ECMAScriptLexer lexer = new ECMAScriptLexer(stream);
             return parseSourceCode(context, lexer, forceStrict);
         } catch (RecognitionException e) {
             throw new ThrowException( context, context.createSyntaxError( e.getMessage() ) );
         }
     }
 
-    private Program parseSourceCode(ExecutionContext context, ES3Lexer lexer, boolean forceStrict) throws RecognitionException, SyntaxError {
+    private Program parseSourceCode(ExecutionContext context, ECMAScriptLexer lexer, boolean forceStrict) throws RecognitionException, SyntaxError {
         CommonTokenStream stream = new CommonTokenStream(lexer);
         JavascriptParser parser = new JavascriptParser(context, stream);
         parser.getWatcher().setStrict( forceStrict );
@@ -204,13 +204,13 @@ public class DynJS {
         if (tree == null) {
             return null;
         }
-        if ( lexer.nextToken().getType() != ES3Lexer.EOF ) {
+        if ( lexer.nextToken().getType() != ECMAScriptLexer.EOF ) {
             throw new ThrowException( context, context.createSyntaxError( "unable to fully parse script" ) );
         }
         //dump(tree);
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
-        ES3Walker walker = new ES3Walker(treeNodeStream);
+        ECMAScriptWalker walker = new ECMAScriptWalker(treeNodeStream);
 
         ASTFactory astFactory = new ASTFactory();
         walker.setASTFactory(astFactory);

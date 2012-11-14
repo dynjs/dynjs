@@ -3,7 +3,7 @@ package org.dynjs.parser.ast;
 import java.util.List;
 
 import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.ES3Parser.block_return;
+import org.dynjs.parser.ECMAScriptParser.block_return;
 import org.dynjs.parser.JavascriptTree;
 import org.dynjs.parser.Statement;
 

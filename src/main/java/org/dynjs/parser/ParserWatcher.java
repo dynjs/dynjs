@@ -8,11 +8,11 @@ import java.util.Set;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.dynjs.parser.ES3Parser.functionDeclaration_return;
-import org.dynjs.parser.ES3Parser.functionExpression_return;
-import org.dynjs.parser.ES3Parser.program_return;
-import org.dynjs.parser.ES3Parser.propertyAssignment_return;
-import org.dynjs.parser.ES3Parser.sourceElement_return;
+import org.dynjs.parser.ECMAScriptParser.functionDeclaration_return;
+import org.dynjs.parser.ECMAScriptParser.functionExpression_return;
+import org.dynjs.parser.ECMAScriptParser.program_return;
+import org.dynjs.parser.ECMAScriptParser.propertyAssignment_return;
+import org.dynjs.parser.ECMAScriptParser.sourceElement_return;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ParserWatcher extends CommonTreeAdaptor {
