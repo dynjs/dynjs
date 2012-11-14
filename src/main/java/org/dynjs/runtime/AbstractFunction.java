@@ -60,7 +60,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
                 }, true);
             }
         }
-        
+
         setPrototype(scope.getGlobalObject().getPrototypeFor("Function"));
     }
 
@@ -186,7 +186,9 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             buffer.append(params[i]);
         }
         buffer.append("){\n");
-        buffer.append(body.toIndentedString("  "));
+        if (body != null) {
+            buffer.append(body.toIndentedString("  "));
+        }
         buffer.append("}");
 
         return buffer.toString();

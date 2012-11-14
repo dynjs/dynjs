@@ -1665,8 +1665,6 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         append(jsCheckObjectCoercible(expr.getLhs().toString()));
         // context identifier-maybe-reference obj
         swap();
-        ldc("-----------------");
-        pop();
         // context object identifier-maybe-reference
         append(jsGetValue());
         // context object identifier-obj
@@ -1769,7 +1767,7 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         bipush(0);
         anewarray(p(Object.class));
         // context function array
-        invokevirtual(p(ExecutionContext.class), "construct", sig(JSObject.class, JSFunction.class, Object[].class));
+        invokevirtual(p(ExecutionContext.class), "construct", sig(Object.class, JSFunction.class, Object[].class));
         // obj
 
         label(end);

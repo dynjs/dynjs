@@ -1,19 +1,20 @@
 package org.dynjs.runtime.linker;
 
-import org.dynalang.dynalink.ChainedCallSite;
-import org.dynalang.dynalink.DynamicLinker;
-import org.dynalang.dynalink.DynamicLinkerFactory;
-import org.dynalang.dynalink.beans.BeansLinker;
-import org.dynalang.dynalink.support.CallSiteDescriptorFactory;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Opcodes;
+import static java.lang.invoke.MethodType.methodType;
+import static me.qmx.jitescript.util.CodegenUtils.p;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
-import static java.lang.invoke.MethodType.methodType;
-import static me.qmx.jitescript.util.CodegenUtils.p;
+import org.dynalang.dynalink.ChainedCallSite;
+import org.dynalang.dynalink.DynamicLinker;
+import org.dynalang.dynalink.DynamicLinkerFactory;
+import org.dynalang.dynalink.support.CallSiteDescriptorFactory;
+import org.dynjs.runtime.linker.js.JavascriptObjectLinker;
+import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinker;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Opcodes;
 
 public class DynJSBootstrapper {
 
@@ -24,8 +25,10 @@ public class DynJSBootstrapper {
 
     static {
         final DynamicLinkerFactory factory = new DynamicLinkerFactory();
-        factory.setPrioritizedLinkers(new DynJSLinker());
-        factory.setFallbackLinkers(new BeansLinker());
+        factory.setPrioritizedLinkers(new JavascriptObjectLinker(), new JavascriptPrimitiveLinker(), new JavascriptObjectLinker() );
+        factory.setFallbackLinkers(new NoOpLinker() );
+        //factory.setFallbackLinkers(new BeansLinker());
+        factory.setRuntimeContextArgCount(1);
         linker = factory.createLinker();
         BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
                 p(DynJSBootstrapper.class), "bootstrap",

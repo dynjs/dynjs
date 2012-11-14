@@ -336,7 +336,7 @@ public class Types {
     }
 
     public static boolean isCallable(Object o) {
-        return (o instanceof JSCallable);
+        return (o instanceof JSCallable); 
     }
 
     public static boolean isSparse(ExecutionContext context, JSObject o) {

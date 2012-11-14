@@ -22,7 +22,6 @@ import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNonConstructorFunction {
 

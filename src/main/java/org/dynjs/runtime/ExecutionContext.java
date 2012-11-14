@@ -167,7 +167,7 @@ public class ExecutionContext {
         return internalCall(functionReference, function, self, args);
     }
 
-    public JSObject construct(JSFunction function, Object... args) {
+    public Object construct(JSFunction function, Object... args) {
 
         if (!function.isConstructor()) {
             throw new ThrowException(this, createTypeError("not a constructor"));

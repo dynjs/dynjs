@@ -46,7 +46,7 @@ public class Parse extends AbstractNativeFunction {
         if (!Types.isCallable(reviver)) {
             return unfiltered;
         }
-
+        
         JSObject root = BuiltinObject.newObject(context);
         root.put(context, "", unfiltered, false);
 

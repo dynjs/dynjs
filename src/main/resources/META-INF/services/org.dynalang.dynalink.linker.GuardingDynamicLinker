@@ -1,1 +1,3 @@
-org.dynjs.runtime.linker.DynJSLinker
+org.dynjs.runtime.linker.js.JavascriptObjectLinker
+org.dynjs.runtime.linker.js.JavascriptPrimitiveLinker
+org.dynjs.runtime.linker.java.JavaObjectLinker

@@ -33,7 +33,8 @@ public class Reference {
     }
 
     public boolean isPropertyReference() {
-        return (this.base instanceof JSObject) || hasPrimitiveBase();
+        //return (this.base instanceof JSObject) || hasPrimitiveBase();
+        return ( ! ( this.base instanceof EnvironmentRecord ) );
     }
 
     public boolean isUnresolvableReference() {

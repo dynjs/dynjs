@@ -36,6 +36,7 @@ import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinURIError;
+import org.dynjs.runtime.java.JavaPackage;
 import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.JavaClassModuleProvider;
@@ -117,6 +118,15 @@ public class GlobalObject extends DynObject {
         javaClassModuleProvider.addModule(new UtilModule());
 
         this.moduleProviders.add(javaClassModuleProvider);
+        
+        
+        // ----------------------------------------
+        // Java integration
+        // ----------------------------------------
+        
+        defineGlobalProperty( "java", new JavaPackage(this, "java" ) );
+        defineGlobalProperty( "org", new JavaPackage(this, "org" ) );
+        defineGlobalProperty( "com", new JavaPackage(this, "com" ) );
 
         setPrototype(getPrototypeFor("Object"));
 
