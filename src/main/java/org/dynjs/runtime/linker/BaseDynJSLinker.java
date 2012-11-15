@@ -30,6 +30,9 @@ public class BaseDynJSLinker extends AbstractDynJSLinker {
                 if (op.equals( "getMethod" ) ) {
                     result = linkGetMethod(linkRequest, desc);
                 }
+                if (op.equals( "setProp" ) ) {
+                    result = linkSetProp(linkRequest, desc);
+                }
                 if (result != null) {
                     break;
                 }
@@ -53,6 +56,10 @@ public class BaseDynJSLinker extends AbstractDynJSLinker {
     }
     
     protected GuardedInvocation linkGetMethod(LinkRequest linkRequest, CallSiteDescriptor desc) {
+        return null;
+    }
+    
+    protected GuardedInvocation linkSetProp(LinkRequest linkRequest, CallSiteDescriptor desc) {
         return null;
     }
 
