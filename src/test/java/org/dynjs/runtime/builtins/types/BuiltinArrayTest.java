@@ -158,7 +158,7 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(eval("y[2]")).isEqualTo(Types.UNDEFINED);
         assertThat(eval("y.length")).isEqualTo(3L);
     }
-
+    
     @Test
     public void testPop() {
         eval("var a = [ 'a', 'b', 'c', 'd', 'e' ]");

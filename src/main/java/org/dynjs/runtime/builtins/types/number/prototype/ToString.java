@@ -2,6 +2,7 @@ package org.dynjs.runtime.builtins.types.number.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
@@ -22,7 +23,7 @@ public class ToString extends AbstractNativeFunction {
             throw new ThrowException(context, context.createRangeError("Number.prototype.toString([radix]) must have a radix between 2 and 36, inclusive."));
         }
 
-        if (self instanceof DynNumber) {
+        if (self instanceof DynNumber || self instanceof Long || self instanceof Double) {
             return Types.toNumber(context, self).toString();
         }
         throw new ThrowException(context, context.createTypeError("Number.prototype.toString() only allowed on Numbers"));

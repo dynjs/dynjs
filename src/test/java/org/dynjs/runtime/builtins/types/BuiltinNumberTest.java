@@ -100,6 +100,18 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
         // 15.7.2
         check("var result = new Number(12); result = result.toString()", "12");
     }
+    
+    @Test
+    public void testFloatToString() {
+        eval("var x = 3.123;");
+        assertThat(eval("x.toString();")).isEqualTo("3.123");
+    }
+
+    @Test
+    public void testIntToString() {
+        eval("var x = 3;");
+        assertThat(eval("x.toString();")).isEqualTo("3");
+    }
 
     @Test(expected = ThrowException.class)
     public void testNumberToStringNotOnNumber() {

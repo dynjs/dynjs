@@ -10,6 +10,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinObjectTest extends AbstractDynJSTestSupport {
@@ -207,6 +208,27 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
 
         assertThat(names).contains("foo");
         assertThat(names).contains("bar");
+    }
+    
+    @Test
+    @Ignore // the spec isn't entirely clear on this
+    public void testKeysOrder() {
+        eval("var obj = { prop1: 1001, prop2: function() { return 1002; } }");
+        eval("Object.defineProperty(obj, 'prop3', { value: 1003, enumerable: false, configurable: true });");
+        eval("Object.defineProperty(obj, 'prop4', { get: function() { return 1004; }, enumerable: false, configurable: true });");
+        eval("var arr = Object.keys(obj);");
+        assertThat(eval("arr.length === 2")).isEqualTo(true);
+        assertThat(eval("arr[1]")).isEqualTo("prop2");
+    }
+    
+    @Test
+    @Ignore
+    public void testAsFunction() {
+        eval("var obj = Object((null,2,3),1,2);");
+        assertThat(eval("obj.constructor === Number"));
+        assertThat(eval("typeof obj === 'object'"));
+        assertThat(eval("obj !== 3"));
+        assertThat(eval("obj == 3"));
     }
 
     @Test
