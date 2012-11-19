@@ -211,7 +211,6 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore // the spec isn't entirely clear on this
     public void testKeysOrder() {
         eval("var obj = { prop1: 1001, prop2: function() { return 1002; } }");
         eval("Object.defineProperty(obj, 'prop3', { value: 1003, enumerable: false, configurable: true });");
@@ -219,6 +218,14 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         eval("var arr = Object.keys(obj);");
         assertThat(eval("arr.length === 2")).isEqualTo(true);
         assertThat(eval("arr[1]")).isEqualTo("prop2");
+    }
+    
+    @Test
+    public void testArgumentKeys() {
+        eval("var f = function(x,y,z) { return Object.keys(arguments) }");
+        assertThat(eval("f(1,2,3)[0]")).isEqualTo("0");
+        assertThat(eval("f(1,2,3)[1]")).isEqualTo("1");
+        assertThat(eval("f(1,2,3)[2]")).isEqualTo("2");
     }
     
     @Test

@@ -380,7 +380,7 @@ public class ExecutionContext {
 
         final LexicalEnvironment env = getVariableEnvironment();
 
-        for (int i = arguments.length - 1; i >= 0; --i) {
+        for (int i = 0; i < arguments.length; ++i) {
             final Object val = arguments[i];
             desc = new PropertyDescriptor() {
                 {

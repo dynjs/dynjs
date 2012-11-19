@@ -42,7 +42,6 @@ public class Keys extends AbstractNativeFunction {
             }, false);
             ++i;
         }
-
         return array;
     }
 }
