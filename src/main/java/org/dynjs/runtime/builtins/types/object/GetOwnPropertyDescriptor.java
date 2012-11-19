@@ -11,7 +11,7 @@ import org.dynjs.runtime.Types;
 public class GetOwnPropertyDescriptor extends AbstractNativeFunction {
 
     public GetOwnPropertyDescriptor(GlobalObject globalObject) {
-        super(globalObject, "o");
+        super(globalObject, "o", "p");
     }
 
     @Override
