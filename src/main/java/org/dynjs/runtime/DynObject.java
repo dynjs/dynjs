@@ -16,7 +16,7 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.dynjs.exception.ThrowException;
@@ -26,7 +26,7 @@ public class DynObject implements JSObject {
     private String className;
     private JSObject prototype = null;
 
-    private final Map<String, PropertyDescriptor> properties = new HashMap<>();
+    private final Map<String, PropertyDescriptor> properties = new LinkedHashMap<>();
     private boolean extensible = true;
 
     public DynObject(GlobalObject globalObject) {
