@@ -476,4 +476,27 @@ public class DynObject implements JSObject {
         return new NameEnumerator(names);
     }
 
+    protected void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
+        this.defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                set("Value", value );
+                set("Writable", true);
+                set("Enumerable", false);
+                set("Configurable", true);
+            }
+        }, false);
+    }
+
+    protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {
+        this.defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                //set("Value", new DynNumber(globalObject, value));
+                set("Value", value );
+                set("Writable", false);
+                set("Enumerable", false);
+                set("Configurable", false);
+            }
+        }, false);
+    }
+
 }

@@ -3,7 +3,6 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.math.Abs;
 import org.dynjs.runtime.builtins.math.Acos;
@@ -63,30 +62,6 @@ public class Math extends DynObject {
         defineNonEnumerableProperty(globalObject, "tan",    new Tan(globalObject));    // 15.8.2.18
         
         setClassName( "Math" );
-    }
-
-    protected void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
-        this.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                //set("Value", new DynNumber(globalObject, value));
-                set("Value", value );
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
-            }
-        }, false);
-    }
-
-    protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {
-        this.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                //set("Value", new DynNumber(globalObject, value));
-                set("Value", value );
-                set("Writable", false);
-                set("Enumerable", false);
-                set("Configurable", false);
-            }
-        }, false);
     }
 
     public static Object coerceLongIfPossible(double d) {
