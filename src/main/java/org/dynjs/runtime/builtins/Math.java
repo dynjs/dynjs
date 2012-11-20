@@ -43,26 +43,38 @@ public class Math extends DynObject {
         defineReadOnlyProperty(globalObject, "NaN", Double.NaN );
 
         // Math functions 15.8.2
-        put(null, "abs",    new Abs(globalObject), false);    // 15.8.2.1
-        put(null, "acos",   new Acos(globalObject), false);   // 15.8.2.2
-        put(null, "asin",   new Asin(globalObject), false);   // 15.8.2.3
-        put(null, "atan",   new Atan(globalObject), false);   // 15.8.2.4
-        put(null, "atan2",  new Atan2(globalObject), false);  // 15.8.2.5
-        put(null, "ceil",   new Ceil(globalObject), false);   // 15.8.2.6
-        put(null, "cos",    new Cos(globalObject), false);    // 15.8.2.7
-        put(null, "exp",    new Exp(globalObject), false);    // 15.8.2.8
-        put(null, "floor",  new Floor(globalObject), false);  // 15.8.2.9
-        put(null, "log",    new Log(globalObject), false);    // 15.8.2.10
-        put(null, "max",    new Max(globalObject), false);    // 15.8.2.11
-        put(null, "min",    new Min(globalObject), false);    // 15.8.2.12
-        put(null, "pow",    new Pow(globalObject), false);    // 15.8.2.13
-        put(null, "random", new Random(globalObject), false); // 15.8.2.14
-        put(null, "round",  new Round(globalObject), false);  // 15.8.2.15
-        put(null, "sin",    new Sin(globalObject), false);    // 15.8.2.16
-        put(null, "sqrt",   new Sqrt(globalObject), false);   // 15.8.2.17
-        put(null, "tan",    new Tan(globalObject), false);    // 15.8.2.18
+        defineNonEnumerableProperty(globalObject, "abs",    new Abs(globalObject));    // 15.8.2.1
+        defineNonEnumerableProperty(globalObject, "acos",   new Acos(globalObject));   // 15.8.2.2
+        defineNonEnumerableProperty(globalObject, "asin",   new Asin(globalObject));   // 15.8.2.3
+        defineNonEnumerableProperty(globalObject, "atan",   new Atan(globalObject));   // 15.8.2.4
+        defineNonEnumerableProperty(globalObject, "atan2",  new Atan2(globalObject));  // 15.8.2.5
+        defineNonEnumerableProperty(globalObject, "ceil",   new Ceil(globalObject));   // 15.8.2.6
+        defineNonEnumerableProperty(globalObject, "cos",    new Cos(globalObject));    // 15.8.2.7
+        defineNonEnumerableProperty(globalObject, "exp",    new Exp(globalObject));    // 15.8.2.8
+        defineNonEnumerableProperty(globalObject, "floor",  new Floor(globalObject));  // 15.8.2.9
+        defineNonEnumerableProperty(globalObject, "log",    new Log(globalObject));    // 15.8.2.10
+        defineNonEnumerableProperty(globalObject, "max",    new Max(globalObject));    // 15.8.2.11
+        defineNonEnumerableProperty(globalObject, "min",    new Min(globalObject));    // 15.8.2.12
+        defineNonEnumerableProperty(globalObject, "pow",    new Pow(globalObject));    // 15.8.2.13
+        defineNonEnumerableProperty(globalObject, "random", new Random(globalObject)); // 15.8.2.14
+        defineNonEnumerableProperty(globalObject, "round",  new Round(globalObject));  // 15.8.2.15
+        defineNonEnumerableProperty(globalObject, "sin",    new Sin(globalObject));    // 15.8.2.16
+        defineNonEnumerableProperty(globalObject, "sqrt",   new Sqrt(globalObject));   // 15.8.2.17
+        defineNonEnumerableProperty(globalObject, "tan",    new Tan(globalObject));    // 15.8.2.18
         
         setClassName( "Math" );
+    }
+
+    protected void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
+        this.defineOwnProperty(null, name, new PropertyDescriptor() {
+            {
+                //set("Value", new DynNumber(globalObject, value));
+                set("Value", value );
+                set("Writable", true);
+                set("Enumerable", false);
+                set("Configurable", true);
+            }
+        }, false);
     }
 
     protected void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Number value) {

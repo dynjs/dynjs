@@ -14,6 +14,15 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathPrototypeIsUndefined() {
         assertThat(eval("Math.prototype")).isEqualTo(Types.UNDEFINED);
     }
+    
+    @Test
+    public void testMathAtan2BuiltinProperties() {
+        eval("var desc = Object.getOwnPropertyDescriptor(Math, 'atan2');");
+        assertThat(eval("desc.value == Math.atan2")).isEqualTo(true);
+        assertThat(eval("desc.writable")).isEqualTo(true);
+        assertThat(eval("desc.configurable")).isEqualTo(true);
+        assertThat(eval("desc.enumerable")).isEqualTo(false);
+    }
 
     @Test
     public void testMathE() {
