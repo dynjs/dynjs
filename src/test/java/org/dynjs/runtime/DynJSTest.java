@@ -444,4 +444,32 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     public void testStringEquality() {
         check("var result = \"house\" == \"house\" && 'house' == 'house' && \"\" == 0;");
     }
+    
+    @Test
+    public void testGlobalEscapeFunctionProperties() {
+        eval("var global = Function(\"return this;\")()");
+        eval("var desc = Object.getOwnPropertyDescriptor(global, 'escape');");
+        assertThat(eval("desc.value != undefined")).isEqualTo(true);
+        assertThat(eval("desc.value == global.escape")).isEqualTo(true);
+        assertThat(eval("desc.writable")).isEqualTo(true);
+        assertThat(eval("desc.configurable")).isEqualTo(true);
+        assertThat(eval("desc.enumerable")).isEqualTo(false);
+    }
+    
+    @Test
+    public void testHexEscape() {
+        // TODO: Better testing
+        assertThat(eval("escape('Now is the winter')")).isEqualTo("Now%20is%20the%20winter");
+    }
+    
+    @Test
+    public void testGlobalUnescapeFunctionProperties() {
+        eval("var global = Function(\"return this;\")()");
+        eval("var desc = Object.getOwnPropertyDescriptor(global, 'unescape');");
+        assertThat(eval("desc.value != undefined")).isEqualTo(true);
+        assertThat(eval("desc.value == global.unescape")).isEqualTo(true);
+        assertThat(eval("desc.writable")).isEqualTo(true);
+        assertThat(eval("desc.configurable")).isEqualTo(true);
+        assertThat(eval("desc.enumerable")).isEqualTo(false);
+    }
 }

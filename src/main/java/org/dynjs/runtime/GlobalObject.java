@@ -10,6 +10,7 @@ import org.dynjs.runtime.builtins.DecodeUri;
 import org.dynjs.runtime.builtins.DecodeUriComponent;
 import org.dynjs.runtime.builtins.EncodeUri;
 import org.dynjs.runtime.builtins.EncodeUriComponent;
+import org.dynjs.runtime.builtins.Escape;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.Include;
 import org.dynjs.runtime.builtins.IsFinite;
@@ -20,6 +21,7 @@ import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.builtins.ThrowTypeError;
+import org.dynjs.runtime.builtins.Unescape;
 import org.dynjs.runtime.builtins.types.AbstractBuiltinType;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinBoolean;
@@ -99,6 +101,8 @@ public class GlobalObject extends DynObject {
 
         defineGlobalProperty("require", new Require(this));
         defineGlobalProperty("include", new Include(this));
+        defineGlobalProperty("escape", new Escape(this));
+        defineGlobalProperty("unescape", new Unescape(this));
 
         // ----------------------------------------
         // Built-in global objects
