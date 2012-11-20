@@ -15,14 +15,14 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
         super(globalObject, "message");
 
         final DynObject proto = new DynObject(globalObject);
-        put(null, "prototype", proto, false);
+        this.defineReadOnlyProperty(globalObject, "prototype", proto);
         this.name = name;
     }
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setClassName("Error");
-        proto.put(null, "constructor", this, false);
+        proto.defineNonEnumerableProperty(globalObject, "constructor", this);
         proto.put(null, "name", this.name, false);
         proto.put(null, "message", "", false);
         proto.setPrototype(globalObject.getPrototypeFor("Error"));

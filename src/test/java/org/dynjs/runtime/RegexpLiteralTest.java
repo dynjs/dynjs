@@ -63,7 +63,7 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
         assertThat(result.get(getContext(), "0")).isEqualTo("fool");
     }
 
-    private Object getPropertyValue(DynObject object, String name) {
+    private Object getPropertyValue(JSObject object, String name) {
         return ((PropertyDescriptor) object.getOwnProperty(null, name))
                 .getValue();
     }

@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.modules.ModuleProvider;
 
@@ -42,7 +42,7 @@ public class Require extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        DynObject exports = null;
+        JSObject exports = null;
 
         if (arguments[0] == Types.UNDEFINED) {
             throw new ThrowException(context, context.createError("Error", "no module identifier provided"));

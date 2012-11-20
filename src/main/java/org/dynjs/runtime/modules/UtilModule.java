@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 
@@ -74,7 +75,7 @@ public class UtilModule {
     
     @Export
     public boolean isError(Object thing) {
-        return thing instanceof DynObject && ((DynObject)thing).getClassName().equals("Error");
+        return thing instanceof DynObject && ((JSObject)thing).getClassName().equals("Error");
     }
     
     // TODO: util.inherits and util.inspect http://nodejs.org/api/util.html

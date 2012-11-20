@@ -388,7 +388,7 @@ public class PropertyDescriptor {
 
         final PropertyDescriptor desc = (PropertyDescriptor) d;
 
-        DynObject obj = new DynObject(context.getGlobalObject());
+        JSObject obj = new DynObject(context.getGlobalObject());
 
         if (desc.isDataDescriptor()) {
             obj.defineOwnProperty(context, "value", new PropertyDescriptor() {

@@ -1,7 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.Arguments;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -75,7 +74,7 @@ public class BuiltinNumber extends AbstractBuiltinType {
         return new DynNumber(context.getGlobalObject());
     }
 
-    protected static void defineReadOnlyProperty(final DynObject on, final GlobalObject globalObject, String name, final Number value) {
+    protected static void defineReadOnlyProperty(final JSObject on, final GlobalObject globalObject, String name, final Number value) {
         on.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
                 set("Value", value);

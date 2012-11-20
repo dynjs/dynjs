@@ -36,4 +36,8 @@ public interface JSObject {
 
     void setExtensible(boolean extensible);
 
+    public abstract void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value);
+
+    public abstract void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value);
+
 }

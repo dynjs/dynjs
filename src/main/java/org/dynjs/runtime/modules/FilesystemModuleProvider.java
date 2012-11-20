@@ -8,6 +8,7 @@ import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the
@@ -34,7 +35,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
     }
 
     @Override
-    public DynObject load(ExecutionContext context, String moduleName) {
+    public JSObject load(ExecutionContext context, String moduleName) {
         String filename = normalizeFileName(moduleName);
         File file = findFile(context, filename);
         if (file == null) {
@@ -65,7 +66,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
             exports = (DynObject) requireGlobal.get(requireContext, "exports");
             
 
-            return (DynObject) module.get(requireContext, "exports");
+            return (JSObject) module.get(requireContext, "exports");
         }
         return null;
     }

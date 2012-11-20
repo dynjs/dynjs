@@ -375,7 +375,7 @@ public class ExecutionContext {
 
         String[] names = function.getFormalParameters();
 
-        DynObject map = new DynObject(getGlobalObject());
+        JSObject map = new DynObject(getGlobalObject());
         List<String> mappedNames = new ArrayList<>();
 
         final LexicalEnvironment env = getVariableEnvironment();

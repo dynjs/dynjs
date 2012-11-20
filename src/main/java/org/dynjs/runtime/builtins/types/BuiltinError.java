@@ -16,7 +16,7 @@ public class BuiltinError extends AbstractBuiltinType {
     public BuiltinError(final GlobalObject globalObject) {
         super(globalObject, "message" );
 
-        final DynObject proto = new DynObject(globalObject);
+        final JSObject proto = new DynObject(globalObject);
         proto.setClassName("Error");
         setPrototypeProperty(proto);
 

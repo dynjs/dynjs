@@ -10,6 +10,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 
 public class JavaClassModuleProvider implements ModuleProvider {
@@ -31,7 +32,7 @@ public class JavaClassModuleProvider implements ModuleProvider {
     }
 
     @Override
-    public DynObject load(ExecutionContext context, String moduleName) {
+    public JSObject load(ExecutionContext context, String moduleName) {
         Object javaModule = modules.get(moduleName);
 
         if (javaModule == null) {
@@ -45,10 +46,10 @@ public class JavaClassModuleProvider implements ModuleProvider {
         }
     }
 
-    private DynObject buildExports(ExecutionContext context, String moduleName, Object javaModule) throws IllegalAccessException {
+    private JSObject buildExports(ExecutionContext context, String moduleName, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
 
-        DynObject exports = new DynObject(context.getGlobalObject());
+        JSObject exports = new DynObject(context.getGlobalObject());
 
         for (Method method : methods) {
             Export exportAnno = method.getAnnotation(Export.class);
