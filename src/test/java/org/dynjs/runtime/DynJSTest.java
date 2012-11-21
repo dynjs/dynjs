@@ -24,6 +24,11 @@ import org.junit.Test;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
 
+    @Test
+    public void testObjectPrototypePrototypeIsNull() {
+        assertThat(eval("Object.getPrototypeOf(Object.prototype)")).isNull();
+    }
+    
     @Test(expected = ThrowException.class)
     public void testSyntaxErrorThrows() {
         getRuntime().execute("var f ( {;");

@@ -207,15 +207,9 @@ public class ExecutionContext {
 
     public Object internalCall(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
-
         ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
         try {
-            Object result = function.call(fnContext);
-            if (result == null) {
-                return Types.UNDEFINED;
-            }
-
-            return result;
+            return function.call(fnContext);
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
