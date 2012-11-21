@@ -26,7 +26,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testObjectPrototypePrototypeIsNull() {
-        assertThat(eval("Object.getPrototypeOf(Object.prototype)")).isNull();
+        assertThat(eval("Object.getPrototypeOf(Object.prototype) === null")).isEqualTo(true);
     }
     
     @Test

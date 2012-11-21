@@ -209,7 +209,11 @@ public class ExecutionContext {
         // 13.2.1
         ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
         try {
-            return function.call(fnContext);
+            Object value = function.call(fnContext);
+            if (value == null) {
+                return Types.NULL;
+            }
+            return value;
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
