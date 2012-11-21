@@ -22,6 +22,7 @@ import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNonConstructorFunction {
 
@@ -44,6 +45,9 @@ public class Eval extends AbstractNonConstructorFunction {
         if (code instanceof String) {
             try {
                 Object result = context.getGlobalObject().getRuntime().evaluate(context.getParent(), code.toString(), context.getParent().isStrict() && direct, direct );
+                if (result == null) {
+                    return Types.UNDEFINED;
+                }
                 return result;
             } catch (SyntaxError e) {
                 throw new ThrowException(context, context.createSyntaxError(e.getMessage()));

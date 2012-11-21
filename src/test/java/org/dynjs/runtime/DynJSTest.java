@@ -29,6 +29,16 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("Object.getPrototypeOf(Object.prototype)")).isNull();
     }
     
+    @Test
+    public void testTypeOfUndefined() {
+        assertThat(eval("typeof(undefined) === 'undefined'")).isEqualTo(true);
+    }
+    
+    @Test
+    public void testObject() {
+        assertThat(eval("eval('{}')")).isEqualTo(Types.UNDEFINED);
+    }
+    
     @Test(expected = ThrowException.class)
     public void testSyntaxErrorThrows() {
         getRuntime().execute("var f ( {;");
