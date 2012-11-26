@@ -20,15 +20,16 @@ public class Create extends AbstractNativeFunction {
         // 15.2.3.5
         Object o = args[0];
 
-        if (!(o instanceof JSObject)) {
+        if (!(o instanceof JSObject) && o != Types.NULL) {
             throw new ThrowException(context, context.createTypeError("must be an object"));
         }
 
-        JSObject jsObj = (JSObject) o;
-
         DynObject newObj = new DynObject(context.getGlobalObject());
 
-        newObj.setPrototype(jsObj);
+        if (o != Types.NULL) {
+            JSObject jsObj = (JSObject) o;
+            newObj.setPrototype(jsObj);
+        }
 
         Object props = args[1];
         if (props != Types.UNDEFINED) {

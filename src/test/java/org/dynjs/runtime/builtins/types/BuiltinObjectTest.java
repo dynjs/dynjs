@@ -154,6 +154,11 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         assertThat(eval("x.fish")).isEqualTo("taco");
 
     }
+    
+    @Test
+    public void testCreateWithNullShouldNotThrow() {
+        assertThat(eval("Object.create(null).prototype === {}.prototype")).isEqualTo(true);
+    }
 
     @Test
     public void testCreateWithoutProps() {
