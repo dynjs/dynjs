@@ -1,6 +1,9 @@
 package org.dynjs.runtime.builtins.types.number.prototype;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+import java.util.Locale;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
@@ -27,6 +30,7 @@ public class ToExponential extends AbstractNativeFunction {
             throw new ThrowException(context, context.createRangeError("Number.prototype.toExponential() [fractionDigits] must be between 0 and 20"));
         }
         DecimalFormat decimalFormat = new DecimalFormat("0.00##################E0");
+        decimalFormat.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
         decimalFormat.setMinimumFractionDigits(fractionDigits.intValue());
         return Types.rewritePossiblyExponentialValue(decimalFormat.format(number.doubleValue()));
     }

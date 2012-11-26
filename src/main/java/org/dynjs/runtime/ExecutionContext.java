@@ -2,7 +2,9 @@ package org.dynjs.runtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TimeZone;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.dynjs.Clock;
@@ -21,6 +23,7 @@ public class ExecutionContext {
         ExecutionContext context = new ExecutionContext(null, env, env, env.getGlobalObject(), false);
         context.clock = runtime.getConfig().getClock();
         context.timeZone = runtime.getConfig().getTimeZone();
+        context.locale = runtime.getConfig().getLocale();
         return context;
     }
 
@@ -42,6 +45,7 @@ public class ExecutionContext {
 
     private Clock clock;
     private TimeZone timeZone;
+    private Locale locale;
     private Object functionReference;
 
     public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
@@ -90,6 +94,14 @@ public class ExecutionContext {
         }
 
         return this.timeZone;
+    }
+
+    public Locale getLocale() {
+        if (this.parent != null) {
+            return this.parent.getLocale();
+        }
+
+        return this.locale;
     }
 
     void setStrict(boolean strict) {

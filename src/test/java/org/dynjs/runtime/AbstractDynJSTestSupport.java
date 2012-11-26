@@ -2,6 +2,7 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.dynjs.Config;
@@ -21,6 +22,7 @@ public abstract class AbstractDynJSTestSupport {
         this.config.setDebug(false);
         config.setClock( new ManualClock( fixedInstant ) );
         config.setTimeZone( TimeZone.getTimeZone( "America/Sao_Paulo" ) );
+        config.setLocale( Locale.US );
         this.runtime = new DynJS(this.config);
     }
 
