@@ -1,8 +1,6 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.TimeZone;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -170,6 +168,14 @@ public class ExecutionContext {
         return call(null, function, self, args);
     }
 
+    public Object call(Reference reference, Object self, Object... args) {
+        Object value = reference.getValue(this);
+        if (value instanceof JSFunction) {
+            return call(reference, (JSFunction) value, self, args);
+        }
+        throw new ThrowException(this, createTypeError( "must be callable" ) );
+    }
+
     public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
         if (getPendingConstructorCount() > 0) {
@@ -179,6 +185,14 @@ public class ExecutionContext {
         return internalCall(functionReference, function, self, args);
     }
 
+    public Object construct(Reference reference, Object...args){
+        Object value = reference.getValue(this);
+        if (value instanceof JSFunction) {
+            return construct(reference, (JSFunction) value, args);
+        }
+        return null;
+        
+    }
     public Object construct(JSFunction function, Object... args) {
 
         if (!function.isConstructor()) {

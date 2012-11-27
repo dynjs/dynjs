@@ -1,43 +1,43 @@
 package org.dynjs.runtime.linker;
 
-import static java.lang.invoke.MethodType.methodType;
-import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 
-import org.dynalang.dynalink.ChainedCallSite;
-import org.dynalang.dynalink.DynamicLinker;
-import org.dynalang.dynalink.DynamicLinkerFactory;
-import org.dynalang.dynalink.support.CallSiteDescriptorFactory;
-import org.dynjs.runtime.linker.js.JavascriptObjectLinker;
-import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinker;
+import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
+import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
+import org.projectodd.linkfusion.FusionLinker;
 
 public class DynJSBootstrapper {
 
-    public static final Handle BOOTSTRAP;
-    public static final Object[] BOOTSTRAP_ARGS = new Object[0];
+    public static final Handle HANDLE;
+    public static final Object[] ARGS = new Object[0];
 
-    private static DynamicLinker linker;
-
+    private static FusionLinker linker = new FusionLinker();
+    
     static {
-        final DynamicLinkerFactory factory = new DynamicLinkerFactory();
-        factory.setPrioritizedLinkers(new JavascriptObjectLinker(), new JavascriptPrimitiveLinker(), new JavascriptObjectLinker() );
-        factory.setFallbackLinkers(new NoOpLinker() );
-        //factory.setFallbackLinkers(new BeansLinker());
-        factory.setRuntimeContextArgCount(1);
-        linker = factory.createLinker();
-        BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,
+        
+        linker.addLinkStrategy( new JavascriptObjectLinkStrategy() );
+        linker.addLinkStrategy( new JavascriptPrimitiveLinkStrategy() );
+        
+        HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
                 p(DynJSBootstrapper.class), "bootstrap",
-                methodType(CallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class)
+                MethodType.methodType(CallSite.class, Lookup.class, String.class, MethodType.class)
                         .toMethodDescriptorString());
     }
-
-    public static CallSite bootstrap(MethodHandles.Lookup caller, String name, MethodType type) {
-        return linker.link(new ChainedCallSite(CallSiteDescriptorFactory.create(caller, name, type)));
+    
+    public static CallSite bootstrap(Lookup lookup, String name, MethodType type) throws Throwable {
+        return linker.bootstrap(lookup, name, type);
+    }
+    
+    
+    public static MethodHandle getBootstrapMethodHandle() throws NoSuchMethodException, IllegalAccessException {
+        return linker.getBootstrapMethodHandle();
     }
 
 }

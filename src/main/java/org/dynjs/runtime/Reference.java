@@ -115,7 +115,7 @@ public class Reference {
     }
 
     public String toString() {
-        return "[Reference: name=" + this.referencedName + "; base=" + this.base + "]";
+        return "[Reference: name=" + this.referencedName + "; base=" + this.base + " (" + this.base.getClass().getName() + ")]";
     }
 
 }

@@ -43,6 +43,13 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testReplaceGetProp() {
+        Object o = eval("String('fat').replace" );
+        assertThat(o).isNotNull();
+        System.err.println( "o: " + o );
+    }
+    
+    @Test
     public void testReplaceOnce() {
         assertThat(eval("'If the police police the police...'.replace('police', 'sekretpolice')")).isEqualTo("If the sekretpolice police the police...");
     }

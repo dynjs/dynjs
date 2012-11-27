@@ -109,9 +109,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.dynalang</groupId>
-            <artifactId>dynalink</artifactId>
-            <version>0.4.x.incremental.5</version>
+            <groupId>org.projectodd.linkfusion</groupId>
+            <artifactId>linkfusion</artifactId>
+            <version>1.x.incremental.11</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

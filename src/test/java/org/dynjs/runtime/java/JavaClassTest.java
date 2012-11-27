@@ -20,14 +20,5 @@ public class JavaClassTest extends AbstractDynJSTestSupport {
         assertThat( result ).isInstanceOf( Class.class).isSameAs(JavaMockery.class);
     }
     
-    @Test
-    public void testJavaClass_staticMethod_call() {
-        Object result = eval( "var cls = org.dynjs.runtime.java.JavaMockery",
-                "cls.name" );
-        assertThat( result ).isInstanceOf(String.class);
-        System.err.println( "name: " + result );
-    }
-    
-    
 
 }

@@ -1,10 +1,9 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.java.JavaMockery;
-import org.dynjs.runtime.linker.java.MethodMeta;
 import org.junit.Test;
 
 public class NewOperatorTest extends AbstractDynJSTestSupport {
@@ -53,37 +52,6 @@ public class NewOperatorTest extends AbstractDynJSTestSupport {
         assertThat(result).isEqualTo("fish");
     }
     
-    @Test
-    public void testNew_java() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery");
-        assertThat( result ).isInstanceOf(JavaMockery.class);
-    }
-    
-    @Test
-    public void testNew_java_withParams() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42)");
-        assertThat( result ).isInstanceOf(JavaMockery.class);
-        assertThat( ((JavaMockery)result).getValue() ).isEqualTo( 42L );
-    }
-    
-    @Test
-    public void testNew_java_withParams_getProp() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42).value");
-        assertThat( result ).isEqualTo( 42L );
-    }
-    
-    @Test
-    public void testNew_java_withParams_getMethod() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42).doSomething");
-        assertThat( result ).isInstanceOf(MethodMeta.class);
-        assertThat( ((MethodMeta)result).getName() ).isEqualTo( "doSomething" );
-    }
-    
-    @Test
-    public void testNew_java_withParams_getMethod_call() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42).doSomething()");
-        assertThat( result ).isEqualTo( 42L );
-    }
     
 
 }

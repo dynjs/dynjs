@@ -197,7 +197,9 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // IN obj
                 aload(Arities.EXECUTION_CONTEXT);
                 // obj context
-                invokedynamic("ToObject", sig(JSObject.class, Object.class, ExecutionContext.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
+                swap();
+                // context object
+                invokestatic( p(Types.class), "toObject", sig( JSObject.class, ExecutionContext.class, Object.class ) );
                 // obj
             }
         };
