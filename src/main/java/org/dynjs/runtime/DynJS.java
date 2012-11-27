@@ -207,7 +207,7 @@ public class DynJS {
         if ( lexer.nextToken().getType() != ECMAScriptLexer.EOF ) {
             throw new ThrowException( context, context.createSyntaxError( "unable to fully parse script" ) );
         }
-        //dump(tree);
+        dump(tree);
         CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
         treeNodeStream.setTokenStream(stream);
         ECMAScriptWalker walker = new ECMAScriptWalker(treeNodeStream);

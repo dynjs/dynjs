@@ -20,7 +20,6 @@ import org.junit.Test;
 
 public class NodeJSFailuresTest extends AbstractDynJSTestSupport {
     @Test
-    @Ignore
     public void testCexpr() {
         eval("var x = (null || 'foo').split('/');");
     }

@@ -418,8 +418,8 @@ callExpression returns [Expression value]
 memberExpression returns [Expression value]
 	: ^( BYINDEX leftHandSideExpression expression)
 	{ $value = astFactory.memberExpression($BYINDEX, $leftHandSideExpression.value, $expression.value); }
-	| ^( BYFIELD leftHandSideExpression Identifier )
-	{ $value = astFactory.memberExpression($BYFIELD, $leftHandSideExpression.value, astFactory.defineStringLiteral( $Identifier, $Identifier.text ) ); }
+	| ^( BYFIELD expr Identifier )
+	{ $value = astFactory.memberExpression($BYFIELD, $expr.value, astFactory.defineStringLiteral( $Identifier, $Identifier.text ) ); }
 	;
 
 primaryExpression returns [Expression value]
