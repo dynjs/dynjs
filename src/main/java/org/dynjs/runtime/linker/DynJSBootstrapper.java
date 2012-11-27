@@ -11,6 +11,8 @@ import org.dynalang.dynalink.ChainedCallSite;
 import org.dynalang.dynalink.DynamicLinker;
 import org.dynalang.dynalink.DynamicLinkerFactory;
 import org.dynalang.dynalink.support.CallSiteDescriptorFactory;
+import org.dynjs.runtime.linker.java.JavaObjectLinker;
+import org.dynjs.runtime.linker.java.JavaShadowObjectLinker;
 import org.dynjs.runtime.linker.js.JavascriptObjectLinker;
 import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinker;
 import org.objectweb.asm.Handle;
@@ -25,9 +27,12 @@ public class DynJSBootstrapper {
 
     static {
         final DynamicLinkerFactory factory = new DynamicLinkerFactory();
-        factory.setPrioritizedLinkers(new JavascriptObjectLinker(), new JavascriptPrimitiveLinker(), new JavascriptObjectLinker() );
+        factory.setPrioritizedLinkers(
+                new JavascriptObjectLinker(), 
+                new JavascriptPrimitiveLinker(), 
+                new JavaObjectLinker(),
+                new JavaShadowObjectLinker() );
         factory.setFallbackLinkers(new NoOpLinker() );
-        //factory.setFallbackLinkers(new BeansLinker());
         factory.setRuntimeContextArgCount(1);
         linker = factory.createLinker();
         BOOTSTRAP = new Handle(Opcodes.H_INVOKESTATIC,

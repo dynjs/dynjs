@@ -264,7 +264,7 @@ public class ExecutionContext {
             if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
                 thisBinding = this.getLexicalEnvironment().getGlobalObject();
             } else if (!(thisArg instanceof JSObject)) {
-                thisBinding = Types.toObject(this, thisArg);
+                thisBinding = Types.toObjectForThis(this, thisArg);
             } else {
                 thisBinding = thisArg;
             }

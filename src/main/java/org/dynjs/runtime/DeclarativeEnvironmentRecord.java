@@ -32,7 +32,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     }
 
     @Override
-    public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
+    public Object setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
 
         // 10.2.1.1.3
         if (!hasBinding(context, name)) {
@@ -42,12 +42,14 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         if (this.mutableBindings.containsKey(name)) {
             PropertyDescriptor desc = this.mutableBindings.get(name);
             desc.setValue(value);
-            return;
+            return value;
         }
 
         if (strict) {
             throw new ThrowException(context, context.createTypeError("attempt to change immutable binding is not allowed"));
         }
+        
+        return value;
     }
 
     @Override

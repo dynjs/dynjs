@@ -26,7 +26,7 @@ public class JavascriptPrimitiveLinker extends BaseDynJSLinker {
         Object receiver = linkRequest.getReceiver();
         if (isPrimitive(receiver) || receiver == Types.UNDEFINED || receiver == Types.NULL ) {
             ExecutionContext context = (ExecutionContext) linkRequest.getArguments()[1];
-            ThrowException ex = new ThrowException(context, context.createTypeError("object not usable as a constructor"));
+            ThrowException ex = new ThrowException(context, context.createTypeError("object not callable "));
             return new GuardedInvocation(getThrower(ex, desc.getMethodType()), Guards.getIdentityGuard(receiver));
         }
         return null;
@@ -49,7 +49,6 @@ public class JavascriptPrimitiveLinker extends BaseDynJSLinker {
         GuardedInvocation result = null;
 
         if ( isPrimitive(receiver ) ) {
-            Object[] args = linkRequest.getArguments();
             try {
                 ReferenceContext context = (ReferenceContext) linkRequest.getArguments()[1];
 

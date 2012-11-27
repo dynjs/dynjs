@@ -100,22 +100,16 @@ public class DynObject implements JSObject {
         // Returns PropertyDescriptor or UNDEFINED
         PropertyDescriptor x = this.properties.get(name);
 
-        // System.err.println("x1: " + name + " > " + x);
-
         if (x == null) {
             return Types.UNDEFINED;
         }
 
         PropertyDescriptor dup = null;
         if (x.isDataDescriptor()) {
-            // System.err.println("isData");
             dup = x.duplicate("Value", "Writable", "Enumerable", "Configurable");
         } else {
-            // System.err.println("isAccesor");
             dup = x.duplicate("Get", "Set", "Enumerable", "Configurable");
         }
-
-        // System.err.println("return: " + name + " > " + dup);
 
         return dup;
     }
@@ -143,28 +137,25 @@ public class DynObject implements JSObject {
     }
 
     @Override
-    public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
+    public Object put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
         // 8.12.5
-        // System.err.println("PUT " + name + " > " + value);
         if (!canPut(context, name)) {
-            // System.err.println("CANNOT PUT");
             if (shouldThrow) {
                 throw new ThrowException(context, context.createTypeError("cannot put property '" + name + "'"));
             }
-            return;
+            return value;
         }
 
         Object ownDesc = getOwnProperty(context, name);
 
         if ((ownDesc != Types.UNDEFINED) && ((PropertyDescriptor) ownDesc).isDataDescriptor()) {
-            // System.err.println("setting value on non-UNDEF");
             PropertyDescriptor newDesc = new PropertyDescriptor() {
                 {
                     set("Value", value);
                 }
             };
             defineOwnProperty(context, name, newDesc, shouldThrow);
-            return;
+            return value;
         }
 
         Object desc = getProperty(context, name);
@@ -183,6 +174,8 @@ public class DynObject implements JSObject {
             };
             defineOwnProperty(context, name, newDesc, shouldThrow);
         }
+
+        return value;
     }
 
     @Override
@@ -197,20 +190,16 @@ public class DynObject implements JSObject {
             }
         }
 
-        // System.err.println("canPut?: " + name + " > " + d);
-
         // If either has it, deal with descriptor appropriately
         if (d != Types.UNDEFINED) {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             if (desc.isAccessorDescriptor()) {
                 if (desc.get("Set") == Types.UNDEFINED) {
-                    // System.err.println("NO SET");
                     return false;
                 }
                 return true;
             } else {
                 Object writable = desc.get("Writable");
-                // System.err.println("writable? " + writable);
                 if (writable == Types.UNDEFINED) {
                     return true;
                 }
@@ -299,9 +288,6 @@ public class DynObject implements JSObject {
         // 8.12.9
         Object c = getOwnProperty(context, name);
 
-        // System.err.println("DEF.start: " + name + " > " + desc);
-        // System.err.println("DEF.orig: " + name + " > " + c);
-
         if (c == Types.UNDEFINED) {
             if (!isExtensible()) {
                 return reject(context, shouldThrow);
@@ -313,7 +299,6 @@ public class DynObject implements JSObject {
                     newDesc = desc.duplicateWithDefaults("Get", "Set", "Enumerable", "Configurable");
                 }
 
-                // System.err.println("DEF.initial: " + name + " > " + newDesc);
                 this.properties.put(name, newDesc);
                 return true;
             }
@@ -341,19 +326,15 @@ public class DynObject implements JSObject {
 
         if (desc.isGenericDescriptor()) {
             newDesc = new PropertyDescriptor();
-            // System.err.println("DEF.generic: " + name + " > " + newDesc);
         } else if (current.isDataDescriptor() != desc.isDataDescriptor()) {
             if (!current.isConfigurable()) {
                 return reject(context, shouldThrow);
             }
             if (current.isDataDescriptor()) {
-                // System.err.println("accessor");
                 newDesc = PropertyDescriptor.newAccessorPropertyDescriptor(true);
             } else {
-                // System.err.println("data");
                 newDesc = PropertyDescriptor.newDataPropertyDescriptor(true);
             }
-            // System.err.println("DEF.mismatch: " + name + " > " + newDesc);
         } else if (current.isDataDescriptor() && desc.isDataDescriptor()) {
             if (!current.isConfigurable()) {
                 Object currentWritable = current.get("Writable");
@@ -375,7 +356,6 @@ public class DynObject implements JSObject {
             if (current.hasWritable()) {
                 newDesc.set("Writable", current.get("Writable"));
             }
-            // System.err.println("DEF.data: " + name + " > " + newDesc);
         } else if (current.isAccessorDescriptor() && desc.isAccessorDescriptor()) {
             if (!current.isConfigurable()) {
                 Object newSetter = desc.getSetter();
@@ -394,7 +374,6 @@ public class DynObject implements JSObject {
             if (current.hasGet()) {
                 newDesc.set("Get", current.get("Get"));
             }
-            // System.err.println("DEF.accessor: " + name + " > " + newDesc);
         }
 
         if (current.hasConfigurable()) {
@@ -405,30 +384,8 @@ public class DynObject implements JSObject {
         }
 
         newDesc.copyAll(desc);
-        // System.err.println("DEF.final: " + name + " > " + newDesc);
         this.properties.put(name, newDesc);
         return true;
-
-        /*
-         * if (current.hasConfigurable()) {
-         * newDesc.set("Configurable", current.get("Configurable"));
-         * }
-         * if (current.hasEnumerable()) {
-         * newDesc.set("Enumerable", current.get("Enumerable"));
-         * }
-         * 
-         * if (current.hasWritable()) {
-         * newDesc.set("Writable", current.get("Writable"));
-         * }
-         * 
-         * newDesc.copyAll(current);
-         * newDesc.copyAll(desc);
-         * System.err.println( this + " def: " + name + " > " + newDesc );
-         * this.properties.put(name, newDesc);
-         * return true;
-         * }
-         */
-
     }
 
     protected boolean reject(ExecutionContext context, boolean shouldThrow) {

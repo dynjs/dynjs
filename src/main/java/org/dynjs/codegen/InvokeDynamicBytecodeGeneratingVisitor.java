@@ -82,7 +82,6 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         // ref ref
         append(jsGetValue());
         // ref function
-
         swap();
         // function ref
         dup();
@@ -279,10 +278,9 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         expr.getRhs().accept(context, this, strict);
         // obj context name value
         append(jsGetValue());
-        // obj context name value
+        // object context name value
         invokedynamic("dyn:setProp", sig(Object.class, Object.class, ReferenceContext.class, String.class, Object.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
         // value
-
         go_to(end);
 
         label(throwRefError);
@@ -351,8 +349,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
                 // obj name context
                 swap();
                 // obj context name
-                invokedynamic("dyn:getProp|getElem|getMethod", sig(Object.class, Object.class, ReferenceContext.class, String.class), DynJSBootstrapper.BOOTSTRAP,
-                        DynJSBootstrapper.BOOTSTRAP_ARGS);
+                invokedynamic("dyn:getProp|getElem|getMethod", sig(Object.class, Object.class, ReferenceContext.class, String.class), DynJSBootstrapper.BOOTSTRAP, DynJSBootstrapper.BOOTSTRAP_ARGS);
                 // value
                 if (throwIfNot != null) {
                     dup();

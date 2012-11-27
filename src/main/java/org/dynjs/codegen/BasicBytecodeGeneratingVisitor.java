@@ -372,7 +372,9 @@ public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisito
         iconst_0();
         i2b();
         // array array context name size bool
-        invokeinterface(p(JSObject.class), "put", sig(void.class, ExecutionContext.class, String.class, Object.class, boolean.class));
+        invokeinterface(p(JSObject.class), "put", sig(Object.class, ExecutionContext.class, String.class, Object.class, boolean.class));
+        // array val
+        pop();
         // array
 
     }

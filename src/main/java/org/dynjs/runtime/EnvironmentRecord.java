@@ -6,7 +6,7 @@ public interface EnvironmentRecord {
 
     void createMutableBinding(ExecutionContext context, String name, boolean deletable);
 
-    void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict);
+    Object setMutableBinding(ExecutionContext context, String name, Object value, boolean strict);
 
     Object getBindingValue(ExecutionContext context, String name, boolean strict);
 

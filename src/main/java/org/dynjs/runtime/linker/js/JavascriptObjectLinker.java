@@ -3,8 +3,6 @@ package org.dynjs.runtime.linker.js;
 import static java.lang.invoke.MethodHandles.lookup;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.util.Arrays;
 
 import org.dynalang.dynalink.CallSiteDescriptor;
 import org.dynalang.dynalink.linker.GuardedInvocation;
@@ -26,20 +24,19 @@ import com.headius.invokebinder.Binder;
 
 public class JavascriptObjectLinker extends BaseDynJSLinker {
 
-    public static final MethodHandle PUT;
     public static final MethodHandle SET_MUTABLE_BINDING;
-    
+
     public static final MethodHandle CALL;
     public static final MethodHandle CONSTRUCT;
     public static final MethodHandle TO_OBJECT;
+    
 
     static {
         try {
-            PUT = Binder.from(void.class, Object.class, ExecutionContext.class, String.class, Object.class, boolean.class)
-                    .convert(void.class, JSObject.class, ExecutionContext.class, String.class, Object.class, boolean.class)
-                    .invokeVirtual(lookup(), "put");
-            SET_MUTABLE_BINDING = Binder.from(void.class, Object.class, ExecutionContext.class, String.class, Object.class, boolean.class)
-                    .convert(void.class, EnvironmentRecord.class, ExecutionContext.class, String.class, Object.class, boolean.class)
+
+            
+            SET_MUTABLE_BINDING = Binder.from(Object.class, Object.class, ExecutionContext.class, String.class, Object.class, boolean.class)
+                    .convert(Object.class, EnvironmentRecord.class, ExecutionContext.class, String.class, Object.class, boolean.class)
                     .invokeVirtual(lookup(), "setMutableBinding");
             CALL = Binder.from(Object.class, Object.class, ExecutionContext.class, Object.class, Object.class, Object[].class)
                     .convert(Object.class, JSFunction.class, ExecutionContext.class, Object.class, Object.class, Object[].class)
@@ -56,18 +53,6 @@ public class JavascriptObjectLinker extends BaseDynJSLinker {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public GuardedInvocation getGuardedInvocation(LinkRequest linkRequest, LinkerServices linkerServices) throws Exception {
-        GuardedInvocation result = super.getGuardedInvocation(linkRequest, linkerServices);
-        final CallSiteDescriptor desc = linkRequest.getCallSiteDescriptor();
-        if (result == null) {
-            if ("ToObject".equals(desc.getName())) {
-                result = linkToObject(linkRequest, desc);
-            }
-        }
-        return result;
     }
 
     @Override
@@ -101,25 +86,22 @@ public class JavascriptObjectLinker extends BaseDynJSLinker {
         final Object receiver = linkRequest.getReceiver();
 
         if (receiver instanceof EnvironmentRecord) {
-            ReferenceContext context = (ReferenceContext) linkRequest.getArguments()[1];
             try {
                 MethodHandle mh = Binder.from(Object.class, Object.class, ReferenceContext.class, String.class)
-                        .drop(1)
-                        .convert(Object.class, EnvironmentRecord.class, String.class)
-                        .insert(1, context.getContext())
-                        .insert(3, context.getReference().isStrictReference())
+                        .permute(0, 1, 2, 1)
+                        .convert(Object.class, EnvironmentRecord.class, ExecutionContext.class, String.class, boolean.class)
+                        .filter(1, CONTEXT_FILTER)
+                        .filter(3, REFERENCE_STRICTNESS_FILTER )
                         .invokeVirtual(desc.getLookup(), "getBindingValue");
                 return new GuardedInvocation(mh, Guards.isInstance(EnvironmentRecord.class, mh.type()));
             } catch (NoSuchMethodException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         } else if (receiver instanceof JSObject) {
-            ReferenceContext context = (ReferenceContext) linkRequest.getArguments()[1];
             try {
                 MethodHandle mh = Binder.from(Object.class, Object.class, ReferenceContext.class, String.class)
-                        .drop(1)
-                        .convert(Object.class, JSObject.class, String.class)
-                        .insert(1, context.getContext())
+                        .convert(Object.class, JSObject.class, ExecutionContext.class, String.class)
+                        .filter(1, CONTEXT_FILTER )
                         .invokeVirtual(desc.getLookup(), "get");
                 return new GuardedInvocation(mh, Guards.isInstance(JSObject.class, mh.type()));
             } catch (NoSuchMethodException | IllegalAccessException e) {
@@ -133,7 +115,7 @@ public class JavascriptObjectLinker extends BaseDynJSLinker {
     @Override
     protected GuardedInvocation linkSetProp(LinkRequest linkRequest, CallSiteDescriptor desc) {
         final Object receiver = linkRequest.getReceiver();
-        
+
         if (receiver instanceof JSObject) {
             Reference ref = ((ReferenceContext) linkRequest.getArguments()[1]).getReference();
             if (ref.isUnresolvableReference()) {
@@ -149,7 +131,7 @@ public class JavascriptObjectLinker extends BaseDynJSLinker {
                             .drop(1)
                             .insert(1, context)
                             .insert(4, false)
-                            .invoke(PUT);
+                            .invoke(JSOBJECT_PUT);
                     return new GuardedInvocation(mh, Guards.getIdentityGuard(receiver));
                 }
             } else if (ref.isPropertyReference()) {
@@ -159,7 +141,7 @@ public class JavascriptObjectLinker extends BaseDynJSLinker {
                             .drop(1)
                             .insert(1, context)
                             .insert(4, ref.isStrictReference())
-                            .invoke(PUT);
+                            .invoke(JSOBJECT_PUT);
                     return new GuardedInvocation(mh, Guards.getIdentityGuard(receiver));
                 }
             }
@@ -171,7 +153,7 @@ public class JavascriptObjectLinker extends BaseDynJSLinker {
                     .drop(1)
                     .insert(1, context)
                     .insert(4, ref.isStrictReference());
-            MethodHandle mh = binder.invoke( SET_MUTABLE_BINDING );
+            MethodHandle mh = binder.invoke(SET_MUTABLE_BINDING);
             return new GuardedInvocation(mh, Guards.getIdentityGuard(receiver));
         }
 

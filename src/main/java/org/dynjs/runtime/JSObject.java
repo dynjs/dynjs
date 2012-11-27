@@ -18,7 +18,7 @@ public interface JSObject {
 
     boolean hasProperty(ExecutionContext context, String name);
 
-    void put(ExecutionContext context, String name, Object value, boolean shouldThrow);
+    Object put(ExecutionContext context, String name, Object value, boolean shouldThrow);
 
     boolean canPut(ExecutionContext context, String name);
 
