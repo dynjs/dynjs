@@ -15,7 +15,7 @@ public class ToLocaleDateString extends DateTimeFormatter {
     public String format(ExecutionContext context, long t) {
         Calendar c = Calendar.getInstance(context.getTimeZone());
         c.setTimeInMillis(t);
-        return String.format(context.getLocale(), "%1$tA, %1$tB %1$td, %1$tY", c );
+        return String.format(context.getLocale(), "%1$tA, %1$tB %1$td, %1$tY", c);
     }
 
 }
