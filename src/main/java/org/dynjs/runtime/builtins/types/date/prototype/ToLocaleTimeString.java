@@ -14,6 +14,6 @@ public class ToLocaleTimeString extends DateTimeFormatter {
     public String format(ExecutionContext context, long t) {
         Calendar c = Calendar.getInstance(context.getTimeZone());
         c.setTimeInMillis(t);
-        return String.format("%1$tH:%1$tM:%1$tS", c );
+        return String.format("%1$tH:%1$tM:%1$tS", c);
     }
 }

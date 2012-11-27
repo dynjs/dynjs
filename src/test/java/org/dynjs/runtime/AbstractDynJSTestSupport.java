@@ -2,6 +2,7 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.dynjs.Config;
@@ -9,9 +10,9 @@ import org.dynjs.ManualClock;
 import org.junit.Before;
 
 public abstract class AbstractDynJSTestSupport {
-    
+
     public final long fixedInstant = 1347051329670L;
-    
+
     protected Config config;
     protected DynJS runtime;
 
@@ -19,8 +20,9 @@ public abstract class AbstractDynJSTestSupport {
     public void setUp() {
         this.config = new Config();
         this.config.setDebug(false);
-        config.setClock( new ManualClock( fixedInstant ) );
-        config.setTimeZone( TimeZone.getTimeZone( "America/Sao_Paulo" ) );
+        config.setClock(new ManualClock(fixedInstant));
+        config.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+        config.setLocale(Locale.US);
         this.runtime = new DynJS(this.config);
     }
 

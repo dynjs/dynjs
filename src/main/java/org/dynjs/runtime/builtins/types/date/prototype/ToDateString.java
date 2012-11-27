@@ -15,11 +15,7 @@ public class ToDateString extends DateTimeFormatter {
     public String format(ExecutionContext context, long t) {
         Calendar c = Calendar.getInstance(context.getTimeZone());
         c.setTimeInMillis(t);
-        return String.format("%1$ta %1$tb %1$td %1$tY", c );
+        return String.format(context.getLocale(), "%1$ta %1$tb %1$td %1$tY", c);
     }
-    
-    
-
-    
 
 }

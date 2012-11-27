@@ -1,6 +1,7 @@
 package org.dynjs;
 
 import java.io.PrintStream;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.dynjs.runtime.DefaultObjectFactory;
@@ -15,6 +16,7 @@ public class Config {
     private final ClassLoader classLoader;
     private Clock clock = SystemClock.INSTANCE;
     private TimeZone timeZone = TimeZone.getDefault();
+    private Locale locale = Locale.getDefault();
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
@@ -57,6 +59,14 @@ public class Config {
 
     public TimeZone getTimeZone() {
         return this.timeZone;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public Locale getLocale() {
+        return this.locale;
     }
 
     public void setBasePackage(String basePackage) {
