@@ -36,8 +36,16 @@ public class Repl {
     private final DynJS runtime;
     private final OutputStream out;
     private final InputStream in;
+    private final String welcome;
+    private final String prompt;
 
     public Repl(DynJS runtime, InputStream in, OutputStream out) {
+        this(runtime, in, out, WELCOME_MESSAGE, PROMPT);
+    }
+    
+    public Repl(DynJS runtime, InputStream in, OutputStream out, String welcome, String prompt) {
+        this.prompt  = prompt;
+        this.welcome = welcome; 
         this.runtime = runtime;
         this.out = out;
         this.in = in;
@@ -49,9 +57,9 @@ public class Repl {
             consoleSettings.setStdOut(this.out);
             consoleSettings.setInputStream(this.in);
             Console console = new Console();
-            console.pushToStdOut(WELCOME_MESSAGE);
+            console.pushToStdOut(welcome);
             ConsoleOutput line = null;
-            while ((line = console.read(PROMPT)) != null) {
+            while ((line = console.read(prompt)) != null) {
                 String statement = line.getBuffer();
                 if (statement.equalsIgnoreCase("exit")) {
                     break;
