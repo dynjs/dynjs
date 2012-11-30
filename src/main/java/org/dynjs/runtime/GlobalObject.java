@@ -99,7 +99,9 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("encodeURIComponent", new EncodeUriComponent(this));
         defineGlobalProperty("decodeURIComponent", new DecodeUriComponent(this));
 
-        defineGlobalProperty("require", new Require(this));
+        if (runtime.getConfig().isNodePackageManagerEnabled()) {
+            defineGlobalProperty("require", new Require(this));
+        }
         defineGlobalProperty("include", new Include(this));
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
@@ -122,15 +124,14 @@ public class GlobalObject extends DynObject {
         javaClassModuleProvider.addModule(new UtilModule());
 
         this.moduleProviders.add(javaClassModuleProvider);
-        
-        
+
         // ----------------------------------------
         // Java integration
         // ----------------------------------------
-        
-        defineGlobalProperty( "java", new JavaPackage(this, "java" ) );
-        defineGlobalProperty( "org", new JavaPackage(this, "org" ) );
-        defineGlobalProperty( "com", new JavaPackage(this, "com" ) );
+
+        defineGlobalProperty("java", new JavaPackage(this, "java"));
+        defineGlobalProperty("org", new JavaPackage(this, "org"));
+        defineGlobalProperty("com", new JavaPackage(this, "com"));
 
         setPrototype(getPrototypeFor("Object"));
 

@@ -22,23 +22,41 @@ public class Config {
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
     private boolean invokeDynamicEnabled = true;
+    private boolean nodePackageManagerEnabled = true;
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
-        if (System.getProperty("dynjs.disable.indy") != null) {
-            this.invokeDynamicEnabled = false;
-        }
+        initializeOptions();
     }
 
     public Config(ClassLoader parentClassLoader) {
         this.classLoader = new DynamicClassLoader(parentClassLoader);
+        initializeOptions();
+    }
+    
+    private void initializeOptions() {
         if (System.getProperty("dynjs.disable.indy") != null) {
-            this.invokeDynamicEnabled = false;
+            setInvokeDynamicEnabled(false);
         }
+        if (System.getProperty("dynjs.disable.npm") != null) {
+            setNodePackageManagerEnabled(false);
+        }
+    }
+    
+    public void setInvokeDynamicEnabled(boolean enabled) {
+        this.invokeDynamicEnabled = enabled;
     }
 
     public boolean isInvokeDynamicEnabled() {
         return this.invokeDynamicEnabled;
+    }
+    
+    public void setNodePackageManagerEnabled(boolean enabled) {
+        this.nodePackageManagerEnabled = enabled;
+    }
+    
+    public boolean isNodePackageManagerEnabled() {
+        return this.nodePackageManagerEnabled;
     }
 
     public ClassLoader getClassLoader() {
