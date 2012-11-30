@@ -2,7 +2,6 @@ package org.dynjs.compiler;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.JDKVersion;
@@ -18,7 +17,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
-public class AbstractCompiler {
+public class AbstractCompiler<T> {
 
     private final AtomicInteger counter = new AtomicInteger();
     private Class<? extends AbstractCodeGeneratingVisitor> codeGenClass;
@@ -53,14 +52,15 @@ public class AbstractCompiler {
         return this.config.getBasePackage().replace('.', '/') + "/" + grist + type + nextCounterValue();
     }
 
-    protected Class<?> defineClass(JiteClass jiteClass) {
+    @SuppressWarnings("unchecked")
+    protected T defineClass(JiteClass jiteClass) {
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
         if (config.isDebug()) {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
+        return (T) new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
     protected AbstractCodeGeneratingVisitor newCodeGeneratingVisitor(ExecutionContext context) {

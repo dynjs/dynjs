@@ -1,7 +1,7 @@
 package org.dynjs.runtime;
 
 
-public class NullProgram extends BaseProgram {
+public class NullProgram extends AbstractProgram {
     private String filename;
 
     public NullProgram(String filename) {
