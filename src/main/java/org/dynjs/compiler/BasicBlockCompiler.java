@@ -11,6 +11,7 @@ import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
+import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.AbstractBasicBlock;
 import org.dynjs.runtime.BasicBlock;
@@ -54,6 +55,16 @@ public class BasicBlockCompiler extends AbstractCompiler {
 
             }
         };
+        
+        String sourceFile = "<eval>";
+        Position position = body.getPosition();
+        if ( position != null ) {
+            if ( position.getFileName() != null ) {
+                sourceFile = position.getFileName();
+            }
+        }
+        
+        jiteClass.setSourceFile(sourceFile);
 
         Class<AbstractBasicBlock> blockClass = (Class<AbstractBasicBlock>) defineClass(jiteClass);
         try {

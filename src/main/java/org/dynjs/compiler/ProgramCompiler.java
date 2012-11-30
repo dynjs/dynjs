@@ -12,6 +12,7 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
 import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
+import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BaseProgram;
@@ -64,6 +65,16 @@ public class ProgramCompiler extends AbstractCompiler {
                 };
             }
         };
+        
+        String sourceFile = "<eval>";
+        Position position = program.getPosition();
+        if ( position != null ) {
+            if ( position.getFileName() != null ) {
+                sourceFile = position.getFileName();
+            }
+        }
+        
+        jiteClass.setSourceFile(sourceFile);
         
         Class<BaseProgram> cls = (Class<BaseProgram>) defineClass(jiteClass);
         try {

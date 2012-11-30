@@ -13,6 +13,7 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
 import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
+import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.AbstractJavascriptFunction;
@@ -86,6 +87,16 @@ public class FunctionCompiler extends AbstractCompiler {
                 });
             }
         };
+        
+        String sourceFile = "<eval>";
+        Position position = body.getPosition();
+        if ( position != null ) {
+            if ( position.getFileName() != null ) {
+                sourceFile = position.getFileName();
+            }
+        }
+        
+        jiteClass.setSourceFile(sourceFile);
 
         Class<AbstractFunction> functionClass = (Class<AbstractFunction>) defineClass(jiteClass);
         try {

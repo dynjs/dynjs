@@ -1,12 +1,12 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
-
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
 
     @Test
+    @Ignore
     public void testBenComplainsAboutStuff1() {
         
         StringBuffer foo = new StringBuffer();
