@@ -168,14 +168,6 @@ public class ExecutionContext {
         return call(null, function, self, args);
     }
 
-    public Object call(Reference reference, Object self, Object... args) {
-        Object value = reference.getValue(this);
-        if (value instanceof JSFunction) {
-            return call(reference, (JSFunction) value, self, args);
-        }
-        throw new ThrowException(this, createTypeError( "must be callable" ) );
-    }
-
     public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
         if (getPendingConstructorCount() > 0) {
@@ -194,7 +186,6 @@ public class ExecutionContext {
         
     }
     public Object construct(JSFunction function, Object... args) {
-
         if (!function.isConstructor()) {
             throw new ThrowException(this, createTypeError("not a constructor"));
         }

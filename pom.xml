@@ -112,6 +112,9 @@
             <groupId>org.projectodd.linkfusion</groupId>
             <artifactId>linkfusion</artifactId>
             <version>1.x.incremental.11</version>
+<!--
+            <version>1.0-SNAPSHOT</version>
+-->
             <scope>compile</scope>
         </dependency>
         <dependency>

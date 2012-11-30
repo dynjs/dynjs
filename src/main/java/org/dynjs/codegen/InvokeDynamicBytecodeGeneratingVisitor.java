@@ -38,13 +38,14 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             // reference
             aload(Arities.EXECUTION_CONTEXT);
             // reference context
-            ldc( expr.getIdentifier() );
+            ldc(expr.getIdentifier());
             // reference context name
             expr.getExpr().accept(context, this, strict);
             // reference context name val
             append(jsGetValue());
             // reference context name val
-            invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
+            invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+                    DynJSBootstrapper.ARGS);
             // <empty>
             ldc(expr.getIdentifier());
             // str
@@ -171,85 +172,82 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
 
         expr.getMemberExpression().accept(context, this, strict);
         // fnexpr
-        /*
         dup();
         // fnexpr fnexpr
-        append(jsGetValue());
-        // fnexpr function
+        aload(Arities.EXECUTION_CONTEXT);
+        // fnexpr fnexpr context
+        invokestatic(p(DereferencedReference.class), "create", sig(Object.class, Object.class, ExecutionContext.class));
+        // fnexpr fn
         swap();
-        // function fnexpr
-         */
-        
+        // fn fnexpr
         dup();
-        // fnexpr fnexpr
+        // fn fnexpr fnexpr
         instance_of(p(Reference.class));
-        // fnexpr isref?
+        // fn fnexpr isref?
         iffalse(noSelf);
 
         // ----------------------------------------
         // Reference
 
-        // ref
+        // fn ref
         checkcast(p(Reference.class));
-        // ref
+        // fn ref
         dup();
-        // ref ref
+        // fn ref ref
         invokevirtual(p(Reference.class), "isPropertyReference", sig(boolean.class));
-        // ref bool(is-prop)
+        // fn ref bool(is-prop)
 
         iftrue(propertyRef);
 
         // ----------------------------------------
         // Environment Record
 
-        // ref
-        dup();
-        // ref ref
-        append(jsGetBase());
-        // ref base
+        // fn ref
+        invokevirtual(p(Reference.class), "getBase", sig(Object.class));
+        // fn base
         checkcast(p(EnvironmentRecord.class));
-        // ref env-rec
+        // fn env-rec
         invokeinterface(p(EnvironmentRecord.class), "implicitThisValue", sig(Object.class));
-        // ref self
+        // fn self
         go_to(doCall);
 
         // ----------------------------------------
         // Property Reference
         label(propertyRef);
-        // ref
-        dup();
-        // ref ref
+        // fn ref
         append(jsGetBase());
-        // ref self
+        // fn self
         go_to(doCall);
 
         // ------------------------------------------
         // No self
         label(noSelf);
-        // function 
+        // fn fnexpr
+        pop();
+        // fn
         append(jsPushUndefined());
-        // function UNDEFINED
+        // fn UNDEFINED
 
         // ------------------------------------------
         // call()
 
         label(doCall);
-        // ref self
+        // fn self
 
         aload(Arities.EXECUTION_CONTEXT);
-        // ref self context
-        
+        // fn self context
+
         dup_x1();
-        // ref context self context
+        // fn context self context
 
         invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
-        // ref context self
+        // fn context self
 
         List<Expression> argExprs = expr.getArgumentExpressions();
         int numArgs = argExprs.size();
         bipush(numArgs);
         anewarray(p(Object.class));
-        // ref context self array
+        // fn context self array
         for (int i = 0; i < numArgs; ++i) {
             dup();
             bipush(i);
@@ -258,12 +256,12 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             append(jsGetValue());
             aastore();
         }
-        // ref context self array
+        // fn context self array
 
         aload(Arities.EXECUTION_CONTEXT);
-        // ref context self array context
+        // fn context self array context
         invokevirtual(p(ExecutionContext.class), "popCallContext", sig(void.class));
-        // ref context self array
+        // fn context self array
 
         // function context ref self args
         invokedynamic("fusion:call", sig(Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class), DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);

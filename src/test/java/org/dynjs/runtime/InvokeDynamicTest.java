@@ -61,7 +61,6 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
     }
     
 
-    /*
     @Test
     public void testNew_java() {
         Object result = eval( "new org.dynjs.runtime.java.JavaMockery");
@@ -75,6 +74,7 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
         assertThat( ((JavaMockery)result).getValue() ).isEqualTo( 42L );
     }
     
+    /*
     @Test
     public void testNew_java_withParams_getProp() {
         Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42).value");

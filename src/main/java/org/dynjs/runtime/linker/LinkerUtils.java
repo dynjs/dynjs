@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
+import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -15,6 +16,24 @@ import org.dynjs.runtime.Types;
 import com.headius.invokebinder.Binder;
 
 public class LinkerUtils {
+    
+    public static boolean isJavascriptDereferencedReference(Object o) {
+        return ( o instanceof DereferencedReference ) && ( ( (DereferencedReference)o).getValue() instanceof JSObject );
+    }
+    
+    public static boolean isFunctionDereferencedReference(Object o) {
+        return ( o instanceof DereferencedReference ) && ( ( (DereferencedReference)o).getValue() instanceof JSFunction );
+    }
+    
+    public static boolean isPrimitiveDereferencedReference(Object object) {
+        if ( ! (object instanceof DereferencedReference) ) {
+            return false;
+        }
+        
+        Object value = ((DereferencedReference)object).getValue();
+        
+        return value instanceof String || value instanceof Number || value instanceof Boolean;
+    }
 
     public static boolean isJavascriptObjectReference(Object object) {
         return (object instanceof Reference) && (((Reference) object).getBase() instanceof JSObject );
@@ -49,7 +68,22 @@ public class LinkerUtils {
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
-
+    
+    public static MethodHandle javascriptDereferencedReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        return binder.drop(1, binder.type().parameterCount() - 1)
+                .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isJavascriptDereferencedReference", MethodType.methodType(boolean.class, Object.class)));
+    }
+    
+    public static MethodHandle functionDereferencedReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        return binder.drop(1, binder.type().parameterCount() - 1)
+                .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isFunctionDereferencedReference", MethodType.methodType(boolean.class, Object.class)));
+    }
+    
+    public static MethodHandle primitiveDereferencedReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        return binder.drop(1, binder.type().parameterCount() - 1)
+                .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isPrimitiveDereferencedReference", MethodType.methodType(boolean.class, Object.class)));
+    }
+    
     public static MethodHandle javascriptObjectReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
         return binder.drop(1, binder.type().parameterCount() - 1)
                 .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isJavascriptObjectReference", MethodType.methodType(boolean.class, Object.class)));
