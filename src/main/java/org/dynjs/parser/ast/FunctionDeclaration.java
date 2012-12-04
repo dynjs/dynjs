@@ -38,7 +38,7 @@ public class FunctionDeclaration extends AbstractStatement {
         return this.descriptor.getFormalParameters();
     }
 
-    public Statement getBlock() {
+    public BlockStatement getBlock() {
         return this.descriptor.getBlock();
     }
 

@@ -1,9 +1,6 @@
 package org.dynjs.codegen;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.params;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.io.PrintStream;
 
@@ -15,6 +12,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AdditiveExpression;
+import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -25,7 +23,6 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
@@ -733,6 +730,8 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
         // compiler statement context
         swap();
         // compiler context statement
+        
+        checkcast(p(BlockStatement.class));
 
         bipush(formalParams.length);
         // compiler context statement params-en
@@ -757,7 +756,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
 
         // compiler context params statement bool
 
-        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, Statement.class, boolean.class));
+        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, BlockStatement.class, boolean.class));
         // fn
 
         dup();

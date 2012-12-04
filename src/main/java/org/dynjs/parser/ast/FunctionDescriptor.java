@@ -24,10 +24,10 @@ public class FunctionDescriptor {
     private Tree tree;
     private final String identifier;
     private final String[] formalParameters;
-    private Statement block;
+    private BlockStatement block;
     private boolean strict;
 
-    public FunctionDescriptor(final Tree tree, final String identifier, final String[] formalParameters, final Statement block) {
+    public FunctionDescriptor(final Tree tree, final String identifier, final String[] formalParameters, final BlockStatement block) {
         this.tree = tree;
         this.identifier = identifier;
         this.formalParameters = formalParameters;
@@ -47,7 +47,7 @@ public class FunctionDescriptor {
         return this.formalParameters;
     }
 
-    public Statement getBlock() {
+    public BlockStatement getBlock() {
         return this.block;
     }
     

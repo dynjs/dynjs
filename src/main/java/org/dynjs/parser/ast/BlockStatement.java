@@ -42,6 +42,30 @@ public class BlockStatement extends AbstractStatement implements Statement {
         return this.blockContent;
     }
 
+    public List<BlockStatement> getAsChunks(int chunkSize) {
+        if (this.blockContent.size() <= chunkSize) {
+            return Collections.singletonList(this);
+        }
+
+        List<BlockStatement> chunks = new ArrayList<>();
+
+        int chunkStart = 0;
+        int totalStatements = this.blockContent.size();
+
+        while (chunkStart < totalStatements) {
+            int chunkEnd = chunkStart + chunkSize;
+            if (chunkEnd > totalStatements) {
+                chunkEnd = totalStatements;
+            }
+
+            chunks.add(new BlockStatement(this.blockContent.subList(chunkStart, chunkEnd)));
+
+            chunkStart = chunkEnd;
+        }
+
+        return chunks;
+    }
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
         if (this.blockContent == null) {
             return Collections.emptyList();

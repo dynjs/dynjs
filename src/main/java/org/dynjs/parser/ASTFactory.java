@@ -345,7 +345,7 @@ public class ASTFactory {
         return new ExpressionStatement(expr);
     }
 
-    public FunctionDescriptor functionDescriptor(final Tree tree, String identifier, final List<String> formalParameters, final Statement block) {
+    public FunctionDescriptor functionDescriptor(final Tree tree, String identifier, final List<String> formalParameters, final BlockStatement block) {
         return new FunctionDescriptor(tree, identifier, formalParameters.toArray(new String[formalParameters.size()]), block);
     }
 

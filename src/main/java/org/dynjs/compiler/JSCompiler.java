@@ -5,6 +5,7 @@ import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
 import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
 import org.dynjs.codegen.InvokeDynamicBytecodeGeneratingVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.DynJS;
@@ -38,7 +39,7 @@ public class JSCompiler {
         return this.programCompiler.compile(context, program, forceStrict);
     }
 
-    public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, Statement body, boolean containedInStrictCode) {
+    public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, BlockStatement body, boolean containedInStrictCode) {
         return this.functionCompiler.compile(context, formalParameters, body, containedInStrictCode );
     }
 

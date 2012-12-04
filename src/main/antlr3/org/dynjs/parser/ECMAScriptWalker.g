@@ -118,7 +118,7 @@ statement returns [Statement value]
         { $value = $emptyStatement.value; }
 	;
 
-block returns [Statement value]
+block returns [BlockStatement value]
 @init { List<Statement> blockContent = new ArrayList<Statement>(); }
 	: ^( BLOCK (st=statement {blockContent.add($st.value);})* )
 	{  $value = astFactory.block($BLOCK, blockContent);  }
