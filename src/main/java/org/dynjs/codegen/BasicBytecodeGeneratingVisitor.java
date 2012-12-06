@@ -97,7 +97,7 @@ import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.objectweb.asm.tree.LabelNode;
 
-public class BasicBytecodeGeneratingVisitor extends AbstractCodeGeneratingVisitor {
+public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     private static final String[] EMPTY_STRING_ARRAY = {};
 

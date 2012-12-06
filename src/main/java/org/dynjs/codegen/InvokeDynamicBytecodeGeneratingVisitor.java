@@ -6,7 +6,7 @@ import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
-import org.dynjs.codegen.AbstractCodeGeneratingVisitor.Arities;
+import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.AssignmentExpression;
 import org.dynjs.parser.ast.Expression;

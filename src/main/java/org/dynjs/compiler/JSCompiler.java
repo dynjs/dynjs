@@ -1,14 +1,20 @@
 package org.dynjs.compiler;
 
 import org.dynjs.Config;
-import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
 import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
+import org.dynjs.codegen.CodeGeneratingVisitor;
+import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.codegen.InvokeDynamicBytecodeGeneratingVisitor;
+import org.dynjs.compiler.toplevel.BasicBlockCompiler;
+import org.dynjs.compiler.toplevel.FunctionCompiler;
+import org.dynjs.compiler.toplevel.ProgramCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.Program;
 import org.dynjs.runtime.BasicBlock;
+import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
@@ -24,15 +30,12 @@ public class JSCompiler {
     public JSCompiler(DynJS runtime, Config config) {
         this.runtime = runtime;
         this.config = config;
-        Class<? extends AbstractCodeGeneratingVisitor> codeGenClass = null;
-        if ( config.isInvokeDynamicEnabled() ) {
-            codeGenClass = InvokeDynamicBytecodeGeneratingVisitor.class;
-        } else {
-            codeGenClass = BasicBytecodeGeneratingVisitor.class;
-        }
-        this.programCompiler = new ProgramCompiler(codeGenClass, runtime, this.config);
-        this.functionCompiler = new FunctionCompiler(codeGenClass, runtime, this.config);
-        this.basicBlockCompiler = new BasicBlockCompiler(codeGenClass, runtime, this.config);
+
+        CodeGeneratingVisitorFactory factory = new CodeGeneratingVisitorFactory(config.isInvokeDynamicEnabled());
+
+        this.programCompiler = new ProgramCompiler(config, factory);
+        this.functionCompiler = new FunctionCompiler(config, factory);
+        this.basicBlockCompiler = new BasicBlockCompiler(config, factory);
     }
 
     public JSProgram compileProgram(ExecutionContext context, Program program, boolean forceStrict) {
@@ -40,7 +43,7 @@ public class JSCompiler {
     }
 
     public JSFunction compileFunction(ExecutionContext context, String[] formalParameters, BlockStatement body, boolean containedInStrictCode) {
-        return this.functionCompiler.compile(context, formalParameters, body, containedInStrictCode );
+        return this.functionCompiler.compile(context, formalParameters, body, containedInStrictCode);
     }
 
     public BasicBlock compileBasicBlock(ExecutionContext context, String grist, Statement body) {

@@ -1,76 +1,55 @@
 package org.dynjs.compiler;
 
 import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.codegen.AbstractCodeGeneratingVisitor;
-import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
+import org.dynjs.codegen.CodeGeneratingVisitor;
+import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynamicClassLoader;
-import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
-public class AbstractCompiler<T> {
-
-    private final AtomicInteger counter = new AtomicInteger();
-    private Class<? extends AbstractCodeGeneratingVisitor> codeGenClass;
-    private DynJS runtime;
+public abstract class AbstractCompiler {
+    
     private Config config;
-    private String type;
+    private CodeGeneratingVisitorFactory factory;
 
-    public AbstractCompiler(Class<? extends AbstractCodeGeneratingVisitor> codeGenClass, DynJS runtime, Config config, String type) {
-        this.codeGenClass = codeGenClass;
-        this.runtime = runtime;
+    public AbstractCompiler(Config config, CodeGeneratingVisitorFactory factory) {
         this.config = config;
-        this.type = type;
+        this.factory = factory;
     }
-
+    
+    public AbstractCompiler(AbstractCompiler parent) {
+        this.config = parent.config;
+        this.factory = parent.factory;
+    }
+    
     public Config getConfig() {
         return this.config;
     }
-
-    public DynJS getRuntime() {
-        return this.runtime;
+    
+    public CodeGeneratingVisitorFactory getFactory() {
+        return this.factory;
     }
-
-    public int nextCounterValue() {
-        return this.counter.getAndIncrement();
+    
+    public CodeGeneratingVisitor createVisitor(BlockManager blockManager) {
+        return this.factory.create(blockManager);
     }
-
-    public String nextClassName() {
-        return nextClassName("");
-    }
-
-    public String nextClassName(String grist) {
-        return this.config.getBasePackage().replace('.', '/') + "/" + grist + type + nextCounterValue();
-    }
-
+    
     @SuppressWarnings("unchecked")
-    protected T defineClass(JiteClass jiteClass) {
+    protected <T> T defineClass(DynamicClassLoader classLoader, JiteClass jiteClass) {
+        //System.err.println( "defineClass: " + jiteClass.getClassName() );
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
         if (config.isDebug()) {
             ClassReader reader = new ClassReader(bytecode);
             CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         }
-        return (T) new DynamicClassLoader(config.getClassLoader()).define(jiteClass.getClassName().replace('/', '.'), bytecode);
-    }
-
-    protected AbstractCodeGeneratingVisitor newCodeGeneratingVisitor(ExecutionContext context) {
-        try {
-            Constructor<? extends AbstractCodeGeneratingVisitor> ctor = this.codeGenClass.getConstructor(BlockManager.class);
-            AbstractCodeGeneratingVisitor instance = ctor.newInstance(context.getBlockManager());
-            return instance;
-        } catch (Exception e) {
-            return new BasicBytecodeGeneratingVisitor(context.getBlockManager());
-        }
+        return (T) classLoader.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
 }

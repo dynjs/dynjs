@@ -25,7 +25,7 @@ import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
-public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
+public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
 
     public static interface Arities {
         int THIS = 0;
@@ -35,7 +35,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
 
     private BlockManager blockManager;
 
-    public AbstractCodeGeneratingVisitor(BlockManager blockManager) {
+    public CodeGeneratingVisitor(BlockManager blockManager) {
         this.blockManager = blockManager;
     }
 
@@ -359,7 +359,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // Number(x) Number(y) Number(y) Number(x)
                 swap();
                 // Number(x) Number(y) Number(x) Number(y)
-                invokestatic(p(AbstractCodeGeneratingVisitor.class), "isEitherNaN", sig(boolean.class, Number.class, Number.class));
+                invokestatic(p(CodeGeneratingVisitor.class), "isEitherNaN", sig(boolean.class, Number.class, Number.class));
                 // Number(x) Number(y) bool
                 iftrue(target);
                 // Number(x) Number(y)
@@ -376,7 +376,7 @@ public abstract class AbstractCodeGeneratingVisitor extends CodeBlock implements
                 // Number
                 dup();
                 // Number Number
-                invokestatic(p(AbstractCodeGeneratingVisitor.class), "isZero", sig(boolean.class, Number.class));
+                invokestatic(p(CodeGeneratingVisitor.class), "isZero", sig(boolean.class, Number.class));
                 // Number bool
                 iftrue(target);
                 // Number

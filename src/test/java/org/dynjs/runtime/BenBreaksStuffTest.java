@@ -10,7 +10,7 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
         StringBuffer foo = new StringBuffer();
         foo.append( "function foo(){\n" );
         
-        for ( int i = 0 ; i < 5000; ++i ) {
+        for ( int i = 0 ; i < 100000; ++i ) {
             foo.append( "var foo='bar';\n" );
         }
         
