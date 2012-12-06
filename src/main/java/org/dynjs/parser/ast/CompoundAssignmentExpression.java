@@ -15,17 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class CompoundAssignmentExpression extends AbstractExpression {
 
     private final AbstractBinaryExpression rootExpr;
 
-    public CompoundAssignmentExpression(Tree tree, AbstractBinaryExpression rootExpr) {
-        super(tree);
+    public CompoundAssignmentExpression(AbstractBinaryExpression rootExpr) {
         this.rootExpr = rootExpr;
+    }
+    
+    public Position getPosition() {
+        return this.rootExpr.getPosition();
     }
     
     public AbstractBinaryExpression getRootExpr() {

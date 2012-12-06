@@ -1,16 +1,19 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.js.Position;
 
 public abstract class AbstractUnaryOperatorExpression extends AbstractExpression {
 
     private Expression expr;
     private String op;
 
-    public AbstractUnaryOperatorExpression(Tree tree, Expression expr, String op) {
-        super(tree);
+    public AbstractUnaryOperatorExpression(Expression expr, String op) {
         this.expr = expr;
         this.op = op;
+    }
+    
+    public Position getPosition() {
+        return this.expr.getPosition();
     }
 
     public String getOp() {

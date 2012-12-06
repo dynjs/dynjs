@@ -1,16 +1,15 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class BreakStatement extends AbstractStatement implements Statement {
+public class BreakStatement extends BaseStatement {
 
     private String target;
 
-    public BreakStatement(Tree tree, String target) {
-        super(tree);
+    public BreakStatement(Position position, String target) {
+        super(position);
         this.target = target;
     }
     

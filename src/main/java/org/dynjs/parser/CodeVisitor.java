@@ -7,17 +7,19 @@ import org.dynjs.parser.ast.BitwiseExpression;
 import org.dynjs.parser.ast.BitwiseInversionOperatorExpression;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.BooleanLiteralExpression;
+import org.dynjs.parser.ast.BracketExpression;
 import org.dynjs.parser.ast.BreakStatement;
 import org.dynjs.parser.ast.CaseClause;
 import org.dynjs.parser.ast.CatchClause;
+import org.dynjs.parser.ast.CommaOperator;
 import org.dynjs.parser.ast.CompoundAssignmentExpression;
 import org.dynjs.parser.ast.ContinueStatement;
 import org.dynjs.parser.ast.DefaultCaseClause;
 import org.dynjs.parser.ast.DeleteOpExpression;
 import org.dynjs.parser.ast.DoWhileStatement;
+import org.dynjs.parser.ast.DotExpression;
 import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
-import org.dynjs.parser.ast.ExpressionList;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
@@ -32,7 +34,6 @@ import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
-import org.dynjs.parser.ast.MemberExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
 import org.dynjs.parser.ast.NamedValue;
 import org.dynjs.parser.ast.NewOperatorExpression;
@@ -57,9 +58,8 @@ import org.dynjs.parser.ast.TryStatement;
 import org.dynjs.parser.ast.TypeOfOpExpression;
 import org.dynjs.parser.ast.UnaryMinusExpression;
 import org.dynjs.parser.ast.UnaryPlusExpression;
-import org.dynjs.parser.ast.UndefinedValueExpression;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.parser.ast.VariableDeclarationStatement;
+import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
@@ -102,7 +102,7 @@ public interface CodeVisitor {
 
     void visit(ExecutionContext context, EqualityOperatorExpression expr, boolean strict);
 
-    void visit(ExecutionContext context, ExpressionList expr, boolean strict);
+    void visit(ExecutionContext context, CommaOperator expr, boolean strict);
 
     void visit(ExecutionContext context, ExpressionStatement statement, boolean strict);
 
@@ -132,7 +132,9 @@ public interface CodeVisitor {
 
     void visit(ExecutionContext context, LogicalNotOperatorExpression expr, boolean strict);
 
-    void visit(ExecutionContext context, MemberExpression expr, boolean strict);
+    void visit(ExecutionContext context, DotExpression expr, boolean strict);
+    
+    void visit(ExecutionContext context, BracketExpression expr, boolean strict);
 
     void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict);
 
@@ -182,11 +184,9 @@ public interface CodeVisitor {
 
     void visit(ExecutionContext context, UnaryPlusExpression expr, boolean strict);
 
-    void visit(ExecutionContext context, UndefinedValueExpression expr, boolean strict);
-
     void visit(ExecutionContext context, VariableDeclaration expr, boolean strict);
 
-    void visit(ExecutionContext context, VariableDeclarationStatement statement, boolean strict);
+    void visit(ExecutionContext context, VariableStatement statement, boolean strict);
 
     void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict);
 

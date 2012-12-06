@@ -1,10 +1,8 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.makeDate;
-import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.makeDay;
-import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.makeTime;
-import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.timeClip;
-import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.utc;
+import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.*;
+
+import java.util.Arrays;
 
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;

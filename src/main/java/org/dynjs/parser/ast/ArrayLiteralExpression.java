@@ -17,18 +17,18 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class ArrayLiteralExpression extends AbstractExpression {
+public class ArrayLiteralExpression extends BaseExpression {
 
     private final List<Expression> exprs;
 
-    public ArrayLiteralExpression(final Tree tree, final List<Expression> exprs) {
-        super(tree);
+    public ArrayLiteralExpression(Position position, final List<Expression> exprs) {
+        super(position);
         this.exprs = exprs;
-        if (this.exprs.get(this.exprs.size() - 1) == null) {
+        if (this.exprs.size() > 1 && ( this.exprs.get(this.exprs.size() - 1) == null)  ) {
             this.exprs.remove(this.exprs.size() - 1);
         }
     }

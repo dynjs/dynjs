@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class AssignmentExpression extends AbstractBinaryExpression {
 
-    public AssignmentExpression(final Tree tree, final Expression lhs, final Expression rhs) {
-        super(tree, lhs, rhs, "=" );
+    public AssignmentExpression(final Expression lhs, final Expression rhs) {
+        super(lhs, rhs, "=" );
     }
     
     @Override

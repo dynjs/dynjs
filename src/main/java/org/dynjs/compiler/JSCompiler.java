@@ -1,20 +1,15 @@
 package org.dynjs.compiler;
 
 import org.dynjs.Config;
-import org.dynjs.codegen.BasicBytecodeGeneratingVisitor;
-import org.dynjs.codegen.CodeGeneratingVisitor;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
-import org.dynjs.codegen.InvokeDynamicBytecodeGeneratingVisitor;
 import org.dynjs.compiler.toplevel.BasicBlockCompiler;
 import org.dynjs.compiler.toplevel.FunctionCompiler;
 import org.dynjs.compiler.toplevel.ProgramCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
-import org.dynjs.parser.ast.Program;
+import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.BasicBlock;
-import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
@@ -38,7 +33,7 @@ public class JSCompiler {
         this.basicBlockCompiler = new BasicBlockCompiler(config, factory);
     }
 
-    public JSProgram compileProgram(ExecutionContext context, Program program, boolean forceStrict) {
+    public JSProgram compileProgram(ExecutionContext context, ProgramTree program, boolean forceStrict) {
         return this.programCompiler.compile(context, program, forceStrict);
     }
 

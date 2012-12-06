@@ -16,6 +16,7 @@
 package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionExpression extends AbstractExpression {
@@ -23,8 +24,11 @@ public class FunctionExpression extends AbstractExpression {
     private FunctionDescriptor descriptor;
 
     public FunctionExpression(FunctionDescriptor descriptor) {
-        super(descriptor.getTree());
         this.descriptor = descriptor;
+    }
+    
+    public Position getPosition() {
+        return this.descriptor.getPosition();
     }
 
     public FunctionDescriptor getDescriptor() {
@@ -34,7 +38,7 @@ public class FunctionExpression extends AbstractExpression {
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
-        String[] params = this.descriptor.getFormalParameters();
+        String[] params = this.descriptor.getFormalParameterNames();
         for (int i = 0; i < params.length; ++i) {
             if (i > 0) {
                 buf.append(", ");

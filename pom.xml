@@ -151,14 +151,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- antlr parser dependencies -->
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr-runtime</artifactId>
-            <version>3.3</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -246,7 +238,6 @@
                 <configuration>
                     <header>${project.basedir}/etc/dynjs-license.txt</header>
                     <excludes>
-                        <exclude>src/main/antlr3/**</exclude>
                         <exclude>src/main/java/org/dynalang/**</exclude>
                         <exclude>src/main/resources/org/dynjs/dynjs-license.txt</exclude>
                     </excludes>
@@ -264,18 +255,6 @@
                     <configFile>${project.basedir}/support/eclipse-formatting.xml</configFile>
                     <lineEnding>LF</lineEnding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>antlr</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

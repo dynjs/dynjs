@@ -17,27 +17,27 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class VariableDeclarationStatement extends AbstractStatement {
+public class VariableStatement extends BaseStatement {
 
-    private List<VariableDeclaration> declExprs;
+    private List<VariableDeclaration> decls;
 
-    public VariableDeclarationStatement(final Tree tree, final List<VariableDeclaration> declExprs) {
-        super(tree);
-        this.declExprs = declExprs;
+    public VariableStatement(Position position, final List<VariableDeclaration> decls) {
+        super( position );
+        this.decls = decls;
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
-        return this.declExprs;
+        return this.decls;
     }
     
     public String dump(String indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(super.dump(indent));
-        for (VariableDeclaration decl : this.declExprs) {
+        for (VariableDeclaration decl : this.decls) {
             buf.append(decl.dump(indent + "  "));
         }
         return buf.toString();
@@ -47,7 +47,7 @@ public class VariableDeclarationStatement extends AbstractStatement {
         StringBuffer buf = new StringBuffer();
         buf.append(indent).append("var ");
         boolean first = true;
-        for (VariableDeclaration each : declExprs) {
+        for (VariableDeclaration each : decls) {
             if (!first) {
                 buf.append(", ");
             }

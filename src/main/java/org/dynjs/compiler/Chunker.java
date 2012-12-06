@@ -9,7 +9,7 @@ import org.dynjs.parser.ast.BlockStatement;
 
 public class Chunker {
     
-    public static final int CHUNK_SIZE = 150;
+    public static final int CHUNK_SIZE = 100;
     
     public static List<BlockStatement> chunk(BlockStatement block) {
         return chunk( block, CHUNK_SIZE );

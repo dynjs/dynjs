@@ -18,43 +18,43 @@ package org.dynjs.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class IfStatement extends AbstractStatement {
+public class IfStatement extends BaseStatement {
 
-    private final Expression vbool;
-    private final Statement vthen;
-    private final Statement velse;
+    private final Expression testExpr;
+    private final Statement thenBlock;
+    private final Statement elseBlock;
 
-    public IfStatement(final Tree tree, final Expression vbool, final Statement vthen, final Statement velse) {
-        super(tree);
-        this.vbool = vbool;
-        this.vthen = vthen;
-        this.velse = velse;
+    public IfStatement(Position position, final Expression testExpr, final Statement thenBlock, final Statement elseBlock) {
+        super( position );
+        this.testExpr = testExpr;
+        this.thenBlock = thenBlock;
+        this.elseBlock = elseBlock;
     }
 
     public Expression getTest() {
-        return this.vbool;
+        return this.testExpr;
     }
 
     public Statement getThenBlock() {
-        return this.vthen;
+        return this.thenBlock;
     }
 
     public Statement getElseBlock() {
-        return this.velse;
+        return this.elseBlock;
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
-        if (this.vthen != null) {
-            decls.addAll(this.vthen.getVariableDeclarations());
+        if (this.thenBlock != null) {
+            decls.addAll(this.thenBlock.getVariableDeclarations());
         }
-        if (this.velse != null) {
-            decls.addAll(this.velse.getVariableDeclarations());
+        if (this.elseBlock != null) {
+            decls.addAll(this.elseBlock.getVariableDeclarations());
         }
         return decls;
     }
@@ -62,10 +62,10 @@ public class IfStatement extends AbstractStatement {
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
 
-        buf.append(indent).append("if (").append(this.vbool.toString()).append(") {\n");
-        buf.append(this.vthen.toIndentedString(indent + "  "));
-        if (this.velse != null) {
-            buf.append(indent).append("} else {\n").append(this.velse.toIndentedString(indent + "  "));
+        buf.append(indent).append("if (").append(this.testExpr.toString()).append(") {\n");
+        buf.append(this.thenBlock.toIndentedString(indent + "  "));
+        if (this.elseBlock != null) {
+            buf.append(indent).append("} else {\n").append(this.elseBlock.toIndentedString(indent + "  "));
         }
         buf.append(indent).append("}");
 

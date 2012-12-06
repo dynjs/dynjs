@@ -57,7 +57,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
             requireGlobal.put(requireContext, "exports", exports, true);
 
             try {
-                runtime.execute(requireContext, file);
+                runtime.newRunner().withContext(requireContext).withSource(file).execute();
             } catch (IOException e) {
                 return null;
             }

@@ -148,6 +148,12 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         // TODO: Strict equality on arrays fails
 //        assertThat(eval("y === x")).isEqualTo(true);
     }
+    
+    @Test
+    public void testElidedArrays() {
+        DynArray result = (DynArray) eval( "[,]" );
+        System.err.println( result.get( getContext(), "length" ) );
+    }
 
     @Test
     public void testConcatWithEmptyArrays() {

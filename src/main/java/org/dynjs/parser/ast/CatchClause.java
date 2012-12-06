@@ -1,18 +1,23 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class CatchClause extends AbstractStatement {
+public class CatchClause {
+    private final Position position;
     private final String identifier;
     private final Statement block;
 
-    public CatchClause(Tree tree, String identifier, Statement block) {
-        super(tree);
+    public CatchClause(Position position, String identifier, Statement block) {
+        this.position = position;
         this.identifier = identifier;
         this.block = block;
+    }
+    
+    public Position getPosition() {
+        return this.position;
     }
 
     public String getIdentifier() {
@@ -31,14 +36,10 @@ public class CatchClause extends AbstractStatement {
         return buf.toString();
     }
     
-    
-
-    @Override
     public String dump(String indent) {
-        return super.dump(indent) + this.block.dump( indent + "  " );
+        return this.block.dump( indent + "  " );
     }
 
-    @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
     }

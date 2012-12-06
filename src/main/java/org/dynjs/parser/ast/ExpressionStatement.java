@@ -16,6 +16,7 @@
 package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ExpressionStatement extends AbstractStatement {
@@ -23,12 +24,19 @@ public class ExpressionStatement extends AbstractStatement {
     private final Expression expr;
 
     public ExpressionStatement(final Expression expr) {
-        super(expr.getPosition());
         this.expr = expr;
+    }
+    
+    public Position getPosition() {
+        return this.expr.getPosition();
     }
 
     public Expression getExpr() {
         return this.expr;
+    }
+    
+    public String dump(String indent) {
+        return super.dump(indent) + this.expr.dump("  " + indent);
     }
     
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

@@ -2,13 +2,14 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class DefaultCaseClause extends CaseClause {
 
 
-    public DefaultCaseClause(Statement block) {
-        super( null, block );
+    public DefaultCaseClause(Position position, Statement block) {
+        super( position, null, block );
     }
 
     public String toIndentedString(String indent) {

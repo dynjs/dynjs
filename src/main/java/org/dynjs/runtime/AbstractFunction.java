@@ -8,7 +8,7 @@ import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.parser.ast.VariableDeclarationStatement;
+import org.dynjs.parser.ast.VariableStatement;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
@@ -115,8 +115,8 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             return ((BlockStatement) this.body).getVariableDeclarations();
         }
 
-        if (this.body instanceof VariableDeclarationStatement) {
-            return ((VariableDeclarationStatement) this.body).getVariableDeclarations();
+        if (this.body instanceof VariableStatement) {
+            return ((VariableStatement) this.body).getVariableDeclarations();
         }
         return Collections.emptyList();
     }

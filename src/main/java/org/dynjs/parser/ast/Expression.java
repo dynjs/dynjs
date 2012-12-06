@@ -1,7 +1,7 @@
 package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.Position;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public interface Expression {

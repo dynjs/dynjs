@@ -20,6 +20,7 @@ import org.dynjs.parser.ast.BitwiseExpression;
 import org.dynjs.parser.ast.BitwiseInversionOperatorExpression;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.BooleanLiteralExpression;
+import org.dynjs.parser.ast.BracketExpression;
 import org.dynjs.parser.ast.BreakStatement;
 import org.dynjs.parser.ast.CaseClause;
 import org.dynjs.parser.ast.CatchClause;
@@ -31,7 +32,7 @@ import org.dynjs.parser.ast.DoWhileStatement;
 import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
-import org.dynjs.parser.ast.ExpressionList;
+import org.dynjs.parser.ast.CommaOperator;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
@@ -46,7 +47,7 @@ import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
-import org.dynjs.parser.ast.MemberExpression;
+import org.dynjs.parser.ast.DotExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
 import org.dynjs.parser.ast.NamedValue;
 import org.dynjs.parser.ast.NewOperatorExpression;
@@ -72,9 +73,8 @@ import org.dynjs.parser.ast.TryStatement;
 import org.dynjs.parser.ast.TypeOfOpExpression;
 import org.dynjs.parser.ast.UnaryMinusExpression;
 import org.dynjs.parser.ast.UnaryPlusExpression;
-import org.dynjs.parser.ast.UndefinedValueExpression;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.parser.ast.VariableDeclarationStatement;
+import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
@@ -134,7 +134,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
-
         LabelNode doubleNums = new LabelNode();
 
         LabelNode stringConcatByLeft = new LabelNode();
@@ -153,12 +152,14 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // val(lhs) val(lhs)
         instance_of(p(String.class));
         // val(lhs) bool
+        expr.getRhs().accept(context, this, strict);
+        // val(lhs) bool ref(rhs)
+        append(jsGetValue());
+        // val(lhs) bool val(rhs)
+        swap();
+        // val(lhs) val(rhs) bool
         iftrue(stringConcatByLeft);
 
-        expr.getRhs().accept(context, this, strict);
-        // val(lhs) ref(rhs)
-        append(jsGetValue());
-        // val(lhs) val(rhs)
         aconst_null();
         // val(lhs) val(rhs) null
         append(jsToPrimitive());
@@ -209,10 +210,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // ----------------------------------------
         // Strings forced by LHS
         label(stringConcatByLeft);
-        // val(lhs)
-        expr.getRhs().accept(context, this, strict);
-        // val(lhs) ref(rhs)
-        append(jsGetValue());
         // val(lhs) val(rhs)
         aconst_null();
         // val(lhs) val(rhs) null
@@ -240,7 +237,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // ----------------------------------------
         label(end);
         nop();
-
     }
 
     public void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
@@ -831,14 +827,12 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ExpressionList expr, boolean strict) {
-        Iterator<Expression> exprs = expr.getExprList().iterator();
-        while (exprs.hasNext()) {
-            exprs.next().accept(context, this, strict);
-            if (exprs.hasNext()) {
-                pop();
-            }
-        }
+    public void visit(ExecutionContext context, CommaOperator expr, boolean strict) {
+        expr.getLhs().accept( context, this, strict );
+        jsGetValue();
+        pop();
+        expr.getRhs().accept( context, this, strict );
+        jsGetValue();
     }
 
     @Override
@@ -1057,7 +1051,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // <EMPTY>
         aload(Arities.EXECUTION_CONTEXT);
         // context
-        ldc(statement.getDeclaration().getVariableDeclarations().get(0).getIdentifier());
+        ldc(statement.getDeclaration().getIdentifier());
         // context identifier
         invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
         // reference
@@ -1372,11 +1366,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         label(doCall);
         // context ref function self
 
-        aload(Arities.EXECUTION_CONTEXT);
-        // context ref function self context
-        invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
-        // context ref function self
-
         swap();
         // context ref self function
 
@@ -1409,11 +1398,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         label(isCallable);
         // context ref function self array
 
-        aload(Arities.EXECUTION_CONTEXT);
-        // context ref function self array context
-        invokevirtual(p(ExecutionContext.class), "popCallContext", sig(void.class));
-        // context ref function self array
-
         // call ExecutionContext#call(fn, self, args) -> Object
         invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, Object.class, JSFunction.class, Object.class, Object[].class));
         // obj
@@ -1426,7 +1410,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        compiledFunction(expr.getDescriptor().getFormalParameters(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
+        compiledFunction(expr.getDescriptor().getFormalParameterNames(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
     }
 
     @Override
@@ -1651,7 +1635,27 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, MemberExpression expr, boolean strict) {
+    public void visit(ExecutionContext context, DotExpression expr, boolean strict) {
+        aload(Arities.EXECUTION_CONTEXT);
+        // context
+        expr.getLhs().accept(context, this, strict);
+        // context reference
+        append(jsGetValue());
+        // context object
+        ldc( expr.getIdentifier() );
+        // context object identifier
+        swap();
+        // context identifier obj
+        append(jsCheckObjectCoercible(expr.getLhs().toString()));
+        // context identifier obj
+        swap();
+        // context object identifier
+        append(jsCreatePropertyReference());
+        // reference
+    }
+    
+    @Override
+    public void visit(ExecutionContext context, BracketExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         expr.getLhs().accept(context, this, strict);
@@ -1659,17 +1663,17 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         append(jsGetValue());
         // context object
         expr.getRhs().accept(context, this, strict);
-        // context object identifier-maybe-reference
+        // context object ident-expr
         swap();
-        // context identifier-maybe-reference obj
+        // context ident-expr obj
         append(jsCheckObjectCoercible(expr.getLhs().toString()));
-        // context identifier-maybe-reference obj
+        // context ident-expr obj
         swap();
-        // context object identifier-maybe-reference
+        // context object ident-expr
         append(jsGetValue());
-        // context object identifier-obj
+        // context object ident-obj
         append(jsToString());
-        // context object identifier-str
+        // context object ident-str
         append(jsCreatePropertyReference());
         // reference
     }
@@ -1742,21 +1746,9 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         LabelNode end = new LabelNode();
         // 11.2.2
 
-        aload(Arities.EXECUTION_CONTEXT);
-        // context
-        invokevirtual(p(ExecutionContext.class), "incrementPendingConstructorCount", sig(void.class));
-        // <empty>
-
         expr.getExpr().accept(context, this, strict);
         // obj
 
-        aload(Arities.EXECUTION_CONTEXT);
-        // obj context
-        invokevirtual(p(ExecutionContext.class), "getPendingConstructorCount", sig(int.class));
-        // obj count
-        iffalse(end);
-
-        // obj
         aload(Arities.EXECUTION_CONTEXT);
         // obj context
         swap();
@@ -2560,7 +2552,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
             // thrown context
             swap();
             // context thrown
-            compiledStatementBlock("Catch", statement.getCatchClause());
+            compiledStatementBlock("Catch", statement.getCatchClause().getBlock());
             // context thrown catchblock
             swap();
             // context catchblock thrown
@@ -2781,11 +2773,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, UndefinedValueExpression expr, boolean strict) {
-        append(jsPushUndefined());
-    }
-
-    @Override
     public void visit(ExecutionContext context, VariableDeclaration expr, boolean strict) {
         if (expr.getExpr() == null) {
             ldc(expr.getIdentifier());
@@ -2807,7 +2794,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableDeclarationStatement statement, boolean strict) {
+    public void visit(ExecutionContext context, VariableStatement statement, boolean strict) {
         for (VariableDeclaration each : statement.getVariableDeclarations()) {
             each.accept(context, this, strict);
             // identifier

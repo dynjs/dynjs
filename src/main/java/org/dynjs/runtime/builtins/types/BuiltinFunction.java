@@ -1,22 +1,24 @@
 package org.dynjs.runtime.builtins.types;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.ECMAScriptLexer;
-import org.dynjs.parser.ECMAScriptParser;
-import org.dynjs.parser.ECMAScriptWalker;
-import org.dynjs.parser.ASTFactory;
-import org.dynjs.parser.JavascriptParser;
 import org.dynjs.parser.ast.FunctionDescriptor;
+import org.dynjs.parser.js.ASTFactory;
+import org.dynjs.parser.js.CharStream;
+import org.dynjs.parser.js.CircularCharBuffer;
+import org.dynjs.parser.js.JavascriptParser;
+import org.dynjs.parser.js.Lexer;
+import org.dynjs.parser.js.Parser;
+import org.dynjs.parser.js.ParserException;
+import org.dynjs.parser.js.TokenQueue;
+import org.dynjs.parser.js.TokenStream;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -90,41 +92,27 @@ public class BuiltinFunction extends AbstractBuiltinType {
         try {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
-            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameters(), descriptor.getBlock(), descriptor.isStrict() );
+            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameterNames(), descriptor.getBlock(), descriptor.isStrict() );
             if (function.isStrict() && duplicateFormalParams) {
                 throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
             }
             function.setPrototype(getPrototype());
             return function;
-        } catch (RecognitionException e) {
+        } catch (ParserException e) {
+            throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
+        } catch (IOException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         }
 
     }
 
-    public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws RecognitionException {
-        final ANTLRStringStream stream = new ANTLRStringStream(code);
-        ECMAScriptLexer lexer = new ECMAScriptLexer(stream);
-
-        CommonTokenStream lexerStream = new CommonTokenStream(lexer);
-        JavascriptParser parser = new JavascriptParser(context, lexerStream);
-        parser.getWatcher().pushState();
-
-        ECMAScriptParser.functionExpression_return function = parser.functionExpression();
-        List<String> errors = parser.getErrors();
-        if (!errors.isEmpty()) {
-            throw new ThrowException(context, context.createSyntaxError(errors.get(0)));
-        }
-
-        CommonTree tree = (CommonTree) function.getTree();
-        CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream(tree);
-        treeNodeStream.setTokenStream(lexerStream);
-        ECMAScriptWalker walker = new ECMAScriptWalker(treeNodeStream);
-
-        ASTFactory astFactory = new ASTFactory();
-        walker.setASTFactory(astFactory);
-        FunctionDescriptor descriptor = walker.functionDescriptor();
-        return descriptor;
+    public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws IOException {
+        Reader in = new StringReader( code );
+        CharStream charStream = new CircularCharBuffer(in);
+        Lexer lexer = new Lexer(charStream);
+        TokenStream tokenStream = new TokenQueue(lexer);
+        Parser parser = new Parser( new ASTFactory(), tokenStream );
+        return parser.functionDescriptor();
     }
 
 }

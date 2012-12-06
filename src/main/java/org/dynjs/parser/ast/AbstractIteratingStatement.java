@@ -1,19 +1,18 @@
 package org.dynjs.parser.ast;
 
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
-import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.js.Position;
 import org.objectweb.asm.tree.LabelNode;
 
-public abstract class AbstractIteratingStatement extends AbstractStatement {
+public abstract class AbstractIteratingStatement extends BaseStatement {
 
-    public AbstractIteratingStatement(Tree tree) {
-        super(tree);
+    public AbstractIteratingStatement(Position position) {
+        super( position );
     }
 
     public CodeBlock isInLabelSet() {

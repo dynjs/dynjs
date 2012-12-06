@@ -27,8 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.CodeBlock;
 
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Position;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
@@ -37,22 +35,11 @@ import org.objectweb.asm.tree.LabelNode;
 public abstract class AbstractStatement implements Statement {
 
     private final static AtomicInteger counter = new AtomicInteger();
-    private final Position position;
     private int number;
     private List<String> labels = new ArrayList<String>();
 
-    AbstractStatement(final Tree tree) {
-        this.position = new Position(tree);
+    AbstractStatement() {
         this.number = counter.incrementAndGet();
-    }
-
-    AbstractStatement(final Position position) {
-        this.position = position;
-        this.number = counter.incrementAndGet();
-    }
-
-    public Position getPosition() {
-        return position;
     }
 
     public int getStatementNumber() {

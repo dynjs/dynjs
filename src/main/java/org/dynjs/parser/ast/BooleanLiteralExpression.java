@@ -15,16 +15,16 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class BooleanLiteralExpression extends AbstractExpression {
+public class BooleanLiteralExpression extends BaseExpression {
 
     private final boolean value;
 
-    public BooleanLiteralExpression(final Tree tree, final boolean value) {
-        super(tree);
+    public BooleanLiteralExpression(final Position position, final boolean value) {
+        super(position);
         this.value = value;
     }
     

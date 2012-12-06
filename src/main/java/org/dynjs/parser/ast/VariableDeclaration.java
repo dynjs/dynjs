@@ -1,18 +1,23 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class VariableDeclaration extends AbstractExpression {
+public class VariableDeclaration {
 
+    private Position position;
     private String identifier;
     private Expression expr;
 
-    public VariableDeclaration(Tree tree, String identifier, Expression initializerExpr) {
-        super(tree);
+    public VariableDeclaration(Position position, String identifier, Expression initializerExpr) {
+        this.position = position;
         this.identifier = identifier;
         this.expr = initializerExpr;
+    }
+    
+    public Position getPosition() {
+        return this.position;
     }
     
     public Expression getExpr() {
@@ -34,9 +39,20 @@ public class VariableDeclaration extends AbstractExpression {
         return buf.toString();
     }
 
-    @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
+    }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append( this.identifier );
+        if ( this.expr != null ) {
+            buf.append( " = " );
+            buf.append( this.expr );
+        }
+        return buf.toString();
+        
+        
     }
 
 }

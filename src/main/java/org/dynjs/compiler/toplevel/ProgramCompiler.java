@@ -14,7 +14,7 @@ import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.compiler.partial.CompilationPlanner;
 import org.dynjs.compiler.partial.PartialCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.Program;
+import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.AbstractProgram;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;
@@ -29,7 +29,7 @@ public class ProgramCompiler extends AbstractTopLevelCompiler {
         super(config, factory, "Program");
     }
 
-    public JSProgram compile(final ExecutionContext context, final Program body, boolean forceStrict) {
+    public JSProgram compile(final ExecutionContext context, final ProgramTree body, boolean forceStrict) {
         String className = nextClassName();
 
         final boolean strict = body.isStrict() || forceStrict;

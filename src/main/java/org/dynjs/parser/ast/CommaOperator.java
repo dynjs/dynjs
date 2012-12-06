@@ -13,35 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.dynjs.parser;
 
-import java.util.List;
+package org.dynjs.parser.ast;
 
-import org.antlr.runtime.RecognitionException;
+import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.ExecutionContext;
 
-public class SyntaxError extends ParserException {
+public class CommaOperator extends AbstractBinaryExpression {
 
-    private List<String> errors;
-
-    public SyntaxError(RecognitionException e) {
-        super(e);
+    public CommaOperator(Expression lhs, Expression rhs) {
+        super( lhs, rhs , ",");
     }
 
-    public SyntaxError(List<String> errors) {
-        this.errors = errors;
+    @Override
+    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+        visitor.visit( context, this, strict );
     }
 
-    public List<String> getErrors() {
-        return this.errors;
-    }
-
-    public String getMessage() {
-        StringBuffer buf = new StringBuffer();
-
-        for (String message : errors) {
-            buf.append(message + "\n");
-        }
-
-        return buf.toString();
-    }
 }

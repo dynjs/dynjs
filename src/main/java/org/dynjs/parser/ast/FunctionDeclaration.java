@@ -18,7 +18,7 @@ package org.dynjs.parser.ast;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionDeclaration extends AbstractStatement {
@@ -26,8 +26,11 @@ public class FunctionDeclaration extends AbstractStatement {
     private FunctionDescriptor descriptor;
 
     public FunctionDeclaration(FunctionDescriptor descriptor) {
-        super(descriptor.getTree());
         this.descriptor = descriptor;
+    }
+    
+    public Position getPosition() {
+        return this.descriptor.getPosition();
     }
 
     public String getIdentifier() {
@@ -35,7 +38,7 @@ public class FunctionDeclaration extends AbstractStatement {
     }
 
     public String[] getFormalParameters() {
-        return this.descriptor.getFormalParameters();
+        return this.descriptor.getFormalParameterNames();
     }
 
     public BlockStatement getBlock() {
@@ -57,7 +60,7 @@ public class FunctionDeclaration extends AbstractStatement {
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(indent).append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
-        String[] params = this.descriptor.getFormalParameters();
+        String[] params = this.descriptor.getFormalParameterNames();
         for (int i = 0; i < params.length; ++i) {
             if (i > 0) {
                 buf.append(", ");

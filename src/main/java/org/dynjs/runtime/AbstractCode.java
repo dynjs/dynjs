@@ -7,7 +7,7 @@ import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.parser.ast.VariableDeclarationStatement;
+import org.dynjs.parser.ast.VariableStatement;
 
 public abstract class AbstractCode implements JSCode {
 
@@ -49,8 +49,8 @@ public abstract class AbstractCode implements JSCode {
             return ((BlockStatement) block).getVariableDeclarations();
         }
 
-        if (block instanceof VariableDeclarationStatement) {
-            return ((VariableDeclarationStatement) block).getVariableDeclarations();
+        if (block instanceof VariableStatement) {
+            return ((VariableStatement) block).getVariableDeclarations();
         }
 
         return Collections.emptyList();

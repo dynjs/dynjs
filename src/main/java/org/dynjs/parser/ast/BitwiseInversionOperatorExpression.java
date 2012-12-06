@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class BitwiseInversionOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    public BitwiseInversionOperatorExpression(final Tree tree, final Expression expr) {
-        super(tree, expr, "~");
+    public BitwiseInversionOperatorExpression(final Expression expr) {
+        super(expr, "~");
     }
     
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

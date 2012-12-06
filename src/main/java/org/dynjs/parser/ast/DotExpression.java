@@ -15,8 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 /**
@@ -27,18 +27,34 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Douglas Campos
  * @author Bob McWhirter
  */
-public class MemberExpression extends AbstractBinaryExpression {
+public class DotExpression extends AbstractExpression {
 
-    public MemberExpression(final Tree tree, final Expression memberExpr, final Expression identifierExpr) {
-        super(tree, memberExpr, identifierExpr, "." );
+    private Expression lhs;
+    private String identifier;
+
+    public DotExpression(Expression lhs, String identifier) {
+        this.lhs = lhs;
+        this.identifier = identifier;
+    }
+    
+    public Position getPosition() {
+        return this.lhs.getPosition();
+    }
+    
+    public Expression getLhs() {
+        return this.lhs;
+    }
+    
+    public String getIdentifier() {
+        return this.identifier;
     }
     
     public String toString() {
-        return getLhs() + "." + getRhs();
+        return this.lhs + "." + this.identifier;
     }
     
     public String dump(String indent) {
-        return super.dump(indent) + getLhs().dump( indent + "  " ) + getRhs().dump( indent + "  " );
+        return super.dump(indent) + getLhs().dump( indent + "  " ) + this.identifier;
     }
 
     @Override

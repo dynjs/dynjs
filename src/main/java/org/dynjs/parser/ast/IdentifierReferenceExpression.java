@@ -15,8 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 /**
@@ -30,12 +30,12 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Douglas Campos
  * @author Bob McWhirter
  */
-public class IdentifierReferenceExpression extends AbstractExpression {
+public class IdentifierReferenceExpression extends BaseExpression {
 
     private final String identifier;
 
-    public IdentifierReferenceExpression(final Tree tree, final String identifier) {
-        super(tree);
+    public IdentifierReferenceExpression(Position position, String identifier) {
+        super(position);
         this.identifier = identifier;
     }
     

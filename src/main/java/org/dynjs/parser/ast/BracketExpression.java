@@ -13,31 +13,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.dynjs.parser.ast;
 
-import java.util.List;
-
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class ExpressionList extends AbstractExpression {
+/**
+ * Access a property with bracket notation
+ * 
+ * @see 11.2.1
+ * 
+ * @author Douglas Campos
+ * @author Bob McWhirter
+ */
+public class BracketExpression extends AbstractBinaryExpression {
 
-    private final List<Expression> exprList;
-
-    public ExpressionList(final Tree tree, final List<Expression> exprList) {
-        super(tree);
-        this.exprList = exprList;
+    public BracketExpression(Expression lhs, Expression rhs) {
+        super( lhs, rhs, "[]" );
     }
     
-    public List<Expression> getExprList() {
-        return this.exprList;
+    public String toString() {
+        return getLhs() + "[" + getRhs() + "]";
+    }
+    
+    public String dump(String indent) {
+        return super.dump(indent) + getLhs().dump( indent + "  " ) + getRhs().dump( indent + "  " );
     }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
     }
-
 }

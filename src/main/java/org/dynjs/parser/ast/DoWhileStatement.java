@@ -17,10 +17,9 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.BlockManager;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class DoWhileStatement extends AbstractIteratingStatement {
@@ -28,10 +27,10 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     private final Expression test;
     private final Statement block;
 
-    public DoWhileStatement(final Tree tree, final Expression test, final Statement block) {
-        super(tree);
-        this.test = test;
+    public DoWhileStatement(Position position, final Statement block, final Expression test) {
+        super(position);
         this.block = block;
+        this.test = test;
     }
 
     public Expression getTest() {

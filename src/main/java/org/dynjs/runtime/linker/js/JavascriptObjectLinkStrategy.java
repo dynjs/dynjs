@@ -165,7 +165,6 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkConstruct(StrategyChain chain, Object receiver, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-        System.err.println("jsobj: link construct: " + receiver.getClass());
         if (isFunctionDereferencedReference(receiver)) {
             MethodHandle handle = binder
                     .permute(1, 0, 2)

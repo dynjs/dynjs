@@ -16,14 +16,13 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class VoidOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    public VoidOperatorExpression(final Tree tree, final Expression expr) {
-        super(tree, expr, "void" );
+    public VoidOperatorExpression(final Expression expr) {
+        super(expr, "void" );
     }
     
     public String toString() {

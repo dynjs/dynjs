@@ -18,36 +18,35 @@ package org.dynjs.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ForVarDeclStatement extends AbstractForStatement {
 
-    private final VariableDeclarationStatement declList;
+    private final List<VariableDeclaration> declList;
 
-    public ForVarDeclStatement(final Tree tree, final VariableDeclarationStatement declList, final Expression test,
-            final Expression increment, final Statement block) {
-        super(tree, test, increment, block);
+    public ForVarDeclStatement(Position position, List<VariableDeclaration> declList, Expression test, Expression increment, Statement block) {
+        super(position, test, increment, block);
         this.declList = declList;
     }
 
-    public VariableDeclarationStatement getDeclaration() {
+    public List<VariableDeclaration> getDeclarationList() {
         return this.declList;
     }
 
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
-        decls.addAll(declList.getVariableDeclarations());
+        decls.addAll(declList);
         decls.addAll(super.getVariableDeclarations() );
         return decls;
     }
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append(indent).append("for (").append(this.declList == null ? "" : this.declList.toIndentedString("")).append(" ; ");
+        buf.append(indent).append("for (").append(this.declList == null ? "" : this.declList).append(" ; ");
         buf.append((getTest() == null ? "" : getTest().toString())).append(" ; ");
         buf.append((getIncrement() == null ? "" : getIncrement().toString())).append(") {\n");
         buf.append(getBlock().toIndentedString(indent + "  "));

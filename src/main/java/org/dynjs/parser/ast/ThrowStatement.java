@@ -16,16 +16,16 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class ThrowStatement extends AbstractStatement {
+public class ThrowStatement extends BaseStatement {
 
     private final Expression expr;
 
-    public ThrowStatement(final Tree tree, Expression expr) {
-        super(tree);
+    public ThrowStatement(Position position, Expression expr) {
+        super(position);
         this.expr = expr;
     }
     

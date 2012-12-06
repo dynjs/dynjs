@@ -17,9 +17,9 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class WhileStatement extends AbstractIteratingStatement {
@@ -27,8 +27,8 @@ public class WhileStatement extends AbstractIteratingStatement {
     private final Expression vbool;
     private final Statement vloop;
 
-    public WhileStatement(final Tree tree, Expression vbool, Statement vloop) {
-        super(tree);
+    public WhileStatement(Position position, Expression vbool, Statement vloop) {
+        super(position);
         this.vbool = vbool;
         this.vloop = vloop;
     }

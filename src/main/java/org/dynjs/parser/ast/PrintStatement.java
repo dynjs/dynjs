@@ -15,17 +15,16 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class PrintStatement extends AbstractStatement implements Statement {
+public class PrintStatement extends BaseStatement {
 
     private final Expression expr;
 
-    public PrintStatement(final Tree tree, final Expression expr) {
-        super(tree);
+    public PrintStatement(Position position, Expression expr) {
+        super(position);
         this.expr = expr;
     }
     

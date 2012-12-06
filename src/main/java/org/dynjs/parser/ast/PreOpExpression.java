@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class PreOpExpression extends AbstractUnaryOperatorExpression {
 
-    public PreOpExpression(final Tree tree, final Expression expression, String op) {
-        super(tree, expression, op);
+    public PreOpExpression(final Expression expr, String op) {
+        super(expr, op);
     }
 
     public String toString() {

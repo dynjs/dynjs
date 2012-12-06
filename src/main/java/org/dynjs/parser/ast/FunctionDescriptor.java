@@ -15,36 +15,44 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.JavascriptTree;
-import org.dynjs.parser.Statement;
+import java.util.List;
+
+import org.dynjs.parser.js.Position;
 
 public class FunctionDescriptor {
 
-    private Tree tree;
+    private final Position position;
     private final String identifier;
-    private final String[] formalParameters;
-    private BlockStatement block;
+    private final Parameter[] formalParameters;
+    private final BlockStatement block;
     private boolean strict;
 
-    public FunctionDescriptor(final Tree tree, final String identifier, final String[] formalParameters, final BlockStatement block) {
-        this.tree = tree;
+    public FunctionDescriptor(Position position, String identifier, List<Parameter> formalParameters, BlockStatement block, boolean strict) {
+        this( position, identifier, formalParameters.toArray( new Parameter[ formalParameters.size()] ), block, strict );
+    }
+    public FunctionDescriptor(Position position, String identifier, Parameter[] formalParameters, BlockStatement block, boolean strict) {
+        this.position = position;
         this.identifier = identifier;
         this.formalParameters = formalParameters;
         this.block = block;
-        this.strict = ((JavascriptTree)tree).isStrict();
+        this.strict = strict;
     }
+    
 
-    public Tree getTree() {
-        return this.tree;
+    public Position getPosition() {
+        return this.position;
     }
 
     public String getIdentifier() {
         return this.identifier;
     }
 
-    public String[] getFormalParameters() {
-        return this.formalParameters;
+    public String[] getFormalParameterNames() {
+        String[] names = new String[ this.formalParameters.length ];
+        for ( int i = 0 ; i < names.length; ++i) {
+            names[i] = this.formalParameters[i].getIdentifier();
+        }
+        return names;
     }
 
     public BlockStatement getBlock() {

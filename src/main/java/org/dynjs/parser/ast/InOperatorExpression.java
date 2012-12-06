@@ -16,14 +16,13 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class InOperatorExpression extends AbstractBinaryExpression {
 
-    public InOperatorExpression(final Tree tree, final Expression l, final Expression r) {
-        super(tree, l, r, "in");
+    public InOperatorExpression(final Expression lhs, final Expression rhs) {
+        super(lhs, rhs, "in");
     }
 
     @Override

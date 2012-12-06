@@ -1,7 +1,7 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 /**
@@ -13,9 +13,10 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Bob McWhirter
  * 
  */
-public class ThisExpression extends AbstractExpression {
-    public ThisExpression(Tree tree) {
-        super(tree);
+public class ThisExpression extends BaseExpression {
+    
+    public ThisExpression(Position position) {
+        super(position);
     }
 
     public String toString() {

@@ -19,4 +19,11 @@ public class ForExprInStatementTest extends AbstractDynJSTestSupport {
         assertThat( collector.get( getContext(), "length" )).isEqualTo(2L);
     }
     
+    @Test
+    public void testInStatement() {
+        JSObject result = (JSObject) eval( "for ( x in Math ) { } ");
+        System.err.println( result );
+        
+    }
+    
 }

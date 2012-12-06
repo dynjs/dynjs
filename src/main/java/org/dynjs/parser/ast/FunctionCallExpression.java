@@ -17,8 +17,8 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionCallExpression extends AbstractExpression {
@@ -26,10 +26,13 @@ public class FunctionCallExpression extends AbstractExpression {
     private final Expression memberExpr;
     private final List<Expression> argExprs;
 
-    public FunctionCallExpression(final Tree tree, final Expression memberExpr, final List<Expression> argExprs) {
-        super(tree);
+    public FunctionCallExpression(Expression memberExpr, List<Expression> argExprs) {
         this.memberExpr = memberExpr;
         this.argExprs = argExprs;
+    }
+    
+    public Position getPosition() {
+        return this.memberExpr.getPosition();
     }
     
     public List<Expression> getArgumentExpressions() {
@@ -57,7 +60,13 @@ public class FunctionCallExpression extends AbstractExpression {
     }
     
     public String dump(String indent) {
-        return super.dump(indent) + this.memberExpr.dump( indent + "  " );
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( super.dump( indent ) );
+        buffer.append( this.memberExpr.dump( indent + "  " ) );
+        for ( Expression arg : argExprs ) {
+            buffer.append( arg.dump( indent + "  - " ) );
+        }
+        return buffer.toString();
     }
 
     @Override

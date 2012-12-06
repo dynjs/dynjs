@@ -1,13 +1,12 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class RelationalExpression extends AbstractBinaryExpression {
 
-    public RelationalExpression(Tree tree, Expression lhs, Expression rhs, String op) {
-        super(tree, lhs, rhs, op);
+    public RelationalExpression(Expression lhs, Expression rhs, String op) {
+        super(lhs, rhs, op);
     }
 
     @Override

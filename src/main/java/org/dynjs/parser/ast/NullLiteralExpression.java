@@ -15,14 +15,14 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class NullLiteralExpression extends AbstractExpression {
+public class NullLiteralExpression extends BaseExpression {
 
-    public NullLiteralExpression(final Tree tree) {
-        super(tree);
+    public NullLiteralExpression(Position position) {
+        super(position);
     }
 
     public String toString() {

@@ -15,14 +15,14 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class EmptyStatement extends AbstractStatement {
+public class EmptyStatement extends BaseStatement {
 
-    public EmptyStatement(final Tree tree) {
-        super(tree);
+    public EmptyStatement(final Position position) {
+        super(position);
     }
 
     public String toIndentedString(String indent) {

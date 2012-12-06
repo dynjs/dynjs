@@ -15,17 +15,17 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class NumberLiteralExpression extends AbstractExpression {
+public class NumberLiteralExpression extends BaseExpression {
 
     private final String text;
     private final int radix;
 
-    public NumberLiteralExpression(final Tree tree, final String text, final int radix) {
-        super(tree);
+    public NumberLiteralExpression(Position position, String text, int radix) {
+        super(position);
         this.text = text;
         this.radix = radix;
     }

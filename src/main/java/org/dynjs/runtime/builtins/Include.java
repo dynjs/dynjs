@@ -23,6 +23,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Runner;
 import org.dynjs.runtime.Types;
 
 public class Include extends AbstractNativeFunction {
@@ -33,15 +34,18 @@ public class Include extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        String includePath = Types.toString( context, args[0] );
-        File includeFile = new File( includePath );
-        
+        String includePath = Types.toString(context, args[0]);
+        File includeFile = new File(includePath);
+
         try {
-            context.getGlobalObject().getRuntime().execute(context.getParent().getParent(), includeFile);
+            Runner runner = context.getGlobalObject().getRuntime().newRunner();
+            runner.withContext(context.getParent().getParent())
+                    .withSource(includeFile)
+                    .execute();
         } catch (IOException e) {
-            throw new ThrowException( context, e );
+            throw new ThrowException(context, e);
         }
-        
+
         return Types.UNDEFINED;
     }
 }

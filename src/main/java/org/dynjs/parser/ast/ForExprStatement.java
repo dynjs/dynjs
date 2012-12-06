@@ -15,21 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ForExprStatement extends AbstractForStatement {
 
     private final Expression initialize;
 
-    public ForExprStatement(final Tree tree, final Expression initialize, final Expression test, final Expression increment,
-            final Statement block) {
-        super(tree, test, increment, block);
+    public ForExprStatement(Position position, Expression initialize, Expression test, Expression increment, Statement block) {
+        super(position, test, increment, block);
         this.initialize = initialize;
     }
-
+    
     public Expression getExpr() {
         return this.initialize;
     }

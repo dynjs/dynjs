@@ -16,14 +16,13 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
 
-    public TypeOfOpExpression(final Tree tree, final Expression expr) {
-        super(tree, expr, "typeof");
+    public TypeOfOpExpression(final Expression expr) {
+        super(expr, "typeof");
     }
     
     public String toString() {

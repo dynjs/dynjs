@@ -8,6 +8,7 @@ import org.junit.Test;
 
 public class ProgramCompilerTest extends AbstractDynJSTestSupport {
 
+    /*
     @Test
     public void testNonStrictCompilation() {
         JSProgram program = getRuntime().compile("var x = 42;");
@@ -24,4 +25,5 @@ public class ProgramCompilerTest extends AbstractDynJSTestSupport {
     public void testStrictCompilationOfFunctions() {
         JSProgram program = getRuntime().compile("var v = function() { 'use strict'; var x = 42; }");
     }
+    */
 }

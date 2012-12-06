@@ -15,8 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class TernaryExpression extends AbstractExpression {
@@ -25,11 +25,14 @@ public class TernaryExpression extends AbstractExpression {
     private final Expression vthen;
     private final Expression velse;
 
-    public TernaryExpression(final Tree tree, final Expression vbool, final Expression vthen, final Expression velse) {
-        super(tree);
+    public TernaryExpression(final Expression vbool, final Expression vthen, final Expression velse) {
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
+    }
+    
+    public Position getPosition() {
+        return this.vbool.getPosition();
     }
     
     public Expression getTest() {

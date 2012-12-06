@@ -16,16 +16,27 @@
 
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    public NewOperatorExpression(final Tree tree, final Expression expr, final List<Expression> argExprs) {
-        super(tree, expr, "new" );
+    private List<Expression> argExprs;
+
+    public NewOperatorExpression(final Expression expr) {
+        this( expr, new ArrayList<Expression>() );
+    }
+    
+    public NewOperatorExpression(final Expression expr, final List<Expression> argExprs) {
+        super(expr, "new" );
+        this.argExprs = argExprs;
+    }
+    
+    public List<Expression> getArgumentExpressions() {
+        return this.argExprs;
     }
     
     public String toString() {

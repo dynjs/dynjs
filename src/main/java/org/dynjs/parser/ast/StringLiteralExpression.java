@@ -15,16 +15,16 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class StringLiteralExpression extends AbstractExpression {
+public class StringLiteralExpression extends BaseExpression {
 
     private final String literal;
 
-    public StringLiteralExpression(final Tree tree, String literal) {
-        super(tree);
+    public StringLiteralExpression(Position position, String literal) {
+        super(position);
         this.literal = literal;
     }
 
@@ -34,6 +34,10 @@ public class StringLiteralExpression extends AbstractExpression {
 
     public String toString() {
         return this.literal;
+    }
+    
+    public String dump(String indent) {
+        return super.dump(indent) + indent + "[" + toString() + "]";
     }
 
     @Override

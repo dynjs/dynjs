@@ -3,12 +3,12 @@ package org.dynjs.parser.ast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.parser.ParserException;
+import org.dynjs.parser.js.Position;
+import org.dynjs.parser.js.SyntaxError;
 import org.dynjs.runtime.ExecutionContext;
 
-public class RegexpLiteralExpression extends AbstractExpression {
+public class RegexpLiteralExpression extends BaseExpression {
 
     static class RegexpLiteralExpressionParser {
         private static final String REG_EXP_PATTERN = "^\\/(.*)\\/([igm]{0,})$";
@@ -43,32 +43,32 @@ public class RegexpLiteralExpression extends AbstractExpression {
     private String pattern;
     private String flags;
 
-    public RegexpLiteralExpression(Tree tree, String text) {
-        super(tree);
+    public RegexpLiteralExpression(Position position, String text) {
+        super(position);
 
         RegexpLiteralExpressionParser parser = RegexpLiteralExpressionParser
                 .parse(text);
         if (parser == null) {
-            throw new ParserException("Invalid regular expression", tree);
+            throw new SyntaxError(position, "Invalid regular expression");
         }
         this.pattern = parser.getPattern();
         this.flags = parser.getFlags();
     }
-    
+
     public String getPattern() {
         return this.pattern;
     }
-    
+
     public String getFlags() {
         return this.flags;
     }
-    
+
     public String toString() {
         return "/" + this.pattern + "/" + this.flags;
     }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
 }

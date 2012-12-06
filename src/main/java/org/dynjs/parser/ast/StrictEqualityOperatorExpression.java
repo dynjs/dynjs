@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class StrictEqualityOperatorExpression extends AbstractBinaryExpression {
 
-    public StrictEqualityOperatorExpression(final Tree tree, final Expression l, final Expression r, String op) {
-        super(tree, l, r, op);
+    public StrictEqualityOperatorExpression(final Expression lhs, final Expression rhs, String op) {
+        super(lhs, rhs, op);
     }
 
     @Override

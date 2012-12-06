@@ -44,8 +44,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             // reference context name val
             append(jsGetValue());
             // reference context name val
-            invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
-                    DynJSBootstrapper.ARGS);
+            invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
             // <empty>
             ldc(expr.getIdentifier());
             // str
@@ -127,20 +126,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         LabelNode end = new LabelNode();
         // 11.2.2
 
-        aload(Arities.EXECUTION_CONTEXT);
-        // context
-        invokevirtual(p(ExecutionContext.class), "incrementPendingConstructorCount", sig(void.class));
-        // <empty>
-
         expr.getExpr().accept(context, this, strict);
-        // obj
-
-        aload(Arities.EXECUTION_CONTEXT);
-        // obj context
-        invokevirtual(p(ExecutionContext.class), "getPendingConstructorCount", sig(int.class));
-        // obj count
-        iffalse(end);
-
         // obj
         aload(Arities.EXECUTION_CONTEXT);
         // obj context
@@ -151,9 +137,21 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         swap();
         // ctor-fn context
 
-        bipush(0);
+        List<Expression> argExprs = expr.getArgumentExpressions();
+        int numArgs = argExprs.size();
+        bipush(numArgs);
         anewarray(p(Object.class));
         // ctor-fn context array
+        for (int i = 0; i < numArgs; ++i) {
+            dup();
+            bipush(i);
+
+            argExprs.get(i).accept(context, this, strict);
+            append(jsGetValue());
+            aastore();
+        }
+        // ctor-fn context array
+        
 
         invokedynamic("fusion:construct", sig(Object.class, Object.class, ExecutionContext.class, Object[].class), DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
         // obj
@@ -237,11 +235,8 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         aload(Arities.EXECUTION_CONTEXT);
         // fn self context
 
-        dup_x1();
-        // fn context self context
-
-        invokevirtual(p(ExecutionContext.class), "pushCallContext", sig(void.class));
-        // fn context self
+        swap();
+        // fn context self 
 
         List<Expression> argExprs = expr.getArgumentExpressions();
         int numArgs = argExprs.size();
@@ -256,11 +251,6 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             append(jsGetValue());
             aastore();
         }
-        // fn context self array
-
-        aload(Arities.EXECUTION_CONTEXT);
-        // fn context self array context
-        invokevirtual(p(ExecutionContext.class), "popCallContext", sig(void.class));
         // fn context self array
 
         // function context ref self args

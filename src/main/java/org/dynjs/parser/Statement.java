@@ -21,6 +21,8 @@ import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.ExecutionContext;
 
+import org.dynjs.parser.js.Position;
+
 public interface Statement {
 
     Position getPosition();

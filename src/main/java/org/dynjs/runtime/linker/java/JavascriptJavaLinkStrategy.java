@@ -49,15 +49,12 @@ public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<Execution
 
         if (linkArgs.length >= 2 && linkArgs[1] instanceof ExecutionContext) {
             ExecutionContext context = (ExecutionContext) linkArgs[1];
-            if (context.getPendingConstructorCount() > 0) {
-                context.decrementPendingConstructorCount();
-                binder = binder.filter(0, dereferencedValueFilter());
-                guardBinder = guardBinder.filter(0, dereferencedValueFilter());
-                
-                binder = binder.drop(1,2);
-                guardBinder = guardBinder.drop(1,2);
-                return javaLinkStrategy.linkConstruct(chain, dereferencedValueFilter(receiver), args, binder, guardBinder);
-            }
+            binder = binder.filter(0, dereferencedValueFilter());
+            guardBinder = guardBinder.filter(0, dereferencedValueFilter());
+
+            binder = binder.drop(1, 2);
+            guardBinder = guardBinder.drop(1, 2);
+            return javaLinkStrategy.linkConstruct(chain, dereferencedValueFilter(receiver), args, binder, guardBinder);
         }
         return javaLinkStrategy.linkCall(chain, receiver, self, args, binder, guardBinder);
     }

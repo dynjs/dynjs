@@ -3,18 +3,18 @@ package org.dynjs.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class TryStatement extends AbstractStatement {
+public class TryStatement extends BaseStatement {
     private final Statement tryBlock;
     private final CatchClause catchClause;
     private final Statement finallyBlock;
 
-    public TryStatement(Tree tree, Statement tryBlock, CatchClause catchClause, Statement finallyBlock) {
-        super(tree);
+    public TryStatement(Position position, Statement tryBlock, CatchClause catchClause, Statement finallyBlock) {
+        super(position);
         this.tryBlock = tryBlock;
         this.catchClause = catchClause;
         this.finallyBlock = finallyBlock;
@@ -39,12 +39,14 @@ public class TryStatement extends AbstractStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         decls.addAll(this.tryBlock.getVariableDeclarations());
+        /*
         if (this.catchClause != null) {
             decls.addAll(this.catchClause.getVariableDeclarations());
         }
         if (this.finallyBlock != null) {
             decls.addAll(this.finallyBlock.getVariableDeclarations());
         }
+        */
         return decls;
     }
 

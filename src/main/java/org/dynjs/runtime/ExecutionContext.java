@@ -35,7 +35,6 @@ public class ExecutionContext {
     private LexicalEnvironment variableEnvironment;
     private Object thisBinding;
     private boolean strict;
-    private List<CallContext> callContexts = new ArrayList<>();
 
     private int lineNumber;
     private String fileName;
@@ -52,7 +51,6 @@ public class ExecutionContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
-        pushCallContext();
     }
 
     public Object getFunctionReference() {
@@ -144,36 +142,12 @@ public class ExecutionContext {
         return result.value;
     }
 
-    public void incrementPendingConstructorCount() {
-        this.callContexts.get(this.callContexts.size() - 1).incrementPendingConstructorCount();
-    }
-
-    public void decrementPendingConstructorCount() {
-        this.callContexts.get(this.callContexts.size() - 1).decrementPendingConstructorCount();
-    }
-
-    public int getPendingConstructorCount() {
-        return this.callContexts.get(this.callContexts.size() - 1).getPendingConstructorCount();
-    }
-
-    public void pushCallContext() {
-        this.callContexts.add(new CallContext());
-    }
-
-    public void popCallContext() {
-        this.callContexts.remove(this.callContexts.size() - 1);
-    }
-
     public Object call(JSFunction function, Object self, Object... args) {
         return call(null, function, self, args);
     }
 
     public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
-        if (getPendingConstructorCount() > 0) {
-            return construct(function, args);
-        }
-
         return internalCall(functionReference, function, self, args);
     }
 
@@ -188,10 +162,6 @@ public class ExecutionContext {
     public Object construct(JSFunction function, Object... args) {
         if (!function.isConstructor()) {
             throw new ThrowException(this, createTypeError("not a constructor"));
-        }
-
-        if (getPendingConstructorCount() > 0) {
-            decrementPendingConstructorCount();
         }
 
         // 13.2.2
@@ -267,6 +237,7 @@ public class ExecutionContext {
         context = new ExecutionContext(this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
+        context.fileName = eval.getFileName();
         return context;
     }
 

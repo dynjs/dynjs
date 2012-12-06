@@ -19,18 +19,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class SwitchStatement extends AbstractStatement {
+public class SwitchStatement extends BaseStatement {
 
     private Expression expr;
     private List<CaseClause> caseClauses;
     private DefaultCaseClause defaultClause;
 
-    public SwitchStatement(final Tree tree, Expression expr, List<CaseClause> caseClauses) {
-        super(tree);
+    public SwitchStatement(Position position, Expression expr, List<CaseClause> caseClauses) {
+        super(position);
         this.expr = expr;
         this.caseClauses = caseClauses;
         Iterator<CaseClause> caseIter = caseClauses.iterator();

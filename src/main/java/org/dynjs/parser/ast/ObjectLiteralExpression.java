@@ -17,16 +17,16 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class ObjectLiteralExpression extends AbstractExpression {
+public class ObjectLiteralExpression extends BaseExpression {
 
     private final List<PropertyAssignment> propertyAssignments;
 
-    public ObjectLiteralExpression(final Tree tree, final List<PropertyAssignment> propertyAssignments) {
-        super(tree);
+    public ObjectLiteralExpression(Position position, final List<PropertyAssignment> propertyAssignments) {
+        super(position);
         this.propertyAssignments = propertyAssignments;
     }
     

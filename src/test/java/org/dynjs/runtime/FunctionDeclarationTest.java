@@ -30,4 +30,9 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         }
     }
 
+    @Test
+    public void testValidFunctionExpr() {
+        eval("(function (){});");
+    }
+
 }

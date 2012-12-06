@@ -1,6 +1,6 @@
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
+import org.dynjs.parser.js.Position;
 
 public abstract class AbstractBinaryExpression extends AbstractExpression {
 
@@ -8,11 +8,17 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     private Expression rhs;
     private String op;
 
-    AbstractBinaryExpression(final Tree tree, final Expression lhs, final Expression rhs, String op) {
-        super(tree);
+    AbstractBinaryExpression(final Expression lhs, final Expression rhs, String op) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;
+    }
+    
+    public Position getPosition() {
+        if ( this.lhs == null ) {
+            System.err.println( "NULL: " + this.getClass() );
+        }
+        return this.lhs.getPosition();
     }
     
     public Expression getLhs() {
@@ -25,6 +31,10 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
 
     public String getOp() {
         return this.op;
+    }
+    
+    public String dump(String indent) {
+        return super.dump( indent ) + this.lhs.dump( indent + "  " ) + "\n"+ this.rhs.dump( indent + "  " );
     }
 
     public String toString() {

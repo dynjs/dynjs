@@ -17,8 +17,8 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 
 public abstract class AbstractForStatement extends AbstractIteratingStatement {
 
@@ -26,8 +26,8 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
     private final Expression increment;
     private final Statement block;
 
-    public AbstractForStatement(final Tree tree, final Expression test, final Expression increment, final Statement block) {
-        super(tree);
+    public AbstractForStatement(final Position position, final Expression test, final Expression increment, final Statement block) {
+        super( position );
         this.test = test;
         this.increment = increment;
         this.block = block;

@@ -17,16 +17,16 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 
 public abstract class AbstractForInStatement extends AbstractIteratingStatement {
 
     private final Expression rhs;
     private final Statement block;
 
-    public AbstractForInStatement(final Tree tree, final Expression rhs, final Statement block) {
-        super(tree);
+    public AbstractForInStatement(Position position, final Expression rhs, final Statement block) {
+        super( position );
         this.rhs = rhs;
         this.block = block;
     }

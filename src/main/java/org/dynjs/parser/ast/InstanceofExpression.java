@@ -16,14 +16,13 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class InstanceofExpression extends AbstractBinaryExpression {
 
-    public InstanceofExpression(final Tree tree, final Expression l, final Expression r) {
-        super(tree, l, r, "instanceof");
+    public InstanceofExpression(final Expression lhs, final Expression rhs) {
+        super(lhs, rhs, "instanceof");
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Parse extends AbstractNativeFunction {
 
     public static long parse(ExecutionContext context, String text) {
         Date date = null;
-
+        
         if (text.startsWith("T")) {
             date = attemptParse(text, "'T'HH:mm:ss.SSSZ");
             if (date != null) {

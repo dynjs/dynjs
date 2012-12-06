@@ -15,14 +15,13 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class LogicalNotOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    public LogicalNotOperatorExpression(final Tree tree, final Expression expr) {
-        super(tree, expr, "!" );
+    public LogicalNotOperatorExpression(final Expression expr) {
+        super(expr, "!" );
     }
     
     public String toString() {

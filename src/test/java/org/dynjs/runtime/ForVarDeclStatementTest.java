@@ -23,7 +23,7 @@ public class ForVarDeclStatementTest extends AbstractDynJSTestSupport {
     @Test
     public void testBasicLoopMultipleDecls() {
         eval("var y=0; var z=0;",
-                "for ( var i = 0, j = 3 ; i < 10; ++i, ++j ) {",
+                "for ( var i=0, j=3 ; i < 10; ++i, ++j ) {",
                 "  y = i;",
                 "  z = j;",
                 "}");

@@ -16,14 +16,13 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
 
-    public DeleteOpExpression(final Tree tree, final Expression expr) {
-        super(tree, expr, "delete" );
+    public DeleteOpExpression(final Expression expr) {
+        super(expr, "delete" );
     }
     
     @Override

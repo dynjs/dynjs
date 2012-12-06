@@ -16,24 +16,11 @@
 
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
-import org.dynjs.parser.Position;
+import org.dynjs.parser.js.Position;
 
 public abstract class AbstractExpression implements Expression {
 
-    private final Position position;
-
-    AbstractExpression(final Tree tree) {
-        this.position = new Position(tree);
-    }
-
-    AbstractExpression(Position position) {
-        this.position = position;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
+    public abstract Position getPosition();
 
     public String dump(String indent) {
         return indent + getClass().getName() + "\n";

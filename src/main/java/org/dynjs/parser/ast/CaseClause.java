@@ -5,23 +5,30 @@ import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 import org.objectweb.asm.tree.LabelNode;
 
 public class CaseClause {
 
+    private Position position;
     private Expression expr;
     private Statement block;
     private LabelNode entranceLabel;
     private LabelNode fallThroughLabel;
 
-    public CaseClause(Expression expr, Statement block) {
+    public CaseClause(Position position, Expression expr, Statement block) {
+        this.position = position;
         this.expr = expr;
         this.block = block;
         this.entranceLabel = new LabelNode();
         this.fallThroughLabel = new LabelNode();
     }
 
+    public Position getPosition() {
+        return this.position;
+    }
+    
     public Expression getExpression() {
         return this.expr;
     }

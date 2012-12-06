@@ -2,6 +2,7 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -35,27 +36,27 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     protected void check(String scriptlet, Boolean expected) {
-        this.runtime.execute(scriptlet, null, 0);
+        this.runtime.execute(scriptlet);
         Reference result = this.runtime.getExecutionContext().resolve("result");
         Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
 
     protected void check(String scriptlet, Object expected) {
-        this.runtime.execute(scriptlet, null, 0);
+        this.runtime.execute(scriptlet);
         Reference result = this.runtime.getExecutionContext().resolve("result");
         Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
 
     protected void assertNull(String scriptlet) {
-        this.runtime.execute(scriptlet, null, 0);
+        this.runtime.execute(scriptlet);
         Reference result = this.runtime.getExecutionContext().resolve("result");
         assertThat(result.getValue(getContext())).isEqualTo(Types.NULL);
     }
 
     protected void assertUndefined(String scriptlet) {
-        this.runtime.execute(scriptlet, null, 0);
+        this.runtime.execute(scriptlet);
         Reference result = this.runtime.getExecutionContext().resolve("result");
         assertThat(result.getValue(getContext())).isEqualTo(Types.UNDEFINED);
     }
@@ -73,7 +74,7 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     protected Object resultFor(String expression) {
-        this.runtime.execute(expression, null, 0);
+        this.runtime.execute(expression);
         return getContext().resolve("result").getValue(getContext());
     }
 }

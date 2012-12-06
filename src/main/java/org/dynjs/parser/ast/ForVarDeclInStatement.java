@@ -17,34 +17,34 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ForVarDeclInStatement extends AbstractForInStatement {
 
-    private final VariableDeclarationStatement decl;
+    private final VariableDeclaration decl;
 
-    public ForVarDeclInStatement(final Tree tree, final VariableDeclarationStatement decl, final Expression rhs, final Statement block) {
-        super(tree, rhs, block);
+    public ForVarDeclInStatement(Position position, VariableDeclaration decl, Expression rhs, Statement block) {
+        super(position, rhs, block);
         this.decl = decl;
     }
 
-    public VariableDeclarationStatement getDeclaration() {
+    public VariableDeclaration getDeclaration() {
         return this.decl;
     }
 
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = super.getVariableDeclarations();
-        decls.addAll(decl.getVariableDeclarations());
+        decls.add(decl);
         return decls;
     }
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append(indent).append("for (").append(decl.toIndentedString("")).append(" in ").append(getRhs().toString()).append(") {\n");
+        buf.append(indent).append("for (").append(decl).append(" in ").append(getRhs().toString()).append(") {\n");
         buf.append(getBlock().toIndentedString(indent + "  "));
         buf.append(indent).append("}");
         return buf.toString();

@@ -15,16 +15,16 @@
  */
 package org.dynjs.parser.ast;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class ContinueStatement extends AbstractStatement {
+public class ContinueStatement extends BaseStatement {
 
     private String target;
 
-    public ContinueStatement(Tree tree, String target) {
-        super(tree);
+    public ContinueStatement(Position position, String target) {
+        super(position);
         this.target = target;
     }
 

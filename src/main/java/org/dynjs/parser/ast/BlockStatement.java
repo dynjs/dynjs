@@ -19,23 +19,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class BlockStatement extends AbstractStatement implements Statement {
+public class BlockStatement extends AbstractStatement {
 
     private final List<Statement> blockContent;
 
-    public BlockStatement(Tree tree, final List<Statement> blockContent) {
-        super(tree);
+    public BlockStatement(final List<Statement> blockContent) {
         this.blockContent = blockContent;
     }
-
-    public BlockStatement(final List<Statement> blockContent) {
-        super((blockContent == null || blockContent.isEmpty()) ? null : blockContent.get(0).getPosition());
-        this.blockContent = blockContent;
+    
+    public Position getPosition() {
+        if ( blockContent.isEmpty() ) {
+            return null;
+        }
+        
+        return blockContent.get(0).getPosition();
     }
 
     public List<Statement> getBlockContent() {
@@ -86,8 +88,8 @@ public class BlockStatement extends AbstractStatement implements Statement {
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         for (Statement each : this.blockContent) {
-            if (each instanceof VariableDeclarationStatement) {
-                VariableDeclarationStatement statement = (VariableDeclarationStatement) each;
+            if (each instanceof VariableStatement) {
+                VariableStatement statement = (VariableStatement) each;
                 decls.addAll(statement.getVariableDeclarations());
             } else if (!(each instanceof FunctionDeclaration)) {
                 decls.addAll(each.getVariableDeclarations());

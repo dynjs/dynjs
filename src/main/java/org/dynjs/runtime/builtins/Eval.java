@@ -16,12 +16,14 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.SyntaxError;
+import org.dynjs.parser.js.ParserException;
+import org.dynjs.parser.js.SyntaxError;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Runner;
 import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNonConstructorFunction {
@@ -44,12 +46,17 @@ public class Eval extends AbstractNonConstructorFunction {
         Object code = args[0];
         if (code instanceof String) {
             try {
-                Object result = context.getGlobalObject().getRuntime().evaluate(context.getParent(), code.toString(), context.getParent().isStrict() && direct, direct );
+                Runner runner = context.getGlobalObject().getRuntime().newRunner();
+                Object result = runner.withContext(context.getParent())
+                        .forceStrict(context.getParent().isStrict() && direct)
+                        .directEval(direct)
+                        .withSource((String) code)
+                        .evaluate();
                 if (result == null) {
                     return Types.UNDEFINED;
                 }
                 return result;
-            } catch (SyntaxError e) {
+            } catch (ParserException e) {
                 throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
             }
         } else {

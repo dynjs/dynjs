@@ -17,18 +17,18 @@ package org.dynjs.parser.ast;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.Tree;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class WithStatement extends AbstractStatement {
+public class WithStatement extends BaseStatement {
 
     private final Expression expr;
     private final Statement block;
 
-    public WithStatement(final Tree tree, Expression expr, Statement block) {
-        super(tree);
+    public WithStatement(Position position, Expression expr, Statement block) {
+        super( position );
         this.expr = expr;
         this.block = block;
     }

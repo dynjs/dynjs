@@ -15,6 +15,7 @@
  */
 package org.dynjs.cli;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class Main {
     private void executeFile(String filename) throws IOException {
         runtime = new DynJS();
         try {
-            runtime.execute(new FileInputStream(filename), filename);
+            runtime.newRunner().withSource( new File( filename ) ).execute();
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");
         }
