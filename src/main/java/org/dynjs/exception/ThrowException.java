@@ -7,6 +7,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.StackElement;
 import org.dynjs.runtime.StackGetter;
+import org.dynjs.runtime.Types;
 
 public class ThrowException extends DynJSException {
 
@@ -52,11 +53,11 @@ public class ThrowException extends DynJSException {
         if (value instanceof JSObject) {
             String errorName = "<unknown>";
             if (((JSObject) value).hasProperty(context, "name")) {
-                errorName = (String) ((JSObject) value).get(context, "name");
+                errorName = Types.toString(context, ((JSObject) value).get(context, "name"));
             }
             String message = null;
             if (((JSObject) value).hasProperty(context, "message")) {
-                message = (String) ((JSObject) value).get(context, "message");
+                message = Types.toString(context, ((JSObject) value).get(context, "message"));
             }
             final String msg = message;
             final String err = errorName;
