@@ -16,6 +16,7 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,6 +29,10 @@ public class DynObject implements JSObject {
 
     private final Map<String, PropertyDescriptor> properties = new LinkedHashMap<>();
     private boolean extensible = true;
+    
+    // Support for an array-backed set of indexed properties. 
+    protected Object[] buffer = null;
+    private final Map<Long, PropertyDescriptor> indexedPropertyDescriptors = new HashMap<Long, PropertyDescriptor>();
 
     public DynObject(GlobalObject globalObject) {
         setClassName("Object");
@@ -36,7 +41,7 @@ public class DynObject implements JSObject {
             setPrototype(globalObject.getPrototypeFor("Object"));
         }
     }
-
+    
     // ------------------------------------------------------------------------
     // JSObject
     // ------------------------------------------------------------------------
@@ -96,6 +101,11 @@ public class DynObject implements JSObject {
 
     @Override
     public Object getOwnProperty(ExecutionContext context, String name) {
+        // Supports index-based property access that is backed
+        // by a byte array. TODO: Should this be an object array?
+        if (this.buffer != null && Types.toUint32(context, name).toString().equals(name)) {
+            return getOwnIndexedProperty(context, name);
+        }
         // 8.12.1
         // Returns PropertyDescriptor or UNDEFINED
         PropertyDescriptor x = this.properties.get(name);
@@ -144,6 +154,11 @@ public class DynObject implements JSObject {
 
     @Override
     public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
+        // Support for byte[] storage as indexed property names
+        if (this.buffer != null && Types.toUint32(context, name).toString().equals(name)) {
+            putIndexedValue(context, name, value);
+            return;
+        }
         // 8.12.5
         // System.err.println("PUT " + name + " > " + value);
         if (!canPut(context, name)) {
@@ -498,6 +513,63 @@ public class DynObject implements JSObject {
                 set("Configurable", false);
             }
         }, false);
+    }
+
+    protected Object getOwnIndexedProperty(ExecutionContext context, String name) {
+        Long number = Types.toUint32(context, name);
+        final int index = number.intValue();
+        if (index < 0 || index >= buffer.length) {
+            return Types.UNDEFINED;
+        } else {
+            synchronized(this) {
+                if (!this.indexedPropertyDescriptors.containsKey(number)) {
+                    this.indexedPropertyDescriptors.put(number, new PropertyDescriptor() {
+                        {
+                            set("Value", buffer[index]);
+                            set("Writable", true);
+                            set("Enumerable", false);
+                            set("Configurable", false);
+                        }
+                    });
+                }
+            }
+            return this.indexedPropertyDescriptors.get(number);
+        }
+    }
+
+    protected void putIndexedValue(ExecutionContext context, String name, Object value) {
+        Long possibleIndex = Types.toUint32(context, name);
+        final int index   = possibleIndex.intValue();
+        if (index < 0 || index >= buffer.length) {
+            this.put(context, name, value, false);
+        } else {
+            synchronized(this) {
+                putValueAtIndex(context, value, index);
+                if (!this.indexedPropertyDescriptors.containsKey(possibleIndex)) {
+                    this.indexedPropertyDescriptors.put(possibleIndex, new PropertyDescriptor() {
+                        {
+                            set("Value", buffer[index]);
+                            set("Writable", true);
+                            set("Enumerable", false);
+                            set("Configurable", false);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    protected void putValueAtIndex(ExecutionContext context, Object value, int index) {
+        buffer[index] = value;
+    }
+
+    // May return null
+    public Object[] getBackingArray() {
+        return buffer;
+    }
+
+    public void setBackingArray(Object[] buffer) {
+        this.buffer = buffer;
     }
 
 }
