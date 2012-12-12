@@ -560,7 +560,9 @@ public class DynObject implements JSObject {
     }
 
     protected void putValueAtIndex(ExecutionContext context, Object value, int index) {
-        buffer[index] = value;
+//        buffer[index] = value;
+        Long numberValue = Types.toUint32(context, value);
+        this.getBackingArray()[index] = numberValue.byteValue() & 0xff;
     }
 
     // May return null
