@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -37,7 +38,7 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
 
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
-        List<VariableDeclaration> decls = super.getVariableDeclarations();
+        List<VariableDeclaration> decls = new ArrayList<VariableDeclaration>(super.getVariableDeclarations());
         decls.add(decl);
         return decls;
     }
