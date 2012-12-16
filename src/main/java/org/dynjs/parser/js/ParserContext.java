@@ -69,6 +69,9 @@ class ParserContext {
     }
 
     boolean isValidContinue(String label) {
+        if (this.type == ContextType.SWITCH && this.parent != null) {
+            return this.parent.isValidContinue(label);
+        }
         if (this.type != ContextType.ITERATION) {
             return false;
         }

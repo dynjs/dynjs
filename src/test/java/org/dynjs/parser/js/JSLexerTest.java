@@ -123,5 +123,11 @@ public class JSLexerTest {
         assertThat( lex( "'taco\\\nwith cheese'" ).getText() ).isEqualTo( "tacowith cheese" );
     }
     
+    @Test
+    public void testRegexpLiterals() throws Exception {
+        assertThat( lex( "/foo/" ).getType() ).isEqualTo( REGEXP_LITERAL );
+        assertThat( lex( "/\\//g").getType() ).isEqualTo( REGEXP_LITERAL );
+    }
+    
 
 }

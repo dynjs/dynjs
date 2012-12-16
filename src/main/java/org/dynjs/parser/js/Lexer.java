@@ -531,8 +531,24 @@ public class Lexer {
             case '[':
                 text.append(consume());
                 while (la() != ']') {
-                    text.append(consume());
+                    switch (la()) {
+                    case '\\':
+                        text.append(consume());
+                        text.append(consume());
+                        break;
+                    case '[':
+                        // Java doesn't allow unescaped "[" inside "["
+                        text.append('\\');
+                        text.append(consume());
+                        break;
+                    default:
+                        text.append(consume());
+                    }
                 }
+                text.append(consume());
+                break;
+            case '\\':
+                text.append(consume());
                 text.append(consume());
                 break;
             default:

@@ -199,6 +199,18 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testReplaceRegexContainingEscapedSlash() {
+        Object o = eval("new String('foo/bar').replace(/\\//g, '\\\\/');");
+        assertThat(o).isEqualTo("foo\\/bar");
+    }
+
+    @Test
+    public void testReplaceRegexContainingUnescapedLeftBracket() {
+        Object o = eval("new String('foozbar').replace(/o[^[]b/, 'o_b');");
+        assertThat(o).isEqualTo("foo_bar");
+    }
+
+    @Test
     public void testValueOf() {
         Object o = eval("new String(42).valueOf()");
         assertThat(o).isEqualTo("42");
