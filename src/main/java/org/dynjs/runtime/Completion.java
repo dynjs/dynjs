@@ -42,7 +42,7 @@ public class Completion {
     public static Completion createReturn(Object value) {
         return new Completion(Type.RETURN, value, null);
     }
-
+    
     public String toString() {
         return "(" + this.type + ", " + this.value + ", " + this.target + ")";
     }
