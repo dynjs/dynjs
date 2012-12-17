@@ -34,7 +34,7 @@ public class MultipleClassCaller extends CodeBlock {
             // block
             aload(Arities.EXECUTION_CONTEXT);
             // block context
-            invokeinterface(p(BasicBlock.class), "call" + i, sig(Completion.class, ExecutionContext.class));
+            invokeinterface(p(BasicBlock.class), "call", sig(Completion.class, ExecutionContext.class));
             // completion
             dup();
             // completion completion
