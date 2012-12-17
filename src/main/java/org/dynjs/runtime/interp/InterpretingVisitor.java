@@ -78,11 +78,13 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
+import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 
 public class InterpretingVisitor implements CodeVisitor {
 
@@ -363,8 +365,36 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getMemberExpression().accept(context, this, strict);
+        Object ref = pop();
+        Object function = Types.getValue(context, ref);
 
+        List<Expression> argExprs = expr.getArgumentExpressions();
+
+        Object[] args = new Object[argExprs.size()];
+        int i = 0;
+
+        for (Expression each : argExprs) {
+            each.accept(context, this, strict);
+            args[i] = Types.getValue(context, pop());
+            ++i;
+        }
+
+        if (!(function instanceof JSFunction)) {
+            throw new ThrowException(context, context.createTypeError(expr.getMemberExpression() + " is not calllable"));
+        }
+
+        Object thisValue = null;
+
+        if (ref instanceof Reference) {
+            if (((Reference) ref).isPropertyReference()) {
+                thisValue = ((Reference) ref).getBase();
+            } else {
+                thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
+            }
+        }
+
+        push(context.call(ref, (JSFunction) function, thisValue, args));
     }
 
     @Override
@@ -400,14 +430,32 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        expr.getRhs().accept(context, this, strict);
 
+        Object rhs = Types.getValue(context, pop());
+        Object lhs = Types.getValue(context, pop());
+
+        if (!(rhs instanceof JSObject)) {
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
+        }
+
+        push(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
     }
 
     @Override
     public void visit(ExecutionContext context, InstanceofExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        expr.getRhs().accept(context, this, strict);
 
+        Object rhs = Types.getValue(context, pop());
+        Object lhs = Types.getValue(context, pop());
+
+        if (!(rhs instanceof JSFunction)) {
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
+        }
+
+        push(((JSFunction) rhs).hasInstance(context, lhs));
     }
 
     @Override
@@ -424,14 +472,31 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, DotExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        Object baseRef = pop();
+        Object baseValue = Types.getValue(context, baseRef);
 
+        String propertyName = expr.getIdentifier();
+
+        Types.checkObjectCoercible(context, baseValue);
+
+        push(context.createPropertyReference(baseValue, propertyName));
     }
 
     @Override
     public void visit(ExecutionContext context, BracketExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        Object baseRef = pop();
+        Object baseValue = Types.getValue(context, baseRef);
 
+        expr.getRhs().accept(context, this, strict);
+        Object identifier = Types.getValue(context, pop());
+
+        Types.checkObjectCoercible(context, baseValue);
+
+        String propertyName = Types.toString(context, identifier);
+
+        push(context.createPropertyReference(baseValue, propertyName));
     }
 
     @Override
@@ -494,8 +559,10 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, PrintStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
-
+        statement.getExpr().accept(context, this, strict);
+        Object result = pop();
+        System.err.println(result);
+        push(Completion.createNormal());
     }
 
     @Override
@@ -516,8 +583,7 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, RegexpLiteralExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
-
+        push(BuiltinRegExp.newRegExp(context, expr.getPattern(), expr.getFlags()));
     }
 
     @Override
@@ -538,7 +604,17 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, StrictEqualityOperatorExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        expr.getRhs().accept(context, this, strict);
+
+        Object rhs = Types.getValue(context, pop());
+        Object lhs = Types.getValue(context, pop());
+
+        if (expr.getOp().equals("==")) {
+            push(Types.compareStrictEquality(context, lhs, rhs));
+        } else {
+            push(!Types.compareStrictEquality(context, lhs, rhs));
+        }
     }
 
     @Override
