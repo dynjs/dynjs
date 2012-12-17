@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.*;
@@ -33,6 +34,14 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
     @Test
     public void testValidFunctionExpr() {
         eval("(function (){});");
+    }
+    
+    @Test
+    @Ignore
+    public void testFunctionPropertyNamedPrint() {
+        eval("var o = new Object();");
+        eval("o.print = function() { return 'printed' }");
+        assertThat(eval("o.print()")).isEqualTo("printed");
     }
 
 }
