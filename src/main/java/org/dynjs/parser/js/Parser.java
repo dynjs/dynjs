@@ -1228,6 +1228,7 @@ public class Parser {
         case PARAGRAPH_SEPARATOR:
         case LINE_SEPARATOR:
         case SEMICOLON:
+        case RIGHT_BRACE:
             break;
         case IDENTIFIER:
             target = consume(IDENTIFIER).getText();
@@ -1257,6 +1258,7 @@ public class Parser {
         case PARAGRAPH_SEPARATOR:
         case LINE_SEPARATOR:
         case SEMICOLON:
+        case RIGHT_BRACE:
             break;
         case IDENTIFIER:
             target = consume(IDENTIFIER).getText();
