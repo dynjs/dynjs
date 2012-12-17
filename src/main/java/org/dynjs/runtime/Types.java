@@ -311,7 +311,7 @@ public class Types {
         return (long) int32bit;
     }
 
-    private static long modulo(long a, long b) {
+    public static long modulo(long a, long b) {
         // because Java modulo doesn't deal with negatives the way the
         // javascript spec assumes it should.
         return (a % b + b) % b;

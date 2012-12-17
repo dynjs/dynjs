@@ -173,6 +173,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     public String getDebugContext() {
         return this.debugContext;
     }
+    
+    public Statement getBody() {
+        return this.body;
+    }
 
     public String toString() {
         StringBuffer buffer = new StringBuffer();

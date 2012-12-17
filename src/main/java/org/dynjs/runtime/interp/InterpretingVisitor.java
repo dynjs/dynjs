@@ -72,6 +72,7 @@ import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.DynObject;
@@ -241,26 +242,42 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, CaseClause clause, boolean strict) {
-        // TODO Auto-generated method stub
-
+        // not used, handled by switch-statement
     }
 
     @Override
     public void visit(ExecutionContext context, DefaultCaseClause clause, boolean strict) {
-        // TODO Auto-generated method stub
-
+        // not used, handled by switch-statement
     }
 
     @Override
     public void visit(ExecutionContext context, CatchClause clause, boolean strict) {
-        // TODO Auto-generated method stub
-
+        // not used, handled by try-statement
     }
 
     @Override
     public void visit(ExecutionContext context, CompoundAssignmentExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getRootExpr().accept(context, this, strict);
+        Object r = pop();
 
+        expr.getRootExpr().getLhs().accept(context, this, strict);
+        Object lref = pop();
+
+        if (lref instanceof Reference) {
+            if (((Reference) lref).isStrictReference()) {
+                if (((Reference) lref).getBase() instanceof EnvironmentRecord) {
+                    if (((Reference) lref).getReferencedName().equals("arguments") || ((Reference) lref).getReferencedName().equals("eval")) {
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lref).getReferencedName()));
+                    }
+                }
+            }
+
+            ((Reference) lref).putValue(context, r);
+            push(r);
+            return;
+        }
+
+        throw new ThrowException(context, context.createReferenceError("cannot assign to non-reference"));
     }
 
     @Override
@@ -400,13 +417,15 @@ public class InterpretingVisitor implements CodeVisitor {
     @Override
     public void visit(ExecutionContext context, FunctionDeclaration statement, boolean strict) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
-
+        push(new InterpretedFunction(
+                expr.getDescriptor().getBlock(),
+                context.getLexicalEnvironment(),
+                context.isStrict(),
+                expr.getDescriptor().getFormalParameterNames()));
     }
 
     @Override
@@ -460,14 +479,20 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        Object lhs = Types.getValue(context, pop());
 
+        if ((expr.getOp().equals("|| ") && Types.toBoolean(lhs)) || (expr.getOp().equals("&&") && !Types.toBoolean(lhs))) {
+            push(lhs);
+        } else {
+            expr.getRhs().accept(context, this, strict);
+        }
     }
 
     @Override
     public void visit(ExecutionContext context, LogicalNotOperatorExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
-
+        expr.getExpr().accept(context, this, strict);
+        push(!Types.toBoolean(Types.getValue(context, pop())));
     }
 
     @Override
@@ -501,8 +526,68 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        expr.getRhs().accept(context, this, strict);
 
+        Number rval = Types.toNumber(context, Types.getValue(context, pop()));
+        Number lval = Types.toNumber(context, Types.getValue(context, pop()));
+
+        if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
+            push(Double.NaN);
+        }
+
+        if (lval instanceof Double || rval instanceof Double) {
+            switch (expr.getOp()) {
+            case "*":
+                push(lval.doubleValue() * rval.doubleValue());
+                return;
+            case "/":
+                if ( rval.doubleValue() == 0.0 ) {
+                    if ( lval.doubleValue() >= 0 ) {
+                        push( Double.POSITIVE_INFINITY );
+                        return;
+                    } else {
+                        push( Double.NEGATIVE_INFINITY );
+                        return;
+                    }
+                }
+                push(lval.doubleValue() / rval.doubleValue());
+                return;
+            case "%":
+                if (rval.doubleValue() == 0.0) {
+                    push(Double.NaN);
+                    return;
+                }
+                push(lval.doubleValue() % rval.doubleValue());
+                return;
+            }
+        } else {
+            switch ( expr.getOp() ) {
+            case "*":
+                push( lval.longValue() * rval.longValue() );
+                return;
+            case "/":
+                if ( rval.longValue() == 0L) {
+                    if ( lval.longValue() >= 0L ) {
+                        push( Double.POSITIVE_INFINITY );
+                        return;
+                    } else {
+                        push( Double.NEGATIVE_INFINITY );
+                        return;
+                    }
+                }
+                push( lval.doubleValue() / rval.longValue() );
+                return;
+            case "%":
+                if ( rval.longValue() == 0L ) {
+                    push( Double.NaN );
+                    return;
+                }
+                
+                push( lval.longValue() % rval.doubleValue() );
+                return;
+            }
+        }
     }
 
     @Override
@@ -588,7 +673,48 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, RelationalExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getLhs().accept(context, this, strict);
+        expr.getRhs().accept(context, this, strict);
+
+        Object rval = Types.getValue(context, pop());
+        Object lval = Types.getValue(context, pop());
+
+        Object r = null;
+
+        switch (expr.getOp()) {
+        case "<":
+            r = Types.compareRelational(context, lval, rval, true);
+            if (r == Types.UNDEFINED) {
+                push(false);
+            } else {
+                push(r);
+            }
+            return;
+        case ">":
+            r = Types.compareRelational(context, rval, lval, false);
+            if (r == Types.UNDEFINED) {
+                push(false);
+            } else {
+                push(r);
+            }
+            return;
+        case "<=":
+            r = Types.compareRelational(context, rval, lval, false);
+            if (r == Boolean.TRUE || r == Types.UNDEFINED) {
+                push(false);
+            } else {
+                push(r);
+            }
+            return;
+        case ">=":
+            r = Types.compareRelational(context, lval, rval, true);
+            if (r == Boolean.TRUE || r == Types.UNDEFINED) {
+                push(false);
+            } else {
+                push(r);
+            }
+            return;
+        }
 
     }
 
@@ -624,8 +750,41 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, SwitchStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+        statement.getExpr().accept(context, this, strict);
+        Object value = Types.getValue(context, pop());
 
+        List<CaseClause> clauses = statement.getCaseClauses();
+
+        Object v = null;
+
+        boolean searching = true;
+        for (CaseClause each : clauses) {
+            if (each instanceof DefaultCaseClause) {
+                searching = false;
+            } else {
+                each.getExpression().accept(context, this, strict);
+                Object caseTest = pop();
+                if (Types.compareStrictEquality(context, value, Types.getValue(context, caseTest))) {
+                    searching = false;
+                }
+            }
+
+            if (!searching) {
+                if (each.getBlock() != null) {
+                    each.getBlock().accept(context, this, strict);
+                    Completion completion = (Completion) pop();
+                    v = completion.value;
+
+                    if (completion.type != Completion.Type.NORMAL) {
+                        completion.value = v;
+                        push(completion);
+                        return;
+                    }
+                }
+            }
+        }
+
+        push(Completion.createNormal(v));
     }
 
     @Override
@@ -651,8 +810,31 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, TryStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+        Completion b = null;
+        try {
+            statement.getTryBlock().accept(context, this, strict);
+            b = (Completion) pop();
+        } catch (ThrowException e) {
+            if (statement.getCatchClause() != null) {
+                BasicBlock catchBlock = new InterpretedStatement(statement.getCatchClause().getBlock(), strict);
+                context.executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
+                return;
+            }
+        } finally {
+            if (statement.getFinallyBlock() != null) {
+                statement.getFinallyBlock().accept(context, this, strict);
+                Completion f = (Completion) pop();
+                if (f.type == Completion.Type.NORMAL) {
+                    push(b);
+                    return;
+                } else {
+                    push(f);
+                    return;
+                }
+            }
+        }
 
+        push(b);
     }
 
     @Override
@@ -746,8 +928,9 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, WithStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
-
+        statement.getExpr().accept(context, this, strict);
+        JSObject obj = Types.toObject(context, Types.getValue(context, pop()));
+        push(context.executeWith(obj, new InterpretedStatement(statement.getBlock(), strict)));
     }
 
 }
