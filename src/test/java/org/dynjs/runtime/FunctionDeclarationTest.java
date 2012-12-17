@@ -37,11 +37,17 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testFunctionPropertyNamedPrint() {
         eval("var o = new Object();");
         eval("o.print = function() { return 'printed' }");
         assertThat(eval("o.print()")).isEqualTo("printed");
+    }
+
+    @Test
+    public void testFunctionPropertyNamedFoo() {
+        eval("var o = new Object();");
+        eval("o.foo = function() { return 'foo' }");
+        assertThat(eval("o.foo()")).isEqualTo("foo");
     }
 
 }

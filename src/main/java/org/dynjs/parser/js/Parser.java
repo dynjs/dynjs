@@ -374,6 +374,7 @@ public class Parser {
         case DECIMAL_LITERAL:
         case HEX_LITERAL:
         case STRING_LITERAL:
+        case PRINT: // 'print' is not really reserved, and can actually be a property name
             return true;
         default:
             return isReservedWord(token);
