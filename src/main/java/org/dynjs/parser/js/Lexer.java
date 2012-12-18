@@ -41,8 +41,6 @@ public class Lexer {
             add("null");
             add("true");
             add("false");
-
-            add("print");
         }
     };
 

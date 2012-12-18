@@ -63,7 +63,6 @@ import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.Parameter;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
-import org.dynjs.parser.ast.PrintStatement;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.RegexpLiteralExpression;
@@ -446,10 +445,6 @@ public class ASTFactory {
     
     public DebuggerStatement debuggerStatement(Position position) {
         return new DebuggerStatement( position );
-    }
-    
-    public PrintStatement printStatement(Position position, Expression expr) {
-        return new PrintStatement(position, expr);
     }
     
     public ForExprStatement forStatement(Position position, Expression initExpr, Expression testExpr, Expression incrExpr, Statement body) {

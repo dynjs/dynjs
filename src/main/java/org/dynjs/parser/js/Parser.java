@@ -28,7 +28,6 @@ import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.NamedValue;
 import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.Parameter;
-import org.dynjs.parser.ast.PrintStatement;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.PropertyGet;
@@ -374,7 +373,6 @@ public class Parser {
         case DECIMAL_LITERAL:
         case HEX_LITERAL:
         case STRING_LITERAL:
-        case PRINT: // 'print' is not really reserved, and can actually be a property name
             return true;
         default:
             return isReservedWord(token);
@@ -1081,8 +1079,6 @@ public class Parser {
             return tryStatement();
         case DEBUGGER:
             return debuggerStatement();
-        case PRINT:
-            return printStatement();
         }
 
         if (la(2) == COLON) {
@@ -1125,15 +1121,6 @@ public class Parser {
         consume(RIGHT_BRACE);
 
         return factory.block(statements);
-    }
-
-    public PrintStatement printStatement() {
-        Token position = consume(PRINT);
-
-        Expression expr = expression();
-        semic();
-
-        return factory.printStatement(position, expr);
     }
 
     public VariableStatement variableStatement() {

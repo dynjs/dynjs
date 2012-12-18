@@ -1,15 +1,7 @@
 package org.dynjs.runtime;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Reader;
-
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.ast.ProgramTree;
-import org.dynjs.parser.js.JavascriptParser;
 
 public class DynJS {
 

@@ -19,6 +19,7 @@ import org.dynjs.runtime.builtins.JSON;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.ParseFloat;
 import org.dynjs.runtime.builtins.ParseInt;
+import org.dynjs.runtime.builtins.Print;
 import org.dynjs.runtime.builtins.Require;
 import org.dynjs.runtime.builtins.ThrowTypeError;
 import org.dynjs.runtime.builtins.Unescape;
@@ -105,7 +106,8 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("include", new Include(this));
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
-
+        defineGlobalProperty("print", new Print(this));
+        
         // ----------------------------------------
         // Built-in global objects
         // ----------------------------------------
