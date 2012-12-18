@@ -357,25 +357,205 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+        statement.getRhs().accept(context, this, strict);
 
+        Object exprRef = pop();
+        Object exprValue = Types.getValue(context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            push(Completion.createNormal());
+            return;
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getOwnEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+            Object prop = obj.get(context, each);
+
+            statement.getExpr().accept(context, this, strict);
+            Object lhsRef = pop();
+
+            if (lhsRef instanceof Reference) {
+                ((Reference) lhsRef).putValue(context, prop);
+            }
+
+            statement.getBlock().accept(context, this, strict);
+            Completion completion = (Completion) pop();
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(v));
+                    return;
+                }
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                push(completion);
+                return;
+            }
+        }
+
+        push(Completion.createNormal(v));
     }
 
     @Override
     public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+        if (statement.getExpr() != null) {
+            statement.getExpr().accept(context, this, strict);
+            pop();
+        }
 
+        Expression test = statement.getTest();
+        Expression incr = statement.getIncrement();
+        Statement body = statement.getBlock();
+
+        Object v = null;
+
+        while (true) {
+            test.accept(context, this, strict);
+            if (!Types.toBoolean(Types.getValue(context, pop()))) {
+                break;
+            }
+            body.accept(context, this, strict);
+            Completion completion = (Completion) pop();
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(v));
+                    return;
+                }
+            }
+            if (completion.type == Completion.Type.RETURN) {
+                push(completion);
+                return;
+            }
+            if (completion.type == Completion.Type.CONTINUE) {
+                if (completion.target != null || !statement.getLabels().contains(completion.target)) {
+                    push(completion);
+                    return;
+                }
+            }
+
+            if (incr != null) {
+                incr.accept(context, this, strict);
+                Types.getValue(context, pop());
+            }
+        }
     }
 
     @Override
     public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+        statement.getDeclaration().accept(context, this, strict);
+        String varName = (String) pop();
+
+        statement.getRhs().accept(context, this, strict);
+
+        Object exprRef = pop();
+        Object exprValue = Types.getValue(context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            push(Completion.createNormal());
+            return;
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getOwnEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+            Object prop = obj.get(context, each);
+
+            Reference varRef = context.resolve(varName);
+
+            varRef.putValue(context, prop);
+
+            statement.getBlock().accept(context, this, strict);
+            Completion completion = (Completion) pop();
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(v));
+                    return;
+                }
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                push(completion);
+                return;
+            }
+        }
+
+        push(Completion.createNormal(v));
 
     }
 
     @Override
     public void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+
+        List<VariableDeclaration> decls = statement.getDeclarationList();
+        for (VariableDeclaration each : decls) {
+            each.accept(context, this, strict);
+            pop();
+        }
+
+        Expression test = statement.getTest();
+        Expression incr = statement.getIncrement();
+        Statement body = statement.getBlock();
+
+        Object v = null;
+
+        while (true) {
+            test.accept(context, this, strict);
+            if (!Types.toBoolean(Types.getValue(context, pop()))) {
+                break;
+            }
+            body.accept(context, this, strict);
+            Completion completion = (Completion) pop();
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(v));
+                    return;
+                }
+            }
+            if (completion.type == Completion.Type.RETURN) {
+                push(completion);
+                return;
+            }
+            if (completion.type == Completion.Type.CONTINUE) {
+                if (completion.target != null || !statement.getLabels().contains(completion.target)) {
+                    push(completion);
+                    return;
+                }
+            }
+
+            if (incr != null) {
+                incr.accept(context, this, strict);
+                Types.getValue(context, pop());
+            }
+        }
 
     }
 
@@ -415,7 +595,7 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, FunctionDeclaration statement, boolean strict) {
-        // TODO Auto-generated method stub
+        push(Completion.createNormal());
     }
 
     @Override
@@ -541,12 +721,12 @@ public class InterpretingVisitor implements CodeVisitor {
                 push(lval.doubleValue() * rval.doubleValue());
                 return;
             case "/":
-                if ( rval.doubleValue() == 0.0 ) {
-                    if ( lval.doubleValue() >= 0 ) {
-                        push( Double.POSITIVE_INFINITY );
+                if (rval.doubleValue() == 0.0) {
+                    if (lval.doubleValue() >= 0) {
+                        push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
-                        push( Double.NEGATIVE_INFINITY );
+                        push(Double.NEGATIVE_INFINITY);
                         return;
                     }
                 }
@@ -561,29 +741,29 @@ public class InterpretingVisitor implements CodeVisitor {
                 return;
             }
         } else {
-            switch ( expr.getOp() ) {
+            switch (expr.getOp()) {
             case "*":
-                push( lval.longValue() * rval.longValue() );
+                push(lval.longValue() * rval.longValue());
                 return;
             case "/":
-                if ( rval.longValue() == 0L) {
-                    if ( lval.longValue() >= 0L ) {
-                        push( Double.POSITIVE_INFINITY );
+                if (rval.longValue() == 0L) {
+                    if (lval.longValue() >= 0L) {
+                        push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
-                        push( Double.NEGATIVE_INFINITY );
+                        push(Double.NEGATIVE_INFINITY);
                         return;
                     }
                 }
-                push( lval.doubleValue() / rval.longValue() );
+                push(lval.doubleValue() / rval.longValue());
                 return;
             case "%":
-                if ( rval.longValue() == 0L ) {
-                    push( Double.NaN );
+                if (rval.longValue() == 0L) {
+                    push(Double.NaN);
                     return;
                 }
-                
-                push( lval.longValue() % rval.doubleValue() );
+
+                push(lval.longValue() % rval.doubleValue());
                 return;
             }
         }
@@ -591,8 +771,25 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getExpr().accept(context, this, strict);
+        Object memberExpr = Types.getValue(context, pop());
 
+        Object[] args = new Object[expr.getArgumentExpressions().size()];
+
+        int i = 0;
+
+        for (Expression each : expr.getArgumentExpressions()) {
+            each.accept(context, this, strict);
+            args[i] = Types.getValue(context, pop());
+            ++i;
+        }
+
+        if (memberExpr instanceof JSFunction) {
+            push(context.construct((JSFunction) memberExpr, args));
+            return;
+        }
+
+        throw new ThrowException(context, context.createTypeError("can only construct using functions"));
     }
 
     @Override
@@ -602,7 +799,37 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        String text = expr.getText();
+
+        if (text.indexOf('.') == 0) {
+            text = "0" + text;
+            push(Double.valueOf(text));
+            return;
+        }
+
+        if (text.indexOf('.') > 0) {
+            push(Double.valueOf(text));
+            return;
+        }
+
+        if (text.startsWith("0x") || text.startsWith("0X")) {
+            text = text.substring(2);
+            push(Long.valueOf(text, 16));
+            return;
+        }
+
+        int eLoc = text.toLowerCase().indexOf('e');
+        if (eLoc > 0) {
+
+            String base = text.substring(0, eLoc);
+            String exponent = text.substring(eLoc);
+
+            String javafied = base + ".0" + exponent;
+
+            push(Double.valueOf(javafied));
+        } else {
+            push(Long.valueOf(text, expr.getRadix()));
+        }
     }
 
     @Override
@@ -631,24 +858,96 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, PostOpExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getExpr().accept(context, this, strict);
+        Object lhs = pop();
 
+        if (lhs instanceof Reference) {
+            if (((Reference) lhs).isStrictReference()) {
+                if (((Reference) lhs).getBase() instanceof EnvironmentRecord) {
+                    if (((Reference) lhs).getReferencedName().equals("arguments") || ((Reference) lhs).getReferencedName().equals("eval")) {
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
+                    }
+                }
+            }
+
+            Number newValue = null;
+            Number oldValue = Types.toNumber(context, Types.getValue(context, lhs));
+
+            if (oldValue instanceof Double) {
+                switch (expr.getOp()) {
+                case "++":
+                    newValue = oldValue.doubleValue() + 1;
+                    break;
+                case "--":
+                    newValue = oldValue.doubleValue() - 1;
+                    break;
+                }
+            } else {
+                switch (expr.getOp()) {
+                case "++":
+                    newValue = oldValue.longValue() + 1;
+                    break;
+                case "--":
+                    newValue = oldValue.longValue() - 1;
+                    break;
+                }
+            }
+
+            ((Reference) lhs).putValue(context, newValue);
+            push(oldValue);
+        }
     }
 
     @Override
     public void visit(ExecutionContext context, PreOpExpression expr, boolean strict) {
-        // TODO Auto-generated method stub
+        expr.getExpr().accept(context, this, strict);
+        Object lhs = pop();
 
+        if (lhs instanceof Reference) {
+            if (((Reference) lhs).isStrictReference()) {
+                if (((Reference) lhs).getBase() instanceof EnvironmentRecord) {
+                    if (((Reference) lhs).getReferencedName().equals("arguments") || ((Reference) lhs).getReferencedName().equals("eval")) {
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
+                    }
+                }
+            }
+
+            Number newValue = null;
+            Number oldValue = Types.toNumber(context, Types.getValue(context, lhs));
+
+            if (oldValue instanceof Double) {
+                switch (expr.getOp()) {
+                case "++":
+                    newValue = oldValue.doubleValue() + 1;
+                    break;
+                case "--":
+                    newValue = oldValue.doubleValue() - 1;
+                    break;
+                }
+            } else {
+                switch (expr.getOp()) {
+                case "++":
+                    newValue = oldValue.longValue() + 1;
+                    break;
+                case "--":
+                    newValue = oldValue.longValue() - 1;
+                    break;
+                }
+            }
+
+            ((Reference) lhs).putValue(context, newValue);
+            push(newValue);
+        }
     }
 
     @Override
     public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
-        // TODO Auto-generated method stub
+        push(new InterpretedFunction(propertyGet.getBlock(), context.getLexicalEnvironment(), strict, new String[] {}));
     }
 
     @Override
     public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
-        // TODO Auto-generated method stub
+        push(new InterpretedFunction(propertySet.getBlock(), context.getLexicalEnvironment(), strict, new String[] { propertySet.getIdentifier() }));
 
     }
 
@@ -857,14 +1156,25 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, VariableDeclaration expr, boolean strict) {
-        // TODO Auto-generated method stub
+        if (expr.getExpr() != null) {
+            expr.getExpr().accept(context, this, strict);
+            Object value = Types.getValue(context, pop());
+            Reference var = context.resolve(expr.getIdentifier());
+            var.putValue(context, value);
+        }
 
+        push(expr.getIdentifier());
     }
 
     @Override
     public void visit(ExecutionContext context, VariableStatement statement, boolean strict) {
-        // TODO Auto-generated method stub
+        List<FunctionDeclaration> decls = statement.getFunctionDeclarations();
+        for (FunctionDeclaration each : decls) {
+            each.accept(context, this, strict);
+            pop();
+        }
 
+        push(Completion.createNormal());
     }
 
     @Override
