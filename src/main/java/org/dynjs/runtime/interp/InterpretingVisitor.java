@@ -104,6 +104,14 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
+        if (expr.getOp().equals("+")) {
+            visitPlus(context, expr, strict);
+        } else {
+            visitMinus(context, expr, strict);
+        }
+    }
+
+    public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         expr.getRhs().accept(context, this, strict);
 
@@ -124,6 +132,21 @@ public class InterpretingVisitor implements CodeVisitor {
         }
 
         push(lhsNum.longValue() + rhsNum.longValue());
+    }
+
+    public void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
+        expr.getLhs().accept(context, this, strict);
+        expr.getRhs().accept(context, this, strict);
+
+        Number rhs = Types.toNumber(context, pop());
+        Number lhs = Types.toNumber(context, pop());
+
+        if (lhs instanceof Double || rhs instanceof Double) {
+            push(lhs.doubleValue() - rhs.doubleValue());
+            return;
+        }
+
+        push(lhs.longValue() - rhs.longValue());
     }
 
     @Override
@@ -352,7 +375,13 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, ExpressionStatement statement, boolean strict) {
-        push(Completion.createNormal(pop()));
+        Expression expr = statement.getExpr();
+        if (expr instanceof FunctionDeclaration) {
+            push(Completion.createNormal());
+        } else {
+            expr.accept(context, this, strict);
+            push(Completion.createNormal(pop()));
+        }
     }
 
     @Override
@@ -1026,7 +1055,7 @@ public class InterpretingVisitor implements CodeVisitor {
         Object rhs = Types.getValue(context, pop());
         Object lhs = Types.getValue(context, pop());
 
-        if (expr.getOp().equals("==")) {
+        if (expr.getOp().equals("===")) {
             push(Types.compareStrictEquality(context, lhs, rhs));
         } else {
             push(!Types.compareStrictEquality(context, lhs, rhs));
