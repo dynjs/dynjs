@@ -24,6 +24,14 @@ import org.junit.Test;
 public class DynJSTest extends AbstractDynJSTestSupport {
 
     @Test
+    public void testOperatorPrecedence() {
+        assertThat( eval( "3-1+1" ) ).isEqualTo(3L);
+        assertThat( eval( "3-0+1" ) ).isEqualTo(4L);
+        assertThat( eval( "3-2*2" ) ).isEqualTo(-1L);
+        assertThat( eval( "3*2-2" ) ).isEqualTo(4L);
+    }
+    
+    @Test
     public void testObjectPrototypePrototypeIsNull() {
         assertThat(eval("Object.getPrototypeOf(Object.prototype) === null")).isEqualTo(true);
     }

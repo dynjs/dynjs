@@ -269,7 +269,7 @@ public class Parser {
                     assignment = propertyGet();
                     propAssignments.add(assignment);
                     if (values.contains(assignment.getName()) || getters.contains(assignment.getName())) {
-                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName() );
+                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
                     }
                     getters.add(assignment.getName());
                     break;
@@ -279,7 +279,7 @@ public class Parser {
                     assignment = propertySet();
                     propAssignments.add(assignment);
                     if (values.contains(assignment.getName()) || setters.contains(assignment.getName())) {
-                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName() );
+                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
                     }
                     setters.add(assignment.getName());
                     break;
@@ -287,15 +287,15 @@ public class Parser {
             default:
                 assignment = namedValue();
                 propAssignments.add(assignment);
-                if ( getters.contains( assignment.getName() ) || setters.contains( assignment.getName() ) ) {
-                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName() );
+                if (getters.contains(assignment.getName()) || setters.contains(assignment.getName())) {
+                    throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
                 }
-                if ( currentContext().isStrict() ) {
-                    if ( values.contains( assignment.getName() ) ) {
-                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName() );
+                if (currentContext().isStrict()) {
+                    if (values.contains(assignment.getName())) {
+                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
                     }
                 }
-                values.add( assignment.getName() );
+                values.add(assignment.getName());
             }
 
             if (la() != COMMA) {
@@ -573,9 +573,9 @@ public class Parser {
     public Expression logicalOrExpression(boolean noIn) {
         Expression expr = logicalAndExpression(noIn);
 
-        if (la() == LOGICAL_OR) {
+        while (la() == LOGICAL_OR) {
             consume(LOGICAL_OR);
-            return factory.logicalOrOperator(expr, logicalOrExpression(noIn));
+            expr = factory.logicalOrOperator(expr, logicalAndExpression(noIn));
         }
 
         return expr;
@@ -584,9 +584,9 @@ public class Parser {
     public Expression logicalAndExpression(boolean noIn) {
         Expression expr = bitwiseOrExpression(noIn);
 
-        if (la() == LOGICAL_AND) {
+        while (la() == LOGICAL_AND) {
             consume(LOGICAL_AND);
-            return factory.logicalAndOperator(expr, logicalAndExpression(noIn));
+            expr = factory.logicalAndOperator(expr, bitwiseOrExpression(noIn));
         }
 
         return expr;
@@ -595,9 +595,9 @@ public class Parser {
     public Expression bitwiseOrExpression(boolean noIn) {
         Expression expr = bitwiseXorExpression(noIn);
 
-        if (la() == BITWISE_OR) {
+        while (la() == BITWISE_OR) {
             consume(BITWISE_OR);
-            return factory.bitwiseOrOperator(expr, bitwiseOrExpression(noIn));
+            expr = factory.bitwiseOrOperator(expr, bitwiseXorExpression(noIn));
         }
 
         return expr;
@@ -606,9 +606,9 @@ public class Parser {
     public Expression bitwiseXorExpression(boolean noIn) {
         Expression expr = bitwiseAndExpression(noIn);
 
-        if (la() == BITWISE_XOR) {
+        while (la() == BITWISE_XOR) {
             consume(BITWISE_XOR);
-            return factory.bitwiseXorOperator(expr, bitwiseXorExpression(noIn));
+            expr = factory.bitwiseXorOperator(expr, bitwiseAndExpression(noIn));
         }
 
         return expr;
@@ -617,9 +617,9 @@ public class Parser {
     public Expression bitwiseAndExpression(boolean noIn) {
         Expression expr = equalityExpression(noIn);
 
-        if (la() == BITWISE_AND) {
+        while (la() == BITWISE_AND) {
             consume(BITWISE_AND);
-            return factory.bitwiseAndOperator(expr, bitwiseAndExpression(noIn));
+            expr = factory.bitwiseAndOperator(expr, equalityExpression(noIn));
         }
 
         return expr;
@@ -628,19 +628,25 @@ public class Parser {
     public Expression equalityExpression(boolean noIn) {
         Expression expr = relationalExpression(noIn);
 
-        switch (la()) {
-        case EQUALITY:
-            consume();
-            return factory.equalityOperator(expr, equalityExpression(noIn));
-        case NOT_EQUALITY:
-            consume();
-            return factory.notEqualityOperator(expr, equalityExpression(noIn));
-        case STRICT_EQUALITY:
-            consume();
-            return factory.strictEqualityOperator(expr, equalityExpression(noIn));
-        case STRICT_NOT_EQUALITY:
-            consume();
-            return factory.strictNotEqualityOperator(expr, equalityExpression(noIn));
+        while (la() == EQUALITY || la() == NOT_EQUALITY || la() == STRICT_EQUALITY || la() == STRICT_NOT_EQUALITY) {
+            switch (la()) {
+            case EQUALITY:
+                consume();
+                expr = factory.equalityOperator(expr, relationalExpression(noIn));
+                break;
+            case NOT_EQUALITY:
+                consume();
+                expr = factory.notEqualityOperator(expr, relationalExpression(noIn));
+                break;
+            case STRICT_EQUALITY:
+                consume();
+                expr = factory.strictEqualityOperator(expr, relationalExpression(noIn));
+                break;
+            case STRICT_NOT_EQUALITY:
+                consume();
+                expr = factory.strictNotEqualityOperator(expr, relationalExpression(noIn));
+                break;
+            }
         }
 
         return expr;
@@ -649,26 +655,34 @@ public class Parser {
     public Expression relationalExpression(boolean noIn) {
         Expression expr = shiftExpression();
 
-        switch (la()) {
-        case LESS_THAN:
-            consume();
-            return factory.lessThanOperator(expr, relationalExpression(noIn));
-        case LESS_THAN_EQUAL:
-            consume();
-            return factory.lessThanEqualOperator(expr, relationalExpression(noIn));
-        case GREATER_THAN:
-            consume();
-            return factory.greaterThanOperator(expr, relationalExpression(noIn));
-        case GREATER_THAN_EQUAL:
-            consume();
-            return factory.greaterThanEqualOperator(expr, relationalExpression(noIn));
-        case INSTANCEOF:
-            consume();
-            return factory.instanceofOperator(expr, relationalExpression(noIn));
-        case IN:
-            if (!noIn) {
+        while (la() == LESS_THAN || la() == LESS_THAN_EQUAL || la() == GREATER_THAN || la() == GREATER_THAN_EQUAL || la() == INSTANCEOF || (!noIn && la() == IN)) {
+            switch (la()) {
+            case LESS_THAN:
                 consume();
-                return factory.inOperator(expr, relationalExpression(noIn));
+                expr = factory.lessThanOperator(expr, shiftExpression());
+                break;
+            case LESS_THAN_EQUAL:
+                consume();
+                expr = factory.lessThanEqualOperator(expr, shiftExpression());
+                break;
+            case GREATER_THAN:
+                consume();
+                expr = factory.greaterThanOperator(expr, shiftExpression());
+                break;
+            case GREATER_THAN_EQUAL:
+                consume();
+                expr = factory.greaterThanEqualOperator(expr, shiftExpression());
+                break;
+            case INSTANCEOF:
+                consume();
+                expr = factory.instanceofOperator(expr, shiftExpression());
+                break;
+            case IN:
+                if (!noIn) {
+                    consume();
+                    expr = factory.inOperator(expr, shiftExpression());
+                    break;
+                }
             }
         }
 
@@ -678,16 +692,21 @@ public class Parser {
     public Expression shiftExpression() {
         Expression expr = additiveExpression();
 
-        switch (la()) {
-        case LEFT_SHIFT:
-            consume();
-            return factory.leftShiftOperator(expr, shiftExpression());
-        case RIGHT_SHIFT:
-            consume();
-            return factory.rightShiftOperator(expr, shiftExpression());
-        case UNSIGNED_RIGHT_SHIFT:
-            consume();
-            return factory.unsignedRightShiftOperator(expr, shiftExpression());
+        while (la() == LEFT_SHIFT || la() == RIGHT_SHIFT || la() == UNSIGNED_RIGHT_SHIFT) {
+            switch (la()) {
+            case LEFT_SHIFT:
+                consume();
+                expr = factory.leftShiftOperator(expr, additiveExpression());
+                break;
+            case RIGHT_SHIFT:
+                consume();
+                expr = factory.rightShiftOperator(expr, additiveExpression());
+                break;
+            case UNSIGNED_RIGHT_SHIFT:
+                consume();
+                expr = factory.unsignedRightShiftOperator(expr, additiveExpression());
+                break;
+            }
         }
 
         return expr;
@@ -696,13 +715,17 @@ public class Parser {
     public Expression additiveExpression() {
         Expression expr = multiplicativeExpression();
 
-        switch (la()) {
-        case PLUS:
-            consume();
-            return factory.additionOperator(expr, additiveExpression());
-        case MINUS:
-            consume();
-            return factory.subtractionOperator(expr, additiveExpression());
+        while (la() == PLUS || la() == MINUS) {
+            switch (la()) {
+            case PLUS:
+                consume();
+                expr = factory.additionOperator(expr, multiplicativeExpression());
+                break;
+            case MINUS:
+                consume();
+                expr = factory.subtractionOperator(expr, multiplicativeExpression());
+                break;
+            }
         }
 
         return expr;
@@ -711,16 +734,21 @@ public class Parser {
     public Expression multiplicativeExpression() {
         Expression expr = unaryExpression();
 
-        switch (la()) {
-        case MULTIPLY:
-            consume();
-            return factory.multiplicationOperator(expr, multiplicativeExpression());
-        case DIVIDE:
-            consume();
-            return factory.divisionOperator(expr, multiplicativeExpression());
-        case MODULO:
-            consume();
-            return factory.moduloOperator(expr, multiplicativeExpression());
+        while (la() == MULTIPLY || la() == DIVIDE || la() == MODULO) {
+            switch (la()) {
+            case MULTIPLY:
+                consume();
+                expr = factory.multiplicationOperator(expr, unaryExpression());
+                break;
+            case DIVIDE:
+                consume();
+                expr = factory.divisionOperator(expr, unaryExpression());
+                break;
+            case MODULO:
+                consume();
+                expr = factory.moduloOperator(expr, unaryExpression());
+                break;
+            }
         }
 
         return expr;
@@ -884,9 +912,9 @@ public class Parser {
             String identifierName = null;
             if (la() == IDENTIFIER) {
                 identifier = consume(IDENTIFIER);
-                if ( currentContext().isStrict() ) {
-                    if ( identifier.getText().equals( "eval" ) || identifier.getText().equals( "arguments" ) ) {
-                        throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText() );
+                if (currentContext().isStrict()) {
+                    if (identifier.getText().equals("eval") || identifier.getText().equals("arguments")) {
+                        throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText());
                     }
                 }
                 identifierName = identifier.getText();
@@ -908,12 +936,12 @@ public class Parser {
             pushContext(ContextType.FUNCTION);
             Token position = consume(FUNCTION);
             Token identifier = consume(IDENTIFIER);
-            if ( currentContext().isStrict() ) {
-                if ( identifier.getText().equals( "eval" ) || identifier.getText().equals( "arguments" ) ) {
-                    throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText() );
+            if (currentContext().isStrict()) {
+                if (identifier.getText().equals("eval") || identifier.getText().equals("arguments")) {
+                    throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText());
                 }
             }
-            
+
             List<Parameter> params = formalParameters();
 
             consume(LEFT_BRACE);
