@@ -1,4 +1,4 @@
-package org.dynjs.compiler.toplevel;
+package org.dynjs.compiler.bytecode.toplevel;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
@@ -11,8 +11,9 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
-import org.dynjs.compiler.partial.CompilationPlanner;
-import org.dynjs.compiler.partial.PartialCompiler;
+import org.dynjs.compiler.FunctionCompiler;
+import org.dynjs.compiler.bytecode.partial.CompilationPlanner;
+import org.dynjs.compiler.bytecode.partial.PartialCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.AbstractJavascriptFunction;
@@ -23,12 +24,16 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.objectweb.asm.Opcodes;
 
-public class FunctionCompiler extends AbstractTopLevelCompiler {
+public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implements FunctionCompiler {
 
-    public FunctionCompiler(Config config, CodeGeneratingVisitorFactory factory) {
+    public BytecodeFunctionCompiler(Config config, CodeGeneratingVisitorFactory factory) {
         super(config, factory, "Function");
     }
 
+    /* (non-Javadoc)
+     * @see org.dynjs.compiler.bytecode.toplevel.FunctionCompiler#compile(org.dynjs.runtime.ExecutionContext, java.lang.String[], org.dynjs.parser.ast.BlockStatement, boolean)
+     */
+    @Override
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final BlockStatement body, final boolean strict) {
         String className = nextClassName();
 

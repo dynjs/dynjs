@@ -1,4 +1,4 @@
-package org.dynjs.compiler;
+package org.dynjs.compiler.bytecode;
 
 import java.io.PrintWriter;
 
@@ -13,17 +13,17 @@ import org.dynjs.runtime.DynamicClassLoader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
-public abstract class AbstractCompiler {
+public abstract class AbstractBytecodeCompiler {
     
     private Config config;
     private CodeGeneratingVisitorFactory factory;
 
-    public AbstractCompiler(Config config, CodeGeneratingVisitorFactory factory) {
+    public AbstractBytecodeCompiler(Config config, CodeGeneratingVisitorFactory factory) {
         this.config = config;
         this.factory = factory;
     }
     
-    public AbstractCompiler(AbstractCompiler parent) {
+    public AbstractBytecodeCompiler(AbstractBytecodeCompiler parent) {
         this.config = parent.config;
         this.factory = parent.factory;
     }

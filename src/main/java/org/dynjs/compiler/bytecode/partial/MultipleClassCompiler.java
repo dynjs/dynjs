@@ -1,4 +1,4 @@
-package org.dynjs.compiler.partial;
+package org.dynjs.compiler.bytecode.partial;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 

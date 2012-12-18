@@ -1,12 +1,12 @@
-package org.dynjs.compiler.toplevel;
+package org.dynjs.compiler.bytecode.toplevel;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
-import org.dynjs.compiler.AbstractCompiler;
+import org.dynjs.compiler.bytecode.AbstractBytecodeCompiler;
 
-public class AbstractTopLevelCompiler extends AbstractCompiler implements TopLevelCompiler {
+public class AbstractTopLevelCompiler extends AbstractBytecodeCompiler {
 
     private String type;
     private AtomicInteger counter = new AtomicInteger();

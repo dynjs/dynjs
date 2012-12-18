@@ -1,4 +1,4 @@
-package org.dynjs.compiler.toplevel;
+package org.dynjs.compiler.bytecode.toplevel;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
@@ -11,8 +11,9 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
-import org.dynjs.compiler.partial.CompilationPlanner;
-import org.dynjs.compiler.partial.PartialCompiler;
+import org.dynjs.compiler.ProgramCompiler;
+import org.dynjs.compiler.bytecode.partial.CompilationPlanner;
+import org.dynjs.compiler.bytecode.partial.PartialCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.AbstractProgram;
@@ -23,12 +24,16 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
 import org.objectweb.asm.Opcodes;
 
-public class ProgramCompiler extends AbstractTopLevelCompiler {
+public class BytecodeProgramCompiler extends AbstractTopLevelCompiler implements ProgramCompiler {
 
-    public ProgramCompiler(Config config, CodeGeneratingVisitorFactory factory) {
+    public BytecodeProgramCompiler(Config config, CodeGeneratingVisitorFactory factory) {
         super(config, factory, "Program");
     }
 
+    /* (non-Javadoc)
+     * @see org.dynjs.compiler.bytecode.toplevel.ProgramCompiler#compile(org.dynjs.runtime.ExecutionContext, org.dynjs.parser.ast.ProgramTree, boolean)
+     */
+    @Override
     public JSProgram compile(final ExecutionContext context, final ProgramTree body, boolean forceStrict) {
         String className = nextClassName();
 

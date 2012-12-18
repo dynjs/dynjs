@@ -1,10 +1,10 @@
-package org.dynjs.compiler.partial;
+package org.dynjs.compiler.bytecode.partial;
 
 import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
-import org.dynjs.compiler.Chunker;
+import org.dynjs.compiler.bytecode.Chunker;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.DynamicClassLoader;
 

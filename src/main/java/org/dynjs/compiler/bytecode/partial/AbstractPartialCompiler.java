@@ -1,13 +1,13 @@
-package org.dynjs.compiler.partial;
+package org.dynjs.compiler.bytecode.partial;
 
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
-import org.dynjs.compiler.AbstractCompiler;
+import org.dynjs.compiler.bytecode.AbstractBytecodeCompiler;
 import org.dynjs.runtime.DynamicClassLoader;
 
-public abstract class AbstractPartialCompiler extends AbstractCompiler implements PartialCompiler {
+public abstract class AbstractPartialCompiler extends AbstractBytecodeCompiler implements PartialCompiler {
     
     private CodeGeneratingVisitorFactory factory;
     private DynamicClassLoader classLoader;

@@ -1,4 +1,4 @@
-package org.dynjs.compiler.toplevel;
+package org.dynjs.compiler.bytecode.toplevel;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 import me.qmx.jitescript.CodeBlock;

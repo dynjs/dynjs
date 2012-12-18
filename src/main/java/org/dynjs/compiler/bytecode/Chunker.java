@@ -1,4 +1,4 @@
-package org.dynjs.compiler;
+package org.dynjs.compiler.bytecode;
 
 import java.util.ArrayList;
 import java.util.Collections;

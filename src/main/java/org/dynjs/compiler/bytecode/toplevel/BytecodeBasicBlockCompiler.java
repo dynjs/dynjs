@@ -1,4 +1,4 @@
-package org.dynjs.compiler.toplevel;
+package org.dynjs.compiler.bytecode.toplevel;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
@@ -10,27 +10,29 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
-import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
-import org.dynjs.compiler.partial.CompilationPlanner;
-import org.dynjs.compiler.partial.InlineCompiler;
-import org.dynjs.compiler.partial.PartialCompiler;
+import org.dynjs.codegen.CodeGeneratingVisitorFactory;
+import org.dynjs.compiler.BasicBlockCompiler;
+import org.dynjs.compiler.bytecode.partial.CompilationPlanner;
+import org.dynjs.compiler.bytecode.partial.PartialCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.AbstractBasicBlock;
-import org.dynjs.runtime.AbstractJavascriptFunction;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
 import org.objectweb.asm.Opcodes;
 
-public class BasicBlockCompiler extends AbstractTopLevelCompiler {
+public class BytecodeBasicBlockCompiler extends AbstractTopLevelCompiler implements BasicBlockCompiler {
 
-    public BasicBlockCompiler(Config config, CodeGeneratingVisitorFactory factory) {
+    public BytecodeBasicBlockCompiler(Config config, CodeGeneratingVisitorFactory factory) {
         super(config, factory, "BasicBlock");
     }
 
+    /* (non-Javadoc)
+     * @see org.dynjs.compiler.bytecode.toplevel.BasicBlockCompiler#compile(org.dynjs.runtime.ExecutionContext, java.lang.String, org.dynjs.parser.Statement)
+     */
+    @Override
     public BasicBlock compile(ExecutionContext context, final String grist, final Statement body) {
         String className = nextClassName(grist);
 
