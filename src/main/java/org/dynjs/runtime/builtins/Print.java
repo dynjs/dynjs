@@ -15,14 +15,9 @@
  */
 package org.dynjs.runtime.builtins;
 
-import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.js.ParserException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
-import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Runner;
 import org.dynjs.runtime.Types;
 
 public class Print extends AbstractNonConstructorFunction {
