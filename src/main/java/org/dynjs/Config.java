@@ -21,6 +21,7 @@ public class Config {
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
+    private boolean compilationEnabled = true;
     private boolean invokeDynamicEnabled = true;
     private boolean nodePackageManagerEnabled = true;
 
@@ -41,6 +42,9 @@ public class Config {
         if (System.getProperty("dynjs.disable.npm") != null) {
             setNodePackageManagerEnabled(false);
         }
+        if ( System.getProperty("dynjs.disable.compilation") != null ) {
+            setCompilationEnabled(false);
+        }
     }
     
     public void setInvokeDynamicEnabled(boolean enabled) {
@@ -49,6 +53,14 @@ public class Config {
 
     public boolean isInvokeDynamicEnabled() {
         return this.invokeDynamicEnabled;
+    }
+    
+    public void setCompilationEnabled(boolean enabled) {
+        this.compilationEnabled = enabled;
+    }
+    
+    public boolean isCompilationEnabled() {
+        return this.compilationEnabled;
     }
     
     public void setNodePackageManagerEnabled(boolean enabled) {

@@ -5,6 +5,9 @@ import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.compiler.bytecode.toplevel.BytecodeBasicBlockCompiler;
 import org.dynjs.compiler.bytecode.toplevel.BytecodeFunctionCompiler;
 import org.dynjs.compiler.bytecode.toplevel.BytecodeProgramCompiler;
+import org.dynjs.compiler.interpreter.InterpretingBasicBlockCompiler;
+import org.dynjs.compiler.interpreter.InterpretingFunctionCompiler;
+import org.dynjs.compiler.interpreter.InterpretingProgramCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.ProgramTree;
@@ -28,9 +31,15 @@ public class JSCompiler {
 
         CodeGeneratingVisitorFactory factory = new CodeGeneratingVisitorFactory(config.isInvokeDynamicEnabled());
 
-        this.programCompiler = new BytecodeProgramCompiler(config, factory);
-        this.functionCompiler = new BytecodeFunctionCompiler(config, factory);
-        this.basicBlockCompiler = new BytecodeBasicBlockCompiler(config, factory);
+        if (config.isCompilationEnabled()) {
+            this.programCompiler = new BytecodeProgramCompiler(config, factory);
+            this.functionCompiler = new BytecodeFunctionCompiler(config, factory);
+            this.basicBlockCompiler = new BytecodeBasicBlockCompiler(config, factory);
+        } else {
+            this.programCompiler = new InterpretingProgramCompiler();
+            this.functionCompiler = new InterpretingFunctionCompiler();
+            this.basicBlockCompiler = new InterpretingBasicBlockCompiler();
+        }
     }
 
     public JSProgram compileProgram(ExecutionContext context, ProgramTree program, boolean forceStrict) {
