@@ -49,7 +49,6 @@ import org.dynjs.parser.ast.NumberLiteralExpression;
 import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
-import org.dynjs.parser.ast.PrintStatement;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.PropertyGet;
 import org.dynjs.parser.ast.PropertySet;
@@ -640,14 +639,6 @@ public class InterpretingVisitor implements CodeVisitor {
     public void visit(ExecutionContext context, PreOpExpression expr, boolean strict) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void visit(ExecutionContext context, PrintStatement statement, boolean strict) {
-        statement.getExpr().accept(context, this, strict);
-        Object result = pop();
-        System.err.println(result);
-        push(Completion.createNormal());
     }
 
     @Override

@@ -56,7 +56,6 @@ import org.dynjs.parser.ast.NumberLiteralExpression;
 import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
-import org.dynjs.parser.ast.PrintStatement;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.PropertyGet;
 import org.dynjs.parser.ast.PropertySet;
@@ -2025,21 +2024,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         label(end);
         nop();
 
-    }
-
-    @Override
-    public void visit(ExecutionContext context, PrintStatement statement, boolean strict) {
-        statement.getExpr().accept(context, this, strict);
-        // obj
-        append(jsGetValue());
-        // val
-        getstatic(p(System.class), "err", ci(PrintStream.class));
-        // val System.out
-        swap();
-        // System.out val
-        invokevirtual(p(PrintStream.class), "println", sig(void.class, Object.class));
-        // <empty>
-        normalCompletion();
     }
 
     @Override
