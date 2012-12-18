@@ -31,6 +31,10 @@ public abstract class AbstractCode implements JSCode {
         this.strict = strict;
     }
     
+    public Statement getBlock() {
+        return this.block;
+    }
+    
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
         if (this.block instanceof BlockStatement) {
