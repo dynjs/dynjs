@@ -62,7 +62,6 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
         } catch (ThrowException e) {
             JSObject o = (JSObject) e.getValue();
             String stack = (String) o.get(getContext(), "stack");
-            System.err.println( stack );
             assertThat(stack.contains("TypeError: dangit")).isTrue();
             assertThat(stack.contains("at foo (<eval>:5)")).isTrue();
             assertThat(stack.contains("at bar (<eval>:8)")).isTrue();

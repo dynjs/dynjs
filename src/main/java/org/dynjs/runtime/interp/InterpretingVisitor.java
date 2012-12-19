@@ -79,6 +79,7 @@ import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
@@ -115,8 +116,8 @@ public class InterpretingVisitor implements CodeVisitor {
         expr.getLhs().accept(context, this, strict);
         expr.getRhs().accept(context, this, strict);
 
-        Object rhs = Types.toPrimitive(context, pop());
-        Object lhs = Types.toPrimitive(context, pop());
+        Object rhs = Types.toPrimitive(context, Types.getValue(context, pop()));
+        Object lhs = Types.toPrimitive(context, Types.getValue(context, pop()));
 
         if (lhs instanceof String || rhs instanceof String) {
             push(Types.toString(context, lhs) + Types.toString(context, rhs));
@@ -138,8 +139,8 @@ public class InterpretingVisitor implements CodeVisitor {
         expr.getLhs().accept(context, this, strict);
         expr.getRhs().accept(context, this, strict);
 
-        Number rhs = Types.toNumber(context, pop());
-        Number lhs = Types.toNumber(context, pop());
+        Number rhs = Types.toNumber(context, Types.getValue(context, pop()));
+        Number lhs = Types.toNumber(context, Types.getValue(context, pop()));
 
         if (lhs instanceof Double || rhs instanceof Double) {
             push(lhs.doubleValue() - rhs.doubleValue());
@@ -186,10 +187,15 @@ public class InterpretingVisitor implements CodeVisitor {
 
         int i = 0;
         for (Expression each : expr.getExprs()) {
-            each.accept(context, this, strict);
-            array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(Types.getValue(context, pop())), false);
+            Object value = null;
+            if (each != null) {
+                each.accept(context, this, strict);
+                value = Types.getValue(context, pop());
+            }
+            array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             ++i;
         }
+        NameEnumerator enumerator = array.getOwnEnumerablePropertyNames();
 
         push(array);
     }
@@ -232,20 +238,20 @@ public class InterpretingVisitor implements CodeVisitor {
             each.accept(context, this, strict);
             Completion completion = (Completion) pop();
             if (completion.type == Completion.Type.NORMAL) {
-                if (completion.value != null) {
-                    completionValue = completion.value;
-                }
+                completionValue = completion.value;
                 continue;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                continue;
+                push(completion);
+                return;
             }
             if (completion.type == Completion.Type.RETURN) {
                 push(completion);
                 return;
             }
             if (completion.type == Completion.Type.BREAK) {
-                break;
+                push(completion);
+                return;
             }
         }
 
@@ -342,7 +348,46 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, DoWhileStatement statement, boolean strict) {
+        Expression testExpr = statement.getTest();
+        Statement block = statement.getBlock();
 
+        Object v = null;
+
+        while (true) {
+            block.accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            if (completion.value != null) {
+                v = completion.value;
+            }
+            if (completion.type == Completion.Type.CONTINUE) {
+                if (completion.target == null) {
+                    continue;
+                } else if (!statement.getLabels().contains(completion.target)) {
+                    push(completion);
+                    return;
+                }
+            }
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null) {
+                    break;
+                } else if (!statement.getLabels().contains(completion.target)) {
+                    push(completion);
+                    return;
+                }
+            }
+            if (completion.type == Completion.Type.RETURN) {
+                push(Completion.createReturn(v));
+                return;
+            }
+
+            testExpr.accept(context, this, strict);
+            Boolean testResult = Types.toBoolean(Types.getValue(context, pop()));
+            if (!testResult) {
+                break;
+            }
+        }
+
+        push(Completion.createNormal(v));
     }
 
     @Override
@@ -380,7 +425,7 @@ public class InterpretingVisitor implements CodeVisitor {
             push(Completion.createNormal());
         } else {
             expr.accept(context, this, strict);
-            push(Completion.createNormal(pop()));
+            push(Completion.createNormal(Types.getValue(context, pop())));
         }
     }
 
@@ -482,6 +527,8 @@ public class InterpretingVisitor implements CodeVisitor {
                 Types.getValue(context, pop());
             }
         }
+
+        push(Completion.createNormal(v));
     }
 
     @Override
@@ -586,6 +633,7 @@ public class InterpretingVisitor implements CodeVisitor {
             }
         }
 
+        push(Completion.createNormal(v));
     }
 
     @Override
@@ -690,7 +738,7 @@ public class InterpretingVisitor implements CodeVisitor {
         expr.getLhs().accept(context, this, strict);
         Object lhs = Types.getValue(context, pop());
 
-        if ((expr.getOp().equals("|| ") && Types.toBoolean(lhs)) || (expr.getOp().equals("&&") && !Types.toBoolean(lhs))) {
+        if ((expr.getOp().equals("||") && Types.toBoolean(lhs)) || (expr.getOp().equals("&&") && !Types.toBoolean(lhs))) {
             push(lhs);
         } else {
             expr.getRhs().accept(context, this, strict);
@@ -751,7 +799,7 @@ public class InterpretingVisitor implements CodeVisitor {
                 return;
             case "/":
                 if (rval.doubleValue() == 0.0) {
-                    if (lval.doubleValue() >= 0) {
+                    if (lval.doubleValue() >= 0 && !(rval.doubleValue() == -0.0)) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -869,15 +917,20 @@ public class InterpretingVisitor implements CodeVisitor {
 
         for (PropertyAssignment each : assignments) {
             each.accept(context, this, strict);
-            Object value = Types.getValue(context, pop());
+            String debugName = each.getName();
+            Object ref = pop();
+            if (ref instanceof Reference) {
+                debugName = ((Reference) ref).getReferencedName();
+            }
+            Object value = Types.getValue(context, ref);
             Object original = obj.getOwnProperty(context, each.getName());
             PropertyDescriptor desc = null;
             if (each instanceof PropertyGet) {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, each.getName(), (JSFunction) value);
+                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
             } else if (each instanceof PropertySet) {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, each.getName(), (JSFunction) value);
+                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, debugName, (JSFunction) value);
             } else {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(each.getName(), value);
+                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
             }
             obj.defineOwnProperty(context, each.getName(), desc, false);
         }
@@ -1022,7 +1075,7 @@ public class InterpretingVisitor implements CodeVisitor {
             if (r == Boolean.TRUE || r == Types.UNDEFINED) {
                 push(false);
             } else {
-                push(r);
+                push(true);
             }
             return;
         case ">=":
@@ -1030,7 +1083,7 @@ public class InterpretingVisitor implements CodeVisitor {
             if (r == Boolean.TRUE || r == Types.UNDEFINED) {
                 push(false);
             } else {
-                push(r);
+                push(true);
             }
             return;
         }
@@ -1041,7 +1094,8 @@ public class InterpretingVisitor implements CodeVisitor {
     public void visit(ExecutionContext context, ReturnStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
-            push(Completion.createReturn(pop()));
+            Object value = pop();
+            push(Completion.createReturn(value));
         } else {
             push(Completion.createReturn(Types.UNDEFINED));
         }
@@ -1073,31 +1127,32 @@ public class InterpretingVisitor implements CodeVisitor {
         Object value = Types.getValue(context, pop());
 
         List<CaseClause> clauses = statement.getCaseClauses();
+        if (statement.getDefaultCaseClause() != null) {
+            clauses.add(statement.getDefaultCaseClause());
+        }
 
         Object v = null;
 
-        boolean searching = true;
+        boolean matched = false;
         for (CaseClause each : clauses) {
             if (each instanceof DefaultCaseClause) {
-                searching = false;
+                matched = true;
             } else {
                 each.getExpression().accept(context, this, strict);
                 Object caseTest = pop();
                 if (Types.compareStrictEquality(context, value, Types.getValue(context, caseTest))) {
-                    searching = false;
+                    matched = true;
                 }
             }
 
-            if (!searching) {
+            if (matched) {
                 if (each.getBlock() != null) {
                     each.getBlock().accept(context, this, strict);
                     Completion completion = (Completion) pop();
                     v = completion.value;
-
-                    if (completion.type != Completion.Type.NORMAL) {
-                        completion.value = v;
-                        push(completion);
-                        return;
+                    
+                    if (completion.type == Completion.Type.BREAK) {
+                        break;
                     }
                 }
             }
@@ -1124,7 +1179,7 @@ public class InterpretingVisitor implements CodeVisitor {
     @Override
     public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
-        throw new ThrowException(context, pop());
+        throw new ThrowException(context, Types.getValue(context, pop()));
     }
 
     @Override
@@ -1133,11 +1188,12 @@ public class InterpretingVisitor implements CodeVisitor {
         try {
             statement.getTryBlock().accept(context, this, strict);
             b = (Completion) pop();
+            push(b);
         } catch (ThrowException e) {
             if (statement.getCatchClause() != null) {
                 BasicBlock catchBlock = new InterpretedStatement(statement.getCatchClause().getBlock(), strict);
-                context.executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
-                return;
+                b = context.executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
+                push(b);
             }
         } finally {
             if (statement.getFinallyBlock() != null) {
@@ -1145,15 +1201,11 @@ public class InterpretingVisitor implements CodeVisitor {
                 Completion f = (Completion) pop();
                 if (f.type == Completion.Type.NORMAL) {
                     push(b);
-                    return;
                 } else {
                     push(f);
-                    return;
                 }
             }
         }
-
-        push(b);
     }
 
     @Override
@@ -1165,13 +1217,16 @@ public class InterpretingVisitor implements CodeVisitor {
     @Override
     public void visit(ExecutionContext context, UnaryMinusExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        Number oldValue = Types.toNumber(context, pop());
+        Object value = Types.getValue(context, pop());
+        Number oldValue = Types.toNumber(context, value);
         if (oldValue instanceof Double) {
             if (Double.isNaN(oldValue.doubleValue())) {
                 push(Double.NaN);
             } else {
                 push(-1 * oldValue.doubleValue());
             }
+        } else if (oldValue.longValue() == 0L) {
+            push(-0.0);
         } else {
             push(-1 * oldValue.longValue());
         }
@@ -1191,25 +1246,24 @@ public class InterpretingVisitor implements CodeVisitor {
             Reference var = context.resolve(expr.getIdentifier());
             var.putValue(context, value);
         }
-
         push(expr.getIdentifier());
     }
 
     @Override
     public void visit(ExecutionContext context, VariableStatement statement, boolean strict) {
-        List<FunctionDeclaration> decls = statement.getFunctionDeclarations();
-        for (FunctionDeclaration each : decls) {
+        for (VariableDeclaration each : statement.getVariableDeclarations()) {
             each.accept(context, this, strict);
             pop();
         }
 
-        push(Completion.createNormal());
+        push(Completion.createNormal(Types.UNDEFINED));
     }
 
     @Override
     public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
         pop();
+        push(Types.UNDEFINED);
     }
 
     @Override

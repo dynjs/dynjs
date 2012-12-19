@@ -7,7 +7,6 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class InterpretedStatement implements BasicBlock {
 
-    private InterpretingVisitor visitor;
     private Statement block;
     private boolean strict;
 
@@ -20,7 +19,7 @@ public class InterpretedStatement implements BasicBlock {
     public Completion call(ExecutionContext context) {
         InterpretingVisitor visitor = new InterpretingVisitor();
         this.block.accept(context, visitor, this.strict);
-        return (Completion) this.visitor.pop();
+        return (Completion) visitor.pop();
     }
 
 }

@@ -63,15 +63,19 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNew_java() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery");
-        assertThat( result ).isInstanceOf(JavaMockery.class);
+        if (this.config.isCompilationEnabled()) {
+            Object result = eval( "new org.dynjs.runtime.java.JavaMockery");
+            assertThat( result ).isInstanceOf(JavaMockery.class);
+        }
     }
     
     @Test
     public void testNew_java_withParams() {
-        Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42)");
-        assertThat( result ).isInstanceOf(JavaMockery.class);
-        assertThat( ((JavaMockery)result).getValue() ).isEqualTo( 42L );
+        if (this.config.isCompilationEnabled()) {
+            Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42)");
+            assertThat( result ).isInstanceOf(JavaMockery.class);
+            assertThat( ((JavaMockery)result).getValue() ).isEqualTo( 42L );
+        }
     }
     
     /*
