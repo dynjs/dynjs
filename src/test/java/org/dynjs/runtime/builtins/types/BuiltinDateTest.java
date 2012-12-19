@@ -34,6 +34,12 @@ public class BuiltinDateTest extends AbstractDynJSTestSupport {
         assertThat(eval("new Date(Date.parse('2012')).toISOString()"))
                 .isEqualTo("2012-01-01T00:00:00.000Z");
     }
+    
+    @Test
+    public void testDateParseWithWackyDateFormat() {
+        assertThat(eval("new Date('Sun, 14 Feb 2010 11:48:40 GMT').toISOString()"))
+                .isEqualTo("2010-02-14T11:48:40.000Z");
+    }
 
     @Test
     public void testDateValueOf() {

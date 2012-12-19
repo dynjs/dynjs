@@ -60,6 +60,10 @@ public class Parse extends AbstractNativeFunction {
             if (date != null) {
                 return date.getTime();
             }
+            date = attemptParse(text, "EEE, dd MMM yyyy HH:mm:ss zzz");
+            if (date != null) {
+                return date.getTime();
+            }
         }
 
         throw new ThrowException(context, context.createSyntaxError("unable to parse date"));
