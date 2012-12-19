@@ -56,6 +56,15 @@ public class VariableStatement extends BaseStatement {
         }
         return buf.toString();
     }
+    
+    public int getSizeMetric() {
+        int size = 0;
+        for ( VariableDeclaration each : this.decls ) {
+            size += each.getSizeMetric();
+        }
+        
+        return size + 2;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

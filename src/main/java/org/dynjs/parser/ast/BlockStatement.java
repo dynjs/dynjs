@@ -112,6 +112,10 @@ public class BlockStatement extends AbstractStatement {
 
         return buffer.toString();
     }
+    
+    public int getSizeMetric() {
+        return 3;
+    }
 
     public String toIndentedString(String indent) {
         StringBuffer buffer = new StringBuffer();

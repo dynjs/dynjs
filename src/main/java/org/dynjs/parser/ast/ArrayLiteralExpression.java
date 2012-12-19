@@ -40,6 +40,16 @@ public class ArrayLiteralExpression extends BaseExpression {
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
     }
+    
+    public int getSizeMetric() {
+        int size = 0;
+        
+        for ( Expression each : exprs ) {
+            size += each.getSizeMetric();
+        }
+        
+        return size + 3;
+    }
 
     public String toString() {
         StringBuffer buf = new StringBuffer();

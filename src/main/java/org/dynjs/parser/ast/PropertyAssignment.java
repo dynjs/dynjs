@@ -17,4 +17,6 @@ public abstract class PropertyAssignment {
 
     public abstract void accept(ExecutionContext context, CodeVisitor visitor, boolean strict);
 
+    public abstract int getSizeMetric();
+
 }

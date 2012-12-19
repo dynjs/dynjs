@@ -34,6 +34,10 @@ public class FunctionExpression extends AbstractExpression {
     public FunctionDescriptor getDescriptor() {
         return this.descriptor;
     }
+    
+    public int getSizeMetric() {
+        return this.descriptor.getSizeMetric();
+    }
 
     public String toString() {
         StringBuffer buf = new StringBuffer();

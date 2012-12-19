@@ -19,6 +19,10 @@ public class NamedValue extends PropertyAssignment {
     public String toString() {
         return getName() + ":" + this.expr;
     }
+    
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 3;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

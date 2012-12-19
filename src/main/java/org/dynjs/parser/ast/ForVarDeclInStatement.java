@@ -50,6 +50,10 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
         buf.append(indent).append("}");
         return buf.toString();
     }
+    
+    public int getSizeMetric() {
+        return super.getSizeMetric() + decl.getSizeMetric();
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

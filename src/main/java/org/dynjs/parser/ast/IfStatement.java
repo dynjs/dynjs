@@ -71,6 +71,10 @@ public class IfStatement extends BaseStatement {
 
         return buf.toString();
     }
+    
+    public int getSizeMetric() {
+        return this.testExpr.getSizeMetric() + 7;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

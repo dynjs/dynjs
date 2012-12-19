@@ -53,6 +53,16 @@ public class ForVarDeclStatement extends AbstractForStatement {
         buf.append(indent).append("}");
         return buf.toString();
     }
+    
+    public int getSizeMetric() {
+        int size = super.getSizeMetric();
+        
+        for ( VariableDeclaration each : this.declList ) {
+            size += each.getSizeMetric();
+        }
+        
+        return size;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

@@ -10,4 +10,6 @@ public interface Expression {
     String dump(String indent);
     
     void accept(ExecutionContext context, CodeVisitor visitor, boolean strict);
+    
+    int getSizeMetric();
 }

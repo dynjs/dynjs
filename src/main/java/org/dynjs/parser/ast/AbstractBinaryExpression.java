@@ -40,5 +40,9 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     public String toString() {
         return this.lhs + " " + this.op + " " + this.rhs;
     }
+    
+    public int getSizeMetric() {
+        return this.lhs.getSizeMetric() + this.rhs.getSizeMetric() + 1;
+    }
 
 }

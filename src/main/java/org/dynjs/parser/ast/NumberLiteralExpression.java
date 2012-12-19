@@ -41,6 +41,10 @@ public class NumberLiteralExpression extends BaseExpression {
     public String toString() {
         return this.text;
     }
+    
+    public int getSizeMetric() {
+        return 3;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

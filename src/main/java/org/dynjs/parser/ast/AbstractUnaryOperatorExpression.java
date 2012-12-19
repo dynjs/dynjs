@@ -23,5 +23,9 @@ public abstract class AbstractUnaryOperatorExpression extends AbstractExpression
     public Expression getExpr() {
         return this.expr;
     }
+    
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 3;
+    }
 
 }

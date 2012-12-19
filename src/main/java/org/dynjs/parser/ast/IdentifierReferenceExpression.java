@@ -46,6 +46,10 @@ public class IdentifierReferenceExpression extends BaseExpression {
     public String toString() {
         return this.identifier;
     }
+    
+    public int getSizeMetric() {
+        return 2;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

@@ -46,6 +46,10 @@ public class TernaryExpression extends AbstractExpression {
     public Expression getElseExpr() {
         return this.velse;
     }
+    
+    public int getSizeMetric() {
+        return this.vbool.getSizeMetric() + this.vthen.getSizeMetric() + this.velse.getSizeMetric() + 5;
+    }
 
     public String toString() {
         return this.vbool + " ? " + this.vthen + " : " + this.velse;

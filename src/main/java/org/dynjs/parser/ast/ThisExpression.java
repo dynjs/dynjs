@@ -22,6 +22,10 @@ public class ThisExpression extends BaseExpression {
     public String toString() {
         return "this";
     }
+    
+    public int getSizeMetric() {
+        return 3;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

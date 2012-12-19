@@ -21,6 +21,10 @@ public class DefaultCaseClause extends CaseClause {
         return buf.toString();
     }
     
+    public int getSizeMetric() {
+        return 3;
+    }
+    
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );

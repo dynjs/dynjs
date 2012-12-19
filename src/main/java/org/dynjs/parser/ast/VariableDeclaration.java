@@ -43,6 +43,10 @@ public class VariableDeclaration {
         visitor.visit( context, this, strict );
     }
     
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 3;
+    }
+    
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append( this.identifier );

@@ -40,5 +40,6 @@ public interface Statement {
     List<VariableDeclaration> getVariableDeclarations();
 
     void accept(ExecutionContext context, CodeVisitor visitor, boolean strict);
-
+    
+    int getSizeMetric();
 }

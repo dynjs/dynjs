@@ -35,6 +35,10 @@ public class ExpressionStatement extends AbstractStatement {
         return this.expr;
     }
     
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 1;
+    }
+    
     public String dump(String indent) {
         return super.dump(indent) + this.expr.dump("  " + indent);
     }

@@ -39,15 +39,11 @@ public class TryStatement extends BaseStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         decls.addAll(this.tryBlock.getVariableDeclarations());
-        /*
-        if (this.catchClause != null) {
-            decls.addAll(this.catchClause.getVariableDeclarations());
-        }
-        if (this.finallyBlock != null) {
-            decls.addAll(this.finallyBlock.getVariableDeclarations());
-        }
-        */
         return decls;
+    }
+    
+    public int getSizeMetric() {
+        return 7;
     }
 
     public String toIndentedString(String indent) {

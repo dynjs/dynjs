@@ -66,6 +66,16 @@ public class SwitchStatement extends BaseStatement {
         }
         return decls;
     }
+    
+    public int getSizeMetric() {
+        int size = this.expr.getSizeMetric();
+        
+        for ( CaseClause each : caseClauses ) {
+            size += each.getSizeMetric();
+        }
+        
+        return size + 11;
+    }
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();

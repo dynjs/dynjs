@@ -27,7 +27,7 @@ public class BitwiseInversionOperatorExpression extends AbstractUnaryOperatorExp
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
     }
-
+    
     public String toString() {
         return "~" + getExpr();
     }

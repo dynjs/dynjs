@@ -51,6 +51,16 @@ public class ObjectLiteralExpression extends BaseExpression {
 
         return buf.toString();
     }
+    
+    public int getSizeMetric() {
+        int size = 0;
+        
+        for ( PropertyAssignment each : this.propertyAssignments ) {
+            size += each.getSizeMetric();
+        }
+        
+        return size + 5;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

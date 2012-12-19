@@ -20,6 +20,10 @@ public class BreakStatement extends BaseStatement {
     public String toIndentedString(String indent) {
         return indent + "break" + (target == null ? ";" : target + ";");
     }
+    
+    public int getSizeMetric() {
+        return 1;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

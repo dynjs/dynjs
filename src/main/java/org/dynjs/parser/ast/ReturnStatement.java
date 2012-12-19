@@ -32,6 +32,14 @@ public class ReturnStatement extends BaseStatement {
         return this.expr;
     }
     
+    public int getSizeMetric() {
+        if ( this.expr == null ) {
+            return 1;
+        }
+        
+        return this.expr.getSizeMetric() + 1;
+    }
+    
     public String toIndentedString(String indent) {
         return indent + "return" + (this.expr == null ? "" : " " + this.expr.toString());
     }

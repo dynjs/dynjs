@@ -53,6 +53,10 @@ public class DotExpression extends AbstractExpression {
         return this.lhs + "." + this.identifier;
     }
     
+    public int getSizeMetric() {
+        return this.lhs.getSizeMetric() + 1;
+    }
+    
     public String dump(String indent) {
         return super.dump(indent) + getLhs().dump( indent + "  " ) + this.identifier;
     }

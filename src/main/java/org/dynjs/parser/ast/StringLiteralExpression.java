@@ -36,6 +36,10 @@ public class StringLiteralExpression extends BaseExpression {
         return this.literal;
     }
     
+    public int getSizeMetric() {
+        return 1;
+    }
+    
     public String dump(String indent) {
         return super.dump(indent) + indent + "[" + toString() + "]";
     }

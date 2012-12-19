@@ -14,6 +14,10 @@ public class DebuggerStatement extends BaseStatement {
     public String toIndentedString(String indent) {
         return indent + "debugger";
     }
+    
+    public int getSizeMetric() {
+        return 1;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

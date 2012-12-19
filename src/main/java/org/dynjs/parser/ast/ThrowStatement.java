@@ -32,6 +32,10 @@ public class ThrowStatement extends BaseStatement {
     public Expression getExpr()  {
         return this.expr;
     }
+    
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 1;
+    }
 
     public String toIndentedString(String indent) {
         return indent + "throw " + this.expr.toString();

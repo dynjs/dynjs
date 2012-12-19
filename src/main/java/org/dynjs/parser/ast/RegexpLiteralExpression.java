@@ -66,6 +66,10 @@ public class RegexpLiteralExpression extends BaseExpression {
     public String toString() {
         return "/" + this.pattern + "/" + this.flags;
     }
+    
+    public int getSizeMetric() {
+        return 3;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

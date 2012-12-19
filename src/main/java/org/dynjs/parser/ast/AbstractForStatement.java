@@ -48,5 +48,20 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }
+    
+    public int getSizeMetric()  {
+        int size = 0;
+        if ( this.test != null ) {
+            size += this.test.getSizeMetric();
+        }
+        
+        if ( this.increment != null ) {
+            size += this.increment.getSizeMetric();
+        }
+        
+        return size + 7;
+        
+    }
+    
 
 }

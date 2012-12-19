@@ -62,6 +62,10 @@ public class FunctionDescriptor {
     public boolean isStrict() {
         return this.strict;
     }
+    
+    public int getSizeMetric() {
+        return block.getSizeMetric() + this.formalParameters.length + 5;
+    }
 
     public String toString() {
         return "function " + this.identifier + "(...){...}";

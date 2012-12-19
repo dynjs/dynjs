@@ -35,6 +35,10 @@ public class BooleanLiteralExpression extends BaseExpression {
     public String toString() {
         return "" + this.value;
     }
+    
+    public int getSizeMetric() {
+        return 1;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

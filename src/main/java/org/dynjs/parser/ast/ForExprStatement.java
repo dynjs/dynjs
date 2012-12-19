@@ -47,4 +47,11 @@ public class ForExprStatement extends AbstractForStatement {
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
     }
+    
+    public int getSizeMetric() {
+        if ( this.initialize != null ) {
+            return this.initialize.getSizeMetric() + super.getSizeMetric();
+        }
+        return super.getSizeMetric();
+    }
 }

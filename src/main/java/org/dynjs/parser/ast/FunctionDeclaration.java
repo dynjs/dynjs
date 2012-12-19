@@ -48,6 +48,10 @@ public class FunctionDeclaration extends AbstractStatement {
     public boolean isStrict() {
         return this.descriptor.isStrict();
     }
+    
+    public int getSizeMetric() {
+        return this.descriptor.getSizeMetric();
+    }
 
     public String toString() {
         return this.descriptor.toString();

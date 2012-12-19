@@ -43,6 +43,16 @@ public class FunctionCallExpression extends AbstractExpression {
         return this.memberExpr;
     }
     
+    public int getSizeMetric() {
+        int size = this.memberExpr.getSizeMetric();
+        
+        for ( Expression each : argExprs ) {
+            size += each.getSizeMetric();
+        }
+        
+        return size + 5;
+    }
+    
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(this.memberExpr).append("(");

@@ -21,4 +21,8 @@ public class PropertySet extends PropertyAccessor {
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
     }
+    
+    public int getSizeMetric() {
+        return super.getSizeMetric() + 1;
+    }
 }

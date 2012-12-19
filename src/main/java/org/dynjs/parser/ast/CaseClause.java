@@ -45,6 +45,10 @@ public class CaseClause {
         return this.fallThroughLabel;
     }
     
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 3;
+    }
+    
     public List<VariableDeclaration> getVariableDeclarations() {
         if ( this.block == null ) {
             return Collections.emptyList();

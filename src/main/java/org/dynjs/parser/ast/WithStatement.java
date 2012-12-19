@@ -41,6 +41,10 @@ public class WithStatement extends BaseStatement {
         return this.block;
     }
     
+    public int getSizeMetric() {
+        return this.expr.getSizeMetric() + 3;
+    }
+    
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }

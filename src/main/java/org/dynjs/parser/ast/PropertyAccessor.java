@@ -14,5 +14,9 @@ public abstract class PropertyAccessor extends PropertyAssignment {
     public Statement getBlock() {
         return this.block;
     }
+    
+    public int getSizeMetric() {
+        return this.block.getSizeMetric() + 3;
+    }
 
 }

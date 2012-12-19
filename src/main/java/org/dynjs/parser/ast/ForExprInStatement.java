@@ -40,10 +40,20 @@ public class ForExprInStatement extends AbstractForInStatement {
         buf.append(indent).append("}");
         return buf.toString();
     }
-
+    
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
+    }
+    
+    public int getSizeMetric() {
+        int size = super.getSizeMetric();
+        
+        if ( this.expr != null ) {
+            size += this.expr.getSizeMetric();
+        }
+        
+        return size;
     }
 
 }

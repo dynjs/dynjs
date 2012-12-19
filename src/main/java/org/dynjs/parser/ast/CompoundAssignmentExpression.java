@@ -38,6 +38,10 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     public String toString() {
         return rootExpr.getLhs() + " " + rootExpr.getOp() + "=" + rootExpr.getRhs();
     }
+    
+    public int getSizeMetric() {
+        return this.rootExpr.getSizeMetric() + 5;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

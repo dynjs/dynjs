@@ -28,6 +28,10 @@ public class EmptyStatement extends BaseStatement {
     public String toIndentedString(String indent) {
         return "";
     }
+    
+    public int getSizeMetric() {
+        return 0;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

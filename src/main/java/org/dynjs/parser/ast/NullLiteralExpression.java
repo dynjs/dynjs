@@ -28,6 +28,10 @@ public class NullLiteralExpression extends BaseExpression {
     public String toString() {
         return "null";
     }
+    
+    public int getSizeMetric() {
+        return 1;
+    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

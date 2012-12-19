@@ -48,6 +48,10 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
     }
+    
+    public int getSizeMetric() {
+        return test.getSizeMetric() + 5;
+    }
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();

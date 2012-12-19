@@ -44,6 +44,10 @@ public class WhileStatement extends AbstractIteratingStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.vloop.getVariableDeclarations();
     }
+    
+    public int getSizeMetric() {
+        return vbool.getSizeMetric() + 7;
+    }
 
     public String toIndentedString(String indent) {
         StringBuffer buf = new StringBuffer();
