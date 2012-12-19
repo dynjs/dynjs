@@ -693,7 +693,7 @@ public class InterpretingVisitor implements CodeVisitor {
     public void visit(ExecutionContext context, IfStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
 
-        Boolean result = Types.toBoolean(pop());
+        Boolean result = Types.toBoolean(Types.getValue(context, pop()));
         if (result) {
             statement.getThenBlock().accept(context, this, strict);
         } else if (statement.getElseBlock() != null) {
