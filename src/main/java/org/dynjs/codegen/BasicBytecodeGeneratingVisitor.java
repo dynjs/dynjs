@@ -473,7 +473,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
                 // <empty>
             }
-            if (each.getSizeMetric() > 20) {
+            if (each.getSizeMetric() > 45) {
                 interpretedStatement( each, strict );
             } else {
                 each.accept(context, this, strict);
@@ -530,7 +530,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         label(end);
         // <empty>
         aload(Arities.COMPLETION);
-
     }
 
     @Override

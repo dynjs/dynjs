@@ -36,7 +36,7 @@ public class FunctionExpression extends AbstractExpression {
     }
     
     public int getSizeMetric() {
-        return this.descriptor.getSizeMetric() + this.descriptor.getBlock().getSizeMetric();
+        return this.descriptor.getSizeMetric() + 40;
     }
 
     public String toString() {
