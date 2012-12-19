@@ -26,7 +26,7 @@ public class FunctionExpression extends AbstractExpression {
     public FunctionExpression(FunctionDescriptor descriptor) {
         this.descriptor = descriptor;
     }
-    
+
     public Position getPosition() {
         return this.descriptor.getPosition();
     }
@@ -34,9 +34,9 @@ public class FunctionExpression extends AbstractExpression {
     public FunctionDescriptor getDescriptor() {
         return this.descriptor;
     }
-    
+
     public int getSizeMetric() {
-        return this.descriptor.getSizeMetric() + 40;
+        return this.descriptor.getSizeMetric() + 15;
     }
 
     public String toString() {
@@ -58,7 +58,7 @@ public class FunctionExpression extends AbstractExpression {
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
 
 }

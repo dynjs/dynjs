@@ -31,11 +31,14 @@ public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implement
         super(config, factory, "Function");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.dynjs.compiler.bytecode.toplevel.FunctionCompiler#compile(org.dynjs.runtime.ExecutionContext, java.lang.String[], org.dynjs.parser.ast.BlockStatement, boolean)
      */
     @Override
     public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final BlockStatement body, final boolean strict) {
+
         String className = nextClassName();
 
         final JiteClass cls = new JiteClass(className,
@@ -55,17 +58,18 @@ public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implement
                         // this statements scope strict
                         aload(3);
                         // this statements scope strict formal-parameters
-                        invokespecial(p(AbstractJavascriptFunction.class), "<init>", sig(void.class, Statement.class, LexicalEnvironment.class, boolean.class, String[].class));
+                        invokespecial(p(AbstractJavascriptFunction.class), "<init>",
+                                sig(void.class, Statement.class, LexicalEnvironment.class, boolean.class, String[].class));
                         // empty
-                        aload( Arities.THIS );
+                        aload(Arities.THIS);
                         // this
                         invokevirtual(cls.getClassName().replace('.', '/'), "initializeCode", sig(void.class));
                         // <empty>
                         voidreturn();
                     }
                 });
-        
-        cls.defineMethod("call", Opcodes.ACC_PUBLIC, sig( Object.class, ExecutionContext.class ), new FunctionCaller() );
+
+        cls.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), new FunctionCaller());
 
         DynamicClassLoader cl = new DynamicClassLoader(getConfig().getClassLoader());
 
@@ -85,5 +89,4 @@ public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implement
             throw new IllegalStateException(e);
         }
     }
-
 }

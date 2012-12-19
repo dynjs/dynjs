@@ -77,6 +77,7 @@ import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
@@ -473,8 +474,8 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
                 // <empty>
             }
-            if (each.getSizeMetric() > 45) {
-                interpretedStatement( each, strict );
+            if (each.getSizeMetric() > 40_000 ) {
+                interpretedStatement(each, strict);
             } else {
                 each.accept(context, this, strict);
             }
@@ -1648,7 +1649,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // context object identifier
         swap();
         // context identifier obj
-        append(jsCheckObjectCoercible(expr.getLhs().toString()));
+        append(jsCheckObjectCoercible(null));
         // context identifier obj
         swap();
         // context object identifier
@@ -1668,7 +1669,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // context object ident-expr
         swap();
         // context ident-expr obj
-        append(jsCheckObjectCoercible(expr.getLhs().toString()));
+        append(jsCheckObjectCoercible(null));
         // context ident-expr obj
         swap();
         // context object ident-expr

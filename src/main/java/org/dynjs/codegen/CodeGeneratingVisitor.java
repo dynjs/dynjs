@@ -44,17 +44,16 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         return this.blockManager;
     }
 
-    
     protected void emitDebug(String message) {
-        ldc( message );
+        ldc(message);
         aprintln();
         pop();
     }
-    
+
     protected void emitTop() {
         aprintln();
     }
-    
+
     public CodeBlock aprintln() {
         dup();
         getstatic(p(System.class), "err", ci(PrintStream.class));
@@ -62,7 +61,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         invokevirtual(p(PrintStream.class), "println", sig(void.class, params(Object.class)));
         return this;
     }
-    
+
     @Override
     public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         if (expr.getOp().equals("+")) {
@@ -86,7 +85,11 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
                 // obj obj context
                 swap();
                 // obj context obj
-                ldc( debug );
+                if (debug != null) {
+                    ldc(debug);
+                } else {
+                    aconst_null();
+                }
                 invokestatic(p(Types.class), "checkObjectCoercible", sig(void.class, ExecutionContext.class, Object.class, String.class));
                 // obj
             }
@@ -197,7 +200,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
                 // obj context
                 swap();
                 // context object
-                invokestatic( p(Types.class), "toObject", sig( JSObject.class, ExecutionContext.class, Object.class ) );
+                invokestatic(p(Types.class), "toObject", sig(JSObject.class, ExecutionContext.class, Object.class));
                 // obj
             }
         };
@@ -731,7 +734,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         // compiler statement context
         swap();
         // compiler context statement
-        
+
         checkcast(p(BlockStatement.class));
 
         bipush(formalParams.length);
@@ -790,12 +793,12 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         label(end);
         // fn
     }
-    
+
     void interpretedStatement(Statement statement, boolean strict) {
-        Entry entry = getBlockManager().retrieve( statement.getStatementNumber() );
+        Entry entry = getBlockManager().retrieve(statement.getStatementNumber());
         InterpretedStatement interpreted = new InterpretedStatement(statement, strict);
         entry.setCompiled(interpreted);
-        
+
         aload(Arities.EXECUTION_CONTEXT);
         ldc(statement.getStatementNumber());
         invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));

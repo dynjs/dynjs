@@ -1,5 +1,8 @@
 package org.dynjs.compiler.bytecode;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import me.qmx.jitescript.JDKVersion;
@@ -14,7 +17,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 public abstract class AbstractBytecodeCompiler {
-    
+
     private Config config;
     private CodeGeneratingVisitorFactory factory;
 
@@ -22,28 +25,36 @@ public abstract class AbstractBytecodeCompiler {
         this.config = config;
         this.factory = factory;
     }
-    
+
     public AbstractBytecodeCompiler(AbstractBytecodeCompiler parent) {
         this.config = parent.config;
         this.factory = parent.factory;
     }
-    
+
     public Config getConfig() {
         return this.config;
     }
-    
+
     public CodeGeneratingVisitorFactory getFactory() {
         return this.factory;
     }
-    
+
     public CodeGeneratingVisitor createVisitor(BlockManager blockManager) {
         return this.factory.create(blockManager);
     }
-    
+
     @SuppressWarnings("unchecked")
     protected <T> T defineClass(DynamicClassLoader classLoader, JiteClass jiteClass) {
-        //System.err.println( "defineClass: " + jiteClass.getClassName() );
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
+
+        try {
+            File file = new File("myclass.class");
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(bytecode);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if (config.isDebug()) {
             ClassReader reader = new ClassReader(bytecode);
