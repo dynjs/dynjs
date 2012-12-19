@@ -16,6 +16,7 @@ import org.dynjs.compiler.bytecode.partial.CompilationPlanner;
 import org.dynjs.compiler.bytecode.partial.PartialCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.AbstractJavascriptFunction;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.DynamicClassLoader;

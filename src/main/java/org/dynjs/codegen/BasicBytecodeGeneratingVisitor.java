@@ -473,7 +473,11 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
                 // <empty>
             }
-            each.accept(context, this, strict);
+            if (each.getSizeMetric() > 20) {
+                interpretedStatement( each, strict );
+            } else {
+                each.accept(context, this, strict);
+            }
             // completion(cur)
             dup();
             // completion(cur) completion(cur)
@@ -827,10 +831,10 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public void visit(ExecutionContext context, CommaOperator expr, boolean strict) {
-        expr.getLhs().accept( context, this, strict );
+        expr.getLhs().accept(context, this, strict);
         jsGetValue();
         pop();
-        expr.getRhs().accept( context, this, strict );
+        expr.getRhs().accept(context, this, strict);
         jsGetValue();
     }
 
@@ -1641,7 +1645,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // context reference
         append(jsGetValue());
         // context object
-        ldc( expr.getIdentifier() );
+        ldc(expr.getIdentifier());
         // context object identifier
         swap();
         // context identifier obj
@@ -1652,7 +1656,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         append(jsCreatePropertyReference());
         // reference
     }
-    
+
     @Override
     public void visit(ExecutionContext context, BracketExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);

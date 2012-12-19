@@ -23,6 +23,7 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.interp.InterpretedStatement;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
@@ -788,6 +789,22 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
 
         label(end);
         // fn
+    }
+    
+    void interpretedStatement(Statement statement, boolean strict) {
+        Entry entry = getBlockManager().retrieve( statement.getStatementNumber() );
+        InterpretedStatement interpreted = new InterpretedStatement(statement, strict);
+        entry.setCompiled(interpreted);
+        
+        aload(Arities.EXECUTION_CONTEXT);
+        ldc(statement.getStatementNumber());
+        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
+        invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
+        // object
+        aload(Arities.EXECUTION_CONTEXT);
+        // obj context
+        invokeinterface(p(BasicBlock.class), "call", sig(Completion.class, ExecutionContext.class));
+        // completion
     }
 
 }

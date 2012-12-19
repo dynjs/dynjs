@@ -32,7 +32,6 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testBenComplainsAboutCoffeeScript() throws IOException {
         InputStream coffee = getClass().getResourceAsStream("coffee-script.js");
         //getRuntime().execute(coffee, "coffee-script.js");

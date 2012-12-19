@@ -13,10 +13,10 @@ public class BlockManager {
     }
 
     public Entry retrieve(int statementNumber) {
-        Entry entry = this.storage.get( statementNumber );
+        Entry entry = this.storage.get(statementNumber);
         if (entry == null) {
-            entry = new Entry( statementNumber );
-            this.storage.put( statementNumber, entry );
+            entry = new Entry(statementNumber);
+            this.storage.put(statementNumber, entry);
         }
 
         return entry;
@@ -29,24 +29,32 @@ public class BlockManager {
         }
 
         public Object getCompiled() {
-            if (compiled == null) {
-                return null;
-            }
-
-            return compiled.get();
+            /*
+             * if (compiled == null) {
+             * System.err.println( "returning null early" );
+             * return null;
+             * }
+             * 
+             * 
+             * return compiled.get();
+             */
+            return compiled;
         }
 
         public void setCompiled(Object compiled) {
-            this.compiled = new WeakReference<Object>( compiled );
+            // this.compiled = new WeakReference<Object>( compiled );
+            this.compiled = compiled;
         }
 
         public String toString() {
-            return "[Entry: statement=" + statement + "; compiled=" + (compiled == null ? null : compiled.get()) + "]";
+            // return "[Entry: statement=" + statement + "; compiled=" + (compiled == null ? null : compiled.get()) + "]";
+            return "[Entry: statement=" + statement + "; compiled=" + compiled + "]";
         }
 
         public int statementNumber;
         public Statement statement;
-        private WeakReference<Object> compiled;
+        // private WeakReference<Object> compiled;
+        private Object compiled;
     }
 
     private Map<Integer, Entry> storage = new HashMap<>();

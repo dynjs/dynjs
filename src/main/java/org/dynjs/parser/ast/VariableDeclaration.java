@@ -15,11 +15,11 @@ public class VariableDeclaration {
         this.identifier = identifier;
         this.expr = initializerExpr;
     }
-    
+
     public Position getPosition() {
         return this.position;
     }
-    
+
     public Expression getExpr() {
         return this.expr;
     }
@@ -40,23 +40,25 @@ public class VariableDeclaration {
     }
 
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+        visitor.visit(context, this, strict);
     }
-    
+
     public int getSizeMetric() {
-        return this.expr.getSizeMetric() + 3;
+        if (this.expr != null) {
+            return this.expr.getSizeMetric() + 3;
+        }
+        return 3;
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append( this.identifier );
-        if ( this.expr != null ) {
-            buf.append( " = " );
-            buf.append( this.expr );
+        buf.append(this.identifier);
+        if (this.expr != null) {
+            buf.append(" = ");
+            buf.append(this.expr);
         }
         return buf.toString();
-        
-        
+
     }
 
 }
