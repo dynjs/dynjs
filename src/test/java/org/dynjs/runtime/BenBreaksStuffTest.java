@@ -38,7 +38,22 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
         getRuntime().newRunner().withSource(new InputStreamReader(coffee))
                 .withFileName("coffee-script.js")
                 .execute();
-        Object value = getRuntime().evaluate("CoffeeScript.eval('((x) -> x * x)(8)')");
+        Object value = getRuntime().evaluate("var content = '# Place all the behaviors and hooks related to the matching controller here.\\n' + ",
+                "'# All this logic will automatically be available in application.js.\\n' + ",
+                "'# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/\\n' + ",
+                "'\\n' + ",
+                "'class Animal\\n' + ",
+                "'  constructor: (@name) ->\\n' + ",
+                "'\\n' + ",
+                "'  move: (meters) ->\\n' + ",
+                "'    alert @name + \" moved #{meters}m.\"\\n' + ",
+                "'\\n' + ",
+                "'class Snake extends Animal\\n' + ",
+                "'  move: ->\\n' + ",
+                "'    alert \"Slithering...\"\\n' + ",
+                "'    super 5\\n';",
+                "CoffeeScript.compile(content);");
+        value = getRuntime().evaluate("CoffeeScript.eval('((x) -> x * x)(8)')");
         assertThat(value).isEqualTo(64L);
     }
 }
