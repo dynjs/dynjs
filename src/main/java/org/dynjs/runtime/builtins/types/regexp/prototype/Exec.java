@@ -48,7 +48,7 @@ public class Exec extends AbstractNonConstructorFunction {
             if (r != null) {
                 matchSucceeded = true;
             } else {
-                ++i;
+                i = strLen + 1;
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
