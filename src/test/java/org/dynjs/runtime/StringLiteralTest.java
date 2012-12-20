@@ -72,4 +72,11 @@ public class StringLiteralTest extends AbstractDynJSTestSupport {
         
         eval( script );
     }
+    
+    @Test
+    public void testLineContinuations() {
+        Object result = eval( "'foo\\\r\nbar'");
+        
+        assertThat( result ).isEqualTo( "foobar" );
+    }
 }

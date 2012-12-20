@@ -7,7 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.naming.BinaryRefAddr;
+
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.ast.AbstractBinaryExpression;
 import org.dynjs.parser.ast.ArrayLiteralExpression;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.BreakStatement;
@@ -544,10 +547,13 @@ public class Parser {
         }
 
         if (currentContext().isStrict()) {
-            if (expr instanceof IdentifierReferenceExpression) {
-                String ident = ((IdentifierReferenceExpression) expr).getIdentifier();
-                if (currentContext().isStrict() && (ident.equals("eval") || ident.equals("arguments"))) {
-                    throw new SyntaxError(expr.getPosition(), "invalid identifier for strict-mode: " + ident);
+            if (expr instanceof AbstractBinaryExpression) {
+                Expression lhs = ((AbstractBinaryExpression) expr).getLhs();
+                if (lhs instanceof IdentifierReferenceExpression) {
+                    String ident = ((IdentifierReferenceExpression) lhs).getIdentifier();
+                    if (currentContext().isStrict() && (ident.equals("eval") || ident.equals("arguments"))) {
+                        throw new SyntaxError(expr.getPosition(), "invalid identifier for strict-mode: " + ident);
+                    }
                 }
             }
         }
@@ -1338,6 +1344,10 @@ public class Parser {
     }
 
     public WithStatement withStatement() {
+        if (currentContext().isStrict()) {
+            throw new SyntaxError("with() statement not allowed in strict-mode code");
+        }
+
         Token position = consume(WITH);
 
         consume(LEFT_PAREN);
@@ -1443,12 +1453,17 @@ public class Parser {
     protected CatchClause catchClause() {
         Token position = consume(CATCH);
         consume(LEFT_PAREN);
-        String identifier = consume(IDENTIFIER).getText();
+        String ident = consume(IDENTIFIER).getText();
+
+        if (currentContext().isStrict() && (ident.equals("eval") || ident.equals("arguments"))) {
+            throw new SyntaxError(position, "invalid identifier for strict-mode: " + ident);
+        }
+
         consume(RIGHT_PAREN);
 
         BlockStatement block = block();
 
-        return factory.catchClause(position, identifier, block);
+        return factory.catchClause(position, ident, block);
     }
 
     protected BlockStatement finallyClause() {

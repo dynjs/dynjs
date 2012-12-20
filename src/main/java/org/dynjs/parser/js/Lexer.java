@@ -913,7 +913,7 @@ public class Lexer {
             return;
         case '\r':
             consume();
-            if (la(2) == '\n') {
+            if (la() == '\n') {
                 consume();
                 return;
             }
