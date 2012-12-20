@@ -19,7 +19,7 @@ public class Shift extends AbstractNonConstructorFunction {
         long len = Types.toUint32(context, o.get(context, "length"));
 
         if (len == 0) {
-            o.put(context, "length", 0, true);
+            o.put(context, "length", 0L, true);
             return Types.UNDEFINED;
         }
 

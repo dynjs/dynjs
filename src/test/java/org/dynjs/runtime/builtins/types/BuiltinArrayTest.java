@@ -258,6 +258,18 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testShiftEmptyArray() {
+        eval("var a = []");
+
+        Object result = eval("a.shift()");
+
+        assertThat(result).isEqualTo(Types.UNDEFINED);
+
+        JSObject a = (JSObject) eval("a");
+        assertThat(a.get(getContext(), "length")).isEqualTo(0L);
+    }
+
+    @Test
     public void testSlicePositiveArgs() {
         JSObject result = (JSObject) eval("['a','b','c','d'].slice(1,3)");
         assertThat(result.get(getContext(), "length")).isEqualTo(2L);
