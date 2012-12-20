@@ -17,7 +17,7 @@ public class InterpretedStatement implements BasicBlock {
 
     @Override
     public Completion call(ExecutionContext context) {
-        InterpretingVisitor visitor = new InterpretingVisitor();
+        InterpretingVisitor visitor = new InterpretingVisitor( context.getBlockManager() );
         this.block.accept(context, visitor, this.strict);
         return (Completion) visitor.pop();
     }

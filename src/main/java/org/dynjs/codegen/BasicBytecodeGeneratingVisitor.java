@@ -475,7 +475,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
                 // <empty>
             }
-            if (each.getSizeMetric() > Chunker.STATEMENT_THRESHOLD ) {
+            if (each.getSizeMetric() > Chunker.STATEMENT_THRESHOLD) {
                 interpretedStatement(each, strict);
             } else {
                 each.accept(context, this, strict);
@@ -1414,7 +1414,8 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        compiledFunction(expr.getDescriptor().getIdentifier(), expr.getDescriptor().getFormalParameterNames(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
+        compiledFunction(expr.getDescriptor().getIdentifier(), expr.getDescriptor().getFormalParameterNames(), expr.getDescriptor().getBlock(), expr.getDescriptor()
+                .isStrict());
     }
 
     @Override

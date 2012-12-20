@@ -16,7 +16,7 @@ public class InterpretedFunction extends AbstractJavascriptFunction {
 
     @Override
     public Object call(ExecutionContext context) {
-        InterpretingVisitor visitor = new InterpretingVisitor();
+        InterpretingVisitor visitor = new InterpretingVisitor( context.getBlockManager() );
         getBody().accept(context, visitor, isStrict());
         Completion completion = (Completion) visitor.pop();
         if (completion.type == Completion.Type.RETURN) {

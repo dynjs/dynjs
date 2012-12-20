@@ -13,7 +13,7 @@ public class InterpretedProgram extends AbstractProgram {
 
     @Override
     public Completion execute(ExecutionContext context) {
-        InterpretingVisitor visitor = new InterpretingVisitor();
+        InterpretingVisitor visitor = new InterpretingVisitor( context.getBlockManager() );
         getBlock().accept(context, visitor, isStrict() );
         return (Completion) visitor.pop();
     }
