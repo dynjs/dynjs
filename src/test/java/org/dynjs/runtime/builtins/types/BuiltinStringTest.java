@@ -248,6 +248,11 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         assertThat(o).isEqualTo("2");
     }
 
+    @Test
+    public void testCharAtOutsideBounds() {
+        assertThat(eval("new String(42).charAt(2)")).isEqualTo("");
+    }
+
     @Test(expected = ThrowException.class)
     public void testToStringMustThrowIfNotAPrimitiveResult() {
         eval("var obj = { toString:function(){ return new Object(); } };",
@@ -307,6 +312,16 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     @Test
     public void testSlice() {
         assertThat( eval( "'boblanceqmx'.slice(3,8)")).isEqualTo("lance");
+    }
+    
+    @Test
+    public void testSliceWithUnaryPlusExpression() {
+        assertThat( eval( "var i = 7;\"{meters}m.othercrap\".slice(0, +i + 1 || 9e9)")).isEqualTo("{meters}");
+    }
+    
+    @Test
+    public void testSliceWithUnaryMinusExpression() {
+        assertThat( eval( "var i = 1;\"{meters}m.othercrap\".slice(0, -i + 9 || 9e9)")).isEqualTo("{meters}");
     }
     
     @Test

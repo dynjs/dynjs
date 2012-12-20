@@ -1294,7 +1294,7 @@ public class InterpretingVisitor implements CodeVisitor {
     @Override
     public void visit(ExecutionContext context, UnaryPlusExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        push(Types.toNumber(context, pop()));
+        push(Types.toNumber(context, Types.getValue(context, pop())));
     }
 
     @Override
