@@ -1308,6 +1308,7 @@ public class Parser {
         case PARAGRAPH_SEPARATOR:
         case LINE_SEPARATOR:
         case SEMICOLON:
+        case RIGHT_BRACE:
             return factory.returnStatement(position);
         default:
             expr = expression();
