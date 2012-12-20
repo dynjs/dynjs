@@ -687,7 +687,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
 
     }
 
-    public void compiledFunction(final String[] formalParams, final Statement block, final boolean strict) {
+    public void compiledFunction(final String identifier, final String[] formalParams, final Statement block, final boolean strict) {
         LabelNode skipCompile = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -735,12 +735,21 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         swap();
         // compiler context statement
 
+        if (identifier != null) {
+            ldc(identifier);
+        } else {
+            aconst_null();
+        }
+        // compiler context statement identifier
+        swap();
+        // compiler context identifier statement
+
         checkcast(p(BlockStatement.class));
 
         bipush(formalParams.length);
-        // compiler context statement params-en
+        // compiler context identifier statement params-en
         anewarray(p(String.class));
-        // compiler context statement params
+        // compiler context identifier statement params
 
         for (int i = 0; i < formalParams.length; ++i) {
             dup();
@@ -748,9 +757,9 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
             ldc(formalParams[i]);
             aastore();
         }
-        // compiler context statement params
+        // compiler context identifier statement params
         swap();
-        // compiler context params statement
+        // compiler context identifier params statement
 
         if (strict) {
             iconst_1();
@@ -758,9 +767,9 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
             iconst_0();
         }
 
-        // compiler context params statement bool
+        // compiler context identifer params statement bool
 
-        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String[].class, BlockStatement.class, boolean.class));
+        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String.class, String[].class, BlockStatement.class, boolean.class));
         // fn
 
         dup();

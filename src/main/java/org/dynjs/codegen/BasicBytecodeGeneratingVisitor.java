@@ -1413,7 +1413,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        compiledFunction(expr.getDescriptor().getFormalParameterNames(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
+        compiledFunction(expr.getDescriptor().getIdentifier(), expr.getDescriptor().getFormalParameterNames(), expr.getDescriptor().getBlock(), expr.getDescriptor().isStrict());
     }
 
     @Override
@@ -2041,7 +2041,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // obj obj context name
         invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
         // obj desc(orig)
-        compiledFunction(EMPTY_STRING_ARRAY, propertyGet.getBlock(), false);
+        compiledFunction(null, EMPTY_STRING_ARRAY, propertyGet.getBlock(), false);
         // obj desc(orig) fn
         ldc(propertyGet.getName());
         // obj desc(orig) fn name
@@ -2081,7 +2081,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // obj obj context name
         invokeinterface(p(JSObject.class), "getOwnProperty", sig(Object.class, ExecutionContext.class, String.class));
         // obj desc(orig)
-        compiledFunction(new String[] { propertySet.getIdentifier() }, propertySet.getBlock(), false);
+        compiledFunction(null, new String[] { propertySet.getIdentifier() }, propertySet.getBlock(), false);
         // obj desc(orig) fn
         ldc(propertySet.getName());
         // obj desc(orig) fn name

@@ -37,28 +37,30 @@ public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implement
      * @see org.dynjs.compiler.bytecode.toplevel.FunctionCompiler#compile(org.dynjs.runtime.ExecutionContext, java.lang.String[], org.dynjs.parser.ast.BlockStatement, boolean)
      */
     @Override
-    public JSFunction compile(final ExecutionContext context, String identifier, final String[] formalParameters, final BlockStatement body, final boolean strict) {
+    public JSFunction compile(final ExecutionContext context, final String identifier, final String[] formalParameters, final BlockStatement body, final boolean strict) {
         String className = nextClassName();
 
         final JiteClass cls = new JiteClass(className,
                 p(AbstractJavascriptFunction.class),
                 new String[] { p(JSFunction.class), p(BasicBlock.class) });
 
-        cls.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, Statement.class, LexicalEnvironment.class, String[].class),
+        cls.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, String.class, Statement.class, LexicalEnvironment.class, String[].class),
                 new CodeBlock() {
                     {
                         aload(Arities.THIS);
                         // this
                         aload(1);
-                        // this statements
+                        // this identifier
                         aload(2);
-                        // this statements scope
-                        pushBoolean(strict);
-                        // this statements scope strict
+                        // this identifier statements
                         aload(3);
+                        // this identifier statements scope
+                        pushBoolean(strict);
+                        // this identifier statements scope strict
+                        aload(4);
                         // this statements scope strict formal-parameters
                         invokespecial(p(AbstractJavascriptFunction.class), "<init>",
-                                sig(void.class, Statement.class, LexicalEnvironment.class, boolean.class, String[].class));
+                                sig(void.class, String.class, Statement.class, LexicalEnvironment.class, boolean.class, String[].class));
                         // empty
                         aload(Arities.THIS);
                         // this
@@ -80,8 +82,8 @@ public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implement
         Class<JSFunction> functionClass = defineClass(cl, cls);
 
         try {
-            Constructor<JSFunction> ctor = functionClass.getDeclaredConstructor(Statement.class, LexicalEnvironment.class, String[].class);
-            JSFunction function = ctor.newInstance(body, context.getLexicalEnvironment(), formalParameters);
+            Constructor<JSFunction> ctor = functionClass.getDeclaredConstructor(String.class, Statement.class, LexicalEnvironment.class, String[].class);
+            JSFunction function = ctor.newInstance(identifier, body, context.getLexicalEnvironment(), formalParameters);
             function.setDebugContext("<anonymous>");
             return function;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
