@@ -1,5 +1,5 @@
 #!/bin/sh
 if [ ! -f target/dynjs-all.jar ]; then
-	mvn clean package -Pshade
+	mvn clean package
 fi
 java -jar target/dynjs-all.jar --console $*
