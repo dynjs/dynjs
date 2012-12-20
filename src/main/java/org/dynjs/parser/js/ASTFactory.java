@@ -102,8 +102,11 @@ public class ASTFactory {
         return new IdentifierReferenceExpression(position, identifier);
     }
 
-    public StringLiteralExpression stringLiteral(Position position, String literal) {
-        return new StringLiteralExpression(position, literal);
+    public StringLiteralExpression stringLiteral(Position position, String literal, boolean escaped, boolean continuedLine) {
+        StringLiteralExpression expr = new StringLiteralExpression(position, literal);
+        expr.setEscaped( escaped );
+        expr.setContinuedLine(continuedLine );
+        return expr;
     }
 
     public NumberLiteralExpression decimalLiteral(Position position, String text) {

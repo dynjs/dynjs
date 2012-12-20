@@ -9,6 +9,7 @@ public class Token implements Position {
     private int columnNumber;
     private boolean escapedString;
     private boolean escapedOctalString;
+    private boolean continuedLine;
 
     public Token(TokenType type, String text, String fileName, int lineNumber, int columnNumber) {
         this.type = type;
@@ -32,6 +33,14 @@ public class Token implements Position {
     
     public boolean isEscapedOctalString() {
         return this.escapedOctalString;
+    }
+    
+    public void setContinuedLine(boolean continuedLine) {
+        this.continuedLine = continuedLine;
+    }
+    
+    public boolean isContinuedLine() {
+        return this.continuedLine;
     }
     
     public TokenType getType() {

@@ -736,6 +736,7 @@ public class Lexer {
 
         boolean escapedString = false;
         boolean escapedOctalString = false;
+        boolean continuedLine = false;
 
         while ((c = la()) != type) {
             if (c == 0) {
@@ -792,6 +793,7 @@ public class Lexer {
                 case '\u2029':
                     consume();
                     lineTerminatorSequence();
+                    continuedLine = true;
                     break;
                 case 'u':
                     text.append(unicodeEscapeSequence());
@@ -827,6 +829,7 @@ public class Lexer {
         Token token = newToken(STRING_LITERAL, text.toString());
         token.setEscapedString(escapedString);
         token.setEscapedOctalString(escapedOctalString);
+        token.setContinuedLine( continuedLine );
         return token;
     }
 

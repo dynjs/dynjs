@@ -22,14 +22,33 @@ import org.dynjs.runtime.ExecutionContext;
 public class StringLiteralExpression extends BaseExpression {
 
     private final String literal;
+    
+    private boolean continuedLine;
+    private boolean escaped;
 
     public StringLiteralExpression(Position position, String literal) {
         super(position);
         this.literal = literal;
     }
-
+    
     public String getLiteral() {
         return this.literal;
+    }
+    
+    public void setContinuedLine(boolean continuedline) {
+        this.continuedLine = continuedline;
+    }
+    
+    public boolean isContinuedLine() {
+        return this.continuedLine;
+    }
+    
+    public void setEscaped(boolean escaped) {
+        this.escaped = escaped;
+    }
+    
+    public boolean isEscaped() {
+        return this.escaped;
     }
 
     public String toString() {

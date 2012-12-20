@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.BinaryRefAddr;
-
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AbstractBinaryExpression;
 import org.dynjs.parser.ast.ArrayLiteralExpression;
@@ -155,7 +153,7 @@ public class Parser {
         if (isReservedWord(token)) {
             return false;
         }
-        if (currentContext().isStrict() && isStrictFutureReservedWord(token)) {
+        if (currentContext().isStrict() && isStrictFutureReservedWord(token.getText())) {
             return false;
         }
         return true;
@@ -194,7 +192,7 @@ public class Parser {
             if (currentContext().isStrict() && token.isEscapedOctalString()) {
                 throw new SyntaxError(token, "octal escapes not allowed in strict mode");
             }
-            return factory.stringLiteral(token, token.getText());
+            return factory.stringLiteral(token, token.getText(), token.isEscapedString(), token.isContinuedLine());
         case DECIMAL_LITERAL:
             token = consume(DECIMAL_LITERAL);
             return factory.decimalLiteral(token, token.getText());
@@ -324,13 +322,17 @@ public class Parser {
 
         String name = consume().getText();
         consume(LEFT_PAREN);
-        String paramName = consume(IDENTIFIER).getText();
+
+        Token param = consume(IDENTIFIER);
+        if (!isAssignableName(param.getText())) {
+            throw new SyntaxError("invalid parameter name: " + param.getText());
+        }
         consume(RIGHT_PAREN);
         consume(LEFT_BRACE);
         BlockStatement body = functionBody();
         consume(RIGHT_BRACE);
 
-        return new PropertySet(name, paramName, body);
+        return new PropertySet(name, param.getText(), body);
     }
 
     protected PropertyGet propertyGet() {
@@ -382,8 +384,22 @@ public class Parser {
         }
     }
 
+    protected boolean isAssignableName(String name) {
+        if (isFutureReservedWord(name)) {
+            return false;
+        }
+
+        if (currentContext().isStrict()) {
+            if (isStrictFutureReservedWord(name) || name.equals("arguments") || name.equals("eval")) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     protected boolean isReservedWord(Token token) {
-        return isKeyword(token.getType()) || isFutureReservedWord(token);
+        return isKeyword(token.getType()) || isFutureReservedWord(token.getText());
     }
 
     protected boolean isKeyword(TokenType type) {
@@ -423,36 +439,32 @@ public class Parser {
         return false;
     }
 
-    protected boolean isFutureReservedWord(Token token) {
-        if (token.getType() == IDENTIFIER) {
-            switch (token.getText()) {
-            case "class":
-            case "enum":
-            case "extends":
-            case "super":
-            case "const":
-            case "export":
-            case "import":
-                return true;
-            }
+    protected boolean isFutureReservedWord(String name) {
+        switch (name) {
+        case "class":
+        case "enum":
+        case "extends":
+        case "super":
+        case "const":
+        case "export":
+        case "import":
+            return true;
         }
         return false;
     }
 
-    protected boolean isStrictFutureReservedWord(Token token) {
-        if (token.getType() == IDENTIFIER) {
-            switch (token.getText()) {
-            case "implements":
-            case "let":
-            case "private":
-            case "public":
-            case "yield":
-            case "interface":
-            case "package":
-            case "protected":
-            case "static":
-                return true;
-            }
+    protected boolean isStrictFutureReservedWord(String name) {
+        switch (name) {
+        case "implements":
+        case "let":
+        case "private":
+        case "public":
+        case "yield":
+        case "interface":
+        case "package":
+        case "protected":
+        case "static":
+            return true;
         }
         return false;
 
@@ -551,7 +563,7 @@ public class Parser {
                 Expression lhs = ((AbstractBinaryExpression) expr).getLhs();
                 if (lhs instanceof IdentifierReferenceExpression) {
                     String ident = ((IdentifierReferenceExpression) lhs).getIdentifier();
-                    if (currentContext().isStrict() && (ident.equals("eval") || ident.equals("arguments"))) {
+                    if (!isAssignableName(ident)) {
                         throw new SyntaxError(expr.getPosition(), "invalid identifier for strict-mode: " + ident);
                     }
                 }
@@ -918,10 +930,8 @@ public class Parser {
             String identifierName = null;
             if (la() == IDENTIFIER) {
                 identifier = consume(IDENTIFIER);
-                if (currentContext().isStrict()) {
-                    if (identifier.getText().equals("eval") || identifier.getText().equals("arguments")) {
-                        throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText());
-                    }
+                if (!isAssignableName(identifier.getText())) {
+                    throw new SyntaxError(identifier, "invalid identifier: " + identifier.getText());
                 }
                 identifierName = identifier.getText();
             }
@@ -942,10 +952,8 @@ public class Parser {
             pushContext(ContextType.FUNCTION);
             Token position = consume(FUNCTION);
             Token identifier = consume(IDENTIFIER);
-            if (currentContext().isStrict()) {
-                if (identifier.getText().equals("eval") || identifier.getText().equals("arguments")) {
-                    throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText());
-                }
+            if (!isAssignableName(identifier.getText())) {
+                throw new SyntaxError(identifier, "invalid identifier: " + identifier.getText());
             }
 
             List<Parameter> params = formalParameters();
@@ -1020,8 +1028,8 @@ public class Parser {
 
     public Parameter parameter() {
         Token identifier = consume(IDENTIFIER);
-        if (currentContext().isStrict() && (identifier.getText().equals("eval") || identifier.getText().equals("arguments"))) {
-            throw new SyntaxError(identifier, "invalid formal parameter for strict-mode");
+        if (!isAssignableName(identifier.getText())) {
+            throw new SyntaxError(identifier, "invalid formal parameter:" + identifier.getText());
         }
         return factory.parameter(identifier, identifier.getText());
     }
@@ -1061,7 +1069,9 @@ public class Parser {
                     Expression expr = ((ExpressionStatement) element).getExpr();
                     if (expr instanceof StringLiteralExpression) {
                         if (((StringLiteralExpression) expr).getLiteral().equals("use strict")) {
-                            currentContext().setStrict(true);
+                            if (!((StringLiteralExpression) expr).isContinuedLine() && !((StringLiteralExpression) expr).isEscaped()) {
+                                currentContext().setStrict(true);
+                            }
                         }
                     } else {
                         currentContext().setInProlog(false);
@@ -1190,12 +1200,8 @@ public class Parser {
     public VariableDeclaration variableDeclaration(boolean noIn) {
         Token identifier = consume(IDENTIFIER);
 
-        if (!isValidIdentifier(identifier)) {
+        if (!isAssignableName(identifier.getText())) {
             throw new SyntaxError(identifier, "invalid identifier: " + identifier.getText());
-        }
-
-        if (currentContext().isStrict() && (identifier.getText().equals("eval") || identifier.getText().equals("arguments"))) {
-            throw new SyntaxError(identifier, "invalid identifier for strict-mode: " + identifier.getText());
         }
 
         Expression initializer = null;
@@ -1455,8 +1461,8 @@ public class Parser {
         consume(LEFT_PAREN);
         String ident = consume(IDENTIFIER).getText();
 
-        if (currentContext().isStrict() && (ident.equals("eval") || ident.equals("arguments"))) {
-            throw new SyntaxError(position, "invalid identifier for strict-mode: " + ident);
+        if (!isAssignableName(ident)) {
+            throw new SyntaxError(position, "invalid identifier: " + ident);
         }
 
         consume(RIGHT_PAREN);
