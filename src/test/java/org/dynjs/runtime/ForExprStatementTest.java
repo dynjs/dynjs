@@ -35,4 +35,22 @@ public class ForExprStatementTest extends AbstractDynJSTestSupport {
         Object y = getContext().resolve("y").getValue(getContext());
         assertThat(y).isEqualTo(9L);
     }
+
+    @Test
+    public void testLoopWithContinue() {
+        eval("var y=0;",
+                "var i;",
+                "for ( i = 0; i < 10; ++i ) {",
+                "  if (i == 3) {",
+                "    continue;",
+                "  }",
+                "  y++;",
+                "}");
+
+        Object i = getContext().resolve("i").getValue(getContext());
+        assertThat(i).isEqualTo(10L);
+
+        Object y = getContext().resolve("y").getValue(getContext());
+        assertThat(y).isEqualTo(9L);
+    }
 }

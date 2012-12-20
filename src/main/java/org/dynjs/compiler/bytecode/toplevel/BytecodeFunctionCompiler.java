@@ -37,8 +37,7 @@ public class BytecodeFunctionCompiler extends AbstractTopLevelCompiler implement
      * @see org.dynjs.compiler.bytecode.toplevel.FunctionCompiler#compile(org.dynjs.runtime.ExecutionContext, java.lang.String[], org.dynjs.parser.ast.BlockStatement, boolean)
      */
     @Override
-    public JSFunction compile(final ExecutionContext context, final String[] formalParameters, final BlockStatement body, final boolean strict) {
-
+    public JSFunction compile(final ExecutionContext context, String identifier, final String[] formalParameters, final BlockStatement body, final boolean strict) {
         String className = nextClassName();
 
         final JiteClass cls = new JiteClass(className,

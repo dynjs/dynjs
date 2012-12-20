@@ -92,7 +92,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         try {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
-            JSFunction function = compiler.compileFunction(context, descriptor.getFormalParameterNames(), descriptor.getBlock(), descriptor.isStrict() );
+            JSFunction function = compiler.compileFunction(context, descriptor.getIdentifier(), descriptor.getFormalParameterNames(), descriptor.getBlock(), descriptor.isStrict() );
             if (function.isStrict() && duplicateFormalParams) {
                 throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
             }

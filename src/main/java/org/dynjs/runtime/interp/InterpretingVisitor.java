@@ -445,7 +445,7 @@ public class InterpretingVisitor implements CodeVisitor {
 
         Object v = null;
 
-        List<String> names = obj.getOwnEnumerablePropertyNames().toList();
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
             Object prop = obj.get(context, each);
@@ -454,7 +454,7 @@ public class InterpretingVisitor implements CodeVisitor {
             Object lhsRef = pop();
 
             if (lhsRef instanceof Reference) {
-                ((Reference) lhsRef).putValue(context, prop);
+                ((Reference) lhsRef).putValue(context, each);
             }
 
             statement.getBlock().accept(context, this, strict);
@@ -516,7 +516,7 @@ public class InterpretingVisitor implements CodeVisitor {
                 return;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                if (completion.target != null || !statement.getLabels().contains(completion.target)) {
+                if (completion.target != null && statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
                 }
@@ -550,14 +550,14 @@ public class InterpretingVisitor implements CodeVisitor {
 
         Object v = null;
 
-        List<String> names = obj.getOwnEnumerablePropertyNames().toList();
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
             Object prop = obj.get(context, each);
 
             Reference varRef = context.resolve(varName);
 
-            varRef.putValue(context, prop);
+            varRef.putValue(context, each);
 
             statement.getBlock().accept(context, this, strict);
             Completion completion = (Completion) pop();
@@ -621,7 +621,7 @@ public class InterpretingVisitor implements CodeVisitor {
                 return;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                if (completion.target != null || !statement.getLabels().contains(completion.target)) {
+                if (completion.target != null && statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
                 }
@@ -678,6 +678,7 @@ public class InterpretingVisitor implements CodeVisitor {
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
         push(new InterpretedFunction(
+                expr.getDescriptor().getIdentifier(),
                 expr.getDescriptor().getBlock(),
                 context.getLexicalEnvironment(),
                 context.isStrict(),
@@ -1024,12 +1025,12 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
-        push(new InterpretedFunction(propertyGet.getBlock(), context.getLexicalEnvironment(), strict, new String[] {}));
+        push(new InterpretedFunction(null, propertyGet.getBlock(), context.getLexicalEnvironment(), strict, new String[] {}));
     }
 
     @Override
     public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
-        push(new InterpretedFunction(propertySet.getBlock(), context.getLexicalEnvironment(), strict, new String[] { propertySet.getIdentifier() }));
+        push(new InterpretedFunction(null, propertySet.getBlock(), context.getLexicalEnvironment(), strict, new String[] { propertySet.getIdentifier() }));
 
     }
 
@@ -1095,7 +1096,7 @@ public class InterpretingVisitor implements CodeVisitor {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
             Object value = pop();
-            push(Completion.createReturn(value));
+            push(Completion.createReturn(Types.getValue(context, value)));
         } else {
             push(Completion.createReturn(Types.UNDEFINED));
         }
@@ -1153,6 +1154,9 @@ public class InterpretingVisitor implements CodeVisitor {
                     
                     if (completion.type == Completion.Type.BREAK) {
                         break;
+                    } else if (completion.type == Completion.Type.RETURN) {
+                        push(completion);
+                        return;
                     }
                 }
             }
@@ -1164,7 +1168,7 @@ public class InterpretingVisitor implements CodeVisitor {
     @Override
     public void visit(ExecutionContext context, TernaryExpression expr, boolean strict) {
         expr.getTest().accept(context, this, strict);
-        if (Types.toBoolean(pop())) {
+        if (Types.toBoolean(Types.getValue(context, pop()))) {
             expr.getThenExpr().accept(context, this, strict);
         } else {
             expr.getElseExpr().accept(context, this, strict);

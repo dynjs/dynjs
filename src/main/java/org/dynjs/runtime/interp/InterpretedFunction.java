@@ -9,8 +9,8 @@ import org.dynjs.runtime.Types;
 
 public class InterpretedFunction extends AbstractJavascriptFunction {
 
-    public InterpretedFunction(Statement body, LexicalEnvironment scope, boolean strict, String[] formalParameters) {
-        super(body, scope, strict, formalParameters);
+    public InterpretedFunction(final String identifier, Statement body, LexicalEnvironment scope, boolean strict, String[] formalParameters) {
+        super(identifier, body, scope, strict, formalParameters);
         this.setDebugContext("<anonymous>");
     }
 

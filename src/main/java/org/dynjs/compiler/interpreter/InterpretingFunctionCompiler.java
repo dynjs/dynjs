@@ -9,8 +9,8 @@ import org.dynjs.runtime.interp.InterpretedFunction;
 public class InterpretingFunctionCompiler implements FunctionCompiler {
 
     @Override
-    public JSFunction compile(ExecutionContext context, String[] formalParameters, BlockStatement body, boolean strict) {
-        return new InterpretedFunction(body, context.getLexicalEnvironment(), strict, formalParameters);
+    public JSFunction compile(ExecutionContext context, String identifier, String[] formalParameters, BlockStatement body, boolean strict) {
+        return new InterpretedFunction(identifier, body, context.getLexicalEnvironment(), strict, formalParameters);
     }
 
 }

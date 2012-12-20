@@ -1,10 +1,11 @@
 package org.dynjs.runtime;
 
+import static org.fest.assertions.Assertions.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
@@ -34,9 +35,10 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
     @Test
     public void testBenComplainsAboutCoffeeScript() throws IOException {
         InputStream coffee = getClass().getResourceAsStream("coffee-script.js");
-        //getRuntime().execute(coffee, "coffee-script.js");
         getRuntime().newRunner().withSource(new InputStreamReader(coffee))
                 .withFileName("coffee-script.js")
                 .execute();
+        Object value = getRuntime().evaluate("CoffeeScript.eval('((x) -> x * x)(8)')");
+        assertThat(value).isEqualTo(64L);
     }
 }

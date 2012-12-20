@@ -5,10 +5,10 @@ import org.dynjs.parser.Statement;
 public abstract class AbstractJavascriptFunction extends AbstractFunction {
 
     public AbstractJavascriptFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        this(null, scope, strict, formalParameters);
+        this(null, null, scope, strict, formalParameters);
     }
 
-    public AbstractJavascriptFunction(final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+    public AbstractJavascriptFunction(final String identifier, final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(body, scope, strict, formalParameters);
 
         final DynObject proto = new DynObject(scope.getGlobalObject());
@@ -26,6 +26,14 @@ public abstract class AbstractJavascriptFunction extends AbstractFunction {
                 set( "Writable", true );
                 set( "Enumerable", false );
                 set( "Configurable", false );
+            }
+        }, false);
+        defineOwnProperty(null, "name", new PropertyDescriptor() {
+            {
+                set("Value", identifier);
+                set("Writable", true);
+                set("Enumerable", false);
+                set("Configurable", true);
             }
         }, false);
     }
