@@ -28,7 +28,7 @@ public class CompilationPlanner {
     }
     
     public PartialCompiler plan(List<BlockStatement> chunks) {
-        return plan( chunks, Chunker.CHUNK_SIZE );
+        return plan( chunks, Chunker.CHUNKS_PER_CLASS );
     }
     
     public PartialCompiler plan(List<BlockStatement> chunks, int chunksPerClass) {

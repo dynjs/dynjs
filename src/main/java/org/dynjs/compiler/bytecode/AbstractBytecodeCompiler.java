@@ -46,15 +46,18 @@ public abstract class AbstractBytecodeCompiler {
     @SuppressWarnings("unchecked")
     protected <T> T defineClass(DynamicClassLoader classLoader, JiteClass jiteClass) {
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
-
+        /*
+        System.err.println( jiteClass.getClassName() + " " + ( bytecode.length / 1024 )+ " K" );
         try {
-            File file = new File("myclass.class");
+            File file = new File( "dynjs-classes", jiteClass.getClassName() + ".class");
+            file.getParentFile().mkdirs();
             FileOutputStream out = new FileOutputStream(file);
             out.write(bytecode);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
         if (config.isDebug()) {
             ClassReader reader = new ClassReader(bytecode);

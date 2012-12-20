@@ -10,6 +10,7 @@ import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
+import org.dynjs.compiler.bytecode.Chunker;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AbstractForStatement;
@@ -474,7 +475,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 invokevirtual(p(ExecutionContext.class), "setLineNumber", sig(void.class, int.class));
                 // <empty>
             }
-            if (each.getSizeMetric() > 40_000 ) {
+            if (each.getSizeMetric() > Chunker.STATEMENT_THRESHOLD ) {
                 interpretedStatement(each, strict);
             } else {
                 each.accept(context, this, strict);
