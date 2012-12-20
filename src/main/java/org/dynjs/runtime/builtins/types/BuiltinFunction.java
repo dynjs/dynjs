@@ -3,8 +3,8 @@ package org.dynjs.runtime.builtins.types;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.dynjs.compiler.JSCompiler;
@@ -13,7 +13,6 @@ import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.parser.js.ASTFactory;
 import org.dynjs.parser.js.CharStream;
 import org.dynjs.parser.js.CircularCharBuffer;
-import org.dynjs.parser.js.JavascriptParser;
 import org.dynjs.parser.js.Lexer;
 import org.dynjs.parser.js.Parser;
 import org.dynjs.parser.js.ParserException;
@@ -41,7 +40,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
                 return Types.UNDEFINED;
             }
         };
-        
+
         setPrototypeProperty(proto);
     }
 
@@ -79,7 +78,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
             formalParams.append(param);
             first = false;
         }
-        
+
         if (numArgs > 0) {
             body = Types.toString(context, args[numArgs - 1]);
         }
@@ -88,11 +87,12 @@ public class BuiltinFunction extends AbstractBuiltinType {
         code.append("function(" + formalParams.toString() + "){\n");
         code.append(body);
         code.append("}");
-        
+
         try {
             FunctionDescriptor descriptor = parseFunction(context, code.toString());
             JSCompiler compiler = context.getGlobalObject().getCompiler();
-            JSFunction function = compiler.compileFunction(context, descriptor.getIdentifier(), descriptor.getFormalParameterNames(), descriptor.getBlock(), descriptor.isStrict() );
+            JSFunction function = compiler.compileFunction(context, descriptor.getIdentifier(), descriptor.getFormalParameterNames(), descriptor.getBlock(),
+                    descriptor.isStrict());
             if (function.isStrict() && duplicateFormalParams) {
                 throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
             }
@@ -107,11 +107,11 @@ public class BuiltinFunction extends AbstractBuiltinType {
     }
 
     public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws IOException {
-        Reader in = new StringReader( code );
+        Reader in = new StringReader(code);
         CharStream charStream = new CircularCharBuffer(in);
         Lexer lexer = new Lexer(charStream);
         TokenStream tokenStream = new TokenQueue(lexer);
-        Parser parser = new Parser( new ASTFactory(), tokenStream );
+        Parser parser = new Parser(new ASTFactory(), tokenStream);
         return parser.functionDescriptor();
     }
 

@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -151,14 +152,15 @@ public class ExecutionContext {
         return internalCall(functionReference, function, self, args);
     }
 
-    public Object construct(Reference reference, Object...args){
+    public Object construct(Reference reference, Object... args) {
         Object value = reference.getValue(this);
         if (value instanceof JSFunction) {
             return construct(reference, (JSFunction) value, args);
         }
         return null;
-        
+
     }
+
     public Object construct(JSFunction function, Object... args) {
         if (!function.isConstructor()) {
             throw new ThrowException(this, createTypeError("not a constructor"));

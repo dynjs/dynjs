@@ -99,6 +99,9 @@ public class InterpretingVisitor implements CodeVisitor {
     }
 
     public void push(Object value) {
+        if (value == null) {
+            new Exception().printStackTrace();
+        }
         this.stack.add(value);
     }
 
@@ -198,7 +201,6 @@ public class InterpretingVisitor implements CodeVisitor {
             array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             ++i;
         }
-        NameEnumerator enumerator = array.getOwnEnumerablePropertyNames();
 
         push(array);
     }
@@ -363,21 +365,25 @@ public class InterpretingVisitor implements CodeVisitor {
             }
             if (completion.type == Completion.Type.CONTINUE) {
                 if (completion.target == null) {
-                    continue;
+                    // nothing
                 } else if (!statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
-                }
-            }
-            if (completion.type == Completion.Type.BREAK) {
+                } 
+            } else if (completion.type == Completion.Type.BREAK) {
+                System.err.println( "do/while break: " + completion.target );
                 if (completion.target == null) {
+                    System.err.println( "break self" );
                     break;
                 } else if (!statement.getLabels().contains(completion.target)) {
+                    System.err.println( "break other" );
                     push(completion);
                     return;
+                } else {
+                    System.err.println( "break self" );
+                    break;
                 }
-            }
-            if (completion.type == Completion.Type.RETURN) {
+            } else if (completion.type == Completion.Type.RETURN) {
                 push(Completion.createReturn(v));
                 return;
             }
@@ -388,6 +394,8 @@ public class InterpretingVisitor implements CodeVisitor {
                 break;
             }
         }
+        
+        System.err.println( "do/while return normal" );
 
         push(Completion.createNormal(v));
     }
@@ -457,8 +465,8 @@ public class InterpretingVisitor implements CodeVisitor {
                 ((Reference) lhsRef).putValue(context, each);
             }
 
-            //statement.getBlock().accept(context, this, strict);
-            //Completion completion = (Completion) pop();
+            // statement.getBlock().accept(context, this, strict);
+            // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForIn", statement.getBlock());
 
             if (completion.value != null) {
@@ -499,8 +507,8 @@ public class InterpretingVisitor implements CodeVisitor {
             if (!Types.toBoolean(Types.getValue(context, pop()))) {
                 break;
             }
-            //body.accept(context, this, strict);
-            //Completion completion = (Completion) pop();
+            // body.accept(context, this, strict);
+            // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
 
             if (completion.value != null) {
@@ -559,8 +567,8 @@ public class InterpretingVisitor implements CodeVisitor {
 
             varRef.putValue(context, each);
 
-            //statement.getBlock().accept(context, this, strict);
-            //Completion completion = (Completion) pop();
+            // statement.getBlock().accept(context, this, strict);
+            // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
 
             if (completion.value != null) {
@@ -604,9 +612,9 @@ public class InterpretingVisitor implements CodeVisitor {
             if (!Types.toBoolean(Types.getValue(context, pop()))) {
                 break;
             }
-            
-            //body.accept(context, this, strict);
-            //Completion completion = (Completion) pop();
+
+            // body.accept(context, this, strict);
+            // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForVarDecl", body);
 
             if (completion.value != null) {
@@ -1198,29 +1206,65 @@ public class InterpretingVisitor implements CodeVisitor {
     public void visit(ExecutionContext context, TryStatement statement, boolean strict) {
         Completion b = null;
         try {
-            //statement.getTryBlock().accept(context, this, strict);
-            //b = (Completion) pop();
+            // statement.getTryBlock().accept(context, this, strict);
+            // b = (Completion) pop();
             b = invokeCompiledBlockStatement(context, "Try", statement.getTryBlock());
             push(b);
         } catch (ThrowException e) {
             if (statement.getCatchClause() != null) {
-                //BasicBlock catchBlock = new InterpretedStatement(statement.getCatchClause().getBlock(), strict);
-                BasicBlock catchBlock = compiledBlockStatement(context, "Catch", statement.getCatchClause().getBlock() );
-                b = context.executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
-                push(b);
+                // BasicBlock catchBlock = new InterpretedStatement(statement.getCatchClause().getBlock(), strict);
+                BasicBlock catchBlock = compiledBlockStatement(context, "Catch", statement.getCatchClause().getBlock());
+                try {
+                    b = context.executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
+                } catch (ThrowException e2) {
+                    if (statement.getFinallyBlock() != null) {
+                        Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
+                        if (f.type == Completion.Type.NORMAL) {
+                            if (b != null) {
+                                push(b);
+                            } else {
+                                throw e2;
+                            }
+                        } else {
+                            push(f);
+                            return;
+                        }
+                    } else {
+                        throw e2;
+                    }
+                }
             }
-        } finally {
+
             if (statement.getFinallyBlock() != null) {
-                //statement.getFinallyBlock().accept(context, this, strict);
-                //Completion f = (Completion) pop();
                 Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
                 if (f.type == Completion.Type.NORMAL) {
-                    push(b);
+                    if (b != null) {
+                        push(b);
+                    } else {
+                        throw e;
+                    }
                 } else {
                     push(f);
+                    return;
+                }
+            } else {
+                if ( b != null ) {
+                    push(b);
+                } else {
+                    throw e;
                 }
             }
         }
+
+        if (statement.getFinallyBlock() != null) {
+            Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
+            if (f.type == Completion.Type.NORMAL) {
+                push(b);
+            } else {
+                push(f);
+            }
+        }
+
     }
 
     @Override
@@ -1292,8 +1336,8 @@ public class InterpretingVisitor implements CodeVisitor {
             testExpr.accept(context, this, strict);
             Boolean testResult = Types.toBoolean(Types.getValue(context, pop()));
             if (testResult) {
-                //block.accept(context, this, strict);
-                //Completion completion = (Completion) pop();
+                // block.accept(context, this, strict);
+                // Completion completion = (Completion) pop();
                 Completion completion = invokeCompiledBlockStatement(context, "While", block);
                 if (completion.value != null) {
                     v = completion.value;
@@ -1304,6 +1348,8 @@ public class InterpretingVisitor implements CodeVisitor {
                     } else if (!statement.getLabels().contains(completion.target)) {
                         push(completion);
                         return;
+                    } else {
+                        continue;
                     }
                 }
                 if (completion.type == Completion.Type.BREAK) {
@@ -1312,7 +1358,10 @@ public class InterpretingVisitor implements CodeVisitor {
                     } else if (!statement.getLabels().contains(completion.target)) {
                         push(completion);
                         return;
+                    } else {
+                        break;
                     }
+                    
                 }
                 if (completion.type == Completion.Type.RETURN) {
                     push(Completion.createReturn(v));

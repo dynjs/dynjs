@@ -11,6 +11,12 @@ import org.junit.Test;
 public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
 
     @Test
+    public void testStrictConstructor() {
+        Object result = eval( "var f = new Function('\"use strict\";\\nreturn typeof this;')",
+                "f()" );
+    }
+    
+    @Test
     public void testConstructor() {
         Object result = eval("var f = new Function('x', 'return x*2;');",
                 "f(42);");

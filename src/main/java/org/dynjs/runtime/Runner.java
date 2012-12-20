@@ -100,7 +100,7 @@ public class Runner {
             ProgramTree tree = parseSourceCode();
             JSProgram program = compile(tree);
 
-            return this.context.eval(program, false);
+            return this.context.eval(program, this.directEval);
         } catch (SyntaxError e) {
             throw new ThrowException(this.context, this.context.createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
