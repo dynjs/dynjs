@@ -704,8 +704,11 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         // ----------------------------------------
 
         aload(Arities.EXECUTION_CONTEXT);
+        // context
         ldc(statementNumber);
+        // context statement-number
         invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
+        // entry
         dup();
         // entry entry
         invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
@@ -798,14 +801,6 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         swap();
         // fn entry
         pop();
-        // fn
-        dup();
-        // fn fn
-        aload(Arities.EXECUTION_CONTEXT);
-        // fn fn context
-        invokevirtual(p(ExecutionContext.class), "getLexicalEnvironment", sig(LexicalEnvironment.class));
-        // fn fn environment
-        invokeinterface(p(JSFunction.class), "setScope", sig(void.class, LexicalEnvironment.class));
         // fn
 
         label(end);

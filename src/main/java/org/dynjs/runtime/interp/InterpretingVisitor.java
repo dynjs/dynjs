@@ -690,17 +690,16 @@ public class InterpretingVisitor implements CodeVisitor {
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
         int statementNumber = expr.getDescriptor().getBlock().getStatementNumber();
         Entry entry = this.blockManager.retrieve(statementNumber);
-        if (entry.getCompiled() == null) {
-            JSFunction compiledFn = context.getCompiler().compileFunction(context,
+        Object compiledFn = entry.getCompiled();
+        if (compiledFn == null) {
+            compiledFn = context.getCompiler().compileFunction(context,
                     expr.getDescriptor().getIdentifier(),
                     expr.getDescriptor().getFormalParameterNames(),
                     expr.getDescriptor().getBlock(),
                     strict);
             entry.setCompiled(compiledFn);
         }
-        JSFunction function = (JSFunction) entry.getCompiled();
-        function.setScope(context.getLexicalEnvironment());
-        push(function);
+        push(compiledFn);
     }
 
     @Override

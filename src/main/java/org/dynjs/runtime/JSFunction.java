@@ -4,7 +4,6 @@ public interface JSFunction extends JSObject, JSCallable, JSCode {
     String[] getFormalParameters();
 
     LexicalEnvironment getScope();
-    void setScope(LexicalEnvironment scope);
 
     boolean hasInstance(ExecutionContext context, Object obj);
 
