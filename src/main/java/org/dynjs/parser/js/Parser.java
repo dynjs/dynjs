@@ -1523,7 +1523,10 @@ public class Parser {
         Expression expr = expression();
         consume(RIGHT_PAREN);
 
-        semic();
+        // don't call semic() here because the semicolon is optional
+        if (la() == SEMICOLON) {
+            consume(SEMICOLON);
+        }
         return factory.doWhileStatement(position, body, expr);
     }
 
