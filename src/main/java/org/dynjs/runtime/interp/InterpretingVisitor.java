@@ -1143,7 +1143,7 @@ public class InterpretingVisitor implements CodeVisitor {
         statement.getExpr().accept(context, this, strict);
         Object value = Types.getValue(context, pop());
 
-        List<CaseClause> clauses = statement.getCaseClauses();
+        List<CaseClause> clauses = new ArrayList<CaseClause>(statement.getCaseClauses());
         if (statement.getDefaultCaseClause() != null) {
             clauses.add(statement.getDefaultCaseClause());
         }
