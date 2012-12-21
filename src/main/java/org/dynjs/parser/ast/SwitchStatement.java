@@ -84,6 +84,9 @@ public class SwitchStatement extends BaseStatement {
         for (CaseClause each : caseClauses) {
             buf.append(each.toIndentedString("  " + indent));
         }
+        if (defaultClause != null) {
+            buf.append(defaultClause.toIndentedString("  " + indent));
+        }
         buf.append(indent).append("}");
 
         return buf.toString();
