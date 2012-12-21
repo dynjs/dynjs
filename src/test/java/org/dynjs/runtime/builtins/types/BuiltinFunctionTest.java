@@ -82,6 +82,28 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testCallTwice() {
+        Object result = eval("var token = 'foo';",
+                "function doIt() {",
+                "  var foo = this.token;",
+                "  var id = 'something';",
+                "  foo = (function() {",
+                "    switch(id) {",
+                "      case 'dontmatch':",
+                "        return 'somethingelse';",
+                "      default:",
+                "        return foo;",
+                "    }",
+                "  })();",
+                "  return foo;",
+                "}",
+                "doIt();",
+                "token = 'bar';",
+                "doIt();");
+        assertThat(result).isEqualTo("bar");
+    }
+
+    @Test
     public void testBindFunction() {
         Object result = eval("var self = { z: 10 };",
                 "var f = function(x,y) { return this.z + x + y };",

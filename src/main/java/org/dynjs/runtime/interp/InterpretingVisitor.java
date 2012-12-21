@@ -648,7 +648,7 @@ public class InterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
+    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {        
         expr.getMemberExpression().accept(context, this, strict);
         Object ref = pop();
         Object function = Types.getValue(context, ref);
@@ -698,7 +698,9 @@ public class InterpretingVisitor implements CodeVisitor {
                     strict);
             entry.setCompiled(compiledFn);
         }
-        push(entry.getCompiled());
+        JSFunction function = (JSFunction) entry.getCompiled();
+        function.setScope(context.getLexicalEnvironment());
+        push(function);
     }
 
     @Override

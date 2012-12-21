@@ -21,6 +21,7 @@ import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.interp.InterpretedStatement;
@@ -782,7 +783,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         // fn fn context statement-number
 
         invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
-        // fn fn context entry
+        // fn fn entry
 
         swap();
         // fn entry fn
@@ -797,6 +798,14 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         swap();
         // fn entry
         pop();
+        // fn
+        dup();
+        // fn fn
+        aload(Arities.EXECUTION_CONTEXT);
+        // fn fn context
+        invokevirtual(p(ExecutionContext.class), "getLexicalEnvironment", sig(LexicalEnvironment.class));
+        // fn fn environment
+        invokeinterface(p(JSFunction.class), "setScope", sig(void.class, LexicalEnvironment.class));
         // fn
 
         label(end);

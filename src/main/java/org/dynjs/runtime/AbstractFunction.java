@@ -68,6 +68,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         return this.scope;
     }
 
+    public void setScope(LexicalEnvironment scope) {
+        this.scope = scope;
+    }
+
     public boolean isStrict() {
         return this.strict;
     }
