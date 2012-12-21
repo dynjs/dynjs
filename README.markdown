@@ -7,7 +7,7 @@
 
 ### Getting JDK7
 
-OSX users can get it at [openjdk-osx-build].
+OSX users can get it at [java site](http://java.sun.com).
 
 Download and install it to your user(not to the entire machine) and before running `mvn install` run (or use Java7 as default compiler):
 		
@@ -39,4 +39,3 @@ For more options, run `java -jar target/dynjs-all.jar --help`.
 
 [jitescript]:https://github.com/qmx/jitescript
 [invokebinder]:https://github.com/headius/invokebinder
-[openjdk-osx-build]:http://code.google.com/p/openjdk-osx-build
