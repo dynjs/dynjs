@@ -36,6 +36,3 @@ print(x);
 ```
 
 For more options, run `java -jar target/dynjs-all.jar --help`.
-
-[jitescript]:https://github.com/qmx/jitescript
-[invokebinder]:https://github.com/headius/invokebinder
