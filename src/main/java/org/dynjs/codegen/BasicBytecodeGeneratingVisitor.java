@@ -725,7 +725,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         LabelNode end = new LabelNode();
 
         label(begin);
-        invokeCompiledStatementBlock("Do", statement.getBlock());
+        invokeCompiledStatementBlock("Do", statement.getBlock(), strict);
         // completion(block)
         dup();
         // completion(block) completion(block)
@@ -914,7 +914,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // completion ref context str
         invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
         // completion
-        invokeCompiledStatementBlock("For", statement.getBlock());
+        invokeCompiledStatementBlock("For", statement.getBlock(), strict);
         // completion(prev) completion(cur)
         dup();
         // completion(prev) completion(cur) completion(cur)
@@ -1069,7 +1069,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // completion ref context str
         invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
         // completion
-        invokeCompiledStatementBlock("For", statement.getBlock());
+        invokeCompiledStatementBlock("For", statement.getBlock(), strict);
         // completion(prev) completion(cur)
         dup();
         // completion(prev) completion(cur) completion(cur)
@@ -1199,7 +1199,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         }
 
         // completion(prev)
-        invokeCompiledStatementBlock("For", statement.getBlock());
+        invokeCompiledStatementBlock("For", statement.getBlock(), strict);
         // completion(prev) completion(cur)
         dup();
         // completion(prev) completion(cur) completion(cur)
@@ -1455,7 +1455,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // THEN
 
         if (statement.getThenBlock() != null) {
-            invokeCompiledStatementBlock("Then", statement.getThenBlock());
+            invokeCompiledStatementBlock("Then", statement.getThenBlock(), strict);
         } else {
             normalCompletion();
         }
@@ -1470,7 +1470,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         } else {
             label(elseBranch);
             // <empty>
-            invokeCompiledStatementBlock("Else", statement.getElseBlock());
+            invokeCompiledStatementBlock("Else", statement.getElseBlock(), strict);
             // completion
         }
 
@@ -2334,13 +2334,13 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 nextCase = caseClauses.get(curCase + 1);
             }
 
-            caseCodeBlock(end, eachCase, nextCase, statement.getDefaultCaseClause());
+            caseCodeBlock(end, eachCase, nextCase, statement.getDefaultCaseClause(), strict);
 
             ++curCase;
         }
 
         if (statement.getDefaultCaseClause() != null) {
-            caseCodeBlock(end, statement.getDefaultCaseClause(), null, null);
+            caseCodeBlock(end, statement.getDefaultCaseClause(), null, null, strict);
         }
 
         label(end);
@@ -2350,7 +2350,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     }
 
-    protected void caseCodeBlock(final LabelNode end, final CaseClause curCase, final CaseClause nextCase, final CaseClause defaultCase) {
+    protected void caseCodeBlock(final LabelNode end, final CaseClause curCase, final CaseClause nextCase, final CaseClause defaultCase, boolean strict) {
         LabelNode normal = new LabelNode();
         LabelNode blockEnd = new LabelNode();
         LabelNode broke = new LabelNode();
@@ -2361,7 +2361,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         pop();
         label(curCase.getFallThroughLabel());
         // <empty>
-        invokeCompiledStatementBlock("Case", curCase.getBlock());
+        invokeCompiledStatementBlock("Case", curCase.getBlock(), strict);
         // completion
 
         dup();
@@ -2487,13 +2487,13 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         LabelNode outerCatchHandler = new LabelNode();
 
         label(tryStart);
-        invokeCompiledStatementBlock("Try", statement.getTryBlock());
+        invokeCompiledStatementBlock("Try", statement.getTryBlock(), strict);
         label(tryEnd);
         // completion(try)
 
         if (statement.getFinallyBlock() != null) {
             // completion(try)
-            invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
+            invokeCompiledStatementBlock("Finally", statement.getFinallyBlock(), strict);
             // completion(try) completion(finally)
             dup();
             // completion(try) completion(finally) completion(finally)
@@ -2542,7 +2542,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
             // thrown context
             swap();
             // context thrown
-            compiledStatementBlock("Catch", statement.getCatchClause().getBlock());
+            compiledStatementBlock("Catch", statement.getCatchClause().getBlock(), strict);
             // context thrown catchblock
             swap();
             // context catchblock thrown
@@ -2557,7 +2557,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
             if (statement.getFinallyBlock() != null) {
                 // completion(catch)
-                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
+                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock(), strict);
                 // completion(catch) completion(finally)
                 dup();
                 // completion(catch) completion(finally) completion(finally)
@@ -2598,7 +2598,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 label(catchCatchHandler);
                 // ex
 
-                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
+                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock(), strict);
                 // ex completion(finally)
                 dup();
                 // ex completion(finally) completion(finally)
@@ -2626,7 +2626,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
             // ex
             if (statement.getFinallyBlock() != null) {
                 // ex
-                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock());
+                invokeCompiledStatementBlock("Finally", statement.getFinallyBlock(), strict);
                 // ex completion(finally)
                 dup();
                 // ex completion(finally) completion(finally)
@@ -2825,7 +2825,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         iffalse(end);
         // completion(block)
 
-        invokeCompiledStatementBlock("Do", statement.getBlock());
+        invokeCompiledStatementBlock("Do", statement.getBlock(), strict);
         // completion(block,prev) completion(block,cur)
         swap();
         // completion(block,cur) completion(block,prev)
@@ -2886,7 +2886,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // context val
         append(jsToObject());
         // context obj
-        compiledStatementBlock("With", statement.getBlock());
+        compiledStatementBlock("With", statement.getBlock(), strict);
         // context obj block
         invokevirtual(p(ExecutionContext.class), "executeWith", sig(Completion.class, JSObject.class, BasicBlock.class));
         // completion

@@ -1,18 +1,9 @@
 package org.dynjs.runtime;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.BlockStatement;
-import org.dynjs.parser.ast.FunctionDeclaration;
-import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.parser.ast.VariableStatement;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
-    private Statement body;
     private String[] formalParameters;
     private LexicalEnvironment scope;
     private boolean strict;
@@ -20,12 +11,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private String debugContext;
 
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        this(null, scope, strict, formalParameters);
-    }
-
-    public AbstractFunction(final Statement body, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(scope.getGlobalObject());
-        this.body = body;
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
@@ -102,30 +88,6 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     }
 
     @Override
-    public List<FunctionDeclaration> getFunctionDeclarations() {
-        if (this.body instanceof BlockStatement) {
-            return ((BlockStatement) this.body).getFunctionDeclarations();
-        }
-
-        if (this.body instanceof FunctionDeclaration) {
-            return Collections.singletonList((FunctionDeclaration) this.body);
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<VariableDeclaration> getVariableDeclarations() {
-        if (this.body instanceof BlockStatement) {
-            return ((BlockStatement) this.body).getVariableDeclarations();
-        }
-
-        if (this.body instanceof VariableStatement) {
-            return ((VariableStatement) this.body).getVariableDeclarations();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
     public boolean hasInstance(ExecutionContext context, Object v) {
         if (!(v instanceof JSObject)) {
             return false;
@@ -159,17 +121,6 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         return new DynObject(context.getGlobalObject());
     }
 
-    public String getFileName() {
-        String name = null;
-        if (this.body.getPosition() != null) {
-            name = this.body.getPosition().getFileName();
-        }
-        if (name == null) {
-            name = "<eval>";
-        }
-        return name;
-    }
-
     public void setDebugContext(String debugContext) {
         this.debugContext = debugContext;
     }
@@ -178,27 +129,4 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         return this.debugContext;
     }
     
-    public Statement getBody() {
-        return this.body;
-    }
-
-    public String toString() {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("function(");
-        String[] params = getFormalParameters();
-        for (int i = 0; i < params.length; ++i) {
-            if (i > 0) {
-                buffer.append(", ");
-            }
-            buffer.append(params[i]);
-        }
-        buffer.append("){\n");
-        if (body != null) {
-            buffer.append(body.toIndentedString("  "));
-        }
-        buffer.append("}");
-
-        return buffer.toString();
-    }
 }

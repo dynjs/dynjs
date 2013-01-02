@@ -10,6 +10,12 @@ import org.dynjs.runtime.GlobalObjectFactory;
 
 public class Config {
 
+    public static enum CompileMode {
+        OFF,
+        FORCE,
+        JIT,
+    }
+
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
 
     private boolean debug = false;
@@ -21,9 +27,9 @@ public class Config {
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
-    private boolean compilationEnabled = true;
     private boolean invokeDynamicEnabled = true;
     private boolean nodePackageManagerEnabled = true;
+    private CompileMode compileMode = CompileMode.JIT;
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
@@ -34,7 +40,7 @@ public class Config {
         this.classLoader = new DynamicClassLoader(parentClassLoader);
         initializeOptions();
     }
-    
+
     private void initializeOptions() {
         if (System.getProperty("dynjs.disable.indy") != null) {
             setInvokeDynamicEnabled(false);
@@ -42,11 +48,18 @@ public class Config {
         if (System.getProperty("dynjs.disable.npm") != null) {
             setNodePackageManagerEnabled(false);
         }
-        if ( System.getProperty("dynjs.disable.compilation") != null ) {
-            setCompilationEnabled(false);
+        String compileMode = System.getProperty("dynjs.compile.mode");
+        if (compileMode != null) {
+            if (compileMode.equals("off")) {
+                this.compileMode = CompileMode.OFF;
+            } else if (compileMode.equals("force")) {
+                this.compileMode = CompileMode.FORCE;
+            } else if (compileMode.equals("jit")) {
+                this.compileMode = CompileMode.JIT;
+            }
         }
     }
-    
+
     public void setInvokeDynamicEnabled(boolean enabled) {
         this.invokeDynamicEnabled = enabled;
     }
@@ -54,19 +67,19 @@ public class Config {
     public boolean isInvokeDynamicEnabled() {
         return this.invokeDynamicEnabled;
     }
-    
-    public void setCompilationEnabled(boolean enabled) {
-        this.compilationEnabled = enabled;
+
+    public void setCompileMode(CompileMode compileMode) {
+        this.compileMode = compileMode;
     }
-    
-    public boolean isCompilationEnabled() {
-        return this.compilationEnabled;
+
+    public CompileMode getCompileMode() {
+        return this.compileMode;
     }
-    
+
     public void setNodePackageManagerEnabled(boolean enabled) {
         this.nodePackageManagerEnabled = enabled;
     }
-    
+
     public boolean isNodePackageManagerEnabled() {
         return this.nodePackageManagerEnabled;
     }

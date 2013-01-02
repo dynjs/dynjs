@@ -28,7 +28,7 @@ public class BlockManager {
             this.statementNumber = statementNumber;
         }
 
-        public Object getCompiled() {
+        public BasicBlock getCompiled() {
             /*
              * if (compiled == null) {
              * System.err.println( "returning null early" );
@@ -41,7 +41,7 @@ public class BlockManager {
             return compiled;
         }
 
-        public void setCompiled(Object compiled) {
+        public void setCompiled(BasicBlock compiled) {
             // this.compiled = new WeakReference<Object>( compiled );
             this.compiled = compiled;
         }
@@ -54,7 +54,7 @@ public class BlockManager {
         public int statementNumber;
         public Statement statement;
         // private WeakReference<Object> compiled;
-        private Object compiled;
+        private BasicBlock compiled;
     }
 
     private Map<Integer, Entry> storage = new HashMap<>();

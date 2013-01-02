@@ -1,11 +1,16 @@
 package org.dynjs.runtime;
 
+import java.util.Collections;
+import java.util.List;
 
-public class NullProgram extends AbstractProgram {
+import org.dynjs.parser.ast.FunctionDeclaration;
+import org.dynjs.parser.ast.VariableDeclaration;
+
+
+public class NullProgram implements JSProgram {
     private String filename;
 
     public NullProgram(String filename) {
-        super(null);
         this.filename = filename;
     }
 
@@ -17,6 +22,21 @@ public class NullProgram extends AbstractProgram {
     @Override
     public String getFileName() {
         return this.filename;
+    }
+
+    @Override
+    public boolean isStrict() {
+        return false;
+    }
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return Collections.emptyList();
     }
     
 

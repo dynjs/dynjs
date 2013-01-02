@@ -9,17 +9,17 @@ import org.dynjs.parser.ast.VariableDeclaration;
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
-        super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
+        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
         setDebugContext( "<native function: " + getClass().getName() + ">" );
     }
 
     public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
-        super(null, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
+        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
         setDebugContext( "<native function: " + getClass().getSimpleName() + ">" );
     }
 
     public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super(null, scope, strict, formalParameters);
+        super(scope, strict, formalParameters);
         setDebugContext( "<native function: " + getClass().getSimpleName() + ">" );
     }
 

@@ -1,6 +1,10 @@
 package org.dynjs.runtime;
 
 import java.util.Arrays;
+import java.util.List;
+
+import org.dynjs.parser.ast.FunctionDeclaration;
+import org.dynjs.parser.ast.VariableDeclaration;
 
 public class BoundFunction extends AbstractFunction {
     
@@ -98,6 +102,16 @@ public class BoundFunction extends AbstractFunction {
     @Override
     public String getDebugContext() {
         return "bound-function:" + target.getDebugContext();
+    }
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return target.getFunctionDeclarations();
+    }
+
+    @Override
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return target.getVariableDeclarations();
     }
 
 }

@@ -2,7 +2,9 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.*;
 
+import org.dynjs.Config;
 import org.dynjs.runtime.java.JavaMockery;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class InvokeDynamicTest extends AbstractDynJSTestSupport {
@@ -63,7 +65,7 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testNew_java() {
-        if (this.config.isCompilationEnabled()) {
+        if (this.config.getCompileMode() == Config.CompileMode.FORCE ) {
             Object result = eval( "new org.dynjs.runtime.java.JavaMockery");
             assertThat( result ).isInstanceOf(JavaMockery.class);
         }
@@ -71,7 +73,7 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testNew_java_withParams() {
-        if (this.config.isCompilationEnabled()) {
+        if (this.config.getCompileMode() == Config.CompileMode.FORCE ) {
             Object result = eval( "new org.dynjs.runtime.java.JavaMockery(42)");
             assertThat( result ).isInstanceOf(JavaMockery.class);
             assertThat( ((JavaMockery)result).getValue() ).isEqualTo( 42L );

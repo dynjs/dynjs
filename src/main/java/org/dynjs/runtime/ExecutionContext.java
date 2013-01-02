@@ -264,6 +264,7 @@ public class ExecutionContext {
         ExecutionContext context = new ExecutionContext(this, localEnv, localEnv, thisBinding, function.isStrict());
         context.performDeclarationBindingInstantiation(function, arguments);
         context.fileName = function.getFileName();
+        //System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
         return context;

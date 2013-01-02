@@ -2,12 +2,9 @@ package org.dynjs.compiler;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
-import org.dynjs.compiler.bytecode.toplevel.BytecodeBasicBlockCompiler;
-import org.dynjs.compiler.bytecode.toplevel.BytecodeFunctionCompiler;
-import org.dynjs.compiler.bytecode.toplevel.BytecodeProgramCompiler;
+import org.dynjs.compiler.bytecode.BytecodeBasicBlockCompiler;
 import org.dynjs.compiler.interpreter.InterpretingBasicBlockCompiler;
-import org.dynjs.compiler.interpreter.InterpretingFunctionCompiler;
-import org.dynjs.compiler.interpreter.InterpretingProgramCompiler;
+import org.dynjs.compiler.jit.JITBasicBlockCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.ProgramTree;
@@ -30,28 +27,33 @@ public class JSCompiler {
         this.config = config;
 
         CodeGeneratingVisitorFactory factory = new CodeGeneratingVisitorFactory(config.isInvokeDynamicEnabled());
+        
+        this.programCompiler = new ProgramCompiler();
+        this.functionCompiler = new FunctionCompiler();
 
-        if (config.isCompilationEnabled()) {
-            this.programCompiler = new BytecodeProgramCompiler(config, factory);
-            this.functionCompiler = new BytecodeFunctionCompiler(config, factory);
-            this.basicBlockCompiler = new BytecodeBasicBlockCompiler(config, factory);
-        } else {
-            this.programCompiler = new InterpretingProgramCompiler();
-            this.functionCompiler = new InterpretingFunctionCompiler();
+        switch ( config.getCompileMode() ) {
+        case OFF:
             this.basicBlockCompiler = new InterpretingBasicBlockCompiler();
+            break;
+        case FORCE:
+            this.basicBlockCompiler = new BytecodeBasicBlockCompiler(config, factory);
+            break;
+        case JIT:
+            this.basicBlockCompiler = new JITBasicBlockCompiler(config, factory);
+            break;
         }
     }
 
     public JSProgram compileProgram(ExecutionContext context, ProgramTree program, boolean forceStrict) {
         return this.programCompiler.compile(context, program, forceStrict);
     }
-    
-    public JSFunction compileFunction(ExecutionContext context, String identifier, String[] formalParameters, BlockStatement body, boolean containedInStrictCode) {
+
+    public JSFunction compileFunction(ExecutionContext context, String identifier, String[] formalParameters, Statement body, boolean containedInStrictCode) {
         return this.functionCompiler.compile(context, identifier, formalParameters, body, containedInStrictCode);
     }
 
-    public BasicBlock compileBasicBlock(ExecutionContext context, String grist, Statement body) {
-        return this.basicBlockCompiler.compile(context, grist, body);
+    public BasicBlock compileBasicBlock(ExecutionContext context, String grist, Statement body, boolean strict) {
+        return this.basicBlockCompiler.compile(context, grist, body, strict);
     }
 
 }

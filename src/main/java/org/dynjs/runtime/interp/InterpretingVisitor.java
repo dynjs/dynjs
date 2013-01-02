@@ -81,7 +81,6 @@ import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
@@ -369,18 +368,18 @@ public class InterpretingVisitor implements CodeVisitor {
                 } else if (!statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
-                } 
+                }
             } else if (completion.type == Completion.Type.BREAK) {
-                System.err.println( "do/while break: " + completion.target );
+                System.err.println("do/while break: " + completion.target);
                 if (completion.target == null) {
-                    System.err.println( "break self" );
+                    System.err.println("break self");
                     break;
                 } else if (!statement.getLabels().contains(completion.target)) {
-                    System.err.println( "break other" );
+                    System.err.println("break other");
                     push(completion);
                     return;
                 } else {
-                    System.err.println( "break self" );
+                    System.err.println("break self");
                     break;
                 }
             } else if (completion.type == Completion.Type.RETURN) {
@@ -394,8 +393,8 @@ public class InterpretingVisitor implements CodeVisitor {
                 break;
             }
         }
-        
-        System.err.println( "do/while return normal" );
+
+        System.err.println("do/while return normal");
 
         push(Completion.createNormal(v));
     }
@@ -648,7 +647,7 @@ public class InterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {        
+    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
         expr.getMemberExpression().accept(context, this, strict);
         Object ref = pop();
         Object function = Types.getValue(context, ref);
@@ -688,17 +687,11 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        int statementNumber = expr.getDescriptor().getBlock().getStatementNumber();
-        Entry entry = this.blockManager.retrieve(statementNumber);
-        Object compiledFn = entry.getCompiled();
-        if (compiledFn == null) {
-            compiledFn = context.getCompiler().compileFunction(context,
-                    expr.getDescriptor().getIdentifier(),
-                    expr.getDescriptor().getFormalParameterNames(),
-                    expr.getDescriptor().getBlock(),
-                    strict);
-            entry.setCompiled(compiledFn);
-        }
+        JSFunction compiledFn = context.getCompiler().compileFunction(context,
+                expr.getDescriptor().getIdentifier(),
+                expr.getDescriptor().getFormalParameterNames(),
+                expr.getDescriptor().getBlock(),
+                strict);
         push(compiledFn);
     }
 
@@ -1042,13 +1035,22 @@ public class InterpretingVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
-        push(new InterpretedFunction(null, propertyGet.getBlock(), context.getLexicalEnvironment(), strict, new String[] {}));
+        JSFunction compiledFn = context.getCompiler().compileFunction(context,
+                null,
+                new String[] {},
+                propertyGet.getBlock(),
+                strict);
+        push(compiledFn);
     }
 
     @Override
     public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
-        push(new InterpretedFunction(null, propertySet.getBlock(), context.getLexicalEnvironment(), strict, new String[] { propertySet.getIdentifier() }));
-
+        JSFunction compiledFn = context.getCompiler().compileFunction(context,
+                null,
+                new String[] { propertySet.getIdentifier() },
+                propertySet.getBlock(),
+                strict);
+        push(compiledFn);
     }
 
     @Override
@@ -1249,7 +1251,7 @@ public class InterpretingVisitor implements CodeVisitor {
                     return;
                 }
             } else {
-                if ( b != null ) {
+                if (b != null) {
                     push(b);
                 } else {
                     throw e;
@@ -1362,7 +1364,7 @@ public class InterpretingVisitor implements CodeVisitor {
                     } else {
                         break;
                     }
-                    
+
                 }
                 if (completion.type == Completion.Type.RETURN) {
                     push(Completion.createReturn(v));
@@ -1387,7 +1389,7 @@ public class InterpretingVisitor implements CodeVisitor {
     protected BasicBlock compiledBlockStatement(ExecutionContext context, String grist, Statement statement) {
         Entry entry = this.blockManager.retrieve(statement.getStatementNumber());
         if (entry.getCompiled() == null) {
-            BasicBlock compiledBlock = context.getCompiler().compileBasicBlock(context, grist, statement);
+            BasicBlock compiledBlock = context.getCompiler().compileBasicBlock(context, grist, statement, context.isStrict());
             entry.setCompiled(compiledBlock);
         }
         return (BasicBlock) entry.getCompiled();

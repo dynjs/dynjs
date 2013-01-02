@@ -24,7 +24,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.interp.InterpretedStatement;
+import org.dynjs.runtime.interp.InterpretedBasicBlock;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
@@ -589,8 +589,8 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         }
     }
 
-    public void invokeCompiledStatementBlock(final String grist, final Statement block) {
-        compiledStatementBlock(grist, block);
+    public void invokeCompiledStatementBlock(final String grist, final Statement block, final boolean strict) {
+        compiledStatementBlock(grist, block, strict);
         // basic-block
         aload(Arities.EXECUTION_CONTEXT);
         // basic-block context
@@ -599,10 +599,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         // completion
     }
 
-    public void compiledStatementBlock(final String grist, final Statement block) {
-        LabelNode skipCompile = new LabelNode();
-        LabelNode end = new LabelNode();
-
+    public void compiledStatementBlock(final String grist, final Statement block, final boolean strict) {
         int statementNumber = block.getStatementNumber();
         Entry entry = blockManager.retrieve(statementNumber);
 
@@ -615,18 +612,10 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         // ----------------------------------------
 
         aload(Arities.EXECUTION_CONTEXT);
+        // context
         ldc(statementNumber);
+        // context statement-num
         invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
-        dup();
-        // entry entry
-        invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
-        // entry object
-        dup();
-        // entry object object
-
-        ifnonnull(skipCompile);
-        // entry object
-        pop();
         // entry
 
         aload(Arities.EXECUTION_CONTEXT);
@@ -652,45 +641,21 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
 
         getfield(p(Entry.class), "statement", ci(Statement.class));
         // compiler context grist statement
+        
+        if ( strict ) {
+            iconst_1();
+        } else {
+            iconst_0();
+        }
+        
+        // compiler context grist statement strict
 
-        invokevirtual(p(JSCompiler.class), "compileBasicBlock", sig(BasicBlock.class, ExecutionContext.class, String.class, Statement.class));
-        // basic-block
-
-        dup();
-        // basic-block basic-block
-
-        aload(Arities.EXECUTION_CONTEXT);
-        // basic-block basic-block context
-
-        ldc(statementNumber);
-        // basic-block basic-block context statement-number
-
-        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
-        // basic-block basic-block entry
-
-        swap();
-        // basic-block entry basic-block
-
-        invokevirtual(p(Entry.class), "setCompiled", sig(void.class, Object.class));
-        // basic-block
-
-        go_to(end);
-
-        label(skipCompile);
-        // entry basic-block
-        swap();
-        // basic-block entry
-        pop();
-        // basic-block
-
-        label(end);
+        invokevirtual(p(JSCompiler.class), "compileBasicBlock", sig(BasicBlock.class, ExecutionContext.class, String.class, Statement.class, boolean.class));
         // basic-block
 
     }
 
     public void compiledFunction(final String identifier, final String[] formalParams, final Statement block, final boolean strict) {
-        LabelNode skipCompile = new LabelNode();
-        LabelNode end = new LabelNode();
 
         int statementNumber = block.getStatementNumber();
         Entry entry = blockManager.retrieve(statementNumber);
@@ -707,21 +672,10 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         // context
         ldc(statementNumber);
         // context statement-number
+        
         invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
         // entry
-        dup();
-        // entry entry
-        invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
-        // entry object
-        dup();
-        // entry object object
-
-        ifnonnull(skipCompile);
-        // entry object
-
-        pop();
-        // entry
-
+        
         aload(Arities.EXECUTION_CONTEXT);
         // entry context
 
@@ -773,49 +727,19 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
 
         // compiler context identifer params statement bool
 
-        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String.class, String[].class, BlockStatement.class, boolean.class));
-        // fn
-
-        dup();
-        // fn fn
-
-        aload(Arities.EXECUTION_CONTEXT);
-        // fn fn context
-
-        ldc(statementNumber);
-        // fn fn context statement-number
-
-        invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
-        // fn fn entry
-
-        swap();
-        // fn entry fn
-
-        invokevirtual(p(Entry.class), "setCompiled", sig(void.class, Object.class));
-        // fn
-
-        go_to(end);
-
-        label(skipCompile);
-        // entry fn
-        swap();
-        // fn entry
-        pop();
-        // fn
-
-        label(end);
+        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String.class, String[].class, Statement.class, boolean.class));
         // fn
     }
 
     void interpretedStatement(Statement statement, boolean strict) {
         Entry entry = getBlockManager().retrieve(statement.getStatementNumber());
-        InterpretedStatement interpreted = new InterpretedStatement(statement, strict);
+        InterpretedBasicBlock interpreted = new InterpretedBasicBlock(statement, strict);
         entry.setCompiled(interpreted);
 
         aload(Arities.EXECUTION_CONTEXT);
         ldc(statement.getStatementNumber());
         invokevirtual(p(ExecutionContext.class), "retrieveBlockEntry", sig(Entry.class, int.class));
-        invokevirtual(p(Entry.class), "getCompiled", sig(Object.class));
+        invokevirtual(p(Entry.class), "getCompiled", sig(BasicBlock.class));
         // object
         aload(Arities.EXECUTION_CONTEXT);
         // obj context
