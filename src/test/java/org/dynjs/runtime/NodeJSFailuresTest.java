@@ -15,7 +15,6 @@
  */
 package org.dynjs.runtime;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NodeJSFailuresTest extends AbstractDynJSTestSupport {

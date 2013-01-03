@@ -26,7 +26,6 @@ public class MultipleClassCompiler extends AbstractPartialCompiler {
         List<PartialCompiler> plans = new ArrayList<PartialCompiler>();
 
         int classStart = 0;
-        int i = 0;
         while (classStart < chunks.size()) {
             int classEnd = classStart + chunkSize;
 
@@ -39,7 +38,6 @@ public class MultipleClassCompiler extends AbstractPartialCompiler {
             SingleClassCompiler classPlan = new SingleClassCompiler(this, classChunks);
             plans.add(classPlan);
             classStart = classEnd;
-            ++i;
         }
 
         this.plans = treeify(plans, chunkSize);

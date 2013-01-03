@@ -1,7 +1,5 @@
 package org.dynjs.runtime.builtins.types.date.prototype;
 
-import java.util.Calendar;
-
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;

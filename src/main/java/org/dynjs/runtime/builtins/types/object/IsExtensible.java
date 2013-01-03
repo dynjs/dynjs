@@ -5,9 +5,6 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.NameEnumerator;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Types;
 
 public class IsExtensible extends AbstractNativeFunction {
 

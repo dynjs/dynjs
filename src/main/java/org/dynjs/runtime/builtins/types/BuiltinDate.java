@@ -2,8 +2,6 @@ package org.dynjs.runtime.builtins.types;
 
 import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.*;
 
-import java.util.Arrays;
-
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;

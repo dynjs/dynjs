@@ -4,7 +4,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 
 public class ValueOf extends AbstractNativeFunction {

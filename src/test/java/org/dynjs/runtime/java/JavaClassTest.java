@@ -1,8 +1,9 @@
 package org.dynjs.runtime.java;
 
+import static org.fest.assertions.Assertions.*;
+
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.junit.Test;
-import static org.fest.assertions.Assertions.*;
 
 
 public class JavaClassTest extends AbstractDynJSTestSupport {

@@ -7,7 +7,6 @@ public class TokenQueue implements TokenStream {
 
     private Lexer lexer;
     private LinkedList<Token> queue = new LinkedList<>();
-    private boolean eof = false;
 
     public TokenQueue(Lexer lexer) {
         this.lexer = lexer;

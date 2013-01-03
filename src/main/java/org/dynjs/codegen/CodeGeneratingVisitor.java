@@ -21,7 +21,6 @@ import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;

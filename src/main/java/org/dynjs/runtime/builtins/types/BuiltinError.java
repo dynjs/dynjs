@@ -1,8 +1,5 @@
 package org.dynjs.runtime.builtins.types;
 
-import java.util.Arrays;
-
-import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;

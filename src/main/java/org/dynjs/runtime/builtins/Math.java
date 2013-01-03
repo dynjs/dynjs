@@ -1,9 +1,7 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.math.Abs;
 import org.dynjs.runtime.builtins.math.Acos;
 import org.dynjs.runtime.builtins.math.Asin;
@@ -22,7 +20,6 @@ import org.dynjs.runtime.builtins.math.Round;
 import org.dynjs.runtime.builtins.math.Sin;
 import org.dynjs.runtime.builtins.math.Sqrt;
 import org.dynjs.runtime.builtins.math.Tan;
-import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Math extends DynObject {
 

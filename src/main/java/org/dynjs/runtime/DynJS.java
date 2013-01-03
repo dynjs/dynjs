@@ -15,7 +15,7 @@ public class DynJS {
 
     public DynJS(Config config) {
         this.config = config;
-        this.compiler = new JSCompiler(this, config);
+        this.compiler = new JSCompiler(config);
         this.context = ExecutionContext.createGlobalExecutionContext(this);
     }
 

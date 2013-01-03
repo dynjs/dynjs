@@ -9,7 +9,6 @@ import org.dynjs.runtime.DynamicClassLoader;
 
 public abstract class AbstractPartialCompiler extends AbstractBytecodeCompiler implements PartialCompiler {
     
-    private CodeGeneratingVisitorFactory factory;
     private DynamicClassLoader classLoader;
 
     public AbstractPartialCompiler(Config config, DynamicClassLoader classLoader, CodeGeneratingVisitorFactory factory) {

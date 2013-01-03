@@ -2,7 +2,6 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.*;
 
-import org.dynjs.exception.ThrowException;
 import org.junit.Test;
 
 public class EvalTest extends AbstractDynJSTestSupport {

@@ -1,11 +1,7 @@
 package org.dynjs.codegen;
 
-import static me.qmx.jitescript.util.CodegenUtils.ci;
-import static me.qmx.jitescript.util.CodegenUtils.p;
-import static me.qmx.jitescript.util.CodegenUtils.sig;
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
-import java.io.PrintStream;
-import java.util.Iterator;
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
@@ -25,15 +21,16 @@ import org.dynjs.parser.ast.BracketExpression;
 import org.dynjs.parser.ast.BreakStatement;
 import org.dynjs.parser.ast.CaseClause;
 import org.dynjs.parser.ast.CatchClause;
+import org.dynjs.parser.ast.CommaOperator;
 import org.dynjs.parser.ast.CompoundAssignmentExpression;
 import org.dynjs.parser.ast.ContinueStatement;
 import org.dynjs.parser.ast.DefaultCaseClause;
 import org.dynjs.parser.ast.DeleteOpExpression;
 import org.dynjs.parser.ast.DoWhileStatement;
+import org.dynjs.parser.ast.DotExpression;
 import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
-import org.dynjs.parser.ast.CommaOperator;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
@@ -48,7 +45,6 @@ import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
-import org.dynjs.parser.ast.DotExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
 import org.dynjs.parser.ast.NamedValue;
 import org.dynjs.parser.ast.NewOperatorExpression;
@@ -78,7 +74,6 @@ import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
-import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
@@ -326,11 +321,8 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
         int index = 0;
 
-        boolean someNonNull = false;
-
         for (Expression each : expr.getExprs()) {
             if (each != null) {
-                someNonNull = true;
                 dup();
                 // array array
                 aload(Arities.EXECUTION_CONTEXT);

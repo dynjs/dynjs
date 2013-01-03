@@ -6,7 +6,6 @@ import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
 
-import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.AssignmentExpression;
 import org.dynjs.parser.ast.Expression;
@@ -16,7 +15,6 @@ import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
@@ -165,7 +163,6 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         LabelNode propertyRef = new LabelNode();
         LabelNode noSelf = new LabelNode();
         LabelNode doCall = new LabelNode();
-        LabelNode isCallable = new LabelNode();
         // 11.2.3
 
         expr.getMemberExpression().accept(context, this, strict);

@@ -1,10 +1,9 @@
 package org.dynjs.runtime;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static org.fest.assertions.Assertions.*;
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
 

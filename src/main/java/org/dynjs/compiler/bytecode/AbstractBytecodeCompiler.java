@@ -1,8 +1,5 @@
 package org.dynjs.compiler.bytecode;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import me.qmx.jitescript.JDKVersion;

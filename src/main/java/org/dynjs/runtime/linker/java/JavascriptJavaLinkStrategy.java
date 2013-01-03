@@ -6,7 +6,6 @@ import java.lang.invoke.MethodType;
 
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -48,7 +47,6 @@ public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<Execution
         Object[] linkArgs = chain.getRequest().arguments();
 
         if (linkArgs.length >= 2 && linkArgs[1] instanceof ExecutionContext) {
-            ExecutionContext context = (ExecutionContext) linkArgs[1];
             binder = binder.filter(0, dereferencedValueFilter());
             guardBinder = guardBinder.filter(0, dereferencedValueFilter());
 

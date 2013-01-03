@@ -15,14 +15,14 @@
  */
 package org.dynjs.cli;
 
+import static org.dynjs.cli.Arguments.*;
+import static org.fest.assertions.Assertions.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ExampleMode;
-
-import static org.dynjs.cli.Arguments.*;
-import static org.fest.assertions.Assertions.assertThat;
 
 public class ArgumentsTest {
     private CmdLineParser parser;

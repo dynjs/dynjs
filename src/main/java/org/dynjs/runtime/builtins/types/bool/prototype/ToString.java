@@ -5,7 +5,6 @@ import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
-import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class ToString extends AbstractNativeFunction {
     public ToString(GlobalObject globalObject) {

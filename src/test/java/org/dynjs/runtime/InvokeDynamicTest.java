@@ -4,7 +4,6 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.Config;
 import org.dynjs.runtime.java.JavaMockery;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class InvokeDynamicTest extends AbstractDynJSTestSupport {

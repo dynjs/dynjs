@@ -17,7 +17,6 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.js.ParserException;
-import org.dynjs.parser.js.SyntaxError;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;

@@ -8,7 +8,6 @@ import java.lang.invoke.MethodType;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.projectodd.linkfusion.StrategicLink;

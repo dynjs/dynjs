@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +7,7 @@ import org.dynjs.exception.ThrowException;
 
 public class PropertyDescriptor {
 
+    @SuppressWarnings("serial")
     private static final Map<String, Object> DEFAULTS = new HashMap<String, Object>() {
         {
             put("Value", Types.UNDEFINED);

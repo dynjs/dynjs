@@ -1,6 +1,5 @@
 package org.dynjs.runtime;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.dynjs.parser.ast.FunctionDeclaration;

@@ -3,7 +3,6 @@ package org.dynjs.runtime.builtins.types;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 

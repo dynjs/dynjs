@@ -1,6 +1,5 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;

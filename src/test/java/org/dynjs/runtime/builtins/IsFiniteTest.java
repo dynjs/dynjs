@@ -3,7 +3,6 @@ package org.dynjs.runtime.builtins;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
-import org.dynjs.runtime.Types;
 import org.junit.Test;
 
 public class IsFiniteTest extends AbstractDynJSTestSupport {

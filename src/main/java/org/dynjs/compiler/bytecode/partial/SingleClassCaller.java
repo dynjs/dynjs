@@ -7,7 +7,6 @@ import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Types;
 import org.objectweb.asm.tree.LabelNode;
 
 public class SingleClassCaller extends CodeBlock {

@@ -1,7 +1,8 @@
 package org.dynjs.runtime;
 
-import org.junit.Test;
 import static org.fest.assertions.Assertions.*;
+
+import org.junit.Test;
 
 public class WithStatementTest extends AbstractDynJSTestSupport {
 

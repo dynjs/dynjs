@@ -2,6 +2,8 @@ package org.dynjs.exception;
 
 public class ModuleLoadException extends DynJSException {
 
+    private static final long serialVersionUID = -1402931758319396373L;
+
     public ModuleLoadException(String moduleName, Throwable cause) {
         super(cause);
         this.moduleName = moduleName;

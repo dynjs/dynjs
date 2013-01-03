@@ -1,7 +1,7 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.fest.assertions.Assertions.*;
+import static org.junit.Assert.*;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;

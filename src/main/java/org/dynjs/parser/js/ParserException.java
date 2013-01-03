@@ -4,6 +4,8 @@ import org.dynjs.exception.DynJSException;
 
 public class ParserException extends DynJSException {
     
+    private static final long serialVersionUID = 8613590677194914255L;
+    
     private Position position;
 
     public ParserException(String message) {

@@ -11,6 +11,8 @@ import org.dynjs.runtime.Types;
 
 public class ThrowException extends DynJSException {
 
+    private static final long serialVersionUID = -5523478980527254739L;
+    
     private Object value;
     private ArrayList<StackElement> stack;
 

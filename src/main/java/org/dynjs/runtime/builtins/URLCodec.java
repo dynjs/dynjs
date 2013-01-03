@@ -1,8 +1,5 @@
 package org.dynjs.runtime.builtins;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 

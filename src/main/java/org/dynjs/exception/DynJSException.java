@@ -16,6 +16,9 @@
 package org.dynjs.exception;
 
 public class DynJSException extends RuntimeException {
+    
+    private static final long serialVersionUID = 1L;
+
     public DynJSException() {
         super();
     }

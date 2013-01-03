@@ -1,7 +1,5 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
-
 import org.junit.Test;
 
 public class ForVarDeclInStatementTest extends AbstractDynJSTestSupport {

@@ -1,10 +1,6 @@
 package org.dynjs.compiler;
 
-import static org.fest.assertions.Assertions.*;
-
 import org.dynjs.runtime.AbstractDynJSTestSupport;
-import org.dynjs.runtime.JSProgram;
-import org.junit.Test;
 
 public class ProgramCompilerTest extends AbstractDynJSTestSupport {
 

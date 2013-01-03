@@ -6,25 +6,19 @@ import org.dynjs.compiler.bytecode.BytecodeBasicBlockCompiler;
 import org.dynjs.compiler.interpreter.InterpretingBasicBlockCompiler;
 import org.dynjs.compiler.jit.JITBasicBlockCompiler;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.BasicBlock;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
 
 public class JSCompiler {
 
-    private Config config;
     private ProgramCompiler programCompiler;
     private FunctionCompiler functionCompiler;
     private BasicBlockCompiler basicBlockCompiler;
-    private DynJS runtime;
 
-    public JSCompiler(DynJS runtime, Config config) {
-        this.runtime = runtime;
-        this.config = config;
+    public JSCompiler(Config config) {
 
         CodeGeneratingVisitorFactory factory = new CodeGeneratingVisitorFactory(config.isInvokeDynamicEnabled());
         

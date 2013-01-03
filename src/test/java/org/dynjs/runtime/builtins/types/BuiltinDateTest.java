@@ -1,10 +1,9 @@
 package org.dynjs.runtime.builtins.types;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
-import org.junit.Before;
 import org.junit.Test;
 
 public class BuiltinDateTest extends AbstractDynJSTestSupport {

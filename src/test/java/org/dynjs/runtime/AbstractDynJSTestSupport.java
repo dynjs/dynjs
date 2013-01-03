@@ -1,8 +1,7 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.*;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.TimeZone;
 

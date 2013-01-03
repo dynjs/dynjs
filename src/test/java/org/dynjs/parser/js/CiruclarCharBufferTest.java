@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.*;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Test;
 
