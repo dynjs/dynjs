@@ -117,6 +117,10 @@ public class DynArray extends DynObject {
 
         return super.defineOwnProperty(context, name, desc, shouldThrow);
     }
+    
+    public long length() {
+        return Types.toInt32(null, this.get(null, "length"));
+    }
 
     protected boolean isArrayIndex(ExecutionContext context, String name) {
         return name.equals(Types.toUint32(context, name).toString());

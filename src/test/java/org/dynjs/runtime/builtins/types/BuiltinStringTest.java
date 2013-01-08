@@ -344,6 +344,21 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testSubstr() {
+        assertThat(eval("'boblanceqmx'.substr(0, 3)")).isEqualTo("bob");
+    }
+    
+    @Test
+    public void testSubstrFromEnd() {
+        assertThat(eval("'boblanceqmx'.substr(-3)")).isEqualTo("qmx");
+    }
+    
+    @Test
+    public void testSubstrWithLength() {
+        assertThat(eval("'boblanceqmx'.substr(-3, 2)")).isEqualTo("qm");
+    }
+    
+    @Test
     public void testToLowerCase() {
         assertThat( eval( "'BoBLaNcEqMX'.toLowerCase()")).isEqualTo("boblanceqmx");
     }
