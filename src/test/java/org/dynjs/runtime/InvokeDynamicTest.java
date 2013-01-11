@@ -79,7 +79,7 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testSystemClass() {
+    public void testSystemClass_becauseLanceBreaksStuff() {
         if (this.config.isInvokeDynamicEnabled()) {
             eval("var sys = java.lang.System");
             assertThat(eval("sys")).isEqualTo(java.lang.System.class);
