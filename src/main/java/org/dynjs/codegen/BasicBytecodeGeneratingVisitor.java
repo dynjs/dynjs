@@ -91,14 +91,15 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 import org.objectweb.asm.tree.LabelNode;
 
 public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     private static final String[] EMPTY_STRING_ARRAY = {};
 
-    public BasicBytecodeGeneratingVisitor(BlockManager blockManager) {
-        super(blockManager);
+    public BasicBytecodeGeneratingVisitor(InterpretingVisitorFactory interpFactory, BlockManager blockManager) {
+        super(interpFactory, blockManager);
     }
 
     @Override

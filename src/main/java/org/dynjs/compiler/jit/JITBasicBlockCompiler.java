@@ -13,13 +13,16 @@ import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.CompilableBasicBlock;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 
 public class JITBasicBlockCompiler implements BasicBlockCompiler {
 
+    private InterpretingVisitorFactory interpFactory;
     private BytecodeBasicBlockCompiler jitCompiler;
     private Executor compilationQueue;
 
-    public JITBasicBlockCompiler(Config config, CodeGeneratingVisitorFactory factory) {
+    public JITBasicBlockCompiler(Config config, InterpretingVisitorFactory interpFactory, CodeGeneratingVisitorFactory factory) {
+        this.interpFactory = interpFactory;
         this.jitCompiler = new BytecodeBasicBlockCompiler(config, factory);
         this.compilationQueue = Executors.newFixedThreadPool(5);
     }
@@ -32,7 +35,7 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
         if ( code != null ) {
             return code;
         }
-        InterpretedBasicBlock initial = new InterpretedBasicBlock(body, strict);
+        InterpretedBasicBlock initial = new InterpretedBasicBlock(this.interpFactory, body, strict);
         code = new CompilableBasicBlock(this, grist, initial);
         entry.setCompiled(code);
         return code;

@@ -12,17 +12,19 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class InterpretedBasicBlock implements BasicBlock {
 
+    private InterpretingVisitorFactory factory;
     private Statement body;
     private boolean strict;
 
-    public InterpretedBasicBlock(Statement body, boolean strict) {
+    public InterpretedBasicBlock(InterpretingVisitorFactory factory, Statement body, boolean strict) {
+        this.factory = factory;
         this.body = body;
         this.strict = strict;
     }
 
     @Override
     public Completion call(ExecutionContext context) {
-        InterpretingVisitor visitor = new InterpretingVisitor( context.getBlockManager() );
+        InterpretingVisitor visitor = factory.createVisitor( context.getBlockManager() );
         this.body.accept(context, visitor, this.strict);
         return (Completion) visitor.pop();
     }

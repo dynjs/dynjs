@@ -6,9 +6,16 @@ import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 
 public class InterpretingBasicBlockCompiler implements BasicBlockCompiler {
 
+    
+    private InterpretingVisitorFactory factory;
+    public InterpretingBasicBlockCompiler(InterpretingVisitorFactory factory) {
+        this.factory = factory;
+    }
+    
     @Override
     public BasicBlock compile(ExecutionContext context, String grist, Statement body, boolean strict) {
         int statementNumber = body.getStatementNumber();
@@ -19,7 +26,7 @@ public class InterpretingBasicBlockCompiler implements BasicBlockCompiler {
             return code;
         }
         
-        code = new InterpretedBasicBlock(body, strict);
+        code = new InterpretedBasicBlock(this.factory, body, strict);
         entry.setCompiled(code);
         return code;
     }

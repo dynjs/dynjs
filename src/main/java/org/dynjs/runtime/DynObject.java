@@ -29,8 +29,8 @@ public class DynObject implements JSObject {
 
     private final Map<String, PropertyDescriptor> properties = new LinkedHashMap<>();
     private boolean extensible = true;
-    
-    // Support for an array-backed set of indexed properties. 
+
+    // Support for an array-backed set of indexed properties.
     protected Object[] buffer = null;
     private final Map<Long, PropertyDescriptor> indexedPropertyDescriptors = new HashMap<Long, PropertyDescriptor>();
 
@@ -41,7 +41,7 @@ public class DynObject implements JSObject {
             setPrototype(globalObject.getPrototypeFor("Object"));
         }
     }
-    
+
     // ------------------------------------------------------------------------
     // JSObject
     // ------------------------------------------------------------------------
@@ -314,9 +314,6 @@ public class DynObject implements JSObject {
         // 8.12.9
         Object c = getOwnProperty(context, name);
 
-        // System.err.println("DEF.start: " + name + " > " + desc);
-        // System.err.println("DEF.orig: " + name + " > " + c);
-
         if (c == Types.UNDEFINED) {
             if (!isExtensible()) {
                 return reject(context, shouldThrow);
@@ -356,6 +353,7 @@ public class DynObject implements JSObject {
 
         if (desc.isGenericDescriptor()) {
             newDesc = new PropertyDescriptor();
+            newDesc.copyAll(current);
             // System.err.println("DEF.generic: " + name + " > " + newDesc);
         } else if (current.isDataDescriptor() != desc.isDataDescriptor()) {
             if (!current.isConfigurable()) {
@@ -420,7 +418,6 @@ public class DynObject implements JSObject {
         }
 
         newDesc.copyAll(desc);
-        // System.err.println("DEF.final: " + name + " > " + newDesc);
         this.properties.put(name, newDesc);
         return true;
 
@@ -495,7 +492,7 @@ public class DynObject implements JSObject {
     public void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
         this.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", value );
+                set("Value", value);
                 set("Writable", true);
                 set("Enumerable", false);
                 set("Configurable", true);
@@ -507,7 +504,7 @@ public class DynObject implements JSObject {
     public void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value) {
         this.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", value );
+                set("Value", value);
                 set("Writable", false);
                 set("Enumerable", false);
                 set("Configurable", false);
@@ -521,7 +518,7 @@ public class DynObject implements JSObject {
         if (index < 0 || index >= buffer.length) {
             return Types.UNDEFINED;
         } else {
-            synchronized(this) {
+            synchronized (this) {
                 if (!this.indexedPropertyDescriptors.containsKey(number)) {
                     this.indexedPropertyDescriptors.put(number, new PropertyDescriptor() {
                         {
@@ -539,11 +536,11 @@ public class DynObject implements JSObject {
 
     protected void putIndexedValue(ExecutionContext context, String name, Object value) {
         Long possibleIndex = Types.toUint32(context, name);
-        final int index   = possibleIndex.intValue();
+        final int index = possibleIndex.intValue();
         if (index < 0 || index >= buffer.length) {
             this.put(context, name, value, false);
         } else {
-            synchronized(this) {
+            synchronized (this) {
                 putValueAtIndex(context, value, index);
                 if (!this.indexedPropertyDescriptors.containsKey(possibleIndex)) {
                     this.indexedPropertyDescriptors.put(possibleIndex, new PropertyDescriptor() {
@@ -560,7 +557,7 @@ public class DynObject implements JSObject {
     }
 
     protected void putValueAtIndex(ExecutionContext context, Object value, int index) {
-//        buffer[index] = value;
+        // buffer[index] = value;
         Long numberValue = Types.toUint32(context, value);
         this.getBackingArray()[index] = numberValue.byteValue() & 0xff;
     }

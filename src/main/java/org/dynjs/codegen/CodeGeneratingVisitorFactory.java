@@ -1,6 +1,7 @@
 package org.dynjs.codegen;
 
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 
 public class CodeGeneratingVisitorFactory {
     
@@ -11,11 +12,12 @@ public class CodeGeneratingVisitorFactory {
     }
     
     public CodeGeneratingVisitor create(BlockManager blockManager) {
+        InterpretingVisitorFactory interpFactory = new InterpretingVisitorFactory( enableInvokeDynamic );
         if ( enableInvokeDynamic ) {
-            return new InvokeDynamicBytecodeGeneratingVisitor( blockManager );
+            return new InvokeDynamicBytecodeGeneratingVisitor( interpFactory, blockManager );
         }
         
-        return new BasicBytecodeGeneratingVisitor( blockManager );
+        return new BasicBytecodeGeneratingVisitor( interpFactory, blockManager );
     }
 
 }

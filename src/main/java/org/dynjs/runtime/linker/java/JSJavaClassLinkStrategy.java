@@ -3,28 +3,37 @@ package org.dynjs.runtime.linker.java;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Arrays;
 
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
-import org.projectodd.linkfusion.mop.java.JavaLinkStrategy;
+import org.projectodd.linkfusion.mop.java.JavaClassLinkStrategy;
+import org.projectodd.linkfusion.mop.java.JavaInstanceLinkStrategy;
+import org.projectodd.linkfusion.mop.java.ResolverManager;
 
 import com.headius.invokebinder.Binder;
 
-public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<ExecutionContext> {
+public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionContext> {
 
-    private JavaLinkStrategy javaLinkStrategy;
+    private JavaClassLinkStrategy javaLinkStrategy;
 
-    public JavascriptJavaLinkStrategy() {
+    public JSJavaClassLinkStrategy(ResolverManager manager) {
         super(ExecutionContext.class);
-        this.javaLinkStrategy = new JavaLinkStrategy();
+        this.javaLinkStrategy = new JavaClassLinkStrategy(manager);
     }
 
     @Override
     public StrategicLink linkGetProperty(StrategyChain chain, Object receiver, String propName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
+        if (receiver instanceof Reference) {
+            receiver = ((Reference)receiver).getBase();
+            binder = binder.drop(1).filter(0, referenceBaseFilter());
+            guardBinder = guardBinder.drop(1).filter(0, referenceBaseFilter());
+        }
         return javaLinkStrategy.linkGetProperty(chain, receiver, propName, binder, guardBinder);
     }
 
@@ -43,7 +52,7 @@ public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<Execution
     @Override
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-
+        
         Object[] linkArgs = chain.getRequest().arguments();
 
         if (linkArgs.length >= 2 && linkArgs[1] instanceof ExecutionContext) {
@@ -52,7 +61,7 @@ public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<Execution
 
             binder = binder.drop(1, 2);
             guardBinder = guardBinder.drop(1, 2);
-            return javaLinkStrategy.linkConstruct(chain, dereferencedValueFilter(receiver), args, binder, guardBinder);
+            //return javaLinkStrategy.linkConstruct(chain, dereferencedValueFilter(receiver), args, binder, guardBinder);
         }
         return javaLinkStrategy.linkCall(chain, receiver, self, args, binder, guardBinder);
     }
@@ -66,7 +75,7 @@ public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<Execution
     }
 
     public static MethodHandle dereferencedValueFilter() throws NoSuchMethodException, IllegalAccessException {
-        return MethodHandles.lookup().findStatic(JavascriptJavaLinkStrategy.class, "dereferencedValueFilter",
+        return MethodHandles.lookup().findStatic(JSJavaClassLinkStrategy.class, "dereferencedValueFilter",
                 MethodType.methodType(Object.class, Object.class));
     }
 
@@ -76,4 +85,18 @@ public class JavascriptJavaLinkStrategy extends ContextualLinkStrategy<Execution
         }
         return deref;
     }
+
+    public static MethodHandle referenceBaseFilter() throws NoSuchMethodException, IllegalAccessException {
+        return MethodHandles.lookup().findStatic(JSJavaClassLinkStrategy.class, "referenceBaseFilter",
+                MethodType.methodType(Object.class, Object.class));
+    }
+
+    public static Object referenceBaseFilter(Object obj) {
+        if (obj instanceof Reference) {
+            return ((Reference) obj).getBase();
+        }
+
+        return obj;
+    }
+
 }

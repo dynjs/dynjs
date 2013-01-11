@@ -24,6 +24,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
@@ -34,9 +35,11 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
         int COMPLETION = 2;
     }
 
+    private InterpretingVisitorFactory interpFactory;
     private BlockManager blockManager;
 
-    public CodeGeneratingVisitor(BlockManager blockManager) {
+    public CodeGeneratingVisitor(InterpretingVisitorFactory interpFactory, BlockManager blockManager) {
+        this.interpFactory = interpFactory;
         this.blockManager = blockManager;
     }
 
@@ -732,7 +735,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
 
     void interpretedStatement(Statement statement, boolean strict) {
         Entry entry = getBlockManager().retrieve(statement.getStatementNumber());
-        InterpretedBasicBlock interpreted = new InterpretedBasicBlock(statement, strict);
+        InterpretedBasicBlock interpreted = new InterpretedBasicBlock(this.interpFactory, statement, strict);
         entry.setCompiled(interpreted);
 
         aload(Arities.EXECUTION_CONTEXT);

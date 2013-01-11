@@ -5,6 +5,7 @@ import static org.dynjs.runtime.linker.LinkerUtils.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Arrays;
 
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.exception.ThrowException;
@@ -24,12 +25,10 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     public JavascriptObjectLinkStrategy() {
         super(ExecutionContext.class);
     }
-
+    
     @Override
     public StrategicLink linkGetProperty(StrategyChain chain, Object receiver, String propName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-
-        // System.err.println("jsobj: link getprop: " + receiver + " // " + propName);
 
         if (isJavascriptObjectReference(receiver)) {
             MethodHandle handle = binder
@@ -60,8 +59,6 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkSetProperty(StrategyChain chain, Object receiver, String propName, Object value, Binder binder, Binder guardBinder)
             throws NoSuchMethodException, IllegalAccessException {
-
-        // System.err.println("jsobj: link setprop: " + receiver + " // " + propName);
 
         if (isJavascriptObjectReference(receiver)) {
             MethodHandle handle = binder
@@ -165,6 +162,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkConstruct(StrategyChain chain, Object receiver, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
+        
         if (isFunctionDereferencedReference(receiver)) {
             MethodHandle handle = binder
                     .permute(1, 0, 2)

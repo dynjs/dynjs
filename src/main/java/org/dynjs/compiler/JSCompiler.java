@@ -11,6 +11,7 @@ import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 
 public class JSCompiler {
 
@@ -24,16 +25,19 @@ public class JSCompiler {
         
         this.programCompiler = new ProgramCompiler();
         this.functionCompiler = new FunctionCompiler();
+        
+        InterpretingVisitorFactory interpFactory = new InterpretingVisitorFactory( config.isInvokeDynamicEnabled() );
+        
 
         switch ( config.getCompileMode() ) {
         case OFF:
-            this.basicBlockCompiler = new InterpretingBasicBlockCompiler();
+            this.basicBlockCompiler = new InterpretingBasicBlockCompiler( interpFactory );
             break;
         case FORCE:
             this.basicBlockCompiler = new BytecodeBasicBlockCompiler(config, factory);
             break;
         case JIT:
-            this.basicBlockCompiler = new JITBasicBlockCompiler(config, factory);
+            this.basicBlockCompiler = new JITBasicBlockCompiler(config, interpFactory, factory);
             break;
         }
     }

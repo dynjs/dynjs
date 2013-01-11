@@ -17,13 +17,14 @@ import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.tree.LabelNode;
 
 public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGeneratingVisitor {
 
-    public InvokeDynamicBytecodeGeneratingVisitor(BlockManager blockManager) {
-        super(blockManager);
+    public InvokeDynamicBytecodeGeneratingVisitor(InterpretingVisitorFactory interpFactory, BlockManager blockManager) {
+        super(interpFactory, blockManager);
     }
 
     @Override
