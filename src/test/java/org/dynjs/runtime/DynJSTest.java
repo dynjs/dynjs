@@ -19,6 +19,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ThrowException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DynJSTest extends AbstractDynJSTestSupport {
@@ -493,5 +494,13 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("desc.writable")).isEqualTo(true);
         assertThat(eval("desc.configurable")).isEqualTo(true);
         assertThat(eval("desc.enumerable")).isEqualTo(false);
+    }
+    
+    @Test
+    @Ignore
+    public void testStaticObjectAsProperty() {
+        eval("var obj = {}");
+        eval("obj.version = org.dynjs.DynJSVersion.FULL");
+        assertThat(eval("obj.version")).isEqualTo(org.dynjs.DynJSVersion.FULL);
     }
 }
