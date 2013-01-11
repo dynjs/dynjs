@@ -496,11 +496,5 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("desc.enumerable")).isEqualTo(false);
     }
     
-    @Test
-    @Ignore
-    public void testStaticObjectAsProperty() {
-        eval("var obj = {}");
-        eval("obj.version = org.dynjs.DynJSVersion.FULL");
-        assertThat(eval("obj.version")).isEqualTo(org.dynjs.DynJSVersion.FULL);
-    }
+
 }

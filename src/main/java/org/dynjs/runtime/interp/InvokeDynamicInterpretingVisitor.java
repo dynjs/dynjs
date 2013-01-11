@@ -124,7 +124,7 @@ public class InvokeDynamicInterpretingVisitor implements InterpretingVisitor {
         expr.getRhs().accept(context, this, strict);
 
         Object rhs = Types.toPrimitive(context, getValue(context, pop()));
-        Object lhs = Types.toPrimitive(context, Types.getValue(context, pop()));
+        Object lhs = Types.toPrimitive(context, getValue(context, pop()));
 
         if (lhs instanceof String || rhs instanceof String) {
             push(Types.toString(context, lhs) + Types.toString(context, rhs));
@@ -146,8 +146,8 @@ public class InvokeDynamicInterpretingVisitor implements InterpretingVisitor {
         expr.getLhs().accept(context, this, strict);
         expr.getRhs().accept(context, this, strict);
 
-        Number rhs = Types.toNumber(context, Types.getValue(context, pop()));
-        Number lhs = Types.toNumber(context, Types.getValue(context, pop()));
+        Number rhs = Types.toNumber(context, getValue(context, pop()));
+        Number lhs = Types.toNumber(context, getValue(context, pop()));
 
         if (lhs instanceof Double || rhs instanceof Double) {
             push(lhs.doubleValue() - rhs.doubleValue());
@@ -160,10 +160,10 @@ public class InvokeDynamicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, BitwiseExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        Object lhs = Types.getValue(context, pop());
+        Object lhs = getValue(context, pop());
 
         expr.getRhs().accept(context, this, strict);
-        Long rhsNum = Types.toInt32(context, Types.getValue(context, pop()));
+        Long rhsNum = Types.toInt32(context, getValue(context, pop()));
 
         Long lhsNum = null;
 
@@ -197,7 +197,7 @@ public class InvokeDynamicInterpretingVisitor implements InterpretingVisitor {
             Object value = null;
             if (each != null) {
                 each.accept(context, this, strict);
-                value = Types.getValue(context, pop());
+                value = getValue(context, pop());
             }
             array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             ++i;
@@ -217,7 +217,7 @@ public class InvokeDynamicInterpretingVisitor implements InterpretingVisitor {
         Reference lhsRef = (Reference) lhs;
 
         expr.getRhs().accept(context, this, strict);
-        Object rhs = Types.getValue(context, pop());
+        Object rhs = getValue(context, pop());
 
         lhsRef.putValue(context, rhs);
         push(rhs);
@@ -226,7 +226,7 @@ public class InvokeDynamicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, BitwiseInversionOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        push(~Types.toInt32(context, Types.getValue(context, pop())));
+        push(~Types.toInt32(context, getValue(context, pop())));
     }
 
     @Override

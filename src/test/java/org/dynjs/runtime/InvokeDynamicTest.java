@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.java.JavaMockery;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.projectodd.linkfusion.mop.java.DynamicMethod;
 
@@ -87,6 +88,13 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
             assertThat(eval("sys.out.println")).isInstanceOf(DynamicMethod.class);
             eval("sys.out.println('foo is nice')");
         }
+    }
+    
+    @Test
+    public void testStaticObjectAsProperty() {
+        eval("var obj = {}");
+        eval("obj.version = org.dynjs.DynJSVersion.FULL");
+        assertThat(eval("obj.version")).isEqualTo(org.dynjs.DynJSVersion.FULL);
     }
 
     /*
