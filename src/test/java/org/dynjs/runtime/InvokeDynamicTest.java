@@ -8,6 +8,15 @@ import org.junit.Test;
 import org.projectodd.linkfusion.mop.java.DynamicMethod;
 
 public class InvokeDynamicTest extends AbstractDynJSTestSupport {
+    
+    @Test
+    @Ignore
+    public void testLanceBreaksMoreStuff() {
+        eval("var obj = {}");
+        eval("var env = System.getenv()");
+        eval("var obj.path = env.get('PWD')");
+        assertThat(eval("obj.path")).isEqualTo(System.getenv().get("PWD"));
+    }
 
     @Test
     public void testObjectProperties() {
