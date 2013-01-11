@@ -30,7 +30,7 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
     public StrategicLink linkGetProperty(StrategyChain chain, Object receiver, String propName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
         if (receiver instanceof Reference) {
-            receiver = ((Reference)receiver).getBase();
+            receiver = ((Reference) receiver).getBase();
             binder = binder.drop(1).filter(0, referenceBaseFilter());
             guardBinder = guardBinder.drop(1).filter(0, referenceBaseFilter());
         }
@@ -46,23 +46,19 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
     @Override
     public StrategicLink linkGetMethod(StrategyChain chain, Object receiver, String methodName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
+        if (receiver instanceof Reference) {
+            receiver = ((Reference) receiver).getBase();
+            binder = binder.drop(1).filter(0, referenceBaseFilter());
+            guardBinder = guardBinder.drop(1).filter(0, referenceBaseFilter());
+        }
         return javaLinkStrategy.linkGetMethod(chain, receiver, methodName, binder, guardBinder);
     }
 
     @Override
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-        
-        Object[] linkArgs = chain.getRequest().arguments();
-
-        if (linkArgs.length >= 2 && linkArgs[1] instanceof ExecutionContext) {
-            binder = binder.filter(0, dereferencedValueFilter());
-            guardBinder = guardBinder.filter(0, dereferencedValueFilter());
-
-            binder = binder.drop(1, 2);
-            guardBinder = guardBinder.drop(1, 2);
-            //return javaLinkStrategy.linkConstruct(chain, dereferencedValueFilter(receiver), args, binder, guardBinder);
-        }
+        binder = binder.drop(1);
+        guardBinder = guardBinder.drop(1);
         return javaLinkStrategy.linkCall(chain, receiver, self, args, binder, guardBinder);
     }
 

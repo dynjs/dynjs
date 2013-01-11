@@ -57,9 +57,6 @@ public class JSJavaInstanceLinkStrategy extends ContextualLinkStrategy<Execution
     @Override
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-
-        Object[] linkArgs = chain.getRequest().arguments();
-
         binder = binder.drop(1);
         guardBinder = guardBinder.drop(1);
         return javaLinkStrategy.linkCall(chain, receiver, self, args, binder, guardBinder);
