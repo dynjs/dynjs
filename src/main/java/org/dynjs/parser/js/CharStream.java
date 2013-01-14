@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public interface CharStream {
     
-    char peek() throws IOException;
-    char peek(int pos) throws IOException;
-    char consume() throws IOException;
+    int peek() throws IOException;
+    int peek(int pos) throws IOException;
+    int consume() throws IOException;
     
 }

@@ -59,7 +59,9 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
             IllegalAccessException {
         binder = binder.drop(1);
         guardBinder = guardBinder.drop(1);
-        return javaLinkStrategy.linkCall(chain, receiver, self, args, binder, guardBinder);
+        binder = binder.filter(0, dereferencedValueFilter() );
+        guardBinder = guardBinder.filter(0, dereferencedValueFilter() );
+        return javaLinkStrategy.linkCall(chain, dereferencedValueFilter(receiver), self, args, binder, guardBinder);
     }
 
     @Override

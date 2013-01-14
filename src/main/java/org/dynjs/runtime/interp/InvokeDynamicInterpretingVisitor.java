@@ -2,6 +2,7 @@ package org.dynjs.runtime.interp;
 
 import java.util.List;
 
+import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.FunctionCallExpression;
@@ -9,6 +10,7 @@ import org.dynjs.parser.ast.NewOperatorExpression;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
@@ -16,7 +18,7 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
     public InvokeDynamicInterpretingVisitor(BlockManager blockManager) {
-        super( blockManager );
+        super(blockManager);
     }
 
     @Override
@@ -49,6 +51,11 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         if (thisValue == null) {
             thisValue = Types.UNDEFINED;
         }
+        
+        if ( ref instanceof Reference ) {
+            function = new DereferencedReference( (Reference) ref, function );
+        }
+        
         try {
             push(DynJSBootstrapper.getInvokeHandler().call(function, context, thisValue, args));
         } catch (ThrowException e) {
@@ -57,7 +64,6 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             throw new ThrowException(context, e);
         }
     }
-
 
     @Override
     public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {

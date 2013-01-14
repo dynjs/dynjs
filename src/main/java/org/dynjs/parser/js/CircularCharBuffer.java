@@ -11,6 +11,7 @@ public class CircularCharBuffer implements CharStream {
     private int readPos = 0;
     private int writePos = 0;
     private int available = 0;
+    private boolean eof = false;
 
     public CircularCharBuffer(Reader in) throws IOException {
         this( in, DEFAULT_BUFFER_SIZE );
@@ -42,6 +43,7 @@ public class CircularCharBuffer implements CharStream {
         int amountRead = this.in.read(this.buf, this.writePos, len);
         
         if ( amountRead < 0 ) {
+            this.eof = true;
             return;
         }
         
@@ -50,23 +52,23 @@ public class CircularCharBuffer implements CharStream {
         
     }
     
-    public char peek() throws IOException {
+    public int peek() throws IOException {
         return peek(1);
     }
     
-    public char peek(int pos) throws IOException {
+    public int peek(int pos) throws IOException {
         if ( available() < pos ) {
             fill();
         }
         if ( available() < pos ) {
-            return 0;
+            return -1;
         }
         int c = ( readPos + pos - 1) % this.buf.length;
         return buf[c];
     }
     
-    public char consume() throws IOException {
-        char c = peek();
+    public int consume() throws IOException {
+        int c = peek();
         ++this.readPos;
         --this.available;
         if ( this.readPos == this.buf.length ) {

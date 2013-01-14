@@ -1200,7 +1200,7 @@ public class Parser {
     public VariableDeclaration variableDeclaration(boolean noIn) {
         Token identifier = consume(IDENTIFIER);
 
-        if (!isAssignableName(identifier.getText())) {
+        if (!isValidIdentifier( identifier) || !isAssignableName(identifier.getText())) {
             throw new SyntaxError(identifier, "invalid identifier: " + identifier.getText());
         }
 

@@ -89,11 +89,10 @@ public class ASTFactory {
     public ASTFactory() {
     }
 
-    
     public ProgramTree program(List<Statement> statements, boolean strict) {
-        return new ProgramTree( statements, strict );
+        return new ProgramTree(statements, strict);
     }
-    
+
     public ThisExpression thisExpression(Position position) {
         return new ThisExpression(position);
     }
@@ -104,8 +103,8 @@ public class ASTFactory {
 
     public StringLiteralExpression stringLiteral(Position position, String literal, boolean escaped, boolean continuedLine) {
         StringLiteralExpression expr = new StringLiteralExpression(position, literal);
-        expr.setEscaped( escaped );
-        expr.setContinuedLine(continuedLine );
+        expr.setEscaped(escaped);
+        expr.setContinuedLine(continuedLine);
         return expr;
     }
 
@@ -116,11 +115,11 @@ public class ASTFactory {
     public NumberLiteralExpression hexLiteral(Position position, String text) {
         return new NumberLiteralExpression(position, text, 16);
     }
-    
+
     public NumberLiteralExpression octalLiteral(Position position, String text) {
         return new NumberLiteralExpression(position, text, 8);
     }
-    
+
     public RegexpLiteralExpression regexpLiteral(Position position, String text) {
         return new RegexpLiteralExpression(position, text);
     }
@@ -140,11 +139,11 @@ public class ASTFactory {
     public ArrayLiteralExpression arrayLiteral(Position position, List<Expression> exprs) {
         return new ArrayLiteralExpression(position, exprs);
     }
-    
+
     public ObjectLiteralExpression objectLiteral(Position position, List<PropertyAssignment> propAssignments) {
         return new ObjectLiteralExpression(position, propAssignments);
     }
-    
+
     public FunctionCallExpression functionCall(Expression lhs, List<Expression> args) {
         return new FunctionCallExpression(lhs, args);
     }
@@ -348,23 +347,23 @@ public class ASTFactory {
     public NewOperatorExpression newOperator(Expression expr, List<Expression> argExprs) {
         return new NewOperatorExpression(expr, argExprs);
     }
-    
+
     public FunctionExpression functionExpression(Position position, String identifier, List<Parameter> params, BlockStatement body, boolean strict) {
         FunctionDescriptor descriptor = new FunctionDescriptor(position, identifier, params, body, strict);
         return new FunctionExpression(descriptor);
     }
-    
+
     public DotExpression dotOperator(Expression lhs, String identifier) {
         return new DotExpression(lhs, identifier);
     }
-    
+
     public BracketExpression bracketOperator(Expression lhs, Expression rhs) {
         return new BracketExpression(lhs, rhs);
     }
 
     // ----------------------------------------------------------------------
     // ----------------------------------------------------------------------
-    
+
     public FunctionDeclaration functionDeclaration(Position position, String identifier, List<Parameter> params, BlockStatement body, boolean strict) {
         FunctionDescriptor descriptor = new FunctionDescriptor(position, identifier, params, body, strict);
         return new FunctionDeclaration(descriptor);
@@ -437,41 +436,41 @@ public class ASTFactory {
     public DefaultCaseClause defaultClause(Position position, List<Statement> body) {
         return new DefaultCaseClause(position, block(body));
     }
-    
+
     public TryStatement tryStatement(Position position, BlockStatement tryBlock, CatchClause catchClause, BlockStatement finallyBlock) {
         return new TryStatement(position, tryBlock, catchClause, finallyBlock);
     }
-    
+
     public CatchClause catchClause(Position position, String identifier, BlockStatement block) {
         return new CatchClause(position, identifier, block);
     }
-    
+
     public DebuggerStatement debuggerStatement(Position position) {
-        return new DebuggerStatement( position );
+        return new DebuggerStatement(position);
     }
-    
+
     public ForExprStatement forStatement(Position position, Expression initExpr, Expression testExpr, Expression incrExpr, Statement body) {
         return new ForExprStatement(position, initExpr, testExpr, incrExpr, body);
     }
-    
+
     public ForVarDeclStatement forStatement(Position position, List<VariableDeclaration> declList, Expression testExpr, Expression incrExpr, Statement body) {
         return new ForVarDeclStatement(position, declList, testExpr, incrExpr, body);
     }
-    
+
     public ForExprInStatement forInStatement(Position position, Expression lhs, Expression rhs, Statement body) {
         return new ForExprInStatement(position, lhs, rhs, body);
     }
-    
+
     public ForVarDeclInStatement forInStatement(Position position, VariableDeclaration decl, Expression rhs, Statement body) {
         return new ForVarDeclInStatement(position, decl, rhs, body);
     }
-    
+
     public DoWhileStatement doWhileStatement(Position position, Statement body, Expression expr) {
         return new DoWhileStatement(position, body, expr);
     }
-    
+
     public WhileStatement whileStatement(Position position, Expression expr, Statement body) {
-        return new WhileStatement( position, expr, body );
+        return new WhileStatement(position, expr, body);
     }
 
     // ----------------------------------------------------------------------

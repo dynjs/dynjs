@@ -69,7 +69,7 @@ public class Lexer {
         return this.fileName;
     }
 
-    protected char la() {
+    protected int la() {
         try {
             return this.stream.peek();
         } catch (IOException e) {
@@ -77,7 +77,7 @@ public class Lexer {
         }
     }
 
-    protected char la(int pos) {
+    protected int la(int pos) {
         try {
             return this.stream.peek(pos);
         } catch (IOException e) {
@@ -85,7 +85,7 @@ public class Lexer {
         }
     }
 
-    protected char consume() {
+    protected int consume() {
         try {
             ++this.columnNumber;
             return this.stream.consume();
@@ -106,7 +106,7 @@ public class Lexer {
             token = new Token(type, text, this.fileName, this.lineNumber, this.columnNumber - text.length());
         }
 
-        //System.err.println(token);
+        // System.err.println(token);
 
         return token;
     }
@@ -138,14 +138,14 @@ public class Lexer {
     }
 
     public Token nextToken() throws LexerException {
-        char d;
+        int d;
 
         Token token = null;
 
         loop: while (token == null) {
-            char c = la();
+            int c = la();
             switch (c) {
-            case 0:
+            case -1:
                 token = newToken(EOF, null);
                 break loop;
             case '{':
@@ -474,15 +474,16 @@ public class Lexer {
 
             throw new SyntaxError("unexpected character: " + c);
         }
+        
 
         return token;
     }
 
-    private boolean isIdentifierStart(char c) {
+    private boolean isIdentifierStart(int c) {
         return (Character.isLetter(c) || Character.getType(c) == Character.LETTER_NUMBER || c == '$' || c == '_' || (isUnicodeEscapeSequence(c) && !isNonEscapeSequence(c)));
     }
 
-    private boolean isIdentifierPart(char c) {
+    private boolean isIdentifierPart(int c) {
         if (isIdentifierStart(c)) {
             return true;
         }
@@ -498,7 +499,7 @@ public class Lexer {
         return false;
     }
 
-    private boolean isUnicodeEscapeSequence(char start) {
+    private boolean isUnicodeEscapeSequence(int start) {
         if (start != '\\') {
             return false;
         }
@@ -506,7 +507,7 @@ public class Lexer {
         return (la(2) == 'u' && (isHexDigit(la(3)) && isHexDigit(la(4)) && isHexDigit(la(5)) && isHexDigit(la(6))));
     }
 
-    private boolean isNonEscapeSequence(char start) {
+    private boolean isNonEscapeSequence(int start) {
         if (la(3) == '0' && la(4) == '0' && la(5) == '0' && (la(6) == 'A' || la(6) == 'D')) {
             return true;
         }
@@ -516,7 +517,7 @@ public class Lexer {
         return false;
     }
 
-    private boolean isHexDigit(char c) {
+    private boolean isHexDigit(int c) {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
@@ -524,40 +525,42 @@ public class Lexer {
         StringBuffer text = new StringBuffer();
         text.append("/");
 
-        while (la() != '/' && la() != 0) {
+        while (la() != '/' ) {
             switch (la()) {
+            case -1:
+                throw new LexerException( "unexpected end-of-file" );
             case '[':
-                text.append(consume());
+                text.append((char) consume());
                 while (la() != ']') {
                     switch (la()) {
                     case '\\':
-                        text.append(consume());
-                        text.append(consume());
+                        text.append((char) consume());
+                        text.append((char) consume());
                         break;
                     case '[':
                         // Java doesn't allow unescaped "[" inside "["
                         text.append('\\');
-                        text.append(consume());
+                        text.append((char) consume());
                         break;
                     default:
-                        text.append(consume());
+                        text.append((char) consume());
                     }
                 }
-                text.append(consume());
+                text.append((char) consume());
                 break;
             case '\\':
-                text.append(consume());
-                text.append(consume());
+                text.append((char) consume());
+                text.append((char) consume());
                 break;
             default:
-                text.append(consume());
+                text.append((char) consume());
             }
         }
 
-        text.append(consume());
+        text.append((char) consume());
 
         while (isIdentifierPart(la())) {
-            text.append(consume());
+            text.append((char) consume());
         }
 
         return newToken(REGEXP_LITERAL, text.toString());
@@ -567,11 +570,11 @@ public class Lexer {
         StringBuffer text = new StringBuffer();
 
         if (isIdentifierStart(la())) {
-            text.append(consume());
+            text.append((char) consume());
         }
 
         while (isIdentifierPart(la())) {
-            text.append(consume());
+            text.append((char) consume());
         }
 
         if (text.length() == 0) {
@@ -601,13 +604,13 @@ public class Lexer {
 
     protected void singleLineComment() {
         consume();
-        char c = 0;
+        int c = 0;
         while (true) {
             c = consume();
             if (c == '\r' && la() == '\n') {
                 consume();
                 break;
-            } else if (c == 0 || c == '\r' || c == '\n' || c == '\u2028' || c == '\u2029') {
+            } else if (c < 0 || c == '\r' || c == '\n' || c == '\u2028' || c == '\u2029') {
                 break;
             }
         }
@@ -618,8 +621,8 @@ public class Lexer {
         consume();
 
         while (true) {
-            char c = consume();
-            if (c == 0) {
+            int c = consume();
+            if (c < 0) {
                 throw new LexerException("unexpected end-of-file");
             } else if (c == '\n') {
                 incrementLine();
@@ -636,10 +639,10 @@ public class Lexer {
     }
 
     protected Token numericLiteral() {
-        char c = la();
+        int c = la();
 
         if (c == '0') {
-            char d = la(2);
+            int d = la(2);
             if (d == 'x' || d == 'X') {
                 return hexLiteral();
             } else if (d >= '0' && d <= '7') {
@@ -655,7 +658,7 @@ public class Lexer {
         consume(); // 0
 
         while (la() >= '0' && la() <= '7') {
-            text.append(consume());
+            text.append((char) consume());
         }
 
         return newToken(OCTAL_LITERAL, text.toString());
@@ -664,26 +667,26 @@ public class Lexer {
     protected Token decimalLiteral() {
         StringBuffer text = new StringBuffer();
 
-        char c = la();
+        int c = la();
         if (c == '+' || c == '-') {
-            text.append(consume());
+            text.append((char) consume());
         }
 
         while (true) {
             c = la();
             if (c >= '0' && c <= '9') {
-                text.append(consume());
+                text.append((char) consume());
             } else {
                 break;
             }
         }
 
         if (la() == '.') {
-            text.append(consume());
+            text.append((char) consume());
             while (true) {
                 c = la();
                 if (c >= '0' && c <= '9') {
-                    text.append(consume());
+                    text.append((char) consume());
                 } else {
                     break;
                 }
@@ -691,16 +694,16 @@ public class Lexer {
         }
 
         if (la() == 'E' || la() == 'e') {
-            text.append(consume());
+            text.append((char) consume());
             c = la();
             if (c == '+' || c == '-') {
-                text.append(consume());
+                text.append((char) consume());
             }
 
             while (true) {
                 c = la();
                 if (c >= '0' && c <= '9') {
-                    text.append(consume());
+                    text.append((char) consume());
                 } else {
                     break;
                 }
@@ -713,13 +716,13 @@ public class Lexer {
     protected Token hexLiteral() {
         StringBuffer text = new StringBuffer();
 
-        text.append(consume()); // 0
-        text.append(consume()); // x
+        text.append((char) consume()); // 0
+        text.append((char) consume()); // x
 
         while (true) {
-            char c = la();
+            int c = la();
             if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
-                text.append(consume());
+                text.append((char) consume());
             } else {
                 break;
             }
@@ -732,14 +735,14 @@ public class Lexer {
         StringBuffer text = new StringBuffer();
         consume();
 
-        char c = 0;
+        int c = 0;
 
         boolean escapedString = false;
         boolean escapedOctalString = false;
         boolean continuedLine = false;
 
         while ((c = la()) != type) {
-            if (c == 0) {
+            if (c < 0) {
                 throw new LexerException("unexpected end-of-file");
             }
             if (c == '\n') {
@@ -749,13 +752,13 @@ public class Lexer {
                 throw new LexerException("carriage-returns not allowed within string literals");
             }
             if (c == '\\') {
-                char d = la(2);
+                int d = la(2);
                 switch (d) {
                 case '\'':
                 case '"':
                 case '\\':
                     consume();
-                    text.append(consume());
+                    text.append((char) consume());
                     break;
                 case 'b':
                     consume();
@@ -817,10 +820,10 @@ public class Lexer {
                     break;
                 default:
                     consume();
-                    text.append(consume());
+                    text.append((char) consume());
                 }
             } else {
-                text.append(consume());
+                text.append((char) consume());
             }
         }
 
@@ -829,7 +832,7 @@ public class Lexer {
         Token token = newToken(STRING_LITERAL, text.toString());
         token.setEscapedString(escapedString);
         token.setEscapedOctalString(escapedOctalString);
-        token.setContinuedLine( continuedLine );
+        token.setContinuedLine(continuedLine);
         return token;
     }
 
@@ -840,8 +843,8 @@ public class Lexer {
         consume();
 
         for (int i = 0; i < 4; ++i) {
-            char c = hexDigit();
-            text.append(c);
+            int c = hexDigit();
+            text.append((char) c);
         }
 
         int code = Integer.decode(text.toString());
@@ -879,7 +882,7 @@ public class Lexer {
         return text.toString();
     }
 
-    protected boolean isOctalDigit(char c) {
+    protected boolean isOctalDigit(int c) {
         if (c >= '0' && c <= '7') {
             return true;
         }
@@ -888,25 +891,25 @@ public class Lexer {
     }
 
     protected char octalDigit() {
-        char c = la();
+        int c = la();
         if (isOctalDigit(c)) {
-            return consume();
+            return (char) consume();
         }
 
         throw new LexerException("expected octal digit, but found '" + c + "'");
     }
 
     protected char hexDigit() {
-        char c = la();
+        int c = la();
         if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
-            return consume();
+            return (char) consume();
         }
 
         throw new LexerException("expected hex digit, but found '" + c + "'");
     }
 
     protected void lineTerminatorSequence() {
-        char c = la();
+        int c = la();
 
         switch (c) {
         case '\n':
