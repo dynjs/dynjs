@@ -13,6 +13,7 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
         eval("var obj = {}");
         eval("var env = java.lang.System.getenv()");
         eval("obj.path = env.get('PWD')");
+        assertThat(eval("java.lang.System.getenv()")).isNotNull();
         //assertThat(eval("obj.path")).isEqualTo(System.getenv().get("PWD"));
     }
 
