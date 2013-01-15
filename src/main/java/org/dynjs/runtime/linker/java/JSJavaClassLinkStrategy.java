@@ -3,7 +3,6 @@ package org.dynjs.runtime.linker.java;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.Arrays;
 
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
@@ -12,7 +11,6 @@ import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
 import org.projectodd.linkfusion.mop.java.JavaClassLinkStrategy;
-import org.projectodd.linkfusion.mop.java.JavaInstanceLinkStrategy;
 import org.projectodd.linkfusion.mop.java.ResolverManager;
 
 import com.headius.invokebinder.Binder;

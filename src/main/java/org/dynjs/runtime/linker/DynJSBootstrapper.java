@@ -9,6 +9,7 @@ import java.lang.invoke.MethodType;
 
 import org.dynjs.runtime.linker.java.JSJavaClassLinkStrategy;
 import org.dynjs.runtime.linker.java.JSJavaInstanceLinkStrategy;
+import org.dynjs.runtime.linker.java.JSJavaInterfaceLinkStrategy;
 import org.dynjs.runtime.linker.java.JavaNullReplacingLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
@@ -32,6 +33,7 @@ public class DynJSBootstrapper {
         linker.addLinkStrategy(new JavascriptObjectLinkStrategy());
         linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy());
         linker.addLinkStrategy(new JavaNullReplacingLinkStrategy());
+        linker.addLinkStrategy(new JSJavaInterfaceLinkStrategy(manager));
         linker.addLinkStrategy(new JSJavaClassLinkStrategy(manager));
         linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(manager));
 
