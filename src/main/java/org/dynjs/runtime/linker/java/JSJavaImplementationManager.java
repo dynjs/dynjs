@@ -201,6 +201,9 @@ public class JSJavaImplementationManager {
                         aload(i + 1);
                     }
                     invokespecial(p(superClass), method.getName(), sig(signature));
+                    if ( method.getReturnType() == Void.TYPE ) {
+                        aconst_null();
+                    }
                 } else {
                     aconst_null();
                 }

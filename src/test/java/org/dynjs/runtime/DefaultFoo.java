@@ -14,5 +14,9 @@ public class DefaultFoo extends AbstractFoo {
     public String getContent() {
         return "default content";
     }
+    
+    public void avoidMe() {
+        
+    }
 
 }
