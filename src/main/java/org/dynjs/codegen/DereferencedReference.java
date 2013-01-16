@@ -5,9 +5,9 @@ import org.dynjs.runtime.Reference;
 
 public class DereferencedReference {
 
-    public static Object create(Object reference, ExecutionContext context) {
+    public static Object create(Object reference, Object value) {
         if (reference instanceof Reference) {
-            return new DereferencedReference((Reference)reference, ((Reference)reference).getValue(context));
+            return new DereferencedReference((Reference)reference, value);
         }
         return reference;
     }

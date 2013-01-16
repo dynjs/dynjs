@@ -170,9 +170,16 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         // fnexpr
         dup();
         // fnexpr fnexpr
+        /*
         aload(Arities.EXECUTION_CONTEXT);
-        // fnexpr fnexpr context
-        invokestatic(p(DereferencedReference.class), "create", sig(Object.class, Object.class, ExecutionContext.class));
+        fnexpr fnexpr context
+        invokestatic(p(DereferencedReference.class), "create", sig(Object.class, Object.class, Object.class));
+         */
+        dup();
+        // fnexpr fnexpr fnexpr
+        append( jsGetValue() );
+        // fnexpr fn-ref fn
+        invokestatic(p(DereferencedReference.class), "create", sig(Object.class, Object.class, Object.class));
         // fnexpr fn
         swap();
         // fn fnexpr

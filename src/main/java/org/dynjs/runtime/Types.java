@@ -75,6 +75,29 @@ public class Types {
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
+    
+    public static Object toThisObject(ExecutionContext context, Object o) {
+        if (o instanceof JSObject) {
+            return (JSObject) o;
+        }
+        if (o instanceof String) {
+            return new DynString(context.getGlobalObject(), (String) o);
+        }
+        if (o instanceof Number) {
+            return new DynNumber(context.getGlobalObject(), (Number) o);
+        }
+        if (o instanceof Boolean) {
+            return new DynBoolean(context.getGlobalObject(), (Boolean) o);
+        }
+        if (o == Types.UNDEFINED) {
+            throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
+        }
+        if (o == Types.NULL) {
+            throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
+        }
+        //return new PrimitiveDynObject(context.getGlobalObject(), o);
+        return o;
+    }
 
     public static Object toPrimitive(ExecutionContext context, Object o) {
         return toPrimitive(context, o, null);
