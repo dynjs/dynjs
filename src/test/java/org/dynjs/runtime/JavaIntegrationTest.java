@@ -2,6 +2,9 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.*;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 import org.junit.Test;
 
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
@@ -93,4 +96,12 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         
         assertThat( result.doItDifferently() ).isEqualTo( "with javascript content: default content" );
     }
+    
+    @Test
+    public void testArgumentCoercion() {
+        InetSocketAddress addr = (InetSocketAddress) eval( "new java.net.InetSocketAddress(8080)" );
+        assertThat( addr.getPort() ).isEqualTo( 8080 );
+        
+    }
+    
 }

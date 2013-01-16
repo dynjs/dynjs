@@ -105,6 +105,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
+        
         if (isFunctionDereferencedReference(receiver)) {
             MethodHandle handle = binder
                     .convert(Object.class, DereferencedReference.class, ExecutionContext.class, Object.class, Object[].class)
@@ -162,7 +163,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkConstruct(StrategyChain chain, Object receiver, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-
+        
         if (isFunctionDereferencedReference(receiver)) {
             MethodHandle handle = binder
                     .permute(1, 0, 2)

@@ -124,16 +124,11 @@ public class JSJavaImplementationManager {
         final Class<?>[] params = method.getParameterTypes();
         final Class<?>[] signature = new Class<?>[params.length + 1];
 
-        System.err.println(method.getName() + " PARAMS: " + Arrays.asList(params));
-
         for (int i = 1; i < params.length + 1; ++i) {
-            System.err.println(i + ": " + params[i - 1]);
             signature[i] = params[i - 1];
         }
 
         signature[0] = method.getReturnType();
-
-        System.err.println("SIG: " + Arrays.asList(signature));
 
         boolean superMethodFound = false;
         try {
