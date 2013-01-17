@@ -16,33 +16,35 @@ import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 import org.projectodd.linkfusion.FusionLinker;
+import org.projectodd.linkfusion.mop.java.CoercionMatrix;
 import org.projectodd.linkfusion.mop.java.ResolverManager;
 
 public class DynJSBootstrapper {
 
-    public static final Handle HANDLE;
-    public static final Object[] ARGS = new Object[0];
+    public static Handle HANDLE;
+    public static Object[] ARGS = new Object[0];
 
     private static FusionLinker linker = new FusionLinker();
 
     private static InterpretingInvokeDynamicHandler invokeHandler;
 
     static {
-        ResolverManager manager = new ResolverManager();
-
-        linker.addLinkStrategy(new JavascriptObjectLinkStrategy());
-        linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy());
-        linker.addLinkStrategy(new JavaNullReplacingLinkStrategy());
-        linker.addLinkStrategy(new JSJavaImplementationLinkStrategy());
-        linker.addLinkStrategy(new JSJavaClassLinkStrategy(manager));
-        linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(manager));
-
-        HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
-                p(DynJSBootstrapper.class), "bootstrap",
-                MethodType.methodType(CallSite.class, Lookup.class, String.class, MethodType.class)
-                        .toMethodDescriptorString());
-
         try {
+            CoercionMatrix coercionMatrix = new CoercionMatrix();
+            ResolverManager manager = new ResolverManager(coercionMatrix);
+
+            linker.addLinkStrategy(new JavascriptObjectLinkStrategy());
+            linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy());
+            linker.addLinkStrategy(new JavaNullReplacingLinkStrategy());
+            linker.addLinkStrategy(new JSJavaImplementationLinkStrategy());
+            linker.addLinkStrategy(new JSJavaClassLinkStrategy(manager));
+            linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(manager));
+
+            HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
+                    p(DynJSBootstrapper.class), "bootstrap",
+                    MethodType.methodType(CallSite.class, Lookup.class, String.class, MethodType.class)
+                            .toMethodDescriptorString());
+
             invokeHandler = new InterpretingInvokeDynamicHandler(linker);
         } catch (Throwable t) {
             t.printStackTrace();

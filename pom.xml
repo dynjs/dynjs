@@ -111,7 +111,7 @@
         <dependency>
             <groupId>org.projectodd.linkfusion</groupId>
             <artifactId>linkfusion</artifactId>
-            <version>1.x.incremental.15</version>
+            <version>1.x.incremental.16</version>
 <!--
             <version>1.0-SNAPSHOT</version>
 -->

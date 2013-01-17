@@ -124,22 +124,32 @@ public class ExecutionContext {
     // ----------------------------------------------------------------------
 
     public Completion execute(JSProgram program) {
-        setStrict(program.isStrict());
-        this.fileName = program.getFileName();
-        performDeclarationBindingInstantiation(program);
         try {
-            return program.execute(this);
-        } catch (ThrowException e) {
-            throw e;
-        } catch (Throwable t) {
-            throw new ThrowException(this, t);
+            ThreadContextManager.pushContext(this);
+            setStrict(program.isStrict());
+            this.fileName = program.getFileName();
+            performDeclarationBindingInstantiation(program);
+            try {
+                return program.execute(this);
+            } catch (ThrowException e) {
+                throw e;
+            } catch (Throwable t) {
+                throw new ThrowException(this, t);
+            }
+        } finally {
+            ThreadContextManager.popContext();
         }
     }
 
     public Object eval(JSProgram eval, boolean direct) {
-        ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
-        Completion result = eval.execute(evalContext);
-        return result.value;
+        try {
+            ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
+            ThreadContextManager.pushContext(evalContext);
+            Completion result = eval.execute(evalContext);
+            return result.value;
+        } finally {
+            ThreadContextManager.popContext();
+        }
     }
 
     public Object call(JSFunction function, Object self, Object... args) {
@@ -195,17 +205,22 @@ public class ExecutionContext {
 
     public Object internalCall(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
-        ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
         try {
-            Object value = function.call(fnContext);
-            if (value == null) {
-                return Types.NULL;
+            ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
+            ThreadContextManager.pushContext(fnContext);
+            try {
+                Object value = function.call(fnContext);
+                if (value == null) {
+                    return Types.NULL;
+                }
+                return value;
+            } catch (ThrowException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new ThrowException(fnContext, e);
             }
-            return value;
-        } catch (ThrowException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new ThrowException(fnContext, e);
+        } finally {
+            ThreadContextManager.popContext();
         }
     }
 
@@ -251,7 +266,7 @@ public class ExecutionContext {
             if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
                 thisBinding = this.getLexicalEnvironment().getGlobalObject();
             } else if (!(thisArg instanceof JSObject)) {
-                //thisBinding = Types.toObject(this, thisArg);
+                // thisBinding = Types.toObject(this, thisArg);
                 thisBinding = Types.toThisObject(this, thisArg);
             } else {
                 thisBinding = thisArg;
@@ -264,7 +279,7 @@ public class ExecutionContext {
         ExecutionContext context = new ExecutionContext(this, localEnv, localEnv, thisBinding, function.isStrict());
         context.performDeclarationBindingInstantiation(function, arguments);
         context.fileName = function.getFileName();
-        //System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
+        // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
         return context;
