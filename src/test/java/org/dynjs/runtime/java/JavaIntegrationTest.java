@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
@@ -123,4 +124,18 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         
     }
     
+    @Test
+    @Ignore
+    public void testRawJavaArrays() {
+        eval("javaBytes = new java.lang.Byte[3]");
+        assertThat(eval("javaBytes.length")).isEqualTo(3);
+    }
+    
+    @Test
+    @Ignore
+    public void testReturnedJavaArrays() {
+        eval("javaThing = new org.dynjs.runtime.java.JavaMockery()");
+        eval("javaArray = javaThing.getAFewThings()");
+        assertThat(eval("javaArray.length")).isEqualTo(3);
+    }
 }

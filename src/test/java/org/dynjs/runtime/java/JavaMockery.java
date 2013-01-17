@@ -30,6 +30,11 @@ public class JavaMockery {
         return this.value;
     }
     
-    
-
+    public String[] getAFewThings() {
+        String[] things = new String[3];
+        things[0] = "Foo";
+        things[1] = "Bar";
+        things[2] = "FooBar";
+        return things;
+    }
 }
