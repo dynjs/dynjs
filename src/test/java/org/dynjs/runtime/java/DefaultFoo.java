@@ -1,4 +1,4 @@
-package org.dynjs.runtime;
+package org.dynjs.runtime.java;
 
 public class DefaultFoo extends AbstractFoo {
 

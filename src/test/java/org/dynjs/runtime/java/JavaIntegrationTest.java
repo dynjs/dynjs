@@ -1,10 +1,12 @@
-package org.dynjs.runtime;
+package org.dynjs.runtime.java;
 
 import static org.fest.assertions.Assertions.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
 
+import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.junit.Test;
 
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
@@ -34,7 +36,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Test
     public void testImplementAnInterface() {
         Foo result = (Foo) eval( 
-                "new org.dynjs.runtime.Foo( {",
+                "new org.dynjs.runtime.java.Foo( {",
                 "  doIt: function() {",
                 "    return 'done in javascript';",
                 "  }",
@@ -47,7 +49,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Test
     public void testImplementAnAbstractClass() {
         Foo result = (Foo) eval( 
-                "new org.dynjs.runtime.AbstractFoo( {",
+                "new org.dynjs.runtime.java.AbstractFoo( {",
                 "  doIt: function() {",
                 "    return 'done in javascript';",
                 "  }",
@@ -59,7 +61,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Test
     public void testImplementAConcreteClass() {
         Foo result = (Foo) eval( 
-                "new org.dynjs.runtime.DefaultFoo( {",
+                "new org.dynjs.runtime.java.DefaultFoo( {",
                 "  doIt: function() {",
                 "    return 'done in javascript';",
                 "  }",
@@ -72,7 +74,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     public void testImplementAConcreteClassWithOnlyPartialOverride() {
         
         Foo result = (Foo) eval( 
-                "new org.dynjs.runtime.DefaultFoo( {",
+                "new org.dynjs.runtime.java.DefaultFoo( {",
                 "  getContent: function() {",
                 "    return 'javascript content';",
                 "  }",
@@ -85,7 +87,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     public void testImplementAConcreteClassWithOnlyPartialOverrideInversely() {
         
         Foo result = (Foo) eval( 
-                "new org.dynjs.runtime.DefaultFoo( {",
+                "new org.dynjs.runtime.java.DefaultFoo( {",
                 "  doItDifferently: function() {",
                 "    print('--------------');",
                 "    print(this);",
@@ -101,6 +103,23 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     public void testArgumentCoercion() {
         InetSocketAddress addr = (InetSocketAddress) eval( "new java.net.InetSocketAddress(8080)" );
         assertThat( addr.getPort() ).isEqualTo( 8080 );
+    }
+    
+    @Test
+    public void testConstructorFromNettyExample() {
+        
+        Executor e1 = (Executor) eval( "java.util.concurrent.Executors.newCachedThreadPool()");
+        
+        assertThat( e1 ).isNotNull();
+        
+        NettyFactory factory = (NettyFactory) eval( 
+                "var Executors = java.util.concurrent.Executors;",
+                "new org.dynjs.runtime.java.NettyFactory( Executors.newCachedThreadPool(), Executors.newCachedThreadPool() );");
+        
+        assertThat( factory ).isNotNull();
+        
+        assertThat( factory.getE1() ).isNotNull();
+        assertThat( factory.getE2() ).isNotNull();
         
     }
     

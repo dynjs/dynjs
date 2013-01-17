@@ -1,4 +1,4 @@
-package org.dynjs.runtime;
+package org.dynjs.runtime.java;
 
 public abstract class AbstractFoo implements Foo {
     
