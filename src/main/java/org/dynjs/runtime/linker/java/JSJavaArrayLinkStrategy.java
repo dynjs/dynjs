@@ -34,13 +34,16 @@ public class JSJavaArrayLinkStrategy extends ContextualLinkStrategy<ExecutionCon
         return javaLinkStrategy.linkGetProperty(chain, receiver, propName, binder, guardBinder);
     }
 
-    /*
     @Override
     public StrategicLink linkSetProperty(StrategyChain chain, Object receiver, String propName, Object value, Binder binder, Binder guardBinder)
             throws NoSuchMethodException, IllegalAccessException {
+        if ( receiver instanceof Reference) {
+            receiver = ((Reference) receiver).getBase();
+            binder = binder.drop(1).filter(0, referenceBaseFilter());
+            guardBinder = guardBinder.drop(1).filter(0, referenceBaseFilter());
+        }
         return javaLinkStrategy.linkSetProperty(chain, receiver, propName, value, binder, guardBinder);
     }
-    */
 
 
     public static MethodHandle referenceBaseFilter() throws NoSuchMethodException, IllegalAccessException {

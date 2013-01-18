@@ -1,13 +1,17 @@
 package org.dynjs.runtime.interp;
 
+import static me.qmx.jitescript.util.CodegenUtils.*;
+
 import java.util.List;
 
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.ast.AssignmentExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.NewOperatorExpression;
 import org.dynjs.runtime.BlockManager;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -19,6 +23,33 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
     public InvokeDynamicInterpretingVisitor(BlockManager blockManager) {
         super(blockManager);
+    }
+
+    @Override
+    public void visit(ExecutionContext context, AssignmentExpression expr, boolean strict) {
+        expr.getLhs().accept(context, this, strict);
+        Object lhs = pop();
+        if (!(lhs instanceof Reference)) {
+            throw new ThrowException(context, context.createTypeError(expr.getLhs() + " is not a reference"));
+        }
+
+        Reference lhsRef = (Reference) lhs;
+
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = getValue(context, pop());
+        
+        try {
+            DynJSBootstrapper.getInvokeHandler().set(lhsRef, context, lhsRef.getReferencedName(), rhs);
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ThrowException(context, e);
+        }
+        push(rhs);
+        
+        // lhsRef.putValue(context, rhs);
+        // invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+        // DynJSBootstrapper.ARGS);
     }
 
     @Override
@@ -51,11 +82,11 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         if (thisValue == null) {
             thisValue = Types.UNDEFINED;
         }
-        
-        if ( ref instanceof Reference ) {
-            function = new DereferencedReference( (Reference) ref, function );
+
+        if (ref instanceof Reference) {
+            function = new DereferencedReference((Reference) ref, function);
         }
-        
+
         try {
             push(DynJSBootstrapper.getInvokeHandler().call(function, context, thisValue, args));
         } catch (ThrowException e) {

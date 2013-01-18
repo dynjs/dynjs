@@ -138,4 +138,13 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("javaArray.length")).isEqualTo(3);
         assertThat(eval("javaArray[2]")).isEqualTo( "FooBar" );
     }
+    
+    @Test
+    public void testArrayElementSetting() {
+        eval("javaThing = new org.dynjs.runtime.java.JavaMockery()");
+        eval("javaArray = javaThing.getAFewThings()");
+        assertThat(eval("javaArray.length")).isEqualTo(3);
+        eval( "javaArray[2] = 'bob'");
+        assertThat(eval("javaArray[2]")).isEqualTo( "bob" );
+    }
 }
