@@ -36,3 +36,4 @@ print(x);
 ```
 
 For more options, run `java -jar target/dynjs-all.jar --help`.
+
