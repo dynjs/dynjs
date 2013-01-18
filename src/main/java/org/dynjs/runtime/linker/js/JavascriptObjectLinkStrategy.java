@@ -95,7 +95,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
                     .convert(void.class, JSObject.class, ExecutionContext.class, String.class, Object.class, boolean.class)
                     .invokeVirtual(lookup(), "put");
 
-            MethodHandle guard = javascriptObjectReferenceGuard(guardBinder);
+            MethodHandle guard = javascriptUndefinedReferenceGuard(guardBinder);
             return new StrategicLink(handle, guard);
         }
 

@@ -39,7 +39,7 @@ public class DynJSBootstrapper {
             linker.addLinkStrategy(new JavaNullReplacingLinkStrategy());
             linker.addLinkStrategy(new JSJavaImplementationLinkStrategy());
             linker.addLinkStrategy(new JSJavaClassLinkStrategy(manager));
-            //linker.addLinkStrategy(new JSJavaArrayLinkStrategy());
+            linker.addLinkStrategy(new JSJavaArrayLinkStrategy());
             linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(manager));
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
