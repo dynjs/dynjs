@@ -7,9 +7,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 
+import org.dynjs.runtime.linker.java.JSJavaArrayLinkStrategy;
 import org.dynjs.runtime.linker.java.JSJavaClassLinkStrategy;
-import org.dynjs.runtime.linker.java.JSJavaInstanceLinkStrategy;
 import org.dynjs.runtime.linker.java.JSJavaImplementationLinkStrategy;
+import org.dynjs.runtime.linker.java.JSJavaInstanceLinkStrategy;
 import org.dynjs.runtime.linker.java.JavaNullReplacingLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
@@ -38,6 +39,7 @@ public class DynJSBootstrapper {
             linker.addLinkStrategy(new JavaNullReplacingLinkStrategy());
             linker.addLinkStrategy(new JSJavaImplementationLinkStrategy());
             linker.addLinkStrategy(new JSJavaClassLinkStrategy(manager));
+            linker.addLinkStrategy(new JSJavaArrayLinkStrategy());
             linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(manager));
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
