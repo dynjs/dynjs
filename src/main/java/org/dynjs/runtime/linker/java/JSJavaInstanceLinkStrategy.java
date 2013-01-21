@@ -29,6 +29,7 @@ public class JSJavaInstanceLinkStrategy extends ContextualLinkStrategy<Execution
     @Override
     public StrategicLink linkGetProperty(StrategyChain chain, Object receiver, String propName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
+        log( "JSJavaInstance: GetProperty" );
         if (receiver instanceof Reference) {
             receiver = ((Reference) receiver).getBase();
             binder = binder.drop(1).filter(0, referenceBaseFilter());
@@ -40,6 +41,7 @@ public class JSJavaInstanceLinkStrategy extends ContextualLinkStrategy<Execution
     @Override
     public StrategicLink linkGetMethod(StrategyChain chain, Object receiver, String methodName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
+        log( "JSJavaInstance: GetMethod" );
 
         if (receiver instanceof Reference) {
             receiver = ((Reference) receiver).getBase();

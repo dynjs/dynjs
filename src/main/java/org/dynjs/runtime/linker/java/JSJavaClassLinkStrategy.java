@@ -23,7 +23,7 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
 
     public JSJavaClassLinkStrategy(LinkLogger logger, ResolverManager manager) {
         super(ExecutionContext.class, logger);
-        this.javaLinkStrategy = new JavaClassLinkStrategy(manager);
+        this.javaLinkStrategy = new JavaClassLinkStrategy(logger, manager);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
             IllegalAccessException {
         binder = binder.drop(1);
         guardBinder = guardBinder.drop(1);
-        binder = binder.filter(0, dereferencedValueFilter() );
-        guardBinder = guardBinder.filter(0, dereferencedValueFilter() );
+        binder = binder.filter(0, dereferencedValueFilter());
+        guardBinder = guardBinder.filter(0, dereferencedValueFilter());
         return javaLinkStrategy.linkCall(chain, dereferencedValueFilter(receiver), self, args, binder, guardBinder);
     }
 
