@@ -7,6 +7,7 @@ import java.lang.invoke.MethodType;
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -18,8 +19,8 @@ public class JSJavaArrayLinkStrategy extends ContextualLinkStrategy<ExecutionCon
 
     private JavaArrayLinkStrategy javaLinkStrategy;
 
-    public JSJavaArrayLinkStrategy() {
-        super(ExecutionContext.class);
+    public JSJavaArrayLinkStrategy(LinkLogger logger) {
+        super(ExecutionContext.class, logger);
         this.javaLinkStrategy = new JavaArrayLinkStrategy();
     }
 
@@ -37,14 +38,13 @@ public class JSJavaArrayLinkStrategy extends ContextualLinkStrategy<ExecutionCon
     @Override
     public StrategicLink linkSetProperty(StrategyChain chain, Object receiver, String propName, Object value, Binder binder, Binder guardBinder)
             throws NoSuchMethodException, IllegalAccessException {
-        if ( receiver instanceof Reference) {
+        if (receiver instanceof Reference) {
             receiver = ((Reference) receiver).getBase();
             binder = binder.drop(1).filter(0, referenceBaseFilter());
             guardBinder = guardBinder.drop(1).filter(0, referenceBaseFilter());
         }
         return javaLinkStrategy.linkSetProperty(chain, receiver, propName, value, binder, guardBinder);
     }
-
 
     public static MethodHandle referenceBaseFilter() throws NoSuchMethodException, IllegalAccessException {
         return MethodHandles.lookup().findStatic(JSJavaArrayLinkStrategy.class, "referenceBaseFilter",

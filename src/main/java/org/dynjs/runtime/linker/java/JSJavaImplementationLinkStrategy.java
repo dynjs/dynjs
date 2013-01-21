@@ -5,6 +5,7 @@ import java.lang.reflect.Proxy;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -17,8 +18,8 @@ public class JSJavaImplementationLinkStrategy extends ContextualLinkStrategy<Exe
 
     private static JSJavaImplementationManager manager = new JSJavaImplementationManager();
 
-    public JSJavaImplementationLinkStrategy() {
-        super(ExecutionContext.class);
+    public JSJavaImplementationLinkStrategy(LinkLogger logger) {
+        super(ExecutionContext.class, logger);
     }
 
     @Override

@@ -5,7 +5,6 @@ import static org.dynjs.runtime.linker.LinkerUtils.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.Arrays;
 
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.exception.ThrowException;
@@ -14,6 +13,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -22,14 +22,14 @@ import com.headius.invokebinder.Binder;
 
 public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<ExecutionContext> {
 
-    public JavascriptObjectLinkStrategy() {
-        super(ExecutionContext.class);
+    public JavascriptObjectLinkStrategy(LinkLogger logger) {
+        super(ExecutionContext.class, logger);
     }
 
     @Override
     public StrategicLink linkGetProperty(StrategyChain chain, Object receiver, String propName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-
+        
         if (isJavascriptObjectReference(receiver)) {
             MethodHandle handle = binder
                     .filter(0, referenceBaseFilter())

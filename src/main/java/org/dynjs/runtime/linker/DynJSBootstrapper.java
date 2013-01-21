@@ -16,7 +16,9 @@ import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
+import org.projectodd.linkfusion.FileLinkLogger;
 import org.projectodd.linkfusion.FusionLinker;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.mop.java.CoercionMatrix;
 import org.projectodd.linkfusion.mop.java.ResolverManager;
 
@@ -33,14 +35,16 @@ public class DynJSBootstrapper {
         try {
             CoercionMatrix coercionMatrix = new CoercionMatrix();
             ResolverManager manager = new ResolverManager(coercionMatrix);
+            
+            LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
 
-            linker.addLinkStrategy(new JavascriptObjectLinkStrategy());
-            linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy());
-            linker.addLinkStrategy(new JavaNullReplacingLinkStrategy());
-            linker.addLinkStrategy(new JSJavaImplementationLinkStrategy());
-            linker.addLinkStrategy(new JSJavaClassLinkStrategy(manager));
-            linker.addLinkStrategy(new JSJavaArrayLinkStrategy());
-            linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(manager));
+            linker.addLinkStrategy(new JavascriptObjectLinkStrategy(logger));
+            linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy(logger));
+            linker.addLinkStrategy(new JavaNullReplacingLinkStrategy(logger));
+            linker.addLinkStrategy(new JSJavaImplementationLinkStrategy(logger));
+            linker.addLinkStrategy(new JSJavaClassLinkStrategy(logger,manager));
+            linker.addLinkStrategy(new JSJavaArrayLinkStrategy(logger ));
+            linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(logger, manager));
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
                     p(DynJSBootstrapper.class), "bootstrap",

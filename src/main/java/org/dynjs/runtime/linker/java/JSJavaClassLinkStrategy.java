@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -20,8 +21,8 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
 
     private JavaClassLinkStrategy javaLinkStrategy;
 
-    public JSJavaClassLinkStrategy(ResolverManager manager) {
-        super(ExecutionContext.class);
+    public JSJavaClassLinkStrategy(LinkLogger logger, ResolverManager manager) {
+        super(ExecutionContext.class, logger);
         this.javaLinkStrategy = new JavaClassLinkStrategy(manager);
     }
 

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Reference;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -20,8 +21,8 @@ public class JSJavaInstanceLinkStrategy extends ContextualLinkStrategy<Execution
 
     private JavaInstanceLinkStrategy javaLinkStrategy;
 
-    public JSJavaInstanceLinkStrategy(ResolverManager manager) {
-        super(ExecutionContext.class);
+    public JSJavaInstanceLinkStrategy(LinkLogger logger, ResolverManager manager) {
+        super(ExecutionContext.class, logger);
         this.javaLinkStrategy = new JavaInstanceLinkStrategy(manager);
     }
 
@@ -59,10 +60,10 @@ public class JSJavaInstanceLinkStrategy extends ContextualLinkStrategy<Execution
             IllegalAccessException {
         binder = binder.drop(1);
         guardBinder = guardBinder.drop(1);
-        
-        binder = binder.filter(0, dereferencedValueFilter() );
-        guardBinder = guardBinder.filter(0, dereferencedValueFilter() );
-        return javaLinkStrategy.linkCall(chain, dereferencedValueFilter( receiver), self, args, binder, guardBinder);
+
+        binder = binder.filter(0, dereferencedValueFilter());
+        guardBinder = guardBinder.filter(0, dereferencedValueFilter());
+        return javaLinkStrategy.linkCall(chain, dereferencedValueFilter(receiver), self, args, binder, guardBinder);
     }
 
     @Override

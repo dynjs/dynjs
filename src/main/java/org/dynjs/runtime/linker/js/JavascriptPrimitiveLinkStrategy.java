@@ -10,6 +10,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
+import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
@@ -18,8 +19,8 @@ import com.headius.invokebinder.Binder;
 
 public class JavascriptPrimitiveLinkStrategy extends ContextualLinkStrategy<ExecutionContext> {
 
-    public JavascriptPrimitiveLinkStrategy(){ 
-        super(ExecutionContext.class);
+    public JavascriptPrimitiveLinkStrategy(LinkLogger logger){ 
+        super(ExecutionContext.class, logger);
     }
 
     
