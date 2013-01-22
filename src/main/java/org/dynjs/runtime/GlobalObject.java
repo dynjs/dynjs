@@ -13,6 +13,7 @@ import org.dynjs.runtime.builtins.EncodeUriComponent;
 import org.dynjs.runtime.builtins.Escape;
 import org.dynjs.runtime.builtins.Eval;
 import org.dynjs.runtime.builtins.Include;
+import org.dynjs.runtime.builtins.Intl;
 import org.dynjs.runtime.builtins.IsFinite;
 import org.dynjs.runtime.builtins.IsNaN;
 import org.dynjs.runtime.builtins.JSON;
@@ -107,13 +108,14 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
         defineGlobalProperty("print", new Print(this));
-        
+
         // ----------------------------------------
         // Built-in global objects
         // ----------------------------------------
 
         put(null, "JSON", new JSON(this), false);
         defineGlobalProperty("Math", new Math(this));
+        defineGlobalProperty("Intl", new Intl(this));
 
         // ----------------------------------------
         // Module-provider setup

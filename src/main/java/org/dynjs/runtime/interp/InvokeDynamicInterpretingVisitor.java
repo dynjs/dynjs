@@ -129,6 +129,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
                 return DynJSBootstrapper.getInvokeHandler().get(obj, context, name);
             } catch (ThrowException e) {
                 throw e;
+            } catch (NoSuchMethodError e) {
+                throw new ThrowException(context, context.createReferenceError( "unable to reference: " + name ) );
             } catch (Throwable e) {
                 throw new ThrowException(context, e);
             }
