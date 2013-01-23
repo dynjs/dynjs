@@ -154,6 +154,20 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "})");
         
         assertThat( result ).isInstanceOf(SimpleChannelHandler.class);
+    }
+    
+    @Test
+    public void testGeneric() {
+        GenericHandler<Thing> handler = (GenericHandler<Thing>) eval( 
+                "handler = new org.dynjs.runtime.java.GenericHandler({",
+                "  handle: function(thing) {",
+                "    return 'handled a thing';",
+                "  }",
+                "});" );
+        
+        Dispatcher dispatcher = new Dispatcher();
+        Object result = dispatcher.handle(handler);
+        assertThat( result ).isEqualTo( "handled a thing" );
         
     }
 }
