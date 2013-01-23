@@ -421,8 +421,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, CommaOperator expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        pop();
+        getValue(context, pop());
         expr.getRhs().accept(context, this, strict);
+        push(getValue(context, pop()));
         // leave RHS on the stack
     }
 
@@ -731,10 +732,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, InstanceofExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Object rhs = getValue(context, pop());
         Object lhs = getValue(context, pop());
+        
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = getValue(context, pop());
 
         if (!(rhs instanceof JSFunction)) {
             throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
@@ -1128,11 +1129,13 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         Object rhs = getValue(context, pop());
         Object lhs = getValue(context, pop());
 
+        Object result = null;
         if (expr.getOp().equals("===")) {
-            push(Types.compareStrictEquality(context, lhs, rhs));
+            result = Types.compareStrictEquality(context, lhs, rhs);
         } else {
-            push(!Types.compareStrictEquality(context, lhs, rhs));
+            result = !Types.compareStrictEquality(context, lhs, rhs);
         }
+        push(result);
     }
 
     @Override
@@ -1398,9 +1401,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         BasicBlock block = compiledBlockStatement(context, grist, statement);
         return block.call(context);
     }
-    
+
     protected Object getValue(ExecutionContext context, Object obj) {
-        return Types.getValue( context, obj );
+        return Types.getValue(context, obj);
     }
 
 }
