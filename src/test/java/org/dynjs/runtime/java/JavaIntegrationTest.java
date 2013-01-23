@@ -2,11 +2,11 @@ package org.dynjs.runtime.java;
 
 import static org.fest.assertions.Assertions.*;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
 
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -146,5 +146,14 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("javaArray.length")).isEqualTo(3);
         eval( "javaArray[2] = 'bob'");
         assertThat(eval("javaArray[2]")).isEqualTo( "bob" );
+    }
+    
+    @Test
+    public void testNettyChannelHandler() {
+        Object result = eval( "new org.jboss.netty.channel.SimpleChannelHandler({",
+                "})");
+        
+        assertThat( result ).isInstanceOf(SimpleChannelHandler.class);
+        
     }
 }

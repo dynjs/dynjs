@@ -98,8 +98,8 @@ public class JSJavaImplementationManager {
 
         DynamicClassLoader cl = new DynamicClassLoader();
 
-        ClassReader reader = new ClassReader(bytecode);
-        // CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
+        //ClassReader reader = new ClassReader(bytecode);
+        //CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         return cl.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
@@ -166,8 +166,10 @@ public class JSJavaImplementationManager {
                 // fn
 
                 aload(Arities.THIS);
+                // fn this
                 getfield(jiteClass.getClassName().replace('.', '/'), "context", ci(ExecutionContext.class));
                 // fn context
+
                 swap();
                 // context fn
 
@@ -181,7 +183,9 @@ public class JSJavaImplementationManager {
                 for (int i = 0; i < params.length; ++i) {
                     dup();
                     // context fn this args args
+                    ldc( i );
                     aload(i + 1);
+                    // context fn this args args arg-I
                     aastore();
                     // context fn this args
                 }
@@ -190,18 +194,19 @@ public class JSJavaImplementationManager {
 
                 invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, JSFunction.class, Object.class, Object[].class));
                 // result
+
                 go_to(complete);
 
                 label(noImpl);
                 // fn
                 pop();
                 if (hasSuper) {
-                    aload( Arities.THIS );
+                    aload(Arities.THIS);
                     for (int i = 0; i < params.length; ++i) {
                         aload(i + 1);
                     }
                     invokespecial(p(superClass), method.getName(), sig(signature));
-                    if ( method.getReturnType() == Void.TYPE ) {
+                    if (method.getReturnType() == Void.TYPE) {
                         aconst_null();
                     }
                 } else {
