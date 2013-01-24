@@ -31,6 +31,10 @@ public class ThreadContextManager {
             throw new IllegalStateException( "Cannot pop ExecutionContext from empty stack" );
         }
         currentList.remove( currentList.size() - 1 );
+        
+        if ( currentList.isEmpty() ) {
+            threadContext.remove();
+        }
     }
 
 }
