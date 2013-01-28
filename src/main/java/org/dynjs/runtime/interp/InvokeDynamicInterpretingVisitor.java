@@ -37,7 +37,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
-        
+
         try {
             DynJSBootstrapper.getInvokeHandler().set(lhsRef, context, lhsRef.getReferencedName(), rhs);
         } catch (ThrowException e) {
@@ -46,7 +46,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             throw new ThrowException(context, e);
         }
         push(rhs);
-        
+
         // lhsRef.putValue(context, rhs);
         // invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
         // DynJSBootstrapper.ARGS);
@@ -113,6 +113,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
         try {
             push(DynJSBootstrapper.getInvokeHandler().construct(memberExpr, context, args));
+        } catch (NoSuchMethodError e) {
+            throw new ThrowException(context, context.createTypeError("cannot construct with: " + memberExpr));
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
@@ -130,7 +132,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             } catch (ThrowException e) {
                 throw e;
             } catch (NoSuchMethodError e) {
-                throw new ThrowException(context, context.createReferenceError( "unable to reference: " + name ) );
+                throw new ThrowException(context, context.createReferenceError("unable to reference: " + name));
             } catch (Throwable e) {
                 throw new ThrowException(context, e);
             }

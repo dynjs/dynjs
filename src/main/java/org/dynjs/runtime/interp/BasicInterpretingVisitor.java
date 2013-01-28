@@ -875,7 +875,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             args[i] = getValue(context, pop());
             ++i;
         }
-
+        
         if (memberExpr instanceof JSFunction) {
             push(context.construct((JSFunction) memberExpr, args));
             return;
