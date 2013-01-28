@@ -159,9 +159,6 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
 
-        expr.getRhs().accept(context, this, strict);
-        Long rhsNum = Types.toInt32(context, getValue(context, pop()));
-
         Long lhsNum = null;
 
         if (expr.getOp().equals(">>>")) {
@@ -169,6 +166,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         } else {
             lhsNum = Types.toInt32(context, lhs);
         }
+
+        expr.getRhs().accept(context, this, strict);
+        Long rhsNum = Types.toInt32(context, getValue(context, pop()));
 
         if (expr.getOp().equals("<<")) {
             push(lhsNum.longValue() << rhsNum.intValue());
@@ -392,8 +392,6 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 break;
             }
         }
-
-        System.err.println("do/while return normal");
 
         push(Completion.createNormal(v));
     }

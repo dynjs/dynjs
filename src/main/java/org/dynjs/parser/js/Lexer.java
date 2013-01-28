@@ -474,7 +474,6 @@ public class Lexer {
 
             throw new SyntaxError("unexpected character: " + c);
         }
-        
 
         return token;
     }
@@ -525,10 +524,10 @@ public class Lexer {
         StringBuffer text = new StringBuffer();
         text.append("/");
 
-        while (la() != '/' ) {
+        while (la() != '/') {
             switch (la()) {
             case -1:
-                throw new LexerException( "unexpected end-of-file" );
+                throw new LexerException("unexpected end-of-file");
             case '[':
                 text.append((char) consume());
                 while (la() != ']') {
@@ -570,11 +569,19 @@ public class Lexer {
         StringBuffer text = new StringBuffer();
 
         if (isIdentifierStart(la())) {
-            text.append((char) consume());
+            if (isUnicodeEscapeSequence(la())) {
+                text.append(unicodeEscapeSequence());
+            } else {
+                text.append((char) consume());
+            }
         }
 
         while (isIdentifierPart(la())) {
-            text.append((char) consume());
+            if (isUnicodeEscapeSequence(la())) {
+                text.append(unicodeEscapeSequence());
+            } else {
+                text.append((char) consume());
+            }
         }
 
         if (text.length() == 0) {
