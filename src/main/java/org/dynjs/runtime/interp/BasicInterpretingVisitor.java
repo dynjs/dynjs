@@ -373,16 +373,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     return;
                 }
             } else if (completion.type == Completion.Type.BREAK) {
-                System.err.println("do/while break: " + completion.target);
                 if (completion.target == null) {
-                    System.err.println("break self");
                     break;
                 } else if (!statement.getLabels().contains(completion.target)) {
-                    System.err.println("break other");
                     push(completion);
                     return;
                 } else {
-                    System.err.println("break self");
                     break;
                 }
             } else if (completion.type == Completion.Type.RETURN) {
@@ -506,9 +502,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         Object v = null;
 
         while (true) {
-            test.accept(context, this, strict);
-            if (!Types.toBoolean(getValue(context, pop()))) {
-                break;
+            if (test != null) {
+                test.accept(context, this, strict);
+                if (!Types.toBoolean(getValue(context, pop()))) {
+                    break;
+                }
             }
             // body.accept(context, this, strict);
             // Completion completion = (Completion) pop();
@@ -529,7 +527,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                if (completion.target != null && ! statement.getLabels().contains(completion.target)) {
+                if (completion.target != null && !statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
                 }
@@ -611,9 +609,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         Object v = null;
 
         while (true) {
-            test.accept(context, this, strict);
-            if (!Types.toBoolean(getValue(context, pop()))) {
-                break;
+            if (test != null) {
+                test.accept(context, this, strict);
+                if (!Types.toBoolean(getValue(context, pop()))) {
+                    break;
+                }
             }
 
             // body.accept(context, this, strict);
@@ -635,7 +635,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                if (completion.target != null && ! statement.getLabels().contains(completion.target)) {
+                if (completion.target != null && !statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
                 }
