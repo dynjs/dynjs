@@ -32,9 +32,9 @@ public class ThreadContextManager {
         }
         currentList.remove( currentList.size() - 1 );
         
-        if ( currentList.isEmpty() ) {
-            threadContext.remove();
-        }
+        //if ( currentList.isEmpty() ) {
+            //threadContext.remove();
+        //}
     }
 
 }

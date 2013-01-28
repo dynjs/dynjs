@@ -253,7 +253,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             }
             if (completion.type == Completion.Type.BREAK) {
-                push(completion);
+                if (completion.target != null && statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(completion.value));
+                } else {
+                    push(completion);
+                }
                 return;
             }
         }
@@ -525,7 +529,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                if (completion.target != null && statement.getLabels().contains(completion.target)) {
+                if (completion.target != null && ! statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
                 }
@@ -631,7 +635,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                if (completion.target != null && statement.getLabels().contains(completion.target)) {
+                if (completion.target != null && ! statement.getLabels().contains(completion.target)) {
                     push(completion);
                     return;
                 }
@@ -733,7 +737,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, InstanceofExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
 
