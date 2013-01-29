@@ -61,7 +61,10 @@ class ParserContext {
     }
 
     boolean isValidBreak(String label) {
-        if (this.type != ContextType.ITERATION && this.type != ContextType.SWITCH) {
+        if (label == null) {
+            if (this.type == ContextType.ITERATION || this.type == ContextType.SWITCH) {
+                return true;
+            }
             return false;
         }
 
