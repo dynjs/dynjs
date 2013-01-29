@@ -10,6 +10,7 @@ import java.lang.invoke.MethodType;
 import org.dynjs.runtime.linker.java.JSJavaArrayLinkStrategy;
 import org.dynjs.runtime.linker.java.JSJavaClassLinkStrategy;
 import org.dynjs.runtime.linker.java.JSJavaImplementationLinkStrategy;
+import org.dynjs.runtime.linker.java.JSJavaImplementationManager;
 import org.dynjs.runtime.linker.java.JSJavaInstanceLinkStrategy;
 import org.dynjs.runtime.linker.java.JavaNullReplacingLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
@@ -33,7 +34,8 @@ public class DynJSBootstrapper {
 
     static {
         try {
-            CoercionMatrix coercionMatrix = new CoercionMatrix();
+            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager();
+            CoercionMatrix coercionMatrix = new DynJSCoercionMatrix( implementationManager );
             ResolverManager manager = new ResolverManager(coercionMatrix);
             
             //LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
@@ -44,7 +46,7 @@ public class DynJSBootstrapper {
             linker.addLinkStrategy(new JavascriptObjectLinkStrategy(logger));
             linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy(logger));
             linker.addLinkStrategy(new JavaNullReplacingLinkStrategy(logger));
-            linker.addLinkStrategy(new JSJavaImplementationLinkStrategy(logger));
+            linker.addLinkStrategy(new JSJavaImplementationLinkStrategy(implementationManager, logger));
             linker.addLinkStrategy(new JSJavaClassLinkStrategy(logger,manager));
             linker.addLinkStrategy(new JSJavaArrayLinkStrategy(logger ));
             linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(logger, manager));

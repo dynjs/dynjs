@@ -1,7 +1,6 @@
 package org.dynjs.runtime.linker.java;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Proxy;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
@@ -9,17 +8,16 @@ import org.projectodd.linkfusion.LinkLogger;
 import org.projectodd.linkfusion.StrategicLink;
 import org.projectodd.linkfusion.StrategyChain;
 import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
-import org.projectodd.linkfusion.mop.java.Resolver;
-import org.projectodd.linkfusion.mop.java.ResolverManager;
 
 import com.headius.invokebinder.Binder;
 
 public class JSJavaImplementationLinkStrategy extends ContextualLinkStrategy<ExecutionContext> {
 
-    private static JSJavaImplementationManager manager = new JSJavaImplementationManager();
+    private JSJavaImplementationManager manager;
 
-    public JSJavaImplementationLinkStrategy(LinkLogger logger) {
+    public JSJavaImplementationLinkStrategy(JSJavaImplementationManager manager, LinkLogger logger) {
         super(ExecutionContext.class, logger);
+        this.manager = manager;
     }
 
     @Override
@@ -45,10 +43,12 @@ public class JSJavaImplementationLinkStrategy extends ContextualLinkStrategy<Exe
     }
 
     private MethodHandle makeImplementation(Binder binder) throws NoSuchMethodException, IllegalAccessException {
-        return binder.invokeStatic(lookup(), JSJavaImplementationLinkStrategy.class, "makeImplementation");
+        return binder
+                .insert(0, this.manager)
+                .invokeStatic(lookup(), JSJavaImplementationLinkStrategy.class, "makeImplementation");
     }
 
-    public static Object makeImplementation(Class<?> targetClass, ExecutionContext context, JSObject implementation) throws Exception {
+    public static Object makeImplementation(JSJavaImplementationManager manager, Class<?> targetClass, ExecutionContext context, JSObject implementation) throws Exception {
         return manager.getImplementationWrapper(targetClass, context, implementation);
     }
 

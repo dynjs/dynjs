@@ -201,4 +201,14 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat( result ).isEqualTo( "handled a thing" );
         
     }
+    
+    @Test
+    public void testSAM() {
+        Object result = eval( 
+                "catcher = new org.dynjs.runtime.java.HandlerCatcher();",
+                "catcher.catchHandler( function() { } );"
+                );
+        
+        assertThat( result ).isInstanceOf( GenericHandler.class );
+    }
 }
