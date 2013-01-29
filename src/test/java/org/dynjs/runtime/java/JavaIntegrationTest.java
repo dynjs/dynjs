@@ -157,6 +157,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    @SuppressWarnings("unchecked")
     public void testGeneric() {
         GenericHandler<Thing> handler = (GenericHandler<Thing>) eval( 
                 "handler = new org.dynjs.runtime.java.GenericHandler({",
@@ -167,6 +168,36 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         
         Dispatcher dispatcher = new Dispatcher();
         Object result = dispatcher.handle(handler);
+        assertThat( result ).isEqualTo( "handled a thing" );
+        
+    }
+    
+    @Test
+    public void testGenericParam() {
+        Object result = eval( 
+                "handler = new org.dynjs.runtime.java.GenericHandler({",
+                "  handle: function(thing) {",
+                "    return 'handled a thing';",
+                "  }",
+                "});",
+                "dispatcher = new org.dynjs.runtime.java.Dispatcher();",
+                "dispatcher.handle(handler)" );
+        
+        assertThat( result ).isEqualTo( "handled a thing" );
+        
+    }
+    
+    @Test
+    public void testGenericParamDoubly() {
+        Object result = eval( 
+                "handler = new org.dynjs.runtime.java.GenericHandler({",
+                "  handle: function(thing) {",
+                "    return 'handled a thing';",
+                "  }",
+                "});",
+                "dispatcher = new org.dynjs.runtime.java.GenericDispatcher();",
+                "dispatcher.handle(handler)" );
+        
         assertThat( result ).isEqualTo( "handled a thing" );
         
     }
