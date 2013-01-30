@@ -22,7 +22,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.modules.ModuleProvider;
 
@@ -63,6 +62,9 @@ public class Require extends AbstractNativeFunction {
             throw new ThrowException(context, context.createError("Error", "cannot find module " + moduleName));
         }
 
+        if (exports == Types.UNDEFINED || exports == Types.NULL) {
+            return null;
+        }
         return exports;
     }
 }

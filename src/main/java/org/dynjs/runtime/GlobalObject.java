@@ -123,7 +123,7 @@ public class GlobalObject extends DynObject {
         // ----------------------------------------
 
         this.moduleProviders.add(new FilesystemModuleProvider(this));
-        this.moduleProviders.add(new ClasspathModuleProvider(this));
+        this.moduleProviders.add(new ClasspathModuleProvider());
 
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
         javaClassModuleProvider.addModule(new ConsoleModule());
