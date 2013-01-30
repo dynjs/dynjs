@@ -4,7 +4,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.java.JavaMockery;
 import org.junit.Test;
-import org.projectodd.linkfusion.mop.java.DynamicMethod;
+import org.projectodd.rephract.mop.java.DynamicMethod;
 
 public class InvokeDynamicTest extends AbstractDynJSTestSupport {
 

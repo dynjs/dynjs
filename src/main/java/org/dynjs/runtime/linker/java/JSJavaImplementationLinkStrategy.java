@@ -4,10 +4,10 @@ import java.lang.invoke.MethodHandle;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
-import org.projectodd.linkfusion.LinkLogger;
-import org.projectodd.linkfusion.StrategicLink;
-import org.projectodd.linkfusion.StrategyChain;
-import org.projectodd.linkfusion.mop.ContextualLinkStrategy;
+import org.projectodd.rephract.LinkLogger;
+import org.projectodd.rephract.StrategicLink;
+import org.projectodd.rephract.StrategyChain;
+import org.projectodd.rephract.mop.ContextualLinkStrategy;
 
 import com.headius.invokebinder.Binder;
 

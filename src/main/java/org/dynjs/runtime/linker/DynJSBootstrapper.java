@@ -17,11 +17,11 @@ import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
-import org.projectodd.linkfusion.FusionLinker;
-import org.projectodd.linkfusion.LinkLogger;
-import org.projectodd.linkfusion.NullLinkLogger;
-import org.projectodd.linkfusion.mop.java.CoercionMatrix;
-import org.projectodd.linkfusion.mop.java.ResolverManager;
+import org.projectodd.rephract.FusionLinker;
+import org.projectodd.rephract.LinkLogger;
+import org.projectodd.rephract.NullLinkLogger;
+import org.projectodd.rephract.mop.java.CoercionMatrix;
+import org.projectodd.rephract.mop.java.ResolverManager;
 
 public class DynJSBootstrapper {
 

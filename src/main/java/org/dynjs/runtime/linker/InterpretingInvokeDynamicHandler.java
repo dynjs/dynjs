@@ -3,8 +3,8 @@ package org.dynjs.runtime.linker;
 import java.lang.invoke.CallSite;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.projectodd.linkfusion.FusionLinker;
-import org.projectodd.linkfusion.mop.MetaObjectProtocolLinkStrategy;
+import org.projectodd.rephract.FusionLinker;
+import org.projectodd.rephract.mop.MetaObjectProtocolLinkStrategy;
 
 public class InterpretingInvokeDynamicHandler {
 
