@@ -42,7 +42,7 @@ public class Require extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        JSObject exports = null;
+        Object exports = null;
 
         if (arguments[0] == Types.UNDEFINED) {
             throw new ThrowException(context, context.createError("Error", "no module identifier provided"));

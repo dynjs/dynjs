@@ -1,7 +1,6 @@
 package org.dynjs.runtime.modules;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
 
 /**
  * Provider for loading Javascript modules.
@@ -23,6 +22,6 @@ public interface ModuleProvider {
      * @return The loaded module (through its exports), otherwise
      *         <code>null</code> if un-loadable.
      */
-    JSObject load(ExecutionContext context, String moduleName);
+    Object load(ExecutionContext context, String moduleName);
 
 }

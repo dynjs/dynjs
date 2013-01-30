@@ -29,7 +29,7 @@ public class ClasspathModuleProvider implements ModuleProvider {
     }
 
     @Override
-    public JSObject load(ExecutionContext context, String moduleName) {
+    public Object load(ExecutionContext context, String moduleName) {
         if (moduleName == null) {
             return null;
         }
