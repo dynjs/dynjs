@@ -6,6 +6,7 @@ import java.util.List;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.builtins.ClasspathModuleProvider;
 import org.dynjs.runtime.builtins.DecodeUri;
 import org.dynjs.runtime.builtins.DecodeUriComponent;
 import org.dynjs.runtime.builtins.EncodeUri;
@@ -122,6 +123,7 @@ public class GlobalObject extends DynObject {
         // ----------------------------------------
 
         this.moduleProviders.add(new FilesystemModuleProvider(this));
+        this.moduleProviders.add(new ClasspathModuleProvider(this));
 
         JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
         javaClassModuleProvider.addModule(new ConsoleModule());

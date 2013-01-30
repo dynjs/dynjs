@@ -61,11 +61,6 @@ public class FilesystemModuleProvider implements ModuleProvider {
             } catch (IOException e) {
                 return null;
             }
-
-            module  = (DynObject) requireGlobal.get(requireContext, "module");
-            exports = (DynObject) requireGlobal.get(requireContext, "exports");
-            
-
             return (JSObject) module.get(requireContext, "exports");
         }
         return null;

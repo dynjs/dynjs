@@ -1,0 +1,2 @@
+module.exports.foobar = function() {
+}
