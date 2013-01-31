@@ -43,12 +43,12 @@ public class ClasspathModuleProvider implements ModuleProvider {
                 }
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            Object ret = requireGlobal.getRuntime().newRunner().withContext(requireContext).withSource(reader).execute();
+            requireGlobal.getRuntime().newRunner().withContext(requireContext).withSource(reader).execute();
             try {
                 is.close();
             } catch (IOException ignore) {
             }
-            return ret;
+            return module.get(requireContext, "exports");
         }
         catch(FileNotFoundException e) {
             System.err.println("Module not found: " + moduleName);
