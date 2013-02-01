@@ -211,4 +211,17 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         
         assertThat( result ).isInstanceOf( GenericHandler.class );
     }
+    
+    @Test
+    public void testShadowObjects() {
+        eval(
+                "var thing = new org.dynjs.runtime.java.JavaMockery();",
+                "var other_thing = new org.dynjs.runtime.java.JavaMockery();",
+                "thing.tacos = 'tasty';",
+                "other_thing.tacos = 'ugly';"
+                );
+        
+        assertThat( eval( "thing.tacos") ).isEqualTo("tasty");
+        assertThat( eval( "other_thing.tacos") ).isEqualTo("ugly");
+    }
 }

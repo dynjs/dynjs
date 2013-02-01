@@ -124,11 +124,13 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     protected Object getValue(ExecutionContext context, Object obj) {
+        
         if (obj instanceof Reference) {
             String name = ((Reference) obj).getReferencedName();
-
+            
             try {
-                return DynJSBootstrapper.getInvokeHandler().get(obj, context, name);
+                Object result = DynJSBootstrapper.getInvokeHandler().get(obj, context, name);
+                return result;
             } catch (ThrowException e) {
                 throw e;
             } catch (NoSuchMethodError e) {
@@ -141,5 +143,4 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
     }
-
 }

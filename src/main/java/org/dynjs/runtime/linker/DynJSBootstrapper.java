@@ -15,6 +15,7 @@ import org.dynjs.runtime.linker.java.JSJavaInstanceLinkStrategy;
 import org.dynjs.runtime.linker.java.JavaNullReplacingLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
 import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
+import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 import org.projectodd.rephract.FusionLinker;
@@ -35,21 +36,22 @@ public class DynJSBootstrapper {
     static {
         try {
             JSJavaImplementationManager implementationManager = new JSJavaImplementationManager();
-            CoercionMatrix coercionMatrix = new DynJSCoercionMatrix( implementationManager );
+            CoercionMatrix coercionMatrix = new DynJSCoercionMatrix(implementationManager);
             ResolverManager manager = new ResolverManager(coercionMatrix);
-            
-            //LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
+
+            // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
             LinkLogger logger = new NullLinkLogger();
-            
-            linker = new FusionLinker( logger );
+
+            linker = new FusionLinker(logger);
 
             linker.addLinkStrategy(new JavascriptObjectLinkStrategy(logger));
             linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy(logger));
             linker.addLinkStrategy(new JavaNullReplacingLinkStrategy(logger));
             linker.addLinkStrategy(new JSJavaImplementationLinkStrategy(implementationManager, logger));
-            linker.addLinkStrategy(new JSJavaClassLinkStrategy(logger,manager));
-            linker.addLinkStrategy(new JSJavaArrayLinkStrategy(logger ));
+            linker.addLinkStrategy(new JSJavaClassLinkStrategy(logger, manager));
+            linker.addLinkStrategy(new JSJavaArrayLinkStrategy(logger));
             linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(logger, manager));
+            linker.addLinkStrategy(new ShadowObjectLinkStrategy(logger));
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
                     p(DynJSBootstrapper.class), "bootstrap",

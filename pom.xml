@@ -11,7 +11,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.rephract>1.x.incremental.28</version.rephract>
+        <version.rephract>1.x.incremental.29</version.rephract>
+<!--
+        <version.rephract>1.0-SNAPSHOT</version.rephract>
+-->
     </properties>
 
     <developers>

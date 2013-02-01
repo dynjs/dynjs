@@ -107,7 +107,18 @@ public class LinkerUtils {
         return binder.drop(1, binder.type().parameterCount() - 1)
                 .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isJavascriptEnvironmnetReference", MethodType.methodType(boolean.class, Object.class)));
     }
-
+    
+    public static MethodHandle identityGuard(Object expected, Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        MethodHandle guard = MethodHandles.lookup().findStatic(LinkerUtils.class, "identityGuard", MethodType.methodType( boolean.class, Object.class, Object.class ) );
+        
+        return binder.drop( 1, binder.type().parameterCount() - 1 ) 
+                .insert(1, expected )
+                .invoke(guard );
+    }
+    
+    public static boolean identityGuard(Object actual, Object expected) {
+        return expected == actual;
+    }
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
 
