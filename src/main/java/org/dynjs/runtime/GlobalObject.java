@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.builtins.ClasspathModuleProvider;
 import org.dynjs.runtime.builtins.DecodeUri;
 import org.dynjs.runtime.builtins.DecodeUriComponent;
@@ -195,7 +194,7 @@ public class GlobalObject extends DynObject {
         return this.blockManager;
     }
 
-    public Entry retrieveBlockEntry(int statementNumber) {
+    public org.dynjs.runtime.BlockManager.Entry retrieveBlockEntry(int statementNumber) {
         return this.blockManager.retrieve(statementNumber);
     }
 

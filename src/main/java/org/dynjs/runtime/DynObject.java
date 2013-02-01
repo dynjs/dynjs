@@ -16,13 +16,16 @@
 package org.dynjs.runtime;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.dynjs.exception.ThrowException;
 
-public class DynObject implements JSObject {
+public class DynObject implements JSObject, Map<String, Object> {
 
     private String className;
     private JSObject prototype = null;
@@ -569,6 +572,167 @@ public class DynObject implements JSObject {
 
     public void setBackingArray(Object[] buffer) {
         this.buffer = buffer;
+    }
+
+    // java.util.Map
+
+    @Override
+    public int size() {
+        return getAllEnumerablePropertyNames().size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return getAllEnumerablePropertyNames().isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        Object desc = getProperty(null, key.toString());
+        return (desc != Types.UNDEFINED);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Object get(Object key) {
+        Object result = get(null, key.toString());
+        if ( result == Types.UNDEFINED ) {
+            return null;
+        }
+        
+        return result;
+    }
+
+    @Override
+    public Object put(String key, Object value) {
+        Object oldValue = get(null, key.toString());
+        put(null, key, value, false);
+        return oldValue;
+    }
+
+    @Override
+    public Object remove(Object key) {
+        Object oldValue = get(null, key.toString());
+        delete(null, key.toString(), false);
+        return oldValue;
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void clear() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return new KeySet();
+    }
+
+    @Override
+    public Collection<Object> values() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<java.util.Map.Entry<String, Object>> entrySet() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    protected class KeySet implements Set<String> {
+
+        @Override
+        public int size() {
+            return getAllEnumerablePropertyNames().size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return getAllEnumerablePropertyNames().isEmpty();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return hasProperty(null, o.toString());
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return getAllEnumerablePropertyNames().toList().iterator();
+        }
+
+        @Override
+        public Object[] toArray() {
+            return getAllEnumerablePropertyNames().toList().toArray();
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return getAllEnumerablePropertyNames().toList().toArray(a);
+        }
+
+        @Override
+        public boolean add(String e) {
+            if (! hasProperty(null, e)) {
+                put(e, Types.UNDEFINED);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if ( hasProperty(null, o.toString())) {
+                delete( null, o.toString(), false );
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends String> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void clear() {
+            // TODO Auto-generated method stub
+        }
+        
+        public String toString() {
+            return getAllEnumerablePropertyNames().toList().toString();
+        }
+
     }
 
 }

@@ -50,6 +50,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         if (JSFunction.class.isAssignableFrom(actual)) {
             return (isSingleAbstractMethod(target) != null);
         }
+        
         return false;
     }
 

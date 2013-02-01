@@ -12,6 +12,14 @@ public class NameEnumerator {
         this.names = names;
         this.counter = 0;
     }
+    
+    public boolean isEmpty() {
+        return this.names.isEmpty();
+    }
+    
+    public int size() {
+        return this.names.size();
+    }
 
     public boolean hasNext() {
         return this.counter < names.size();
