@@ -243,20 +243,34 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(map.keySet()).contains("bar");
 
         map.keySet().remove("foo");
-        
-        assertThat( map.get( "foo" )).isNull();
-        
-        assertThat( eval( "x.foo" ) ).isEqualTo(Types.UNDEFINED );
+
+        assertThat(map.get("foo")).isNull();
+
+        assertThat(eval("x.foo")).isEqualTo(Types.UNDEFINED);
     }
-    
+
     @Test
     public void testMapParameter() {
-        Object result = eval( 
+        Object result = eval(
                 "var consumer = new org.dynjs.runtime.java.MapConsumer();",
                 "var obj = { foo: 'tacos', fish: 'haddock' };",
                 "consumer.consume( obj, 'fish');"
                 );
+
+        assertThat(result).isEqualTo("haddock");
+    }
+
+    @Test
+    public void testJavaMapsAsJSObjects() {
+        Map map = (Map) eval(
+                "var map = new java.util.HashMap();",
+                "map.foo = 'tacos';",
+                "map"
+                );
+
+        assertThat(map.get("foo")).isEqualTo("tacos");
         
-        assertThat( result ).isEqualTo( "haddock" );
+        assertThat( eval( "map.foo" ) ).isEqualTo( "tacos" );
+
     }
 }
