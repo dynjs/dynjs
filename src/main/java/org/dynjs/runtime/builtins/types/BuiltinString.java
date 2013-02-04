@@ -5,6 +5,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.string.DynString;
 import org.dynjs.runtime.builtins.types.string.FromCharCode;
@@ -94,5 +95,5 @@ public class BuiltinString extends AbstractBuiltinType {
     public JSObject createNewObject(ExecutionContext context) {
         return new DynString(context.getGlobalObject());
     }
-
+    
 }

@@ -32,11 +32,15 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         if (!(lhs instanceof Reference)) {
             throw new ThrowException(context, context.createTypeError(expr.getLhs() + " is not a reference"));
         }
-
+        
         Reference lhsRef = (Reference) lhs;
-
+        
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
+        
+        if ( lhsRef.isUnresolvableReference() && strict ) {
+            throw new ThrowException( context, context.createReferenceError( lhsRef.getReferencedName() + " is not defined" ) );
+        }
 
         try {
             DynJSBootstrapper.getInvokeHandler().set(lhsRef, context, lhsRef.getReferencedName(), rhs);

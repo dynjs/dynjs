@@ -54,10 +54,10 @@ public class DynString extends PrimitiveDynObject {
 
         return new PropertyDescriptor() {
             {
-                set( "Value", resultStr );
-                set( "Writable", false );
-                set( "Configurable", false );
-                set( "Enumerable", true );
+                set("Value", resultStr);
+                set("Writable", false);
+                set("Configurable", false);
+                set("Enumerable", true);
             }
         };
     }

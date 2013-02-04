@@ -99,7 +99,6 @@ public class Runner {
         try {
             ProgramTree tree = parseSourceCode();
             JSProgram program = compile(tree);
-
             return this.context.eval(program, this.directEval);
         } catch (SyntaxError e) {
             throw new ThrowException(this.context, this.context.createSyntaxError(e.getMessage()));
@@ -109,7 +108,7 @@ public class Runner {
     }
 
     private ProgramTree parseSourceCode() {
-        JavascriptParser parser = new JavascriptParser();
+        JavascriptParser parser = new JavascriptParser( this.context );
         try {
             return parser.parse(this.source, this.fileName, this.forceStrict );
         } finally {

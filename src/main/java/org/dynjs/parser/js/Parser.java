@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AbstractBinaryExpression;
 import org.dynjs.parser.ast.ArrayLiteralExpression;
@@ -43,16 +44,19 @@ import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.parser.js.ParserContext.ContextType;
+import org.dynjs.runtime.ExecutionContext;
 
 public class Parser {
 
+    private ExecutionContext executionContext;
     private ASTFactory factory;
     private TokenStream stream;
     private List<ParserContext> context = new ArrayList<ParserContext>();
 
     private boolean forceStrict;
 
-    public Parser(ASTFactory factory, TokenStream stream) {
+    public Parser(ExecutionContext executionContext, ASTFactory factory, TokenStream stream) {
+        this.executionContext = executionContext;
         this.factory = factory;
         this.stream = stream;
     }
@@ -508,50 +512,62 @@ public class Parser {
         switch (la()) {
         case EQUALS:
             consume(EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.assignmentOperator(expr, assignmentExpression(noIn));
             break;
         case MULTIPLY_EQUALS:
             consume(MULTIPLY_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.multiplicationAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case DIVIDE_EQUALS:
             consume(DIVIDE_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.divisionAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case MODULO_EQUALS:
             consume(MODULO_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.moduloAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case PLUS_EQUALS:
             consume(PLUS_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.additionAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case MINUS_EQUALS:
             consume(MINUS_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.subtractionAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case LEFT_SHIFT_EQUALS:
             consume(LEFT_SHIFT_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.leftShiftAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case RIGHT_SHIFT_EQUALS:
             consume(RIGHT_SHIFT_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.rightShiftAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case UNSIGNED_RIGHT_SHIFT_EQUALS:
             consume(UNSIGNED_RIGHT_SHIFT_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.unsignedRightShiftAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case BITWISE_AND_EQUALS:
             consume(BITWISE_AND_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.bitwiseAndAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case BITWISE_OR_EQUALS:
             consume(BITWISE_OR_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.bitwiseOrAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         case BITWISE_XOR_EQUALS:
             consume(BITWISE_XOR_EQUALS);
+            checkAssignmentLHS(expr);
             expr = factory.bitwiseXorAssignmentOperator(expr, assignmentExpression(noIn));
             break;
         default:
@@ -571,6 +587,17 @@ public class Parser {
         }
 
         return expr;
+    }
+    
+    protected void checkAssignmentLHS(Expression expr) {
+        if ( currentContext().isStrict() ) {
+            if ( expr instanceof IdentifierReferenceExpression ) {
+                String id = ((IdentifierReferenceExpression) expr).getIdentifier();
+                if ( id.equals( "eval" ) || id.equals( "arguments" ) ) {
+                    throw new ThrowException( executionContext, executionContext.createSyntaxError( id + " may not appear on the left-hand-side of a compound assignment expression in strict mode" ));
+                }
+            }
+        }
     }
 
     public Expression conditionalExpression(boolean noIn) {

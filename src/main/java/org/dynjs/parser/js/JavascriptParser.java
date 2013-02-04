@@ -7,16 +7,19 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.dynjs.parser.ast.ProgramTree;
+import org.dynjs.runtime.ExecutionContext;
 
 public class JavascriptParser {
 
+    private ExecutionContext context;
     private ASTFactory factory;
 
-    public JavascriptParser() {
-        this(new ASTFactory());
+    public JavascriptParser(ExecutionContext context) {
+        this(context, new ASTFactory());
     }
 
-    public JavascriptParser(ASTFactory factory) {
+    public JavascriptParser(ExecutionContext context, ASTFactory factory) {
+        this.context = context;
         this.factory = factory;
     }
 
@@ -78,7 +81,7 @@ public class JavascriptParser {
         Lexer lexer = new Lexer(source);
         lexer.setFileName(fileName);
         TokenStream tokens = new TokenQueue(lexer);
-        Parser parser = new Parser(this.factory, tokens);
+        Parser parser = new Parser(this.context, this.factory, tokens);
         parser.forceStrict( forceStrict );
         return parser.program();
     }

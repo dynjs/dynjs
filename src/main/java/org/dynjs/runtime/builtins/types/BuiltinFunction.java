@@ -110,7 +110,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         CharStream charStream = new CircularCharBuffer(in);
         Lexer lexer = new Lexer(charStream);
         TokenStream tokenStream = new TokenQueue(lexer);
-        Parser parser = new Parser(new ASTFactory(), tokenStream);
+        Parser parser = new Parser(context, new ASTFactory(), tokenStream);
         return parser.functionDescriptor();
     }
 
