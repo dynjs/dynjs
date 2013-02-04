@@ -393,5 +393,17 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberFunctionIsZero() {
         assertThat(eval("Number() === 0")).isEqualTo(true);
     }
+    
+    @Test
+    public void testParseFloat() {
+        Object result = eval( "1/parseFloat(-0)");
+        
+        System.err.println( "result: " + result + " // " + result.getClass() );
+        
+        
+        
+        
+        
+    }
 
 }

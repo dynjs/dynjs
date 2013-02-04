@@ -812,7 +812,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.doubleValue() == 0.0) {
-                    if (lval.doubleValue() >= 0 && !(rval.doubleValue() == -0.0)) {
+                    if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0 ) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -873,7 +873,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             args[i] = getValue(context, pop());
             ++i;
         }
-        
+
         if (memberExpr instanceof JSFunction) {
             push(context.construct((JSFunction) memberExpr, args));
             return;
