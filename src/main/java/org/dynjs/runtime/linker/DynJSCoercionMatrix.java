@@ -13,6 +13,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.ThreadContextManager;
+import org.dynjs.runtime.Types;
 import org.dynjs.runtime.linker.java.JSJavaImplementationManager;
 import org.projectodd.rephract.mop.java.CoercionMatrix;
 
@@ -46,6 +47,10 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         if (super.isCompatible(target, actual)) {
             return true;
         }
+        
+        if ( actual == Types.UNDEFINED.getClass() || actual == Types.NULL.getClass() ) {
+            return true;
+        }
 
         if (JSFunction.class.isAssignableFrom(actual)) {
             return (isSingleAbstractMethod(target) != null);
@@ -58,6 +63,14 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     public MethodHandle getFilter(Class<?> target, Class<?> actual) {
         if (super.isCompatible(target, actual)) {
             return super.getFilter(target, actual);
+        }
+        
+        if ( actual == Types.UNDEFINED.getClass() || actual == Types.NULL.getClass() ) {
+            try {
+                return nullReplacingFilter(target);
+            } catch (NoSuchMethodException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
         if (JSFunction.class.isAssignableFrom(actual)) {
@@ -112,6 +125,14 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         JSObject implObj = new DynObject(context.getGlobalObject());
         implObj.put(context, methodName, implementation, false);
         return manager.getImplementationWrapper(targetClass, context, implObj);
+    }
+    
+    
+    public static MethodHandle nullReplacingFilter(Class<?> target) throws NoSuchMethodException, IllegalAccessException {
+        return Binder.from( methodType(target, Object.class) )
+                .drop(0)
+                .insert( 0, new Class[] { Object.class}, new Object[] { null } )
+                .invoke( MethodHandles.identity(target));
     }
 
 }
