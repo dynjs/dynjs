@@ -13,6 +13,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
+    
+    @Test
+    @Ignore
+    public void testCallJavaMethodWithPrimitiveBooleanParameter() {
+        eval("var thing = new org.dynjs.runtime.java.Thing()");
+        assertThat(eval("thing.oppositeOf(true)")).isEqualTo(false);
+    }
 
     @Test
     public void testImplementAnInterfaceWithAccessToContext() {
