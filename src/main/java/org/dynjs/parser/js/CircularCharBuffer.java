@@ -2,6 +2,7 @@ package org.dynjs.parser.js;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 
 public class CircularCharBuffer implements CharStream {
     private static final int DEFAULT_BUFFER_SIZE = 2048;
@@ -49,7 +50,6 @@ public class CircularCharBuffer implements CharStream {
         
         this.available += amountRead;
         this.writePos = ( this.writePos + amountRead ) % this.buf.length;
-        
     }
     
     public int peek() throws IOException {
@@ -74,6 +74,7 @@ public class CircularCharBuffer implements CharStream {
         if ( this.readPos == this.buf.length ) {
             this.readPos = 0;
         }
+        
         return c;
     }
 

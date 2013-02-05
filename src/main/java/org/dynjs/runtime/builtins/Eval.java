@@ -16,6 +16,7 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.js.LexerException;
 import org.dynjs.parser.js.ParserException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.EnvironmentRecord;
@@ -55,6 +56,8 @@ public class Eval extends AbstractNonConstructorFunction {
                     return Types.UNDEFINED;
                 }
                 return result;
+            } catch (LexerException e) {
+                throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
             } catch (ParserException e) {
                 throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
             }

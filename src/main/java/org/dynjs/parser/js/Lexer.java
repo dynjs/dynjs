@@ -325,6 +325,10 @@ public class Lexer {
                 d = la();
                 switch (d) {
                 case '=':
+                    if (isRegexpEnabled()) {
+                        token = regexpLiteral();
+                        break loop;
+                    }
                     consume();
                     token = newToken(DIVIDE_EQUALS, "/=");
                     break loop;
