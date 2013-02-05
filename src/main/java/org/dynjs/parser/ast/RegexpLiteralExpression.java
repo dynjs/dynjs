@@ -14,7 +14,7 @@ public class RegexpLiteralExpression extends BaseExpression {
         private static final String REG_EXP_PATTERN = "^\\/(.*)\\/([igm]{0,})$";
 
         static RegexpLiteralExpressionParser parse(String text) {
-            Pattern pattern = Pattern.compile(REG_EXP_PATTERN, Pattern.DOTALL);
+            Pattern pattern = Pattern.compile(REG_EXP_PATTERN);
             Matcher matcher = pattern.matcher(text);
             if (matcher.matches()) {
                 return new RegexpLiteralExpressionParser(matcher.group(1), matcher.group(2));
