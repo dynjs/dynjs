@@ -18,5 +18,16 @@ public class DefaultFoo extends AbstractFoo {
     public void avoidMe() {
         
     }
+    
+    public String doIt(String arg, Number num) {
+        return "One way";
+    }
+    
+    public String doIt(String arg, Number num, String other) {
+        return "Another way";
+    }
 
+    public String doIt(String arg, Number num, String other, Number otherNum) {
+        return "Yet another way";
+    }
 }
