@@ -760,7 +760,7 @@ public class Lexer {
             }
             if (c == '\\') {
                 int d = la(2);
-                switch (d) {
+                main: switch (d) {
                 case '\'':
                 case '"':
                 case '\\':
@@ -814,6 +814,24 @@ public class Lexer {
                     escapedString = true;
                     break;
                 case '0':
+                    inner: switch (la(3)) {
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        // nothing special
+                        break inner;
+                    default:
+                        consume();
+                        consume();
+                        text.append(new String(new char[] { 0 }));
+                        break main;
+                    }
                 case '1':
                 case '2':
                 case '3':

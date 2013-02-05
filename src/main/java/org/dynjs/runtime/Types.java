@@ -585,8 +585,6 @@ public class Types {
 
     public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
-        //System.err.println( "LHS: " + lhs + " // " + lhs.getClass() );
-        //System.err.println( "RHS: " + rhs + " // " + rhs.getClass() );
         
         if (!lhs.getClass().equals(rhs.getClass())
                 // Allow comparison of Doubles and Longs (because 0 === -0 in Javascript
