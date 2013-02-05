@@ -473,8 +473,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
                     push(Completion.createNormal(v));
-                    return;
+                } else {
+                    push(completion);
                 }
+                return;
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
@@ -517,8 +519,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
                     push(Completion.createNormal(v));
-                    return;
+                } else {
+                    push(completion);
                 }
+                return;
             }
             if (completion.type == Completion.Type.RETURN) {
                 push(completion);
@@ -577,8 +581,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
                     push(Completion.createNormal(v));
-                    return;
+                } else {
+                    push(completion);
                 }
+                return;
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
@@ -625,8 +631,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
                     push(Completion.createNormal(v));
-                    return;
+                } else {
+                    push(completion);
                 }
+                return;
             }
             if (completion.type == Completion.Type.RETURN) {
                 push(completion);
@@ -812,7 +820,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.doubleValue() == 0.0) {
-                    if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0 ) {
+                    if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
