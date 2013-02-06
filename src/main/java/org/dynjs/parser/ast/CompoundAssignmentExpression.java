@@ -15,6 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
@@ -29,6 +32,10 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     
     public Position getPosition() {
         return this.rootExpr.getPosition();
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.rootExpr.getFunctionDeclarations();
     }
     
     public AbstractBinaryExpression getRootExpr() {

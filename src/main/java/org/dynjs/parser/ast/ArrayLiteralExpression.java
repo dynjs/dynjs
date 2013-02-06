@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -31,6 +32,16 @@ public class ArrayLiteralExpression extends BaseExpression {
         if (this.exprs.size() > 1 && (this.exprs.get(this.exprs.size() - 1) == null)) {
             this.exprs.remove(this.exprs.size() - 1);
         }
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        List<FunctionDeclaration> decls = new ArrayList<>();
+        for ( Expression each : this.exprs ) {
+            if ( each != null ) {
+                decls.addAll( each.getFunctionDeclarations() );
+            }
+        }
+        return decls;
     }
 
     public List<Expression> getExprs() {

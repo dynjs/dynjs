@@ -1,5 +1,8 @@
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.parser.js.Position;
 
 public abstract class AbstractBinaryExpression extends AbstractExpression {
@@ -31,6 +34,13 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
 
     public String getOp() {
         return this.op;
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        List<FunctionDeclaration> decls = new ArrayList<>();
+        decls.addAll( this.lhs.getFunctionDeclarations() );
+        decls.addAll( this.rhs.getFunctionDeclarations() );
+        return decls;
     }
     
     public String dump(String indent) {

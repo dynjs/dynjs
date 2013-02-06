@@ -1,5 +1,8 @@
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.parser.js.Position;
 
 public abstract class AbstractUnaryOperatorExpression extends AbstractExpression {
@@ -22,6 +25,10 @@ public abstract class AbstractUnaryOperatorExpression extends AbstractExpression
 
     public Expression getExpr() {
         return this.expr;
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.expr.getFunctionDeclarations();
     }
     
     public int getSizeMetric() {

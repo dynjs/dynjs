@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -51,6 +52,14 @@ public class FunctionCallExpression extends AbstractExpression {
         }
         
         return size + 5;
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        List<FunctionDeclaration> decls = new ArrayList<>();
+        for ( Expression arg : this.argExprs ) {
+            decls.addAll( arg.getFunctionDeclarations() );
+        }
+        return decls;
     }
     
     public String toString() {

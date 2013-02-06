@@ -15,6 +15,8 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.List;
+
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
@@ -41,6 +43,10 @@ public class ExpressionStatement extends AbstractStatement {
     
     public String dump(String indent) {
         return super.dump(indent) + this.expr.dump("  " + indent);
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.expr.getFunctionDeclarations();
     }
     
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {

@@ -48,5 +48,16 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         eval("o.foo = function() { return 'foo' }");
         assertThat(eval("o.foo()")).isEqualTo("foo");
     }
-
+    
+    @Test
+    public void testFunctionDeclInParameter() {
+        Object result = eval( 
+                "function foo(arg) { return arg(); };",
+                "foo( function bar() { return bar; } );"
+                );
+        
+        assertThat( result ).isNotNull();
+        assertThat( result ).isInstanceOf( JSFunction.class );
+        
+    }
 }

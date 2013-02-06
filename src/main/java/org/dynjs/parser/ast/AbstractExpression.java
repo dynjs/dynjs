@@ -16,6 +16,9 @@
 
 package org.dynjs.parser.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dynjs.parser.js.Position;
 
 public abstract class AbstractExpression implements Expression {
@@ -24,6 +27,10 @@ public abstract class AbstractExpression implements Expression {
 
     public String dump(String indent) {
         return indent + getClass().getName() + "\n";
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return Collections.emptyList();
     }
     
 

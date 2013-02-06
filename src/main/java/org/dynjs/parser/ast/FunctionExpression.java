@@ -15,6 +15,9 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
@@ -37,6 +40,10 @@ public class FunctionExpression extends AbstractExpression {
 
     public int getSizeMetric() {
         return this.descriptor.getSizeMetric() + 15;
+    }
+    
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return Collections.singletonList( new FunctionDeclaration(this.descriptor ) );
     }
 
     public String toString() {

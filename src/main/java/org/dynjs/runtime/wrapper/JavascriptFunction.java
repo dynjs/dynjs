@@ -1,5 +1,6 @@
 package org.dynjs.runtime.wrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.ast.FunctionDeclaration;
