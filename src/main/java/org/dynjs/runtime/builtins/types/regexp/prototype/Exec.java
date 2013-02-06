@@ -1,7 +1,5 @@
 package org.dynjs.runtime.builtins.types.regexp.prototype;
 
-import java.util.regex.MatchResult;
-
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
@@ -10,6 +8,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.joni.Region;
 
 public class Exec extends AbstractNonConstructorFunction {
 
@@ -27,7 +26,7 @@ public class Exec extends AbstractNonConstructorFunction {
 
         DynRegExp regexp = (DynRegExp) self;
 
-        long lastIndex = (long) Types.toInteger(context, regexp.get(context, "lastIndex") );
+        long lastIndex = (long) Types.toInteger(context, regexp.get(context, "lastIndex"));
         long i = lastIndex;
 
         if (regexp.get(context, "global") == Boolean.FALSE) {
@@ -37,7 +36,7 @@ public class Exec extends AbstractNonConstructorFunction {
         boolean matchSucceeded = false;
         int strLen = str.length();
 
-        MatchResult r = null;
+        Region r = null;
 
         while (!matchSucceeded) {
             if (i < 0 || i > strLen) {
@@ -52,16 +51,18 @@ public class Exec extends AbstractNonConstructorFunction {
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
-            regexp.put(context, "lastIndex", (long) r.end(), true);
+            regexp.put(context, "lastIndex", (long) r.end[0], true);
         }
 
         JSObject a = BuiltinArray.newArray(context);
-        a.put(context, "index", (long) r.start(), true);
+        a.put(context, "index", (long) r.beg[0], true);
         a.put(context, "input", str, true);
-        a.put(context, "length", (long) r.groupCount() + 1, true);
-        a.put(context, "0", r.group(0), true);
-        for (int j = 1; j <= r.groupCount(); ++j) {
-            a.put(context, "" + j, r.group(j), true);
+        a.put(context, "length", (long) r.beg.length, true);
+        a.put(context, "0", str.substring(r.beg[0], r.end[0]), true);
+        for (int j = 1; j < r.beg.length; ++j) {
+            if (r.beg[j] >= 0 && r.end[j] >= 0) {
+                a.put(context, "" + j, str.substring(r.beg[j], r.end[j]), true);
+            }
         }
 
         return a;

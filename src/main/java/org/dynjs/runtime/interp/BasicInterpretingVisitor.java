@@ -1214,7 +1214,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
-        throw new ThrowException(context, getValue(context, pop()));
+        Object throwable = getValue(context, pop());
+        //if ( throwable instanceof Throwable ) {
+            //((Throwable) throwable).printStackTrace();
+        //}
+        throw new ThrowException(context, throwable);
     }
 
     @Override

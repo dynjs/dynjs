@@ -41,9 +41,13 @@ public class FunctionExpression extends AbstractExpression {
     public int getSizeMetric() {
         return this.descriptor.getSizeMetric() + 15;
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        return Collections.singletonList( new FunctionDeclaration(this.descriptor ) );
+        if (this.descriptor.getIdentifier() != null) {
+            return Collections.singletonList(new FunctionDeclaration(this.descriptor));
+        }
+        
+        return Collections.emptyList();
     }
 
     public String toString() {

@@ -50,7 +50,7 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testExecWithMultilineFlag() {
-        eval("var r = /foo./mg", "var s = 'foot\\nfool';");
+        eval("var r = /foo./mg", "var s = 'afoot\\nafool';");
 
         JSObject result = (JSObject) eval("r.exec(s)");
 
@@ -61,6 +61,16 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
         result = (JSObject) eval("r.exec(s)");
         assertThat(result.get(getContext(), "length")).isEqualTo(1L);
         assertThat(result.get(getContext(), "0")).isEqualTo("fool");
+    }
+    
+    @Test
+    public void testProblematicRegexpWithEscapedCharRanges() {
+        eval( "/^[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*$/");
+    }
+    
+    @Test
+    public void testProblematicRegexpWithEscapedCharRangesInCtor() {
+        eval( "new RegExp('^[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*$')");
     }
 
     private Object getPropertyValue(JSObject object, String name) {

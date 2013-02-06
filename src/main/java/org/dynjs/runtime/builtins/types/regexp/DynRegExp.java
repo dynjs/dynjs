@@ -1,8 +1,6 @@
 package org.dynjs.runtime.builtins.types.regexp;
 
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.UnsupportedEncodingException;
 import java.util.regex.PatternSyntaxException;
 
 import org.dynjs.exception.ThrowException;
@@ -10,10 +8,17 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.jcodings.specific.UTF8Encoding;
+import org.joni.Matcher;
+import org.joni.Option;
+import org.joni.Regex;
+import org.joni.Region;
+import org.joni.Syntax;
+import org.joni.exception.ValueException;
 
 public class DynRegExp extends DynObject {
 
-    private Pattern pattern;
+    private Regex pattern;
 
     public DynRegExp(GlobalObject globalObject) {
         super(globalObject);
@@ -101,15 +106,18 @@ public class DynRegExp extends DynObject {
         int flagsInt = 0;
 
         if (get(context, "multiline") == Boolean.TRUE) {
-            flagsInt = flagsInt | Pattern.MULTILINE;
+            flagsInt = flagsInt | Option.MULTILINE;
         }
 
         if (get(context, "ignoreCase") == Boolean.TRUE) {
-            flagsInt = flagsInt | Pattern.CASE_INSENSITIVE;
+            flagsInt = flagsInt | Option.IGNORECASE;
         }
         try {
-            this.pattern = Pattern.compile(pattern, flagsInt);
-        } catch (PatternSyntaxException e) {
+            byte[] patternBytes = pattern.getBytes("UTF-8");
+            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.RUBY );
+        } catch (ValueException e) {
+            throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
+        } catch (UnsupportedEncodingException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         }
     }
@@ -126,7 +134,7 @@ public class DynRegExp extends DynObject {
             case 'g':
                 break;
             default:
-                throw new ThrowException(context, context.createSyntaxError("invalid flag '" + flags.charAt(i) + "'" ) );
+                throw new ThrowException(context, context.createSyntaxError("invalid flag '" + flags.charAt(i) + "'"));
             }
         }
 
@@ -154,10 +162,11 @@ public class DynRegExp extends DynObject {
         }
     }
 
-    public MatchResult match(String str, int from) {
-        Matcher matcher = this.pattern.matcher(str);
-        if (matcher.find(from)) {
-            return matcher.toMatchResult();
+    public Region match(String str, int from) {
+        byte[] strBytes = str.getBytes();
+        Matcher matcher = this.pattern.matcher(strBytes, 0, strBytes.length);
+        if ( matcher.search(from, strBytes.length, 0) >= 0 ) {
+            return matcher.getEagerRegion();
         }
         return null;
     }

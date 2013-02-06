@@ -10,6 +10,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.joni.Region;
 
 public class Split extends AbstractNativeFunction {
 
@@ -58,7 +59,7 @@ public class Split extends AbstractNativeFunction {
         }
 
         if (sLen == 0) {
-            MatchResult z = splitMatch(context, s, 0, r);
+            Region z = splitMatch(context, s, 0, r);
             if (z != null) {
                 return a;
             }
@@ -76,11 +77,11 @@ public class Split extends AbstractNativeFunction {
         int q = p;
 
         while (q != sLen) {
-            final MatchResult z = splitMatch(context, s, q, r);
+            final Region z = splitMatch(context, s, q, r);
             if (z == null) {
                 ++q;
             } else {
-                int e = z.end();
+                int e = z.end[0];
                 if (e == p) {
                     ++q;
                 } else {
@@ -98,12 +99,13 @@ public class Split extends AbstractNativeFunction {
                         return a;
                     }
                     p = e;
-                    int numCaps = z.groupCount();
+                    int numCaps = z.beg.length - 1;
                     for ( int i = 0 ; i < numCaps ; ++i ) {
                         final int capNum = i+1;
                         a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
                             {
-                                set("Value", z.group(capNum));
+                                //set("Value", z.group(capNum));
+                                set("Value", s.substring(z.beg[capNum], z.end[capNum]) );
                                 set("Writable", true);
                                 set("Configurable", true);
                                 set("Enumerable", true);
@@ -131,7 +133,7 @@ public class Split extends AbstractNativeFunction {
         return a;
     }
     
-    private MatchResult splitMatch(ExecutionContext context, String s, int q, Object r) {
+    private Region splitMatch(ExecutionContext context, String s, int q, Object r) {
         if ( r instanceof DynRegExp ) {
             return ((DynRegExp)r).match(s, q);
         }
@@ -150,7 +152,7 @@ public class Split extends AbstractNativeFunction {
             }
         }
         
-        return new SimpleMatchResult( q+rLen );
+        return new Region(0, q+rLen);
     }
 
 }

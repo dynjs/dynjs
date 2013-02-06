@@ -509,6 +509,14 @@ public class Lexer {
 
         return (la(2) == 'u' && (isHexDigit(la(3)) && isHexDigit(la(4)) && isHexDigit(la(5)) && isHexDigit(la(6))));
     }
+    
+    private boolean isHexEscapeSequence(int start) {
+        if ( start != '\\' ) {
+            return false;
+        }
+        
+        return ( la(2) == 'x' && isHexDigit(la(3) ) && isHexDigit( la(4)));
+    }
 
     private boolean isNonEscapeSequence(int start) {
         if (la(3) == '0' && la(4) == '0' && la(5) == '0' && (la(6) == 'A' || la(6) == 'D')) {
@@ -524,7 +532,7 @@ public class Lexer {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
-    protected Token regexpLiteral() {
+    public Token regexpLiteral() {
         StringBuffer text = new StringBuffer();
         text.append("/");
 
@@ -537,8 +545,14 @@ public class Lexer {
                 while (la() != ']') {
                     switch (la()) {
                     case '\\':
-                        text.append((char) consume());
-                        text.append((char) consume());
+                        if (isUnicodeEscapeSequence(la())) {
+                            text.append(unicodeEscapeSequence());
+                        } else if ( isHexEscapeSequence(la())) {
+                            text.append( hexEscapeSequence() );
+                        } else {
+                            text.append((char) consume());
+                            text.append((char) consume());
+                        }
                         break;
                     case '[':
                         // Java doesn't allow unescaped "[" inside "["
@@ -552,8 +566,14 @@ public class Lexer {
                 text.append((char) consume());
                 break;
             case '\\':
-                text.append((char) consume());
-                text.append((char) consume());
+                if (isUnicodeEscapeSequence(la())) {
+                    text.append(unicodeEscapeSequence());
+                } else if ( isHexEscapeSequence(la())) {
+                    text.append( hexEscapeSequence() );
+                } else {
+                    text.append((char) consume());
+                    text.append((char) consume());
+                }
                 break;
             default:
                 text.append((char) consume());
@@ -565,7 +585,7 @@ public class Lexer {
         while (isIdentifierPart(la())) {
             text.append((char) consume());
         }
-
+        
         return newToken(REGEXP_LITERAL, text.toString());
     }
 
