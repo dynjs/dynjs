@@ -1,9 +1,10 @@
 package org.dynjs.runtime.java;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class GenericMapThingyFactory {
+public class GenericMapFactory {
     public static Map<Integer, String> create() {
-        return new GenericMapThingy<Integer, String>();
+        return new HashMap<Integer, String>();
     }
 }
