@@ -284,7 +284,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Ignore
     public void testGenericMapFactory() {
         eval("var thingy = org.dynjs.runtime.java.GenericMapFactory.create()");
-        assertThat(eval("thingy.put(1, 'one')")).isEqualTo("one");
+        eval("thingy.put(1, 'one')");
+        assertThat(eval("thingy.get(1)")).isEqualTo("one");
     }
     
     @Test
