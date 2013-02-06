@@ -389,7 +389,7 @@ public class Types {
             return "undefined";
         }
 
-        if (o == Types.NULL) {
+        if (o == Types.NULL || o == null) {
             return "null";
         }
 
@@ -434,7 +434,6 @@ public class Types {
             }
             return result;
         }
-
         return o.toString();
     }
 
