@@ -544,16 +544,6 @@ public class Lexer {
                 text.append((char) consume());
                 while (la() != ']') {
                     switch (la()) {
-                    case '\\':
-                        if (isUnicodeEscapeSequence(la())) {
-                            text.append(unicodeEscapeSequence());
-                        } else if ( isHexEscapeSequence(la())) {
-                            text.append( hexEscapeSequence() );
-                        } else {
-                            text.append((char) consume());
-                            text.append((char) consume());
-                        }
-                        break;
                     case '[':
                         // Java doesn't allow unescaped "[" inside "["
                         text.append('\\');
@@ -566,13 +556,13 @@ public class Lexer {
                 text.append((char) consume());
                 break;
             case '\\':
-                if (isUnicodeEscapeSequence(la())) {
-                    text.append(unicodeEscapeSequence());
-                } else if ( isHexEscapeSequence(la())) {
-                    text.append( hexEscapeSequence() );
+                if ( la(2) == '/' ) {
+                    consume();
+                    consume();
+                    text.append( "/" );
                 } else {
-                    text.append((char) consume());
-                    text.append((char) consume());
+                    text.append( (char) consume() );
+                    text.append( (char) consume() );
                 }
                 break;
             default:
