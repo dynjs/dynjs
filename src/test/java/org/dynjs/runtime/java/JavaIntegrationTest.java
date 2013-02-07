@@ -301,4 +301,11 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         //assertThat(eval("thing.doIt('foo', 12, 'bar', 22)")).isEqualTo("Yet another way");
         assertThat(eval("thing.doIt('foo', null, 'bar', null)")).isEqualTo("Yet another way");
     }
+    
+    @Test
+    public void testLongPrimitiveCoercion() {
+        Object result = eval( "new org.dynjs.runtime.java.Thing().longMethod(42)");
+        
+        assertThat( result ).isInstanceOf(Long.class).isEqualTo(42L);
+    }
 }
