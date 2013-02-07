@@ -1,7 +1,8 @@
 package org.dynjs.runtime.builtins.types.regexp;
 
+import static org.joni.constants.MetaChar.*;
+
 import java.io.UnsupportedEncodingException;
-import java.util.regex.PatternSyntaxException;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynObject;
@@ -14,9 +15,38 @@ import org.joni.Option;
 import org.joni.Regex;
 import org.joni.Region;
 import org.joni.Syntax;
-import org.joni.exception.ValueException;
+import org.joni.WarnCallback;
+import org.joni.Syntax.MetaCharTable;
+import org.joni.exception.JOniException;
+import org.joni.exception.SyntaxException;
 
 public class DynRegExp extends DynObject {
+
+    public static final Syntax Javascript = new Syntax(
+            ((Syntax.GNU_REGEX_OP | Syntax.OP_QMARK_NON_GREEDY |
+                    Syntax.OP_ESC_OCTAL3 | Syntax.OP_ESC_X_HEX2 |
+                    Syntax.OP_ESC_X_BRACE_HEX8 | Syntax.OP_ESC_CONTROL_CHARS |
+            Syntax.OP_ESC_C_CONTROL)
+                    & ~Syntax.OP_ESC_LTGT_WORD_BEGIN_END),
+
+            (Syntax.OP2_ESC_CAPITAL_Q_QUOTE |
+                    Syntax.OP2_QMARK_GROUP_EFFECT | Syntax.OP2_OPTION_PERL |
+                    Syntax.OP2_ESC_P_BRACE_CHAR_PROPERTY |
+            Syntax.OP2_ESC_P_BRACE_CIRCUMFLEX_NOT),
+
+            Syntax.GNU_REGEX_BV | Syntax.CONTEXT_INVALID_REPEAT_OPS,
+
+            Option.SINGLELINE,
+
+            new MetaCharTable(
+                    '\\', /* esc */
+                    INEFFECTIVE_META_CHAR, /* anychar '.' */
+                    INEFFECTIVE_META_CHAR, /* anytime '*' */
+                    INEFFECTIVE_META_CHAR, /* zero or one time '?' */
+                    INEFFECTIVE_META_CHAR, /* one or more time '+' */
+                    INEFFECTIVE_META_CHAR /* anychar anytime */
+            )
+            );
 
     private Regex pattern;
 
@@ -114,8 +144,13 @@ public class DynRegExp extends DynObject {
         }
         try {
             byte[] patternBytes = pattern.getBytes("UTF-8");
-            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.RUBY );
-        } catch (ValueException e) {
+            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.Perl, new WarnCallback() {
+                @Override
+                public void warn(String message) {
+                    System.err.println("WARN: " + message);
+                }
+            });
+        } catch (JOniException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         } catch (UnsupportedEncodingException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
@@ -165,7 +200,7 @@ public class DynRegExp extends DynObject {
     public Region match(String str, int from) {
         byte[] strBytes = str.getBytes();
         Matcher matcher = this.pattern.matcher(strBytes, 0, strBytes.length);
-        if ( matcher.search(from, strBytes.length, 0) >= 0 ) {
+        if (matcher.search(from, strBytes.length, 0) >= 0) {
             return matcher.getEagerRegion();
         }
         return null;

@@ -1,5 +1,7 @@
 package org.dynjs.runtime.builtins.types.regexp.prototype;
 
+import java.util.Arrays;
+
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
@@ -58,10 +60,12 @@ public class Exec extends AbstractNonConstructorFunction {
         a.put(context, "index", (long) r.beg[0], true);
         a.put(context, "input", str, true);
         a.put(context, "length", (long) r.beg.length, true);
-        a.put(context, "0", str.substring(r.beg[0], r.end[0]), true);
+        byte[] matchedBytes = Arrays.copyOfRange(str.getBytes(), r.beg[0], r.end[0]);
+        a.put(context, "0", new String(matchedBytes), true);
         for (int j = 1; j < r.beg.length; ++j) {
             if (r.beg[j] >= 0 && r.end[j] >= 0) {
-                a.put(context, "" + j, str.substring(r.beg[j], r.end[j]), true);
+                matchedBytes = Arrays.copyOfRange(str.getBytes(), r.beg[j], r.end[j]);
+                a.put(context, "" + j, new String(matchedBytes), true);
             }
         }
 

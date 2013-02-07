@@ -2,13 +2,12 @@ package org.dynjs.runtime.builtins.types;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.js.CharStream;
 import org.dynjs.parser.js.CircularCharBuffer;
 import org.dynjs.parser.js.Lexer;
-import org.dynjs.parser.js.LexerException;
 import org.dynjs.parser.js.Token;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -41,6 +40,10 @@ public class BuiltinRegExp extends AbstractBuiltinType {
     public Object call(ExecutionContext context, Object self, Object... args) {
 
         if (args[0] instanceof JSObject && ((JSObject) args[0]).getClassName().equals("RegExp")) {
+            if ( args[1] != Types.UNDEFINED ) {
+                throw new ThrowException( context, context.createTypeError("No flags allowed" ) );
+                
+            } 
             return args[0];
         }
 

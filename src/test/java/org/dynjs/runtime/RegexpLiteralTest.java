@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RegexpLiteralTest extends AbstractDynJSTestSupport {
@@ -72,7 +73,13 @@ public class RegexpLiteralTest extends AbstractDynJSTestSupport {
     public void testProblematicRegexpWithEscapedCharRangesInCtor() {
         eval( "new RegExp('^[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*$')");
     }
-
+    
+    @Ignore
+    @Test
+    public void testEmptyCharacterClassRange() {
+        System.err.println( eval( "/[]/.exec('taco')" ) );
+    }
+    
     private Object getPropertyValue(JSObject object, String name) {
         return ((PropertyDescriptor) object.getOwnProperty(null, name))
                 .getValue();
