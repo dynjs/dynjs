@@ -10,6 +10,7 @@ class ParserContext {
         FUNCTION,
         ITERATION,
         SWITCH,
+        OTHER,
     }
 
     private ParserContext parent;
@@ -26,6 +27,14 @@ class ParserContext {
         this.parent = parent;
         this.type = type;
         this.strict = false;
+    }
+
+    boolean isValidForFunctionDeclaration() {
+        if (!this.strict) {
+            return true;
+        }
+
+        return (type == ContextType.PROGRAM || type == ContextType.FUNCTION);
     }
 
     void addLabel(String label) {
@@ -65,6 +74,9 @@ class ParserContext {
             if (this.type == ContextType.ITERATION || this.type == ContextType.SWITCH) {
                 return true;
             }
+            if ( this.type != ContextType.FUNCTION && this.parent != null ) {
+                return this.parent.isValidBreak(label);
+            }
             return false;
         }
 
@@ -72,10 +84,15 @@ class ParserContext {
     }
 
     boolean isValidContinue(String label) {
+
         if (this.type == ContextType.SWITCH && this.parent != null) {
             return this.parent.isValidContinue(label);
         }
+
         if (this.type != ContextType.ITERATION) {
+            if (this.type != ContextType.FUNCTION && this.parent != null) {
+                return this.parent.isValidContinue(label);
+            }
             return false;
         }
 
@@ -90,10 +107,14 @@ class ParserContext {
             return true;
         }
 
-        if (this.parent != null) {
+        if (this.type != ContextType.FUNCTION && this.parent != null) {
             return this.parent.isValidLabel(label);
         }
         return false;
+    }
+
+    public String toString() {
+        return "[Context: type=" + this.type + "]";
     }
 
 }

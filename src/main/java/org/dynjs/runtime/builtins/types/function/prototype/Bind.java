@@ -16,6 +16,7 @@ public class Bind extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.3.4.5
+        System.err.println( "SLEF: " + self );
         if (!(self instanceof JSFunction)) {
             throw new ThrowException(context, context.createTypeError("Function.bind() only allowed on callable objects"));
         }

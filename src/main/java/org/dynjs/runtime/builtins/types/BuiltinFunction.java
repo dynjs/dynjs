@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
@@ -66,16 +67,20 @@ public class BuiltinFunction extends AbstractBuiltinType {
         boolean duplicateFormalParams = false;
 
         for (int i = 0; i < numArgs - 1; ++i) {
-            if (!first) {
-                formalParams.append(",");
+            String paramStr = Types.toString(context, args[i]);
+            StringTokenizer paramTokens = new StringTokenizer(paramStr, ",");
+            while (paramTokens.hasMoreTokens()) {
+                if (!first) {
+                    formalParams.append(",");
+                }
+                String param = paramTokens.nextToken().trim();
+                if (seenParams.contains(param)) {
+                    duplicateFormalParams = true;
+                }
+                seenParams.add(param);
+                formalParams.append(param);
+                first = false;
             }
-            String param = Types.toString(context, args[i]);
-            if (seenParams.contains(param)) {
-                duplicateFormalParams = true;
-            }
-            seenParams.add(param);
-            formalParams.append(param);
-            first = false;
         }
 
         if (numArgs > 0) {
@@ -92,8 +97,13 @@ public class BuiltinFunction extends AbstractBuiltinType {
             JSCompiler compiler = context.getGlobalObject().getCompiler();
             JSFunction function = compiler.compileFunction(context, descriptor.getIdentifier(), descriptor.getFormalParameterNames(), descriptor.getBlock(),
                     descriptor.isStrict());
-            if (function.isStrict() && duplicateFormalParams) {
-                throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
+            if (function.isStrict()) {
+                if (duplicateFormalParams) {
+                    throw new ThrowException(context, context.createSyntaxError("duplicate formal parameters in function definition"));
+                }
+                if (seenParams.contains("eval")) {
+                    throw new ThrowException(context, context.createSyntaxError("formal parameter 'eval' not allowed in function definition in strict-mode"));
+                }
             }
             function.setPrototype(getPrototype());
             return function;

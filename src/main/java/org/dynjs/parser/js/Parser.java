@@ -314,29 +314,34 @@ public class Parser {
     }
 
     protected PropertySet propertySet() {
-        Token set = consume(IDENTIFIER);
-        if (!set.getText().equals("set")) {
-            throw new SyntaxError("expected 'set', was: " + set);
+        try {
+            pushContext(ContextType.FUNCTION);
+            Token set = consume(IDENTIFIER);
+            if (!set.getText().equals("set")) {
+                throw new SyntaxError("expected 'set', was: " + set);
+            }
+
+            Token token = laToken();
+            if (!isPropertyName(token)) {
+                throw new SyntaxError(token, "expected property identifier");
+            }
+
+            String name = consume().getText();
+            consume(LEFT_PAREN);
+
+            Token param = consume(IDENTIFIER);
+            if (!isAssignableName(param.getText())) {
+                throw new SyntaxError("invalid parameter name: " + param.getText());
+            }
+            consume(RIGHT_PAREN);
+            consume(LEFT_BRACE);
+            BlockStatement body = functionBody();
+            consume(RIGHT_BRACE);
+
+            return new PropertySet(name, param.getText(), body);
+        } finally {
+            popContext();
         }
-
-        Token token = laToken();
-        if (!isPropertyName(token)) {
-            throw new SyntaxError(token, "expected property identifier");
-        }
-
-        String name = consume().getText();
-        consume(LEFT_PAREN);
-
-        Token param = consume(IDENTIFIER);
-        if (!isAssignableName(param.getText())) {
-            throw new SyntaxError("invalid parameter name: " + param.getText());
-        }
-        consume(RIGHT_PAREN);
-        consume(LEFT_BRACE);
-        BlockStatement body = functionBody();
-        consume(RIGHT_BRACE);
-
-        return new PropertySet(name, param.getText(), body);
     }
 
     protected PropertyGet propertyGet() {
@@ -588,13 +593,14 @@ public class Parser {
 
         return expr;
     }
-    
+
     protected void checkAssignmentLHS(Expression expr) {
-        if ( currentContext().isStrict() ) {
-            if ( expr instanceof IdentifierReferenceExpression ) {
+        if (currentContext().isStrict()) {
+            if (expr instanceof IdentifierReferenceExpression) {
                 String id = ((IdentifierReferenceExpression) expr).getIdentifier();
-                if ( id.equals( "eval" ) || id.equals( "arguments" ) ) {
-                    throw new ThrowException( executionContext, executionContext.createSyntaxError( id + " may not appear on the left-hand-side of a compound assignment expression in strict mode" ));
+                if (id.equals("eval") || id.equals("arguments")) {
+                    throw new ThrowException(executionContext, executionContext.createSyntaxError(id
+                            + " may not appear on the left-hand-side of a compound assignment expression in strict mode"));
                 }
             }
         }
@@ -950,6 +956,8 @@ public class Parser {
     }
 
     public FunctionExpression functionExpression() {
+        boolean isContainingValidForFunctionDecls = currentContext().isValidForFunctionDeclaration();
+
         try {
             pushContext(ContextType.FUNCTION);
             Token position = consume(FUNCTION);
@@ -961,6 +969,11 @@ public class Parser {
                     throw new SyntaxError(identifier, "invalid identifier: " + identifier.getText());
                 }
                 identifierName = identifier.getText();
+            }
+
+            if (identifierName != null && !isContainingValidForFunctionDecls) {
+                throw new ThrowException(executionContext, executionContext.createSyntaxError("cannot use function-declarations here"));
+
             }
             List<Parameter> params = formalParameters();
 
@@ -1182,16 +1195,21 @@ public class Parser {
     }
 
     public BlockStatement block() {
-        consume(LEFT_BRACE);
-        List<Statement> statements = new ArrayList<Statement>();
+        try {
+            pushContext(ContextType.OTHER);
+            consume(LEFT_BRACE);
+            List<Statement> statements = new ArrayList<Statement>();
 
-        while (la() != RIGHT_BRACE) {
-            statements.add(statement());
+            while (la() != RIGHT_BRACE) {
+                statements.add(statement());
+            }
+
+            consume(RIGHT_BRACE);
+
+            return factory.block(statements);
+        } finally {
+            popContext();
         }
-
-        consume(RIGHT_BRACE);
-
-        return factory.block(statements);
     }
 
     public VariableStatement variableStatement() {
@@ -1227,7 +1245,7 @@ public class Parser {
     public VariableDeclaration variableDeclaration(boolean noIn) {
         Token identifier = consume(IDENTIFIER);
 
-        if (!isValidIdentifier( identifier) || !isAssignableName(identifier.getText())) {
+        if (!isValidIdentifier(identifier) || !isAssignableName(identifier.getText())) {
             throw new SyntaxError(identifier, "invalid identifier: " + identifier.getText());
         }
 
@@ -1280,6 +1298,7 @@ public class Parser {
         switch (la(false)) {
         case CR:
         case NL:
+        case CRNL:
         case PARAGRAPH_SEPARATOR:
         case LINE_SEPARATOR:
         case SEMICOLON:
@@ -1310,6 +1329,7 @@ public class Parser {
         switch (la(false)) {
         case CR:
         case NL:
+        case CRNL:
         case PARAGRAPH_SEPARATOR:
         case LINE_SEPARATOR:
         case SEMICOLON:
@@ -1344,6 +1364,7 @@ public class Parser {
         switch (la(false)) {
         case CR:
         case NL:
+        case CRNL:
         case PARAGRAPH_SEPARATOR:
         case LINE_SEPARATOR:
         case SEMICOLON:
@@ -1543,18 +1564,23 @@ public class Parser {
     }
 
     public DoWhileStatement doWhileStatement() {
-        Token position = consume(DO);
-        Statement body = statement();
-        consume(WHILE);
-        consume(LEFT_PAREN);
-        Expression expr = expression();
-        consume(RIGHT_PAREN);
+        try {
+            pushContext(ContextType.ITERATION);
+            Token position = consume(DO);
+            Statement body = statement();
+            consume(WHILE);
+            consume(LEFT_PAREN);
+            Expression expr = expression();
+            consume(RIGHT_PAREN);
 
-        // don't call semic() here because the semicolon is optional
-        if (la() == SEMICOLON) {
-            consume(SEMICOLON);
+            // don't call semic() here because the semicolon is optional
+            if (la() == SEMICOLON) {
+                consume(SEMICOLON);
+            }
+            return factory.doWhileStatement(position, body, expr);
+        } finally {
+            popContext();
         }
-        return factory.doWhileStatement(position, body, expr);
     }
 
     public WhileStatement whileStatement() {
