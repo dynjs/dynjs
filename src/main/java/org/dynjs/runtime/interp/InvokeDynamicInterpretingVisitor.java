@@ -95,6 +95,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             push(DynJSBootstrapper.getInvokeHandler().call(function, context, thisValue, args));
         } catch (ThrowException e) {
             throw e;
+        } catch (NoSuchMethodError e){
+            throw new ThrowException(context, context.createTypeError( "not callable" ));
         } catch (Throwable e) {
             throw new ThrowException(context, e);
         }
