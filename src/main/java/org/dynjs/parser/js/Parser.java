@@ -492,18 +492,18 @@ public class Parser {
 
         while (la() != RIGHT_BRACKET) {
             if (la() == COMMA) {
-                //System.err.println("comma");
+                // System.err.println("comma");
                 consume();
                 exprs.add(null);
                 continue;
             } else {
-                //System.err.println("not comma");
+                // System.err.println("not comma");
                 exprs.add(assignmentExpression());
                 if (la() == COMMA) {
-                    //System.err.println("followed by comma");
+                    // System.err.println("followed by comma");
                     consume();
                 } else {
-                    //System.err.println("followed by not comma");
+                    // System.err.println("followed by not comma");
                     break;
                 }
             }
@@ -511,7 +511,7 @@ public class Parser {
 
         consume(RIGHT_BRACKET);
 
-        //System.err.println("ARRAY: " + exprs);
+        // System.err.println("ARRAY: " + exprs);
 
         return factory.arrayLiteral(start, exprs);
     }
@@ -854,12 +854,14 @@ public class Parser {
 
     public Expression postfixExpression() {
         Expression expr = leftHandSideExpression();
-
+        
         switch (la(false)) {
         case PLUS_PLUS:
+            checkAssignmentLHS(expr);
             consume(false);
             return factory.postIncrementOperator(expr);
         case MINUS_MINUS:
+            checkAssignmentLHS(expr);
             consume(false);
             return factory.postDecrementOperator(expr);
         }
@@ -936,12 +938,17 @@ public class Parser {
 
     public Expression newExpression() {
         consume(NEW);
-        Expression expr = memberExpression();
-        if (la() == LEFT_PAREN) {
-            List<Expression> args = arguments();
-            expr = factory.newOperator(expr, args);
+        Expression expr = null;
+        if (la() == NEW) {
+            expr = factory.newOperator(newExpression());
         } else {
-            expr = factory.newOperator(expr);
+            expr = memberExpression();
+            if (la() == LEFT_PAREN) {
+                List<Expression> args = arguments();
+                expr = factory.newOperator(expr, args);
+            } else {
+                expr = factory.newOperator(expr);
+            }
         }
 
         loop: while (true) {

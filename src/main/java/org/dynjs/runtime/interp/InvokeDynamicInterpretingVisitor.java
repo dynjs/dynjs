@@ -118,7 +118,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         try {
-            push(DynJSBootstrapper.getInvokeHandler().construct(memberExpr, context, args));
+            push( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, context, args) );
         } catch (NoSuchMethodError e) {
             throw new ThrowException(context, context.createTypeError("cannot construct with: " + memberExpr));
         } catch (ThrowException e) {

@@ -141,10 +141,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
     public void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Number rhs = Types.toNumber(context, getValue(context, pop()));
         Number lhs = Types.toNumber(context, getValue(context, pop()));
+        
+        expr.getRhs().accept(context, this, strict);
+        Number rhs = Types.toNumber(context, getValue(context, pop()));
 
         if (lhs instanceof Double || rhs instanceof Double) {
             push(lhs.doubleValue() - rhs.doubleValue());
