@@ -30,16 +30,16 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         expr.getLhs().accept(context, this, strict);
         Object lhs = pop();
         if (!(lhs instanceof Reference)) {
-            throw new ThrowException(context, context.createTypeError(expr.getLhs() + " is not a reference"));
+            throw new ThrowException(context, context.createReferenceError(expr.getLhs() + " is not a reference"));
         }
-        
+
         Reference lhsRef = (Reference) lhs;
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
-        
-        if ( lhsRef.isUnresolvableReference() && strict ) {
-            throw new ThrowException( context, context.createReferenceError( lhsRef.getReferencedName() + " is not defined" ) );
+
+        if (lhsRef.isUnresolvableReference() && strict) {
+            throw new ThrowException(context, context.createReferenceError(lhsRef.getReferencedName() + " is not defined"));
         }
 
         try {
@@ -95,8 +95,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             push(DynJSBootstrapper.getInvokeHandler().call(function, context, thisValue, args));
         } catch (ThrowException e) {
             throw e;
-        } catch (NoSuchMethodError e){
-            throw new ThrowException(context, context.createTypeError( "not callable" ));
+        } catch (NoSuchMethodError e) {
+            throw new ThrowException(context, context.createTypeError("not callable"));
         } catch (Throwable e) {
             throw new ThrowException(context, e);
         }
@@ -130,10 +130,10 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     protected Object getValue(ExecutionContext context, Object obj) {
-        
+
         if (obj instanceof Reference) {
             String name = ((Reference) obj).getReferencedName();
-            
+
             try {
                 Object result = DynJSBootstrapper.getInvokeHandler().get(obj, context, name);
                 return result;

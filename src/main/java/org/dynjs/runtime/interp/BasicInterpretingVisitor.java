@@ -118,10 +118,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
     public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Object rhs = Types.toPrimitive(context, getValue(context, pop()));
         Object lhs = Types.toPrimitive(context, getValue(context, pop()));
+        
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = Types.toPrimitive(context, getValue(context, pop()));
 
         if (lhs instanceof String || rhs instanceof String) {
             push(Types.toString(context, lhs) + Types.toString(context, rhs));
@@ -208,7 +208,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         expr.getLhs().accept(context, this, strict);
         Object lhs = pop();
         if (!(lhs instanceof Reference)) {
-            throw new ThrowException(context, context.createTypeError(expr.getLhs() + " is not a reference"));
+            throw new ThrowException(context, context.createReferenceError(expr.getLhs() + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
@@ -404,10 +404,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, EqualityOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Object rhs = getValue(context, pop());
         Object lhs = getValue(context, pop());
+        
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = getValue(context, pop());
 
         if (expr.getOp().equals("==")) {
             push(Types.compareEquality(context, lhs, rhs));
@@ -727,10 +727,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Object rhs = getValue(context, pop());
         Object lhs = getValue(context, pop());
+        
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = getValue(context, pop());
 
         if (!(rhs instanceof JSObject)) {
             throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
@@ -804,10 +804,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Number rval = Types.toNumber(context, getValue(context, pop()));
         Number lval = Types.toNumber(context, getValue(context, pop()));
+        
+        expr.getRhs().accept(context, this, strict);
+        Number rval = Types.toNumber(context, getValue(context, pop()));
 
         if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
             push(Double.NaN);
@@ -1076,10 +1076,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, RelationalExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Object rval = getValue(context, pop());
         Object lval = getValue(context, pop());
+        
+        expr.getRhs().accept(context, this, strict);
+        Object rval = getValue(context, pop());
 
         Object r = null;
 
@@ -1134,10 +1134,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, StrictEqualityOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
-        expr.getRhs().accept(context, this, strict);
-
-        Object rhs = getValue(context, pop());
         Object lhs = getValue(context, pop());
+        
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = getValue(context, pop());
 
         Object result = null;
         if (expr.getOp().equals("===")) {
