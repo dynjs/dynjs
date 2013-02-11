@@ -819,10 +819,17 @@ public class Parser {
     }
 
     public Expression unaryExpression() {
+        Expression expr = null;
         switch (la()) {
         case DELETE:
             consume();
-            return factory.deleteOperator(unaryExpression());
+            expr = unaryExpression();
+            if ( currentContext().isStrict() ) {
+                if ( expr instanceof IdentifierReferenceExpression ) {
+                    throw new ThrowException( executionContext, executionContext.createSyntaxError( "cannot delete a direct reference in strict-mode"));
+                }
+            }
+            return factory.deleteOperator(expr);
         case VOID:
             consume();
             return factory.voidOperator(unaryExpression());
@@ -831,10 +838,14 @@ public class Parser {
             return factory.typeofOperator(unaryExpression());
         case PLUS_PLUS:
             consume();
-            return factory.preIncrementOperator(unaryExpression());
+            expr = unaryExpression();
+            checkAssignmentLHS(expr);
+            return factory.preIncrementOperator( expr );
         case MINUS_MINUS:
             consume();
-            return factory.preDecrementOperator(unaryExpression());
+            expr = unaryExpression();
+            checkAssignmentLHS(expr);
+            return factory.preDecrementOperator( expr );
         case PLUS:
             consume();
             return factory.unaryPlusOperator(unaryExpression());

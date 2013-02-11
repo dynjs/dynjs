@@ -119,7 +119,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = Types.toPrimitive(context, getValue(context, pop()));
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rhs = Types.toPrimitive(context, getValue(context, pop()));
 
@@ -130,8 +130,22 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         Number lhsNum = Types.toNumber(context, lhs);
         Number rhsNum = Types.toNumber(context, rhs);
-
-        if (lhs instanceof Double || rhs instanceof Double) {
+        
+        if ( Double.isNaN( lhsNum.doubleValue() ) || Double.isNaN( rhsNum.doubleValue() ) ) {
+            push( Double.NaN);
+            return;
+        }
+        
+        if (lhsNum instanceof Double || rhsNum instanceof Double) {
+            if ( lhsNum.doubleValue() == 0.0 && rhsNum.doubleValue() == 0.0 ) {
+                if ( Double.compare(lhsNum.doubleValue(), 0.0) < 0  && Double.compare( rhsNum.doubleValue(), 0.0 ) < 0 ) {
+                    push( -0.0 );
+                    return;
+                } else {
+                    push( 0.0 );
+                    return;
+                }
+            }
             push(lhsNum.doubleValue() + rhsNum.doubleValue());
             return;
         }
@@ -142,11 +156,23 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Number lhs = Types.toNumber(context, getValue(context, pop()));
-        
+
         expr.getRhs().accept(context, this, strict);
         Number rhs = Types.toNumber(context, getValue(context, pop()));
+        
+        if ( Double.isNaN( lhs.doubleValue() ) || Double.isNaN( rhs.doubleValue() ) ) {
+            push( Double.NaN);
+            return;
+        }
 
         if (lhs instanceof Double || rhs instanceof Double) {
+            if ( lhs.doubleValue() == 0.0 && rhs.doubleValue() == 0.0 ) {
+                if ( Double.compare(lhs.doubleValue(), 0.0) < 0  && Double.compare( rhs.doubleValue(), 0.0 ) < 0 ) {
+                    push( +0.0 );
+                    return;
+                }
+                
+            }
             push(lhs.doubleValue() - rhs.doubleValue());
             return;
         }
@@ -405,7 +431,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, EqualityOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
 
@@ -728,7 +754,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
 
@@ -805,22 +831,28 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Number lval = Types.toNumber(context, getValue(context, pop()));
-        
+
         expr.getRhs().accept(context, this, strict);
         Number rval = Types.toNumber(context, getValue(context, pop()));
 
+        //System.err.println( "l: " + lval );
+        //System.err.println( "r: " + rval );
         if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
             push(Double.NaN);
+            return;
         }
-
+        
         if (lval instanceof Double || rval instanceof Double) {
             switch (expr.getOp()) {
             case "*":
                 push(lval.doubleValue() * rval.doubleValue());
                 return;
             case "/":
-                if (rval.doubleValue() == 0.0) {
-                    if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0) {
+                if (Double.compare(rval.doubleValue(), 0.0) == 0) {
+                    if (lval.doubleValue() == 0.0 ) {
+                        push(Double.NaN);
+                        return;
+                    } else if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -845,7 +877,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.longValue() == 0L) {
-                    if (lval.longValue() >= 0L) {
+                    if ( lval.longValue() == 0L ) {
+                        push( Double.NaN );
+                        return;
+                    } else if (lval.longValue() >= 0L) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -1077,7 +1112,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, RelationalExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lval = getValue(context, pop());
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rval = getValue(context, pop());
 
@@ -1135,7 +1170,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, StrictEqualityOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
-        
+
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
 
@@ -1215,9 +1250,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         Object throwable = getValue(context, pop());
-        //if ( throwable instanceof Throwable ) {
-            //((Throwable) throwable).printStackTrace();
-        //}
+        // if ( throwable instanceof Throwable ) {
+        // ((Throwable) throwable).printStackTrace();
+        // }
         throw new ThrowException(context, throwable);
     }
 
@@ -1340,7 +1375,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        pop();
+        Object value = getValue( context, pop() );
         push(Types.UNDEFINED);
     }
 
