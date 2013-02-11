@@ -509,13 +509,13 @@ public class Lexer {
 
         return (la(2) == 'u' && (isHexDigit(la(3)) && isHexDigit(la(4)) && isHexDigit(la(5)) && isHexDigit(la(6))));
     }
-    
+
     private boolean isHexEscapeSequence(int start) {
-        if ( start != '\\' ) {
+        if (start != '\\') {
             return false;
         }
-        
-        return ( la(2) == 'x' && isHexDigit(la(3) ) && isHexDigit( la(4)));
+
+        return (la(2) == 'x' && isHexDigit(la(3)) && isHexDigit(la(4)));
     }
 
     private boolean isNonEscapeSequence(int start) {
@@ -556,13 +556,13 @@ public class Lexer {
                 text.append((char) consume());
                 break;
             case '\\':
-                if ( la(2) == '/' ) {
+                if (la(2) == '/') {
                     consume();
                     consume();
-                    text.append( "/" );
+                    text.append("/");
                 } else {
-                    text.append( (char) consume() );
-                    text.append( (char) consume() );
+                    text.append((char) consume());
+                    text.append((char) consume());
                 }
                 break;
             default:
@@ -575,7 +575,7 @@ public class Lexer {
         while (isIdentifierPart(la())) {
             text.append((char) consume());
         }
-        
+
         return newToken(REGEXP_LITERAL, text.toString());
     }
 
@@ -829,6 +829,7 @@ public class Lexer {
                     break;
                 case '0':
                     inner: switch (la(3)) {
+                    case '0':
                     case '1':
                     case '2':
                     case '3':
