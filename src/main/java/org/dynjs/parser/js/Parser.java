@@ -53,6 +53,8 @@ public class Parser {
     private TokenStream stream;
     private List<ParserContext> context = new ArrayList<ParserContext>();
 
+    private int parens = 0;
+
     private boolean forceStrict;
 
     public Parser(ExecutionContext executionContext, ASTFactory factory, TokenStream stream) {
@@ -224,9 +226,14 @@ public class Parser {
             return arrayLiteral();
         case LEFT_PAREN:
             consume(LEFT_PAREN);
-            Expression expr = expression();
-            consume(RIGHT_PAREN);
-            return expr;
+            try {
+                ++this.parens;
+                Expression expr = expression();
+                consume(RIGHT_PAREN);
+                return expr;
+            } finally {
+                --this.parens;
+            }
         }
 
         throw new SyntaxError(laToken(), "unexpected token: " + laToken());
@@ -971,7 +978,7 @@ public class Parser {
                 identifierName = identifier.getText();
             }
 
-            if (identifierName != null && !isContainingValidForFunctionDecls) {
+            if (identifierName != null && this.parens == 0 && !isContainingValidForFunctionDecls) {
                 throw new ThrowException(executionContext, executionContext.createSyntaxError("cannot use function-declarations here"));
 
             }

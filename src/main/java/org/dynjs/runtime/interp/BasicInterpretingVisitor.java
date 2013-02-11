@@ -701,7 +701,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 expr.getDescriptor().getIdentifier(),
                 expr.getDescriptor().getFormalParameterNames(),
                 expr.getDescriptor().getBlock(),
-                strict);
+                expr.getDescriptor().isStrict() || strict);
         push(compiledFn);
     }
 
