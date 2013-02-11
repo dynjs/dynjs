@@ -29,9 +29,11 @@ public class ArrayLiteralExpression extends BaseExpression {
     public ArrayLiteralExpression(Position position, final List<Expression> exprs) {
         super(position);
         this.exprs = exprs;
+        /*
         if (this.exprs.size() > 1 && (this.exprs.get(this.exprs.size() - 1) == null)) {
             this.exprs.remove(this.exprs.size() - 1);
         }
+        */
     }
     
     public List<FunctionDeclaration> getFunctionDeclarations() {

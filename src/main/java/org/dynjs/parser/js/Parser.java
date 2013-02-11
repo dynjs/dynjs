@@ -492,20 +492,26 @@ public class Parser {
 
         while (la() != RIGHT_BRACKET) {
             if (la() == COMMA) {
+                //System.err.println("comma");
                 consume();
                 exprs.add(null);
                 continue;
             } else {
+                //System.err.println("not comma");
                 exprs.add(assignmentExpression());
                 if (la() == COMMA) {
+                    //System.err.println("followed by comma");
                     consume();
                 } else {
+                    //System.err.println("followed by not comma");
                     break;
                 }
             }
         }
 
         consume(RIGHT_BRACKET);
+
+        //System.err.println("ARRAY: " + exprs);
 
         return factory.arrayLiteral(start, exprs);
     }
