@@ -27,7 +27,7 @@ public class Parse extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String jsonText = Types.toString(context, args[0]);
-
+        
         JsonFactory factory = new JsonFactory();
         Object unfiltered = null;
         try {
@@ -134,7 +134,7 @@ public class Parse extends AbstractNativeFunction {
         } else if (t == JsonToken.VALUE_STRING) {
             return p.getText();
         } else if (t == JsonToken.VALUE_NUMBER_FLOAT) {
-            return (double) p.getFloatValue();
+            return p.getDoubleValue();
         } else if (t == JsonToken.VALUE_NUMBER_INT) {
             return p.getIntValue();
         }
