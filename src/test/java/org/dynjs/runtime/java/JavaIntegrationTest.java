@@ -16,16 +16,28 @@ import org.junit.Test;
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     
     @Test
-    @Ignore
     public void testJavaStringEquality() {
         eval("var f1 = new java.io.File('/tmp/foo')");
         eval("var f2 = new java.io.File('/tmp/foo')");
+        eval("var f3 = f1");
         assertThat(eval("f1.equals(f2)")).isEqualTo(true);
         File f1 = (File) eval("f1");
         File f2 = (File) eval("f2");
+        File f3 = (File) eval("f3");
         assertThat(f1.equals(f2)).isEqualTo(true);
-        assertThat(eval("f1 === f2")).isEqualTo(true);
-        assertThat(eval("f1 == f2")).isEqualTo(true);
+        assertThat(f1.equals(f3)).isEqualTo(true);
+        assertThat(eval("f1 === f2")).isEqualTo(false);
+        assertThat(eval("f1 == f2")).isEqualTo(false);
+        assertThat(eval("f1 == f3")).isEqualTo(true);
+        assertThat(eval("f1 === f3")).isEqualTo(true);
+    }
+    
+    @Test
+    public void testJavaNumberEquality() {
+        eval("var n1 = new java.lang.Double(12.34)");
+        eval("var n2 = new java.lang.Double(12.34)");
+        Double n1 = (Double) eval("n1");
+        Double n2 = (Double) eval("n2");
     }
     
     @Test
