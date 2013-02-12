@@ -33,14 +33,6 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    public void testJavaNumberEquality() {
-        eval("var n1 = new java.lang.Double(12.34)");
-        eval("var n2 = new java.lang.Double(12.34)");
-        Double n1 = (Double) eval("n1");
-        Double n2 = (Double) eval("n2");
-    }
-    
-    @Test
     public void testCallJavaMethodWithPrimitiveBooleanParameter() {
         eval("var thing = new org.dynjs.runtime.java.Thing()");
         assertThat(eval("thing.oppositeOf(true)")).isEqualTo(false);
