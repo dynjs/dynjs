@@ -2,6 +2,7 @@ package org.dynjs.runtime.java;
 
 import static org.fest.assertions.Assertions.*;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -13,6 +14,19 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
+    
+    @Test
+    @Ignore
+    public void testJavaStringEquality() {
+        eval("var f1 = new java.io.File('/tmp/foo')");
+        eval("var f2 = new java.io.File('/tmp/foo')");
+        assertThat(eval("f1.equals(f2)")).isEqualTo(true);
+        File f1 = (File) eval("f1");
+        File f2 = (File) eval("f2");
+        assertThat(f1.equals(f2)).isEqualTo(true);
+        assertThat(eval("f1 === f2")).isEqualTo(true);
+        assertThat(eval("f1 == f2")).isEqualTo(true);
+    }
     
     @Test
     public void testCallJavaMethodWithPrimitiveBooleanParameter() {
