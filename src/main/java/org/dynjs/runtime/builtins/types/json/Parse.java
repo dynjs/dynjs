@@ -27,6 +27,7 @@ public class Parse extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String jsonText = Types.toString(context, args[0]);
+
         JsonFactory factory = new JsonFactory();
         Object unfiltered = null;
         try {
@@ -35,7 +36,7 @@ public class Parse extends AbstractNativeFunction {
             unfiltered = parse(context, parser);
         } catch (IOException e) {
             JSObject error = context.createSyntaxError(e.getMessage());
-            throw new ThrowException( context, error );
+            throw new ThrowException(context, error);
         }
 
         Object reviver = args[1];
@@ -43,11 +44,12 @@ public class Parse extends AbstractNativeFunction {
         if (!Types.isCallable(reviver)) {
             return unfiltered;
         }
-        
+
         JSObject root = BuiltinObject.newObject(context);
         root.put(context, "", unfiltered, false);
 
-        return walk(context, (JSFunction) reviver, root, "");
+        Object result = walk(context, (JSFunction) reviver, root, "");
+        return result;
     }
 
     protected Object walk(ExecutionContext context, JSFunction reviver, JSObject holder, String name) {

@@ -2,6 +2,7 @@ package org.dynjs.runtime.interp;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.dynjs.codegen.DereferencedReference;
@@ -69,7 +70,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
         for (Expression each : argExprs) {
             each.accept(context, this, strict);
-            args[i] = getValue(context, pop());
+            Object value = getValue(context,pop());
+            args[i] = value;
             ++i;
         }
 

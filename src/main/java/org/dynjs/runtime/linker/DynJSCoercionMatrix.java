@@ -26,7 +26,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     public DynJSCoercionMatrix(JSJavaImplementationManager manager) throws NoSuchMethodException, IllegalAccessException {
         this.manager = manager;
         Lookup lookup = MethodHandles.lookup();
-        addCoercion(String.class, JSObject.class, lookup.findStatic(DynJSCoercionMatrix.class, "objectToString", methodType(String.class, JSObject.class)));
+        addCoercion(3, String.class, JSObject.class, lookup.findStatic(DynJSCoercionMatrix.class, "objectToString", methodType(String.class, JSObject.class)));
     }
 
     public static String objectToString(JSObject object) {
@@ -43,25 +43,30 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     // ----------------------------------------------------------------------
 
     @Override
-    public boolean isCompatible(Class<?> target, Class<?> actual) {
-        if (super.isCompatible(target, actual)) {
-            return true;
+    public int isCompatible(Class<?> target, Class<?> actual) {
+        int superCompat = super.isCompatible(target, actual);
+        if (superCompat >= 0 && superCompat < 3 ) {
+            return superCompat;
         }
         
         if ( actual == Types.UNDEFINED.getClass() || actual == Types.NULL.getClass() ) {
-            return true;
+            return 3;
         }
 
         if (JSFunction.class.isAssignableFrom(actual)) {
-            return (isSingleAbstractMethod(target) != null);
+            if ( isSingleAbstractMethod(target) != null) {
+                return 3;
+            }
         }
         
-        return false;
+        return -1;
     }
 
     @Override
     public MethodHandle getFilter(Class<?> target, Class<?> actual) {
-        if (super.isCompatible(target, actual)) {
+        int superCompat = super.isCompatible(target, actual);
+        
+        if (superCompat >= 0 && superCompat < 3 ) {
             return super.getFilter(target, actual);
         }
         
