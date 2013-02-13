@@ -17,8 +17,8 @@ public class CharCodeAt extends AbstractNativeFunction {
         Types.checkObjectCoercible(context, self);
         String strSelf = Types.toString(context, self);
         long position = Types.toInteger(context, args[0]);
-        if (position < 0 || position > strSelf.length()) {
-            return "";
+        if (position < 0 || position >= strSelf.length()) {
+            return Double.NaN;
         }
 
         return (long) strSelf.charAt( (int) position);

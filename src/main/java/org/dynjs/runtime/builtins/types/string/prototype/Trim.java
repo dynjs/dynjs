@@ -14,6 +14,7 @@ public class Trim extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.20
+        Types.checkObjectCoercible(context, self);
         String s = Types.toString(context, self );
         
         return Types.trimString(s);

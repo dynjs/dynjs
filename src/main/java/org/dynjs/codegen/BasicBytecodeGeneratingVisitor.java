@@ -2142,7 +2142,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // context pattern
         ldc(expr.getFlags());
         // context pattern flags
-        invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class, String.class, String.class));
+        invokestatic(p(BuiltinRegExp.class), "newRegExp", sig(DynRegExp.class, ExecutionContext.class, Object.class, String.class));
         // regexp
     }
 

@@ -75,7 +75,7 @@ public class Types {
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
-    
+
     public static Object toThisObject(ExecutionContext context, Object o) {
         if (o instanceof JSObject) {
             return (JSObject) o;
@@ -95,7 +95,7 @@ public class Types {
         if (o == Types.NULL) {
             throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
         }
-        //return new PrimitiveDynObject(context.getGlobalObject(), o);
+        // return new PrimitiveDynObject(context.getGlobalObject(), o);
         return o;
     }
 
@@ -152,8 +152,15 @@ public class Types {
         while ((st < len) && (isWhitespace(val[len - 1]))) {
             len--;
         }
-        return ((st > 0) || (len < value.length())) ? value.substring(st, len)
-                .trim() : value.trim();
+
+        String result = null;
+        
+        if ( st > 0 || len < value.length() ) {
+            result = value.substring(st,len);
+        } else {
+            result = value;
+        }
+        return result;
     }
 
     public static String trimNumericString(String value) {
@@ -358,7 +365,7 @@ public class Types {
     }
 
     public static boolean isCallable(Object o) {
-        return (o instanceof JSCallable); 
+        return (o instanceof JSCallable);
     }
 
     public static boolean isSparse(ExecutionContext context, JSObject o) {
@@ -584,7 +591,7 @@ public class Types {
 
     public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
-        
+
         if (!lhs.getClass().equals(rhs.getClass())
                 // Allow comparison of Doubles and Longs (because 0 === -0 in Javascript
                 // go figure
@@ -691,9 +698,9 @@ public class Types {
         Matcher matcher = regexp.matcher(value);
 
         if (matcher.matches()) {
-            String decimal  = matcher.group(1);
+            String decimal = matcher.group(1);
             String fraction = matcher.group(2);
-            String sign     = matcher.group(3);
+            String sign = matcher.group(3);
             String exponent = matcher.group(4);
             if (fraction == null || ".0".equals(fraction)) {
                 fraction = "";

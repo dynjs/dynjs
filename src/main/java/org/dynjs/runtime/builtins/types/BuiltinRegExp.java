@@ -51,7 +51,7 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         if (args[0] != Types.UNDEFINED) {
             pattern = Types.toString(context, args[0]);
         }
-
+        
         if (self == Types.UNDEFINED) {
             String flags = null;
             if (args[1] != Types.UNDEFINED) {
@@ -76,21 +76,9 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         return new DynRegExp(context.getGlobalObject());
     }
 
-    public static DynRegExp newRegExp(ExecutionContext context, String pattern, String flags) {
+    public static DynRegExp newRegExp(ExecutionContext context, Object pattern, String flags) {
         BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "__Builtin_RegExp");
         return (DynRegExp) context.construct(ctor, pattern, flags);
-        /*
-         * try {
-         * CharStream stream = new CircularCharBuffer(new StringReader( pattern + "/" ));
-         * Lexer lexer = new Lexer(stream);
-         * Token token = lexer.regexpLiteral();
-         * pattern = token.getText();
-         * pattern = pattern.substring( 1, pattern.length() -1 );
-         * return (DynRegExp) context.construct(ctor, pattern, flags);
-         * } catch (IOException e) {
-         * throw new ThrowException(context, context.createSyntaxError( "unable to parse regular expression"));
-         * }
-         */
     }
 
 }
