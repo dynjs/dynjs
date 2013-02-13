@@ -36,6 +36,12 @@ public class Slice extends AbstractNativeFunction {
             to = (int) Math.min( intEnd, len );
         }
         
+        int span = Math.max( to - from, 0 );
+        
+        if ( span == 0 ) {
+            return "";
+        }
+        
         return s.substring(from, to);
     }
 

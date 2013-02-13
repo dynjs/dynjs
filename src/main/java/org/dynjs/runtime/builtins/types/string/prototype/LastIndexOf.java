@@ -16,15 +16,25 @@ public class LastIndexOf extends AbstractNativeFunction {
         // 15.5.4.7
         Types.checkObjectCoercible(context, self);
         String s = Types.toString(context, self);
-        String searchStr = Types.toString( context, args[0] );
-        long pos = s.length();
-        if ( args.length >= 2 ) {
-            pos = Types.toInteger(context, args[1]);
+        String searchStr = Types.toString(context, args[0]);
+        Number numPos = null;
+        if (args.length >= 2) {
+            numPos = Types.toNumber(context, args[1]);
+        } else {
+            numPos = s.length();
         }
-        
-        int start = (int) Math.min( Math.max(pos, 0), s.length() );
-        
-        return (long) s.lastIndexOf(searchStr, start );
+
+        long pos = 0;
+
+        if (Double.isNaN(numPos.doubleValue())) {
+            pos = Integer.MAX_VALUE;
+        } else {
+            pos = Types.toInteger(context, numPos);
+        }
+
+        int start = (int) Math.min(Math.max(pos, 0), s.length());
+
+        return (long) s.lastIndexOf(searchStr, start);
     }
 
 }
