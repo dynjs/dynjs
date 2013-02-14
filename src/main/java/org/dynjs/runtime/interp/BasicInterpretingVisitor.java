@@ -279,8 +279,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             }
             if (completion.type == Completion.Type.BREAK) {
+                completion.value = completionValue;
                 if (completion.target != null && statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(completion.value));
+                    push(Completion.createNormal(completionValue));
                 } else {
                     push(completion);
                 }
@@ -538,7 +539,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
 
-            if (completion.value != null) {
+            if (completion.value != null && completion.value != Types.UNDEFINED) {
                 v = completion.value;
             }
 
@@ -546,6 +547,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
                     push(Completion.createNormal(v));
                 } else {
+                    completion.value = v;
                     push(completion);
                 }
                 return;
@@ -650,7 +652,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForVarDecl", body);
 
-            if (completion.value != null) {
+            if (completion.value != null && completion.value != Types.UNDEFINED) {
                 v = completion.value;
             }
 
@@ -658,6 +660,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
                     push(Completion.createNormal(v));
                 } else {
+                    completion.value = v;
                     push(completion);
                 }
                 return;
@@ -888,7 +891,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                         return;
                     }
                 }
-                push(lval.doubleValue() / rval.longValue());
+                double primaryResult = lval.doubleValue() / rval.longValue();
+                if (primaryResult == (long) primaryResult) {
+                    push((long) primaryResult);
+                } else {
+                    push(primaryResult);
+                }
                 return;
             case "%":
                 if (rval.longValue() == 0L) {
