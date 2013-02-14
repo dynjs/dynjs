@@ -2,6 +2,7 @@ package org.dynjs.codegen;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.qmx.jitescript.CodeBlock;
@@ -2285,55 +2286,124 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         // switchval
 
         List<CaseClause> caseClauses = statement.getCaseClauses();
+        List<LabelNode> labels = new ArrayList<>();
 
-        for (CaseClause eachCase : caseClauses) {
+        int numClauses = caseClauses.size();
+
+        int defaultIndex = -1;
+
+        // switchval
+        for (int i = 0; i < numClauses; ++i) {
+            CaseClause eachCase = caseClauses.get(i);
+            LabelNode caseLabel = new LabelNode();
+
+            labels.add(caseLabel);
+
+            if (eachCase instanceof DefaultCaseClause) {
+                defaultIndex = i;
+                continue;
+            }
+
+            LabelNode notMatched = new LabelNode();
+
             dup();
             // switchval switchval
-            if (eachCase.getExpression() == null) {
-                pop();
-                // switchval
-                go_to(eachCase.getEntranceLabel());
-            } else {
-                aload(Arities.EXECUTION_CONTEXT);
-                // switchval switchval context
-                swap();
-                // switchval context switchval
-                eachCase.getExpression().accept(context, this, strict);
-                // switchval context switchval caseref
-                append(jsGetValue());
-                // switchval context switchval caseval
-                invokestatic(p(Types.class), "compareStrictEquality", sig(boolean.class, ExecutionContext.class, Object.class, Object.class));
-                // switchval bool
-                iftrue(eachCase.getEntranceLabel());
-                // switchval
-            }
+            aload(Arities.EXECUTION_CONTEXT);
+            // switchval switchval context
+            swap();
+            // switchval context switchval
+            eachCase.getExpression().accept(context, this, strict);
+            // switchval context switchval caseref
+            append(jsGetValue());
+            // switchval context switchval caseval
+            invokestatic(p(Types.class), "compareStrictEquality", sig(boolean.class, ExecutionContext.class, Object.class, Object.class));
+            // switchval bool
+            iffalse(notMatched);
+            // switchval
+            pop();
+            // <empty>
+            go_to(caseLabel);
+
+            label(notMatched);
+            // switchval
         }
 
         // switchval
-        if (statement.getDefaultCaseClause() != null) {
-            go_to(statement.getDefaultCaseClause().getEntranceLabel());
+        pop();
+        // <empty>
+        if (defaultIndex >= 0) {
+            go_to(labels.get(defaultIndex));
         } else {
-            // switchval
-            pop();
             go_to(end);
         }
 
-        int curCase = 0;
+        for (int i = 0; i < numClauses; ++i) {
+            LabelNode eachLabel = labels.get(i);
 
-        while (curCase < caseClauses.size()) {
-            CaseClause eachCase = caseClauses.get(curCase);
-            CaseClause nextCase = null;
-            if (curCase + 1 < caseClauses.size()) {
-                nextCase = caseClauses.get(curCase + 1);
-            }
+            label(eachLabel);
+            CaseClause eachCase = caseClauses.get(i);
 
-            caseCodeBlock(end, eachCase, nextCase, statement.getDefaultCaseClause(), strict);
+            invokeCompiledStatementBlock("Case", eachCase.getBlock(), strict);
+            // <completion>
 
-            ++curCase;
-        }
+            LabelNode normal = new LabelNode();
+            LabelNode broke = new LabelNode();
+            LabelNode abrupt = new LabelNode();
+            LabelNode caseEnd = new LabelNode();
 
-        if (statement.getDefaultCaseClause() != null) {
-            caseCodeBlock(end, statement.getDefaultCaseClause(), null, null, strict);
+            // completion
+            dup();
+            // completion completion
+            append(handleCompletion(normal, broke, abrupt, abrupt));
+
+            // ----------------------------------------
+            // NORMAL
+            // ----------------------------------------
+
+            label(normal);
+            // completion
+            dup();
+            // completion completion
+            append(jsCompletionValue());
+            // completion value
+            ifnonnull(caseEnd);
+            // completion
+            dup();
+            // completion completion
+            aload(Arities.COMPLETION);
+            // completion completion completion(prev)
+            append(jsCompletionValue());
+            // completion completion value(prev)
+            putfield(p(Completion.class), "value", ci(Object.class));
+            // completion
+            go_to( caseEnd );
+
+            // ----------------------------------------
+            // BREAK
+            // ----------------------------------------
+
+            label(broke);
+            // completion
+            convertToNormalCompletion();
+            // completion
+
+            // ----------------------------------------
+            // ABRUPT
+            // ----------------------------------------
+            label(abrupt);
+            // completion
+            astore(Arities.COMPLETION);
+            // <empty>
+            go_to(end);
+
+            // ----------------------------------------
+            // case-end
+            // ----------------------------------------
+
+            label(caseEnd);
+            // completion
+            astore(Arities.COMPLETION);
+            // <empty>
         }
 
         label(end);
@@ -2341,79 +2411,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         aload(Arities.COMPLETION);
         // completion
 
-    }
-
-    protected void caseCodeBlock(final LabelNode end, final CaseClause curCase, final CaseClause nextCase, final CaseClause defaultCase, boolean strict) {
-        LabelNode normal = new LabelNode();
-        LabelNode blockEnd = new LabelNode();
-        LabelNode broke = new LabelNode();
-        LabelNode abrupt = new LabelNode();
-
-        label(curCase.getEntranceLabel());
-        // switchval
-        pop();
-        label(curCase.getFallThroughLabel());
-        // <empty>
-        invokeCompiledStatementBlock("Case", curCase.getBlock(), strict);
-        // completion
-
-        dup();
-        // completion completion
-        append(handleCompletion(normal, broke, abrupt, abrupt));
-
-        // ----------------------------------------
-        // ----------------------------------------
-        // NORMAL (fall-through)
-        label(normal);
-        // completion
-        dup();
-        // completion completion
-        append(jsCompletionValue());
-        // completion value
-        ifnonnull(blockEnd);
-        // completion
-
-        // ----------------------------------------
-        // BRING FORWARD (fall-through)
-        dup();
-        // completion completion
-        aload(Arities.COMPLETION);
-        // completion completion completion(prev)
-        append(jsCompletionValue());
-        // completion completion value(prev)
-        putfield(p(Completion.class), "value", ci(Object.class));
-        // completion
-        go_to(blockEnd);
-
-        // ----------------------------------------
-        // BREAK (fall-through)
-        label(broke);
-        // completion
-        convertToNormalCompletion();
-        // completion
-
-        // ----------------------------------------
-        // ABRUPT
-        label(abrupt);
-        // completion
-        astore(Arities.COMPLETION);
-        // <empty>
-        go_to(end);
-
-        // ----------------------------------------
-        // BLOCK END
-        label(blockEnd);
-        // completion
-        astore(Arities.COMPLETION);
-        // <empty>
-
-        if (nextCase != null) {
-            go_to(nextCase.getFallThroughLabel());
-        } else if (defaultCase != null) {
-            go_to(defaultCase.getFallThroughLabel());
-        } else {
-            go_to(end);
-        }
     }
 
     @Override

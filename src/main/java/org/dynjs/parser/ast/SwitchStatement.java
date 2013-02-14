@@ -27,21 +27,11 @@ public class SwitchStatement extends BaseStatement {
 
     private Expression expr;
     private List<CaseClause> caseClauses;
-    private DefaultCaseClause defaultClause;
 
     public SwitchStatement(Position position, Expression expr, List<CaseClause> caseClauses) {
         super(position);
         this.expr = expr;
         this.caseClauses = caseClauses;
-        Iterator<CaseClause> caseIter = caseClauses.iterator();
-
-        while (caseIter.hasNext()) {
-            CaseClause each = caseIter.next();
-            if (each instanceof DefaultCaseClause) {
-                this.defaultClause = (DefaultCaseClause) each;
-                caseIter.remove();
-            }
-        }
     }
 
     public Expression getExpr() {
@@ -52,17 +42,10 @@ public class SwitchStatement extends BaseStatement {
         return this.caseClauses;
     }
 
-    public DefaultCaseClause getDefaultCaseClause() {
-        return this.defaultClause;
-    }
-
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         for (CaseClause each : caseClauses) {
             decls.addAll(each.getVariableDeclarations());
-        }
-        if (this.defaultClause != null) {
-            decls.addAll(this.defaultClause.getVariableDeclarations());
         }
         return decls;
     }
@@ -83,9 +66,6 @@ public class SwitchStatement extends BaseStatement {
         buf.append(indent).append("switch (").append(expr.toString()).append(" ) {\n");
         for (CaseClause each : caseClauses) {
             buf.append(each.toIndentedString("  " + indent));
-        }
-        if (defaultClause != null) {
-            buf.append(defaultClause.toIndentedString("  " + indent));
         }
         buf.append(indent).append("}");
 

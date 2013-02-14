@@ -130,19 +130,19 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         Number lhsNum = Types.toNumber(context, lhs);
         Number rhsNum = Types.toNumber(context, rhs);
-        
-        if ( Double.isNaN( lhsNum.doubleValue() ) || Double.isNaN( rhsNum.doubleValue() ) ) {
-            push( Double.NaN);
+
+        if (Double.isNaN(lhsNum.doubleValue()) || Double.isNaN(rhsNum.doubleValue())) {
+            push(Double.NaN);
             return;
         }
-        
+
         if (lhsNum instanceof Double || rhsNum instanceof Double) {
-            if ( lhsNum.doubleValue() == 0.0 && rhsNum.doubleValue() == 0.0 ) {
-                if ( Double.compare(lhsNum.doubleValue(), 0.0) < 0  && Double.compare( rhsNum.doubleValue(), 0.0 ) < 0 ) {
-                    push( -0.0 );
+            if (lhsNum.doubleValue() == 0.0 && rhsNum.doubleValue() == 0.0) {
+                if (Double.compare(lhsNum.doubleValue(), 0.0) < 0 && Double.compare(rhsNum.doubleValue(), 0.0) < 0) {
+                    push(-0.0);
                     return;
                 } else {
-                    push( 0.0 );
+                    push(0.0);
                     return;
                 }
             }
@@ -159,19 +159,19 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         expr.getRhs().accept(context, this, strict);
         Number rhs = Types.toNumber(context, getValue(context, pop()));
-        
-        if ( Double.isNaN( lhs.doubleValue() ) || Double.isNaN( rhs.doubleValue() ) ) {
-            push( Double.NaN);
+
+        if (Double.isNaN(lhs.doubleValue()) || Double.isNaN(rhs.doubleValue())) {
+            push(Double.NaN);
             return;
         }
 
         if (lhs instanceof Double || rhs instanceof Double) {
-            if ( lhs.doubleValue() == 0.0 && rhs.doubleValue() == 0.0 ) {
-                if ( Double.compare(lhs.doubleValue(), 0.0) < 0  && Double.compare( rhs.doubleValue(), 0.0 ) < 0 ) {
-                    push( +0.0 );
+            if (lhs.doubleValue() == 0.0 && rhs.doubleValue() == 0.0) {
+                if (Double.compare(lhs.doubleValue(), 0.0) < 0 && Double.compare(rhs.doubleValue(), 0.0) < 0) {
+                    push(+0.0);
                     return;
                 }
-                
+
             }
             push(lhs.doubleValue() - rhs.doubleValue());
             return;
@@ -835,13 +835,13 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         expr.getRhs().accept(context, this, strict);
         Number rval = Types.toNumber(context, getValue(context, pop()));
 
-        //System.err.println( "l: " + lval );
-        //System.err.println( "r: " + rval );
+        // System.err.println( "l: " + lval );
+        // System.err.println( "r: " + rval );
         if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
             push(Double.NaN);
             return;
         }
-        
+
         if (lval instanceof Double || rval instanceof Double) {
             switch (expr.getOp()) {
             case "*":
@@ -849,7 +849,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (Double.compare(rval.doubleValue(), 0.0) == 0) {
-                    if (lval.doubleValue() == 0.0 ) {
+                    if (lval.doubleValue() == 0.0) {
                         push(Double.NaN);
                         return;
                     } else if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0) {
@@ -877,8 +877,8 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.longValue() == 0L) {
-                    if ( lval.longValue() == 0L ) {
-                        push( Double.NaN );
+                    if (lval.longValue() == 0L) {
+                        push(Double.NaN);
                         return;
                     } else if (lval.longValue() >= 0L) {
                         push(Double.POSITIVE_INFINITY);
@@ -1193,26 +1193,34 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         statement.getExpr().accept(context, this, strict);
         Object value = getValue(context, pop());
 
-        List<CaseClause> clauses = new ArrayList<CaseClause>(statement.getCaseClauses());
-        if (statement.getDefaultCaseClause() != null) {
-            clauses.add(statement.getDefaultCaseClause());
-        }
-
         Object v = null;
 
-        boolean matched = false;
-        for (CaseClause each : clauses) {
-            if (each instanceof DefaultCaseClause) {
-                matched = true;
-            } else {
-                each.getExpression().accept(context, this, strict);
-                Object caseTest = pop();
-                if (Types.compareStrictEquality(context, value, getValue(context, caseTest))) {
-                    matched = true;
-                }
-            }
+        int numClauses = statement.getCaseClauses().size();
 
-            if (matched) {
+        int startIndex = -1;
+        int defaultIndex = -1;
+
+        for (int i = 0; i < numClauses; ++i) {
+            CaseClause each = statement.getCaseClauses().get(i);
+            if (each instanceof DefaultCaseClause) {
+                defaultIndex = i;
+                continue;
+            }
+            each.getExpression().accept(context, this, strict);
+            Object caseTest = pop();
+            if (Types.compareStrictEquality(context, value, getValue(context, caseTest))) {
+                startIndex = i;
+                break;
+            }
+        }
+
+        if (startIndex < 0 && defaultIndex >= 0) {
+            startIndex = defaultIndex;
+        }
+
+        if (startIndex >= 0) {
+            for (int i = startIndex; i < numClauses; ++i) {
+                CaseClause each = statement.getCaseClauses().get(i);
                 if (each.getBlock() != null) {
                     each.getBlock().accept(context, this, strict);
                     Completion completion = (Completion) pop();
@@ -1259,9 +1267,8 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, TryStatement statement, boolean strict) {
         Completion b = null;
+        boolean finallyExecuted = false;
         try {
-            // statement.getTryBlock().accept(context, this, strict);
-            // b = (Completion) pop();
             b = invokeCompiledBlockStatement(context, "Try", statement.getTryBlock());
             push(b);
         } catch (ThrowException e) {
@@ -1290,6 +1297,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             }
 
             if (statement.getFinallyBlock() != null) {
+                finallyExecuted = true;
                 Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
                 if (f.type == Completion.Type.NORMAL) {
                     if (b != null) {
@@ -1310,7 +1318,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             }
         }
 
-        if (statement.getFinallyBlock() != null) {
+        if (!finallyExecuted && statement.getFinallyBlock() != null) {
             Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
             if (f.type == Completion.Type.NORMAL) {
                 push(b);
@@ -1375,7 +1383,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        Object value = getValue( context, pop() );
+        Object value = getValue(context, pop());
         push(Types.UNDEFINED);
     }
 

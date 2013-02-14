@@ -31,7 +31,7 @@ public class TryStatement extends BaseStatement {
     public Statement getFinallyBlock() {
         return this.finallyBlock;
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
         return this.tryBlock.getFunctionDeclarations();
     }
@@ -39,9 +39,12 @@ public class TryStatement extends BaseStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         decls.addAll(this.tryBlock.getVariableDeclarations());
+        if (this.catchClause != null) {
+            decls.addAll(this.catchClause.getVariableDeclarations());
+        }
         return decls;
     }
-    
+
     public int getSizeMetric() {
         return 7;
     }

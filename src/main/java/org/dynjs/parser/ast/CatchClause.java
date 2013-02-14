@@ -1,5 +1,7 @@
 package org.dynjs.parser.ast;
 
+import java.util.Collection;
+
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
@@ -42,6 +44,10 @@ public class CatchClause {
 
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict );
+    }
+
+    public Collection<? extends VariableDeclaration> getVariableDeclarations() {
+        return this.block.getVariableDeclarations();
     }
 
 }

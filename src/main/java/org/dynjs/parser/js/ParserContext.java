@@ -66,7 +66,19 @@ class ParserContext {
     }
 
     boolean isValidReturn() {
-        return this.type != ContextType.PROGRAM;
+        if ( this.type == ContextType.PROGRAM ) {
+            return false;
+        }
+        
+        if ( this.type == ContextType.FUNCTION ) {
+            return true;
+        }
+        
+        if ( this.parent != null ) {
+            return this.parent.isValidReturn();
+        }
+        
+        return false;
     }
 
     boolean isValidBreak(String label) {

@@ -381,11 +381,6 @@ public class DefaultVisitor implements CodeVisitor {
         for (CaseClause each : statement.getCaseClauses()) {
             each.accept(context, this, strict);
         }
-
-        if (statement.getDefaultCaseClause() != null) {
-            statement.getDefaultCaseClause().accept(context, this, strict);
-        }
-
     }
 
     @Override
