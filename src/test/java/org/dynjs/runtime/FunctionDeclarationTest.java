@@ -17,7 +17,7 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         assertThat(fn).isNotNull();
 
         Object result = fn.call(getContext());
-        assertThat(result).isEqualTo(42.0);
+        assertThat(result).isEqualTo(42L);
     }
 
     @Test

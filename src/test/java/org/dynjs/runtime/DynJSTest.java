@@ -68,7 +68,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
     @Test
     public void assignsGlobalVariables() {
         check("var result = 'test';", "test");
-        check("var result = undefined; result = 1.0;", 1.0);
+        check("var result = undefined; result = 1.0;", 1L);
     }
 
     @Test

@@ -949,7 +949,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
 
         if (text.indexOf('.') > 0) {
-            push(Double.valueOf(text));
+            double primaryValue = Double.valueOf(text);
+            if ( primaryValue == (long) primaryValue ) {
+                push( (long) primaryValue );
+            } else {
+                push( primaryValue );
+            }
             return;
         }
 

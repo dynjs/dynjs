@@ -50,6 +50,7 @@ public class Lexer {
     private int columnNumber;
 
     private TokenType lastTokenType;
+    private int parens;
 
     public Lexer(CharStream stream) {
         this.stream = stream;
@@ -106,7 +107,11 @@ public class Lexer {
             token = new Token(type, text, this.fileName, this.lineNumber, this.columnNumber - text.length());
         }
 
-        // System.err.println(token);
+        if ( type == LEFT_PAREN ) {
+            ++this.parens;
+        } else if ( type == RIGHT_PAREN ) {
+            --this.parens;
+        }
 
         return token;
     }
@@ -132,6 +137,10 @@ public class Lexer {
         case RIGHT_BRACKET:
         case RIGHT_PAREN:
             return false;
+        case RIGHT_BRACE:
+            if ( this.parens > 0 ) {
+                return false;
+            }
         default:
             return true;
         }
@@ -478,6 +487,8 @@ public class Lexer {
 
             throw new SyntaxError("unexpected character: " + c);
         }
+        
+        //System.err.println( token );
 
         return token;
     }
