@@ -838,8 +838,6 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         expr.getRhs().accept(context, this, strict);
         Number rval = Types.toNumber(context, getValue(context, pop()));
 
-        // System.err.println( "l: " + lval );
-        // System.err.println( "r: " + rval );
         if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
             push(Double.NaN);
             return;
@@ -851,11 +849,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 push(lval.doubleValue() * rval.doubleValue());
                 return;
             case "/":
-                if (Double.compare(rval.doubleValue(), 0.0) == 0) {
-                    if (lval.doubleValue() == 0.0) {
+                // Divide-by-zero
+                if (isZero(rval)) {
+                    if (isZero(lval)) {
                         push(Double.NaN);
                         return;
-                    } else if (lval.doubleValue() >= 0 && Double.compare(rval.doubleValue(), 0.0) >= 0) {
+                    } else if (isSameSign(lval, rval)) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -863,7 +862,24 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                         return;
                     }
                 }
-                push(lval.doubleValue() / rval.doubleValue());
+
+                // Zero-divided-by-something
+                else if (isZero(lval)) {
+                    if (isSameSign(lval, rval)) {
+                        push(0L);
+                    } else {
+                        push(-0.0);
+                    }
+                    return;
+                }
+
+                // Regular math
+                double primaryValue = lval.doubleValue() / rval.doubleValue();
+                if ( isRepresentableByLong(primaryValue)) {
+                    push( (long) primaryValue );
+                } else {
+                    push( primaryValue);
+                }
                 return;
             case "%":
                 if (rval.doubleValue() == 0.0) {
@@ -880,7 +896,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.longValue() == 0L) {
+                    System.err.println("rl: zero");
                     if (lval.longValue() == 0L) {
+                        System.err.println("ll: zero");
                         push(Double.NaN);
                         return;
                     } else if (lval.longValue() >= 0L) {
@@ -888,6 +906,16 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                         return;
                     } else {
                         push(Double.NEGATIVE_INFINITY);
+                        return;
+                    }
+                }
+
+                if (lval.longValue() == 0) {
+                    if (Double.compare(rval.doubleValue(), 0.0) > 0) {
+                        push(0L);
+                        return;
+                    } else {
+                        push(-0.0);
                         return;
                     }
                 }
@@ -950,10 +978,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         if (text.indexOf('.') > 0) {
             double primaryValue = Double.valueOf(text);
-            if ( primaryValue == (long) primaryValue ) {
-                push( (long) primaryValue );
+            if (primaryValue == (long) primaryValue) {
+                push((long) primaryValue);
             } else {
-                push( primaryValue );
+                push(primaryValue);
             }
             return;
         }
@@ -1474,6 +1502,41 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
     protected Object getValue(ExecutionContext context, Object obj) {
         return Types.getValue(context, obj);
+    }
+
+    private boolean isZero(Number n) {
+        return n.doubleValue() == 0.0;
+    }
+
+    private boolean isNegativeZero(Number n) {
+        return isZero(n) && isNegative(n);
+    }
+
+    private boolean isPositiveZero(Number n) {
+        return isZero(n) && isPositive(n);
+    }
+
+    private boolean isNegative(Number n) {
+        return (Double.compare(n.doubleValue(), 0.0) < 0);
+    }
+
+    private boolean isPositive(Number n) {
+        return (Double.compare(n.doubleValue(), 0.0) >= 0);
+    }
+
+    private boolean isSameSign(Number n1, Number n2) {
+        return (isPositive(n1) && isPositive(n2)) || (isNegative(n1) && isNegative(n2));
+    }
+
+    private boolean isDifferentSign(Number n1, Number n2) {
+        return (isPositive(n1) && isNegative(n2)) || (isNegative(n1) && isPositive(n2));
+    }
+
+    private boolean isRepresentableByLong(double n) {
+        if ( isNegativeZero(n)) {
+            return false;
+        }
+        return (n == (long) n);
     }
 
 }
