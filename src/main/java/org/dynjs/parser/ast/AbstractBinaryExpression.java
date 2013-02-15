@@ -16,14 +16,14 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
         this.rhs = rhs;
         this.op = op;
     }
-    
+
     public Position getPosition() {
-        if ( this.lhs == null ) {
-            System.err.println( "NULL: " + this.getClass() );
+        if (this.lhs == null) {
+            System.err.println("NULL: " + this.getClass());
         }
         return this.lhs.getPosition();
     }
-    
+
     public Expression getLhs() {
         return this.lhs;
     }
@@ -35,22 +35,22 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     public String getOp() {
         return this.op;
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
         List<FunctionDeclaration> decls = new ArrayList<>();
-        decls.addAll( this.lhs.getFunctionDeclarations() );
-        decls.addAll( this.rhs.getFunctionDeclarations() );
+        decls.addAll(this.lhs.getFunctionDeclarations());
+        decls.addAll(this.rhs.getFunctionDeclarations());
         return decls;
     }
-    
+
     public String dump(String indent) {
-        return super.dump( indent ) + this.lhs.dump( indent + "  " ) + "\n"+ this.rhs.dump( indent + "  " );
+        return super.dump(indent) + this.lhs.dump(indent + "  ") + "\n" + this.rhs.dump(indent + "  ");
     }
 
     public String toString() {
         return this.lhs + " " + this.op + " " + this.rhs;
     }
-    
+
     public int getSizeMetric() {
         return this.lhs.getSizeMetric() + this.rhs.getSizeMetric() + 1;
     }

@@ -44,9 +44,11 @@ public class FunctionExpression extends AbstractExpression {
 
     public List<FunctionDeclaration> getFunctionDeclarations() {
         if (this.descriptor.getIdentifier() != null) {
+            System.err.println("GET FN: " + this.descriptor.getIdentifier());
+            new Exception().printStackTrace();
             return Collections.singletonList(new FunctionDeclaration(this.descriptor));
         }
-        
+
         return Collections.emptyList();
     }
 

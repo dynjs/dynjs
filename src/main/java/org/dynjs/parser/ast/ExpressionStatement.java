@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -28,7 +29,7 @@ public class ExpressionStatement extends AbstractStatement {
     public ExpressionStatement(final Expression expr) {
         this.expr = expr;
     }
-    
+
     public Position getPosition() {
         return this.expr.getPosition();
     }
@@ -36,21 +37,21 @@ public class ExpressionStatement extends AbstractStatement {
     public Expression getExpr() {
         return this.expr;
     }
-    
+
     public int getSizeMetric() {
         return this.expr.getSizeMetric() + 1;
     }
-    
+
     public String dump(String indent) {
         return super.dump(indent) + this.expr.dump("  " + indent);
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
         return this.expr.getFunctionDeclarations();
     }
-    
+
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict);
+        visitor.visit(context, this, strict);
     }
 
     public String toIndentedString(String indent) {

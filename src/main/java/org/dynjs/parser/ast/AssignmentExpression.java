@@ -15,15 +15,18 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 
 public class AssignmentExpression extends AbstractBinaryExpression {
 
     public AssignmentExpression(final Expression lhs, final Expression rhs) {
-        super(lhs, rhs, "=" );
+        super(lhs, rhs, "=");
     }
-    
+
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
@@ -31,5 +34,14 @@ public class AssignmentExpression extends AbstractBinaryExpression {
 
     public String toString() {
         return getLhs() + " = " + getRhs();
+    }
+
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        List<FunctionDeclaration> decls = new ArrayList<>();
+        if (getRhs() instanceof FunctionExpression) {
+            decls.addAll(getLhs().getFunctionDeclarations());
+            return decls;
+        }
+        return super.getFunctionDeclarations();
     }
 }
