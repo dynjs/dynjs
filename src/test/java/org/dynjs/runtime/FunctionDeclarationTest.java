@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
@@ -59,5 +60,25 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         assertThat( result ).isNotNull();
         assertThat( result ).isInstanceOf( JSFunction.class );
         
+    }
+    
+    @Test
+    @Ignore
+    public void testNamedFunction() {
+        eval("var handlers = {}");
+        eval("var registerHandler = function(name, f) {" +
+        		"handlers[name] = f;" +
+        	 "}");
+        eval("var unregisterHandler = function(name, f) {" +
+                "if (handlers[name] === f) {" +
+        		"  handlers[name] = null;" +
+                "}" +
+        	 "}");
+        eval("registerHandler('myhandler', function MyHandler() {" +
+        		"unregisterHandler('myhandler', MyHandler);" +
+                "return 'foobar';" +
+        		"});");
+        assertThat(eval("handlers['myhandler']()")).isEqualTo("foobar");
+        assertThat(eval("handlers['myhandler'] == null")).isEqualTo(true);
     }
 }
