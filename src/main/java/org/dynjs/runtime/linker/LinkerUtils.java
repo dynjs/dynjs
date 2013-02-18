@@ -49,9 +49,12 @@ public class LinkerUtils {
     }
     
     public static boolean isJavascriptUndefinedReference(Object object) {
-        return (object instanceof Reference) && (((Reference) object).getBase() == Types.UNDEFINED );
+        return (object instanceof Reference) && (((Reference) object).getBase() == Types.UNDEFINED ) && ! (((Reference)object).isStrictReference());
     }
     
+    public static boolean isJavascriptStrictUndefinedReference(Object object) {
+        return (object instanceof Reference) && (((Reference) object).getBase() == Types.UNDEFINED ) && (((Reference)object).isStrictReference());
+    }
     
     public static boolean isJavascriptFunctionReference(Object object) {
         return (object instanceof Reference) && (((Reference) object).getBase() instanceof JSFunction);
@@ -96,6 +99,11 @@ public class LinkerUtils {
     public static MethodHandle javascriptUndefinedReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
         return binder.drop(1, binder.type().parameterCount() - 1)
                 .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isJavascriptUndefinedReference", MethodType.methodType(boolean.class, Object.class)));
+    }
+    
+    public static MethodHandle javascriptStrictUndefinedReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        return binder.drop(1, binder.type().parameterCount() - 1)
+                .invoke(MethodHandles.lookup().findStatic(LinkerUtils.class, "isJavascriptStrictUndefinedReference", MethodType.methodType(boolean.class, Object.class)));
     }
     
     public static MethodHandle javascriptFunctionReferenceGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {

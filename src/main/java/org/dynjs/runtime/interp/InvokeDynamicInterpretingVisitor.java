@@ -35,6 +35,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         Reference lhsRef = (Reference) lhs;
+        
 
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
@@ -132,7 +133,6 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     protected Object getValue(ExecutionContext context, Object obj) {
-
         if (obj instanceof Reference) {
             String name = ((Reference) obj).getReferencedName();
 

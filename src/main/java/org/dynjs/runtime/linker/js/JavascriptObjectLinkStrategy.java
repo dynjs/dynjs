@@ -85,8 +85,19 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
             MethodHandle guard = javascriptEnvironmentReferenceGuard(guardBinder);
             return new StrategicLink(handle, guard);
         }
+        
+        if (isJavascriptStrictUndefinedReference(receiver) && ((Reference)receiver).isStrictReference() ) {
+            MethodHandle handle = binder
+                    .drop(2,2)
+                    .drop(1)
+                    .filter( 0, createReferenceErrorFilter())
+                    .throwException();
+            
+            MethodHandle guard = javascriptStrictUndefinedReferenceGuard(guardBinder);
+            return new StrategicLink(handle, guard);
+        }
 
-        if (isJavascriptUndefinedReference(receiver)) {
+        if (isJavascriptUndefinedReference(receiver) && ! ((Reference)receiver).isStrictReference() ) {
             MethodHandle handle = binder
                     .convert(void.class, Reference.class, ExecutionContext.class, String.class, Object.class)
                     .permute(1, 1, 2, 3, 0)
@@ -98,6 +109,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
             MethodHandle guard = javascriptUndefinedReferenceGuard(guardBinder);
             return new StrategicLink(handle, guard);
         }
+        
 
         return chain.nextStrategy();
     }
@@ -227,6 +239,15 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
 
     public static ThrowException createTypeErrorFilter(ExecutionContext context) {
         return new ThrowException(context, context.createTypeError("not callable"));
+    }
+    
+    public static MethodHandle createReferenceErrorFilter() throws NoSuchMethodException, IllegalAccessException {
+        return MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "createTypeErrorFilter",
+                MethodType.methodType(ThrowException.class, ExecutionContext.class));
+    }
+
+    public static ThrowException createReferenceErrorFilter(ExecutionContext context) {
+        return new ThrowException(context, context.createTypeError("not referenceable"));
     }
 
     /*
