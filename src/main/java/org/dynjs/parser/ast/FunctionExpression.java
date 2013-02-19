@@ -42,16 +42,6 @@ public class FunctionExpression extends AbstractExpression {
         return this.descriptor.getSizeMetric() + 15;
     }
 
-    public List<FunctionDeclaration> getFunctionDeclarations() {
-        if (this.descriptor.getIdentifier() != null) {
-            System.err.println("GET FN: " + this.descriptor.getIdentifier());
-            new Exception().printStackTrace();
-            return Collections.singletonList(new FunctionDeclaration(this.descriptor));
-        }
-
-        return Collections.emptyList();
-    }
-
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");

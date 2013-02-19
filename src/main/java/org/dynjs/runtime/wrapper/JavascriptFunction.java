@@ -50,7 +50,7 @@ public class JavascriptFunction extends AbstractFunction {
             }
         }, false);
     }
-
+    
     @Override
     public String getFileName() {
         return this.code.getFileName();

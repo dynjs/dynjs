@@ -63,20 +63,19 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testNamedFunction() {
         eval("var handlers = {}");
-        eval("var registerHandler = function(name, f) {" +
-        		"handlers[name] = f;" +
+        eval("var registerHandler = function(name, f) {",
+        		"handlers[name] = f;",
         	 "}");
-        eval("var unregisterHandler = function(name, f) {" +
-                "if (handlers[name] === f) {" +
-        		"  handlers[name] = null;" +
+        eval("var unregisterHandler = function(name, f) {",
+                "if (handlers[name] === f) {",
+        		"  handlers[name] = null;",
                 "}" +
         	 "}");
-        eval("registerHandler('myhandler', function MyHandler() {" +
-        		"unregisterHandler('myhandler', MyHandler);" +
-                "return 'foobar';" +
+        eval("registerHandler('myhandler', function MyHandler() {",
+        		"unregisterHandler('myhandler', MyHandler);",
+                "return 'foobar';",
         		"});");
         assertThat(eval("handlers['myhandler']()")).isEqualTo("foobar");
         assertThat(eval("handlers['myhandler'] == null")).isEqualTo(true);

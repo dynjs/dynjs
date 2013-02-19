@@ -54,14 +54,6 @@ public class FunctionCallExpression extends AbstractExpression {
         return size + 5;
     }
     
-    public List<FunctionDeclaration> getFunctionDeclarations() {
-        List<FunctionDeclaration> decls = new ArrayList<>();
-        for ( Expression arg : this.argExprs ) {
-            decls.addAll( arg.getFunctionDeclarations() );
-        }
-        return decls;
-    }
-    
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(this.memberExpr).append("(");

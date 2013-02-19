@@ -591,6 +591,11 @@ public class Types {
 
     public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
         // 11.9.6
+        
+        //System.err.println( "lhs: " + lhs.getClass() + " // " + lhs );
+        //System.err.println( "rhs: " + rhs.getClass() + " // " + rhs );
+        //System.err.println( "lhs: " + System.identityHashCode(lhs));
+        //System.err.println( "rhs: " + System.identityHashCode(rhs));
 
         if (!lhs.getClass().equals(rhs.getClass())
                 // Allow comparison of Doubles and Longs (because 0 === -0 in Javascript
@@ -621,6 +626,8 @@ public class Types {
         if (lhs instanceof String || lhs instanceof Boolean) {
             return lhs.equals(rhs);
         }
+        
+        //System.err.println( "identity: " + ( lhs == rhs ));
 
         return lhs == rhs;
     }
