@@ -96,7 +96,7 @@ public class JSJavaImplementationManager {
 
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
-        DynamicClassLoader cl = new DynamicClassLoader();
+        DynamicClassLoader cl = new DynamicClassLoader(Thread.currentThread().getContextClassLoader());
 
         //ClassReader reader = new ClassReader(bytecode);
         //CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
