@@ -34,7 +34,7 @@ public class ClasspathModuleProvider implements ModuleProvider {
         String originalName = moduleName;
         moduleName = normalizeName(moduleName);
 //        System.err.println("Looking for: " + moduleName);
-        ClassLoader classLoader = this.getClass().getClassLoader();
+        ClassLoader classLoader = requireGlobal.getConfig().getClassLoader();
         try {
             InputStream is = classLoader.getResourceAsStream(moduleName);
             if (is == null) {
