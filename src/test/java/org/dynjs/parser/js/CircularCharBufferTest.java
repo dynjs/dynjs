@@ -8,7 +8,7 @@ import java.io.StringReader;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CiruclarCharBufferTest {
+public class CircularCharBufferTest {
     
     private StringReader reader;
     private CircularCharBuffer buf;
