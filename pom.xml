@@ -12,9 +12,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.rephract>1.x.incremental.37</version.rephract>
-<!--
-        <version.rephract>1.0-SNAPSHOT</version.rephract>
--->
+        <version.jitescript>0.3.x.incremental.12</version.jitescript>
+        <version.jreadline>0.20.incremental.2</version.jreadline>
     </properties>
 
     <developers>
@@ -76,7 +75,7 @@
         <dependency>
             <groupId>me.qmx.jitescript</groupId>
             <artifactId>jitescript</artifactId>
-            <version>0.3.x.incremental.12</version>
+            <version>${version.jitescript}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -109,7 +108,7 @@
         <dependency>
             <groupId>org.jboss.jreadline</groupId>
             <artifactId>jreadline</artifactId>
-            <version>0.20.incremental.2</version>
+            <version>${version.jreadline}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
