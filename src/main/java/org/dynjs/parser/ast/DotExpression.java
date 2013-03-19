@@ -22,7 +22,7 @@ import org.dynjs.runtime.ExecutionContext;
 /**
  * Access a property with dot notation
  * 
- * @see 11.2.1
+ * see 11.2.1
  * 
  * @author Douglas Campos
  * @author Bob McWhirter

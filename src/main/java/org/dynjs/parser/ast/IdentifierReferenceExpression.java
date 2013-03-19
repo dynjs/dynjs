@@ -24,8 +24,8 @@ import org.dynjs.runtime.ExecutionContext;
  * in 10.3.1.
  * The result of evaluating an Identifier is always a value of type Reference.
  * 
- * @see 11.1.2
- * @see 10.3.1
+ * see 11.1.2
+ * see 10.3.1
  * 
  * @author Douglas Campos
  * @author Bob McWhirter

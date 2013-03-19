@@ -8,7 +8,7 @@ import org.dynjs.runtime.ExecutionContext;
  * The <code>this</code> keyword evaluates to the value of the ThisBinding of
  * the current execution context.
  * 
- * @see 11.1.1
+ * see 11.1.1
  * @author Douglas Campos
  * @author Bob McWhirter
  * 
