@@ -24,6 +24,12 @@ public class ExecutionContext {
         context.locale = runtime.getConfig().getLocale();
         return context;
     }
+    
+    public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
+        ExecutionContext context = ExecutionContext.createEvalExecutionContext(runtime);
+        listener.initialize(context);
+        return context;
+    }
 
     public static ExecutionContext createEvalExecutionContext(DynJS runtime) {
         // 10.4.2 (no caller)
