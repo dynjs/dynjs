@@ -54,6 +54,20 @@
                 <role>Software Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>bobmcw</id>
+            <name>Bob McWhirter</name>
+            <roles>
+                <role>Software Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>lanceball</id>
+            <name>Lance Ball</name>
+            <roles>
+                <role>Software Developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <licenses>
