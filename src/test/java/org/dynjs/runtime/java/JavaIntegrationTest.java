@@ -321,6 +321,19 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
+    public void testBoundJavaMethod() {
+        Object result = eval( "var foo = new org.dynjs.runtime.java.DefaultFoo();",
+                "var js = {};",
+                "js.taco = foo.getContent.bind(foo);",
+                "js.taco()" );
+        
+        assertThat( result ).isEqualTo( "default content" );
+        System.err.println( result );
+    
+        
+    }
+    
+    @Test
     public void testLongPrimitiveCoercion() {
         Object result = eval( "new org.dynjs.runtime.java.Thing().longMethod(42)");
         
