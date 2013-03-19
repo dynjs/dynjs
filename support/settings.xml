@@ -1,0 +1,79 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <profiles>
+        <profile>
+            <id>projectodd-repository</id>
+            <repositories>
+                <repository>
+                    <id>projectodd-upstream</id>
+                    <name>project:odd Upstream Builds</name>
+                    <url>https://repository-projectodd.forge.cloudbees.com/upstream</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>projectodd-snapshot</id>
+                    <name>project:odd snapshot Builds</name>
+                    <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>jboss-public-repository</id>
+            <repositories>
+                <repository>
+                    <id>jboss-public-repository-group</id>
+                    <name>JBoss Public Maven Repository Group</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>jboss-public-repository-group</id>
+                    <name>JBoss Public Maven Repository Group</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>jboss-public-repository</activeProfile>
+        <activeProfile>projectodd-repository</activeProfile>
+    </activeProfiles>
+
+</settings>
+
