@@ -144,10 +144,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
-          <version>3.6.1.Final</version>
-          <scope>test</scope>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.6.1.Final</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
