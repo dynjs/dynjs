@@ -3,12 +3,12 @@ package org.dynjs.runtime.linker;
 import java.lang.invoke.CallSite;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.projectodd.rephract.FusionLinker;
+import org.projectodd.rephract.RephractLinker;
 import org.projectodd.rephract.mop.MetaObjectProtocolLinkStrategy;
 
 public class InterpretingInvokeDynamicHandler {
 
-    private FusionLinker linker;
+    private RephractLinker linker;
 
     private CallSite get;
     private CallSite set;
@@ -16,12 +16,12 @@ public class InterpretingInvokeDynamicHandler {
     private CallSite call;
     private CallSite construct;
 
-    public InterpretingInvokeDynamicHandler(FusionLinker linker) throws Throwable {
+    public InterpretingInvokeDynamicHandler(RephractLinker linker) throws Throwable {
         this.linker = linker;
-        this.get = linker.bootstrap("fusion:getProperty|getMethod", Object.class, Object.class, ExecutionContext.class, String.class);
-        this.set = linker.bootstrap("fusion:setProperty", void.class, Object.class, ExecutionContext.class, String.class, Object.class);
-        this.call = linker.bootstrap("fusion:call", Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class);
-        this.construct = linker.bootstrap("fusion:construct", Object.class, Object.class, ExecutionContext.class, Object[].class);
+        this.get = linker.bootstrap("dyn:getProperty|getMethod", Object.class, Object.class, ExecutionContext.class, String.class);
+        this.set = linker.bootstrap("dyn:setProperty", void.class, Object.class, ExecutionContext.class, String.class, Object.class);
+        this.call = linker.bootstrap("dyn:call", Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class);
+        this.construct = linker.bootstrap("dyn:construct", Object.class, Object.class, ExecutionContext.class, Object[].class);
     }
 
     public void addLinkStrategy(MetaObjectProtocolLinkStrategy linkStrategy) {

@@ -18,7 +18,7 @@ import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
 import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
-import org.projectodd.rephract.FusionLinker;
+import org.projectodd.rephract.RephractLinker;
 import org.projectodd.rephract.LinkLogger;
 import org.projectodd.rephract.NullLinkLogger;
 import org.projectodd.rephract.mop.java.CoercionMatrix;
@@ -29,7 +29,7 @@ public class DynJSBootstrapper {
     public static Handle HANDLE;
     public static Object[] ARGS = new Object[0];
 
-    private static FusionLinker linker;
+    private static RephractLinker linker;
 
     private static InterpretingInvokeDynamicHandler invokeHandler;
 
@@ -42,7 +42,7 @@ public class DynJSBootstrapper {
             // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
             LinkLogger logger = new NullLinkLogger();
 
-            linker = new FusionLinker(logger);
+            linker = new RephractLinker(logger);
 
             linker.addLinkStrategy(new JavascriptObjectLinkStrategy(logger));
             linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy(logger));

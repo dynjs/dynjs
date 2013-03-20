@@ -43,7 +43,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             // reference context name val
             append(jsGetValue());
             // reference context name val
-            invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+            invokedynamic("dyn:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
                     DynJSBootstrapper.ARGS);
             // <empty>
             ldc(expr.getIdentifier());
@@ -89,7 +89,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         // value ref context name value context
         pop();
         // value ref context name value
-        invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+        invokedynamic("dyn:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
                 DynJSBootstrapper.ARGS);
         // value
         go_to(end);
@@ -152,7 +152,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         }
         // ctor-fn context array
 
-        invokedynamic("fusion:construct", sig(Object.class, Object.class, ExecutionContext.class, Object[].class), DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
+        invokedynamic("dyn:construct", sig(Object.class, Object.class, ExecutionContext.class, Object[].class), DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
         // obj
 
         label(end);
@@ -259,7 +259,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         // fn context self array
 
         // function context ref self args
-        invokedynamic("fusion:call", sig(Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class), DynJSBootstrapper.HANDLE,
+        invokedynamic("dyn:call", sig(Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class), DynJSBootstrapper.HANDLE,
                 DynJSBootstrapper.ARGS);
         // value
     }
@@ -421,7 +421,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
                 // ref name context
                 swap();
                 // ref context name
-                invokedynamic("fusion:getProperty|getMethod", sig(Object.class, Reference.class, ExecutionContext.class, String.class), DynJSBootstrapper.HANDLE,
+                invokedynamic("dyn:getProperty|getMethod", sig(Object.class, Reference.class, ExecutionContext.class, String.class), DynJSBootstrapper.HANDLE,
                         DynJSBootstrapper.ARGS);
                 // value
                 if (throwIfNot != null) {

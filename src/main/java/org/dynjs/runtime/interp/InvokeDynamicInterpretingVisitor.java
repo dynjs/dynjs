@@ -54,7 +54,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         push(rhs);
 
         // lhsRef.putValue(context, rhs);
-        // invokedynamic("fusion:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+        // invokedynamic("dyn:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
         // DynJSBootstrapper.ARGS);
     }
 
