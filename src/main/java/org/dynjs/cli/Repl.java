@@ -15,19 +15,18 @@
  */
 package org.dynjs.cli;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynJS;
-
 import org.jboss.aesh.console.Console;
 import org.jboss.aesh.console.ConsoleCallback;
 import org.jboss.aesh.console.ConsoleOutput;
 import org.jboss.aesh.console.Prompt;
 import org.jboss.aesh.console.settings.Settings;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 public class Repl {
 
@@ -45,10 +44,10 @@ public class Repl {
     public Repl(DynJS runtime, InputStream in, OutputStream out) {
         this(runtime, in, out, WELCOME_MESSAGE, PROMPT);
     }
-    
+
     public Repl(DynJS runtime, InputStream in, OutputStream out, String welcome, String prompt) {
-        this.prompt  = prompt;
-        this.welcome = welcome; 
+        this.prompt = prompt;
+        this.welcome = welcome;
         this.runtime = runtime;
         this.out = out;
         this.in = in;
