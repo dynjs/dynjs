@@ -237,11 +237,7 @@
                 <version>1.9.0</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <header>${project.basedir}/etc/dynjs-license.txt</header>
-                    <excludes>
-                        <exclude>src/main/java/org/dynalang/**</exclude>
-                        <exclude>src/main/resources/org/dynjs/dynjs-license.txt</exclude>
-                    </excludes>
+                    <header>${project.basedir}/support/dynjs-license.txt</header>
                     <includes>
                         <include>src/**</include>
                     </includes>
