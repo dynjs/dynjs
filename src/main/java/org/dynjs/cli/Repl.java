@@ -66,6 +66,7 @@ public class Repl {
                 public int readConsoleOutput(ConsoleOutput consoleOutput) throws IOException {
                     String statement = consoleOutput.getBuffer();
                     if (statement.equalsIgnoreCase("exit")) {
+                        console.stop();
                         return 0;
                     } else {
                         try {
