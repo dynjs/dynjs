@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.rephract>1.x.incremental.39</version.rephract>
+        <version.rephract>1.0.0</version.rephract>
         <version.jitescript>0.3.0</version.jitescript>
         <version.aesh>0.36</version.aesh>
     </properties>
