@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.rephract>1.x.incremental.39</version.rephract>
         <version.jitescript>0.3.0</version.jitescript>
-        <version.jreadline>0.20.incremental.2</version.jreadline>
+        <version.aesh>0.36</version.aesh>
     </properties>
 
     <developers>
@@ -121,9 +121,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.jreadline</groupId>
-            <artifactId>jreadline</artifactId>
-            <version>${version.jreadline}</version>
+            <groupId>org.jboss.aesh</groupId>
+            <artifactId>aesh</artifactId>
+            <version>${version.aesh}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

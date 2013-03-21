@@ -22,9 +22,12 @@ import java.io.PrintWriter;
 
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynJS;
-import org.jboss.jreadline.console.Console;
-import org.jboss.jreadline.console.ConsoleOutput;
-import org.jboss.jreadline.console.settings.Settings;
+
+import org.jboss.aesh.console.Console;
+import org.jboss.aesh.console.ConsoleCallback;
+import org.jboss.aesh.console.ConsoleOutput;
+import org.jboss.aesh.console.Prompt;
+import org.jboss.aesh.console.settings.Settings;
 
 public class Repl {
 
@@ -56,27 +59,32 @@ public class Repl {
             Settings consoleSettings = Settings.getInstance();
             consoleSettings.setStdOut(this.out);
             consoleSettings.setInputStream(this.in);
-            Console console = new Console();
+            final Console console = Console.getInstance();
             console.pushToStdOut(welcome);
-            ConsoleOutput line = null;
-            while ((line = console.read(prompt)) != null) {
-                String statement = line.getBuffer();
-                if (statement.equalsIgnoreCase("exit")) {
-                    break;
-                } else {
-                    try {
-                        Object object = runtime.evaluate(statement);
-                        console.pushToStdOut(object.toString() + "\n");
-                    } catch (DynJSException e) {
-                        console.pushToStdErr(e.getLocalizedMessage() + "\n");
-                    } catch (IncompatibleClassChangeError e) {
-                        console.pushToStdErr("ERROR> " + e.getLocalizedMessage() + "\n");
-                        console.pushToStdErr("Error parsing statement: " + statement + "\n");
-                    } catch (Exception e) {
-                        e.printStackTrace(new PrintWriter(out));
+            console.setPrompt(new Prompt(prompt));
+            console.setConsoleCallback(new ConsoleCallback() {
+                @Override
+                public int readConsoleOutput(ConsoleOutput consoleOutput) throws IOException {
+                    String statement = consoleOutput.getBuffer();
+                    if (statement.equalsIgnoreCase("exit")) {
+                        return 0;
+                    } else {
+                        try {
+                            Object object = runtime.evaluate(statement);
+                            console.pushToStdOut(object.toString() + "\n");
+                        } catch (DynJSException e) {
+                            console.pushToStdErr(e.getLocalizedMessage() + "\n");
+                        } catch (IncompatibleClassChangeError e) {
+                            console.pushToStdErr("ERROR> " + e.getLocalizedMessage() + "\n");
+                            console.pushToStdErr("Error parsing statement: " + statement + "\n");
+                        } catch (Exception e) {
+                            e.printStackTrace(new PrintWriter(out));
+                        }
                     }
+                    return 0;
                 }
-            }
+            });
+            console.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
