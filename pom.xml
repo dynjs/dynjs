@@ -10,6 +10,12 @@
     <url>http://dynjs.org</url>
     <name>dynjs</name>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.rephract>1.0.0</version.rephract>
