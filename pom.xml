@@ -71,6 +71,13 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git@github.com:dynjs/dynjs.git</connection>
+        <developerConnection>scm:git:git@github.com:dynjs/dynjs.git</developerConnection>
+        <url>git@github.com:dynjs/dynjs.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <licenses>
         <license>
             <name>The BSD License</name>
