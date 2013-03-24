@@ -17,5 +17,5 @@ package org.dynjs;
 
 public class DynJSVersion {
 
-    public static final String FULL = "0.0.0 (development)";
+    public static final String FULL = "0.1.2-SNAPSHOT";
 }
