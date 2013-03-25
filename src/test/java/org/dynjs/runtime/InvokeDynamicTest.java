@@ -100,8 +100,8 @@ public class InvokeDynamicTest extends AbstractDynJSTestSupport {
     @Test
     public void testStaticObjectAsProperty() {
         eval("var obj = {}");
-        eval("obj.version = org.dynjs.DynJSVersion.FULL");
-        assertThat(eval("obj.version")).isEqualTo(org.dynjs.DynJSVersion.FULL);
+        eval("obj.version = org.dynjs.runtime.DynJS.VERSION");
+        assertThat(eval("obj.version")).isEqualTo(org.dynjs.runtime.DynJS.VERSION);
     }
 
     /*

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import org.dynjs.Config;
-import org.dynjs.DynJSVersion;
 import org.dynjs.runtime.DynJS;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -77,7 +76,7 @@ public class Main {
     }
 
     private void showVersion() {
-        stream.println("dynjs version " + DynJSVersion.FULL);
+        stream.println("dynjs " + DynJS.VERSION);
     }
 
     private void startRepl() {
