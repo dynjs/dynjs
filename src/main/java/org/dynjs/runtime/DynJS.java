@@ -3,8 +3,12 @@ package org.dynjs.runtime;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 
+import java.io.IOException;
+import java.util.Properties;
+
 public class DynJS {
 
+    public static final String VERSION;
     private Config config;
     private JSCompiler compiler;
     private ExecutionContext context;
@@ -53,4 +57,14 @@ public class DynJS {
         }
         return evaluate( buffer.toString() );
     }
+    static {
+        try {
+            Properties properties = new Properties();
+            properties.load(DynJS.class.getClassLoader().getResourceAsStream("version.properties"));
+            VERSION = properties.getProperty("git.commit.id.describe");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
