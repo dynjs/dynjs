@@ -38,20 +38,20 @@ public class DynJS {
     public Runner newRunner() {
         return new Runner( this.context );
     }
-    
+
     // ----------------------------------------------------------------------
-    
+
     public Object execute(String source) {
         return newRunner().withSource(source).execute();
     }
-    
+
     public Object evaluate(String source) {
         return newRunner().withSource(source).evaluate();
     }
-    
+
     public Object evaluate(String...sourceLines) {
         StringBuffer buffer = new StringBuffer();
-        
+
         for ( String line : sourceLines ) {
             buffer.append( line ).append( "\n" );
         }
