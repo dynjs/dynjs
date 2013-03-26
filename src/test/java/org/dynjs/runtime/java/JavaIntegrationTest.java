@@ -339,4 +339,13 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         
         assertThat( result ).isInstanceOf(Long.class).isEqualTo(42L);
     }
+    
+    @Test
+    @Ignore
+    public void testCheckingPropertiesOnJavaObjects() {
+        eval("var thing = new org.dynjs.runtime.java.Thing();");
+        // Check the existence of a property - should return undefined
+        Object result = eval("thing.propertyThatDoesNotExist");
+        assertThat( result ).isEqualTo( Types.UNDEFINED );
+    }
 }
