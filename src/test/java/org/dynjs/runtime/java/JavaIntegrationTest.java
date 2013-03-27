@@ -348,4 +348,13 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         Object result = eval("thing.propertyThatDoesNotExist");
         assertThat( result ).isEqualTo( Types.UNDEFINED );
     }
+    
+    @Test
+    @Ignore
+    public void testPublicNumericAttributes() {
+        eval("var thing = new org.dynjs.runtime.java.Thing();");
+        assertThat(eval("thing.someNum")).isEqualTo(100);
+        eval("thing.someNum = 200");
+        assertThat(eval("thing.someNum")).isEqualTo(200);
+    }
 }
