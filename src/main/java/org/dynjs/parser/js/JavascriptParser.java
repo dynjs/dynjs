@@ -3,11 +3,13 @@ package org.dynjs.parser.js;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.files.ProxyFile;
 
 public class JavascriptParser {
 
@@ -25,10 +27,23 @@ public class JavascriptParser {
 
     public ProgramTree parse(File file) throws IOException {
         return parse( file, false );
-        
     }
+
     public ProgramTree parse(File file, boolean forceStrict) throws IOException {
         FileReader reader = new FileReader(file);
+        try {
+            return parse(reader, file.getName(), forceStrict);
+        } finally {
+            reader.close();
+        }
+    }
+
+    public ProgramTree parse(ProxyFile file) throws IOException {
+        return parse( file, false );
+    }
+
+    public ProgramTree parse(ProxyFile file, boolean forceStrict) throws IOException {
+        Reader reader = new InputStreamReader(file.createInputStream());
         try {
             return parse(reader, file.getName(), forceStrict);
         } finally {

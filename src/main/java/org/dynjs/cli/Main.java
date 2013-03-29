@@ -22,6 +22,7 @@ import java.io.PrintStream;
 
 import org.dynjs.Config;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.files.ProxyFile;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -69,7 +70,8 @@ public class Main {
     private void executeFile(String filename) throws IOException {
         runtime = new DynJS();
         try {
-            runtime.newRunner().withSource( new File( filename ) ).execute();
+            final ProxyFile file = runtime.getExecutionContext().getGlobalObject().getFilesystem().createFile(filename);
+            runtime.newRunner().withSource(file).execute();
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");
         }

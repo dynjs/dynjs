@@ -25,6 +25,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Runner;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.files.ProxyFile;
 
 public class Include extends AbstractNativeFunction {
 
@@ -35,7 +36,7 @@ public class Include extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String includePath = Types.toString(context, args[0]);
-        File includeFile = new File(includePath);
+        ProxyFile includeFile = context.getGlobalObject().getFilesystem().createFile(includePath);
 
         try {
             Runner runner = context.getGlobalObject().getRuntime().newRunner();
