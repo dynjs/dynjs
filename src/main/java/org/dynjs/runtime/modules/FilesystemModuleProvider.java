@@ -9,6 +9,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.files.ProxyFile;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the
@@ -37,7 +38,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
     @Override
     public JSObject load(ExecutionContext context, String moduleName) {
         String filename = normalizeFileName(moduleName);
-        File file = findFile(context, filename);
+        ProxyFile file = findFile(context, filename);
         if (file == null) {
             file = findFile(context, moduleName + "/index.js");
         }
@@ -66,10 +67,10 @@ public class FilesystemModuleProvider implements ModuleProvider {
         return null;
     }
 
-    private File findFile(ExecutionContext context, String fileName) {
+    private ProxyFile findFile(ExecutionContext context, String fileName) {
         List<String> loadPaths = context.getGlobalObject().getLoadPaths();
         for (String loadPath : loadPaths) {
-            File file = new File(loadPath, fileName);
+            ProxyFile file = context.getGlobalObject().getFilesystem().createFile(loadPath, fileName);
             if (file.exists()) {
                 return file;
             }

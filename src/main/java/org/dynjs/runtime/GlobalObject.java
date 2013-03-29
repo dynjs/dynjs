@@ -40,6 +40,8 @@ import org.dynjs.runtime.builtins.types.BuiltinString;
 import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinURIError;
+import org.dynjs.runtime.files.FilesystemProvider;
+import org.dynjs.runtime.files.NativeFilesystemProvider;
 import org.dynjs.runtime.java.JavaPackage;
 import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
@@ -51,6 +53,7 @@ public class GlobalObject extends DynObject {
 
     private DynJS runtime;
     private BlockManager blockManager;
+    private FilesystemProvider filesystem;
     private List<ModuleProvider> moduleProviders = new ArrayList<>();
     private List<String> loadPaths = new ArrayList<>();
     private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
@@ -59,6 +62,7 @@ public class GlobalObject extends DynObject {
         super(null);
         this.runtime = runtime;
         this.blockManager = new BlockManager();
+        this.filesystem = new NativeFilesystemProvider();
 
         defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
 
@@ -192,6 +196,10 @@ public class GlobalObject extends DynObject {
 
     public BlockManager getBlockManager() {
         return this.blockManager;
+    }
+
+    public FilesystemProvider getFilesystem() {
+        return filesystem;
     }
 
     public org.dynjs.runtime.BlockManager.Entry retrieveBlockEntry(int statementNumber) {

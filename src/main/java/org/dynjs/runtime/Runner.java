@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -13,6 +14,7 @@ import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.js.JavascriptParser;
 import org.dynjs.parser.js.ParserException;
 import org.dynjs.parser.js.SyntaxError;
+import org.dynjs.runtime.files.ProxyFile;
 
 public class Runner {
 
@@ -59,6 +61,13 @@ public class Runner {
 
     public Runner withSource(File source) throws FileNotFoundException {
         this.source = new FileReader(source);
+        this.shouldClose = true;
+        this.fileName = source.getName();
+        return this;
+    }
+
+    public Runner withSource(ProxyFile source) throws FileNotFoundException {
+        this.source = new InputStreamReader(source.createInputStream());
         this.shouldClose = true;
         this.fileName = source.getName();
         return this;
