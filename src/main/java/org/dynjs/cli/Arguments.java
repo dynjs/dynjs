@@ -28,6 +28,7 @@ public class Arguments {
     static final String HELP = "--help";
     static final String VERSION = "--version";
     static final String DEBUG = "--debug";
+    static final String FILE = "--file";
 
     @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
     private boolean console;
@@ -49,6 +50,7 @@ public class Arguments {
         if (this.isDebug()) {
             config.setDebug(true);
         }
+        config.setArgv(arguments.toArray());
         return config;
     }
 
@@ -73,6 +75,10 @@ public class Arguments {
     }
 
     public String getFilename() {
-        return arguments.get( 0 );
+        if (arguments.size() > 0) {
+            return arguments.get( 0 );
+        } else {
+            return null;
+        }
     }
 }

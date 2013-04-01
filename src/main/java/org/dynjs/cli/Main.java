@@ -30,8 +30,9 @@ public class Main {
     private Arguments dynJsArguments;
     private CmdLineParser parser;
     private String[] arguments;
-    private DynJS runtime;
     private PrintStream stream;
+    private Config config;
+    private DynJS runtime;
 
     public Main(PrintStream stream, String[] args) {
         this.dynJsArguments = new Arguments();
@@ -51,12 +52,12 @@ public class Main {
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
                 showUsage();
+            } else if (dynJsArguments.getFilename() != null) {
+                executeFile(dynJsArguments.getFilename());
             } else if (dynJsArguments.isConsole()) {
                 startRepl();
             } else if (dynJsArguments.isVersion()) {
                 showVersion();
-            } else if (!dynJsArguments.getFilename().isEmpty()) {
-                executeFile(dynJsArguments.getFilename());
             }
 
         } catch (CmdLineException e) {
@@ -67,8 +68,8 @@ public class Main {
     }
 
     private void executeFile(String filename) throws IOException {
-        runtime = new DynJS();
         try {
+            initializeRuntime();
             runtime.newRunner().withSource( new File( filename ) ).execute();
         } catch (FileNotFoundException e) {
             stream.println("File " + filename + " not found");
@@ -80,8 +81,7 @@ public class Main {
     }
 
     private void startRepl() {
-        final Config config = dynJsArguments.getConfig();
-        final DynJS runtime = new DynJS(config);
+        initializeRuntime();
         Repl repl = new Repl(runtime, System.in, stream);
         repl.run();
     }
@@ -89,9 +89,13 @@ public class Main {
     private void showUsage() {
         StringBuilder usageText = new StringBuilder("Usage: dynjs [--console |--debug | --help | --version |FILE]\n");
         usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
-
         stream.println(usageText.toString());
-
         parser.printUsage(stream);
+    }
+    
+    private void initializeRuntime() {
+        config = dynJsArguments.getConfig();
+        config.setOutputStream(this.stream);
+        runtime = new DynJS(config);
     }
 }

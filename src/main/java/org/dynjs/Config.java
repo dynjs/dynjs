@@ -31,6 +31,8 @@ public class Config {
     private boolean nodePackageManagerEnabled = true;
     private CompileMode compileMode = CompileMode.JIT;
 
+    private Object[] argv;
+
     public Config() {
         this.classLoader = new DynamicClassLoader();
         initializeOptions();
@@ -150,6 +152,14 @@ public class Config {
 
     public void setGlobalObjectFactory(GlobalObjectFactory globalObjectFactory) {
         this.globalObjectFactory = globalObjectFactory;
+    }
+
+    public void setArgv(Object[] arguments) {
+        this.argv = arguments;
+    }
+    
+    public Object[] getArgv() {
+        return this.argv;
     }
 
 }

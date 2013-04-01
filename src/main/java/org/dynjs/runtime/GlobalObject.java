@@ -108,6 +108,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
         defineGlobalProperty("print", new Print(this));
+        defineGlobalProperty("argv", this.runtime.getConfig().getArgv());
 
         // ----------------------------------------
         // Built-in global objects
