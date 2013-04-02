@@ -1,0 +1,7 @@
+language: java
+script: mvn test -P,-version
+jdk:
+  - oraclejdk7
+  - openjdk7
+notifications:
+  irc: "irc.freenode.org#dynjs"

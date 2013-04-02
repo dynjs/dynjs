@@ -1,5 +1,7 @@
 # dynjs - invokedynamic-based javascript impl
 
+[![Build Status](https://secure.travis-ci.org/dynjs/dynjs.png)](http://travis-ci.org/dynjs/dynjs)
+
 ![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
 
 ## Setting up environment
