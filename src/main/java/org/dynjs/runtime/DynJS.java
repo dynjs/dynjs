@@ -37,7 +37,7 @@ public class DynJS {
     }
 
     public Runner newRunner() {
-        return new Runner( this.context );
+        return new Runner(this.context);
     }
 
     // ----------------------------------------------------------------------
@@ -50,14 +50,15 @@ public class DynJS {
         return newRunner().withSource(source).evaluate();
     }
 
-    public Object evaluate(String...sourceLines) {
+    public Object evaluate(String... sourceLines) {
         StringBuffer buffer = new StringBuffer();
 
-        for ( String line : sourceLines ) {
-            buffer.append( line ).append( "\n" );
+        for (String line : sourceLines) {
+            buffer.append(line).append("\n");
         }
-        return evaluate( buffer.toString() );
+        return evaluate(buffer.toString());
     }
+
     static {
         String version = "undefined";
         try {
