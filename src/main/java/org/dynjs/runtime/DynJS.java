@@ -58,12 +58,15 @@ public class DynJS {
         return evaluate( buffer.toString() );
     }
     static {
+        String version = "undefined";
         try {
             Properties properties = new Properties();
             properties.load(DynJS.class.getClassLoader().getResourceAsStream("version.properties"));
-            VERSION = properties.getProperty("git.commit.id.describe");
+            version = properties.getProperty("git.commit.id.describe");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // intentionally suppressed
+        } finally {
+            VERSION = version;
         }
     }
 
