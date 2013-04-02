@@ -8,6 +8,7 @@ import org.dynjs.compiler.JSCompiler;
 import org.dynjs.runtime.builtins.ClasspathModuleProvider;
 import org.dynjs.runtime.builtins.DecodeUri;
 import org.dynjs.runtime.builtins.DecodeUriComponent;
+import org.dynjs.runtime.builtins.DynJSBuiltin;
 import org.dynjs.runtime.builtins.EncodeUri;
 import org.dynjs.runtime.builtins.EncodeUriComponent;
 import org.dynjs.runtime.builtins.Escape;
@@ -108,7 +109,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
         defineGlobalProperty("print", new Print(this));
-        defineGlobalProperty("argv", this.runtime.getConfig().getArgv());
+        defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime));
 
         // ----------------------------------------
         // Built-in global objects

@@ -496,5 +496,4 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("desc.enumerable")).isEqualTo(false);
     }
     
-
 }
