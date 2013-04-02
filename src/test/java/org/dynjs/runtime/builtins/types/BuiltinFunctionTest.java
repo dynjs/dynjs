@@ -6,7 +6,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
@@ -83,7 +82,6 @@ public class BuiltinFunctionTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testCallTwice() {
         Object result = eval("var token = 'foo';",
                 "function doIt() {",

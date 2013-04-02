@@ -2,7 +2,6 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ParsersTest extends AbstractDynJSTestSupport {
@@ -23,7 +22,6 @@ public class ParsersTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void parsesFloatWithUnicodeLineBreak() {
         // This seems to break the parser
         check("var result = parseFloat(\"\u20281.1\")", 1.1);        

@@ -10,7 +10,6 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuiltinObjectTest extends AbstractDynJSTestSupport {
@@ -234,7 +233,6 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testAsFunction() {
         eval("var obj = Object((null,2,3),1,2);");
         assertThat(eval("obj.constructor === Number"));
