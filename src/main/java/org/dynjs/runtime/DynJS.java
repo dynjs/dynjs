@@ -4,6 +4,7 @@ import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DynJS {
@@ -61,8 +62,11 @@ public class DynJS {
         String version = "undefined";
         try {
             Properties properties = new Properties();
-            properties.load(DynJS.class.getClassLoader().getResourceAsStream("version.properties"));
-            version = properties.getProperty("git.commit.id.describe");
+            InputStream stream = DynJS.class.getClassLoader().getResourceAsStream("version.properties");
+            if (stream != null) {
+                properties.load(stream);
+                version = properties.getProperty("git.commit.id.describe");
+            }
         } catch (IOException e) {
             // intentionally suppressed
         } finally {
