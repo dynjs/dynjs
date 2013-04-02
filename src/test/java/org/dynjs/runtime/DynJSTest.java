@@ -496,9 +496,4 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("desc.enumerable")).isEqualTo(false);
     }
     
-    @Test
-    public void testGlobalDynJSBuiltin() {
-        Object dynjs = eval("dynjs");
-        assertThat(dynjs).isNotNull();
-    }
 }
