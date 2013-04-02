@@ -109,8 +109,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
         defineGlobalProperty("print", new Print(this));
-        defineGlobalProperty("dynjs", new DynJSBuiltin(this, this.runtime));
-        defineGlobalProperty("argv", this.runtime.getConfig().getArgv());
+        defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime));
 
         // ----------------------------------------
         // Built-in global objects

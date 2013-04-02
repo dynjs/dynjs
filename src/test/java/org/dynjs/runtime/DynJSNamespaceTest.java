@@ -11,4 +11,11 @@ public class DynJSNamespaceTest extends AbstractDynJSTestSupport {
         Object dynjs = eval("dynjs");
         assertThat(dynjs).isNotNull();
     }
+
+    @Test
+    public void exposesTheRuntimeArguments() {
+        Object[] arguments = {"foo", "baz"};
+        getConfig().setArgv(arguments);
+        assertThat(eval("dynjs.argv")).isEqualTo(arguments);
+    }
 }
