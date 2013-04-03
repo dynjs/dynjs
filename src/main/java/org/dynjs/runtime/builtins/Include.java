@@ -38,8 +38,13 @@ public class Include extends AbstractNativeFunction {
         File includeFile = new File(includePath);
 
         try {
+            ExecutionContext parent = context.getParent();
+            while(parent != null) {
+                context = parent;
+                parent  = context.getParent();
+            }
             Runner runner = context.getGlobalObject().getRuntime().newRunner();
-            runner.withContext(context.getParent().getParent())
+            runner.withContext(context)
                     .withSource(includeFile)
                     .execute();
         } catch (IOException e) {

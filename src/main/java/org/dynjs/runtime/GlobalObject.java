@@ -106,6 +106,7 @@ public class GlobalObject extends DynObject {
             defineGlobalProperty("require", new Require(this));
         }
         defineGlobalProperty("include", new Include(this));
+        defineGlobalProperty("load", new Include(this)); // hackety hack
         defineGlobalProperty("escape", new Escape(this));
         defineGlobalProperty("unescape", new Unescape(this));
         defineGlobalProperty("print", new Print(this));
