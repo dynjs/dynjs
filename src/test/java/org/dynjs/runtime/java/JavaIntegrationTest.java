@@ -341,7 +341,6 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testCheckingPropertiesOnJavaObjects() {
         eval("var thing = new org.dynjs.runtime.java.Thing();");
         // Check the existence of a property - should return undefined

@@ -1,8 +1,5 @@
 package org.dynjs.runtime.interp;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import java.util.Arrays;
 import java.util.List;
 
 import org.dynjs.codegen.DereferencedReference;
@@ -12,10 +9,8 @@ import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.NewOperatorExpression;
 import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
@@ -134,14 +129,17 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
     protected Object getValue(ExecutionContext context, Object obj) {
         if (obj instanceof Reference) {
-            String name = ((Reference) obj).getReferencedName();
-
+            Reference ref = (Reference) obj;
+            String name = ref.getReferencedName();
             try {
                 Object result = DynJSBootstrapper.getInvokeHandler().get(obj, context, name);
                 return result;
             } catch (ThrowException e) {
                 throw e;
             } catch (NoSuchMethodError e) {
+                if (ref.isPropertyReference() && !ref.isUnresolvableReference()) {
+                    return Types.UNDEFINED;
+                }
                 throw new ThrowException(context, context.createReferenceError("unable to reference: " + name));
             } catch (Throwable e) {
                 throw new ThrowException(context, e);
