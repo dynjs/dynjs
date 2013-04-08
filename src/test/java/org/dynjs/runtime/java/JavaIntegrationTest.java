@@ -349,7 +349,6 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testPublicNumericAttributes() {
         eval("var thing = new org.dynjs.runtime.java.Thing();");
         assertThat(eval("thing.someNum")).isEqualTo(100);
