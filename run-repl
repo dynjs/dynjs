@@ -1,6 +1,0 @@
-#!/bin/sh
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if [ ! -f "$DIR/target/dynjs-all.jar" ]; then
-	mvn clean package -f "$DIR/pom.xml"
-fi
-java -jar "$DIR/target/dynjs-all.jar" --console $*
