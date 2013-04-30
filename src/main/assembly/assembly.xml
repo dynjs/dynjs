@@ -1,0 +1,19 @@
+<assembly>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <files>
+      <file>
+        <source>target/dynjs-all.jar</source>
+        <outputDirectory>/target</outputDirectory>
+      </file>
+      <file>
+        <source>run-repl</source>
+        <outputDirectory>/</outputDirectory>
+        <destName>dynJS</destName>
+      </file>
+    </files>
+</assembly>
+
+
