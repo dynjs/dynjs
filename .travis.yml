@@ -1,6 +1,6 @@
 language: java
-install: mvn install -DskipTests=true -P,-version
-script: mvn test -P,-version
+install: mvn install -s support/settings.xml -DskipTests=true -P,-version
+script: mvn test -s support/settings.xml -P,-version
 jdk:
   - oraclejdk7
   - openjdk7
