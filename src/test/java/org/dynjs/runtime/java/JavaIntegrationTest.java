@@ -355,4 +355,10 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         eval("thing.someNum = 200");
         assertThat(eval("thing.someNum")).isEqualTo(200);
     }
+    
+    @Test
+    public void testIntegerCoercion() {
+        eval("var thing = new org.dynjs.runtime.java.Thing();");
+        assertThat(eval("thing.intMethod(9)")).isEqualTo("9");
+    }
 }

@@ -563,5 +563,14 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
             "arr.toLocaleString();",
             "n")).isEqualTo(3L);
     }
+    
+    @Test
+    public void testTypeofArray() {
+        eval("var arr = ['b','a','c','o','n']");
+        assertThat(eval("typeof arr")).isEqualTo("object");
+        assertThat(eval("arr instanceof Array")).isEqualTo(true);
+        eval("function foo() { return arguments[0] instanceof Array; }");
+        assertThat(eval("foo(['p','i','g'])")).isEqualTo(true);
+    }
 
 }

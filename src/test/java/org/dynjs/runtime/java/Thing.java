@@ -7,6 +7,10 @@ public class Thing {
         return !tf;
     }
     
+    public String intMethod(int arg) {
+        return String.valueOf(arg);
+    }
+    
     public long longMethod(long arg) {
         return arg;
     }

@@ -5,13 +5,8 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <files>
       <file>
-        <source>target/dynjs-all.jar</source>
-        <outputDirectory>/target</outputDirectory>
-      </file>
-      <file>
-        <source>run-repl</source>
-        <outputDirectory>/</outputDirectory>
-        <destName>dynJS</destName>
+        <source>dynjs</source>
+        <outputDirectory>bin</outputDirectory>
       </file>
     </files>
 </assembly>
