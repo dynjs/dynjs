@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.runtime.builtins.ClasspathModuleProvider;
 import org.dynjs.runtime.builtins.DecodeUri;
 import org.dynjs.runtime.builtins.DecodeUriComponent;
 import org.dynjs.runtime.builtins.DynJSBuiltin;
@@ -42,6 +41,7 @@ import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
 import org.dynjs.runtime.builtins.types.BuiltinTypeError;
 import org.dynjs.runtime.builtins.types.BuiltinURIError;
 import org.dynjs.runtime.java.JavaPackage;
+import org.dynjs.runtime.modules.ClasspathModuleProvider;
 import org.dynjs.runtime.modules.ConsoleModule;
 import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.JavaClassModuleProvider;

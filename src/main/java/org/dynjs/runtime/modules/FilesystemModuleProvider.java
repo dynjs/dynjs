@@ -21,6 +21,7 @@ public class FilesystemModuleProvider implements ModuleProvider {
 
     public FilesystemModuleProvider(GlobalObject globalObject) {
         globalObject.addLoadPath(System.getProperty("user.dir") + "/");
+        globalObject.addLoadPath(System.getProperty("user.dir") + "/node_modules");
         globalObject.addLoadPath(System.getProperty("user.home") + "/.node_modules/");
         globalObject.addLoadPath(System.getProperty("user.home") + "/.node_libraries/");
         globalObject.addLoadPath("/usr/local/lib/node/");
