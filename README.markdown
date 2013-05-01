@@ -31,7 +31,7 @@ Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/d
 
 ### Running 
 
-Run `./dynjs --console` for the REPL and try the snippet below:
+Run `./bin/dynjs --console` for the REPL and try the snippet below:
 
 ```javascript
 var x = 1 + 1;

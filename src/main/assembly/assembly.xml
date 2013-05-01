@@ -5,7 +5,7 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <files>
       <file>
-        <source>dynjs</source>
+        <source>bin/dynjs</source>
         <outputDirectory>bin</outputDirectory>
       </file>
     </files>

@@ -46,4 +46,4 @@ nb-configuration.xml
 src/main/resources/version.properties
 
 # generated exe
-dynjs
+./dynjs
