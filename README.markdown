@@ -11,7 +11,8 @@
 
 OSX users can get it at [java site](http://java.sun.com).
 
-Download and install it to your user(not to the entire machine) and before running `mvn install` run (or use Java7 as default compiler):
+Download and install it to your user(not to the entire machine) and before
+running `mvn install` run (or use Java7 as default compiler):
 		
 		export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
 		
@@ -22,7 +23,7 @@ Download and install it to your user(not to the entire machine) and before runni
 ### Building from sources
 
 1. `git clone https://github.com/dynjs/dynjs.git && cd dynjs`
-2. `mvn install`
+2. `mvn install -s support/settings.xml`
 
 ### Download
 
@@ -30,12 +31,12 @@ Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/d
 
 ### Running 
 
-Run `./run-repl` for the REPL and try the snippet below:
+Run `./dynjs --console` for the REPL and try the snippet below:
 
 ```javascript
 var x = 1 + 1;
 print(x);
 ```
 
-For more options, run `java -jar target/dynjs-all.jar --help`.
+For more options, run `./dynjs --help`.
 
