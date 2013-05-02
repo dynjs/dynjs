@@ -11,7 +11,7 @@ public class JavaPackage extends DynObject {
 
     public JavaPackage(GlobalObject globalObject, String path) {
         super(globalObject);
-        this.path = path;
+        this.path  = path;
     }
 
     @Override
@@ -19,13 +19,12 @@ public class JavaPackage extends DynObject {
         Object result = super.get(context, name);
         if (result == Types.UNDEFINED) {
 
-            String fullPath = this.path + "." + name;
             ClassLoader cl = context.getConfig().getClassLoader();
             try {
-                Class<?> cls = cl.loadClass(fullPath);
+                Class<?> cls = cl.loadClass(fullPath(name));
                 return cls;
             } catch (ClassNotFoundException e) {
-                result = new JavaPackage(context.getGlobalObject(), this.path + "." + name);
+                result = new JavaPackage(context.getGlobalObject(), fullPath(name));
             }
         }
         return result;
@@ -33,6 +32,10 @@ public class JavaPackage extends DynObject {
     
     public String toString() {
         return "[JavaPackage: " + this.path + "]";
+    }
+    
+    private String fullPath(String name) {
+        return (this.path == null ? name : this.path + "." + name);
     }
 
 }

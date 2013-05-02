@@ -1,13 +1,16 @@
 package org.dynjs.runtime.java;
 
 import static org.fest.assertions.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Ignore;
@@ -365,5 +368,19 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Test
     public void testIoPackage() {
         assertThat(eval("io")).isInstanceOf(JavaPackage.class);
+    }
+    
+    @Test
+    public void testPackages() {
+        assertThat(eval("Packages")).isInstanceOf(JavaPackage.class);
+        assertThat(eval("Packages.io")).isInstanceOf(JavaPackage.class);
+        assertThat(eval("Packages.me.skippy.dolphin")).isInstanceOf(JavaPackage.class);
+        assertThat(eval("new Packages.me.skippy.dolphin.DorsalFin()")).isInstanceOf(me.skippy.dolphin.DorsalFin.class);
+        try {
+            assertThat(eval("me.skippy.dolphin")).isInstanceOf(JavaPackage.class);
+            fail("Expected a reference error");
+        } catch (ThrowException e) {
+            // expected
+        }
     }
 }
