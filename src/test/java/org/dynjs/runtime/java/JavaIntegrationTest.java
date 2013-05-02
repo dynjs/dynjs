@@ -361,4 +361,9 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         eval("var thing = new org.dynjs.runtime.java.Thing();");
         assertThat(eval("thing.intMethod(9)")).isEqualTo("9");
     }
+    
+    @Test
+    public void testIoPackage() {
+        assertThat(eval("io")).isInstanceOf(JavaPackage.class);
+    }
 }
