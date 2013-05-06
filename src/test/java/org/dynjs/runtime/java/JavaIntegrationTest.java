@@ -383,4 +383,12 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
             // expected
         }
     }
+    
+    @Test
+    public void testBindJavascriptFunctionToJavaObject() {
+        eval("var f = function() { return 'cheetoes' }");
+        eval("var o = new Packages.me.skippy.dolphin.DorsalFin();");
+        eval("o.snack = f;");
+        assertThat(eval("o.snack();")).isEqualTo("cheetoes");
+    }
 }
