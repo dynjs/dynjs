@@ -391,4 +391,24 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         eval("o.snack = f;");
         assertThat(eval("o.snack();")).isEqualTo("cheetoes");
     }
+    
+    @Test
+    @Ignore
+    public void testJavascriptMethodsOnJavaObjects() {
+        eval("var f = new Packages.me.skippy.dolphin.DorsalFin( {",
+                "isTrue: function() {",
+                "  return true",
+                "}});");
+        assertThat(eval("f.isTrue()")).isEqualTo(true);
+    }
+    
+    @Test
+    @Ignore
+    public void testAbstractBooleanMethods() {
+        eval("var b = new org.dynjs.runtime.java.AbstractBar( {",
+                "isHoppy: function() {",
+                "  return true",
+                "}});");
+        assertThat(eval("b.isHoppy()")).isEqualTo(true);
+    }
 }
