@@ -403,7 +403,15 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
+    public void testJavascriptMethodsOnJavaObjects2() {
+        eval("var f = new Packages.me.skippy.dolphin.DorsalFin();",
+                "f.isTrue = function() {",
+                "  return true",
+                "}});");
+        assertThat(eval("f.isTrue()")).isEqualTo(true);
+    }
+    
+    @Test
     public void testAbstractBooleanMethods() {
         eval("var b = new org.dynjs.runtime.java.AbstractBar( {",
                 "isHoppy: function() {",
