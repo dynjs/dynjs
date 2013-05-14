@@ -393,7 +393,6 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    @Ignore
     public void testJavascriptMethodsOnJavaObjects() {
         eval("var f = new Packages.me.skippy.dolphin.DorsalFin( {",
                 "isTrue: function() {",

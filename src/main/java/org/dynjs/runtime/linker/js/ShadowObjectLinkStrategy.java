@@ -3,13 +3,9 @@ package org.dynjs.runtime.linker.js;
 import static org.dynjs.runtime.linker.LinkerUtils.*;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.dynjs.codegen.DereferencedReference;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
@@ -29,17 +25,21 @@ public class ShadowObjectLinkStrategy extends ContextualLinkStrategy<ExecutionCo
         super(ExecutionContext.class, logger);
     }
 
-    protected JSObject getShadowObject(Object primary) {
+    public JSObject getShadowObject(Object primary) {
         return getShadowObject(primary, true);
     }
     
-    protected JSObject getShadowObject(Object primary, boolean create) {
+    public JSObject getShadowObject(Object primary, boolean create) {
         JSObject shadow = this.shadowObjects.get(primary);
         if (shadow == null && create) {
             shadow = new DynObject(null);
             this.shadowObjects.put(primary, shadow);
         }
         return shadow;
+    }
+    
+    public void putShadowObject(Object primary, JSObject shadow) {
+        this.shadowObjects.put( primary, shadow );
     }
 
     @Override

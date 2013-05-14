@@ -2,12 +2,11 @@ package org.dynjs.runtime.linker.java;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
-import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,28 +15,27 @@ import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Types;
-import org.dynjs.runtime.Types.Undefined;
-import org.objectweb.asm.ClassReader;
+import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.util.CheckClassAdapter;
 
 public class JSJavaImplementationManager {
 
     private static AtomicInteger counter = new AtomicInteger();
 
     private Map<Class<?>, Class<?>> implementations = new HashMap<>();
-    
+
     private BooleanMethodGenerator booleanMethodGenerator = new BooleanMethodGenerator();
     private ObjectMethodGenerator objectMethodGenerator = new ObjectMethodGenerator();
 
-    public JSJavaImplementationManager() {
+    private ShadowObjectLinkStrategy shadowLinker;
 
+    public JSJavaImplementationManager(ShadowObjectLinkStrategy shadowLinker) {
+        this.shadowLinker = shadowLinker;
     }
 
     public Object getImplementationWrapper(Class<?> targetClass, ExecutionContext context, JSObject implementation) throws Exception {
@@ -45,7 +43,42 @@ public class JSJavaImplementationManager {
 
         Constructor<?> ctor = implClass.getConstructor(ExecutionContext.class, JSObject.class);
 
-        return ctor.newInstance(context, implementation);
+        JSObject shadow = createShadow(context, implClass, implementation);
+
+        Object implInstance = ctor.newInstance(context, implementation);
+
+        if (shadow != null) {
+            this.shadowLinker.putShadowObject(implInstance, shadow);
+        }
+
+        return implInstance;
+    }
+
+    protected JSObject createShadow(ExecutionContext context, Class<?> implClass, JSObject implementation) {
+        DynObject shadow = new DynObject(context.getGlobalObject());
+        Method[] methods = implClass.getMethods();
+
+        boolean shadowed = false;
+
+        List<String> propNames = implementation.getOwnPropertyNames().toList();
+        props: for (String propName : propNames) {
+            for (Method m : methods) {
+                if (m.getName().equals(propName)) {
+                    continue props;
+                }
+            }
+            Object val = implementation.get(context, propName);
+            if (val instanceof JSFunction) {
+                shadowed = true;
+                shadow.put(propName, val);
+                implementation.delete(context, propName, false);
+            }
+        }
+        if (shadowed) {
+            return shadow;
+        }
+
+        return null;
     }
 
     public Class<?> getImplementationWrapper(Class<?> targetClass) {
@@ -101,8 +134,8 @@ public class JSJavaImplementationManager {
 
         DynamicClassLoader cl = new DynamicClassLoader(Thread.currentThread().getContextClassLoader());
 
-        //ClassReader reader = new ClassReader(bytecode);
-        //CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
+        // ClassReader reader = new ClassReader(bytecode);
+        // CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         return cl.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
@@ -121,10 +154,10 @@ public class JSJavaImplementationManager {
     private void defineMethod(final Method method, final JiteClass jiteClass, final Class<?> superClass) {
 
         Class<?> returnType = method.getReturnType();
-        if ( returnType == Boolean.TYPE ) {
-            booleanMethodGenerator.defineMethod( method, jiteClass, superClass );
+        if (returnType == Boolean.TYPE) {
+            booleanMethodGenerator.defineMethod(method, jiteClass, superClass);
         } else {
-            objectMethodGenerator.defineMethod( method, jiteClass, superClass );
+            objectMethodGenerator.defineMethod(method, jiteClass, superClass);
         }
     }
 }

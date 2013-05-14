@@ -35,14 +35,17 @@ public class DynJSBootstrapper {
 
     static {
         try {
-            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager();
+            LinkLogger logger = new NullLinkLogger();
+            
+            ShadowObjectLinkStrategy shadowLinker = new ShadowObjectLinkStrategy(logger);
+            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager( shadowLinker );
             CoercionMatrix coercionMatrix = new DynJSCoercionMatrix(implementationManager);
             ResolverManager manager = new ResolverManager(coercionMatrix);
 
             // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
-            LinkLogger logger = new NullLinkLogger();
 
             linker = new RephractLinker(logger);
+            
 
             linker.addLinkStrategy(new JavascriptObjectLinkStrategy(logger));
             linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy(logger));
@@ -51,7 +54,7 @@ public class DynJSBootstrapper {
             linker.addLinkStrategy(new JSJavaClassLinkStrategy(logger, manager));
             linker.addLinkStrategy(new JSJavaArrayLinkStrategy(logger));
             linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(logger, manager));
-            linker.addLinkStrategy(new ShadowObjectLinkStrategy(logger));
+            linker.addLinkStrategy(shadowLinker);
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
                     p(DynJSBootstrapper.class), "bootstrap",

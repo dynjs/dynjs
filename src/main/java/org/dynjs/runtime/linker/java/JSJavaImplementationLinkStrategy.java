@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandle;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
 import org.projectodd.rephract.LinkLogger;
 import org.projectodd.rephract.StrategicLink;
 import org.projectodd.rephract.StrategyChain;
