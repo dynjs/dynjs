@@ -418,4 +418,12 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "}});");
         assertThat(eval("b.isHoppy()")).isEqualTo(true);
     }
+    
+    @Test
+    public void testByte() {
+        Object result = eval( "var b = new java.lang.Byte(120);",
+                "b");
+        
+        System.err.println( result );
+    }
 }
