@@ -553,6 +553,11 @@ public class MathTest extends AbstractDynJSTestSupport {
     public void testMathTanNaNIsNaN() {
         assertEval("isNaN(Math.tan(NaN))", true);
     }
+    
+    @Test
+    public void testModulo() {
+        assertEval( "13%2", 1L );
+    }
 
     private void assertEval(String javascript, Object expected) {
         assertThat(eval(javascript)).isEqualTo(expected);

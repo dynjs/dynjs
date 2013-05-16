@@ -875,10 +875,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
                 // Regular math
                 double primaryValue = lval.doubleValue() / rval.doubleValue();
-                if ( isRepresentableByLong(primaryValue)) {
-                    push( (long) primaryValue );
+                if (isRepresentableByLong(primaryValue)) {
+                    push((long) primaryValue);
                 } else {
-                    push( primaryValue);
+                    push(primaryValue);
                 }
                 return;
             case "%":
@@ -886,7 +886,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     push(Double.NaN);
                     return;
                 }
-                push(lval.doubleValue() % rval.doubleValue());
+                double primaryModulo = lval.doubleValue() % rval.doubleValue();
+                if (isRepresentableByLong(primaryModulo)) {
+                    push((long) primaryModulo);
+                } else {
+                    push(primaryModulo);
+                }
                 return;
             }
         } else {
@@ -931,8 +936,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     push(Double.NaN);
                     return;
                 }
-
-                push(lval.longValue() % rval.doubleValue());
+                
+                long modResult = lval.longValue() % rval.longValue();
+                push(modResult);
                 return;
             }
         }
@@ -1533,7 +1539,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     }
 
     private boolean isRepresentableByLong(double n) {
-        if ( isNegativeZero(n)) {
+        if (isNegativeZero(n)) {
             return false;
         }
         return (n == (long) n);
