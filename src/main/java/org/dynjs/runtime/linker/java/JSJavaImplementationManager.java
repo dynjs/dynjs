@@ -5,7 +5,10 @@ import static me.qmx.jitescript.util.CodegenUtils.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,8 +59,8 @@ public class JSJavaImplementationManager {
 
     protected JSObject createShadow(ExecutionContext context, Class<?> implClass, JSObject implementation) {
         DynObject shadow = new DynObject(context.getGlobalObject());
-        Method[] methods = implClass.getMethods();
-
+        Method[] methods = implClass.getDeclaredMethods();
+        
         boolean shadowed = false;
 
         List<String> propNames = implementation.getOwnPropertyNames().toList();
@@ -138,13 +141,12 @@ public class JSJavaImplementationManager {
     }
 
     private void defineMethods(Class<?> targetClass, JiteClass jiteClass, Class<?> superClass) {
-        Method[] methods = targetClass.getMethods();
+        for (Method method:  getMethods(targetClass)) {
+            int modifiers = method.getModifiers();
 
-        for (int i = 0; i < methods.length; ++i) {
-            int modifiers = methods[i].getModifiers();
-
-            if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
-                defineMethod(methods[i], jiteClass, superClass);
+            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && 
+                    !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
+                defineMethod(method, jiteClass, superClass);
             }
         }
     }
@@ -157,5 +159,38 @@ public class JSJavaImplementationManager {
         } else {
             objectMethodGenerator.defineMethod(method, jiteClass, superClass);
         }
+    }
+    
+    private List<Method> getMethods(Class<?> targetClass) {
+        List<Method> methods = new LinkedList<Method>();
+        methods.addAll(Arrays.asList(targetClass.getMethods()));
+        
+        return addProtectedMethods(targetClass, methods);
+    }
+
+    private List<Method> addProtectedMethods(Class<?> targetClass, List<Method> methods) {
+        if (targetClass != null && !targetClass.equals(Object.class)) {
+            List<Method> declaredMethods = Collections.unmodifiableList(methods);
+            
+            for (Method method : targetClass.getDeclaredMethods()) {
+                if (Modifier.isProtected(method.getModifiers()) && !alreadyDeclaredMethod(method, declaredMethods)) {
+                    methods.add(method);
+                }
+            }
+            
+            addProtectedMethods(targetClass.getSuperclass(), methods);            
+        }
+        return methods;
+    }
+    
+    private boolean alreadyDeclaredMethod(Method method, List<Method> declaredMethods) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for (Method declaredMethod : declaredMethods) {
+            if (method.getName().equals(declaredMethod.getName()) &&
+                    Arrays.equals(parameterTypes, declaredMethod.getParameterTypes())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

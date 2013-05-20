@@ -3,6 +3,7 @@ package org.dynjs.runtime.linker.java;
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
@@ -97,7 +98,7 @@ public abstract class MethodGenerator {
         }
         
 
-        final boolean hasSuper = superMethodFound;
+        final boolean hasSuper = superMethodFound || Modifier.isProtected(method.getModifiers());
         if (hasSuper) {
             final Class<?>[] params = method.getParameterTypes();
             final Class<?>[] signature = new Class<?>[params.length + 1];
