@@ -10,7 +10,6 @@ import java.util.concurrent.Executor;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
-import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Ignore;
@@ -425,5 +424,148 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "b");
         
         System.err.println( result );
+    }
+    
+    @Test
+    public void testCallProtectedMethodOfConcreteClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {} );");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callConcreteGetLong()")).isEqualTo(-1L);
+        assertThat(b.callConcreteGetLong()).isEqualTo(-1L);
+    }
+
+    @Test
+    public void testOverrideProtectedMethodOfConcreteClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {",
+                "concreteGetLong: function() {",
+                "  return 1;",
+                "}});");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callConcreteGetLong()")).isEqualTo(1L);
+        assertThat(b.callConcreteGetLong()).isEqualTo(1L);
+    }
+
+    @Test
+    public void testCallProtectedMethodImplementedByConcreteClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {} );");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callAbstractGetLong()")).isEqualTo(-2L);
+        assertThat(b.callAbstractGetLong()).isEqualTo(-2L);
+    }
+
+    @Test
+    public void testOverrideProtectedMethodImplementedByConcreteClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {",
+                "abstractGetLong: function() {",
+                "  return 2;",
+                "}});");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callAbstractGetLong()")).isEqualTo(2L);
+        assertThat(b.callAbstractGetLong()).isEqualTo(2L);
+    }
+
+    @Test
+    public void testCallInheritedProtectedMethodImplementedByAbstractClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {} );");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(b.callImplementedGetLong()).isEqualTo(-3L);
+        assertThat(eval("b.callImplementedGetLong()")).isEqualTo(-3L);
+    }
+
+    @Test
+    public void testOverrideInheritedProtectedMethodImplementedByAbstractClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {",
+                "implementedGetLong: function() {",
+                "  return 3;",
+                "}});");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callImplementedGetLong()")).isEqualTo(3L);
+        assertThat(b.callImplementedGetLong()).isEqualTo(3L);
+    }
+
+    @Test
+    public void testCallProtectedMethodImplementedByAbstractClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeAbstractBean( {} );");
+        SomeAbstractBean b = (SomeAbstractBean) eval("b");
+
+        assertThat(eval("b.callImplementedGetLong()")).isEqualTo(-3L);
+        assertThat(b.callImplementedGetLong()).isEqualTo(-3L);
+    }
+
+    @Test
+    public void testOverrideProtectedMethodImplementedByAbstractClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeAbstractBean( {",
+                "implementedGetLong: function() {",
+                "  return 4;",
+                "}});");
+        SomeAbstractBean b = (SomeAbstractBean) eval("b");
+
+        assertThat(eval("b.callImplementedGetLong()")).isEqualTo(4L);
+        assertThat(b.callImplementedGetLong()).isEqualTo(4L);
+    }
+
+    @Test
+    public void testImplementProtectedMethodOfAbstractClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeAbstractBean( {",
+                "abstractGetLong: function() {",
+                "  return 5;",
+                "}});");
+        SomeAbstractBean b = (SomeAbstractBean) eval("b");
+
+        assertThat(eval("b.callAbstractGetLong()")).isEqualTo(5L);
+        assertThat(b.callAbstractGetLong()).isEqualTo(5L);
+    }
+
+    @Test
+    public void testCallProtectedMethodOfHigherParent() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {} );");
+        SomeAbstractBean b = (SomeAbstractBean) eval("b");
+
+        assertThat(eval("b.callImplementedParentGetLong()")).isEqualTo(-6L);
+        assertThat(b.callImplementedParentGetLong()).isEqualTo(-6L);
+    }
+
+    @Test
+    public void testOverrideProtectedMethodOfHigherParent() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {",
+                "implementedParentGetLong: function() {",
+                "  return 6;",
+                "}});");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callImplementedParentGetLong()")).isEqualTo(6L);
+        assertThat(b.callImplementedParentGetLong()).isEqualTo(6L);
+    }
+
+    @Test
+    @Ignore
+    public void testBindFunctionThatOverridesMethodOnOnSubclass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean( {} );",
+                "b.implementedParentGetLong = function() {",
+                "  return 7;",
+                "};");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callImplementedParentGetLong()")).isEqualTo(7L);
+        assertThat(b.callImplementedParentGetLong()).isEqualTo(7L);
+    }
+
+    @Test
+    @Ignore
+    public void testBindFunctionThatOverridesMethodOnOriginalClass() {
+        eval("var b = new org.dynjs.runtime.java.SomeConcreteBean();",
+                "b.implementedParentGetLong = function() {",
+                "  return 8;",
+                "};");
+        SomeConcreteBean b = (SomeConcreteBean) eval("b");
+
+        assertThat(eval("b.callImplementedParentGetLong()")).isEqualTo(8L);
+        assertThat(b.callImplementedParentGetLong()).isEqualTo(8L);
     }
 }
