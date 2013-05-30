@@ -92,4 +92,10 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
         assertThat(eval("x.AnObject")).isNotEqualTo(Types.UNDEFINED);
         assertThat(eval("x.a_function()")).isEqualTo("hello!");
     }
+    
+    @Test
+    public void testModuleId() {
+        String path = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/my_module.js";
+        assertThat(eval("require('my_module').module_id")).isEqualTo(path);
+    }
 }

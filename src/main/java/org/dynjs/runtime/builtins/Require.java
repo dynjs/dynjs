@@ -22,6 +22,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.modules.ModuleProvider;
 
@@ -30,7 +31,7 @@ import org.dynjs.runtime.modules.ModuleProvider;
  * 
  * @author Lance Ball
  * @author Bob McWhirter
- * 
+ * http://wiki.commonjs.org/wiki/Modules/1.1
  * @see ModuleProvider
  */
 public class Require extends AbstractNativeFunction {
@@ -41,18 +42,15 @@ public class Require extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
-        Object exports = null;
-
         if (arguments[0] == Types.UNDEFINED) {
             throw new ThrowException(context, context.createError("Error", "no module identifier provided"));
         }
 
         String moduleName = (String) arguments[0];
-
+        JSObject exports  = null;
         List<ModuleProvider> moduleProviders = context.getGlobalObject().getModuleProviders();
-
         for (ModuleProvider provider : moduleProviders) {
-            exports = provider.load(context, moduleName);
+            exports = provider.findAndLoad(context, moduleName);
             if (exports != null) {
                 break;
             }
@@ -62,9 +60,6 @@ public class Require extends AbstractNativeFunction {
             throw new ThrowException(context, context.createError("Error", "cannot find module " + moduleName));
         }
 
-        if (exports == Types.UNDEFINED || exports == Types.NULL) {
-            return null;
-        }
         return exports;
     }
 }

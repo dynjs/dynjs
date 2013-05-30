@@ -1,27 +1,103 @@
 package org.dynjs.runtime.modules;
 
+import java.util.HashMap;
+
+import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSObject;
 
 /**
  * Provider for loading Javascript modules.
  * 
  * @author Bob McWhirter
  */
-public interface ModuleProvider {
+public abstract class ModuleProvider {
 
     /**
      * Load a module.
      * 
      * <p>
      * Given a context and a module name, load the module or return
-     * <code>null</code> if un-handled.
+     * <code>false</code> if not handled.
      * </p>
      * 
+     * @param runtime The active runtime.
      * @param context The context of the request.
-     * @param moduleName The name of the module to load.
-     * @return The loaded module (through its exports), otherwise
-     *         <code>null</code> if un-loadable.
+     * @param moduleID The id of the module to load.
+     * @return <code>true</code> if the module was loaded, false if not
      */
-    Object load(ExecutionContext context, String moduleName);
+    abstract boolean load(DynJS runtime, ExecutionContext context, String moduleID);
+    
+    /** 
+     * Generate a unique module ID for <code>moduleName</code>
+     * 
+     * @param context the current execution context
+     * @param moduleName the name of the module
+     * @return the module ID
+     */
+    abstract String generateModuleID(ExecutionContext context, String moduleName);
 
+    /**
+     * A template method used by require() which is responsible for ensuring the
+     * module loading contract is enforced by subclasses.
+     * 
+     * @see http://wiki.commonjs.org/wiki/Modules/1.1
+     * @param runtime The active runtime
+     * @param context The execution context of the request
+     * @param moduleName The name of the module to load
+     * @return The loaded module or <code>null</code if un-loadable.
+     */
+    public JSObject findAndLoad(ExecutionContext context, String moduleName) {
+        DynJS runtime = context.getGlobalObject().getRuntime();
+        ExecutionContext requireContext = ExecutionContext.createGlobalExecutionContext(runtime);
+        GlobalObject requireGlobal = requireContext.getGlobalObject();
+        
+        // generate the module ID
+        String moduleId = generateModuleID(context, moduleName);
+        
+        // if the module ID is null, we can't find the module, so bail
+        if (moduleId == null) {
+            return null;
+        }
+        
+        // check the cache & return if found
+        if (cache.containsKey(moduleId)) {
+            return cache.get(moduleId);
+        }
+        
+        // add ID + empty module.exports object to cache
+        JSObject module = new DynObject(context.getGlobalObject());
+        DynObject exports = new DynObject(context.getGlobalObject());
+        module.put(requireContext, "exports", exports, true);
+        module.put(requireContext, "id", moduleId, false);
+        requireGlobal.put(requireContext, "module", module, true);
+        requireGlobal.put(requireContext, "exports", exports, true);
+        cache.put(moduleId, exports);
+        
+        // try to load the module
+        // if successful, add to the cache
+        if (this.load(runtime, requireContext, moduleId)) {
+            exports = (DynObject) module.get(requireContext, "exports");
+            cache.put(moduleId, exports);
+            return exports;
+        }
+        return null;
+    }
+    
+    /**
+     * Helper method. Since module names should not include the .js extension, but the actual
+     * modules themselves usually do.
+     * @param originalName
+     * @return
+     */
+    String normalizeName(String originalName) {
+        if (originalName == null || originalName.endsWith(".js")) {
+            return originalName;
+        }
+        return originalName + ".js";
+    }
+    
+    private HashMap<String, JSObject> cache = new HashMap<String, JSObject>();
 }

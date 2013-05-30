@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the
@@ -17,7 +15,7 @@ import org.dynjs.runtime.JSObject;
  * @author Lance Ball
  * @author Bob McWhirter
  */
-public class FilesystemModuleProvider implements ModuleProvider {
+public class FilesystemModuleProvider extends ModuleProvider {
 
     public FilesystemModuleProvider(GlobalObject globalObject) {
         globalObject.addLoadPath(System.getProperty("user.dir") + "/");
@@ -36,61 +34,55 @@ public class FilesystemModuleProvider implements ModuleProvider {
     }
 
     @Override
-    public JSObject load(ExecutionContext context, String moduleName) {
-        String filename = normalizeFileName(moduleName);
-        File file = findFile(context, filename);
-        if (file == null) {
-            file = findFile(context, moduleName + "/index.js");
-        }
-        if (file != null) {
-            DynJS runtime = context.getGlobalObject().getRuntime();
-            ExecutionContext requireContext = ExecutionContext.createGlobalExecutionContext(runtime);
-
-            GlobalObject requireGlobal = requireContext.getGlobalObject();
-
-            DynObject module = new DynObject(context.getGlobalObject());
-            DynObject exports = new DynObject(context.getGlobalObject());
-
-            requireGlobal.addLoadPath(file.getParent());
-
-            module.put(requireContext, "exports", exports, true);
-            requireGlobal.put(requireContext, "module", module, true);
-            requireGlobal.put(requireContext, "exports", exports, true);
-
+    boolean load(DynJS runtime, ExecutionContext context, String moduleID) {
+        GlobalObject global = context.getGlobalObject();
+        File file = new File(moduleID);
+        if (file.exists()) {
+            global.addLoadPath(file.getParent());
             try {
-                runtime.newRunner().withContext(requireContext).withSource(file).execute();
+                runtime.newRunner().withContext(context).withSource(file).execute();
+                return true;
             } catch (IOException e) {
-                return null;
+                return false;
             }
-            return (JSObject) module.get(requireContext, "exports");
+        }
+        return false;
+    }
+
+    @Override
+    String generateModuleID(ExecutionContext context, String moduleName) {
+        File moduleFile = findFile(context.getGlobalObject().getLoadPaths(), moduleName);
+        if (moduleFile != null && moduleFile.exists()) {
+            return moduleFile.getAbsolutePath();
         }
         return null;
     }
 
-    private File findFile(ExecutionContext context, String fileName) {
-        List<String> loadPaths = context.getGlobalObject().getLoadPaths();
+    /**
+     * Finds the module file based on the known load paths.
+     * 
+     * @param loadPaths the list of load paths to search
+     * @param moduleName the name of the module to find
+     * @return the File if found, else null
+     */
+    private File findFile(List<String> loadPaths, String moduleName) {
+        String fileName = normalizeName(moduleName);
+        File file = null;
         for (String loadPath : loadPaths) {
-            File file = new File(loadPath, fileName);
-            if (file.exists()) {
-                return file;
+            file = new File(loadPath, fileName);
+            if (file.exists()) break;
+            else {
+                file = new File(loadPath, moduleName + "/index.js");
+                if (file.exists()) break;
             }
         }
-
-        return null;
+        return file;
     }
 
-    private String normalizeFileName(String originalName) {
-        if (originalName.endsWith(".js")) {
-            return originalName;
-        }
-        return originalName + ".js";
-    }
-    
     private String getCustomRequirePath() {
         if (System.getenv("DYNJS_REQUIRE_PATH") != null) {
             return System.getenv("DYNJS_REQUIRE_PATH");
         }
         return System.getProperty("dynjs.require.path");
     }
-
 }

@@ -28,6 +28,7 @@ var sayGoodbye = function() {
 }
 
 exports.farewell = sayGoodbye;
+exports.module_id = module.id;
 
 var privateVariable = "Something not null";
 var privateExtra    = parseInt("10");

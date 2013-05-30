@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dynjs.exception.InvalidModuleException;
-import org.dynjs.exception.ModuleLoadException;
-import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 
-public class JavaClassModuleProvider implements ModuleProvider {
+public class JavaClassModuleProvider extends ModuleProvider {
 
     public void addModule(Object module) throws InvalidModuleException {
         Module moduleAnno = module.getClass().getAnnotation(Module.class);
@@ -32,24 +31,26 @@ public class JavaClassModuleProvider implements ModuleProvider {
     }
 
     @Override
-    public JSObject load(ExecutionContext context, String moduleName) {
+    public boolean load(DynJS runtime, ExecutionContext context, String moduleName) {
         Object javaModule = modules.get(moduleName);
 
         if (javaModule == null) {
-            return null;
+            return false;
         }
 
         try {
-            return buildExports(context, moduleName, javaModule);
+            buildExports(context, moduleName, javaModule);
+            return true;
         } catch (IllegalAccessException e) {
-            throw new ModuleLoadException(moduleName, e);
+            return false;
         }
     }
 
     private JSObject buildExports(ExecutionContext context, String moduleName, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
 
-        JSObject exports = new DynObject(context.getGlobalObject());
+        JSObject module  = (JSObject) context.getGlobalObject().get("module");
+        JSObject exports = (JSObject) module.get(null, "exports");
 
         for (Method method : methods) {
             Export exportAnno = method.getAnnotation(Export.class);
@@ -81,5 +82,10 @@ public class JavaClassModuleProvider implements ModuleProvider {
     }
 
     private Map<String, Object> modules = new HashMap<String, Object>();
+
+    @Override
+    String generateModuleID(ExecutionContext context, String moduleName) {
+        return moduleName;
+    }
 
 }
