@@ -63,8 +63,8 @@ public abstract class ModuleProvider {
         }
         
         // check the cache & return if found
-        if (cache.containsKey(moduleId)) {
-            return cache.get(moduleId);
+        if (CACHE.containsKey(moduleId)) {
+            return CACHE.get(moduleId);
         }
         
         // add ID + empty module.exports object to cache
@@ -74,13 +74,13 @@ public abstract class ModuleProvider {
         module.put(requireContext, "id", moduleId, false);
         requireGlobal.put(requireContext, "module", module, true);
         requireGlobal.put(requireContext, "exports", exports, true);
-        cache.put(moduleId, exports);
+        CACHE.put(moduleId, exports);
         
         // try to load the module
         // if successful, add to the cache
         if (this.load(runtime, requireContext, moduleId)) {
             exports = (DynObject) module.get(requireContext, "exports");
-            cache.put(moduleId, exports);
+            CACHE.put(moduleId, exports);
             return exports;
         }
         return null;
@@ -99,5 +99,5 @@ public abstract class ModuleProvider {
         return originalName + ".js";
     }
     
-    private HashMap<String, JSObject> cache = new HashMap<String, JSObject>();
+    private static final HashMap<String, JSObject> CACHE = new HashMap<String, JSObject>();
 }

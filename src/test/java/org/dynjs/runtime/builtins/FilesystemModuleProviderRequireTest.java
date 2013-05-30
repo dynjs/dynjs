@@ -98,4 +98,12 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
         String path = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/my_module.js";
         assertThat(eval("require('my_module').module_id")).isEqualTo(path);
     }
+    
+    @Test
+    public void testCyclicDependencies() {
+      eval("var a = require('a');");
+      eval("var b = require('b');");
+      assertThat(eval("a.a().b")).isEqualTo(eval("b.b"));
+      assertThat(eval("b.b().a")).isEqualTo(eval("a.a"));
+    }
 }
