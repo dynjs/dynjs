@@ -49,7 +49,7 @@ public abstract class ModuleProvider {
      * @param moduleName The name of the module to load
      * @return The loaded module or <code>null</code if un-loadable.
      */
-    public JSObject findAndLoad(ExecutionContext context, String moduleName) {
+    public Object findAndLoad(ExecutionContext context, String moduleName) {
         DynJS runtime = context.getGlobalObject().getRuntime();
         ExecutionContext requireContext = ExecutionContext.createGlobalExecutionContext(runtime);
         GlobalObject requireGlobal = requireContext.getGlobalObject();
@@ -69,7 +69,7 @@ public abstract class ModuleProvider {
         
         // add ID + empty module.exports object to cache
         JSObject module = new DynObject(context.getGlobalObject());
-        DynObject exports = new DynObject(context.getGlobalObject());
+        Object exports = new DynObject(context.getGlobalObject());
         module.put(requireContext, "exports", exports, true);
         module.put(requireContext, "id", moduleId, false);
         requireGlobal.put(requireContext, "module", module, true);
@@ -79,7 +79,7 @@ public abstract class ModuleProvider {
         // try to load the module
         // if successful, add to the cache
         if (this.load(runtime, requireContext, moduleId)) {
-            exports = (DynObject) module.get(requireContext, "exports");
+            exports = module.get(requireContext, "exports");
             CACHE.put(moduleId, exports);
             return exports;
         }
@@ -99,5 +99,5 @@ public abstract class ModuleProvider {
         return originalName + ".js";
     }
     
-    private static final HashMap<String, JSObject> CACHE = new HashMap<String, JSObject>();
+    private static final HashMap<String, Object> CACHE = new HashMap<String, Object>();
 }

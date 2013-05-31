@@ -21,6 +21,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.java.Thing;
 import org.junit.Test;
 
 public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
@@ -110,5 +111,12 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
       eval("var b = require('b');");
       assertThat(eval("a.a().b")).isEqualTo(eval("b.b"));
       assertThat(eval("b.b().a")).isEqualTo(eval("a.a"));
+    }
+    
+    @Test
+    public void testExportsJavaClasses() {
+        eval("var Thing = require('exports_java')");
+        eval("thing = new Thing()");
+        assertThat(eval("thing")).isInstanceOf(Thing.class);
     }
 }

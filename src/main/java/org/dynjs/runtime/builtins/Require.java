@@ -22,7 +22,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.modules.ModuleProvider;
 
@@ -47,7 +46,7 @@ public class Require extends AbstractNativeFunction {
         }
 
         String moduleName = (String) arguments[0];
-        JSObject exports  = null;
+        Object exports  = null;
         List<ModuleProvider> moduleProviders = context.getGlobalObject().getModuleProviders();
         for (ModuleProvider provider : moduleProviders) {
             exports = provider.findAndLoad(context, moduleName);
