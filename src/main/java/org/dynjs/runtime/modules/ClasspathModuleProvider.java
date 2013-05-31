@@ -15,6 +15,8 @@ public class ClasspathModuleProvider extends ModuleProvider {
     @Override
     public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {
         ClassLoader classLoader = context.getGlobalObject().getConfig().getClassLoader();
+        System.err.println("Classloader: " + classLoader.toString());
+        System.err.println("Looking for module " + moduleId);
         try {
             InputStream is = classLoader.getResourceAsStream(moduleId);
             if (is == null) {

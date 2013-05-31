@@ -17,11 +17,13 @@ package org.dynjs.runtime.builtins;
 
 import static org.fest.assertions.Assertions.*;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
 import org.junit.Test;
 
 public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
+    
     @Test
     public void findsModulesOnTheClasspath() {
         eval("foo = require('foo')");
@@ -46,5 +48,10 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
         eval("foobar = require('foobar')");
         assertThat(eval("foobar")).isInstanceOf(JSFunction.class);
         assertThat(eval("foobar()")).isEqualTo("crunchy");
+    }
+    
+    @Test(expected=ThrowException.class)
+    public void throwsWhenModuleIsNotFound() {
+        eval("x = require('does_not_exist');");
     }
 }
