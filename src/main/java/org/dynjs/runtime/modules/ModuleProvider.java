@@ -86,6 +86,10 @@ public abstract class ModuleProvider {
         return null;
     }
     
+    public static void clearCache() {
+        CACHE.clear();
+    }
+    
     /**
      * Helper method. Since module names should not include the .js extension, but the actual
      * modules themselves usually do.
