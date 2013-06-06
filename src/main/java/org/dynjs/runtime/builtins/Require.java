@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
@@ -37,6 +38,9 @@ public class Require extends AbstractNativeFunction {
 
     public Require(GlobalObject globalObject) {
         super(globalObject, "name");
+        DynObject module = new DynObject(globalObject);
+        module.put("id", "dynjs");
+        globalObject.put("module", module);
     }
 
     @Override
