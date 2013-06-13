@@ -544,7 +544,7 @@ public class Lexer {
     }
 
     public Token regexpLiteral() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         text.append("/");
 
         while (la() != '/') {
@@ -591,7 +591,7 @@ public class Lexer {
     }
 
     protected Token identifierOrReservedWord() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
 
         if (isIdentifierStart(la())) {
             if (isUnicodeEscapeSequence(la())) {
@@ -686,7 +686,7 @@ public class Lexer {
     }
 
     protected Token octalLiteral() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         consume(); // 0
 
         while (la() >= '0' && la() <= '7') {
@@ -697,7 +697,7 @@ public class Lexer {
     }
 
     protected Token decimalLiteral() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
 
         int c = la();
         if (c == '+' || c == '-') {
@@ -746,7 +746,7 @@ public class Lexer {
     }
 
     protected Token hexLiteral() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
 
         text.append((char) consume()); // 0
         text.append((char) consume()); // x
@@ -764,7 +764,7 @@ public class Lexer {
     }
 
     protected Token stringLiteral(char type) {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         consume();
 
         int c = 0;
@@ -888,7 +888,7 @@ public class Lexer {
     }
 
     protected String unicodeEscapeSequence() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         text.append("0x");
         consume();
         consume();
@@ -903,7 +903,7 @@ public class Lexer {
     }
 
     protected String hexEscapeSequence() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         text.append("0x");
         consume(); // \
         consume(); // x
@@ -917,7 +917,7 @@ public class Lexer {
     }
 
     protected String octalEscapeSequence() {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         consume(); // \
 
         text.append(octalDigit());
