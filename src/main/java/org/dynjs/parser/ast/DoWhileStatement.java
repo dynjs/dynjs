@@ -54,7 +54,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("do {\n");
         buf.append(indent).append("} while (").append(test.toString()).append(")");
         return buf.toString();

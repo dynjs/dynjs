@@ -29,7 +29,7 @@ public class VariableDeclaration {
     }
 
     public String dump(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(indent + "var " + this.identifier + "\n");
         if (this.expr != null) {
@@ -51,7 +51,7 @@ public class VariableDeclaration {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(this.identifier);
         if (this.expr != null) {
             buf.append(" = ");

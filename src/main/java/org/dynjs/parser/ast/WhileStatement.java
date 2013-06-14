@@ -50,7 +50,7 @@ public class WhileStatement extends AbstractIteratingStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(indent).append("while (").append(this.vbool.toString()).append(") {\n");
         buf.append(this.vloop.toIndentedString(indent + "  "));

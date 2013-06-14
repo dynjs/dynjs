@@ -43,7 +43,7 @@ public class FunctionExpression extends AbstractExpression {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
         String[] params = this.descriptor.getFormalParameterNames();
         for (int i = 0; i < params.length; ++i) {

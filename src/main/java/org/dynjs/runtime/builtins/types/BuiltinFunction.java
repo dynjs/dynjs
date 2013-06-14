@@ -60,7 +60,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         int numArgs = args.length;
         String body = "";
 
-        StringBuffer formalParams = new StringBuffer();
+        StringBuilder formalParams = new StringBuilder();
         boolean first = true;
 
         Set<String> seenParams = new HashSet<>();
@@ -87,7 +87,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
             body = Types.toString(context, args[numArgs - 1]);
         }
 
-        StringBuffer code = new StringBuffer();
+        StringBuilder code = new StringBuilder();
         code.append("function(" + formalParams.toString() + "){\n");
         code.append(body);
         code.append("}");

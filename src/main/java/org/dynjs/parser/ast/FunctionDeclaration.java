@@ -62,7 +62,7 @@ public class FunctionDeclaration extends AbstractStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
         String[] params = this.descriptor.getFormalParameterNames();
         for (int i = 0; i < params.length; ++i) {

@@ -52,7 +52,7 @@ public class DynJS {
     }
 
     public Object evaluate(String... sourceLines) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         for (String line : sourceLines) {
             buffer.append(line).append("\n");

@@ -17,7 +17,7 @@ public class StackGetter extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (this.errorName == null) {
             buf.append("<unknown>");
         } else {

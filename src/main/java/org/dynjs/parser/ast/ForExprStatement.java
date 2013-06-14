@@ -34,7 +34,7 @@ public class ForExprStatement extends AbstractForStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("for (").append(this.initialize == null ? "" : this.initialize.toString()).append(" ; ");
         buf.append((getTest() == null ? "" : getTest().toString())).append(" ; ");
         buf.append((getIncrement() == null ? "" : getIncrement().toString())).append(") {\n");

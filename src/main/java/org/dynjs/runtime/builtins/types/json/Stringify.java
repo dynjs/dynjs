@@ -187,12 +187,12 @@ public class Stringify extends AbstractNativeFunction {
             }
         }
 
-        StringBuffer finalStr = new StringBuffer();
+        StringBuilder finalStr = new StringBuilder();
 
         if (partial.isEmpty()) {
             finalStr.append("[]");
         } else {
-            StringBuffer properties = new StringBuffer();
+            StringBuilder properties = new StringBuilder();
 
             String separator = ",";
             if (!gap.isEmpty()) {
@@ -249,7 +249,7 @@ public class Stringify extends AbstractNativeFunction {
             String strP = str(context, stack, indent, gap, replacer, propertyList, value, p);
 
             if (strP != null) {
-                StringBuffer member = new StringBuffer();
+                StringBuilder member = new StringBuilder();
                 member.append(quote(p)).append(':');
                 if (!gap.isEmpty()) {
                     member.append(' ');
@@ -259,12 +259,12 @@ public class Stringify extends AbstractNativeFunction {
             }
         }
 
-        StringBuffer finalStr = new StringBuffer();
+        StringBuilder finalStr = new StringBuilder();
 
         if (partial.isEmpty()) {
             finalStr.append("{}");
         } else {
-            StringBuffer properties = new StringBuffer();
+            StringBuilder properties = new StringBuilder();
 
             String separator = ",";
             if (!gap.isEmpty()) {
@@ -295,7 +295,7 @@ public class Stringify extends AbstractNativeFunction {
     }
 
     protected String quote(String value) {
-        StringBuffer product = new StringBuffer();
+        StringBuilder product = new StringBuilder();
         product.append('"');
 
         int strLen = value.length();

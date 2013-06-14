@@ -50,7 +50,7 @@ public class TryStatement extends BaseStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("try {\n");
         buf.append(this.tryBlock.toIndentedString(indent + "  "));
         buf.append(indent).append("}\n");

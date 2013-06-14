@@ -14,7 +14,7 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
     @Test
     public void testBenComplainsAboutStuff1() {
 
-        StringBuffer foo = new StringBuffer();
+        StringBuilder foo = new StringBuilder();
         foo.append("function foo(){\n");
 
         for (int i = 0; i < 100000; ++i) {
@@ -23,7 +23,7 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
 
         foo.append("};\n");
 
-        StringBuffer wrapper = new StringBuffer();
+        StringBuilder wrapper = new StringBuilder();
 
         wrapper.append("((function(){");
         wrapper.append(foo);

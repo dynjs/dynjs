@@ -13,7 +13,7 @@ public class DefaultCaseClause extends CaseClause {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("default: \n");
         if (getBlock() != null) {
             buf.append(getBlock().toIndentedString("  " + indent));
