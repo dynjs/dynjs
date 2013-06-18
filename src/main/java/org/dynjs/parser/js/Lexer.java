@@ -488,8 +488,6 @@ public class Lexer {
             throw new SyntaxError("unexpected character: " + c);
         }
         
-        //System.err.println( token );
-
         return token;
     }
 
