@@ -20,6 +20,7 @@
         <version.rephract>1.x.incremental.46</version.rephract>
         <version.jitescript>0.3.0</version.jitescript>
         <version.aesh>0.36</version.aesh>
+        <version.invokebinder>1.2</version.invokebinder>
     </properties>
 
     <developers>
@@ -114,7 +115,7 @@
         <dependency>
             <groupId>com.headius</groupId>
             <artifactId>invokebinder</artifactId>
-            <version>1.1</version>
+            <version>${version.invokebinder}</version>
             <scope>compile</scope>
         </dependency>
 
