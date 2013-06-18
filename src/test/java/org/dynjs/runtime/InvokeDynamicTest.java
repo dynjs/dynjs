@@ -1,10 +1,10 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
-
 import org.dynjs.runtime.java.JavaMockery;
 import org.junit.Test;
 import org.projectodd.rephract.mop.java.DynamicMethod;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class InvokeDynamicTest extends AbstractDynJSTestSupport {
 
