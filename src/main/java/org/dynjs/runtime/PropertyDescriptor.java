@@ -20,12 +20,19 @@ public class PropertyDescriptor {
     };
 
     private Object value;
+    private boolean valueDefined;
     private Object set;
+    private boolean setDefined;
     private Object get;
-    private Object writable;
-    private Object configurable;
-    private Object enumerable;
-    private Object initialized;
+    private boolean getDefined;
+    private boolean writable;
+    private boolean writableDefined;
+    private boolean configurable;
+    private boolean configurableDefined;
+    private boolean enumerable;
+    private boolean enumerableDefined;
+    private boolean initialized;
+    private boolean initializedDefined;
 
     public static PropertyDescriptor newAccessorPropertyDescriptor(final boolean withDefaults) {
         return new PropertyDescriptor() {
@@ -47,7 +54,7 @@ public class PropertyDescriptor {
                     set("Value", DEFAULTS.get("Value"));
                     set("Writable", DEFAULTS.get("Writable"));
                     set("Configurable", DEFAULTS.get("Configurable"));
-                    set("Enumerable", DEFAULTS.get("Enumerable")); 
+                    set("Enumerable", DEFAULTS.get("Enumerable"));
                 }
             }
         };
@@ -63,9 +70,13 @@ public class PropertyDescriptor {
         }
         PropertyDescriptor d = new PropertyDescriptor();
         d.value = value;
-        d.writable = Boolean.TRUE;
-        d.configurable = Boolean.TRUE;
-        d.enumerable = Boolean.TRUE;
+        d.valueDefined = true;
+        d.writable = true;
+        d.writableDefined = true;
+        d.configurable = true;
+        d.configurableDefined = true;
+        d.enumerable = true;
+        d.enumerableDefined = true;
         return d;
     }
 
@@ -79,8 +90,11 @@ public class PropertyDescriptor {
             d = (PropertyDescriptor) orig;
         }
         d.get = value;
+        d.getDefined = true;
         d.configurable = Boolean.TRUE;
+        d.configurableDefined = true;
         d.enumerable = Boolean.TRUE;
+        d.enumerableDefined = true;
         return d;
     }
 
@@ -94,8 +108,11 @@ public class PropertyDescriptor {
             d = (PropertyDescriptor) orig;
         }
         d.set = value;
+        d.setDefined = true;
         d.configurable = Boolean.TRUE;
+        d.configurableDefined = true;
         d.enumerable = Boolean.TRUE;
+        d.enumerableDefined = true;
         return d;
     }
 
@@ -103,65 +120,48 @@ public class PropertyDescriptor {
     }
 
     public String toString() {
-        return "[PropertyDescriptor value=" + this.value + "; writable=" + this.writable + "; enumerable=" + this.enumerable + "; configurable=" + this.configurable + "; setter=" + this.set+ "; getter=" + this.get + "]"; 
+        return "[PropertyDescriptor value=" + this.value + "//" + this.valueDefined + "; writable=" + this.writable + "; enumerable=" + this.enumerable
+                + "; configurable=" + this.configurable
+                + "; setter=" + this.set + "; getter=" + this.get + "]";
     }
 
     public boolean isWritable() {
-        if (this.writable == null) {
-            return false;
-        }
-        if (this.writable == Types.UNDEFINED) {
-            return false;
-        }
-        return (Boolean) this.writable;
+        return (this.writableDefined && this.writable);
     }
 
     public boolean hasWritable() {
-        return this.writable != null;
+        return this.writableDefined;
     }
 
     public void setWritable(boolean writable) {
         this.writable = writable;
+        this.writableDefined = true;
     }
 
     public boolean isConfigurable() {
-        if (this.configurable == null) {
-            return false;
-        }
-
-        if (this.configurable == Types.UNDEFINED) {
-            return false;
-        }
-
-        return (Boolean) this.configurable;
+        return (this.configurableDefined && this.configurable);
     }
 
     public boolean hasConfigurable() {
-        return this.configurable != null;
+        return this.configurableDefined;
     }
 
     public void setConfigurable(boolean configurable) {
         this.configurable = configurable;
+        this.configurableDefined = true;
     }
 
     public boolean isEnumerable() {
-        if (this.enumerable == null) {
-            return false;
-        }
-
-        if (this.enumerable == Types.UNDEFINED) {
-            return false;
-        }
-
-        return (Boolean) this.enumerable;
+        return (this.enumerableDefined && this.enumerable);
     }
 
     public void setEnumerable(boolean enumerable) {
         this.enumerable = enumerable;
+        this.enumerableDefined = true;
     }
 
     public boolean hasEnumerable() {
-        return this.enumerable != null;
+        return this.enumerableDefined;
     }
 
     public Object getValue() {
@@ -170,10 +170,11 @@ public class PropertyDescriptor {
 
     public void setValue(Object value) {
         this.value = value;
+        this.valueDefined = true;
     }
-    
+
     public boolean hasValue() {
-        return this.value != null;
+        return this.valueDefined;
     }
 
     public Object getSetter() {
@@ -182,10 +183,11 @@ public class PropertyDescriptor {
 
     public void setSetter(JSFunction setter) {
         this.set = setter;
+        this.setDefined = true;
     }
-    
+
     public boolean hasSet() {
-        return this.set != null;
+        return this.setDefined;
     }
 
     public Object getGetter() {
@@ -194,39 +196,51 @@ public class PropertyDescriptor {
 
     public void setGetter(JSFunction getter) {
         this.get = getter;
+        this.getDefined = true;
     }
-    
+
     public boolean hasGet() {
-        return this.get != null;
+        return this.getDefined;
     }
 
     public boolean isEmpty() {
-        return this.value == null && this.set == null && this.get == null &&
-                this.writable == null && this.configurable == null && this.enumerable == null;
+        return !(this.valueDefined ||
+                this.setDefined ||
+                this.getDefined ||
+                this.writableDefined ||
+                this.configurableDefined || 
+                this.enumerableDefined);
     }
 
     public void set(String name, Object value) {
         switch (name) {
         case "Value":
             this.value = value;
+            this.valueDefined = true;
             break;
         case "Set":
             this.set = value;
+            this.setDefined = true;
             break;
         case "Get":
             this.get = value;
+            this.getDefined = true;
             break;
         case "Writable":
-            this.writable = value;
+            this.writable = (boolean) value;
+            this.writableDefined = true;
             break;
         case "Configurable":
-            this.configurable = value;
+            this.configurable = (boolean) value;
+            this.configurableDefined = true;
             break;
         case "Enumerable":
-            this.enumerable = value;
+            this.enumerable = (boolean) value;
+            this.enumerableDefined = true;
             break;
         case "Initialized":
-            this.initialized = value;
+            this.initialized = (boolean) value;
+            this.initializedDefined = true;
             break;
         }
     }
@@ -234,19 +248,19 @@ public class PropertyDescriptor {
     public Object get(String name) {
         switch (name) {
         case "Value":
-            return (this.value != null ? this.value : Types.UNDEFINED);
+            return (this.valueDefined ? this.value : Types.UNDEFINED);
         case "Set":
-            return (this.set != null ? this.set : Types.UNDEFINED);
+            return (this.setDefined ? this.set : Types.UNDEFINED);
         case "Get":
-            return (this.get != null ? this.get : Types.UNDEFINED);
+            return (this.getDefined ? this.get : Types.UNDEFINED);
         case "Writable":
-            return (this.writable != null ? this.writable : Types.UNDEFINED);
+            return (this.writableDefined ? this.writable : Types.UNDEFINED);
         case "Configurable":
-            return (this.configurable != null ? this.configurable : Types.UNDEFINED);
+            return (this.configurableDefined ? this.configurable : Types.UNDEFINED);
         case "Enumerable":
-            return (this.enumerable != null ? this.enumerable : Types.UNDEFINED);
+            return (this.enumerableDefined ? this.enumerable : Types.UNDEFINED);
         case "Initialized":
-            return (this.initialized != null ? this.initialized : Types.UNDEFINED);
+            return (this.initializedDefined ? this.initialized : Types.UNDEFINED);
         }
         return Types.UNDEFINED;
     }
@@ -254,28 +268,19 @@ public class PropertyDescriptor {
     public boolean isPresent(String name) {
         switch (name) {
         case "Value":
-            return this.value != null;
+            return this.valueDefined;
         case "Set":
-            return this.set != null;
+            return this.setDefined;
         case "Get":
-            return this.get != null;
+            return this.getDefined;
         case "Writable":
-            return this.writable != null;
+            return this.writableDefined;
         case "Configurable":
-            return this.configurable != null;
+            return this.configurableDefined;
         case "Enumerable":
-            return this.enumerable != null;
+            return this.enumerableDefined;
         }
         return false;
-    }
-
-    public Object getWithDefault(String name) {
-        Object v = get(name);
-        if (v == null) {
-            return DEFAULTS.get(name);
-        }
-
-        return v;
     }
 
     public PropertyDescriptor duplicate(String... attributes) {
@@ -284,21 +289,27 @@ public class PropertyDescriptor {
             switch (attributes[i]) {
             case "Value":
                 d.value = this.value;
+                d.valueDefined = this.valueDefined;
                 break;
             case "Set":
                 d.set = this.set;
+                d.setDefined = this.setDefined;
                 break;
             case "Get":
                 d.get = this.get;
+                d.getDefined = this.getDefined;
                 break;
             case "Writable":
                 d.writable = this.writable;
+                d.writableDefined = this.writableDefined;
                 break;
             case "Configurable":
                 d.configurable = this.configurable;
+                d.configurableDefined = this.configurableDefined;
                 break;
             case "Enumerable":
                 d.enumerable = this.enumerable;
+                d.enumerableDefined = this.enumerableDefined;
                 break;
             }
         }
@@ -310,22 +321,40 @@ public class PropertyDescriptor {
         for (int i = 0; i < attributes.length; ++i) {
             switch (attributes[i]) {
             case "Value":
-                d.value = (this.value != null ? this.value : Types.UNDEFINED);
+                if (this.valueDefined) {
+                    d.value = this.value;
+                    d.valueDefined = true;
+                }
                 break;
             case "Set":
-                d.set = (this.set != null ? this.set : Types.UNDEFINED);
+                if (this.setDefined) {
+                    d.set = this.set;
+                    d.setDefined = true;
+                }
                 break;
             case "Get":
-                d.get = (this.get != null ? this.get : Types.UNDEFINED);
+                if (this.getDefined) {
+                    d.get = this.get;
+                    d.getDefined = true;
+                }
                 break;
             case "Writable":
-                d.writable = (this.writable != null ? this.writable : Boolean.FALSE);
+                if (this.writableDefined) {
+                    d.writable = this.writable;
+                    d.writableDefined = true;
+                }
                 break;
             case "Configurable":
-                d.configurable = (this.configurable != null ? this.configurable : Boolean.FALSE);
+                if (this.configurableDefined) {
+                    d.configurable = this.configurable;
+                    d.configurableDefined = true;
+                }
                 break;
             case "Enumerable":
-                d.enumerable = (this.enumerable != null ? this.enumerable : Boolean.FALSE);
+                if (this.enumerableDefined) {
+                    d.enumerable = this.enumerable;
+                    d.enumerableDefined = true;
+                }
                 break;
             }
         }
@@ -333,29 +362,35 @@ public class PropertyDescriptor {
     }
 
     public void copyAll(PropertyDescriptor from) {
-        if (from.value != null) {
+        if (from.valueDefined) {
             this.value = from.value;
+            this.valueDefined = true;
         }
-        if (from.set != null) {
+        if (from.setDefined) {
             this.set = from.set;
+            this.setDefined = true;
         }
-        if (from.get != null) {
+        if (from.getDefined) {
             this.get = from.get;
+            this.getDefined = true;
         }
-        if (from.writable != null) {
+        if (from.writableDefined) {
             this.writable = from.writable;
+            this.writableDefined = true;
         }
-        if (from.configurable != null) {
+        if (from.configurableDefined) {
             this.configurable = from.configurable;
+            this.configurableDefined = true;
         }
-        if (from.enumerable != null) {
+        if (from.enumerableDefined) {
             this.enumerable = from.enumerable;
+            this.enumerableDefined = true;
         }
     }
 
     public boolean isAccessorDescriptor() {
         // 8.10.1
-        if (this.get == null && this.set == null) {
+        if ( ! ( this.getDefined || this.setDefined ) ) {
             return false;
         }
 
@@ -364,7 +399,7 @@ public class PropertyDescriptor {
 
     public boolean isDataDescriptor() {
         // 8.10.2
-        if (this.value == null && this.writable == null) {
+        if (!this.valueDefined && !this.writableDefined) {
             return false;
         }
 

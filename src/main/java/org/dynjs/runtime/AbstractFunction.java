@@ -27,7 +27,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
         if (strict) {
             final Object thrower = scope.getGlobalObject().get(null, "__throwTypeError");
-            if (thrower != null) {
+            if (thrower != Types.UNDEFINED) {
                 defineOwnProperty(null, "caller", new PropertyDescriptor() {
                     {
                         set("Set", thrower);
