@@ -63,7 +63,7 @@ public class Reference {
 
     protected Object primitiveGet(ExecutionContext context, JSObject o, String name) {
         // 8.7.1 primitive [[Get]]
-        Object d = o.getProperty(context, name);
+        Object d = o.getProperty(context, name, false);
         if (d == Types.UNDEFINED) {
             return Types.UNDEFINED;
         }

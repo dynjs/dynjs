@@ -41,5 +41,7 @@ public interface JSObject {
     public abstract void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value);
 
     public abstract void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value);
+    
+    String dumpDebug();
 
 }

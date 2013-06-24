@@ -75,7 +75,8 @@ public class DynObject implements JSObject, Map<String, Object> {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 8.12.3
-        Object d = getProperty(context, name);
+        Object d = getProperty(context, name, false);
+        
         if (d == Types.UNDEFINED) {
             return Types.UNDEFINED;
         }
@@ -153,7 +154,7 @@ public class DynObject implements JSObject, Map<String, Object> {
     @Override
     public boolean hasProperty(ExecutionContext context, String name) {
         // 8.12.6
-        return (getProperty(context, name) != Types.UNDEFINED);
+        return (getProperty(context, name, false) != Types.UNDEFINED);
     }
 
     @Override
@@ -181,7 +182,7 @@ public class DynObject implements JSObject, Map<String, Object> {
             return;
         }
 
-        Object desc = getProperty(context, name);
+        Object desc = getProperty(context, name, false);
 
         if ((desc != Types.UNDEFINED) && ((PropertyDescriptor) desc).isAccessorDescriptor()) {
             JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get("Set");
@@ -503,7 +504,7 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public boolean containsKey(Object key) {
-        Object desc = getProperty(null, key.toString());
+        Object desc = getProperty(null, key.toString(), false);
         return (desc != Types.UNDEFINED);
     }
 
@@ -648,6 +649,10 @@ public class DynObject implements JSObject, Map<String, Object> {
             return getAllEnumerablePropertyNames().toList().toString();
         }
 
+    }
+    
+    public String dumpDebug() {
+        return this.properties.toString();
     }
 
 }

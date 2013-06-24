@@ -90,7 +90,7 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
                 "Object.getOwnPropertyDescriptor(x, 'foo');");
 
         assertThat(result).isNotNull();
-
+        
         assertThat(result.get(getContext(), "value")).isEqualTo("taco");
         assertThat(result.get(getContext(), "writable")).isEqualTo(true);
         assertThat(result.get(getContext(), "configurable")).isEqualTo(true);
