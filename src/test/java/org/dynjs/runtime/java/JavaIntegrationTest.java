@@ -421,9 +421,14 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testByte() {
-        Object result = eval( "var b = new java.lang.Byte(120);",
-                "b");
-        
-        System.err.println( result );
+        Object result = eval( "var b = new java.lang.Byte(120);", "b");
+        assertThat(result).isInstanceOf(Byte.class);
     }
+    
+    @Test
+    public void testDouble() {
+        Object result = eval("var d = new java.lang.Double(1.234);", "d");
+        assertThat(result).isInstanceOf(Double.class);
+    }
+
 }
