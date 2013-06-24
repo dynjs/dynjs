@@ -13,8 +13,10 @@ public interface JSObject {
     Object get(ExecutionContext context, String name);
 
     Object getOwnProperty(ExecutionContext context, String name);
+    Object getOwnProperty(ExecutionContext context, String name, boolean dupe);
 
     Object getProperty(ExecutionContext context, String name);
+    Object getProperty(ExecutionContext context, String name, boolean dupe);
 
     boolean hasProperty(ExecutionContext context, String name);
 
