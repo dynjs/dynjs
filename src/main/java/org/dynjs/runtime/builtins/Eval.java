@@ -65,5 +65,15 @@ public class Eval extends AbstractNonConstructorFunction {
             return code;
         }
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/Eval.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: eval>";
+    }
 
 }

@@ -23,5 +23,15 @@ public class ToString extends AbstractNonConstructorFunction {
         }
         return context.call((JSFunction) func, array);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/ToString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toString>";
+    }
 
 }

@@ -40,5 +40,15 @@ public class Shift extends AbstractNonConstructorFunction {
 
         return first;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Shift.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: shift>";
+    }
 
 }

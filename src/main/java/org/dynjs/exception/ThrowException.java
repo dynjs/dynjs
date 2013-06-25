@@ -1,6 +1,7 @@
 package org.dynjs.exception;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
@@ -12,24 +13,54 @@ import org.dynjs.runtime.Types;
 public class ThrowException extends DynJSException {
 
     private static final long serialVersionUID = -5523478980527254739L;
-    
+
     private Object value;
-    private ArrayList<StackElement> stack;
+    private List<StackElement> stack = new ArrayList<>();
+    private boolean stackTraceSetup;
 
     public ThrowException(final ExecutionContext context, Throwable value) {
         super(value);
         this.value = value;
-        setUpStackElements(context);
+        setupJavascriptStack(context);
     }
 
     public ThrowException(final ExecutionContext context, Object value) {
         this.value = value;
-        setUpStackElements(context);
+        setupJavascriptStack(context);
     }
 
-    protected void setUpStackElements(final ExecutionContext context) {
-        this.stack = new ArrayList<StackElement>();
+    @Override
+    public StackTraceElement[] getStackTrace() {
+        if (!this.stackTraceSetup) {
+            setupJavaStack();
+            this.stackTraceSetup = true;
+        }
+        return super.getStackTrace();
+    }
+
+    protected void setupJavascriptStack(final ExecutionContext context) {
         context.collectStackElements(this.stack);
+        if (this.value instanceof JSObject) {
+            String errorName = "<unknown>";
+            if (((JSObject) value).hasProperty(context, "name")) {
+                errorName = Types.toString(context, ((JSObject) value).get(context, "name"));
+            }
+            String message = null;
+            if (((JSObject) value).hasProperty(context, "message")) {
+                message = Types.toString(context, ((JSObject) value).get(context, "message"));
+            }
+            final String msg = message;
+            final String err = errorName;
+            ((JSObject) value).defineOwnProperty(context, "stack", new PropertyDescriptor() {
+                {
+                    set("Get", new StackGetter(context.getGlobalObject(), err, msg, stack));
+                }
+            }, false);
+        }
+    }
+
+    protected void setupJavaStack() {
+        // this.stack = new ArrayList<StackElement>();
 
         StackTraceElement[] javaElements = getStackTrace();
 
@@ -51,24 +82,6 @@ public class ThrowException extends DynJSException {
             elements[i + this.stack.size()] = javaElements[i];
         }
         setStackTrace(elements);
-
-        if (value instanceof JSObject) {
-            String errorName = "<unknown>";
-            if (((JSObject) value).hasProperty(context, "name")) {
-                errorName = Types.toString(context, ((JSObject) value).get(context, "name"));
-            }
-            String message = null;
-            if (((JSObject) value).hasProperty(context, "message")) {
-                message = Types.toString(context, ((JSObject) value).get(context, "message"));
-            }
-            final String msg = message;
-            final String err = errorName;
-            ((JSObject) value).defineOwnProperty(context, "stack", new PropertyDescriptor() {
-                {
-                    set("Get", new StackGetter(context.getGlobalObject(), err, msg, stack));
-                }
-            }, false);
-        }
 
     }
 

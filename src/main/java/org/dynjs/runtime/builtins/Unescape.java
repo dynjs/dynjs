@@ -31,4 +31,14 @@ public class Unescape extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         return Types.UNDEFINED;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/Unescape.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: unescape>";
+    }
 }

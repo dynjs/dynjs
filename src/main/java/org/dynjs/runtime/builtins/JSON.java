@@ -25,8 +25,8 @@ public class JSON extends DynObject {
     public JSON(GlobalObject globalObject) {
         super(globalObject);
         setClassName("JSON");
-        defineNonEnumerableProperty(globalObject, "parse", new Parse(globalObject));
-        defineNonEnumerableProperty(globalObject, "stringify", new Stringify(globalObject));
+        this.forceDefineNonEnumerableProperty("parse", new Parse(globalObject));
+        this.forceDefineNonEnumerableProperty("stringify", new Stringify(globalObject));
     }
 
 }

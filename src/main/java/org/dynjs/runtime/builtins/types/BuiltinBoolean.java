@@ -22,9 +22,9 @@ public class BuiltinBoolean extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        defineNonEnumerableProperty(proto, "constructor", this );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
+        proto.forceDefineNonEnumerableProperty( "constructor", this );
+        proto.forceDefineNonEnumerableProperty( "toString", new ToString(globalObject) );
+        proto.forceDefineNonEnumerableProperty( "valueOf", new ValueOf(globalObject) );
     }
 
     @Override
@@ -43,6 +43,16 @@ public class BuiltinBoolean extends AbstractBuiltinType {
     @Override
     public JSObject createNewObject(ExecutionContext context) {
         return new DynBoolean(context.getGlobalObject());
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinBoolean.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Boolean>";
     }
 
 }

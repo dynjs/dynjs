@@ -24,4 +24,14 @@ public class IsFinite extends AbstractNonConstructorFunction {
             return false;
         }
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/IsFinite.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: isFinite>";
+    }
 }

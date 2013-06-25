@@ -29,6 +29,9 @@ public interface JSObject {
     Object defaultValue(ExecutionContext context, String hint);
 
     boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow);
+    void forceDefineOwnProperty(String name, PropertyDescriptor desc);
+    void forceDefineReadOnlyProperty(String name, final Object value);
+    void forceDefineNonEnumerableProperty(String name, final Object value);
 
     NameEnumerator getOwnPropertyNames();
     NameEnumerator getAllEnumerablePropertyNames();
@@ -38,9 +41,6 @@ public interface JSObject {
 
     void setExtensible(boolean extensible);
 
-    public abstract void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value);
-
-    public abstract void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value);
     
     String dumpDebug();
 

@@ -27,36 +27,36 @@ public class Math extends DynObject {
         super(globalObject);
 
         // Math properties 15.8.1
-        defineReadOnlyProperty(globalObject, "E", java.lang.Math.E); // 15.8.1.1
-        defineReadOnlyProperty(globalObject, "LN10", java.lang.Math.log(10)); // 15.8.1.2
-        defineReadOnlyProperty(globalObject, "LN2", java.lang.Math.log(2)); // 15.8.1.3
-        defineReadOnlyProperty(globalObject, "LOG2E", java.lang.Math.log(java.lang.Math.E) / java.lang.Math.log(2)); // 15.8.1.4
-        defineReadOnlyProperty(globalObject, "LOG10E", java.lang.Math.log10(java.lang.Math.E)); // 15.8.1.5
-        defineReadOnlyProperty(globalObject, "PI", java.lang.Math.PI); // 15.8.1.6
-        defineReadOnlyProperty(globalObject, "SQRT1_2", java.lang.Math.sqrt(0.5f)); // 15.8.1.7
-        defineReadOnlyProperty(globalObject, "SQRT2", java.lang.Math.sqrt(2.0f)); // 15.8.1.8
+        this.forceDefineReadOnlyProperty("E", java.lang.Math.E); // 15.8.1.1
+        this.forceDefineReadOnlyProperty("LN10", java.lang.Math.log(10)); // 15.8.1.2
+        this.forceDefineReadOnlyProperty("LN2", java.lang.Math.log(2)); // 15.8.1.3
+        this.forceDefineReadOnlyProperty("LOG2E", java.lang.Math.log(java.lang.Math.E) / java.lang.Math.log(2)); // 15.8.1.4
+        this.forceDefineReadOnlyProperty("LOG10E", java.lang.Math.log10(java.lang.Math.E)); // 15.8.1.5
+        this.forceDefineReadOnlyProperty("PI", java.lang.Math.PI); // 15.8.1.6
+        this.forceDefineReadOnlyProperty("SQRT1_2", java.lang.Math.sqrt(0.5f)); // 15.8.1.7
+        this.forceDefineReadOnlyProperty("SQRT2", java.lang.Math.sqrt(2.0f)); // 15.8.1.8
         
-        defineReadOnlyProperty(globalObject, "NaN", Double.NaN );
+        this.forceDefineReadOnlyProperty("NaN", Double.NaN );
 
         // Math functions 15.8.2
-        defineNonEnumerableProperty(globalObject, "abs",    new Abs(globalObject));    // 15.8.2.1
-        defineNonEnumerableProperty(globalObject, "acos",   new Acos(globalObject));   // 15.8.2.2
-        defineNonEnumerableProperty(globalObject, "asin",   new Asin(globalObject));   // 15.8.2.3
-        defineNonEnumerableProperty(globalObject, "atan",   new Atan(globalObject));   // 15.8.2.4
-        defineNonEnumerableProperty(globalObject, "atan2",  new Atan2(globalObject));  // 15.8.2.5
-        defineNonEnumerableProperty(globalObject, "ceil",   new Ceil(globalObject));   // 15.8.2.6
-        defineNonEnumerableProperty(globalObject, "cos",    new Cos(globalObject));    // 15.8.2.7
-        defineNonEnumerableProperty(globalObject, "exp",    new Exp(globalObject));    // 15.8.2.8
-        defineNonEnumerableProperty(globalObject, "floor",  new Floor(globalObject));  // 15.8.2.9
-        defineNonEnumerableProperty(globalObject, "log",    new Log(globalObject));    // 15.8.2.10
-        defineNonEnumerableProperty(globalObject, "max",    new Max(globalObject));    // 15.8.2.11
-        defineNonEnumerableProperty(globalObject, "min",    new Min(globalObject));    // 15.8.2.12
-        defineNonEnumerableProperty(globalObject, "pow",    new Pow(globalObject));    // 15.8.2.13
-        defineNonEnumerableProperty(globalObject, "random", new Random(globalObject)); // 15.8.2.14
-        defineNonEnumerableProperty(globalObject, "round",  new Round(globalObject));  // 15.8.2.15
-        defineNonEnumerableProperty(globalObject, "sin",    new Sin(globalObject));    // 15.8.2.16
-        defineNonEnumerableProperty(globalObject, "sqrt",   new Sqrt(globalObject));   // 15.8.2.17
-        defineNonEnumerableProperty(globalObject, "tan",    new Tan(globalObject));    // 15.8.2.18
+        this.forceDefineNonEnumerableProperty("abs",    new Abs(globalObject));    // 15.8.2.1
+        this.forceDefineNonEnumerableProperty("acos",   new Acos(globalObject));   // 15.8.2.2
+        this.forceDefineNonEnumerableProperty("asin",   new Asin(globalObject));   // 15.8.2.3
+        this.forceDefineNonEnumerableProperty("atan",   new Atan(globalObject));   // 15.8.2.4
+        this.forceDefineNonEnumerableProperty("atan2",  new Atan2(globalObject));  // 15.8.2.5
+        this.forceDefineNonEnumerableProperty("ceil",   new Ceil(globalObject));   // 15.8.2.6
+        this.forceDefineNonEnumerableProperty("cos",    new Cos(globalObject));    // 15.8.2.7
+        this.forceDefineNonEnumerableProperty("exp",    new Exp(globalObject));    // 15.8.2.8
+        this.forceDefineNonEnumerableProperty("floor",  new Floor(globalObject));  // 15.8.2.9
+        this.forceDefineNonEnumerableProperty("log",    new Log(globalObject));    // 15.8.2.10
+        this.forceDefineNonEnumerableProperty("max",    new Max(globalObject));    // 15.8.2.11
+        this.forceDefineNonEnumerableProperty("min",    new Min(globalObject));    // 15.8.2.12
+        this.forceDefineNonEnumerableProperty("pow",    new Pow(globalObject));    // 15.8.2.13
+        this.forceDefineNonEnumerableProperty("random", new Random(globalObject)); // 15.8.2.14
+        this.forceDefineNonEnumerableProperty("round",  new Round(globalObject));  // 15.8.2.15
+        this.forceDefineNonEnumerableProperty("sin",    new Sin(globalObject));    // 15.8.2.16
+        this.forceDefineNonEnumerableProperty("sqrt",   new Sqrt(globalObject));   // 15.8.2.17
+        this.forceDefineNonEnumerableProperty("tan",    new Tan(globalObject));    // 15.8.2.18
         
         setClassName( "Math" );
     }

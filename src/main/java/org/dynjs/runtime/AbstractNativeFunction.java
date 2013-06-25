@@ -8,23 +8,23 @@ import org.dynjs.parser.ast.VariableDeclaration;
 
 public abstract class AbstractNativeFunction extends AbstractFunction {
 
-    private String filename;
+    protected String filename;
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
         super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
-        setDebugContext( "<native function: " + getClass().getName() + ">" );
+        setupDebugContext();
         setFileName();
     }
 
     public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
         super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
-        setDebugContext( "<native function: " + getClass().getSimpleName() + ">" );
+        setupDebugContext();
         setFileName();
     }
 
     public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(scope, strict, formalParameters);
-        setDebugContext( "<native function: " + getClass().getSimpleName() + ">" );
+        setupDebugContext();
         setFileName();
     }
 
@@ -76,7 +76,11 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public void setFileName() {
         this.filename = getClass().getName().replace(".", "/") + ".java";
     }
-
+    
+    public void setupDebugContext() {
+        this.debugContext = "<native function: " + getClass().getSimpleName() + ">";
+    }
+    
     public String toString() {
         StringBuilder buffer = new StringBuilder();
 

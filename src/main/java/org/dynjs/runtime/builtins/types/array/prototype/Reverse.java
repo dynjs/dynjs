@@ -47,5 +47,15 @@ public class Reverse extends AbstractNonConstructorFunction {
 
         return o;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Reverse.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: reverse>";
+    }
 
 }

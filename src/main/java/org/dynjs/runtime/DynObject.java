@@ -76,7 +76,7 @@ public class DynObject implements JSObject, Map<String, Object> {
     public Object get(ExecutionContext context, String name) {
         // 8.12.3
         Object d = getProperty(context, name, false);
-        
+
         if (d == Types.UNDEFINED) {
             return Types.UNDEFINED;
         }
@@ -112,8 +112,8 @@ public class DynObject implements JSObject, Map<String, Object> {
         if (x == null) {
             return Types.UNDEFINED;
         }
-        
-        if ( ! dupe ) {
+
+        if (!dupe) {
             return x;
         }
 
@@ -133,9 +133,9 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public Object getProperty(ExecutionContext context, String name) {
-        return getProperty( context, name, true );
+        return getProperty(context, name, true);
     }
-    
+
     public Object getProperty(ExecutionContext context, String name, boolean dupe) {
         // 8.12.2
         // Returns PropertyDescriptor or UNDEFINED
@@ -309,6 +309,10 @@ public class DynObject implements JSObject, Map<String, Object> {
         return null;
     }
 
+    public void forceDefineOwnProperty(String name, PropertyDescriptor desc) {
+        this.properties.put(name, desc);
+    }
+
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 8.12.9
@@ -467,27 +471,27 @@ public class DynObject implements JSObject, Map<String, Object> {
     }
 
     @Override
-    public void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
-        this.defineOwnProperty(null, name, new PropertyDescriptor() {
+    public void forceDefineNonEnumerableProperty(String name, final Object value) {
+        this.forceDefineOwnProperty(name, new PropertyDescriptor() {
             {
                 set("Value", value);
                 set("Writable", true);
                 set("Enumerable", false);
                 set("Configurable", true);
             }
-        }, false);
+        });
     }
 
     @Override
-    public void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value) {
-        this.defineOwnProperty(null, name, new PropertyDescriptor() {
+    public void forceDefineReadOnlyProperty(String name, final Object value) {
+        this.forceDefineOwnProperty(name, new PropertyDescriptor() {
             {
                 set("Value", value);
                 set("Writable", false);
                 set("Enumerable", false);
                 set("Configurable", false);
             }
-        }, false);
+        });
     }
 
     // java.util.Map
@@ -650,7 +654,7 @@ public class DynObject implements JSObject, Map<String, Object> {
         }
 
     }
-    
+
     public String dumpDebug() {
         return this.properties.toString();
     }

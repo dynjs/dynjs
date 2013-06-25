@@ -18,5 +18,15 @@ public class Round extends AbstractNativeFunction {
         if (x.isNaN() || x.isInfinite()) { return x; }
         return Math.coerceLongIfPossible(java.lang.Math.round(x));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Round.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: round>";
+    }
 
 }

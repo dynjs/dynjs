@@ -41,5 +41,15 @@ public class ForEach extends AbstractNativeFunction {
 
         return Types.UNDEFINED;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/ForEach.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: forEach>";
+    }
 
 }

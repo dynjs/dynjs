@@ -22,4 +22,14 @@ public class IsNaN extends AbstractNonConstructorFunction {
             return true;
         }
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/IsNaN.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: isNaN>";
+    }
 }

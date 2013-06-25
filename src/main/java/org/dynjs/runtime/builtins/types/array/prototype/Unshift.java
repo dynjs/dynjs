@@ -39,5 +39,15 @@ public class Unshift extends AbstractNonConstructorFunction {
         
         return len + numArgs;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Unshift.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: unshift>";
+    }
 
 }

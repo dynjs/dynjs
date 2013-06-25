@@ -1,14 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Arrays;
-
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.js.CharStream;
-import org.dynjs.parser.js.CircularCharBuffer;
-import org.dynjs.parser.js.Lexer;
-import org.dynjs.parser.js.Token;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -30,10 +22,10 @@ public class BuiltinRegExp extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "exec", new Exec(globalObject));
-        defineNonEnumerableProperty(proto, "test", new Test(globalObject));
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty("constructor", this);
+        proto.forceDefineNonEnumerableProperty("exec", new Exec(globalObject));
+        proto.forceDefineNonEnumerableProperty("test", new Test(globalObject));
+        proto.forceDefineNonEnumerableProperty("toString", new ToString(globalObject));
     }
 
     @Override
@@ -79,6 +71,16 @@ public class BuiltinRegExp extends AbstractBuiltinType {
     public static DynRegExp newRegExp(ExecutionContext context, Object pattern, String flags) {
         BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "__Builtin_RegExp");
         return (DynRegExp) context.construct(ctor, pattern, flags);
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinRegExp.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: RegExp>";
     }
 
 }

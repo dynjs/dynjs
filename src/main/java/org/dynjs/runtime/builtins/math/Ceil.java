@@ -23,5 +23,15 @@ public class Ceil extends AbstractNativeFunction {
         }
         return (long) java.lang.Math.ceil(arg);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Ceil.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: ceil>";
+    }
 
 }

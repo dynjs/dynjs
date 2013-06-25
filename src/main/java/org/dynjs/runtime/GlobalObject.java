@@ -133,14 +133,14 @@ public class GlobalObject extends DynObject {
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
-        defineOwnProperty(null, name, new PropertyDescriptor() {
+        forceDefineOwnProperty(name, new PropertyDescriptor() {
             {
                 set("Value", type);
                 set("Enumerable", false);
                 set("Writable", true);
                 set("Configurable", true);
             }
-        }, false);
+        } );
         put(null, "__Builtin_" + name, type, false);
         this.builtinTypes.add(type);
     }
@@ -185,7 +185,7 @@ public class GlobalObject extends DynObject {
                 set("Configurable", true);
             }
         };
-        defineOwnProperty(null, name, desc, false);
+        forceDefineOwnProperty( name, desc );
     }
 
     public void defineReadOnlyGlobalProperty(final String name, final Object value) {
@@ -197,7 +197,7 @@ public class GlobalObject extends DynObject {
                 set("Enumerable", false);
             }
         };
-        defineOwnProperty(null, name, desc, false);
+        forceDefineOwnProperty( name, desc );
     }
 
     public JSObject getPrototypeFor(String type) {

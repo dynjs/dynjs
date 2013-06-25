@@ -16,5 +16,15 @@ public class Asin extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         return Math.coerceLongIfPossible(java.lang.Math.asin(Types.toNumber(context, args[0]).doubleValue()));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Asin.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: asin>";
+    }
 
 }

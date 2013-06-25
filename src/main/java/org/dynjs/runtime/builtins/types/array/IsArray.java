@@ -16,5 +16,15 @@ public class IsArray extends AbstractNativeFunction {
         // 15.4.3.2
         return (args[0] instanceof DynArray);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/IsArray.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: isArray>";
+    }
 
 }

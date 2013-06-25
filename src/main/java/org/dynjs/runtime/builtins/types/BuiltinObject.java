@@ -37,29 +37,29 @@ public class BuiltinObject extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         // Object.prototype.foo()
-        defineNonEnumerableProperty(proto, "constructor", this );
+        proto.forceDefineNonEnumerableProperty("constructor", this );
         
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
-        defineNonEnumerableProperty(proto, "hasOwnProperty", new HasOwnProperty(globalObject) );
-        defineNonEnumerableProperty(proto, "isPrototypeOf", new IsPrototypeOf(globalObject) );
-        defineNonEnumerableProperty(proto, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject) );
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
+        proto.forceDefineNonEnumerableProperty("toString", new ToString(globalObject) );
+        proto.forceDefineNonEnumerableProperty("toLocaleString", new ToLocaleString(globalObject) );
+        proto.forceDefineNonEnumerableProperty("hasOwnProperty", new HasOwnProperty(globalObject) );
+        proto.forceDefineNonEnumerableProperty("isPrototypeOf", new IsPrototypeOf(globalObject) );
+        proto.forceDefineNonEnumerableProperty("propertyIsEnumerable", new PropertyIsEnumerable(globalObject) );
+        proto.forceDefineNonEnumerableProperty("valueOf", new ValueOf(globalObject) );
 
         // Object.foo
-        defineNonEnumerableProperty(this, "getPrototypeOf", new GetPrototypeOf(globalObject) );
-        defineNonEnumerableProperty(this, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject) );
-        defineNonEnumerableProperty(this, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject) );
-        defineNonEnumerableProperty(this, "create", new Create(globalObject) );
-        defineNonEnumerableProperty(this, "defineProperty", new DefineProperty(globalObject) );
-        defineNonEnumerableProperty(this, "defineProperties", new DefineProperties(globalObject) );
-        defineNonEnumerableProperty(this, "seal", new Seal(globalObject) );
-        defineNonEnumerableProperty(this, "freeze", new Freeze(globalObject) );
-        defineNonEnumerableProperty(this, "preventExtensions", new PreventExtensions(globalObject) );
-        defineNonEnumerableProperty(this, "isSealed", new IsSealed(globalObject) );
-        defineNonEnumerableProperty(this, "isFrozen", new IsFrozen(globalObject) );
-        defineNonEnumerableProperty(this, "isExtensible", new IsExtensible(globalObject) );
-        defineNonEnumerableProperty(this, "keys", new Keys(globalObject) );
+        this.forceDefineNonEnumerableProperty("getPrototypeOf", new GetPrototypeOf(globalObject) );
+        this.forceDefineNonEnumerableProperty("getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject) );
+        this.forceDefineNonEnumerableProperty("getOwnPropertyNames", new GetOwnPropertyNames(globalObject) );
+        this.forceDefineNonEnumerableProperty("create", new Create(globalObject) );
+        this.forceDefineNonEnumerableProperty("defineProperty", new DefineProperty(globalObject) );
+        this.forceDefineNonEnumerableProperty("defineProperties", new DefineProperties(globalObject) );
+        this.forceDefineNonEnumerableProperty("seal", new Seal(globalObject) );
+        this.forceDefineNonEnumerableProperty("freeze", new Freeze(globalObject) );
+        this.forceDefineNonEnumerableProperty("preventExtensions", new PreventExtensions(globalObject) );
+        this.forceDefineNonEnumerableProperty("isSealed", new IsSealed(globalObject) );
+        this.forceDefineNonEnumerableProperty("isFrozen", new IsFrozen(globalObject) );
+        this.forceDefineNonEnumerableProperty("isExtensible", new IsExtensible(globalObject) );
+        this.forceDefineNonEnumerableProperty("keys", new Keys(globalObject) );
     }
 
     @Override
@@ -81,6 +81,16 @@ public class BuiltinObject extends AbstractBuiltinType {
     public static DynObject newObject(ExecutionContext context) {
         BuiltinObject ctor = (BuiltinObject) context.getGlobalObject().get(context, "__Builtin_Object");
         return (DynObject) context.construct(ctor);
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinObject.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Object>";
     }
 
 }

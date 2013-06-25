@@ -31,5 +31,15 @@ public class Print extends AbstractNonConstructorFunction {
         System.out.println(Types.toString(context, args[0]));
         return Types.UNDEFINED;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/Print.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: print>";
+    }
 
 }

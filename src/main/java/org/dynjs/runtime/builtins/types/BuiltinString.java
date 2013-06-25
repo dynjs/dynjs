@@ -5,7 +5,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.string.DynString;
 import org.dynjs.runtime.builtins.types.string.FromCharCode;
@@ -41,31 +40,31 @@ public class BuiltinString extends AbstractBuiltinType {
 
     public void initialize(GlobalObject globalObject, JSObject proto) {
         // String.foo()
-        defineNonEnumerableProperty(this, "fromCharCode", new FromCharCode(globalObject) );
+        this.forceDefineNonEnumerableProperty( "fromCharCode", new FromCharCode(globalObject) );
         
         // String.prototype.foo()
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        defineNonEnumerableProperty(proto, "constructor", this );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
-        defineNonEnumerableProperty(proto, "charAt", new CharAt(globalObject) );
-        defineNonEnumerableProperty(proto, "charCodeAt", new CharCodeAt(globalObject) );
-        defineNonEnumerableProperty(proto, "concat", new Concat(globalObject) );
-        defineNonEnumerableProperty(proto, "indexOf", new IndexOf(globalObject) );
-        defineNonEnumerableProperty(proto, "lastIndexOf", new LastIndexOf(globalObject) );
-        defineNonEnumerableProperty(proto, "localeCompare", new LocaleCompare(globalObject) );
-        defineNonEnumerableProperty(proto, "match", new Match(globalObject) );
-        defineNonEnumerableProperty(proto, "search", new Search(globalObject) );
-        defineNonEnumerableProperty(proto, "slice", new Slice(globalObject) );
-        defineNonEnumerableProperty(proto, "split", new Split(globalObject) );
-        defineNonEnumerableProperty(proto, "substring", new Substring(globalObject) );
-        defineNonEnumerableProperty(proto, "substr", new Substr(globalObject) ); // Alias, 'cause node likes this
-        defineNonEnumerableProperty(proto, "toLowerCase", new ToLowerCase(globalObject) );
-        defineNonEnumerableProperty(proto, "toUpperCase", new ToUpperCase(globalObject) );
-        defineNonEnumerableProperty(proto, "toLocaleLowerCase", new ToLocaleLowerCase(globalObject) );
-        defineNonEnumerableProperty(proto, "toLocaleUpperCase", new ToLocaleUpperCase(globalObject) );
-        defineNonEnumerableProperty(proto, "trim", new Trim(globalObject) );
-        defineNonEnumerableProperty(proto, "replace", new Replace(globalObject) ); // http://es5.github.com/#x15.5.4.11
+        proto.forceDefineNonEnumerableProperty("constructor", this );
+        proto.forceDefineNonEnumerableProperty("toString", new ToString(globalObject) );
+        proto.forceDefineNonEnumerableProperty("valueOf", new ValueOf(globalObject) );
+        proto.forceDefineNonEnumerableProperty("charAt", new CharAt(globalObject) );
+        proto.forceDefineNonEnumerableProperty("charCodeAt", new CharCodeAt(globalObject) );
+        proto.forceDefineNonEnumerableProperty("concat", new Concat(globalObject) );
+        proto.forceDefineNonEnumerableProperty("indexOf", new IndexOf(globalObject) );
+        proto.forceDefineNonEnumerableProperty("lastIndexOf", new LastIndexOf(globalObject) );
+        proto.forceDefineNonEnumerableProperty("localeCompare", new LocaleCompare(globalObject) );
+        proto.forceDefineNonEnumerableProperty("match", new Match(globalObject) );
+        proto.forceDefineNonEnumerableProperty("search", new Search(globalObject) );
+        proto.forceDefineNonEnumerableProperty("slice", new Slice(globalObject) );
+        proto.forceDefineNonEnumerableProperty("split", new Split(globalObject) );
+        proto.forceDefineNonEnumerableProperty("substring", new Substring(globalObject) );
+        proto.forceDefineNonEnumerableProperty("substr", new Substr(globalObject) ); // Alias, 'cause node likes this
+        proto.forceDefineNonEnumerableProperty("toLowerCase", new ToLowerCase(globalObject) );
+        proto.forceDefineNonEnumerableProperty("toUpperCase", new ToUpperCase(globalObject) );
+        proto.forceDefineNonEnumerableProperty("toLocaleLowerCase", new ToLocaleLowerCase(globalObject) );
+        proto.forceDefineNonEnumerableProperty("toLocaleUpperCase", new ToLocaleUpperCase(globalObject) );
+        proto.forceDefineNonEnumerableProperty("trim", new Trim(globalObject) );
+        proto.forceDefineNonEnumerableProperty( "replace", new Replace(globalObject) ); // http://es5.github.com/#x15.5.4.11
     }
 
     @Override
@@ -94,6 +93,16 @@ public class BuiltinString extends AbstractBuiltinType {
     @Override
     public JSObject createNewObject(ExecutionContext context) {
         return new DynString(context.getGlobalObject());
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: String>";
     }
     
 }

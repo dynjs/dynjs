@@ -50,5 +50,15 @@ public class ToLocaleString extends AbstractNonConstructorFunction {
 
         return str.toString();
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/ToLocaleString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toLocaleString>";
+    }
 
 }

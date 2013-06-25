@@ -91,4 +91,14 @@ public class ParseFloat extends AbstractNonConstructorFunction {
             return Double.NaN;
         }
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/ParseFloat.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: parseFloat>";
+    }
 }

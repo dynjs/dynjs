@@ -15,4 +15,16 @@ public class ArgSetter extends AbstractNativeFunction {
         return null;
     }
 
+    @Override
+    public void setFileName() {
+        this.filename = "<internal>";
+    }
+    
+    @Override
+    public void setupDebugContext() {
+        setDebugContext("<arg-setter>");
+    }
+    
+    
+
 }

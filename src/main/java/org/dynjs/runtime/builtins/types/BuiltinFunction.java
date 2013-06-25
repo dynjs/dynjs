@@ -47,11 +47,12 @@ public class BuiltinFunction extends AbstractBuiltinType {
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
-        defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "apply", new Apply(globalObject));
-        defineNonEnumerableProperty(proto, "call", new Call(globalObject));
-        defineNonEnumerableProperty(proto, "bind", new Bind(globalObject));
+        
+        proto.forceDefineNonEnumerableProperty("constructor", this);
+        proto.forceDefineNonEnumerableProperty("toString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty("apply", new Apply(globalObject));
+        proto.forceDefineNonEnumerableProperty("call", new Call(globalObject));
+        proto.forceDefineNonEnumerableProperty("bind", new Bind(globalObject));
     }
 
     @Override
@@ -122,6 +123,16 @@ public class BuiltinFunction extends AbstractBuiltinType {
         TokenStream tokenStream = new TokenQueue(lexer);
         Parser parser = new Parser(context, new ASTFactory(), tokenStream);
         return parser.functionDescriptor();
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinFunction.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Function>";
     }
 
 }

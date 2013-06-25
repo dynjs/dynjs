@@ -20,5 +20,15 @@ public class Tan extends AbstractNativeFunction {
         }
         return Math.coerceLongIfPossible(java.lang.Math.tan(arg));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Tan.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: tan>";
+    }
 
 }
