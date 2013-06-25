@@ -55,4 +55,14 @@ public class SetHours extends AbstractDateFunction {
 
         return u;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetHours.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setHours>";
+    }
 }

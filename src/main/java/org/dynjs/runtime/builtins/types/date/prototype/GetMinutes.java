@@ -27,4 +27,14 @@ public class GetMinutes extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) minFromTime(localTime(context, t));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetMinutes.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getMinutes>";
+    }
 }

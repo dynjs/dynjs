@@ -30,4 +30,14 @@ public class SetMilliseconds extends AbstractDateFunction {
 
         return u;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetMilliseconds.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setMilliseconds>";
+    }
 }

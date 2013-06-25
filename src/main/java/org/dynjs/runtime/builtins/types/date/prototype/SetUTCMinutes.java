@@ -47,4 +47,14 @@ public class SetUTCMinutes extends AbstractDateFunction {
 
         return u;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetUTCMinutes.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setUTCMinutes>";
+    }
 }

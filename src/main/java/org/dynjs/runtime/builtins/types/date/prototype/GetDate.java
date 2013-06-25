@@ -27,4 +27,14 @@ public class GetDate extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) dateFromTime(localTime(context, t));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetDate.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getDate>";
+    }
 }

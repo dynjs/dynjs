@@ -55,4 +55,14 @@ public class UTC extends AbstractDateFunction {
 
         return clipped;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/UTC.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: utc>";
+    }
 }

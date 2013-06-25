@@ -78,6 +78,15 @@ public class Parse extends AbstractNativeFunction {
         } catch (ParseException e) {
             return null;
         }
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/Parse.java";
+    }
 
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: parse>";
     }
 }

@@ -18,4 +18,14 @@ public class ToUTCString extends DateTimeFormatter {
         c.setTimeInMillis(t);
         return String.format(context.getLocale(), "%1$ta, %1$td %1$tb %1$tY %1$tH:%1$tM:%1$tS GMT", c);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/ToUTCString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toUTCString>";
+    }
 }

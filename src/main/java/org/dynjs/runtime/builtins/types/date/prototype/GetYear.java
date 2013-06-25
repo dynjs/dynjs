@@ -27,4 +27,14 @@ public class GetYear extends AbstractDateFunction {
         long t = date.getTimeValue();
         return yearFromTime(localTime(context, t)) - 1900;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetYear.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getYear>";
+    }
 }

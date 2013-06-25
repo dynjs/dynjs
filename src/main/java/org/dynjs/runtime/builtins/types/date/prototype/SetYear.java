@@ -17,7 +17,7 @@ public class SetYear extends AbstractDateFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
 
         if (!(self instanceof DynDate)) {
-            throw new ThrowException(context, context.createTypeError("setMonth(...) may only be used with Dates"));
+            throw new ThrowException(context, context.createTypeError("setYear(...) may only be used with Dates"));
         }
 
         DynDate dateObj = (DynDate) self;
@@ -56,6 +56,15 @@ public class SetYear extends AbstractDateFunction {
         dateObj.setTimeValue(u);
 
         return u;
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetYear.java";
+    }
 
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setYear>";
     }
 }

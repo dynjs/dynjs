@@ -15,7 +15,7 @@ public class GetUTCMinutes extends AbstractDateFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if ( ! ( self instanceof DynDate ) ) {
-            throw new ThrowException( context, context.createTypeError( "getMinutes() may only be used with Dates" ) );
+            throw new ThrowException( context, context.createTypeError( "getUTCMinutes() may only be used with Dates" ) );
         }
         
         DynDate date = (DynDate) self;
@@ -26,5 +26,15 @@ public class GetUTCMinutes extends AbstractDateFunction {
         
         long t = date.getTimeValue();
         return (long) minFromTime(t);
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetUTCMinutes.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getUTCMinutes>";
     }
 }
