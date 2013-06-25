@@ -25,4 +25,14 @@ public class SetTime extends AbstractDateFunction {
         dateObj.setTimeValue(v);
         return v;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetTime.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setTime>";
+    }
 }

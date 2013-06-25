@@ -123,5 +123,15 @@ public class BuiltinFunction extends AbstractBuiltinType {
         Parser parser = new Parser(context, new ASTFactory(), tokenStream);
         return parser.functionDescriptor();
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinFunction.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Function>";
+    }
 
 }

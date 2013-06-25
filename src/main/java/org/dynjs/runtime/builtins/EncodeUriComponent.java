@@ -35,4 +35,14 @@ public class EncodeUriComponent extends AbstractNonConstructorFunction {
         
         return result;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/EncodeUriComponent.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: encodeURIComponent>";
+    }
 }

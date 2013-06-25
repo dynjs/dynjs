@@ -8,7 +8,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private LexicalEnvironment scope;
     private boolean strict;
 
-    private String debugContext;
+    protected String debugContext;
 
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(scope.getGlobalObject());

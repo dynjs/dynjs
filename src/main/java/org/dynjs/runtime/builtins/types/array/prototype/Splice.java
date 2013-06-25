@@ -82,5 +82,15 @@ public class Splice extends AbstractNonConstructorFunction {
 
         return a;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Splice.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: splice>";
+    }
 
 }

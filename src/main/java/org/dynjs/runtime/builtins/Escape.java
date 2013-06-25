@@ -44,4 +44,14 @@ public class Escape extends AbstractNativeFunction {
         }
         return result.toString();
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/Escape.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: escape>";
+    }
 }

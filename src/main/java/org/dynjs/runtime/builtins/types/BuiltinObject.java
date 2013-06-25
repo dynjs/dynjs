@@ -88,5 +88,15 @@ public class BuiltinObject extends AbstractBuiltinType {
         BuiltinObject ctor = (BuiltinObject) context.getGlobalObject().get(context, "__Builtin_Object");
         return (DynObject) context.construct(ctor);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinObject.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Object>";
+    }
 
 }

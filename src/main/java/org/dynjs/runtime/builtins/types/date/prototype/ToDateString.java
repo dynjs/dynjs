@@ -17,5 +17,15 @@ public class ToDateString extends DateTimeFormatter {
         c.setTimeInMillis(t);
         return String.format(context.getLocale(), "%1$ta %1$tb %1$td %1$tY", c);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/ToDateString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toDateString>";
+    }
 
 }

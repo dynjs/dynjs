@@ -80,5 +80,15 @@ public class BuiltinRegExp extends AbstractBuiltinType {
         BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "__Builtin_RegExp");
         return (DynRegExp) context.construct(ctor, pattern, flags);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinRegExp.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: RegExp>";
+    }
 
 }

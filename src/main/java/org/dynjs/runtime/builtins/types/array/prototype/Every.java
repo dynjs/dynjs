@@ -44,5 +44,15 @@ public class Every extends AbstractNativeFunction {
 
         return true;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Every.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: every>";
+    }
 
 }

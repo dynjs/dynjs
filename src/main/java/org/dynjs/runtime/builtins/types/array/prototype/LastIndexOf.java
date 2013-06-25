@@ -48,5 +48,15 @@ public class LastIndexOf extends AbstractNativeFunction {
         
         return -1L;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/LastIndexOf.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: lastIndexOf>";
+    }
 
 }

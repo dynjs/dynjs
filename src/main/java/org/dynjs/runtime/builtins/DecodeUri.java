@@ -35,4 +35,14 @@ public class DecodeUri extends AbstractNonConstructorFunction {
         
         return result;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/DecodeUri.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: decodeURI>";
+    }
 }

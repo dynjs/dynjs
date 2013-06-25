@@ -53,5 +53,15 @@ public class Map extends AbstractNativeFunction {
 
         return a;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Map.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: map>";
+    }
 
 }

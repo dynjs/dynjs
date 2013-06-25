@@ -50,4 +50,14 @@ public class SetUTCFullYear extends AbstractDateFunction {
         return u;
 
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetUTCFullYear.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setUTCFullYear>";
+    }
 }

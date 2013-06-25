@@ -34,4 +34,14 @@ public class ThrowTypeError extends AbstractNativeFunction {
         JSObject err = context.createTypeError(null);
         throw new ThrowException(context, err);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/ThrowTypeError.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: throwTypeError>";
+    }
 }

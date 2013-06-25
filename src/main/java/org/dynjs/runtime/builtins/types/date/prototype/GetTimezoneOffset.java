@@ -27,4 +27,14 @@ public class GetTimezoneOffset extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) (t - localTime(context, t)) / MS_PER_MINUTE;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetTimezoneOffset.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getTimezoneOffset>";
+    }
 }

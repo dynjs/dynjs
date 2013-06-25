@@ -140,9 +140,19 @@ public class BuiltinArray extends AbstractBuiltinType {
         JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct(ctor);
     }
-    
+
     public static DynArray newArray(ExecutionContext context, long len) {
         JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct(ctor, len);
+    }
+
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinArray.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Array>";
     }
 }

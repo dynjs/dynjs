@@ -27,4 +27,14 @@ public class GetUTCDate extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) dateFromTime(t);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetUTCDate.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getUTCDate>";
+    }
 }

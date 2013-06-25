@@ -44,5 +44,15 @@ public class BuiltinBoolean extends AbstractBuiltinType {
     public JSObject createNewObject(ExecutionContext context) {
         return new DynBoolean(context.getGlobalObject());
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinBoolean.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Boolean>";
+    }
 
 }

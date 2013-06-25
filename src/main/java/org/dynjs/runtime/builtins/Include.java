@@ -64,4 +64,14 @@ public class Include extends AbstractNativeFunction {
 
         return Types.UNDEFINED;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/Include.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: include>";
+    }
 }

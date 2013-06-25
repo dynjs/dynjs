@@ -14,4 +14,14 @@ public class Now extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         return context.getClock().currentTimeMillis();
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/Now.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: now>";
+    }
 }

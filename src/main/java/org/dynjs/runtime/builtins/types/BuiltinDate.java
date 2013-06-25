@@ -190,4 +190,14 @@ public class BuiltinDate extends AbstractBuiltinType {
 
         return date;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinDate.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Date>";
+    }
 }

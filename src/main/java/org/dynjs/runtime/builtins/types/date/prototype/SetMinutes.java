@@ -47,4 +47,14 @@ public class SetMinutes extends AbstractDateFunction {
 
         return u;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetMinutes.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setMinutes>";
+    }
 }

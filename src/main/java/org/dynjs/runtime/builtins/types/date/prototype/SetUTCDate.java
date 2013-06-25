@@ -32,6 +32,15 @@ public class SetUTCDate extends AbstractDateFunction {
         dateObj.setTimeValue(u);
         
         return u;
-        
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetUTCDate.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setUTCDate>";
     }
 }

@@ -27,4 +27,14 @@ public class GetUTCMilliseconds extends AbstractDateFunction {
         long t = date.getTimeValue();
         return msFromTime(t);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetUTCMilliseconds.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getUTCMilliseconds>";
+    }
 }

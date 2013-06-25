@@ -27,4 +27,14 @@ public class GetDay extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) weekday(localTime(context, t));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetDay.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getDay>";
+    }
 }

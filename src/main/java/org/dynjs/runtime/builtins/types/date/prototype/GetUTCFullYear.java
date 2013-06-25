@@ -27,4 +27,14 @@ public class GetUTCFullYear extends AbstractDateFunction {
         long t = date.getTimeValue();
         return yearFromTime(t);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetUTCFullYear.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getUTCFullYear>";
+    }
 }

@@ -62,5 +62,15 @@ public class Reduce extends AbstractNativeFunction {
         return accumulator;
 
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Reduce.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: reduce>";
+    }
 
 }

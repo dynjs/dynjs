@@ -18,5 +18,15 @@ public class Pow extends AbstractNativeFunction {
         Double y = Types.toNumber(context, args[1]).doubleValue();
         return Math.coerceLongIfPossible(java.lang.Math.pow(x, y));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Pow.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: pow>";
+    }
 
 }

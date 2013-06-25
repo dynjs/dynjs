@@ -41,4 +41,14 @@ public class ToISOString extends DateTimeFormatter {
         c.setTimeInMillis(t);
         return String.format("%1$tY-%1$tm-%1$tdT%1$tH:%1$tM:%1$tS.%1$tLZ", c);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/ToISOString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toISOString>";
+    }
 }

@@ -46,5 +46,15 @@ public class Join extends AbstractNonConstructorFunction {
 
         return buf.toString();
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Join.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: join>";
+    }
 
 }

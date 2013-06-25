@@ -96,4 +96,14 @@ public class BuiltinString extends AbstractBuiltinType {
         return new DynString(context.getGlobalObject());
     }
     
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: String>";
+    }
+    
 }

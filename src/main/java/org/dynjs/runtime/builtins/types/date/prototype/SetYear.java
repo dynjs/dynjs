@@ -56,6 +56,15 @@ public class SetYear extends AbstractDateFunction {
         dateObj.setTimeValue(u);
 
         return u;
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetYear.java";
+    }
 
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setYear>";
     }
 }

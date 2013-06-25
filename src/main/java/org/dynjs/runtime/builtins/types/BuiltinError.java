@@ -61,5 +61,15 @@ public class BuiltinError extends AbstractBuiltinType {
         o.setClassName("Error");
         return o;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinError.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Error>";
+    }
 
 }
