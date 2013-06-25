@@ -39,4 +39,14 @@ public class SetSeconds extends AbstractDateFunction {
 
         return u;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetSeconds.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setSeconds>";
+    }
 }

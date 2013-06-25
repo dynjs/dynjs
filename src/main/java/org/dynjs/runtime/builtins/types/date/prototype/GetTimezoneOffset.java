@@ -15,7 +15,7 @@ public class GetTimezoneOffset extends AbstractDateFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (!(self instanceof DynDate)) {
-            throw new ThrowException(context, context.createTypeError("getMinutes() may only be used with Dates"));
+            throw new ThrowException(context, context.createTypeError("getTimezoneOffset() may only be used with Dates"));
         }
 
         DynDate date = (DynDate) self;
@@ -26,5 +26,15 @@ public class GetTimezoneOffset extends AbstractDateFunction {
 
         long t = date.getTimeValue();
         return (long) (t - localTime(context, t)) / MS_PER_MINUTE;
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetTimezoneOffset.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getTimezoneOffset>";
     }
 }

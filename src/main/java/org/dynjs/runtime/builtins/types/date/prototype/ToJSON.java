@@ -33,5 +33,15 @@ public class ToJSON extends AbstractDateFunction {
         return context.call((JSFunction) toISO, o);
 
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/ToJSON.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toJSON>";
+    }
 
 }

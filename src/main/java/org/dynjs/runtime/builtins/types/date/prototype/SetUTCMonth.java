@@ -16,7 +16,7 @@ public class SetUTCMonth extends AbstractDateFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (!(self instanceof DynDate)) {
-            throw new ThrowException(context, context.createTypeError("setMonth(...) may only be used with Dates"));
+            throw new ThrowException(context, context.createTypeError("setUTCMonth(...) may only be used with Dates"));
         }
 
         DynDate dateObj = (DynDate) self;
@@ -40,6 +40,15 @@ public class SetUTCMonth extends AbstractDateFunction {
         dateObj.setTimeValue(u);
 
         return u;
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetUTCMonth.java";
+    }
 
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setUTCMonth>";
     }
 }

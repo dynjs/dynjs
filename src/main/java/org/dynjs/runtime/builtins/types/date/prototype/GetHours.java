@@ -27,4 +27,14 @@ public class GetHours extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) hourFromTime(localTime(context, t));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetHours.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getHours>";
+    }
 }

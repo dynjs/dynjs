@@ -27,4 +27,14 @@ public class GetSeconds extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) secFromTime(localTime(context, t));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetSeconds.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getSeconds>";
+    }
 }

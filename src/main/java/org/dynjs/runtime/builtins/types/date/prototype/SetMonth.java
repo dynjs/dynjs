@@ -42,4 +42,14 @@ public class SetMonth extends AbstractDateFunction {
         return u;
 
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/SetMonth.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: setMonth>";
+    }
 }

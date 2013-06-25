@@ -27,4 +27,14 @@ public class GetUTCMonth extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) monthFromTime(t);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetUTCMonth.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getUTCMonth>";
+    }
 }

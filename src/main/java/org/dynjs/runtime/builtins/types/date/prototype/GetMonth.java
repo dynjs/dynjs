@@ -27,4 +27,14 @@ public class GetMonth extends AbstractDateFunction {
         long t = date.getTimeValue();
         return (long) monthFromTime(localTime(context, t));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/GetMonth.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: getMonth>";
+    }
 }

@@ -16,4 +16,14 @@ public class ToLocaleTimeString extends DateTimeFormatter {
         c.setTimeInMillis(t);
         return String.format("%1$tH:%1$tM:%1$tS", c);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/date/prototype/ToLocaleTimeString.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: toLocaleTimeString>";
+    }
 }

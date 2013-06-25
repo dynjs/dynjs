@@ -696,13 +696,14 @@ public class Types {
             return "null";
         }
     }
+    
+    private static final Pattern POSSIBLE_EXP_REGEXP = Pattern.compile("^(.*?)(\\.\\d*)*E([+-])?(\\d+)");
 
     public static String rewritePossiblyExponentialValue(String value) {
         // Java writes exponential values as 1.0E14 while JS likes
         // them as 1e+14
 
-        Pattern regexp = Pattern.compile("^(.*?)(\\.\\d*)*E([+-])?(\\d+)");
-        Matcher matcher = regexp.matcher(value);
+        Matcher matcher = POSSIBLE_EXP_REGEXP.matcher(value);
 
         if (matcher.matches()) {
             String decimal = matcher.group(1);
