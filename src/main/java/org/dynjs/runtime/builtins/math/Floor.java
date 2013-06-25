@@ -23,5 +23,15 @@ public class Floor extends AbstractNativeFunction {
         }
         return (long) java.lang.Math.floor(arg);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Floor.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: floor>";
+    }
 
 }

@@ -45,32 +45,32 @@ public class BuiltinArray extends AbstractBuiltinType {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
 
         // Array.prototype.foo()
-        defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
-        defineNonEnumerableProperty(proto, "concat", new Concat(globalObject));
-        defineNonEnumerableProperty(proto, "join", new Join(globalObject));
-        defineNonEnumerableProperty(proto, "pop", new Pop(globalObject));
-        defineNonEnumerableProperty(proto, "push", new Push(globalObject));
-        defineNonEnumerableProperty(proto, "reverse", new Reverse(globalObject));
-        defineNonEnumerableProperty(proto, "shift", new Shift(globalObject));
-        defineNonEnumerableProperty(proto, "slice", new Slice(globalObject));
-        defineNonEnumerableProperty(proto, "sort", new Sort(globalObject));
-        defineNonEnumerableProperty(proto, "splice", new Splice(globalObject));
-        defineNonEnumerableProperty(proto, "unshift", new Unshift(globalObject));
-        defineNonEnumerableProperty(proto, "indexOf", new IndexOf(globalObject));
-        defineNonEnumerableProperty(proto, "lastIndexOf", new LastIndexOf(globalObject));
-        defineNonEnumerableProperty(proto, "every", new Every(globalObject));
-        defineNonEnumerableProperty(proto, "some", new Some(globalObject));
+        proto.forceDefineNonEnumerableProperty( "constructor", this);
+        proto.forceDefineNonEnumerableProperty( "toString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toLocaleString", new ToLocaleString(globalObject));
+        proto.forceDefineNonEnumerableProperty("concat", new Concat(globalObject));
+        proto.forceDefineNonEnumerableProperty("join", new Join(globalObject));
+        proto.forceDefineNonEnumerableProperty("pop", new Pop(globalObject));
+        proto.forceDefineNonEnumerableProperty("push", new Push(globalObject));
+        proto.forceDefineNonEnumerableProperty("reverse", new Reverse(globalObject));
+        proto.forceDefineNonEnumerableProperty("shift", new Shift(globalObject));
+        proto.forceDefineNonEnumerableProperty("slice", new Slice(globalObject));
+        proto.forceDefineNonEnumerableProperty("sort", new Sort(globalObject));
+        proto.forceDefineNonEnumerableProperty("splice", new Splice(globalObject));
+        proto.forceDefineNonEnumerableProperty("unshift", new Unshift(globalObject));
+        proto.forceDefineNonEnumerableProperty("indexOf", new IndexOf(globalObject));
+        proto.forceDefineNonEnumerableProperty( "lastIndexOf", new LastIndexOf(globalObject));
+        proto.forceDefineNonEnumerableProperty( "every", new Every(globalObject));
+        proto.forceDefineNonEnumerableProperty( "some", new Some(globalObject));
 
-        defineNonEnumerableProperty(proto, "forEach", new ForEach(globalObject));
-        defineNonEnumerableProperty(proto, "map", new Map(globalObject));
-        defineNonEnumerableProperty(proto, "filter", new Filter(globalObject));
-        defineNonEnumerableProperty(proto, "reduce", new Reduce(globalObject));
-        defineNonEnumerableProperty(proto, "reduceRight", new ReduceRight(globalObject));
+        proto.forceDefineNonEnumerableProperty("forEach", new ForEach(globalObject));
+        proto.forceDefineNonEnumerableProperty("map", new Map(globalObject));
+        proto.forceDefineNonEnumerableProperty("filter", new Filter(globalObject));
+        proto.forceDefineNonEnumerableProperty("reduce", new Reduce(globalObject));
+        proto.forceDefineNonEnumerableProperty("reduceRight", new ReduceRight(globalObject));
 
         // Array.foo()
-        defineNonEnumerableProperty(this, "isArray", new IsArray(globalObject));
+        this.forceDefineNonEnumerableProperty("isArray", new IsArray(globalObject));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class BuiltinArray extends AbstractBuiltinType {
 
         DynArray arraySelf = null;
 
-        if (self == Types.UNDEFINED || self == Types.NULL ) {
+        if (self == Types.UNDEFINED || self == Types.NULL) {
             arraySelf = new DynArray(context.getGlobalObject());
         } else {
             arraySelf = (DynArray) self;
@@ -95,15 +95,15 @@ public class BuiltinArray extends AbstractBuiltinType {
         } else {
             Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
             int numArgs = (int) argsObj.get(context, "length");
-            if (numArgs == 0 ) {
+            if (numArgs == 0) {
                 arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
                     {
-                        set("Value", 0L );
+                        set("Value", 0L);
                         set("Writable", true);
                         set("Enumerable", false);
                         set("Configurable", false);
                     }
-                }, false );
+                }, false);
             } else {
                 arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
                     {
@@ -117,10 +117,10 @@ public class BuiltinArray extends AbstractBuiltinType {
                     final int finalI = i;
                     arraySelf.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
                         {
-                            set( "Value", args[finalI] );
-                            set( "Writable", true );
-                            set( "Enumerable", true );
-                            set( "Configurable", true );
+                            set("Value", args[finalI]);
+                            set("Writable", true);
+                            set("Enumerable", true);
+                            set("Configurable", true);
                         }
                     }, false);
                 }
@@ -140,9 +140,19 @@ public class BuiltinArray extends AbstractBuiltinType {
         JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct(ctor);
     }
-    
+
     public static DynArray newArray(ExecutionContext context, long len) {
         JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct(ctor, len);
+    }
+
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinArray.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Array>";
     }
 }

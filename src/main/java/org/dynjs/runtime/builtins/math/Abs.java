@@ -17,4 +17,14 @@ public class Abs extends AbstractNativeFunction {
         return Math.coerceLongIfPossible(java.lang.Math.abs(Types.toNumber(context, args[0]).doubleValue()));
     }
 
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Abs.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: abs>";
+    }
+
 }

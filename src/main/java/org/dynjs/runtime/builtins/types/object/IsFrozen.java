@@ -30,7 +30,7 @@ public class IsFrozen extends AbstractNativeFunction {
 
         while (names.hasNext()) {
             String name = names.next();
-            Object d = jsObj.getOwnProperty(context, name);
+            Object d = jsObj.getOwnProperty(context, name, false);
             if (d != Types.UNDEFINED) {
                 PropertyDescriptor desc = (PropertyDescriptor) d;
                 if (desc.isDataDescriptor()) {

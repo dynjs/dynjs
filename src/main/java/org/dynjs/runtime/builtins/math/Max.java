@@ -37,5 +37,15 @@ public class Max extends AbstractNativeFunction {
         }
         return Math.coerceLongIfPossible(max);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Max.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: max>";
+    }
 
 }

@@ -1026,7 +1026,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 debugName = ((Reference) ref).getReferencedName();
             }
             Object value = getValue(context, ref);
-            Object original = obj.getOwnProperty(context, each.getName());
+            Object original = obj.getOwnProperty(context, each.getName(), false);
             PropertyDescriptor desc = null;
             if (each instanceof PropertyGet) {
                 desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);

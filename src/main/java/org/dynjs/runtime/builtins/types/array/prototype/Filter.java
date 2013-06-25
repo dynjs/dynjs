@@ -59,4 +59,14 @@ public class Filter extends AbstractNativeFunction {
 
         return a;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Filter.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: filter>";
+    }
 }

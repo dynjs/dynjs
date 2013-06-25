@@ -36,5 +36,15 @@ public class Min extends AbstractNativeFunction {
         }
         return Math.coerceLongIfPossible(min);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Min.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: min>";
+    }
 
 }

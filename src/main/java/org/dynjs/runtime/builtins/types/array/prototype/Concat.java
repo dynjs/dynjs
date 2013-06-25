@@ -68,4 +68,14 @@ public class Concat extends AbstractNonConstructorFunction {
 
         return array;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Concat.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: concat>";
+    }
 }

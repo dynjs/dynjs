@@ -23,5 +23,15 @@ public class Atan2 extends AbstractNativeFunction {
         if (x.equals(-0.0) && y.equals(-0.0)) { return -java.lang.Math.PI; }
         return java.lang.Math.atan2(y, x);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Atan2.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: atan2>";
+    }
 
 }

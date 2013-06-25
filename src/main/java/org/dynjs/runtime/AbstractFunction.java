@@ -8,7 +8,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private LexicalEnvironment scope;
     private boolean strict;
 
-    private String debugContext;
+    protected String debugContext;
 
     public AbstractFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(scope.getGlobalObject());
@@ -16,14 +16,14 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.scope = scope;
         this.strict = strict;
         setClassName("Function");
-        defineOwnProperty(null, "length", new PropertyDescriptor() {
+        forceDefineOwnProperty("length", new PropertyDescriptor() {
             {
                 set("Value", (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
                 set("Writable", false);
                 set("Configurable", false);
                 set("Enumerable", false);
             }
-        }, false);
+        } );
 
         if (strict) {
             final Object thrower = scope.getGlobalObject().get(null, "__throwTypeError");
@@ -81,7 +81,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 15.3.5.4
-        if (name.equals("caller") && this.strict) {
+        if (this.strict && name.equals("caller") ) {
             throw new ThrowException(context, context.createTypeError("may not reference 'caller'"));
         }
         return super.get(context, name);

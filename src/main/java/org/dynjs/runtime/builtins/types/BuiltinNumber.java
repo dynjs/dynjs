@@ -28,21 +28,22 @@ public class BuiltinNumber extends AbstractBuiltinType {
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
 
-        defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "toFixed", new ToFixed(globalObject));
-        defineNonEnumerableProperty(proto, "toExponential", new ToExponential(globalObject));
-        defineNonEnumerableProperty(proto, "toPrecision", new ToPrecision(globalObject));
+        proto.forceDefineNonEnumerableProperty("constructor", this);
+        proto.forceDefineNonEnumerableProperty("toString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toLocaleString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty("valueOf", new ValueOf(globalObject));
+        proto.forceDefineNonEnumerableProperty("toFixed", new ToFixed(globalObject));
+        proto.forceDefineNonEnumerableProperty("toExponential", new ToExponential(globalObject));
+        proto.forceDefineNonEnumerableProperty("toPrecision", new ToPrecision(globalObject));
 
-        defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
-        defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);
-        defineReadOnlyProperty(this, globalObject, "NEGATIVE_INFINITY", Double.NEGATIVE_INFINITY);
-        defineReadOnlyProperty(this, globalObject, "MIN_VALUE", Double.MIN_VALUE);
-        defineReadOnlyProperty(this, globalObject, "MAX_VALUE", Double.MAX_VALUE);
-        defineReadOnlyProperty(globalObject, globalObject, "NaN", Double.NaN);
-        defineReadOnlyProperty(globalObject, globalObject, "Infinity", Double.POSITIVE_INFINITY);
+        this.forceDefineReadOnlyProperty("NaN", Double.NaN);
+        this.forceDefineReadOnlyProperty("POSITIVE_INFINITY", Double.POSITIVE_INFINITY);
+        this.forceDefineReadOnlyProperty("NEGATIVE_INFINITY", Double.NEGATIVE_INFINITY);
+        this.forceDefineReadOnlyProperty("MIN_VALUE", Double.MIN_VALUE);
+        this.forceDefineReadOnlyProperty("MAX_VALUE", Double.MAX_VALUE);
+        
+        globalObject.forceDefineReadOnlyProperty( "NaN", Double.NaN);
+        globalObject.forceDefineReadOnlyProperty( "Infinity", Double.POSITIVE_INFINITY);
     }
 
     @Override
@@ -74,25 +75,15 @@ public class BuiltinNumber extends AbstractBuiltinType {
         return new DynNumber(context.getGlobalObject());
     }
 
-    protected static void defineReadOnlyProperty(final JSObject on, final GlobalObject globalObject, String name, final Number value) {
-        on.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set("Value", value);
-                set("Writable", false);
-                set("Enumerable", false);
-                set("Configurable", false);
-            }
-        }, false);
+
+
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinNumber.java";
     }
 
-    protected static void defineReadOnlyFunction(final JSObject on, final GlobalObject globalObject, String name, final Object value) {
-        on.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set("Value", value);
-                set("Writable", false);
-                set("Enumerable", false);
-                set("Configurable", false);
-            }
-        }, false);
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Number>";
     }
 }

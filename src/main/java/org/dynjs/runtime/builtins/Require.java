@@ -65,4 +65,14 @@ public class Require extends AbstractNativeFunction {
 
         return exports;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/Require.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: require>";
+    }
 }

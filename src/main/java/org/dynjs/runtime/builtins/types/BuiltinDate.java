@@ -74,57 +74,58 @@ public class BuiltinDate extends AbstractBuiltinType {
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
 
-        defineNonEnumerableProperty(this, "now", new Now(globalObject) );
-        defineNonEnumerableProperty(this, "parse", new Parse(globalObject));
-        defineNonEnumerableProperty(this, "UTC", new UTC(globalObject) );
-        defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject));
-        defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleDateString", new ToLocaleDateString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleTimeString", new ToLocaleTimeString(globalObject));
-        defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
-        defineNonEnumerableProperty(proto, "toUTCString", new ToUTCString(globalObject));
-        defineNonEnumerableProperty(proto, "toGMTString", new ToUTCString(globalObject));
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "getFullYear", new GetFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "getMonth", new GetMonth(globalObject));
-        defineNonEnumerableProperty(proto, "getDay", new GetDay(globalObject));
-        defineNonEnumerableProperty(proto, "getHours", new GetHours(globalObject));
-        defineNonEnumerableProperty(proto, "getMinutes", new GetMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "getSeconds", new GetSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCFullYear", new GetUTCFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCMonth", new GetUTCMonth(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCDay", new GetUTCDay(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCHours", new GetUTCHours(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCMinutes", new GetUTCMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCSeconds", new GetUTCSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "getTimezoneOffset", new GetTimezoneOffset(globalObject));
-        defineNonEnumerableProperty(proto, "getMilliseconds", new GetMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "setMilliseconds", new SetMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCMilliseconds", new GetUTCMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCMilliseconds", new SetUTCMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "setTime", new SetTime(globalObject));
-        defineNonEnumerableProperty(proto, "setSeconds", new SetSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCSeconds", new SetUTCSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "setMinutes", new SetMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCMinutes", new SetUTCMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "setHours", new SetHours(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCHours", new SetUTCHours(globalObject));
-        defineNonEnumerableProperty(proto, "setDate", new SetDate(globalObject));
-        defineNonEnumerableProperty(proto, "getDate", new GetDate(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCDate", new SetUTCDate(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCDate", new GetUTCDate(globalObject));
-        defineNonEnumerableProperty(proto, "setMonth", new SetMonth(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCMonth", new SetUTCMonth(globalObject));
-        defineNonEnumerableProperty(proto, "setFullYear", new SetFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCFullYear", new SetUTCFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "toJSON", new ToJSON(globalObject));
+        this.forceDefineNonEnumerableProperty("now", new Now(globalObject) );
+        this.forceDefineNonEnumerableProperty("parse", new Parse(globalObject));
+        this.forceDefineNonEnumerableProperty("UTC", new UTC(globalObject) );
+        
+        proto.forceDefineNonEnumerableProperty("constructor", this);
+        proto.forceDefineNonEnumerableProperty("toString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toDateString", new ToDateString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toTimeString", new ToTimeString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toLocaleString", new ToLocaleString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toLocaleDateString", new ToLocaleDateString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toLocaleTimeString", new ToLocaleTimeString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toISOString", new ToISOString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toUTCString", new ToUTCString(globalObject));
+        proto.forceDefineNonEnumerableProperty("toGMTString", new ToUTCString(globalObject));
+        proto.forceDefineNonEnumerableProperty("valueOf", new ValueOf(globalObject));
+        proto.forceDefineNonEnumerableProperty("getTime", new ValueOf(globalObject));
+        proto.forceDefineNonEnumerableProperty("getFullYear", new GetFullYear(globalObject));
+        proto.forceDefineNonEnumerableProperty("getMonth", new GetMonth(globalObject));
+        proto.forceDefineNonEnumerableProperty("getDay", new GetDay(globalObject));
+        proto.forceDefineNonEnumerableProperty("getHours", new GetHours(globalObject));
+        proto.forceDefineNonEnumerableProperty("getMinutes", new GetMinutes(globalObject));
+        proto.forceDefineNonEnumerableProperty("getSeconds", new GetSeconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCFullYear", new GetUTCFullYear(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCMonth", new GetUTCMonth(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCDay", new GetUTCDay(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCHours", new GetUTCHours(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCMinutes", new GetUTCMinutes(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCSeconds", new GetUTCSeconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("getTimezoneOffset", new GetTimezoneOffset(globalObject));
+        proto.forceDefineNonEnumerableProperty("getMilliseconds", new GetMilliseconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("setMilliseconds", new SetMilliseconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCMilliseconds", new GetUTCMilliseconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCMilliseconds", new SetUTCMilliseconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("setTime", new SetTime(globalObject));
+        proto.forceDefineNonEnumerableProperty("setSeconds", new SetSeconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCSeconds", new SetUTCSeconds(globalObject));
+        proto.forceDefineNonEnumerableProperty("setMinutes", new SetMinutes(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCMinutes", new SetUTCMinutes(globalObject));
+        proto.forceDefineNonEnumerableProperty("setHours", new SetHours(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCHours", new SetUTCHours(globalObject));
+        proto.forceDefineNonEnumerableProperty("setDate", new SetDate(globalObject));
+        proto.forceDefineNonEnumerableProperty("getDate", new GetDate(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCDate", new SetUTCDate(globalObject));
+        proto.forceDefineNonEnumerableProperty("getUTCDate", new GetUTCDate(globalObject));
+        proto.forceDefineNonEnumerableProperty("setMonth", new SetMonth(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCMonth", new SetUTCMonth(globalObject));
+        proto.forceDefineNonEnumerableProperty("setFullYear", new SetFullYear(globalObject));
+        proto.forceDefineNonEnumerableProperty("setUTCFullYear", new SetUTCFullYear(globalObject));
+        proto.forceDefineNonEnumerableProperty("toJSON", new ToJSON(globalObject));
 
-        defineNonEnumerableProperty(proto, "getYear", new GetYear(globalObject));
-        defineNonEnumerableProperty(proto, "setYear", new SetYear(globalObject));
+        proto.forceDefineNonEnumerableProperty("getYear", new GetYear(globalObject));
+        proto.forceDefineNonEnumerableProperty("setYear", new SetYear(globalObject));
     }
 
     @Override
@@ -189,5 +190,15 @@ public class BuiltinDate extends AbstractBuiltinType {
         }
 
         return date;
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinDate.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Date>";
     }
 }

@@ -21,5 +21,15 @@ public class Log extends AbstractNativeFunction {
         final Double arg = Types.toNumber(context, args[0]).doubleValue();
         return Math.coerceLongIfPossible(java.lang.Math.log(arg));
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Log.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: log>";
+    }
 
 }

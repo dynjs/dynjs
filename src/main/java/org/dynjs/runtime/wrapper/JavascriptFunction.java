@@ -25,30 +25,30 @@ public class JavascriptFunction extends AbstractFunction {
         this.code = code;
 
         final DynObject proto = new DynObject(scope.getGlobalObject());
-        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
+        proto.forceDefineOwnProperty( "constructor", new PropertyDescriptor() {
             {
                 set("Value", JavascriptFunction.this);
                 set("Writable", true);
                 set("Enumerable", false);
                 set("Configurable", true);
             }
-        }, false);
-        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+        });
+        forceDefineOwnProperty("prototype", new PropertyDescriptor() {
             {
                 set("Value", proto);
                 set("Writable", true);
                 set("Enumerable", false);
                 set("Configurable", false);
             }
-        }, false);
-        defineOwnProperty(null, "name", new PropertyDescriptor() {
+        } );
+        forceDefineOwnProperty("name", new PropertyDescriptor() {
             {
                 set("Value", identifier);
                 set("Writable", true);
                 set("Enumerable", false);
                 set("Configurable", true);
             }
-        }, false);
+        });
     }
     
     @Override

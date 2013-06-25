@@ -21,10 +21,10 @@ public class BuiltinError extends AbstractBuiltinType {
 
     @Override
     public void initialize(GlobalObject globalObject, JSObject proto) {
-        defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "name", "Error");
-        defineNonEnumerableProperty(proto, "message", "");
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        proto.forceDefineNonEnumerableProperty( "constructor", this);
+        proto.forceDefineNonEnumerableProperty( "name", "Error");
+        proto.forceDefineNonEnumerableProperty( "message", "");
+        proto.forceDefineNonEnumerableProperty( "toString", new ToString(globalObject));
     }
 
     @Override
@@ -53,6 +53,16 @@ public class BuiltinError extends AbstractBuiltinType {
         DynObject o = new DynObject(context.getGlobalObject());
         o.setClassName("Error");
         return o;
+    }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/BuiltinError.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: Error>";
     }
 
 }

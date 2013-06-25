@@ -23,24 +23,37 @@ public abstract class AbstractBuiltinType extends AbstractNativeFunction {
     public abstract void initialize(GlobalObject globalObject, JSObject prototype);
 
     protected void setPrototypeProperty(final JSObject prototype) {
-        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
+        forceDefineOwnProperty("prototype", new PropertyDescriptor() {
             {
                 set("Value", prototype);
                 set("Writable", false);
                 set("Configurable", false);
                 set("Enumerable", false);
             }
-        }, false);
+        });
     }
 
+    /*
     protected void defineNonEnumerableProperty(JSObject target, String name, final Object value) {
-        target.defineOwnProperty(null, name, new PropertyDescriptor() {
+        target.forceDefineOwnProperty(name, new PropertyDescriptor() {
             {
-                set( "Value", value );
-                set( "Writable", true );
-                set( "Configurable", true );
-                set( "Enumerable", false );
+                set("Value", value);
+                set("Writable", true);
+                set("Configurable", true);
+                set("Enumerable", false);
             }
-        }, false);
+        });
     }
+    
+    protected void defineReadOnlyProperty(final JSObject target, final String name, final Object value) {
+        target.forceDefineOwnProperty(name, new PropertyDescriptor() {
+            {
+                set("Value", value);
+                set("Writable", false);
+                set("Enumerable", false);
+                set("Configurable", false);
+            }
+        } );
+    }
+    */
 }

@@ -114,5 +114,15 @@ public class ParseInt extends AbstractNonConstructorFunction {
             return ( ( c >= '0' ) && ( c <= '9' ) || ( ( c >= 'a' ) && ( c <= ( 'a' + radix - 11) ) ) ) || ( ( c >= 'A' ) && ( c <= ( 'A' + radix - 11) ) );
         }
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/ParseInt.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: parseInt>";
+    }
 
 }

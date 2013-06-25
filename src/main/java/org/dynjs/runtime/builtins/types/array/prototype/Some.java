@@ -44,5 +44,15 @@ public class Some extends AbstractNativeFunction {
 
         return false;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Some.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: some>";
+    }
 
 }

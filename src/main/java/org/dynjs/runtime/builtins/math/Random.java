@@ -15,4 +15,13 @@ public class Random extends AbstractNativeFunction {
         return Math.random();
     }
 
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Random.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: random>";
+    }
 }

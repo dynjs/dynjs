@@ -27,5 +27,15 @@ public class Exp extends AbstractNativeFunction {
         }
         return java.lang.Math.exp(arg);
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/math/Exp.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: exp>";
+    }
 
 }

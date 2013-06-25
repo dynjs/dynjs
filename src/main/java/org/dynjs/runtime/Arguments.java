@@ -59,7 +59,7 @@ public class Arguments extends DynObject {
             return reject(context, shouldThrow);
         }
 
-        if (this.map.getOwnProperty(context, name) != Types.UNDEFINED) {
+        if (this.map.getOwnProperty(context, name, false) != Types.UNDEFINED) {
             if (desc.isAccessorDescriptor()) {
                 this.map.delete(context, name, false);
             } else {
@@ -80,7 +80,7 @@ public class Arguments extends DynObject {
     public boolean delete(ExecutionContext context, String name, boolean shouldThrow) {
         // 10.6 [[Delete]]
         boolean result = super.delete(context, name, shouldThrow);
-        if (result && (this.map.getOwnProperty(context, name) != Types.UNDEFINED)) {
+        if (result && (this.map.getOwnProperty(context, name, false) != Types.UNDEFINED)) {
             this.map.delete(context, name, false);
         }
         return result;

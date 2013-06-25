@@ -30,5 +30,15 @@ public class Pop extends AbstractNonConstructorFunction {
         array.put(context, "length", index, true);
         return element;
     }
+    
+    @Override
+    public void setFileName() {
+        this.filename = "org/dynjs/runtime/builtins/types/array/prototype/Pop.java";
+    }
+
+    @Override
+    public void setupDebugContext() {
+        this.debugContext = "<native function: pop>";
+    }
 
 }
