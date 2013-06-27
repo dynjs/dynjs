@@ -13,7 +13,9 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.CompilableBasicBlock;
+import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.ThreadCompilationManager;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
 import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 
@@ -47,13 +49,14 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
             return code;
         }
         InterpretedBasicBlock initial = new InterpretedBasicBlock(this.interpFactory, body, strict);
-        code = new CompilableBasicBlock(this, grist, initial);
+        DynamicClassLoader cl = ThreadCompilationManager.currentClassLoader();
+        code = new CompilableBasicBlock(cl, this, grist, initial);
         entry.setCompiled(code);
         return code;
     }
 
-    private BasicBlock jitCompile(ExecutionContext context, String grist, Statement body, boolean strict) {
-        return this.jitCompiler.compile(context, grist, body, strict);
+    private BasicBlock jitCompile(DynamicClassLoader cl, ExecutionContext context, String grist, Statement body, boolean strict) {
+        return this.jitCompiler.compile(cl, context, grist, body, strict);
     }
 
     public void requestJitCompilation(ExecutionContext context, CompilableBasicBlock block) {
@@ -74,7 +77,7 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
         public void run() {
             BasicBlock delegate = this.block.getDelegate();
             if (delegate instanceof InterpretedBasicBlock) {
-                BasicBlock compiled = jitCompile(this.context, block.getGrist(), ((InterpretedBasicBlock) delegate).getBody(), block.isStrict());
+                BasicBlock compiled = jitCompile(block.getClassLoader(), this.context, block.getGrist(), ((InterpretedBasicBlock) delegate).getBody(), block.isStrict());
                 this.block.setDelegate(compiled);
             }
         }

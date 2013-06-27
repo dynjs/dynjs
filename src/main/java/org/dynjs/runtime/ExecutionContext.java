@@ -131,6 +131,7 @@ public class ExecutionContext {
 
     public Completion execute(JSProgram program) {
         try {
+            ThreadCompilationManager.push( program.getClassLoader() );
             ThreadContextManager.pushContext(this);
             setStrict(program.isStrict());
             this.fileName = program.getFileName();
@@ -144,17 +145,20 @@ public class ExecutionContext {
             }
         } finally {
             ThreadContextManager.popContext();
+            ThreadCompilationManager.pop();
         }
     }
 
     public Object eval(JSProgram eval, boolean direct) {
         try {
+            ThreadCompilationManager.push( eval.getClassLoader() );
             ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
             ThreadContextManager.pushContext(evalContext);
             Completion result = eval.execute(evalContext);
             return result.value;
         } finally {
             ThreadContextManager.popContext();
+            ThreadCompilationManager.pop();
         }
     }
 

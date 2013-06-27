@@ -6,14 +6,20 @@ import org.dynjs.compiler.jit.JITBasicBlockCompiler;
 
 public class CompilableBasicBlock extends BasicBlockDelegate {
     
+    private DynamicClassLoader classLoader;
     private AtomicInteger counter = new AtomicInteger();
     private String grist;
     private JITBasicBlockCompiler compiler;
 
-    public CompilableBasicBlock(JITBasicBlockCompiler compiler, String grist, BasicBlock initial) {
+    public CompilableBasicBlock(DynamicClassLoader classLoader, JITBasicBlockCompiler compiler, String grist, BasicBlock initial) {
         super(initial);
+        this.classLoader = classLoader;
         this.grist = grist;
         this.compiler = compiler;
+    }
+    
+    public DynamicClassLoader getClassLoader() {
+        return this.classLoader;
     }
     
     @Override

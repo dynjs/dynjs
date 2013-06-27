@@ -6,15 +6,22 @@ import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
 
 public class JavascriptProgram implements JSProgram {
     
+    private DynamicClassLoader classLoader;
     private BasicBlock code;
 
-    public JavascriptProgram(BasicBlock code) {
+    public JavascriptProgram(DynamicClassLoader classLoader, BasicBlock code) {
+        this.classLoader = classLoader;
         this.code = code;
+    }
+    
+    public DynamicClassLoader getClassLoader() {
+        return this.classLoader;
     }
 
     @Override

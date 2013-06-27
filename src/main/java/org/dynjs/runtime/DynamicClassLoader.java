@@ -16,6 +16,10 @@
 package org.dynjs.runtime;
 
 public class DynamicClassLoader extends ClassLoader {
+    
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
 
     public DynamicClassLoader(ClassLoader parentClassLoader) {
         super(parentClassLoader);

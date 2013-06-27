@@ -24,6 +24,7 @@ import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager.Entry;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.ThreadCompilationManager;
 import org.objectweb.asm.Opcodes;
 
 public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler implements BasicBlockCompiler {
@@ -36,6 +37,11 @@ public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler impleme
 
     @Override
     public BasicBlock compile(final ExecutionContext context, final String grist, final Statement body, boolean strict) {
+        DynamicClassLoader cl = ThreadCompilationManager.currentClassLoader();
+        return compile( cl, context, grist, body, strict );
+    }
+    
+    public BasicBlock compile(DynamicClassLoader cl, final ExecutionContext context, final String grist, final Statement body, boolean strict) {
         
         int statementNumber = body.getStatementNumber();
         Entry entry = context.getBlockManager().retrieve(statementNumber);
@@ -74,7 +80,7 @@ public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler impleme
                     }
                 });
 
-        DynamicClassLoader cl = new DynamicClassLoader(getConfig().getClassLoader());
+        //DynamicClassLoader cl = new DynamicClassLoader(getConfig().getClassLoader());
 
         CompilationPlanner planner = new CompilationPlanner(getConfig(), cl, getFactory());
 
