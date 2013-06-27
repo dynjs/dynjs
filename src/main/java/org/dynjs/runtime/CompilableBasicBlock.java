@@ -22,6 +22,10 @@ public class CompilableBasicBlock extends BasicBlockDelegate {
         return this.classLoader;
     }
     
+    public void clearClassLoader() {
+        this.classLoader = null;
+    }
+    
     @Override
     public Completion call(ExecutionContext context) {
         if ( counter.incrementAndGet() == 5 ) {
