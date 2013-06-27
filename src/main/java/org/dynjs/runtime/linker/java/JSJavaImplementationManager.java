@@ -20,6 +20,7 @@ import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.ThreadCompilationManager;
 import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
 import org.objectweb.asm.Opcodes;
 
@@ -132,7 +133,8 @@ public class JSJavaImplementationManager {
 
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
-        DynamicClassLoader cl = new DynamicClassLoader(Thread.currentThread().getContextClassLoader());
+        //DynamicClassLoader cl = new DynamicClassLoader(Thread.currentThread().getContextClassLoader());
+        DynamicClassLoader cl = ThreadCompilationManager.currentClassLoader();
 
         return cl.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }

@@ -78,6 +78,7 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
             BasicBlock delegate = this.block.getDelegate();
             if (delegate instanceof InterpretedBasicBlock) {
                 BasicBlock compiled = jitCompile(block.getClassLoader(), this.context, block.getGrist(), ((InterpretedBasicBlock) delegate).getBody(), block.isStrict());
+                block.clearClassLoader();
                 this.block.setDelegate(compiled);
             }
         }
