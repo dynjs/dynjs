@@ -13,6 +13,10 @@ public class NullProgram implements JSProgram {
     public NullProgram(String filename) {
         this.filename = filename;
     }
+    
+    public DynamicClassLoader getClassLoader() {
+        return null;
+    }
 
     @Override
     public Completion execute(ExecutionContext context) {
