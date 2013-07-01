@@ -84,8 +84,9 @@ public class JavaClassModuleProvider extends ModuleProvider {
     private Map<String, Object> modules = new HashMap<String, Object>();
 
     @Override
-    String generateModuleID(ExecutionContext context, String moduleName) {
-        return moduleName;
+    public String generateModuleID(ExecutionContext context, String moduleName) {
+        if (modules.get(moduleName) != null) return moduleName;
+        return null;
     }
 
 }

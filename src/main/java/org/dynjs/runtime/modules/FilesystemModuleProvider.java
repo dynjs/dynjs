@@ -50,7 +50,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
     }
 
     @Override
-    String generateModuleID(ExecutionContext context, String moduleName) {
+    public String generateModuleID(ExecutionContext context, String moduleName) {
         File moduleFile = findFile(context.getGlobalObject().getLoadPaths(), moduleName);
         if (moduleFile != null && moduleFile.exists()) {
             return moduleFile.getAbsolutePath();

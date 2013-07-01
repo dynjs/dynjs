@@ -2,11 +2,8 @@ package org.dynjs.runtime.modules;
 
 import java.util.HashMap;
 
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.builtins.Require;
 
 /**
  * Provider for loading Javascript modules.
@@ -29,34 +26,31 @@ public abstract class ModuleProvider {
      * @return <code>true</code> if the module was loaded, false if not
      */
     abstract boolean load(DynJS runtime, ExecutionContext context, String moduleID);
-    
-    /** 
+
+    /**
      * Generate a unique module ID for <code>moduleName</code>
      * 
      * @param context the current execution context
      * @param moduleName the name of the module
      * @return the module ID
      */
-    abstract String generateModuleID(ExecutionContext context, String moduleName);
+    public abstract String generateModuleID(ExecutionContext context, String moduleName);
 
     /**
      * A template method used by require() which is responsible for ensuring the
      * module loading contract is enforced by subclasses.
      * 
      * @see http://wiki.commonjs.org/wiki/Modules/1.1
-     * @param runtime The active runtime
+     * @param require
      * @param context The execution context of the request
-     * @param moduleName The name of the module to load
-     * @return The loaded module or <code>null</code if un-loadable.
+     * @param moduleId The name of the module to load   @return The loaded module or <code>null</code if un-loadable.
      */
-    public Object findAndLoad(ExecutionContext context, String moduleName) {
+    public Object findAndLoad(ExecutionContext context, String moduleId) {
         DynJS runtime = context.getGlobalObject().getRuntime();
         ExecutionContext requireContext = ExecutionContext.createGlobalExecutionContext(runtime);
         GlobalObject requireGlobal = requireContext.getGlobalObject();
-        
-        // generate the module ID
-        String moduleId = generateModuleID(context, moduleName);
-        
+//        requireGlobal = context.getGlobalObject();
+
         // if the module ID is null, we can't find the module, so bail
         if (moduleId == null) {
             return null;

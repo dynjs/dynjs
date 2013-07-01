@@ -50,19 +50,16 @@ public class Require extends AbstractNativeFunction {
         }
 
         String moduleName = (String) arguments[0];
-        Object exports  = null;
         List<ModuleProvider> moduleProviders = context.getGlobalObject().getModuleProviders();
         for (ModuleProvider provider : moduleProviders) {
-            exports = provider.findAndLoad(context, moduleName);
-            if (exports != null) {
-                break;
+            // if a module provider can generate a module ID, then it can
+            // load the module.
+            // TODO: Maybe change the method name to be more accurate/descriptive.
+            String moduleId = provider.generateModuleID(context, moduleName);
+            if (moduleId != null) {
+                return provider.findAndLoad(context, moduleId);
             }
         }
-
-        if (exports == null) {
-            throw new ThrowException(context, context.createError("Error", "cannot find module " + moduleName));
-        }
-
-        return exports;
+        throw new ThrowException(context, context.createError("Error", "cannot find module " + moduleName));
     }
 }

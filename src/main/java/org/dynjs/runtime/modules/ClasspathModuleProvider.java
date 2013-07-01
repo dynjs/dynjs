@@ -40,17 +40,15 @@ public class ClasspathModuleProvider extends ModuleProvider {
     }
 
     @Override
-    String generateModuleID(ExecutionContext context, String moduleName) {
+    public String generateModuleID(ExecutionContext context, String moduleName) {
         ClassLoader classLoader = context.getGlobalObject().getConfig().getClassLoader();
         String name = normalizeName(moduleName);
         URL moduleURL = classLoader.getResource(name);
         if (moduleURL != null) {
-//            System.err.println("Found module ID: " + moduleURL.toExternalForm());
             return name;
         } else {
             moduleURL = classLoader.getResource(moduleName + "/index.js");
             if (moduleURL != null) {
-//                System.err.println("Found module ID: " + moduleURL.toExternalForm());
                 return moduleName + "/index.js";
             }
         }
