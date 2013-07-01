@@ -51,6 +51,7 @@ function __extend__(a,b) {
             } else {
                 a[i] = b[i];
             }
+          
         }
     } 
     return a;

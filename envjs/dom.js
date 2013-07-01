@@ -54,8 +54,41 @@ var Envjs = Envjs || require('envjs/platform/core').Envjs,
 //CLOSURE_START
 (function(){
 
+__lookupGetter__ = function(p) {
+  var prop = Object.getOwnPropertyDescriptor(this, p);
+  if (typeof prop.get == 'function') {
+    return prop.get
+  }
+}
 
+__lookupSetter__ = function(p) {
+  var prop = Object.getOwnPropertyDescriptor(this, p);
+  if (typeof prop.set == 'function') {
+    return prop.set;
+  }
+}
 
+__defineGetter__ = function(p, f) {
+  var s = arguments.callee;
+  if (s.hasOwnProperty(p)) {
+    print("PROPERTY: " + p);
+    print(s[p]);
+  }
+  Object.defineProperty(arguments.callee, p, { get: f });
+}
+
+__defineSetter__ = function(p, f) {
+  var s = arguments.callee
+  if (s.hasOwnProperty(p)) {
+    print(s[p]);
+  }
+  Object.defineProperty(arguments.callee, p, { set: f });
+}
+
+Object.defineProperty(Object.prototype, "__lookupGetter__", { value: __lookupGetter__ } );
+Object.defineProperty(Object.prototype, "__lookupSetter__", { value: __lookupSetter__ } );
+Object.defineProperty(Object.prototype, "__defineGetter__", { value: __defineGetter__ } );
+Object.defineProperty(Object.prototype, "__defineSetter__", { value: __defineSetter__ } );
 
 
 /**
@@ -65,7 +98,7 @@ var Envjs = Envjs || require('envjs/platform/core').Envjs,
 function __extend__(a,b) {
     for ( var i in b ) {
         if(b.hasOwnProperty(i)){
-            var g = b.__lookupGetter__(i), s = b.__lookupSetter__(i);
+          var g = b.__lookupGetter__(i), s = b.__lookupSetter__(i);
             if ( g || s ) {
                 if ( g ) { a.__defineGetter__(i, g); }
                 if ( s ) { a.__defineSetter__(i, s); }
@@ -630,6 +663,8 @@ __extend__(Node.prototype, {
             this.nodeName;
     },
     get prefix(){
+      print("THIS: " + this);
+      print("NODE NAME: " + this.nodeName);
         return this.nodeName.split(':').length>1?
             this.nodeName.split(':')[0]:
             null;

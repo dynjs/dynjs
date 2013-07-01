@@ -5,9 +5,9 @@
  * Copyright 2008-2010 John Resig, under the MIT License
  */
 
-var Envjs = Envjs || 
-	require('envjs/platform/core').Envjs;
-	load('local_settings.js');
+var Envjs = Envjs || require('envjs/platform/core').Envjs;
+require('envjs/window');
+load('local_settings.js');
 
 //var __context__ = Packages.org.mozilla.javascript.Context.getCurrentContext();
 
@@ -33,6 +33,33 @@ Envjs.exit = function(){
 //CLOSURE_START
 (function(){
 
+
+__lookupGetter__ = function(p) {
+  var prop = Object.getOwnPropertyDescriptor(this, p);
+  if (typeof prop.get == 'function') {
+    return prop.get
+  }
+}
+
+__lookupSetter__ = function(p) {
+  var prop = Object.getOwnPropertyDescriptor(this, p);
+  if (typeof prop.set == 'function') {
+    return prop.set;
+  }
+}
+
+__defineGetter__ = function(p, f) {
+  Object.defineProperty(arguments.callee, p, { get: f });
+}
+
+__defineSetter__ = function(p, f) {
+  Object.defineProperty(arguments.callee, p, { set: f });
+}
+
+Object.defineProperty(Object.prototype, "__lookupGetter__", { value: __lookupGetter__ } );
+Object.defineProperty(Object.prototype, "__lookupSetter__", { value: __lookupSetter__ } );
+Object.defineProperty(Object.prototype, "__defineGetter__", { value: __defineGetter__ } );
+Object.defineProperty(Object.prototype, "__defineSetter__", { value: __defineSetter__ } );
 
 
 

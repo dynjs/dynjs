@@ -9,7 +9,7 @@ Envjs = exports.Envjs = function(){
         override = function(){
             for(i=0;i<arguments.length;i++){
                 for ( var name in arguments[i] ) {
-					if(arguments[i].hasOwnProperty(name)){
+                    if(arguments[i].hasOwnProperty(name)){
                         var g = arguments[i].__lookupGetter__(name),
                             s = arguments[i].__lookupSetter__(name);
                         if ( g || s ) {
@@ -18,7 +18,8 @@ Envjs = exports.Envjs = function(){
                         } else {
                             Envjs[name] = arguments[i][name];
                         }
-					}
+                    }
+                  
                 }
             }
         };
@@ -71,7 +72,32 @@ Envjs.exit = function(){};
 //CLOSURE_START
 (function(){
 
+__lookupGetter__ = function(p) {
+  var prop = Object.getOwnPropertyDescriptor(this, p);
+  if (typeof prop.get == 'function') {
+    return prop.get
+  }
+}
 
+__lookupSetter__ = function(p) {
+  var prop = Object.getOwnPropertyDescriptor(this, p);
+  if (typeof prop.set == 'function') {
+    return prop.set;
+  }
+}
+
+__defineGetter__ = function(p, f) {
+  Object.defineProperty(arguments.callee, p, { get: f });
+}
+
+__defineSetter__ = function(p, f) {
+  Object.defineProperty(arguments.callee, p, { set: f });
+}
+
+Object.defineProperty(Object.prototype, "__lookupGetter__", { value: __lookupGetter__ } );
+Object.defineProperty(Object.prototype, "__lookupSetter__", { value: __lookupSetter__ } );
+Object.defineProperty(Object.prototype, "__defineGetter__", { value: __defineGetter__ } );
+Object.defineProperty(Object.prototype, "__defineSetter__", { value: __defineSetter__ } );
 
 
 
@@ -82,14 +108,15 @@ Envjs.exit = function(){};
 function __extend__(a,b) {
     for ( var i in b ) {
         if(b.hasOwnProperty(i)){
-          // TODO: Permanently remove this?
-//            var g = b.__lookupGetter__(i), s = b.__lookupSetter__(i);
-//            if ( g || s ) {
-//                if ( g ) { a.__defineGetter__(i, g); }
-//                if ( s ) { a.__defineSetter__(i, s); }
-//            } else {
+            var g = b.__lookupGetter__(i);
+            var s = b.__lookupSetter__(i);
+            if ( g || s ) {
+                if ( g ) { a.__defineGetter__(i, g); }
+                if ( s ) { a.__defineSetter__(i, s); }
+            } else {
                 a[i] = b[i];
-//            }
+            }
+          
         }
     } 
     return a;
