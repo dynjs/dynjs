@@ -19,6 +19,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Types;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +84,9 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
 
     @Test
     public void testSupportsNestedRequires() {
-        assertThat(eval("x = require('outer'); x.quadruple(4);")).isEqualTo(16L);
+        eval("x = require('outer')");
+        assertThat(eval("x.quadruple")).isInstanceOf(JSFunction.class);
+        assertThat(eval("x.quadruple(4)")).isEqualTo(16L);
     }
 
     @Test

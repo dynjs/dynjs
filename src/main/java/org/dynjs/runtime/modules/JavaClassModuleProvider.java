@@ -14,6 +14,10 @@ import org.dynjs.runtime.PropertyDescriptor;
 
 public class JavaClassModuleProvider extends ModuleProvider {
 
+    public JavaClassModuleProvider(GlobalObject globalObject) {
+        super(globalObject);
+    }
+
     public void addModule(Object module) throws InvalidModuleException {
         Module moduleAnno = module.getClass().getAnnotation(Module.class);
 

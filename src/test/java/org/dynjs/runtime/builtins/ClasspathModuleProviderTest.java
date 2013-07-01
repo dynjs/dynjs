@@ -42,7 +42,9 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testSupportsNestedRequires() {
-        assertThat(eval("x = require('outer'); x.quadruple(4);")).isEqualTo(16L);
+        eval("x = require('outer')");
+        assertThat(eval("x.quadruple")).isInstanceOf(JSFunction.class);
+        assertThat(eval("x.quadruple(4)")).isEqualTo(16L);
     }
     
     @Test

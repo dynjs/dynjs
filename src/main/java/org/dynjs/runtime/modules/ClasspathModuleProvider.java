@@ -9,8 +9,13 @@ import java.net.URL;
 
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
 
 public class ClasspathModuleProvider extends ModuleProvider {
+
+    public ClasspathModuleProvider(GlobalObject globalObject) {
+        super(globalObject);
+    }
 
     @Override
     public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {
