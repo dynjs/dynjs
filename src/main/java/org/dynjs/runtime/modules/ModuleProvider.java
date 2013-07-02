@@ -12,7 +12,7 @@ import java.util.HashMap;
 public abstract class ModuleProvider extends AbstractNativeFunction {
 
     public ModuleProvider(GlobalObject globalObject) {
-        super(globalObject);
+        super(globalObject, "moduleId" );
     }
 
     /**
@@ -69,18 +69,26 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
         // add ID + empty module.exports object to cache
         JSObject module = new DynObject(context.getGlobalObject());
         Object exports = new DynObject(context.getGlobalObject());
+        
+        LexicalEnvironment localEnv = context.getVariableEnvironment();
+        
         module.put(context, "exports", exports, true);
         module.put(context, "id", moduleId, false);
+        
+        localEnv.getRecord().createMutableBinding(context, "module", false);
+        localEnv.getRecord().createMutableBinding(context, "exports", false);
+        localEnv.getRecord().createMutableBinding(context, "id", false);
+        
+        localEnv.getRecord().setMutableBinding(context, "module", module, false);
+        localEnv.getRecord().setMutableBinding(context, "exports", exports, false);
+        localEnv.getRecord().setMutableBinding(context, "id", moduleId, false);
+        
         CACHE.put(moduleId, exports);
 
-        // make the module object available
-        GlobalObject requireGlobal = context.getGlobalObject();
-        requireGlobal.put(context, "module", module, true);
-        requireGlobal.put(context, "exports", exports, true);
 
         // try to load the module
         // if successful, add to the cache
-        if (this.load(requireGlobal.getRuntime(), context, moduleId)) {
+        if (this.load(context.getGlobalObject().getRuntime(), context, moduleId)) {
             exports = module.get(context, "exports");
             CACHE.put(moduleId, exports);
             return exports;
