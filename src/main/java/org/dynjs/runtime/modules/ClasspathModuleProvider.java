@@ -10,6 +10,7 @@ import java.net.URL;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Runner;
 
 public class ClasspathModuleProvider extends ModuleProvider {
 
@@ -20,18 +21,14 @@ public class ClasspathModuleProvider extends ModuleProvider {
     @Override
     public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {
         ClassLoader classLoader = context.getGlobalObject().getConfig().getClassLoader();
-//        System.err.println("Classloader: " + classLoader.toString());
-//        System.err.println("Looking for module " + moduleId);
         try {
             InputStream is = classLoader.getResourceAsStream(moduleId);
             if (is == null) {
-//                System.err.println("Can't find module - throwing exception. " + moduleId);
                 throw new FileNotFoundException("Cannot find module: " + moduleId);
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//            System.err.println("Loading module: " + moduleId);
-            context.getGlobalObject().getRuntime().newRunner().withContext(context).withSource(reader).execute();
-//            System.err.println("Loaded module: " + moduleId);
+            Runner runner = runtime.newRunner();
+            runner.withContext(context).withSource(reader).execute();
             try {
                 is.close();
             } catch (IOException ignore) {

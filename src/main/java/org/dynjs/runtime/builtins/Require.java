@@ -58,7 +58,6 @@ public class Require extends AbstractNativeFunction {
             String moduleId = provider.generateModuleID(context, moduleName);
             if (moduleId != null) {
                 return context.call(provider, (Object) provider, moduleId);
-                //return provider.findAndLoad(context, moduleId);
             }
         }
         throw new ThrowException(context, context.createError("Error", "cannot find module " + moduleName));
