@@ -52,7 +52,7 @@ public class LexicalEnvironment {
         if (outer == null) {
             return new Reference(getGlobalObject(), name, Types.UNDEFINED, strict);
         }
-
+        
         return outer.getIdentifierReference(context, name, strict);
     }
 
