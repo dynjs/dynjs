@@ -44,7 +44,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
                 runtime.newRunner().withContext(context).withSource(file).execute();
                 return true;
             } catch (IOException e) {
-                return false;
+                System.err.println("There was an error loading the module " + moduleID + ". Error message: " + e.getMessage());
             }
         }
         return false;

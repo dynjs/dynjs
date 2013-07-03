@@ -36,7 +36,7 @@ public class ClasspathModuleProvider extends ModuleProvider {
             return true;
         }
         catch(Exception e) {
-            System.err.println("Module not found: " + moduleId);
+            System.err.println("There was an error loading the module " + moduleId + ". Error message: " + e.getMessage());
         }
         return false;
     }
