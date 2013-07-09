@@ -1,12 +1,13 @@
 package org.dynjs.runtime.modules;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Runner;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Implementation of <code>ModuleProvider</code> which loads from the
@@ -19,29 +20,16 @@ public class FilesystemModuleProvider extends ModuleProvider {
 
     public FilesystemModuleProvider(GlobalObject globalObject) {
         super(globalObject);
-        globalObject.addLoadPath(System.getProperty("user.dir") + "/");
-        globalObject.addLoadPath(System.getProperty("user.dir") + "/node_modules");
-        globalObject.addLoadPath(System.getProperty("user.home") + "/.node_modules/");
-        globalObject.addLoadPath(System.getProperty("user.home") + "/.node_libraries/");
-        globalObject.addLoadPath("/usr/local/lib/node/");
-        globalObject.addLoadPath("/usr/local/lib/node_modules/");
-        String customRequirePath = this.getCustomRequirePath();
-        if (customRequirePath != null) {
-            String[] paths = customRequirePath.split(":");
-            for(String path : paths) {
-                globalObject.addLoadPath(path);
-            }
-        }
     }
 
     @Override
     boolean load(DynJS runtime, ExecutionContext context, String moduleID) {
-        GlobalObject global = context.getGlobalObject();
         File file = new File(moduleID);
         if (file.exists()) {
-            global.addLoadPath(file.getParent());
+            runtime.evaluate("require.addLoadPath('" + file.getParent() + "')");
             try {
                 runtime.newRunner().withContext(context).withSource(file).execute();
+                runtime.evaluate("require.removeLoadPath('" + file.getParent() + "')");
                 return true;
             } catch (IOException e) {
                 System.err.println("There was an error loading the module " + moduleID + ". Error message: " + e.getMessage());
@@ -52,7 +40,9 @@ public class FilesystemModuleProvider extends ModuleProvider {
 
     @Override
     public String generateModuleID(ExecutionContext context, String moduleName) {
-        File moduleFile = findFile(context.getGlobalObject().getLoadPaths(), moduleName);
+        Runner runtime = context.getGlobalObject().getRuntime().newRunner();
+        List<String> requirePaths = (List<String>) runtime.withContext(context).withSource("require.paths").evaluate();
+        File moduleFile = findFile(requirePaths, moduleName);
         if (moduleFile != null && moduleFile.exists()) {
             return moduleFile.getAbsolutePath();
         }
@@ -80,10 +70,4 @@ public class FilesystemModuleProvider extends ModuleProvider {
         return file;
     }
 
-    private String getCustomRequirePath() {
-        if (System.getenv("DYNJS_REQUIRE_PATH") != null) {
-            return System.getenv("DYNJS_REQUIRE_PATH");
-        }
-        return System.getProperty("dynjs.require.path");
-    }
 }

@@ -52,8 +52,6 @@ public class GlobalObject extends DynObject {
 
     private DynJS runtime;
     private BlockManager blockManager;
-    private List<ModuleProvider> moduleProviders = new ArrayList<>();
-    private List<String> loadPaths = new ArrayList<>();
     private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
 
     public GlobalObject(DynJS runtime) {
@@ -121,19 +119,6 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("Intl", new Intl(this));
 
         // ----------------------------------------
-        // Module-provider setup
-        // ----------------------------------------
-
-        this.moduleProviders.add(new FilesystemModuleProvider(this));
-        this.moduleProviders.add(new ClasspathModuleProvider(this));
-
-        JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider(this);
-        javaClassModuleProvider.addModule(new ConsoleModule());
-        javaClassModuleProvider.addModule(new UtilModule());
-
-        this.moduleProviders.add(javaClassModuleProvider);
-
-        // ----------------------------------------
         // Java integration
         // ----------------------------------------
 
@@ -169,18 +154,6 @@ public class GlobalObject extends DynObject {
 
     public static GlobalObject newGlobalObject(DynJS runtime) {
         return runtime.getConfig().getGlobalObjectFactory().newGlobalObject(runtime);
-    }
-
-    public List<ModuleProvider> getModuleProviders() {
-        return this.moduleProviders;
-    }
-
-    public void addLoadPath(String path) {
-        this.loadPaths.add(path);
-    }
-
-    public List<String> getLoadPaths() {
-        return this.loadPaths;
     }
 
     public DynJS getRuntime() {

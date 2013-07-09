@@ -28,7 +28,8 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
 
     @Before
     public void setUpLater() {
-        getContext().getGlobalObject().addLoadPath(System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/");
+        String testLoadPath = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/";
+        eval("require.addLoadPath('" + testLoadPath + "')");
     }
 
     @Test(expected = ThrowException.class)
