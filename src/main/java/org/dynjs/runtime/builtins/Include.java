@@ -16,15 +16,10 @@
 
 package org.dynjs.runtime.builtins;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Runner;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 
 public class Include extends AbstractNativeFunction {
 
@@ -37,16 +32,32 @@ public class Include extends AbstractNativeFunction {
         String includePath = Types.toString(context, args[0]);
         File includeFile = new File(includePath);
 
+        DynJS runtime = context.getGlobalObject().getRuntime();
         try {
             ExecutionContext parent = context.getParent();
-            while(parent != null) {
+            while (parent != null) {
                 context = parent;
-                parent  = context.getParent();
+                parent = context.getParent();
             }
-            Runner runner = context.getGlobalObject().getRuntime().newRunner();
-            runner.withContext(context)
-                    .withSource(includeFile)
-                    .execute();
+            Runner runner = runtime.newRunner();
+            if (includeFile.exists()) {
+                runner.withContext(context)
+                        .withSource(includeFile)
+                        .execute();
+            } else {
+                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(includePath);
+                if (is == null) {
+                    throw new FileNotFoundException(includePath);
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                Object ret = runner.withContext(context).withSource(reader).execute();
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+                return ret;
+            }
         } catch (IOException e) {
             throw new ThrowException(context, e);
         }
