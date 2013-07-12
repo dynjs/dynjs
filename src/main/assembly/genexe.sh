@@ -10,6 +10,7 @@ then
 fi
 echo "Creating dynjs executable"
 ARGS='"$@"'
-(echo '#!/bin/sh\nexec java -jar "$0" "$@"
+(echo '#!/bin/sh
+exec java -jar "$0" "$@"
 '; cat target/dynjs-all.jar) > bin/dynjs && chmod +x bin/dynjs
 
