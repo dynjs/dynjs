@@ -3,9 +3,36 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.ThrowException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class StackTraceTest extends AbstractDynJSTestSupport {
+    @Test
+    @Ignore
+    public void testBasicConstructedError() {
+        DynObject e = (DynObject) eval("function foo() { return new Error(); }; foo();");
+
+        String stack = (String) e.get(getContext(), "stack");
+        assertThat(stack).contains("Error\n");
+    }
+
+    @Test
+    public void testBasicConstructedTypeError() {
+        DynObject e = (DynObject) eval("function foo() { return new TypeError(); }; foo()");
+
+        String stack = (String) e.get(getContext(), "stack");
+        assertThat(stack).contains("TypeError\n");
+        assertThat(stack).contains("at foo (<eval>:1)\n");
+    }
+
+    @Test
+    public void testBasicThrownError() {
+        DynObject e = (DynObject) eval("function foo() { try { throw new Error(); } catch(e) { return e; } }; foo();");
+
+        String stack = (String) e.get(getContext(), "stack");
+        assertThat(stack).contains("Error\n");
+        assertThat(stack).contains("at foo (<eval>:1)\n");
+    }
 
     @Test
     public void testComplexStack() {
