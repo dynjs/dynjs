@@ -1,17 +1,12 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.error.ToString;
 
 public class BuiltinError extends AbstractBuiltinType {
 
     public BuiltinError(final GlobalObject globalObject) {
-        super(globalObject, "message" );
+        super(globalObject, "message");
 
         final JSObject proto = new DynObject(globalObject);
         proto.setClassName("Error");
@@ -44,6 +39,12 @@ public class BuiltinError extends AbstractBuiltinType {
                 }
             }, false);
         }
+
+        o.defineOwnProperty(context, "stack", new PropertyDescriptor() {
+            {
+                set("Get", new StackGetter(context));
+            }
+        }, false);
 
         return o;
     }
