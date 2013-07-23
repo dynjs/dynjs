@@ -1,66 +1,63 @@
 package org.dynjs.runtime.modules;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.Runner;
 
-public class ClasspathModuleProvider implements ModuleProvider {
+public class ClasspathModuleProvider extends ModuleProvider {
 
-    private DynObject module;
-    private DynObject exports;
+    public ClasspathModuleProvider(GlobalObject globalObject) {
+        super(globalObject);
+    }
 
     @Override
-    public Object load(ExecutionContext context, String moduleName) {
-        if (moduleName == null) {
-            return null;
-        }
-        DynJS runtime = context.getGlobalObject().getRuntime();
-        ExecutionContext requireContext = ExecutionContext.createGlobalExecutionContext(runtime);
-        GlobalObject requireGlobal = requireContext.getGlobalObject();
-        this.module = new DynObject(requireGlobal);
-        this.exports = new DynObject(requireGlobal);
-        module.put(null, "exports", exports, true);
-        requireGlobal.put(requireContext, "module", module, true);
-        requireGlobal.put(requireContext, "exports", exports, true);
-        
-        String originalName = moduleName;
-        moduleName = normalizeName(moduleName);
-//        System.err.println("Looking for: " + moduleName);
-        ClassLoader classLoader = requireGlobal.getConfig().getClassLoader();
+    public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {
+        ClassLoader classLoader = context.getGlobalObject().getConfig().getClassLoader();
+        // System.err.println("Classloader: " + classLoader.toString());
+        // System.err.println("Looking for module " + moduleId);
         try {
-            InputStream is = classLoader.getResourceAsStream(moduleName);
+            InputStream is = classLoader.getResourceAsStream(moduleId);
             if (is == null) {
-                is = classLoader.getResourceAsStream(originalName + "/index.js");
-                if (is == null) {
-                    throw new FileNotFoundException("Cannot find module: " + moduleName);
-                }
+                return false;
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            requireGlobal.getRuntime().newRunner().withContext(requireContext).withSource(reader).execute();
+            context.getGlobalObject().getRuntime().newRunner().withContext(context).withSource(reader).execute();
             try {
                 is.close();
             } catch (IOException ignore) {
             }
-            return module.get(requireContext, "exports");
+            return true;
         }
-        catch(FileNotFoundException e) {
-            System.err.println("Module not found: " + moduleName);
+        catch(Exception e) {
+            System.err.println("There was an error loading the module " + moduleId + ". Error message: " + e.getMessage());
         }
+        return false;
+    }
+
+    @Override
+    public String generateModuleID(ExecutionContext context, String moduleName) {
+        ClassLoader classLoader = context.getGlobalObject().getConfig()
+                .getClassLoader();
+        String name = normalizeName(moduleName);
+        URL moduleURL = classLoader.getResource(name);
+        if (moduleURL != null) {
+            return name;
+        } else {
+            moduleURL = classLoader.getResource(moduleName + "/index.js");
+            if (moduleURL != null) {
+                return moduleName + "/index.js";
+            }
+        }
+        // couldn't find the module in our classpath
         return null;
     }
-    
-    private String normalizeName(String originalName) {
-        if (originalName.endsWith(".js")) {
-            return originalName;
-        }
-        return originalName + ".js";
-    }
-    
+
 }

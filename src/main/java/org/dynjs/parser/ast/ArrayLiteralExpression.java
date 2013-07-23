@@ -67,7 +67,7 @@ public class ArrayLiteralExpression extends BaseExpression {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("[");
         boolean first = true;
         for (Expression each : this.exprs) {

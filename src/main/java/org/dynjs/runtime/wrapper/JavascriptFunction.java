@@ -81,7 +81,7 @@ public class JavascriptFunction extends AbstractFunction {
     }
 
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         buffer.append("function(");
         String[] params = getFormalParameters();

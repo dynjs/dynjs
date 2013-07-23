@@ -18,4 +18,10 @@ public class DynJSNamespaceTest extends AbstractDynJSTestSupport {
         getConfig().setArgv(arguments);
         assertThat(eval("dynjs.argv")).isEqualTo(arguments);
     }
+    
+    @Test
+    public void hasGlobalCommonJSModuleVariable() {
+        assertThat(eval("module").getClass()).isEqualTo(DynObject.class);
+        assertThat(eval("module.id")).isEqualTo("dynjs");
+    }
 }

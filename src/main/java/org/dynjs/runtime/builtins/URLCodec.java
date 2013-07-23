@@ -14,7 +14,7 @@ public class URLCodec {
     public static String encode(ExecutionContext context, String str, String unescapedSet) {
         int len = str.length();
 
-        StringBuffer r = new StringBuffer();
+        StringBuilder r = new StringBuilder();
 
         int k = 0;
 
@@ -79,7 +79,7 @@ public class URLCodec {
     public static String decode(ExecutionContext context, String str, String reservedSet) {
 
         int len = str.length();
-        StringBuffer r = new StringBuffer();
+        StringBuilder r = new StringBuilder();
 
         int k = 0;
 

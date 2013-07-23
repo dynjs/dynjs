@@ -35,7 +35,7 @@ public class VariableStatement extends BaseStatement {
     }
     
     public String dump(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(super.dump(indent));
         for (VariableDeclaration decl : this.decls) {
             buf.append(decl.dump(indent + "  "));
@@ -44,7 +44,7 @@ public class VariableStatement extends BaseStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("var ");
         boolean first = true;
         for (VariableDeclaration each : decls) {

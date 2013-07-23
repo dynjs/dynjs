@@ -29,7 +29,7 @@ public class Join extends AbstractNonConstructorFunction {
             }
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         for (long i = 0; i < len; ++i) {
             if (i > 0) {

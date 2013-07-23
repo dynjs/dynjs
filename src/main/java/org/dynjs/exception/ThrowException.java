@@ -82,6 +82,8 @@ public class ThrowException extends DynJSException {
                 message += ((JSObject) value).get(null, "message");
             }
             return message;
+        } else if ( value instanceof String ) {
+            return value.toString();
         }
         return super.getMessage();
     }

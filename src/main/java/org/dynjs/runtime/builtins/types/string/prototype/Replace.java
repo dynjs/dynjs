@@ -139,7 +139,7 @@ public class Replace extends AbstractNativeFunction {
     protected String buildReplacementString(ExecutionContext context, String replaceWith, DynArray matches) {
         int fromIndex            = 0;
         int endIndex             = replaceWith.length()-1;
-        StringBuffer replacement = new StringBuffer();
+        StringBuilder replacement = new StringBuilder();
         
         while (fromIndex <= endIndex) {
             char nextChar;

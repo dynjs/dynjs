@@ -137,8 +137,6 @@ public class JSJavaImplementationManager {
 
         DynamicClassLoader cl = new DynamicClassLoader(Thread.currentThread().getContextClassLoader());
 
-        // ClassReader reader = new ClassReader(bytecode);
-        // CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
         return cl.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 

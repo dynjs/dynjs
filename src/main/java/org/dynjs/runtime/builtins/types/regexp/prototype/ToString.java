@@ -15,7 +15,7 @@ public class ToString extends AbstractNonConstructorFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         JSObject jsSelf = (JSObject) self;
         
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         str.append( "/" );
         str.append( jsSelf.get(context, "source"));
         str.append( "/" );

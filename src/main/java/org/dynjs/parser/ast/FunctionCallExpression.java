@@ -55,7 +55,7 @@ public class FunctionCallExpression extends AbstractExpression {
     }
     
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(this.memberExpr).append("(");
         boolean first = true;
         for (Expression each : this.argExprs) {
@@ -71,7 +71,7 @@ public class FunctionCallExpression extends AbstractExpression {
     }
     
     public String dump(String indent) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( super.dump( indent ) );
         buffer.append( this.memberExpr.dump( indent + "  " ) );
         for ( Expression arg : argExprs ) {

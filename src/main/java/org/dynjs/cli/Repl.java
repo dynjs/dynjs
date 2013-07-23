@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import org.jboss.aesh.console.reader.ConsoleInputSession;
 
 public class Repl {
 
@@ -50,7 +51,7 @@ public class Repl {
         this.welcome = welcome;
         this.runtime = runtime;
         this.out = out;
-        this.in = in;
+        this.in = new ConsoleInputSession(in).getExternalInputStream();
     }
 
     public void run() {
@@ -58,6 +59,7 @@ public class Repl {
             Settings consoleSettings = Settings.getInstance();
             consoleSettings.setStdOut(this.out);
             consoleSettings.setInputStream(this.in);
+            consoleSettings.setHistoryPersistent(false);
             final Console console = Console.getInstance();
             console.pushToStdOut(welcome);
             console.setPrompt(new Prompt(prompt));

@@ -60,7 +60,7 @@ public class IfStatement extends BaseStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(indent).append("if (").append(this.testExpr.toString()).append(") {\n");
         buf.append(this.thenBlock.toIndentedString(indent + "  "));

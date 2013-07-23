@@ -50,7 +50,7 @@ public class WithStatement extends BaseStatement {
     }
     
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(indent).append("with (").append(this.expr.toString()).append(") {\n");
         buf.append(this.block.toIndentedString(indent + "  "));

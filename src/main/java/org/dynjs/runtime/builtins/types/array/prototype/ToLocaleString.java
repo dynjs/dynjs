@@ -27,7 +27,7 @@ public class ToLocaleString extends AbstractNonConstructorFunction {
 
         String separator = ",";
 
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
 
         boolean first = true;
         for (long i = 0; i < len; ++i) {

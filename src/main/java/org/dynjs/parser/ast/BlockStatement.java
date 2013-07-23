@@ -103,7 +103,7 @@ public class BlockStatement extends AbstractStatement {
     }
 
     public String dump(String indent) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         buffer.append(super.dump(indent));
         for (Statement each : this.blockContent) {
@@ -118,7 +118,7 @@ public class BlockStatement extends AbstractStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         for (Statement each : this.blockContent) {
             if (each != null) {

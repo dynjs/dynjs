@@ -61,7 +61,7 @@ public class SwitchStatement extends BaseStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(indent).append("switch (").append(expr.toString()).append(" ) {\n");
         for (CaseClause each : caseClauses) {

@@ -19,6 +19,7 @@ import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Types;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,8 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
 
     @Before
     public void setUpLater() {
-        getContext().getGlobalObject().addLoadPath(System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/");
+        String testLoadPath = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/";
+        eval("require.addLoadPath('" + testLoadPath + "')");
     }
 
     @Test(expected = ThrowException.class)
@@ -83,7 +85,9 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
 
     @Test
     public void testSupportsNestedRequires() {
-        assertThat(eval("x = require('outer'); x.quadruple(4);")).isEqualTo(16L);
+        eval("x = require('outer')");
+        assertThat(eval("x.quadruple")).isInstanceOf(JSFunction.class);
+        assertThat(eval("x.quadruple(4)")).isEqualTo(16L);
     }
 
     @Test
@@ -91,5 +95,25 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
         eval("x = require('module_dot_export')");
         assertThat(eval("x.AnObject")).isNotEqualTo(Types.UNDEFINED);
         assertThat(eval("x.a_function()")).isEqualTo("hello!");
+    }
+    
+    @Test
+    public void testModuleId() {
+        String path = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/my_module.js";
+        assertThat(eval("require('my_module').module_id")).isEqualTo(path);
+    }
+    
+    @Test
+    public void testCyclicDependencies() {
+      eval("var a = require('a');");
+      eval("var b = require('b');");
+      assertThat(eval("a.a().b")).isEqualTo(eval("b.b"));
+      assertThat(eval("b.b().a")).isEqualTo(eval("a.a"));
+    }
+    
+    @Test
+    public void testExportsAnonymousFunctions() {
+        eval("var flavor = require('func.js')");
+        assertThat(eval("flavor()")).isEqualTo("nacho cheese");
     }
 }

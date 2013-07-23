@@ -4,6 +4,10 @@
 
 ![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
 
+## Bug Reports
+
+We've got a [Jira](https://jira.codehaus.org/browse/DYNJS) over at Codehaus. Please let us know what issues you find!
+
 ## Setting up environment
 
 

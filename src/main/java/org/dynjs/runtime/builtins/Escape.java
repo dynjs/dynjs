@@ -32,7 +32,7 @@ public class Escape extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         String string = Types.toString(context, args[0]);
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int k = 0;
         for (; k < string.length(); ++k) {
             char c = string.charAt(k);

@@ -31,7 +31,7 @@ public class CatchClause {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("catch(").append(this.identifier).append("){\n");
         buf.append(block.toIndentedString(indent + ""));
         buf.append(indent).append("}");

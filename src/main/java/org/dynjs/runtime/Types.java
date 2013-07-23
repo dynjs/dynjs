@@ -166,7 +166,7 @@ public class Types {
     public static String trimNumericString(String value) {
         char[] val = value.toCharArray();
 
-        StringBuffer newStr = new StringBuffer();
+        StringBuilder newStr = new StringBuilder();
 
         for (int i = 0; i < val.length; ++i) {
             if (!isWhitespace(val[i])) {
@@ -415,7 +415,7 @@ public class Types {
                 int expValue = Integer.parseInt(matcher.group(3));
                 if (matcher.group(2).equals("+")) {
                     if (expValue <= 20) {
-                        StringBuffer newResult = new StringBuffer().append(matcher.group(1));
+                        StringBuilder newResult = new StringBuilder().append(matcher.group(1));
                         for (int i = 0; i < expValue; ++i) {
                             newResult.append("0");
                         }
@@ -423,7 +423,7 @@ public class Types {
                     }
                 } else {
                     if (expValue <= 6) {
-                        StringBuffer newResult = new StringBuffer().append("0.");
+                        StringBuilder newResult = new StringBuilder().append("0.");
                         for (int i = 0; i < (expValue - 1); ++i) {
                             newResult.append(0);
                         }

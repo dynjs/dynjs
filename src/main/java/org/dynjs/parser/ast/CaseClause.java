@@ -62,7 +62,7 @@ public class CaseClause {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("case ").append(expr.toString()).append(":\n");
         if (this.block != null) {
             buf.append(this.block.toIndentedString("  " + indent));

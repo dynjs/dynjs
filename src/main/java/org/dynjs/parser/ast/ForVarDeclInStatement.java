@@ -44,7 +44,7 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
     }
 
     public String toIndentedString(String indent) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(indent).append("for (").append(decl).append(" in ").append(getRhs().toString()).append(") {\n");
         buf.append(getBlock().toIndentedString(indent + "  "));
         buf.append(indent).append("}");
