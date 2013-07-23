@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StackGetter extends AbstractNativeFunction {
@@ -15,8 +16,23 @@ public class StackGetter extends AbstractNativeFunction {
         this.stack = stack;
     }
 
+    public StackGetter(ExecutionContext context) {
+        super(context.getGlobalObject());
+        final List<StackElement> stack = new ArrayList<>();
+        context.collectStackElements(stack);
+        this.stack = stack;
+    }
+
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
+        JSObject jsObject = (JSObject) self;
+        if (errorName == null && jsObject.hasProperty(context, "name")) {
+            errorName = Types.toString(context, jsObject.get(context, "name"));
+        }
+        if (message == null && jsObject.hasProperty(context, "message")) {
+            message = Types.toString(context, jsObject.get(context, "message"));
+        }
+
         StringBuilder buf = new StringBuilder();
         if (this.errorName == null) {
             buf.append("<unknown>");

@@ -8,12 +8,12 @@ import org.junit.Test;
 
 public class StackTraceTest extends AbstractDynJSTestSupport {
     @Test
-    @Ignore
     public void testBasicConstructedError() {
         DynObject e = (DynObject) eval("function foo() { return new Error(); }; foo();");
 
         String stack = (String) e.get(getContext(), "stack");
         assertThat(stack).contains("Error\n");
+        assertThat(stack).contains("at foo (<eval>:1)\n");
     }
 
     @Test

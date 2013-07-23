@@ -5,12 +5,8 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.StackElement;
 import org.dynjs.runtime.StackGetter;
 import org.dynjs.runtime.Types;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AbstractBuiltinNativeError extends AbstractBuiltinType {
 
@@ -52,26 +48,13 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
             }, false);
         }
 
-        setUpStackElements(o, context);
-
-        return o;
-    }
-
-    private void setUpStackElements(JSObject o, final ExecutionContext context) {
-        final List<StackElement> stack = new ArrayList<>();
-        context.collectStackElements(stack);
-
-        String message = null;
-        if (o.hasProperty(context, "message")) {
-            message = Types.toString(context, o.get(context, "message"));
-        }
-        final String msg = message;
-
         o.defineOwnProperty(context, "stack", new PropertyDescriptor() {
             {
-                set("Get", new StackGetter(context.getGlobalObject(), name, msg, stack));
+                set("Get", new StackGetter(context));
             }
         }, false);
+
+        return o;
     }
 
     @Override
