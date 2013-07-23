@@ -1,10 +1,9 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
-
 import org.dynjs.exception.ThrowException;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class StackTraceTest extends AbstractDynJSTestSupport {
     @Test
