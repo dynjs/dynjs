@@ -51,25 +51,6 @@ public class ThrowException extends DynJSException {
             elements[i + this.stack.size()] = javaElements[i];
         }
         setStackTrace(elements);
-
-        if (value instanceof JSObject) {
-            String errorName = "<unknown>";
-            if (((JSObject) value).hasProperty(context, "name")) {
-                errorName = Types.toString(context, ((JSObject) value).get(context, "name"));
-            }
-            String message = null;
-            if (((JSObject) value).hasProperty(context, "message")) {
-                message = Types.toString(context, ((JSObject) value).get(context, "message"));
-            }
-            final String msg = message;
-            final String err = errorName;
-            ((JSObject) value).defineOwnProperty(context, "stack", new PropertyDescriptor() {
-                {
-                    set("Get", new StackGetter(context.getGlobalObject(), err, msg, stack));
-                }
-            }, false);
-        }
-
     }
 
     public String getMessage() {

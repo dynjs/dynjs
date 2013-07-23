@@ -5,6 +5,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.StackGetter;
 import org.dynjs.runtime.Types;
 
 public class AbstractBuiltinNativeError extends AbstractBuiltinType {
@@ -46,6 +47,13 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
                 }
             }, false);
         }
+
+        o.defineOwnProperty(context, "stack", new PropertyDescriptor() {
+            {
+                set("Get", new StackGetter(context));
+            }
+        }, false);
+
         return o;
     }
 
