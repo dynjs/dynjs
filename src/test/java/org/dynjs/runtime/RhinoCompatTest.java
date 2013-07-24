@@ -22,6 +22,7 @@ public class RhinoCompatTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    @Ignore
     public void testDefineSetter() {
         assertThat(eval("typeof Object.prototype.__defineSetter__")).isEqualTo("function");
         eval("x = {};");
