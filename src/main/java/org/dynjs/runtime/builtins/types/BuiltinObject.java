@@ -18,12 +18,10 @@ import org.dynjs.runtime.builtins.types.object.IsSealed;
 import org.dynjs.runtime.builtins.types.object.Keys;
 import org.dynjs.runtime.builtins.types.object.PreventExtensions;
 import org.dynjs.runtime.builtins.types.object.Seal;
-import org.dynjs.runtime.builtins.types.object.prototype.HasOwnProperty;
-import org.dynjs.runtime.builtins.types.object.prototype.IsPrototypeOf;
-import org.dynjs.runtime.builtins.types.object.prototype.PropertyIsEnumerable;
-import org.dynjs.runtime.builtins.types.object.prototype.ToLocaleString;
-import org.dynjs.runtime.builtins.types.object.prototype.ToString;
-import org.dynjs.runtime.builtins.types.object.prototype.ValueOf;
+import org.dynjs.runtime.builtins.types.object.prototype.*;
+import org.dynjs.runtime.builtins.types.object.prototype.rhino.DefineGetter;
+import org.dynjs.runtime.builtins.types.object.prototype.rhino.DefineSetter;
+import org.dynjs.runtime.builtins.types.object.prototype.rhino.LookupGetter;
 
 public class BuiltinObject extends AbstractBuiltinType {
 
@@ -45,6 +43,12 @@ public class BuiltinObject extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "isPrototypeOf", new IsPrototypeOf(globalObject) );
         defineNonEnumerableProperty(proto, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject) );
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
+        if (globalObject.getConfig().isRhinoCompatible()) {
+            // TODO: this is probably not an exhaustive list of rhino-specific functions, but it will do for a start
+            defineNonEnumerableProperty(proto, "__defineGetter__", new DefineGetter(globalObject));
+            defineNonEnumerableProperty(proto, "__defineSetter__", new DefineSetter(globalObject));
+            defineNonEnumerableProperty(proto, "__lookupGetter__", new LookupGetter(globalObject));
+        }
 
         // Object.foo
         defineNonEnumerableProperty(this, "getPrototypeOf", new GetPrototypeOf(globalObject) );

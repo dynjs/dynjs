@@ -732,7 +732,5 @@ public class DynObject implements JSObject, Map<String, Object> {
         public String toString() {
             return getAllEnumerablePropertyNames().toList().toString();
         }
-
     }
-
 }
