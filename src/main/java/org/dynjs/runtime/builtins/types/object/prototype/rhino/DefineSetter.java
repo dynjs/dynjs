@@ -12,15 +12,17 @@ public class DefineSetter extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        PropertyDescriptor descriptor = new PropertyDescriptor();
-        descriptor.setSetter((JSFunction) args[1]);
+        String name = (String) args[0];
+        JSFunction function = (JSFunction) args[1];
         DynObject obj = (DynObject) self;
-        if (obj.getPrototype() != null) {
-            System.err.println("DEFINE SETTER SETTING " + args[0] + " to " + args[1]);
-            obj.getPrototype().defineOwnProperty(context, (String) args[0], descriptor, false);
-        } else {
-            obj.defineOwnProperty(context, (String) args[0], descriptor, false);
+
+        PropertyDescriptor descriptor = new PropertyDescriptor();
+        if (obj.hasProperty(context, name)) {
+            descriptor = (PropertyDescriptor) obj.getOwnProperty(context, name);
         }
+
+        descriptor.setSetter(function);
+        obj.defineOwnProperty(context, name, descriptor, false);
         return Types.UNDEFINED;
     }
 }
