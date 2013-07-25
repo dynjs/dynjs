@@ -32,7 +32,13 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
         assertThat(eval("foo")).isInstanceOf(JSFunction.class);
         assertThat(eval("foo()")).isEqualTo("bacon");
     }
-    
+
+    @Test
+    public void filenameAppearsInStackTrace() {
+        eval("var error = require('error')");
+        assertThat((String)eval("error().stack")).contains("error.js");
+    }
+
     @Test
     public void allowsFileExtension() {
         eval("foo = require('foo.js')");
