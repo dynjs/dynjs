@@ -29,7 +29,8 @@ public class ClasspathModuleProvider extends ModuleProvider {
                 return false;
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            context.getGlobalObject().getRuntime().newRunner().withContext(context).withSource(reader).execute();
+            context.getGlobalObject().getRuntime().newRunner()
+                    .withFileName(moduleId).withContext(context).withSource(reader).execute();
             try {
                 is.close();
             } catch (IOException ignore) {
