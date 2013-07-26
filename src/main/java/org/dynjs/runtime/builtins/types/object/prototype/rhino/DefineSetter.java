@@ -17,6 +17,7 @@ public class DefineSetter extends AbstractNativeFunction {
         DynObject obj = (DynObject) self;
 
         PropertyDescriptor descriptor = new PropertyDescriptor();
+        descriptor.setConfigurable(true);
         if (obj.hasProperty(context, name)) {
             descriptor = (PropertyDescriptor) obj.getOwnProperty(context, name);
         }
