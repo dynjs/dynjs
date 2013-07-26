@@ -52,6 +52,19 @@ public class RhinoCompatTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testLookupGetter() {
-        
+        assertThat(eval("var x = {}; x.__lookupGetter__()")).isEqualTo(Types.UNDEFINED);
+        assertThat(eval("x.__lookupGetter__('foo')")).isEqualTo(Types.UNDEFINED);
+        eval("x.__defineGetter__('foo', function() { return bar; });");
+        assertThat(eval("x.__lookupGetter__('foo')")).isInstanceOf(JSFunction.class);
     }
+
+    @Test
+    public void testLookupSetter() {
+        assertThat(eval("typeof Object.prototype.__defineSetter__")).isEqualTo("function");
+        eval("x = {};");
+        assertThat(eval("x.__lookupSetter__()")).isEqualTo(Types.UNDEFINED);
+        eval("x.__defineSetter__('foo', function(val) { bar = val; });");
+        assertThat(eval("x.__lookupSetter__")).isInstanceOf(JSFunction.class);
+    }
+
 }

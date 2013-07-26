@@ -4,11 +4,10 @@ import org.dynjs.runtime.*;
 
 /**
  * Rhino compatibility support
- * Implements Object.prototype.__lookupGetter__
+ * Implements Object.prototype.__lookupSetter__
  */
-public class LookupGetter extends AbstractNativeFunction {
-
-    public LookupGetter(GlobalObject globalObject) {
+public class LookupSetter extends AbstractNativeFunction {
+    public LookupSetter(GlobalObject globalObject) {
         super(globalObject, "name");
     }
 
@@ -19,12 +18,12 @@ public class LookupGetter extends AbstractNativeFunction {
             DynObject object = (DynObject) self;
             if (object.hasProperty(context, name)) {
                 PropertyDescriptor descriptor = (PropertyDescriptor) object.getOwnProperty(context, name);
-                if (descriptor.hasGet()) {
-                    return descriptor.getGetter();
+                if (descriptor.hasSet()) {
+                    return descriptor.getSetter();
                 }
             }
         } catch (ClassCastException e) {
-            // E.g. if no name is provided
+            // e.g. if no name is provided
         }
         return Types.UNDEFINED;
     }

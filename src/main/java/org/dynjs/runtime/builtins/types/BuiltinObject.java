@@ -22,6 +22,7 @@ import org.dynjs.runtime.builtins.types.object.prototype.*;
 import org.dynjs.runtime.builtins.types.object.prototype.rhino.DefineGetter;
 import org.dynjs.runtime.builtins.types.object.prototype.rhino.DefineSetter;
 import org.dynjs.runtime.builtins.types.object.prototype.rhino.LookupGetter;
+import org.dynjs.runtime.builtins.types.object.prototype.rhino.LookupSetter;
 
 public class BuiltinObject extends AbstractBuiltinType {
 
@@ -48,6 +49,7 @@ public class BuiltinObject extends AbstractBuiltinType {
             defineNonEnumerableProperty(proto, "__defineGetter__", new DefineGetter(globalObject));
             defineNonEnumerableProperty(proto, "__defineSetter__", new DefineSetter(globalObject));
             defineNonEnumerableProperty(proto, "__lookupGetter__", new LookupGetter(globalObject));
+            defineNonEnumerableProperty(proto, "__lookupSetter__", new LookupSetter(globalObject));
         }
 
         // Object.foo
