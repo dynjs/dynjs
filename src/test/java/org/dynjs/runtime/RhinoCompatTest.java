@@ -39,8 +39,8 @@ public class RhinoCompatTest extends AbstractDynJSTestSupport {
         eval(
                 "var X = function() {" +
                         "this.bar = 'bar';" +
-                        "this.__defineSetter__('foo', function(val) { bar = val; });" +
-                        "this.__defineGetter__('foo', function() { return bar; });" +
+                        "this.__defineSetter__('foo', function(val) { this.bar = val; });" +
+                        "this.__defineGetter__('foo', function() { return this.bar; });" +
                         "};" +
                         "x = new X();"
         );
@@ -48,5 +48,10 @@ public class RhinoCompatTest extends AbstractDynJSTestSupport {
         assertThat(eval("x.foo")).isEqualTo("bar");
         eval("x.foo = 'foobar'");
         assertThat(eval("x.foo")).isEqualTo("foobar");
+    }
+
+    @Test
+    public void testLookupGetter() {
+        
     }
 }
