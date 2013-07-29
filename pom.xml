@@ -103,7 +103,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>r07</version>
+            <version>14.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -170,6 +170,22 @@
             <artifactId>netty</artifactId>
             <version>3.6.1.Final</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.akiellor.jasmine</groupId>
+            <artifactId>jasmine</artifactId>
+            <version>0.0.3</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.dynjs</groupId>
+                    <artifactId>dynjs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.projectodd.rephract</groupId>
+                    <artifactId>rephract</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
@@ -337,6 +353,27 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.jasmine.cli.Main</mainClass>
+                    <classpathScope>test</classpathScope>
+                    <arguments>
+                        <argument>--pattern</argument>
+                        <argument>./src/test/javascript/**/*Spec.js</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
