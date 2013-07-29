@@ -116,4 +116,10 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
         eval("var flavor = require('func.js')");
         assertThat(eval("flavor()")).isEqualTo("nacho cheese");
     }
+
+    @Test
+    public void testModuleLibDir() {
+        eval("var snack = require('snack')");
+        assertThat(eval("snack.flavor")).isEqualTo("nacho cheese");
+    }
 }

@@ -60,11 +60,19 @@ public class FilesystemModuleProvider extends ModuleProvider {
         String fileName = normalizeName(moduleName);
         File file = null;
         for (String loadPath : loadPaths) {
+            // require('foo');
             file = new File(loadPath, fileName);
+            // foo.js is in the require path
             if (file.exists()) break;
             else {
+                // foo/index.js is in the require path
                 file = new File(loadPath, moduleName + "/index.js");
                 if (file.exists()) break;
+                else {
+                    // foo/lib/foo.js
+                    file = new File(loadPath, moduleName + "/lib/" + fileName);
+                    if (file.exists()) break;
+                }
             }
         }
         return file;
