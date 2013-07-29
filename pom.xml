@@ -174,7 +174,7 @@
         <dependency>
             <groupId>com.github.akiellor.jasmine</groupId>
             <artifactId>jasmine</artifactId>
-            <version>0.0.2</version>
+            <version>0.0.3</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -370,7 +370,8 @@
                     <mainClass>org.jasmine.cli.Main</mainClass>
                     <classpathScope>test</classpathScope>
                     <arguments>
-                        <argument>src/test/javascript/org/dynjs/fooSpec.js</argument>
+                        <argument>--pattern</argument>
+                        <argument>./src/test/javascript/**/*Spec.js</argument>
                     </arguments>
                 </configuration>
             </plugin>
