@@ -59,6 +59,7 @@ public class Require extends AbstractNativeFunction {
 
         this.loadPaths.add(System.getProperty("user.dir") + "/");
         this.loadPaths.add(System.getProperty("user.dir") + "/node_modules");
+        this.loadPaths.add(System.getProperty("user.home") + "/node_modules/");
         this.loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
         this.loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
         this.loadPaths.add("/usr/local/lib/node/");
