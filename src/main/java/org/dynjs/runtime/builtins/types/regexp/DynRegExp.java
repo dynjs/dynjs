@@ -227,4 +227,8 @@ public class DynRegExp extends DynObject {
         }
         return null;
     }
+
+    public boolean isGlobal(){
+        return (boolean) this.get(null, "global");
+    }
 }
