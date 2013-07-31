@@ -1,6 +1,7 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynArray;
@@ -118,7 +119,7 @@ public class Replace extends AbstractNativeFunction {
                         }
                         int idx = string.indexOf(toReplace, startIndex);
                         string = string.substring(0, idx) 
-                                + string.substring(idx).replaceFirst(Matcher.quoteReplacement(toReplace), quotedReplacement);
+                                + string.substring(idx).replaceFirst(Pattern.quote(toReplace), quotedReplacement);
                         startIndex = idx+quotedReplacement.length()-1;
                     }
                 }
