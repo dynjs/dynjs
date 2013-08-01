@@ -365,6 +365,16 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    @Ignore
+    public void testSequentialInvocation() {
+        Object intResult = eval(" new org.dynjs.runtime.java.Thing().intMethod(9)");
+        assertThat( intResult ).isInstanceOf(String.class).isEqualTo("9");
+
+        Object longResult = eval( "new org.dynjs.runtime.java.Thing().longMethod(42)");
+        assertThat( longResult ).isInstanceOf(Long.class).isEqualTo(42L);
+    }
+
+    @Test
     public void testIoPackage() {
         assertThat(eval("io")).isInstanceOf(JavaPackage.class);
     }
