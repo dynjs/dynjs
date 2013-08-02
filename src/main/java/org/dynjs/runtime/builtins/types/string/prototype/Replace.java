@@ -38,15 +38,12 @@ public class Replace extends AbstractNativeFunction {
         int index = searchString.indexOf(query);
         if(index < 0) { return searchString; }
 
-        Object[] fnArgs = new Object[3];
-        fnArgs[0] = searchString.substring(index, index + query.length());
-        fnArgs[1] = index;
-        fnArgs[2] = searchString;
+        Match match = Match.fromStartAndLength(searchString, index, query.length());
 
         String replacement = buildReplacementString(
                 searchString,
-                Types.toString(context, context.call(function, Types.UNDEFINED, fnArgs)),
-                Arrays.asList(new Capture(searchString, index, index + query.length())));
+                Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())),
+                match.captures);
 
         return searchString.replaceFirst(Pattern.quote(query), Matcher.quoteReplacement(replacement));
     }
@@ -101,7 +98,7 @@ public class Replace extends AbstractNativeFunction {
         }
     }
 
-    protected String buildReplacementString(String original, String replaceWith, List<Capture> matches) {
+    protected String buildReplacementString(String original, String replaceWith, List<Capture> captures) {
         int fromIndex = 0;
         int endIndex = replaceWith.length() - 1;
         StringBuilder replacement = new StringBuilder();
@@ -115,15 +112,15 @@ public class Replace extends AbstractNativeFunction {
                         fromIndex++;
                         break;
                     case '&':
-                        replacement.append(matches.get(0).capture());
+                        replacement.append(captures.get(0).capture());
                         fromIndex++;
                         break;
                     case '`':
-                        replacement.append(original.substring(0, matches.get(0).start));
+                        replacement.append(original.substring(0, captures.get(0).start));
                         fromIndex++;
                         break;
                     case '\'':
-                        replacement.append(original.substring(matches.get(0).end));
+                        replacement.append(original.substring(captures.get(0).end));
                         fromIndex++;
                         break;
                     case '0':
@@ -137,8 +134,8 @@ public class Replace extends AbstractNativeFunction {
                     case '8':
                     case '9':
                         Integer backreference = Integer.parseInt(String.valueOf(replaceWith.charAt(fromIndex + 1)));
-                        if (backreference < matches.size()) {
-                            replacement.append(matches.get(backreference).capture());
+                        if (backreference < captures.size()) {
+                            replacement.append(captures.get(backreference).capture());
                             fromIndex++;
                         } else {
                             replacement.append(nextChar);
@@ -164,6 +161,10 @@ public class Replace extends AbstractNativeFunction {
             this.captures = captures;
         }
 
+        public static Match fromStartAndLength(String searchString, int index, int length) {
+            return new Match(searchString, Arrays.asList(new Capture(searchString, index, index + length)));
+        }
+
         public static Match fromRegion(String searchString, Region region){
             List<Capture> captures = new ArrayList<>();
             for(int i = 0; i < region.numRegs; i++){
@@ -175,8 +176,8 @@ public class Replace extends AbstractNativeFunction {
 
         public Object[] toFnArgs(){
             Object[] fnArgs = new Object[3 + captures.size()];
-            fnArgs[1 + captures.size()] = offset();
-            fnArgs[2 + captures.size()] = searchString();
+            fnArgs[captures.size()] = offset();
+            fnArgs[1 + captures.size()] = searchString();
             for(int i = 0; i < captures.size(); i++){
                 fnArgs[i] = captures.get(i).capture();
             }
@@ -190,6 +191,7 @@ public class Replace extends AbstractNativeFunction {
         public String searchString(){
             return searchString;
         }
+
     }
 
     private static class Capture {
