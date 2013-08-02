@@ -40,10 +40,8 @@ public class Replace extends AbstractNativeFunction {
 
         Match match = Match.fromStartAndLength(searchString, index, query.length());
 
-        String replacement = buildReplacementString(
-                searchString,
-                Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())),
-                match.captures);
+        String replacement = match.buildReplacementString(
+                Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())));
 
         return searchString.replaceFirst(Pattern.quote(query), Matcher.quoteReplacement(replacement));
     }
@@ -59,8 +57,8 @@ public class Replace extends AbstractNativeFunction {
 
             Match match = Match.fromRegion(searchString, region);
 
-            String replacement = buildReplacementString(searchString,
-                    Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())), match.captures);
+            String replacement = match.buildReplacementString(
+                    Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())));
             result.append(searchString.substring(startIndex, region.beg[0]))
                     .append(replacement);
 
@@ -98,60 +96,6 @@ public class Replace extends AbstractNativeFunction {
         }
     }
 
-    protected String buildReplacementString(String original, String replaceWith, List<Capture> captures) {
-        int fromIndex = 0;
-        int endIndex = replaceWith.length() - 1;
-        StringBuilder replacement = new StringBuilder();
-
-        while (fromIndex <= endIndex) {
-            char nextChar;
-            if ((nextChar = replaceWith.charAt(fromIndex)) == '$' && fromIndex != endIndex) {
-                switch (replaceWith.charAt(fromIndex + 1)) {
-                    case '$':
-                        replacement.append("$");
-                        fromIndex++;
-                        break;
-                    case '&':
-                        replacement.append(captures.get(0).capture());
-                        fromIndex++;
-                        break;
-                    case '`':
-                        replacement.append(original.substring(0, captures.get(0).start));
-                        fromIndex++;
-                        break;
-                    case '\'':
-                        replacement.append(original.substring(captures.get(0).end));
-                        fromIndex++;
-                        break;
-                    case '0':
-                    case '1':
-                    case '2':
-                    case '3':
-                    case '4':
-                    case '5':
-                    case '6':
-                    case '7':
-                    case '8':
-                    case '9':
-                        Integer backreference = Integer.parseInt(String.valueOf(replaceWith.charAt(fromIndex + 1)));
-                        if (backreference < captures.size()) {
-                            replacement.append(captures.get(backreference).capture());
-                            fromIndex++;
-                        } else {
-                            replacement.append(nextChar);
-                        }
-                        break;
-                    default:
-                        replacement.append(nextChar);
-                }
-            } else {
-                replacement.append(nextChar);
-            }
-            fromIndex++;
-        }
-        return replacement.toString();
-    }
-
     private static class Match {
         private String searchString;
         private List<Capture> captures;
@@ -182,6 +126,60 @@ public class Replace extends AbstractNativeFunction {
                 fnArgs[i] = captures.get(i).capture();
             }
             return fnArgs;
+        }
+
+        protected String buildReplacementString(String replaceWith) {
+            int fromIndex = 0;
+            int endIndex = replaceWith.length() - 1;
+            StringBuilder replacement = new StringBuilder();
+
+            while (fromIndex <= endIndex) {
+                char nextChar;
+                if ((nextChar = replaceWith.charAt(fromIndex)) == '$' && fromIndex != endIndex) {
+                    switch (replaceWith.charAt(fromIndex + 1)) {
+                        case '$':
+                            replacement.append("$");
+                            fromIndex++;
+                            break;
+                        case '&':
+                            replacement.append(captures.get(0).capture());
+                            fromIndex++;
+                            break;
+                        case '`':
+                            replacement.append(searchString.substring(0, captures.get(0).start));
+                            fromIndex++;
+                            break;
+                        case '\'':
+                            replacement.append(searchString.substring(captures.get(0).end));
+                            fromIndex++;
+                            break;
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            Integer backreference = Integer.parseInt(String.valueOf(replaceWith.charAt(fromIndex + 1)));
+                            if (backreference < captures.size()) {
+                                replacement.append(captures.get(backreference).capture());
+                                fromIndex++;
+                            } else {
+                                replacement.append(nextChar);
+                            }
+                            break;
+                        default:
+                            replacement.append(nextChar);
+                    }
+                } else {
+                    replacement.append(nextChar);
+                }
+                fromIndex++;
+            }
+            return replacement.toString();
         }
 
         public int offset(){
