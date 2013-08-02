@@ -46,7 +46,7 @@ public class Replace extends AbstractNativeFunction {
         String replacement = buildReplacementString(
                 searchString,
                 Types.toString(context, context.call(function, Types.UNDEFINED, fnArgs)),
-                Arrays.asList(new Match(searchString, index, index + query.length())));
+                Arrays.asList(new Capture(searchString, index, index + query.length())));
 
         return searchString.replaceFirst(Pattern.quote(query), Matcher.quoteReplacement(replacement));
     }
@@ -60,18 +60,10 @@ public class Replace extends AbstractNativeFunction {
         while((region = regexp.match(searchString, startIndex)) != null){
             lastRegion = region;
 
-            Object[] fnArgs = new Object[3 + region.numRegs];
-            fnArgs[1 + region.numRegs] = region.beg[0];
-            fnArgs[2 + region.numRegs] = searchString;
-            List<Match> matches = new ArrayList<>();
-            for(int i = 0; i < region.numRegs; i++){
-                matches.add(new Match(searchString, region.beg[i], region.end[i]));
-                String substring = searchString.substring(region.beg[i], Math.min(searchString.length(), region.end[i]));
-                fnArgs[i] = substring;
-            }
+            Match match = Match.fromRegion(searchString, region);
 
             String replacement = buildReplacementString(searchString,
-                    Types.toString(context, context.call(function, Types.UNDEFINED, fnArgs)), matches);
+                    Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())), match.captures);
             result.append(searchString.substring(startIndex, region.beg[0]))
                     .append(replacement);
 
@@ -109,7 +101,7 @@ public class Replace extends AbstractNativeFunction {
         }
     }
 
-    protected String buildReplacementString(String original, String replaceWith, List<Match> matches) {
+    protected String buildReplacementString(String original, String replaceWith, List<Capture> matches) {
         int fromIndex = 0;
         int endIndex = replaceWith.length() - 1;
         StringBuilder replacement = new StringBuilder();
@@ -163,19 +155,56 @@ public class Replace extends AbstractNativeFunction {
         return replacement.toString();
     }
 
-    private static class Match{
+    private static class Match {
+        private String searchString;
+        private List<Capture> captures;
+
+        public Match(String searchString, List<Capture> captures) {
+            this.searchString = searchString;
+            this.captures = captures;
+        }
+
+        public static Match fromRegion(String searchString, Region region){
+            List<Capture> captures = new ArrayList<>();
+            for(int i = 0; i < region.numRegs; i++){
+                captures.add(new Capture(searchString, region.beg[i], region.end[i]));
+            }
+
+            return new Match(searchString, captures);
+        }
+
+        public Object[] toFnArgs(){
+            Object[] fnArgs = new Object[3 + captures.size()];
+            fnArgs[1 + captures.size()] = offset();
+            fnArgs[2 + captures.size()] = searchString();
+            for(int i = 0; i < captures.size(); i++){
+                fnArgs[i] = captures.get(i).capture();
+            }
+            return fnArgs;
+        }
+
+        public int offset(){
+            return captures.get(0).start;
+        }
+
+        public String searchString(){
+            return searchString;
+        }
+    }
+
+    private static class Capture {
         private final String original;
         private final int start;
         private final int end;
 
-        public Match(String original, int start, int end){
+        public Capture(String original, int start, int end){
             this.original = original;
             this.start = start;
             this.end = end;
         }
 
         public String capture() {
-            return original.substring(start, end);
+            return original.substring(start, Math.min(original.length(), end));
         }
     }
 }
