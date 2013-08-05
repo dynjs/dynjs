@@ -50,33 +50,32 @@ public class Replace extends AbstractNativeFunction {
         final StringBuilder result = new StringBuilder();
 
         Region region;
-        Region lastRegion = null;
+        Match lastMatch = null;
         int startIndex = 0;
         while((region = regexp.match(searchString, startIndex)) != null){
-            lastRegion = region;
-
             Match match = Match.fromRegion(searchString, region);
+            lastMatch = match;
 
             String replacement = match.buildReplacementString(
                     Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())));
-            result.append(searchString.substring(startIndex, region.beg[0]))
+            result.append(searchString.substring(startIndex, match.start()))
                     .append(replacement);
 
-            if(startIndex == region.end[0]){
+            if(startIndex == match.end()){
                 result.append(searchString.substring(startIndex, Math.min(startIndex + 1, searchString.length())));
                 startIndex++;
             }else{
-                startIndex = region.end[0];
+                startIndex = match.end();
             }
 
             if(!regexp.isGlobal()){
                 break;
             }
         }
-        if(lastRegion != null){
-            result.append(searchString.substring(Math.min(searchString.length(), lastRegion.end[0])));
-        }else{
+        if(lastMatch == null){
             result.append(searchString);
+        }else{
+            result.append(lastMatch.rest());
         }
 
         return result.toString();
@@ -120,7 +119,7 @@ public class Replace extends AbstractNativeFunction {
 
         public Object[] toFnArgs(){
             Object[] fnArgs = new Object[3 + captures.size()];
-            fnArgs[captures.size()] = offset();
+            fnArgs[captures.size()] = start();
             fnArgs[1 + captures.size()] = searchString();
             for(int i = 0; i < captures.size(); i++){
                 fnArgs[i] = captures.get(i).capture();
@@ -182,7 +181,7 @@ public class Replace extends AbstractNativeFunction {
             return replacement.toString();
         }
 
-        public int offset(){
+        public int start(){
             return captures.get(0).start;
         }
 
@@ -190,6 +189,13 @@ public class Replace extends AbstractNativeFunction {
             return searchString;
         }
 
+        public int end() {
+            return captures.get(0).end;
+        }
+
+        public String rest() {
+            return searchString.substring(Math.min(searchString.length(), end()));
+        }
     }
 
     private static class Capture {
