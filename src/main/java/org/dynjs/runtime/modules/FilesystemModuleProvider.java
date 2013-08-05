@@ -41,7 +41,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
     @Override
     public String generateModuleID(ExecutionContext context, String moduleName) {
         Runner runtime = context.getGlobalObject().getRuntime().newRunner();
-        List<String> requirePaths = (List<String>) runtime.withContext(context).withSource("require.paths").evaluate();
+        List<String> requirePaths = (List<String>) runtime.withSource("require.paths").evaluate();
         File moduleFile = findFile(requirePaths, moduleName);
         if (moduleFile != null && moduleFile.exists()) {
             return moduleFile.getAbsolutePath();
