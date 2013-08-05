@@ -129,5 +129,15 @@ public class JSLexerTest {
         assertThat( lex( "/\\//g").getType() ).isEqualTo( REGEXP_LITERAL );
     }
     
+    @Test
+    public void testSingleLineCommentWithEOL() throws Exception {
+        assertThat( lex( "// this is a single line comment\n" ).getType() ).isEqualTo( NL );
+    }
+    
+    @Test
+    public void testSingleLineCommentWithOnlyEOL() throws Exception {
+        assertThat( lex( "//\n" ).getType() ).isEqualTo( NL );
+    }
+    
 
 }

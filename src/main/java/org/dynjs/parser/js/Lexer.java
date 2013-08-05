@@ -636,13 +636,15 @@ public class Lexer {
         consume();
         int c = 0;
         while (true) {
-            c = consume();
-            if (c == '\r' && la() == '\n') {
-                consume();
+            //c = consume();
+            c = la();
+            if (c == '\r' && la(2) == '\n') {
+                //consume();
                 break;
             } else if (c < 0 || c == '\r' || c == '\n' || c == '\u2028' || c == '\u2029') {
                 break;
             }
+            consume();
         }
         incrementLine();
     }
