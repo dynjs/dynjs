@@ -160,6 +160,13 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testDYNJS_108() {
+        eval("javaThing = new org.dynjs.runtime.java.Thing()");
+        eval("jsThing = { foo: 'bar' }");
+        assertThat(eval("javaThing.dynObjectMethod(jsThing)")).isEqualTo("bar");
+    }
+
+    @Test
     public void testReturnedJavaArrays() {
         eval("javaThing = new org.dynjs.runtime.java.JavaMockery()");
         eval("javaArray = javaThing.getAFewThings()");

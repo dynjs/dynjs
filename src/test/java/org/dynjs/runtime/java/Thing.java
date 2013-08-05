@@ -1,5 +1,7 @@
 package org.dynjs.runtime.java;
 
+import org.dynjs.runtime.DynObject;
+
 public class Thing {
     public int someNum = 100;
     
@@ -13,5 +15,9 @@ public class Thing {
     
     public long longMethod(long arg) {
         return arg;
+    }
+
+    public Object dynObjectMethod(DynObject obj) {
+        return obj.get("foo");
     }
 }
