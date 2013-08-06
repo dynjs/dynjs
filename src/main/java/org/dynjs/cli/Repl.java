@@ -21,13 +21,13 @@ import org.jboss.aesh.console.Console;
 import org.jboss.aesh.console.ConsoleCallback;
 import org.jboss.aesh.console.ConsoleOutput;
 import org.jboss.aesh.console.Prompt;
+import org.jboss.aesh.console.reader.ConsoleInputSession;
 import org.jboss.aesh.console.settings.Settings;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import org.jboss.aesh.console.reader.ConsoleInputSession;
 
 public class Repl {
 
@@ -60,6 +60,7 @@ public class Repl {
             consoleSettings.setStdOut(this.out);
             consoleSettings.setInputStream(this.in);
             consoleSettings.setHistoryPersistent(false);
+            consoleSettings.enableOperatorParser(false);
             final Console console = Console.getInstance();
             console.pushToStdOut(welcome);
             console.setPrompt(new Prompt(prompt));
