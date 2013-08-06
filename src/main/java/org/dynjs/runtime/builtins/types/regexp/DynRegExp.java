@@ -63,7 +63,7 @@ public class DynRegExp extends DynObject {
                     INEFFECTIVE_META_CHAR /* anychar anytime */
             )
             );
-    
+
     static {
     }
 
@@ -171,7 +171,7 @@ public class DynRegExp extends DynObject {
                     System.err.println("WARN: " + message);
                 }
             });
-            
+
         } catch (JOniException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         } catch (UnsupportedEncodingException e) {
@@ -226,5 +226,9 @@ public class DynRegExp extends DynObject {
             return matcher.getEagerRegion();
         }
         return null;
+    }
+
+    public boolean isGlobal() {
+        return (boolean) this.get(null, "global");
     }
 }
