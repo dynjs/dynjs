@@ -1,15 +1,14 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.joni.Region;
 
 public class Replace extends AbstractNativeFunction {
 
@@ -19,169 +18,199 @@ public class Replace extends AbstractNativeFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        JSFunction execFn = (JSFunction) context.getPrototypeFor("RegExp").get(context, "exec");
-        String string = Types.NULL.toString();
+        Types.checkObjectCoercible(context, self);
+        final String searchString = Types.toString(context, self);
+        JSFunction replacement;
+        if(args[1] instanceof JSFunction){
+            replacement = (JSFunction) args[1];
+        }else{
+            replacement = new IdentityFunction(context.getGlobalObject(), args[1]);
+        }
 
-        if (args.length == 2) {
-            Object searchValue = args[0];
-            Object replaceValue = args[1];
-            Object global      = Boolean.FALSE;
-            DynArray matches = new DynArray(context.getGlobalObject());
+        if(args[0] instanceof DynRegExp){
+            return replaceWithRegex(context, searchString, (DynRegExp)args[0], replacement);
+        }else{
+            return replaceWithString(context, searchString, Types.toString(context, args[0]), replacement);
+        }
+    }
 
-            Types.checkObjectCoercible(context, self);
-            string = Types.toString(context, self);
+    private Object replaceWithString(ExecutionContext context, String searchString, String query, JSFunction function) {
+        int index = searchString.indexOf(query);
+        if(index < 0) { return searchString; }
 
-            int m = 0;
-            if (searchValue instanceof DynRegExp) {
-                DynRegExp regExp = (DynRegExp) searchValue;
+        Match match = Match.fromStartAndLength(searchString, index, query.length());
 
-                global = regExp.get(context, "global");
-                if (global != Boolean.TRUE) {
-                    Object object = context.call(execFn, regExp, string);
-                    if (object == Types.NULL || object == Types.UNDEFINED) { // It was not a match
-                        matches.put(context, "length", 0L, false);
-                    } else {
-                        matches.put(context, "length", 1L, false);
-                        matches.put(context, "0", object, false);
-                        m = Types.toInteger(context, ((JSObject)object).get(context, "length")).intValue()-1;
-                    }
-                } else {
-                    regExp.put(context, "lastIndex", 0L, false);
-                    long previousLastIndex = 0;
-                    long n = 0;
-                    boolean lastMatch = true;
+        String replacement = match.buildReplacementString(
+                Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())));
 
-                    while (lastMatch) {
-                        final Object result = context.call(execFn, regExp, string);
-                        if (result == Types.NULL) {
-                            lastMatch = false;
-                        } else {
-                            long thisIndex = (long) regExp.get(context, "lastIndex");
-                            if (thisIndex == previousLastIndex) {
-                                regExp.put(context, "lastIndex", thisIndex + 1, false);
-                                previousLastIndex = thisIndex + 1;
-                            } else {
-                                previousLastIndex = thisIndex;
-                            }
+        return searchString.replaceFirst(Pattern.quote(query), Matcher.quoteReplacement(replacement));
+    }
 
-                            m += Types.toInteger(context, ((JSObject)result).get(context, "length")).intValue()-1;
-                            matches.put(context, "" + n, result, false);
+    private Object replaceWithRegex(ExecutionContext context, String searchString, DynRegExp regexp, JSFunction function) {
+        final StringBuilder result = new StringBuilder();
 
-                            ++n;
-                        }
-                        matches.put(context, "length", n, false);
-                    }
-                    m = Types.toInteger(context, matches.get(context, "length")).intValue() - 1;
-                }
-            } else {
-                final String searchString = Types.toString(context, searchValue);
-                long index = string.indexOf(searchString);
-                if (index >= 0) {
-                    matches.put(context, "length", 1L, false);
-                    final DynArray singleMatch = new DynArray(context.getGlobalObject());
-                    singleMatch.put(context, "input", string, false);
-                    singleMatch.put(context, "index", (long) index, false);
-                    singleMatch.put(context, "0", searchString, false);
-                    singleMatch.put(context, "length", 1L, false);
-                    matches.put(context, "0", singleMatch, false);
-                }
+        Region region;
+        Match lastMatch = null;
+        int startIndex = 0;
+        while((region = regexp.match(searchString, startIndex)) != null){
+            Match match = Match.fromRegion(searchString, region);
+            lastMatch = match;
+
+            String replacement = match.buildReplacementString(
+                    Types.toString(context, context.call(function, Types.UNDEFINED, match.toFnArgs())));
+            result.append(searchString.substring(startIndex, match.start()))
+                    .append(replacement);
+
+            if(startIndex == match.end()){
+                result.append(searchString.substring(startIndex, Math.min(startIndex + 1, searchString.length())));
+                startIndex++;
+            }else{
+                startIndex = match.end();
             }
 
-            Long matchCount = Types.toInteger(context, matches.get(context, "length"));
-            if (matchCount > 0) {
-                if (replaceValue instanceof JSFunction) {
-                    for (int i = 0; i < matchCount; ++i) {
-                        final DynArray nextMatch = (DynArray) matches.get(context, "" + i);
-                        Object[] functionArgs = new Object[(int) (m + 3)];
-                        functionArgs[0] = Types.toString(context, nextMatch.get(context, "0"));
-                        if (m == 0) {
-                            functionArgs[1] = nextMatch.get(context, "index");
-                            functionArgs[2] = string;
-                        } else {
-                            int matchLength = Types.toInteger(context, nextMatch.get(context, "length")).intValue();
-                            for (int j = 1; j <= matchLength; j++) {
-                                functionArgs[j] = nextMatch.get(context, "" + j);
-                            }
-                        }
-                        String replacement = Types.toString(context, context.call((JSFunction) replaceValue, Types.UNDEFINED, functionArgs));
-                        string = string.replaceFirst((String) functionArgs[0], Matcher.quoteReplacement(replacement));
-                    }
-                } else {
-                    String newString = Types.toString(context, replaceValue);
-                    int startIndex = 0;
-                    for (int i = 0; i < matchCount.intValue(); i++) {
-                        DynArray match = (DynArray) matches.get(context, "" + i);
-                        String toReplace = Types.toString(context, match.get(context, "0"));
-                        String quotedReplacement = Matcher.quoteReplacement(buildReplacementString(context, newString, match));
-                        if (toReplace.equals("")) {
-                            return string.replaceAll(toReplace, quotedReplacement);
-                        }
-                        int idx = string.indexOf(toReplace, startIndex);
-                        string = string.substring(0, idx) 
-                                + string.substring(idx).replaceFirst(Matcher.quoteReplacement(toReplace), quotedReplacement);
-                        startIndex = idx+quotedReplacement.length()-1;
-                    }
-                }
+            if(!regexp.isGlobal()){
+                break;
             }
         }
-        return string;
+        if(lastMatch == null){
+            result.append(searchString);
+        }else{
+            result.append(lastMatch.rest());
+        }
+
+        return result.toString();
     }
 
-    protected DynArray buildSingleMatch(ExecutionContext context, String inputString, final String searchString, long startIndex) {
-        final DynArray singleMatch = new DynArray(context.getGlobalObject());
-        singleMatch.put(context, "input", inputString, false);
-        singleMatch.put(context, "index", (long) startIndex, false);
-        singleMatch.put(context, "0", searchString, false);
-        singleMatch.put(context, "length", 1L, false);
-        return singleMatch;
+    private static class IdentityFunction extends AbstractNativeFunction{
+        private final Object value;
+
+        public IdentityFunction(GlobalObject globalObject, Object value) {
+            super(globalObject);
+            this.value = value;
+        }
+
+        @Override
+        public Object call(ExecutionContext context, Object self, Object... args) {
+            return value;
+        }
     }
 
-    protected String buildReplacementString(ExecutionContext context, String replaceWith, DynArray matches) {
-        int fromIndex            = 0;
-        int endIndex             = replaceWith.length()-1;
-        StringBuilder replacement = new StringBuilder();
-        
-        while (fromIndex <= endIndex) {
-            char nextChar;
-            if ((nextChar = replaceWith.charAt(fromIndex)) == '$' && fromIndex != endIndex) {
-                String input    = Types.toString(context, matches.get(context, "input"));
-                String matched  = Types.toString(context, matches.get(context, "0"));
-                int matchBegins = Types.toInteger(context, matches.get(context, "index")).intValue();
-                switch(replaceWith.charAt(fromIndex+1)) {
-                case '$':
-                    replacement.append("$");
-                    fromIndex++;
-                    break;
-                case '&':
-                    replacement.append(Types.toString(context,  matches.get(context, "0")));
-                    fromIndex++;
-                    break;
-                case '`':
-                    replacement.append(input.substring(0, matchBegins));
-                    fromIndex++;
-                    break;
-                case '\'':
-                    replacement.append(input.substring(matchBegins+matched.length()));
-                    fromIndex++;
-                    break;
-                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
-                    String backreference = Character.toString(replaceWith.charAt(fromIndex+1));
-                    if (matches.get(context, backreference) != Types.UNDEFINED) {
-                        replacement.append(Types.toString(context, matches.get(context, backreference)));
-                        fromIndex++;
-                    } else {
-                        replacement.append(nextChar);
+    private static class Match {
+        private String searchString;
+        private List<Capture> captures;
+
+        public Match(String searchString, List<Capture> captures) {
+            this.searchString = searchString;
+            this.captures = captures;
+        }
+
+        public static Match fromStartAndLength(String searchString, int index, int length) {
+            return new Match(searchString, Arrays.asList(new Capture(searchString, index, index + length)));
+        }
+
+        public static Match fromRegion(String searchString, Region region){
+            List<Capture> captures = new ArrayList<>();
+            for(int i = 0; i < region.numRegs; i++){
+                captures.add(new Capture(searchString, region.beg[i], region.end[i]));
+            }
+
+            return new Match(searchString, captures);
+        }
+
+        public Object[] toFnArgs(){
+            Object[] fnArgs = new Object[3 + captures.size()];
+            fnArgs[captures.size()] = start();
+            fnArgs[1 + captures.size()] = searchString();
+            for(int i = 0; i < captures.size(); i++){
+                fnArgs[i] = captures.get(i).capture();
+            }
+            return fnArgs;
+        }
+
+        protected String buildReplacementString(String replaceWith) {
+            int fromIndex = 0;
+            int endIndex = replaceWith.length() - 1;
+            StringBuilder replacement = new StringBuilder();
+
+            while (fromIndex <= endIndex) {
+                char nextChar;
+                if ((nextChar = replaceWith.charAt(fromIndex)) == '$' && fromIndex != endIndex) {
+                    switch (replaceWith.charAt(fromIndex + 1)) {
+                        case '$':
+                            replacement.append("$");
+                            fromIndex++;
+                            break;
+                        case '&':
+                            replacement.append(captures.get(0).capture());
+                            fromIndex++;
+                            break;
+                        case '`':
+                            replacement.append(searchString.substring(0, captures.get(0).start));
+                            fromIndex++;
+                            break;
+                        case '\'':
+                            replacement.append(searchString.substring(captures.get(0).end));
+                            fromIndex++;
+                            break;
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            Integer backreference = Integer.parseInt(String.valueOf(replaceWith.charAt(fromIndex + 1)));
+                            if (backreference < captures.size()) {
+                                replacement.append(captures.get(backreference).capture());
+                                fromIndex++;
+                            } else {
+                                replacement.append(nextChar);
+                            }
+                            break;
+                        default:
+                            replacement.append(nextChar);
                     }
-                    break;
-                default:
+                } else {
                     replacement.append(nextChar);
                 }
-            } else {
-                replacement.append(nextChar);
+                fromIndex++;
             }
-            fromIndex++;
+            return replacement.toString();
         }
-        return replacement.toString();
+
+        public int start(){
+            return captures.get(0).start;
+        }
+
+        public String searchString(){
+            return searchString;
+        }
+
+        public int end() {
+            return captures.get(0).end;
+        }
+
+        public String rest() {
+            return searchString.substring(Math.min(searchString.length(), end()));
+        }
     }
 
+    private static class Capture {
+        private final String original;
+        private final int start;
+        private final int end;
+
+        public Capture(String original, int start, int end){
+            this.original = original;
+            this.start = start;
+            this.end = end;
+        }
+
+        public String capture() {
+            return original.substring(start, Math.min(original.length(), end));
+        }
+    }
 }

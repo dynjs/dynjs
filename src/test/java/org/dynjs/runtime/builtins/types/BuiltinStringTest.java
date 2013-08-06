@@ -41,7 +41,19 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("String('fat').replace('f', 'ph')");
         assertThat(o).isEqualTo("phat");
     }
-    
+
+    @Test
+    public void testReplaceWithNestedBracket() {
+        Object o = eval("\"[ [ 'a', 'b', 'c' ] ]\".replace(/^\\[ | \\]$/g, '')");
+        assertThat(o).isEqualTo("[ 'a', 'b', 'c' ]");
+    }
+
+    @Test
+    public void testReplaceWithMultipleNestedBracket() {
+        Object o = eval("\"[ [ 'a', 'b', 'c' ], [ 'd', 'e', 'f' ] ]\".replace(/^\\[ | \\]$/g, '')");
+        assertThat(o).isEqualTo("[ 'a', 'b', 'c' ], [ 'd', 'e', 'f' ]");
+    }
+
     @Test
     public void testReplaceGetProp() {
         Object o = eval("String('fat').replace" );
