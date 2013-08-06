@@ -21,22 +21,24 @@ public class Replace extends AbstractNativeFunction {
         Types.checkObjectCoercible(context, self);
         final String searchString = Types.toString(context, self);
         JSFunction replacement;
-        if(args[1] instanceof JSFunction){
+        if (args[1] instanceof JSFunction) {
             replacement = (JSFunction) args[1];
-        }else{
+        } else {
             replacement = new IdentityFunction(context.getGlobalObject(), args[1]);
         }
 
-        if(args[0] instanceof DynRegExp){
-            return replaceWithRegex(context, searchString, (DynRegExp)args[0], replacement);
-        }else{
+        if (args[0] instanceof DynRegExp) {
+            return replaceWithRegex(context, searchString, (DynRegExp) args[0], replacement);
+        } else {
             return replaceWithString(context, searchString, Types.toString(context, args[0]), replacement);
         }
     }
 
     private Object replaceWithString(ExecutionContext context, String searchString, String query, JSFunction function) {
         int index = searchString.indexOf(query);
-        if(index < 0) { return searchString; }
+        if (index < 0) {
+            return searchString;
+        }
 
         Match match = Match.fromStartAndLength(searchString, index, query.length());
 
@@ -52,7 +54,7 @@ public class Replace extends AbstractNativeFunction {
         Region region;
         Match lastMatch = null;
         int startIndex = 0;
-        while((region = regexp.match(searchString, startIndex)) != null){
+        while ((region = regexp.match(searchString, startIndex)) != null) {
             Match match = Match.fromRegion(searchString, region);
             lastMatch = match;
 
@@ -61,27 +63,27 @@ public class Replace extends AbstractNativeFunction {
             result.append(searchString.substring(startIndex, match.start()))
                     .append(replacement);
 
-            if(startIndex == match.end()){
+            if (startIndex == match.end()) {
                 result.append(searchString.substring(startIndex, Math.min(startIndex + 1, searchString.length())));
                 startIndex++;
-            }else{
+            } else {
                 startIndex = match.end();
             }
 
-            if(!regexp.isGlobal()){
+            if (!regexp.isGlobal()) {
                 break;
             }
         }
-        if(lastMatch == null){
+        if (lastMatch == null) {
             result.append(searchString);
-        }else{
+        } else {
             result.append(lastMatch.rest());
         }
 
         return result.toString();
     }
 
-    private static class IdentityFunction extends AbstractNativeFunction{
+    private static class IdentityFunction extends AbstractNativeFunction {
         private final Object value;
 
         public IdentityFunction(GlobalObject globalObject, Object value) {
@@ -117,11 +119,11 @@ public class Replace extends AbstractNativeFunction {
             return new Match(searchString, captures);
         }
 
-        public Object[] toFnArgs(){
+        public Object[] toFnArgs() {
             Object[] fnArgs = new Object[3 + captures.size()];
             fnArgs[captures.size()] = start();
             fnArgs[1 + captures.size()] = searchString();
-            for(int i = 0; i < captures.size(); i++){
+            for (int i = 0; i < captures.size(); i++) {
                 fnArgs[i] = captures.get(i).capture();
             }
             return fnArgs;
@@ -181,11 +183,11 @@ public class Replace extends AbstractNativeFunction {
             return replacement.toString();
         }
 
-        public int start(){
+        public int start() {
             return captures.get(0).start;
         }
 
-        public String searchString(){
+        public String searchString() {
             return searchString;
         }
 
@@ -203,7 +205,7 @@ public class Replace extends AbstractNativeFunction {
         private final int start;
         private final int end;
 
-        public Capture(String original, int start, int end){
+        public Capture(String original, int start, int end) {
             this.original = original;
             this.start = start;
             this.end = end;

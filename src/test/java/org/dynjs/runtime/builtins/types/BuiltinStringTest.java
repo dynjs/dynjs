@@ -29,13 +29,13 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         assertThat(o.getClassName()).isEqualTo("String");
         assertThat(o.getPrimitiveValue()).isEqualTo("42");
     }
-    
+
     @Test
     public void testConstructorWithExponentialNumber() {
         PrimitiveDynObject o = (PrimitiveDynObject) eval("new  String(.00000012345);");
         assertThat(o.getPrimitiveValue()).isEqualTo("1.2345e-7");
     }
-    
+
     @Test
     public void testReplace() {
         Object o = eval("String('fat').replace('f', 'ph')");
@@ -56,11 +56,11 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testReplaceGetProp() {
-        Object o = eval("String('fat').replace" );
+        Object o = eval("String('fat').replace");
         assertThat(o).isNotNull();
-        System.err.println( "o: " + o );
+        System.err.println("o: " + o);
     }
-    
+
     @Test
     public void testReplaceOnce() {
         assertThat(eval("'If the police police the police...'.replace('police', 'sekretpolice')")).isEqualTo("If the sekretpolice police the police...");
@@ -71,25 +71,25 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("String('fat freddie').replace(/f/, 'ph')");
         assertThat(o).isEqualTo("phat freddie");
     }
-    
+
     @Test
     public void testReplaceGlobalWithRegexp() {
         Object o = eval("String('fat freddie').replace(/f/g, 'ph')");
         assertThat(o).isEqualTo("phat phreddie");
     }
-    
+
     @Test
     public void testReplaceIgnoringCase() {
         Object o = eval("String('Now is the winter').replace(/n/i, '_N_')");
         assertThat(o).isEqualTo("_N_ow is the winter");
     }
-    
+
     @Test
     public void testReplaceGloballyIgnoringCase() {
         Object o = eval("String('Now is the winter').replace(/n/ig, '_N_')");
         assertThat(o).isEqualTo("_N_ow is the wi_N_ter");
     }
-    
+
     @Test
     public void testReplaceWithRegExpUsingAFunction() {
         eval("var upperToHyphenLower = function(match) { return '-'+match.toLowerCase(); }");
@@ -103,60 +103,60 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("String('ABCDE abcde').replace('ABCDE', upperToHyphenLower)");
         assertThat(o).isEqualTo("-abcde abcde");
     }
-    
+
     @Test
     public void testReplaceFunctionArg3() {
         eval("var __func = function(match, arg2, arg3) { return arg3; }");
         Object o = eval("String('ABCDE abcde').replace('BCDE', __func)");
         assertThat(o).isEqualTo("AABCDE abcde abcde");
     }
-    
+
     @Test
     public void testReplaceFunctionArg2() {
         eval("var __func = function(match, arg2, arg3) { return arg2; }");
         Object o = eval("String('ABCDE abcde').replace('BCDE', __func)");
         assertThat(o).isEqualTo("A1 abcde");
     }
-    
+
     @Test
     public void testReplaceFunctionArg1() {
         eval("var returnArg1 = function(match) { return match; }");
         Object o = eval("String('ABCDE abcde').replace(/[A-Z]/, returnArg1)");
         assertThat(o).isEqualTo("ABCDE abcde");
     }
-    
+
     @Test
     public void testReplaceWithNoMatch() {
         assertThat(eval("String('abcde').replace(/[A-Z]/, 'foobar')")).isEqualTo("abcde");
     }
-    
+
     @Test
     public void testReplaceWithTextSubstitution() {
         Object o = eval("\"$1,$2\".replace(/(\\$(\\d))/g, \"$$1-$1$2\")");
         assertThat(o).isEqualTo("$1-$11,$1-$22");
     }
-    
+
     @Test
     public void testNoSubstitution() {
         assertThat(eval("new String('foobar').replace('oo', '$1')")).isEqualTo("f$1bar");
     }
-    
+
     @Test
     public void testRegExpNoSubstitution() {
         assertThat(eval("new String('foobar').replace(/oo/, '$1')")).isEqualTo("f$1bar");
     }
-    
+
     @Test
     public void testReplaceEmptyRegExp() {
         assertThat(eval("new String('asdf').replace(new RegExp('', 'g'), '1')")).isEqualTo("1a1s1d1f1");
     }
-    
+
     @Test
     public void testReplaceDollarDollar() {
         Object o = eval("new String('foo').replace('foo', '$$')");
         assertThat(o).isEqualTo("$");
     }
-    
+
     @Test
     public void testReplaceDollarAmpersand() {
         Object o = eval("new String('foo').replace(/o+/, '$&')");
@@ -174,26 +174,26 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("new String('foobar').replace(/o+/, \"$'\")");
         assertThat(o).isEqualTo("fbarbar");
     }
-    
+
     @Test
     public void testReplaceDollarN() {
         Object o = eval("new String('foobar').replace(/(fo+)(b.+)/, \"$2$1\")");
-        assertThat(o).isEqualTo("barfoo");        
+        assertThat(o).isEqualTo("barfoo");
     }
 
     @Test
     @Ignore
     public void testReplaceDollarNN() {
         Object o = eval("new String('supercalifragilisticexpialidocious').replace(/(s)(u)(p)(e)(r)(c)(a)(l)(i)(f)(r)(a)/, \"$11\")");
-        assertThat(o).isEqualTo("rgilisticexpialidocious");        
+        assertThat(o).isEqualTo("rgilisticexpialidocious");
     }
-    
+
     @Test
     public void testReplace_A1_T8() {
         eval("var __obj = {toString:function(){}};");
         assertThat(eval("String(__obj).replace(/e/g,void 0)")).isEqualTo("undundefinedfinundefinedd");
     }
-    
+
     @Test
     public void testReplace_A4_T1() {
         eval("var __str = \"abc12 def34\";");
@@ -239,20 +239,19 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
         Object o = eval("new String(42).toString()");
         assertThat(o).isEqualTo("42");
     }
-    
+
     @Test
     public void testToString_SpecWeirdness1() {
-        Object o = eval( "new Object().valueOf().toString()");
-        assertThat( o ).isEqualTo( "[object Object]" );
-    }
-    
-    @Test
-    public void testToString_SpecWeirdness2() {
-        Object o = eval( "var to_string_result = '[object '+ 'Object' +']';",
-                "to_string_result.toString()" );
-        assertThat( o ).isEqualTo( "[object Object]" );
+        Object o = eval("new Object().valueOf().toString()");
+        assertThat(o).isEqualTo("[object Object]");
     }
 
+    @Test
+    public void testToString_SpecWeirdness2() {
+        Object o = eval("var to_string_result = '[object '+ 'Object' +']';",
+                "to_string_result.toString()");
+        assertThat(o).isEqualTo("[object Object]");
+    }
 
     @Test
     public void testCharAtWithinBounds() {
@@ -295,95 +294,94 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     public void testIndexOfNotFound() {
         assertThat(eval("'bobobo'.indexOf('taco',2)")).isEqualTo(-1L);
     }
-    
+
     @Test
     public void testLastIndexOf() {
-        assertThat( eval( "'bob'.lastIndexOf('b')")).isEqualTo(2L);
+        assertThat(eval("'bob'.lastIndexOf('b')")).isEqualTo(2L);
     }
-    
+
     @Test
     public void testLastIndexOfWithPos() {
-        assertThat( eval( "'bob'.lastIndexOf('b',1)")).isEqualTo(0L);
+        assertThat(eval("'bob'.lastIndexOf('b',1)")).isEqualTo(0L);
     }
-    
+
     @Test
     public void testLastIndexOfNotFound() {
         assertThat(eval("'bobobo'.lastIndexOf('taco',2)")).isEqualTo(-1L);
     }
-    
+
     @Test
     public void testSearchString() {
-        assertThat( eval( "'boblanceqmx'.search('lance')")).isEqualTo(3L);
+        assertThat(eval("'boblanceqmx'.search('lance')")).isEqualTo(3L);
     }
-    
+
     @Test
     public void testSearchRegExp() {
-        assertThat( eval( "'boblanceqmx'.search(/[ld]ance/)")).isEqualTo(3L);
+        assertThat(eval("'boblanceqmx'.search(/[ld]ance/)")).isEqualTo(3L);
     }
-    
+
     @Test
     public void testSlice() {
-        assertThat( eval( "'boblanceqmx'.slice(3,8)")).isEqualTo("lance");
+        assertThat(eval("'boblanceqmx'.slice(3,8)")).isEqualTo("lance");
     }
-    
+
     @Test
     public void testSliceWithUnaryPlusExpression() {
-        assertThat( eval( "var i = 7;\"{meters}m.othercrap\".slice(0, +i + 1 || 9e9)")).isEqualTo("{meters}");
+        assertThat(eval("var i = 7;\"{meters}m.othercrap\".slice(0, +i + 1 || 9e9)")).isEqualTo("{meters}");
     }
-    
+
     @Test
     public void testSliceWithUnaryMinusExpression() {
-        assertThat( eval( "var i = 1;\"{meters}m.othercrap\".slice(0, -i + 9 || 9e9)")).isEqualTo("{meters}");
+        assertThat(eval("var i = 1;\"{meters}m.othercrap\".slice(0, -i + 9 || 9e9)")).isEqualTo("{meters}");
     }
-    
+
     @Test
     public void testSplitString() {
-        JSObject result = (JSObject) eval( "'bob,lance,qmx'.split(',')" );
-        assertThat( result.get( getContext(), "length" ) ).isEqualTo(3L);
-        assertThat( result.get( getContext(), "0" ) ).isEqualTo("bob" );
-        assertThat( result.get( getContext(), "1" ) ).isEqualTo("lance" );
-        assertThat( result.get( getContext(), "2" ) ).isEqualTo("qmx" );
+        JSObject result = (JSObject) eval("'bob,lance,qmx'.split(',')");
+        assertThat(result.get(getContext(), "length")).isEqualTo(3L);
+        assertThat(result.get(getContext(), "0")).isEqualTo("bob");
+        assertThat(result.get(getContext(), "1")).isEqualTo("lance");
+        assertThat(result.get(getContext(), "2")).isEqualTo("qmx");
     }
-    
+
     @Test
     public void testSubstring() {
-        assertThat( eval( "'boblanceqmx'.substring(3,8)")).isEqualTo("lance");
+        assertThat(eval("'boblanceqmx'.substring(3,8)")).isEqualTo("lance");
     }
-    
+
     @Test
     public void testSubstringNoEnd() {
-        assertThat( eval( "'boblanceqmx'.substring(3)")).isEqualTo("lanceqmx");
+        assertThat(eval("'boblanceqmx'.substring(3)")).isEqualTo("lanceqmx");
     }
-    
+
     @Test
     public void testSubstr() {
         assertThat(eval("'boblanceqmx'.substr(0, 3)")).isEqualTo("bob");
     }
-    
+
     @Test
     public void testSubstrFromEnd() {
         assertThat(eval("'boblanceqmx'.substr(-3)")).isEqualTo("qmx");
     }
-    
+
     @Test
     public void testSubstrWithLength() {
         assertThat(eval("'boblanceqmx'.substr(-3, 2)")).isEqualTo("qm");
     }
-    
+
     @Test
     public void testToLowerCase() {
-        assertThat( eval( "'BoBLaNcEqMX'.toLowerCase()")).isEqualTo("boblanceqmx");
-    }
-    
-    @Test
-    public void testToUpperCase() {
-        assertThat( eval( "'BoBLaNcEqMX'.toUpperCase()")).isEqualTo("BOBLANCEQMX");
+        assertThat(eval("'BoBLaNcEqMX'.toLowerCase()")).isEqualTo("boblanceqmx");
     }
 
-    
     @Test
-    public void testTrim()  {
-        assertThat( eval( "' bob\t'.trim()")).isEqualTo("bob");
+    public void testToUpperCase() {
+        assertThat(eval("'BoBLaNcEqMX'.toUpperCase()")).isEqualTo("BOBLANCEQMX");
     }
-    
+
+    @Test
+    public void testTrim() {
+        assertThat(eval("' bob\t'.trim()")).isEqualTo("bob");
+    }
+
 }
