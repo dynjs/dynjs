@@ -326,6 +326,20 @@
                 <version>1.2.1</version>
                 <executions>
                     <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.jasmine.cli.Main</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <arguments>
+                                <argument>--pattern</argument>
+                                <argument>./src/test/javascript/**/*Spec.js</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>generate-executable</id>
                         <phase>package</phase>
                         <goals>
@@ -353,27 +367,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>org.jasmine.cli.Main</mainClass>
-                    <classpathScope>test</classpathScope>
-                    <arguments>
-                        <argument>--pattern</argument>
-                        <argument>./src/test/javascript/**/*Spec.js</argument>
-                    </arguments>
-                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
