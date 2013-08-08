@@ -12,7 +12,7 @@ branches:
 env:
   global:
     - secure: "O17SbSk/7px/ZOe288D2nUclGKf7MOM91esmmaVyBxHkr4EMcVy55JaPxvYlfm7B31EKkCFyZ98A6bnR+ORoW9BU+nvbLd4jrZanRM7bD4Z5vaDMKmgEdFLUICULGplTweMKB2LjSxzfgJDqVyPq/t+rOL/wvWO9zPrpEmcS8aU="
-    - secure: "LZhhIrHtChdRC/2VJBvy2I2f28MP05SPc+6bdLvAUrg9JVXTmFkYgo6vF8cbZCw6tnUbskrNqnTH7gBqJiHVzqQrHMTw4JpFI+3muHrvVeGVNYrVe48SEuprv/xW4f7QDlNxboYkiglqaxel5T1bjqr6+KdLHd4si78TawR96q8="
+    - secure: "N0YX2bmsQ7+i/jTnc5sPcjXXaCoyMuqKgr5RA9kWNMy8kktXm68G2Yvdqal8AKfBoRoUHrHuBtYIUx6GC16uF9S4tUCMS0Orzi02gRI7CpdyhLMrOHTtWQMhq5NKTy52+6tllXjw7kE99GCfUZMeVwyCMDxi8+NjNmj5Xhu6k4w="
 
 notifications:
   irc: "irc.freenode.org#dynjs"
