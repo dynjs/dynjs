@@ -408,16 +408,6 @@
     </build>
     <profiles>
         <profile>
-            <id>travis</id>
-            <servers>
-                <server>
-                    <id>sonatype-nexus-snapshots</id>
-                    <username>${env.CI_DEPLOY_USERNAME}</username>
-                    <password>${env.CI_DEPLOY_PASSWORD}</password>
-                </server>
-            </servers>
-        </profile>
-        <profile>
             <id>version</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
