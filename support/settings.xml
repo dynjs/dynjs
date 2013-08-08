@@ -68,24 +68,25 @@
                 </pluginRepository>
             </pluginRepositories>
         </profile>
-        <profile>
-            <id>travis</id>
-            <servers>
-                <server>
-                    <id>sonatype-nexus-snapshots</id>
-                    <username>${env.CI_DEPLOY_USERNAME}</username>
-                    <password>${env.CI_DEPLOY_PASSWORD}</password>
-                </server>
-            </servers>
-        </profile>
-
     </profiles>
 
     <activeProfiles>
         <activeProfile>jboss-public-repository</activeProfile>
         <activeProfile>projectodd-repository</activeProfile>
-        <activeProfile>travis</activeProfile>
     </activeProfiles>
+
+    <servers>
+        <server>
+            <id>sonatype-nexus-snapshots</id>
+            <username>${env.CI_DEPLOY_USERNAME}</username>
+            <password>${env.CI_DEPLOY_PASSWORD}</password>
+        </server>
+        <server>
+            <id>sonatype-nexus-staging</id>
+            <username>${env.CI_DEPLOY_USERNAME}</username>
+            <password>${env.CI_DEPLOY_PASSWORD}</password>
+        </server>
+    </servers>
 
 </settings>
 

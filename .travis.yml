@@ -1,6 +1,7 @@
 language: java
 install: mvn install -s support/settings.xml -DskipTests=true -P,-version
-script: mvn deploy -s support/settings.xml -Ptravis,-version
+script: mvn test -s support/settings.xml -P,-version
+after_success: mvn deploy -s support/settings.xml -DskipTests=true -P,-version
 jdk:
   - oraclejdk7
   - openjdk7
