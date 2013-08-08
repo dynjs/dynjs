@@ -1,8 +1,17 @@
 language: java
 install: mvn install -s support/settings.xml -DskipTests=true -P,-version
-script: mvn test -s support/settings.xml -P,-version
+script: mvn deploy -s support/settings.xml -Ptravis,-version
 jdk:
   - oraclejdk7
   - openjdk7
+
+branches:
+  only:
+    - travis
+env:
+  global:
+    - secure: "O17SbSk/7px/ZOe288D2nUclGKf7MOM91esmmaVyBxHkr4EMcVy55JaPxvYlfm7B31EKkCFyZ98A6bnR+ORoW9BU+nvbLd4jrZanRM7bD4Z5vaDMKmgEdFLUICULGplTweMKB2LjSxzfgJDqVyPq/t+rOL/wvWO9zPrpEmcS8aU="
+    - secure: "LZhhIrHtChdRC/2VJBvy2I2f28MP05SPc+6bdLvAUrg9JVXTmFkYgo6vF8cbZCw6tnUbskrNqnTH7gBqJiHVzqQrHMTw4JpFI+3muHrvVeGVNYrVe48SEuprv/xW4f7QDlNxboYkiglqaxel5T1bjqr6+KdLHd4si78TawR96q8="
+
 notifications:
   irc: "irc.freenode.org#dynjs"
