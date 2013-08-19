@@ -184,6 +184,20 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    @Ignore
+    public void testJavaArrayCoercionInMethodCalls() {
+        eval("arr = ['foo', 'bar']");
+        eval("thing = new org.dynjs.runtime.java.Thing()");
+        assertThat(eval("thing.joiner(arr)")).isEqualTo("foobar");
+    }
+
+    @Test
+    @Ignore
+    public void testJavaArrayCoercionInCtor() {
+        assertThat(eval("new org.dynjs.runtime.java.Thing([1, 2, 3])")).isInstanceOf(Thing.class);
+    }
+
+    @Test
     public void testNettyChannelHandler() {
         Object result = eval("new org.jboss.netty.channel.SimpleChannelHandler({",
                 "})");
