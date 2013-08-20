@@ -809,7 +809,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         String propertyName = expr.getIdentifier();
 
-        Types.checkObjectCoercible(context, baseValue);
+        Types.checkObjectCoercible(context, baseValue, propertyName);
 
         push(context.createPropertyReference(baseValue, propertyName));
     }
