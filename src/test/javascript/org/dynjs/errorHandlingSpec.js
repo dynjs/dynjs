@@ -4,8 +4,6 @@ describe("calling a function on an undefined property of an object", function(){
       foo = {};
       foo.bar.foobar();
     } catch(e) {
-      print(e);
-      print(e.stack);
       expect(e.toString()).toMatch(/foobar/);
     }
   });
