@@ -2,6 +2,7 @@ package org.dynjs.runtime.linker.java;
 
 import java.lang.invoke.MethodHandle;
 
+import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
@@ -29,7 +30,9 @@ public class JSJavaImplementationLinkStrategy extends ContextualLinkStrategy<Exe
             return chain.nextStrategy();
         }
 
-        if (args.length == 1 && args[0] instanceof JSObject) {
+        // This is designed to shadow DynObjects as Hashes, but we don't want to
+        // do that for DynArrays. We'll leave that up to the array coercion logic
+        if (args.length == 1 && args[0] instanceof JSObject && !(args[0] instanceof DynArray)) {
 
             binder = binder.spread(JSObject.class)
                     .convert(Object.class, Class.class, ExecutionContext.class, JSObject.class);
