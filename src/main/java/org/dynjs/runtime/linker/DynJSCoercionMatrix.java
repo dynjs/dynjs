@@ -8,6 +8,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -27,6 +28,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         this.manager = manager;
         Lookup lookup = MethodHandles.lookup();
         addCoercion(3, String.class, JSObject.class, lookup.findStatic(DynJSCoercionMatrix.class, "objectToString", methodType(String.class, JSObject.class)));
+        addArrayCoercion(2, DynArray.class, new DynArrayCoercer());
     }
 
     public static String objectToString(JSObject object) {
@@ -43,17 +45,18 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     // ----------------------------------------------------------------------
 
     @Override
-    public int isCompatible(Class<?> target, Class<?> actual) {
+    public int isCompatible(Class<?> target, Object actual) {
         int superCompat = super.isCompatible(target, actual);
         if (superCompat >= 0 && superCompat < 3 ) {
             return superCompat;
         }
         
-        if ( actual == Types.UNDEFINED.getClass() || actual == Types.NULL.getClass() ) {
+        Class<?> actualClass = actual.getClass();
+        if (actualClass == Types.UNDEFINED.getClass() || actualClass == Types.NULL.getClass()) {
             return 3;
         }
 
-        if (JSFunction.class.isAssignableFrom(actual)) {
+        if (JSFunction.class.isAssignableFrom(actualClass)) {
             if ( isSingleAbstractMethod(target) != null) {
                 return 3;
             }
@@ -63,14 +66,15 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     }
 
     @Override
-    public MethodHandle getFilter(Class<?> target, Class<?> actual) {
+    public MethodHandle getFilter(Class<?> target, Object actual) {
         int superCompat = super.isCompatible(target, actual);
         
         if (superCompat >= 0 && superCompat < 3 ) {
             return super.getFilter(target, actual);
         }
         
-        if ( actual == Types.UNDEFINED.getClass() || actual == Types.NULL.getClass() ) {
+        Class<?> actualClass = actual.getClass();
+        if (actualClass == Types.UNDEFINED.getClass() || actualClass == Types.NULL.getClass()) {
             try {
                 return nullReplacingFilter(target);
             } catch (NoSuchMethodException | IllegalAccessException e) {
@@ -78,18 +82,18 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
             }
         }
 
-        if (JSFunction.class.isAssignableFrom(actual)) {
+        if (JSFunction.class.isAssignableFrom(actualClass)) {
             try {
                 String methodName = isSingleAbstractMethod(target);
                 if (methodName != null) {
-                    return singleAbstractMethod(methodName, target, actual);
+                    return singleAbstractMethod(methodName, target, actualClass);
                 }
             } catch (NoSuchMethodException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
 
-        return MethodHandles.identity(actual);
+        return MethodHandles.identity(actualClass);
     }
 
     // ----------------------------------------------------------------------

@@ -184,7 +184,6 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testJavaArrayCoercionInMethodCalls() {
         eval("arr = ['foo', 'bar']");
         eval("thing = new org.dynjs.runtime.java.Thing()");
