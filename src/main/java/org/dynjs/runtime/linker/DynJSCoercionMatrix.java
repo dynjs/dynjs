@@ -28,7 +28,18 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         this.manager = manager;
         Lookup lookup = MethodHandles.lookup();
         addCoercion(3, String.class, JSObject.class, lookup.findStatic(DynJSCoercionMatrix.class, "objectToString", methodType(String.class, JSObject.class)));
-        addArrayCoercion(2, DynArray.class, new DynArrayCoercer());
+
+        DynArrayCoercer dynArrayCoercer = new DynArrayCoercer();
+        addArrayCoercion(1, boolean[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, byte[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, char[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, double[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, float[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, int[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, long[].class, DynArray.class, dynArrayCoercer);
+        addArrayCoercion(1, short[].class, DynArray.class, dynArrayCoercer);
+        // Object[] will catch all non-primitive types
+        addArrayCoercion(2, Object[].class, DynArray.class, dynArrayCoercer);
     }
 
     public static String objectToString(JSObject object) {

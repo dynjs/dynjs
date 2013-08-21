@@ -185,15 +185,23 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testJavaArrayCoercionInMethodCalls() {
-        eval("arr = ['foo', 'bar']");
         eval("thing = new org.dynjs.runtime.java.Thing()");
-        assertThat(eval("thing.joiner(arr)")).isEqualTo("foobar");
+        assertThat(eval("thing.stringJoiner(['foo', 'bar'])")).isEqualTo("foobar");
+        // now make sure primitives work
+        assertThat(eval("thing.booleanJoiner([true, false])")).isEqualTo("truefalse");
+        assertThat(eval("thing.byteJoiner([1, 2, 3])")).isEqualTo("123");
+        assertThat(eval("thing.charJoiner(['a', 'b', 'c'])")).isEqualTo("abc");
+        assertThat(eval("thing.doubleJoiner([1.2, 2.3, 3.4])")).isEqualTo("1.22.33.4");
+        assertThat(eval("thing.floatJoiner([1.2, 2.3, 3.4])")).isEqualTo("1.22.33.4");
+        assertThat(eval("thing.intJoiner([1, 2, 3])")).isEqualTo("123");
+        assertThat(eval("thing.longJoiner([1, 2, 3])")).isEqualTo("123");
+        assertThat(eval("thing.shortJoiner([1, 2, 3])")).isEqualTo("123");
     }
 
     @Test
-    @Ignore
     public void testJavaArrayCoercionInCtor() {
-        assertThat(eval("new org.dynjs.runtime.java.Thing([1, 2, 3])")).isInstanceOf(Thing.class);
+        eval("new org.dynjs.runtime.java.Thing()");
+        assertThat(eval("new org.dynjs.runtime.java.Thing([new java.util.ArrayList()])")).isInstanceOf(Thing.class);
     }
 
     @Test
