@@ -21,12 +21,7 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
 
     private InterpretingVisitorFactory interpFactory;
     private BytecodeBasicBlockCompiler jitCompiler;
-    private Executor compilationQueue;
-
-    public JITBasicBlockCompiler(Config config, InterpretingVisitorFactory interpFactory, CodeGeneratingVisitorFactory factory) {
-        this.interpFactory = interpFactory;
-        this.jitCompiler = new BytecodeBasicBlockCompiler(config, factory);
-        this.compilationQueue = Executors.newFixedThreadPool(5, new ThreadFactory() {
+    private static final Executor compilationQueue = Executors.newFixedThreadPool(8, new ThreadFactory() {
             private final AtomicInteger count = new AtomicInteger(1);
 
             public Thread newThread(Runnable runnable) {
@@ -36,6 +31,10 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
                 return thread;
             }
         });
+
+    public JITBasicBlockCompiler(Config config, InterpretingVisitorFactory interpFactory, CodeGeneratingVisitorFactory factory) {
+        this.interpFactory = interpFactory;
+        this.jitCompiler = new BytecodeBasicBlockCompiler(config, factory);
     }
 
     @Override
