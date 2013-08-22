@@ -211,6 +211,7 @@ public class Types {
         return false;
     }
 
+    static final Pattern decimalDigitPattern = Pattern.compile(".*[0-9].*");
     public static Number stringToNumber(String str) {
         str = trimNumericString(str);
 
@@ -232,6 +233,12 @@ public class Types {
 
         if (str.startsWith("0x") || str.startsWith("0X")) {
             return Long.decode(str);
+        }
+
+        // If we've come this far and there's not a decimal digit in
+        // this string anywhere then bail out early
+        if (!decimalDigitPattern.matcher(str).matches()) {
+            return Double.NaN;
         }
 
         if ((str.indexOf("e") > 0) || (str.indexOf("E") > 0)) {
