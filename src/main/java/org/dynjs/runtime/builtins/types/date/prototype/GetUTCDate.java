@@ -15,7 +15,7 @@ public class GetUTCDate extends AbstractDateFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if ( ! ( self instanceof DynDate ) ) {
-            throw new ThrowException( context, context.createTypeError( "getUTCDay() may only be used with Dates" ) );
+            throw new ThrowException( context, context.createTypeError( "getUTCDate() may only be used with Dates" ) );
         }
         
         DynDate date = (DynDate) self;

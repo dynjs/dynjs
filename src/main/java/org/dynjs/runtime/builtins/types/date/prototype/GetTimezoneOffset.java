@@ -15,7 +15,7 @@ public class GetTimezoneOffset extends AbstractDateFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (!(self instanceof DynDate)) {
-            throw new ThrowException(context, context.createTypeError("getMinutes() may only be used with Dates"));
+            throw new ThrowException(context, context.createTypeError("getTimezoneOffset() may only be used with Dates"));
         }
 
         DynDate date = (DynDate) self;
