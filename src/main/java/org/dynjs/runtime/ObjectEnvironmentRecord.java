@@ -50,7 +50,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.2.4
-        Object d = this.object.getProperty(context, name);
+        Object d = this.object.getProperty(context, name, false);
         if (d == Types.UNDEFINED) {
             if (strict) {
                 throw new ThrowException(context, context.createReferenceError(name + " is not defined"));

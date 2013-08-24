@@ -36,14 +36,15 @@ public class Arguments extends DynObject {
     }
 
     @Override
-    public Object getOwnProperty(ExecutionContext context, String name) {
+    public Object getOwnProperty(ExecutionContext context, String name, boolean dupe) {
+        // Always dupe here since we call .setValue on the returned property
         // 10.6 [[GetOwnProperty]]
-        Object d = super.getOwnProperty(context, name);
+        Object d = super.getOwnProperty(context, name, true);
         if (d == Types.UNDEFINED) {
             return d;
         }
 
-        Object isMapped = this.map.getOwnProperty(context, name);
+        Object isMapped = this.map.getOwnProperty(context, name, true);
         if (isMapped != Types.UNDEFINED) {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             desc.setValue(this.map.get(context, name));

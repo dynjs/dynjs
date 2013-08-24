@@ -383,7 +383,7 @@ public class Types {
         long len = Types.toUint32(context, o.get(context, "length"));
 
         for (long i = 0; i < len; ++i) {
-            if (o.getOwnProperty(context, "" + i) == Types.UNDEFINED) {
+            if (o.getOwnProperty(context, "" + i, false) == Types.UNDEFINED) {
                 return true;
             }
         }

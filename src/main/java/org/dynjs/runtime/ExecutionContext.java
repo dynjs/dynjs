@@ -476,7 +476,7 @@ public class ExecutionContext {
                 env.createMutableBinding(this, identifier, configurableBindings);
             } else if (env.isGlobal()) {
                 JSObject globalObject = ((ObjectEnvironmentRecord) env).getBindingObject();
-                PropertyDescriptor existingProp = (PropertyDescriptor) globalObject.getProperty(this, identifier);
+                PropertyDescriptor existingProp = (PropertyDescriptor) globalObject.getProperty(this, identifier, false);
                 if (existingProp.isConfigurable()) {
                     PropertyDescriptor newProp = new PropertyDescriptor() {
                         {

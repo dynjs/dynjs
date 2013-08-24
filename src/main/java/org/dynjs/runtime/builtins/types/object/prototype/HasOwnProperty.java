@@ -18,7 +18,7 @@ public class HasOwnProperty extends AbstractNativeFunction {
         JSObject o = Types.toObject(context, self);
         String p = Types.toString(context, args[0]);
 
-        Object desc = o.getOwnProperty(context, p);
+        Object desc = o.getOwnProperty(context, p, false);
         if (desc == Types.UNDEFINED) {
             return false;
         }

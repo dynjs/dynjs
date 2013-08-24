@@ -34,8 +34,8 @@ public class DynString extends PrimitiveDynObject {
     }
 
     @Override
-    public Object getOwnProperty(ExecutionContext context, String name) {
-        Object d = super.getOwnProperty(context, name);
+    public Object getOwnProperty(ExecutionContext context, String name, boolean dupe) {
+        Object d = super.getOwnProperty(context, name, dupe);
         if (d != Types.UNDEFINED) {
             return d;
         }

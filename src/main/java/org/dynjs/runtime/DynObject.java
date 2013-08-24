@@ -34,10 +34,6 @@ public class DynObject implements JSObject, Map<String, Object> {
     private final Map<String, PropertyDescriptor> properties = new LinkedHashMap<>();
     private boolean extensible = true;
 
-    // Support for an array-backed set of indexed properties.
-    protected Object[] buffer = null;
-    private final Map<Long, PropertyDescriptor> indexedPropertyDescriptors = new HashMap<Long, PropertyDescriptor>();
-
     public DynObject(GlobalObject globalObject) {
         setClassName("Object");
         setExtensible(true);
@@ -80,7 +76,7 @@ public class DynObject implements JSObject, Map<String, Object> {
     @Override
     public Object get(ExecutionContext context, String name) {
         // 8.12.3
-        Object d = getProperty(context, name);
+        Object d = getProperty(context, name, false);
         if (d == Types.UNDEFINED) {
             return Types.UNDEFINED;
         }
@@ -105,11 +101,11 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public Object getOwnProperty(ExecutionContext context, String name) {
-        // Supports index-based property access that is backed
-        // by a byte array. TODO: Should this be an object array?
-        if (this.buffer != null && Types.toUint32(context, name).toString().equals(name)) {
-            return getOwnIndexedProperty(context, name);
-        }
+        return getOwnProperty(context, name, true);
+    }
+
+    @Override
+    public Object getOwnProperty(ExecutionContext context, String name, boolean dupe) {
         // 8.12.1
         // Returns PropertyDescriptor or UNDEFINED
         PropertyDescriptor x = this.properties.get(name);
@@ -118,6 +114,10 @@ public class DynObject implements JSObject, Map<String, Object> {
 
         if (x == null) {
             return Types.UNDEFINED;
+        }
+
+        if (!dupe) {
+            return x;
         }
 
         PropertyDescriptor dup = null;
@@ -136,9 +136,14 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public Object getProperty(ExecutionContext context, String name) {
+        return getProperty(context, name, true);
+    }
+
+    @Override
+    public Object getProperty(ExecutionContext context, String name, boolean dupe) {
         // 8.12.2
         // Returns PropertyDescriptor or UNDEFINED
-        Object d = getOwnProperty(context, name);
+        Object d = getOwnProperty(context, name, dupe);
         if (d != Types.UNDEFINED) {
             return d;
         }
@@ -147,22 +152,17 @@ public class DynObject implements JSObject, Map<String, Object> {
             return Types.UNDEFINED;
         }
 
-        return this.prototype.getProperty(context, name);
+        return this.prototype.getProperty(context, name, dupe);
     }
 
     @Override
     public boolean hasProperty(ExecutionContext context, String name) {
         // 8.12.6
-        return (getProperty(context, name) != Types.UNDEFINED);
+        return (getProperty(context, name, false) != Types.UNDEFINED);
     }
 
     @Override
     public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
-        // Support for byte[] storage as indexed property names
-        if (this.buffer != null && Types.toUint32(context, name).toString().equals(name)) {
-            putIndexedValue(context, name, value);
-            return;
-        }
         // 8.12.5
         // System.err.println("PUT " + name + " > " + value);
         if (!canPut(context, name)) {
@@ -173,7 +173,7 @@ public class DynObject implements JSObject, Map<String, Object> {
             return;
         }
 
-        Object ownDesc = getOwnProperty(context, name);
+        Object ownDesc = getOwnProperty(context, name, false);
 
         if ((ownDesc != Types.UNDEFINED) && ((PropertyDescriptor) ownDesc).isDataDescriptor()) {
             // System.err.println("setting value on non-UNDEF");
@@ -186,7 +186,7 @@ public class DynObject implements JSObject, Map<String, Object> {
             return;
         }
 
-        Object desc = getProperty(context, name);
+        Object desc = getProperty(context, name, false);
 
         if ((desc != Types.UNDEFINED) && ((PropertyDescriptor) desc).isAccessorDescriptor()) {
             JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get(Names.SET);
@@ -207,12 +207,12 @@ public class DynObject implements JSObject, Map<String, Object> {
     @Override
     public boolean canPut(ExecutionContext context, String name) {
         // 8.12.4
-        Object d = getOwnProperty(context, name);
+        Object d = getOwnProperty(context, name, false);
 
         // Find the property on ourself, or our prototype
         if (d == Types.UNDEFINED) {
             if (this.prototype != null) {
-                d = this.prototype.getProperty(context, name);
+                d = this.prototype.getProperty(context, name, false);
             }
         }
 
@@ -247,7 +247,7 @@ public class DynObject implements JSObject, Map<String, Object> {
         if (!this.properties.containsKey(name)) {
             return true;
         }
-        Object d = getOwnProperty(context, name);
+        Object d = getOwnProperty(context, name, false);
         if (d == Types.UNDEFINED) {
             return true;
         }
@@ -316,7 +316,7 @@ public class DynObject implements JSObject, Map<String, Object> {
     @Override
     public boolean defineOwnProperty(ExecutionContext context, String name, PropertyDescriptor desc, boolean shouldThrow) {
         // 8.12.9
-        Object c = getOwnProperty(context, name);
+        Object c = getOwnProperty(context, name, false);
 
         if (c == Types.UNDEFINED) {
             if (!isExtensible()) {
@@ -516,65 +516,6 @@ public class DynObject implements JSObject, Map<String, Object> {
         }, false);
     }
 
-    protected Object getOwnIndexedProperty(ExecutionContext context, String name) {
-        Long number = Types.toUint32(context, name);
-        final int index = number.intValue();
-        if (index < 0 || index >= buffer.length) {
-            return Types.UNDEFINED;
-        } else {
-            synchronized (this) {
-                if (!this.indexedPropertyDescriptors.containsKey(number)) {
-                    this.indexedPropertyDescriptors.put(number, new PropertyDescriptor() {
-                        {
-                            set(Names.VALUE, buffer[index]);
-                            set(Names.WRITABLE, true);
-                            set(Names.ENUMERABLE, false);
-                            set(Names.CONFIGURABLE, false);
-                        }
-                    });
-                }
-            }
-            return this.indexedPropertyDescriptors.get(number);
-        }
-    }
-
-    protected void putIndexedValue(ExecutionContext context, String name, Object value) {
-        Long possibleIndex = Types.toUint32(context, name);
-        final int index = possibleIndex.intValue();
-        if (index < 0 || index >= buffer.length) {
-            this.put(context, name, value, false);
-        } else {
-            synchronized (this) {
-                putValueAtIndex(context, value, index);
-                if (!this.indexedPropertyDescriptors.containsKey(possibleIndex)) {
-                    this.indexedPropertyDescriptors.put(possibleIndex, new PropertyDescriptor() {
-                        {
-                            set(Names.VALUE, buffer[index]);
-                            set(Names.WRITABLE, true);
-                            set(Names.ENUMERABLE, false);
-                            set(Names.CONFIGURABLE, false);
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    protected void putValueAtIndex(ExecutionContext context, Object value, int index) {
-        // buffer[index] = value;
-        Long numberValue = Types.toUint32(context, value);
-        this.getBackingArray()[index] = numberValue.byteValue() & 0xff;
-    }
-
-    // May return null
-    public Object[] getBackingArray() {
-        return buffer;
-    }
-
-    public void setBackingArray(Object[] buffer) {
-        this.buffer = buffer;
-    }
-
     // java.util.Map
 
     @Override
@@ -589,7 +530,7 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public boolean containsKey(Object key) {
-        Object desc = getProperty(null, key.toString());
+        Object desc = getProperty(null, key.toString(), false);
         return (desc != Types.UNDEFINED);
     }
 
