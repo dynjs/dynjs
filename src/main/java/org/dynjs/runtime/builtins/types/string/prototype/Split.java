@@ -7,6 +7,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
@@ -49,10 +50,10 @@ public class Split extends AbstractNativeFunction {
         if (args[0] == Types.UNDEFINED) {
             a.defineOwnProperty(context, "0", new PropertyDescriptor() {
                 {
-                    set("Value", s);
-                    set("Writable", true);
-                    set("Configurable", true);
-                    set("Enumerable", true);
+                    set(Names.VALUE, s);
+                    set(Names.WRITABLE, true);
+                    set(Names.CONFIGURABLE, true);
+                    set(Names.ENUMERABLE, true);
                 }
             }, false);
             return a;
@@ -65,10 +66,10 @@ public class Split extends AbstractNativeFunction {
             }
             a.defineOwnProperty(context, "0", new PropertyDescriptor() {
                 {
-                    set("Value", s);
-                    set("Writable", true);
-                    set("Configurable", true);
-                    set("Enumerable", true);
+                    set(Names.VALUE, s);
+                    set(Names.WRITABLE, true);
+                    set(Names.CONFIGURABLE, true);
+                    set(Names.ENUMERABLE, true);
                 }
             }, false);
             return a;
@@ -88,10 +89,10 @@ public class Split extends AbstractNativeFunction {
                     final String t = s.substring(p, q);
                     a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
                         {
-                            set("Value", t);
-                            set("Writable", true);
-                            set("Configurable", true);
-                            set("Enumerable", true);
+                            set(Names.VALUE, t);
+                            set(Names.WRITABLE, true);
+                            set(Names.CONFIGURABLE, true);
+                            set(Names.ENUMERABLE, true);
                         }
                     }, false);
                     ++lengthA;
@@ -104,11 +105,11 @@ public class Split extends AbstractNativeFunction {
                         final int capNum = i+1;
                         a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
                             {
-                                //set("Value", z.group(capNum));
-                                set("Value", s.substring(z.beg[capNum], z.end[capNum]) );
-                                set("Writable", true);
-                                set("Configurable", true);
-                                set("Enumerable", true);
+                                //set(Names.VALUE, z.group(capNum));
+                                set(Names.VALUE, s.substring(z.beg[capNum], z.end[capNum]) );
+                                set(Names.WRITABLE, true);
+                                set(Names.CONFIGURABLE, true);
+                                set(Names.ENUMERABLE, true);
                             }
                         }, false);
                         ++lengthA;
@@ -123,10 +124,10 @@ public class Split extends AbstractNativeFunction {
         final String t = s.substring( p, sLen );
         a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
             {
-                set("Value", t );
-                set("Writable", true);
-                set("Configurable", true);
-                set("Enumerable", true);
+                set(Names.VALUE, t );
+                set(Names.WRITABLE, true);
+                set(Names.CONFIGURABLE, true);
+                set(Names.ENUMERABLE, true);
             }
         }, false);
         

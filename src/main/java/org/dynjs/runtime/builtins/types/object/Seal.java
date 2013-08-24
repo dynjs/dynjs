@@ -7,6 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class Seal extends AbstractNativeFunction {
@@ -33,9 +34,9 @@ public class Seal extends AbstractNativeFunction {
             Object d = jsObj.getOwnProperty(context, name);
             if (d != Types.UNDEFINED) {
                 PropertyDescriptor desc = (PropertyDescriptor) d;
-                Object isConfigurable = desc.get("Configurable");
+                Object isConfigurable = desc.get(Names.CONFIGURABLE);
                 if (isConfigurable == Boolean.TRUE) {
-                    desc.set("Configurable", false);
+                    desc.set(Names.CONFIGURABLE, false);
                 }
                 jsObj.defineOwnProperty(context, name, desc, true);
             }

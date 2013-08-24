@@ -5,6 +5,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class PropertyIsEnumerable extends AbstractNativeFunction {
@@ -24,7 +25,7 @@ public class PropertyIsEnumerable extends AbstractNativeFunction {
             return false;
         }
 
-        Object isEnumerable = ((PropertyDescriptor) desc).get("Enumerable");
+        Object isEnumerable = ((PropertyDescriptor) desc).get(Names.ENUMERABLE);
 
         if (isEnumerable instanceof Boolean) {
             return ((Boolean) isEnumerable).booleanValue();

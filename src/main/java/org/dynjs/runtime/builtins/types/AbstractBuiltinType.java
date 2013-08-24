@@ -5,6 +5,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public abstract class AbstractBuiltinType extends AbstractNativeFunction {
 
@@ -25,10 +26,10 @@ public abstract class AbstractBuiltinType extends AbstractNativeFunction {
     protected void setPrototypeProperty(final JSObject prototype) {
         defineOwnProperty(null, "prototype", new PropertyDescriptor() {
             {
-                set("Value", prototype);
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
+                set(Names.VALUE, prototype);
+                set(Names.WRITABLE, false);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, false);
             }
         }, false);
     }
@@ -36,10 +37,10 @@ public abstract class AbstractBuiltinType extends AbstractNativeFunction {
     protected void defineNonEnumerableProperty(JSObject target, String name, final Object value) {
         target.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set( "Value", value );
-                set( "Writable", true );
-                set( "Configurable", true );
-                set( "Enumerable", false );
+                set( Names.VALUE, value );
+                set( Names.WRITABLE, true );
+                set( Names.CONFIGURABLE, true );
+                set( Names.ENUMERABLE, false );
             }
         }, false);
     }

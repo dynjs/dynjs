@@ -12,6 +12,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class ExecutionContext {
 
@@ -375,10 +376,10 @@ public class ExecutionContext {
         Arguments obj = new Arguments(getGlobalObject());
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set("Value", arguments.length);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
+                set(Names.VALUE, arguments.length);
+                set(Names.WRITABLE, true);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, true);
             }
         };
         obj.defineOwnProperty(this, "length", desc, false);
@@ -394,10 +395,10 @@ public class ExecutionContext {
             final Object val = arguments[i];
             desc = new PropertyDescriptor() {
                 {
-                    set("Value", val);
-                    set("Writable", true);
-                    set("Enumerable", true);
-                    set("Configurable", true);
+                    set(Names.VALUE, val);
+                    set(Names.WRITABLE, true);
+                    set(Names.ENUMERABLE, true);
+                    set(Names.CONFIGURABLE, true);
                 }
             };
 
@@ -412,9 +413,9 @@ public class ExecutionContext {
 
                             desc = new PropertyDescriptor() {
                                 {
-                                    set("Set", new ArgSetter(env, name));
-                                    set("Get", new ArgGetter(env, name));
-                                    set("Configurable", true);
+                                    set(Names.SET, new ArgSetter(env, name));
+                                    set(Names.GET, new ArgGetter(env, name));
+                                    set(Names.CONFIGURABLE, true);
                                 }
                             };
                             map.defineOwnProperty(this, "" + i, desc, false);
@@ -433,29 +434,29 @@ public class ExecutionContext {
 
             obj.defineOwnProperty(this, "caller", new PropertyDescriptor() {
                 {
-                    set("Get", thrower);
-                    set("Set", thrower);
-                    set("Enumerable", false);
-                    set("Configurable", false);
+                    set(Names.GET, thrower);
+                    set(Names.SET, thrower);
+                    set(Names.ENUMERABLE, false);
+                    set(Names.CONFIGURABLE, false);
                 }
             }, false);
 
             obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
                 {
-                    set("Get", thrower);
-                    set("Set", thrower);
-                    set("Enumerable", false);
-                    set("Configurable", false);
+                    set(Names.GET, thrower);
+                    set(Names.SET, thrower);
+                    set(Names.ENUMERABLE, false);
+                    set(Names.CONFIGURABLE, false);
                 }
             }, false);
 
         } else {
             obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
                 {
-                    set("Value", function);
-                    set("Writable", true);
-                    set("Enumerable", false);
-                    set("Configurable", true);
+                    set(Names.VALUE, function);
+                    set(Names.WRITABLE, true);
+                    set(Names.ENUMERABLE, false);
+                    set(Names.CONFIGURABLE, true);
                 }
             }, false);
 
@@ -479,10 +480,10 @@ public class ExecutionContext {
                 if (existingProp.isConfigurable()) {
                     PropertyDescriptor newProp = new PropertyDescriptor() {
                         {
-                            set("Value", Types.UNDEFINED);
-                            set("Writable", true);
-                            set("Enumerable", true);
-                            set("Configurable", configurableBindings);
+                            set(Names.VALUE, Types.UNDEFINED);
+                            set(Names.WRITABLE, true);
+                            set(Names.ENUMERABLE, true);
+                            set(Names.CONFIGURABLE, configurableBindings);
                         }
                     };
                     globalObject.defineOwnProperty(this, identifier, newProp, true);

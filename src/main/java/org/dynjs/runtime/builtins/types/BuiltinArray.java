@@ -30,6 +30,7 @@ import org.dynjs.runtime.builtins.types.array.prototype.Splice;
 import org.dynjs.runtime.builtins.types.array.prototype.ToLocaleString;
 import org.dynjs.runtime.builtins.types.array.prototype.ToString;
 import org.dynjs.runtime.builtins.types.array.prototype.Unshift;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class BuiltinArray extends AbstractBuiltinType {
 
@@ -86,10 +87,10 @@ public class BuiltinArray extends AbstractBuiltinType {
         if (args.length == 1 && args[0] instanceof Number) {
             arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
                 {
-                    set("Value", args[0]);
-                    set("Writable", true);
-                    set("Enumerable", false);
-                    set("Configurable", false);
+                    set(Names.VALUE, args[0]);
+                    set(Names.WRITABLE, true);
+                    set(Names.ENUMERABLE, false);
+                    set(Names.CONFIGURABLE, false);
                 }
             }, false);
         } else {
@@ -98,29 +99,29 @@ public class BuiltinArray extends AbstractBuiltinType {
             if (numArgs == 0 ) {
                 arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
                     {
-                        set("Value", 0L );
-                        set("Writable", true);
-                        set("Enumerable", false);
-                        set("Configurable", false);
+                        set(Names.VALUE, 0L );
+                        set(Names.WRITABLE, true);
+                        set(Names.ENUMERABLE, false);
+                        set(Names.CONFIGURABLE, false);
                     }
                 }, false );
             } else {
                 arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
                     {
-                        set("Value", (long) args.length);
-                        set("Writable", true);
-                        set("Enumerable", false);
-                        set("Configurable", false);
+                        set(Names.VALUE, (long) args.length);
+                        set(Names.WRITABLE, true);
+                        set(Names.ENUMERABLE, false);
+                        set(Names.CONFIGURABLE, false);
                     }
                 }, false);
                 for (int i = 0; i < args.length; ++i) {
                     final int finalI = i;
                     arraySelf.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
                         {
-                            set( "Value", args[finalI] );
-                            set( "Writable", true );
-                            set( "Enumerable", true );
-                            set( "Configurable", true );
+                            set( Names.VALUE, args[finalI] );
+                            set( Names.WRITABLE, true );
+                            set( Names.ENUMERABLE, true );
+                            set( Names.CONFIGURABLE, true );
                         }
                     }, false);
                 }

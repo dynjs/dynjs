@@ -6,6 +6,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
@@ -63,10 +64,10 @@ public class Match extends AbstractNativeFunction {
 
                 a.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
                     {
-                        set("Value", matchStr);
-                        set("Writable", true);
-                        set("Configurable", true);
-                        set("Enumerable", true);
+                        set(Names.VALUE, matchStr);
+                        set(Names.WRITABLE, true);
+                        set(Names.CONFIGURABLE, true);
+                        set(Names.ENUMERABLE, true);
                     }
                 }, false);
                 

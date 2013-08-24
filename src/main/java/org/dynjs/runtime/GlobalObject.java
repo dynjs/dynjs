@@ -47,6 +47,7 @@ import org.dynjs.runtime.modules.FilesystemModuleProvider;
 import org.dynjs.runtime.modules.JavaClassModuleProvider;
 import org.dynjs.runtime.modules.ModuleProvider;
 import org.dynjs.runtime.modules.UtilModule;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class GlobalObject extends DynObject {
 
@@ -135,10 +136,10 @@ public class GlobalObject extends DynObject {
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
         defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", type);
-                set("Enumerable", false);
-                set("Writable", true);
-                set("Configurable", true);
+                set(Names.VALUE, type);
+                set(Names.ENUMERABLE, false);
+                set(Names.WRITABLE, true);
+                set(Names.CONFIGURABLE, true);
             }
         }, false);
         put(null, "__Builtin_" + name, type, false);
@@ -179,10 +180,10 @@ public class GlobalObject extends DynObject {
     public void defineGlobalProperty(final String name, final Object value) {
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set("Value", value);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
+                set(Names.VALUE, value);
+                set(Names.WRITABLE, true);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, true);
             }
         };
         defineOwnProperty(null, name, desc, false);
@@ -191,10 +192,10 @@ public class GlobalObject extends DynObject {
     public void defineReadOnlyGlobalProperty(final String name, final Object value) {
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set("Value", value);
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
+                set(Names.VALUE, value);
+                set(Names.WRITABLE, false);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, false);
             }
         };
         defineOwnProperty(null, name, desc, false);

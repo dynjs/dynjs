@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
@@ -18,10 +19,10 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         setClassName("Function");
         defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
-                set("Value", (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
+                set(Names.VALUE, (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
+                set(Names.WRITABLE, false);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, false);
             }
         }, false);
 
@@ -30,18 +31,18 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             if (thrower != null) {
                 defineOwnProperty(null, "caller", new PropertyDescriptor() {
                     {
-                        set("Set", thrower);
-                        set("Get", thrower);
-                        set("Configurable", false);
-                        set("Enumerable", false);
+                        set(Names.SET, thrower);
+                        set(Names.GET, thrower);
+                        set(Names.CONFIGURABLE, false);
+                        set(Names.ENUMERABLE, false);
                     }
                 }, false);
                 defineOwnProperty(null, "arguments", new PropertyDescriptor() {
                     {
-                        set("Set", thrower);
-                        set("Get", thrower);
-                        set("Configurable", false);
-                        set("Enumerable", false);
+                        set(Names.SET, thrower);
+                        set(Names.GET, thrower);
+                        set(Names.CONFIGURABLE, false);
+                        set(Names.ENUMERABLE, false);
                     }
                 }, true);
             }

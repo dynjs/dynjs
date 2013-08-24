@@ -6,6 +6,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 import org.dynjs.runtime.builtins.types.number.prototype.ToExponential;
@@ -77,10 +78,10 @@ public class BuiltinNumber extends AbstractBuiltinType {
     protected static void defineReadOnlyProperty(final JSObject on, final GlobalObject globalObject, String name, final Number value) {
         on.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", value);
-                set("Writable", false);
-                set("Enumerable", false);
-                set("Configurable", false);
+                set(Names.VALUE, value);
+                set(Names.WRITABLE, false);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, false);
             }
         }, false);
     }
@@ -88,10 +89,10 @@ public class BuiltinNumber extends AbstractBuiltinType {
     protected static void defineReadOnlyFunction(final JSObject on, final GlobalObject globalObject, String name, final Object value) {
         on.defineOwnProperty(null, name, new PropertyDescriptor() {
             {
-                set("Value", value);
-                set("Writable", false);
-                set("Enumerable", false);
-                set("Configurable", false);
+                set(Names.VALUE, value);
+                set(Names.WRITABLE, false);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, false);
             }
         }, false);
     }

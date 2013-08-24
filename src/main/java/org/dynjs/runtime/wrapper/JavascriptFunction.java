@@ -13,6 +13,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
 
@@ -27,26 +28,26 @@ public class JavascriptFunction extends AbstractFunction {
         final DynObject proto = new DynObject(scope.getGlobalObject());
         proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
             {
-                set("Value", JavascriptFunction.this);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
+                set(Names.VALUE, JavascriptFunction.this);
+                set(Names.WRITABLE, true);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, true);
             }
         }, false);
         defineOwnProperty(null, "prototype", new PropertyDescriptor() {
             {
-                set("Value", proto);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", false);
+                set(Names.VALUE, proto);
+                set(Names.WRITABLE, true);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, false);
             }
         }, false);
         defineOwnProperty(null, "name", new PropertyDescriptor() {
             {
-                set("Value", identifier);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
+                set(Names.VALUE, identifier);
+                set(Names.WRITABLE, true);
+                set(Names.ENUMERABLE, false);
+                set(Names.CONFIGURABLE, true);
             }
         }, false);
     }

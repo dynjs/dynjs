@@ -5,6 +5,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
@@ -39,10 +40,10 @@ public class Splice extends AbstractNonConstructorFunction {
                 final Object fromValue = o.get(context, "" + (actualStart + k));
                 a.defineOwnProperty(context, "" + k, new PropertyDescriptor() {
                     {
-                        set("Value", fromValue);
-                        set("Writable", true);
-                        set("Configurable", true);
-                        set("Enumerable", true);
+                        set(Names.VALUE, fromValue);
+                        set(Names.WRITABLE, true);
+                        set(Names.CONFIGURABLE, true);
+                        set(Names.ENUMERABLE, true);
                     }
                 }, false);
             }

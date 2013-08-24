@@ -7,6 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
@@ -46,10 +47,10 @@ public class Filter extends AbstractNativeFunction {
                 if (Types.toBoolean(selected)) {
                     a.defineOwnProperty(context, "" + to, new PropertyDescriptor() {
                         {
-                            set("Value", kValue);
-                            set("Writable", true);
-                            set("Configurable", true);
-                            set("Enumerable", true);
+                            set(Names.VALUE, kValue);
+                            set(Names.WRITABLE, true);
+                            set(Names.CONFIGURABLE, true);
+                            set(Names.ENUMERABLE, true);
                         }
                     }, false);
                     ++to;

@@ -9,6 +9,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.jcodings.specific.UTF8Encoding;
 import org.joni.Matcher;
 import org.joni.Option;
@@ -85,70 +86,70 @@ public class DynRegExp extends DynObject {
 
         defineOwnProperty(null, "source", new PropertyDescriptor() {
             {
-                set("Value", pattern);
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
+                set(Names.VALUE, pattern);
+                set(Names.WRITABLE, false);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, false);
             }
         }, false);
 
         if (flags != null) {
             defineOwnProperty(null, "multiline", new PropertyDescriptor() {
                 {
-                    set("Value", flags.contains("m"));
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
+                    set(Names.VALUE, flags.contains("m"));
+                    set(Names.WRITABLE, false);
+                    set(Names.CONFIGURABLE, false);
+                    set(Names.ENUMERABLE, false);
                 }
             }, false);
             defineOwnProperty(null, "global", new PropertyDescriptor() {
                 {
-                    set("Value", flags.contains("g"));
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
+                    set(Names.VALUE, flags.contains("g"));
+                    set(Names.WRITABLE, false);
+                    set(Names.CONFIGURABLE, false);
+                    set(Names.ENUMERABLE, false);
                 }
             }, false);
             defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
                 {
-                    set("Value", flags.contains("i"));
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
+                    set(Names.VALUE, flags.contains("i"));
+                    set(Names.WRITABLE, false);
+                    set(Names.CONFIGURABLE, false);
+                    set(Names.ENUMERABLE, false);
                 }
             }, false);
         } else {
             defineOwnProperty(null, "multiline", new PropertyDescriptor() {
                 {
-                    set("Value", false);
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
+                    set(Names.VALUE, false);
+                    set(Names.WRITABLE, false);
+                    set(Names.CONFIGURABLE, false);
+                    set(Names.ENUMERABLE, false);
                 }
             }, false);
             defineOwnProperty(null, "global", new PropertyDescriptor() {
                 {
-                    set("Value", false);
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
+                    set(Names.VALUE, false);
+                    set(Names.WRITABLE, false);
+                    set(Names.CONFIGURABLE, false);
+                    set(Names.ENUMERABLE, false);
                 }
             }, false);
             defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
                 {
-                    set("Value", false);
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
+                    set(Names.VALUE, false);
+                    set(Names.WRITABLE, false);
+                    set(Names.CONFIGURABLE, false);
+                    set(Names.ENUMERABLE, false);
                 }
             }, false);
         }
         defineOwnProperty(null, "lastIndex", new PropertyDescriptor() {
             {
-                set("Value", 0L);
-                set("Writable", true);
-                set("Configurable", false);
-                set("Enumerable", false);
+                set(Names.VALUE, 0L);
+                set(Names.WRITABLE, true);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, false);
             }
         }, false);
 

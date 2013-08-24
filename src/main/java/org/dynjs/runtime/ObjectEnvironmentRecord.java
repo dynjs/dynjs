@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class ObjectEnvironmentRecord implements EnvironmentRecord {
 
@@ -31,10 +32,10 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
         // 10.2.1.2.2
         PropertyDescriptor desc = new PropertyDescriptor() {
             {
-                set("Value", Types.UNDEFINED);
-                set("Writable", true);
-                set("Enumerable", true);
-                set("Configurable", configValue);
+                set(Names.VALUE, Types.UNDEFINED);
+                set(Names.WRITABLE, true);
+                set(Names.ENUMERABLE, true);
+                set(Names.CONFIGURABLE, configValue);
             }
         };
         this.object.defineOwnProperty(context, name, desc, true);

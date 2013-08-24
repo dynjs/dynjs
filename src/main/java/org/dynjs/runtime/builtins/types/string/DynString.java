@@ -4,6 +4,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class DynString extends PrimitiveDynObject {
@@ -24,10 +25,10 @@ public class DynString extends PrimitiveDynObject {
         super.setPrimitiveValue(value);
         defineOwnProperty(null, "length", new PropertyDescriptor() {
             {
-                set("Value", (long) ((String) value).length());
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
+                set(Names.VALUE, (long) ((String) value).length());
+                set(Names.WRITABLE, false);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, false);
             }
         }, false);
     }
@@ -54,10 +55,10 @@ public class DynString extends PrimitiveDynObject {
 
         return new PropertyDescriptor() {
             {
-                set("Value", resultStr);
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", true);
+                set(Names.VALUE, resultStr);
+                set(Names.WRITABLE, false);
+                set(Names.CONFIGURABLE, false);
+                set(Names.ENUMERABLE, true);
             }
         };
     }

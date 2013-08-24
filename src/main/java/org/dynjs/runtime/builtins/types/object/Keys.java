@@ -7,6 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class Keys extends AbstractNativeFunction {
@@ -34,10 +35,10 @@ public class Keys extends AbstractNativeFunction {
             final String name = names.next();
             array.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
                 {
-                    set("Value", name);
-                    set("Writable", true);
-                    set("Configurable", true);
-                    set("Enumerable", true);
+                    set(Names.VALUE, name);
+                    set(Names.WRITABLE, true);
+                    set(Names.CONFIGURABLE, true);
+                    set(Names.ENUMERABLE, true);
                 }
             }, false);
             ++i;
