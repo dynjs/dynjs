@@ -19,6 +19,7 @@ public class RequireTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddAndRemoveLoadPath() {
         eval("require.addLoadPath('/foo')");
         List<String> paths = (List<String>) eval("require.paths");
