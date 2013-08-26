@@ -42,4 +42,14 @@ public class StackGetter extends AbstractNativeFunction {
         return buf.toString();
     }
 
+    @Override
+    public void setFileName() {
+        this.filename = "<internal>";
+    }
+    
+    @Override
+    public void setupDebugContext() {
+        setDebugContext("<stack-getter>");
+    }
+
 }
