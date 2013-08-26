@@ -112,24 +112,22 @@ public class JSJavaImplementationManager {
         jiteClass.defineField("context", Opcodes.ACC_PRIVATE, ci(ExecutionContext.class), null);
         jiteClass.defineField("implementation", Opcodes.ACC_PRIVATE, ci(JSObject.class), null);
 
-        jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, ExecutionContext.class, JSObject.class),
-                new CodeBlock() {
-                    {
-                        aload(Arities.THIS);
-                        invokespecial(superClassName, "<init>", sig(void.class));
+        CodeBlock codeBlock = new CodeBlock()
+            .aload(Arities.THIS)
+            .invokespecial(superClassName, "<init>", sig(void.class))
 
-                        aload(Arities.THIS);
-                        aload(1);
-                        putfield(className.replace('.', '/'), "context", ci(ExecutionContext.class));
+            .aload(Arities.THIS)
+            .aload(1)
+            .putfield(className.replace('.', '/'), "context", ci(ExecutionContext.class))
 
-                        aload(Arities.THIS);
-                        aload(2);
-                        putfield(className.replace('.', '/'), "implementation", ci(JSObject.class));
-                        aload(2);
+            .aload(Arities.THIS)
+            .aload(2)
+            .putfield(className.replace('.', '/'), "implementation", ci(JSObject.class))
+            .aload(2)
 
-                        voidreturn();
-                    }
-                });
+            .voidreturn();
+
+        jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, ExecutionContext.class, JSObject.class), codeBlock);
 
         defineMethods(targetClass, jiteClass, superClass);
 

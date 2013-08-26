@@ -61,72 +61,56 @@ public abstract class AbstractStatement implements Statement {
     }
     
     public CodeBlock normalCompletion() {
-        return new CodeBlock() {
-            {
-                invokestatic(p(Completion.class), "createNormal", sig(Completion.class));
-            }
-        };
+        return new CodeBlock()
+            .invokestatic(p(Completion.class), "createNormal", sig(Completion.class));
     }
 
     public CodeBlock normalCompletionWithValue() {
-        return new CodeBlock() {
-            {
-                // IN: val
-                invokestatic(p(Completion.class), "createNormal", sig(Completion.class, Object.class));
-            }
-        };
+        return new CodeBlock()
+            // IN: val
+            .invokestatic(p(Completion.class), "createNormal", sig(Completion.class, Object.class));
     }
 
     public CodeBlock returnCompletion() {
-        return new CodeBlock() {
-            {
-                // IN value
-                invokestatic(p(Completion.class), "createReturn", sig(Completion.class, Object.class));
-                // completion
-            }
-        };
+        return new CodeBlock()
+            // IN value
+            .invokestatic(p(Completion.class), "createReturn", sig(Completion.class, Object.class));
+            // completion
     }
 
     public CodeBlock continueCompletion(final String target) {
-        return new CodeBlock() {
-            {
-                // <EMPTY>
-                if (target == null) {
-                    aconst_null();
-                } else {
-                    ldc(target);
-                }
-                // target
-                invokestatic(p(Completion.class), "createContinue", sig(Completion.class, String.class));
-                // completion
-            }
-        };
+        CodeBlock codeBlock = new CodeBlock();
+        // <EMPTY>
+        if (target == null) {
+            codeBlock.aconst_null();
+        } else {
+            codeBlock.ldc(target);
+        }
+        // target
+        codeBlock.invokestatic(p(Completion.class), "createContinue", sig(Completion.class, String.class));
+        // completion
+        return codeBlock;
     }
 
     public CodeBlock breakCompletion(final String target) {
-        return new CodeBlock() {
-            {
-                // <EMPTY>
-                if (target == null) {
-                    aconst_null();
-                } else {
-                    ldc(target);
-                }
-                // target
-                invokestatic(p(Completion.class), "createBreak", sig(Completion.class, String.class));
-                // completion
-            }
-        };
+        CodeBlock codeBlock = new CodeBlock();
+        // <EMPTY>
+        if (target == null) {
+            codeBlock.aconst_null();
+        } else {
+            codeBlock.ldc(target);
+        }
+        // target
+        codeBlock.invokestatic(p(Completion.class), "createBreak", sig(Completion.class, String.class));
+        // completion
+        return codeBlock;
     }
 
     public CodeBlock throwCompletion() {
-        return new CodeBlock() {
-            {
-                // IN value
-                invokestatic(p(Completion.class), "createThrow", sig(Completion.class, Object.class));
-                // completion
-            }
-        };
+        return new CodeBlock()
+            // IN value
+            .invokestatic(p(Completion.class), "createThrow", sig(Completion.class, Object.class));
+            // completion
     }
 
     public CodeBlock handleCompletion(
@@ -134,61 +118,46 @@ public abstract class AbstractStatement implements Statement {
             final LabelNode breakTarget,
             final LabelNode continueTarget,
             final LabelNode returnTarget) {
-        return new CodeBlock() {
-            {
-                // IN: completion
-                append(jsCompletionType());
-                lookupswitch(normalTarget,
-                        new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal() },
-                        new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget });
+        return new CodeBlock()
+            // IN: completion
+            .append(jsCompletionType())
+            .lookupswitch(normalTarget,
+                               new int[] { Type.NORMAL.ordinal(), Type.BREAK.ordinal(), Type.CONTINUE.ordinal(), Type.RETURN.ordinal() },
+                               new LabelNode[] { normalTarget, breakTarget, continueTarget, returnTarget });
 
-            }
-        };
     }
 
     public CodeBlock convertToNormal() {
-        return new CodeBlock() {
-            {
-                // IN: completion
-                dup();
-                // completion completion
-                getstatic(p(Completion.Type.class), "NORMAL", ci(Type.class));
-                // completion completion NORMAL
-                putfield(p(Completion.class), "type", ci(Type.class));
-                // completion
-            }
-        };
+        return new CodeBlock()
+            // IN: completion
+            .dup()
+            // completion completion
+            .getstatic(p(Completion.Type.class), "NORMAL", ci(Type.class))
+            // completion completion NORMAL
+            .putfield(p(Completion.class), "type", ci(Type.class));
+            // completion
     }
 
     public CodeBlock jsCompletionValue() {
-        return new CodeBlock() {
-            {
-                // IN completion
-                getfield(p(Completion.class), "value", ci(Object.class));
-                // value
-            }
-        };
+        return new CodeBlock()
+            // IN completion
+            .getfield(p(Completion.class), "value", ci(Object.class));
+            // value
     }
     
     public CodeBlock jsCompletionTarget() {
-        return new CodeBlock() {
-            {
-                // IN completion
-                getfield(p(Completion.class), "target", ci(String.class));
-                // value
-            }
-        };
+        return new CodeBlock()
+            // IN completion
+            .getfield(p(Completion.class), "target", ci(String.class));
+            // value
     }
 
     public CodeBlock jsCompletionType() {
-        return new CodeBlock() {
-            {
-                // IN completion
-                getfield(p(Completion.class), "type", ci(Completion.Type.class));
-                // type
-                invokevirtual(p(Completion.Type.class), "ordinal", sig(int.class));
-            }
-        };
+        return new CodeBlock()
+            // IN completion
+            .getfield(p(Completion.class), "type", ci(Completion.Type.class))
+            // type
+            .invokevirtual(p(Completion.Type.class), "ordinal", sig(int.class));
     }
 
     public String dump(String indent) {
