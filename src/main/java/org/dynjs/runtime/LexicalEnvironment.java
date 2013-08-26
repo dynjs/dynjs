@@ -20,10 +20,16 @@ public class LexicalEnvironment {
 
     private LexicalEnvironment outer;
     private EnvironmentRecord record;
+    private GlobalObject globalObject;
 
     private LexicalEnvironment(EnvironmentRecord record, LexicalEnvironment outer) {
         this.record = record;
         this.outer = outer;
+        if (this.outer == null) {
+            this.globalObject = (GlobalObject) ((ObjectEnvironmentRecord) this.record).getBindingObject();
+        } else {
+            this.globalObject = this.outer.getGlobalObject();
+        }
     }
 
     public EnvironmentRecord getRecord() {
@@ -35,11 +41,7 @@ public class LexicalEnvironment {
     }
 
     public GlobalObject getGlobalObject() {
-        if (this.outer == null) {
-            return (GlobalObject) ((ObjectEnvironmentRecord) this.record).getBindingObject();
-        } else {
-            return this.outer.getGlobalObject();
-        }
+        return this.globalObject;
     }
 
     public Reference getIdentifierReference(ExecutionContext context, String name, boolean strict) {
