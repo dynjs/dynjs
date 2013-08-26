@@ -71,11 +71,8 @@ public class JavaClassModuleProvider extends ModuleProvider {
             }
 
             final JSFunction function = buildFunction(context.getGlobalObject(), javaModule, method);
-            PropertyDescriptor desc = new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, function);
-                }
-            };
+            PropertyDescriptor desc = new PropertyDescriptor();
+            desc.set(Names.VALUE, function);
             function.setDebugContext(moduleName + "." + exportName);
             exports.defineOwnProperty(context, exportName, desc, false);
         }

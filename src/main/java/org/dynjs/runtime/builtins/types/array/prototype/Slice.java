@@ -47,14 +47,12 @@ public class Slice extends AbstractNonConstructorFunction {
             boolean kPresent = o.hasProperty(context, "" + k);
             if (kPresent) {
                 final Object kValue = o.get(context, "" + k);
-                a.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                    {
-                        set(Names.VALUE, kValue);
-                        set(Names.WRITABLE, true);
-                        set(Names.CONFIGURABLE, true);
-                        set(Names.ENUMERABLE, true);
-                    }
-                }, false);
+                PropertyDescriptor desc = new PropertyDescriptor();
+                desc.set(Names.VALUE, kValue);
+                desc.set(Names.WRITABLE, true);
+                desc.set(Names.CONFIGURABLE, true);
+                desc.set(Names.ENUMERABLE, true);
+                a.defineOwnProperty(context, "" + n, desc, false);
             }
             ++k;
             ++n;

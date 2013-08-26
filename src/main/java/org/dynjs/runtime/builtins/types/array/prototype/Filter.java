@@ -45,14 +45,12 @@ public class Filter extends AbstractNativeFunction {
                 Object selected = context.call(callbackFn, t, kValue, k, o);
 
                 if (Types.toBoolean(selected)) {
-                    a.defineOwnProperty(context, "" + to, new PropertyDescriptor() {
-                        {
-                            set(Names.VALUE, kValue);
-                            set(Names.WRITABLE, true);
-                            set(Names.CONFIGURABLE, true);
-                            set(Names.ENUMERABLE, true);
-                        }
-                    }, false);
+                    PropertyDescriptor desc = new PropertyDescriptor();
+                    desc.set(Names.VALUE, kValue);
+                    desc.set(Names.WRITABLE, true);
+                    desc.set(Names.CONFIGURABLE, true);
+                    desc.set(Names.ENUMERABLE, true);
+                    a.defineOwnProperty(context, "" + to, desc, false);
                     ++to;
                 }
             }

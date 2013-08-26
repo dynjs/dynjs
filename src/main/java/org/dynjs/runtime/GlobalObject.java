@@ -134,14 +134,12 @@ public class GlobalObject extends DynObject {
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
-        defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set(Names.VALUE, type);
-                set(Names.ENUMERABLE, false);
-                set(Names.WRITABLE, true);
-                set(Names.CONFIGURABLE, true);
-            }
-        }, false);
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, type);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.CONFIGURABLE, true);
+        defineOwnProperty(null, name, desc, false);
         put(null, "__Builtin_" + name, type, false);
         this.builtinTypes.add(type);
     }
@@ -178,26 +176,20 @@ public class GlobalObject extends DynObject {
     }
 
     public void defineGlobalProperty(final String name, final Object value) {
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set(Names.VALUE, value);
-                set(Names.WRITABLE, true);
-                set(Names.ENUMERABLE, false);
-                set(Names.CONFIGURABLE, true);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, value);
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.CONFIGURABLE, true);
         defineOwnProperty(null, name, desc, false);
     }
 
     public void defineReadOnlyGlobalProperty(final String name, final Object value) {
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set(Names.VALUE, value);
-                set(Names.WRITABLE, false);
-                set(Names.CONFIGURABLE, false);
-                set(Names.ENUMERABLE, false);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, value);
+        desc.set(Names.WRITABLE, false);
+        desc.set(Names.CONFIGURABLE, false);
+        desc.set(Names.ENUMERABLE, false);
         defineOwnProperty(null, name, desc, false);
     }
 

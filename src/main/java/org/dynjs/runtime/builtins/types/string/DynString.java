@@ -23,14 +23,12 @@ public class DynString extends PrimitiveDynObject {
     public void setPrimitiveValue(final Object value) {
         // 15.5.5.1
         super.setPrimitiveValue(value);
-        defineOwnProperty(null, "length", new PropertyDescriptor() {
-            {
-                set(Names.VALUE, (long) ((String) value).length());
-                set(Names.WRITABLE, false);
-                set(Names.CONFIGURABLE, false);
-                set(Names.ENUMERABLE, false);
-            }
-        }, false);
+        PropertyDescriptor lengthDesc = new PropertyDescriptor();
+        lengthDesc.set(Names.VALUE, (long) ((String) value).length());
+        lengthDesc.set(Names.WRITABLE, false);
+        lengthDesc.set(Names.CONFIGURABLE, false);
+        lengthDesc.set(Names.ENUMERABLE, false);
+        defineOwnProperty(null, "length", lengthDesc, false);
     }
 
     @Override
@@ -53,14 +51,12 @@ public class DynString extends PrimitiveDynObject {
 
         final String resultStr = str.substring((int) index, (int) index + 1);
 
-        return new PropertyDescriptor() {
-            {
-                set(Names.VALUE, resultStr);
-                set(Names.WRITABLE, false);
-                set(Names.CONFIGURABLE, false);
-                set(Names.ENUMERABLE, true);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, resultStr);
+        desc.set(Names.WRITABLE, false);
+        desc.set(Names.CONFIGURABLE, false);
+        desc.set(Names.ENUMERABLE, true);
+        return desc;
     }
 
 }

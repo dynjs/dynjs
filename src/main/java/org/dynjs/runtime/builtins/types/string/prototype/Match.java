@@ -62,14 +62,12 @@ public class Match extends AbstractNativeFunction {
 
                 final Object matchStr = ((JSObject) result).get(context, "0");
 
-                a.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                    {
-                        set(Names.VALUE, matchStr);
-                        set(Names.WRITABLE, true);
-                        set(Names.CONFIGURABLE, true);
-                        set(Names.ENUMERABLE, true);
-                    }
-                }, false);
+                PropertyDescriptor desc = new PropertyDescriptor();
+                desc.set(Names.VALUE, matchStr);
+                desc.set(Names.WRITABLE, true);
+                desc.set(Names.CONFIGURABLE, true);
+                desc.set(Names.ENUMERABLE, true);
+                a.defineOwnProperty(context, "" + n, desc, false);
                 
                 ++n;
             }

@@ -177,11 +177,8 @@ public class DynObject implements JSObject, Map<String, Object> {
 
         if ((ownDesc != Types.UNDEFINED) && ((PropertyDescriptor) ownDesc).isDataDescriptor()) {
             // System.err.println("setting value on non-UNDEF");
-            PropertyDescriptor newDesc = new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, value);
-                }
-            };
+            PropertyDescriptor newDesc = new PropertyDescriptor();
+            newDesc.set(Names.VALUE, value);
             defineOwnProperty(context, name, newDesc, shouldThrow);
             return;
         }
@@ -192,14 +189,11 @@ public class DynObject implements JSObject, Map<String, Object> {
             JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get(Names.SET);
             context.call(setter, this, value);
         } else {
-            PropertyDescriptor newDesc = new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, value);
-                    set(Names.WRITABLE, true);
-                    set(Names.ENUMERABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                }
-            };
+            PropertyDescriptor newDesc = new PropertyDescriptor();
+            newDesc.set(Names.VALUE, value);
+            newDesc.set(Names.WRITABLE, true);
+            newDesc.set(Names.ENUMERABLE, true);
+            newDesc.set(Names.CONFIGURABLE, true);
             defineOwnProperty(context, name, newDesc, shouldThrow);
         }
     }
@@ -494,26 +488,22 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
-        this.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set(Names.VALUE, value);
-                set(Names.WRITABLE, true);
-                set(Names.ENUMERABLE, false);
-                set(Names.CONFIGURABLE, true);
-            }
-        }, false);
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, value);
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.CONFIGURABLE, true);
+        this.defineOwnProperty(null, name, desc, false);
     }
 
     @Override
     public void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value) {
-        this.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set(Names.VALUE, value);
-                set(Names.WRITABLE, false);
-                set(Names.ENUMERABLE, false);
-                set(Names.CONFIGURABLE, false);
-            }
-        }, false);
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, value);
+        desc.set(Names.WRITABLE, false);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.CONFIGURABLE, false);
+        this.defineOwnProperty(null, name, desc, false);
     }
 
     // java.util.Map

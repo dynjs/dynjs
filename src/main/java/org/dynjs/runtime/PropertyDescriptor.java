@@ -40,29 +40,25 @@ public class PropertyDescriptor {
     private static final byte TRUE_FLAG = 1;
 
     public static PropertyDescriptor newAccessorPropertyDescriptor(final boolean withDefaults) {
-        return new PropertyDescriptor() {
-            {
-                if (withDefaults) {
-                    set(Names.SET, defaultSet);
-                    set(Names.GET, defaultGet);
-                    set(Names.CONFIGURABLE, defaultConfigurable);
-                    set(Names.ENUMERABLE, defaultEnumerable);
-                }
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        if (withDefaults) {
+            desc.set(Names.SET, defaultSet);
+            desc.set(Names.GET, defaultGet);
+            desc.set(Names.CONFIGURABLE, defaultConfigurable);
+            desc.set(Names.ENUMERABLE, defaultEnumerable);
+        }
+        return desc;
     }
 
     public static PropertyDescriptor newDataPropertyDescriptor(final boolean withDefaults) {
-        return new PropertyDescriptor() {
-            {
-                if (withDefaults) {
-                    set(Names.VALUE, defaultValue);
-                    set(Names.WRITABLE, defaultWritable);
-                    set(Names.CONFIGURABLE, defaultConfigurable);
-                    set(Names.ENUMERABLE, defaultEnumerable); 
-                }
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        if (withDefaults) {
+            desc.set(Names.VALUE, defaultValue);
+            desc.set(Names.WRITABLE, defaultWritable);
+            desc.set(Names.CONFIGURABLE, defaultConfigurable);
+            desc.set(Names.ENUMERABLE, defaultEnumerable); 
+        }
+        return desc;
     }
 
     public static PropertyDescriptor newPropertyDescriptorForObjectInitializer(Object value) {
@@ -432,57 +428,48 @@ public class PropertyDescriptor {
         JSObject obj = new DynObject(context.getGlobalObject());
 
         if (desc.isDataDescriptor()) {
-            obj.defineOwnProperty(context, "value", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, desc.get(Names.VALUE));
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
-            obj.defineOwnProperty(context, "writable", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, desc.get(Names.WRITABLE));
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
+            PropertyDescriptor valueDesc = new PropertyDescriptor();
+            valueDesc.set(Names.VALUE, desc.get(Names.VALUE));
+            valueDesc.set(Names.WRITABLE, true);
+            valueDesc.set(Names.CONFIGURABLE, true);
+            valueDesc.set(Names.ENUMERABLE, true);
+            obj.defineOwnProperty(context, "value", valueDesc, false);
+
+            PropertyDescriptor writableDesc = new PropertyDescriptor();
+            writableDesc.set(Names.VALUE, desc.get(Names.WRITABLE));
+            writableDesc.set(Names.WRITABLE, true);
+            writableDesc.set(Names.CONFIGURABLE, true);
+            writableDesc.set(Names.ENUMERABLE, true);
+            obj.defineOwnProperty(context, "writable", writableDesc, false);
         } else {
-            obj.defineOwnProperty(context, "get", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, desc.get(Names.GET));
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
-            obj.defineOwnProperty(context, "set", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, desc.get(Names.SET));
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
+            PropertyDescriptor getDesc = new PropertyDescriptor();
+            getDesc.set(Names.VALUE, desc.get(Names.GET));
+            getDesc.set(Names.WRITABLE, true);
+            getDesc.set(Names.CONFIGURABLE, true);
+            getDesc.set(Names.ENUMERABLE, true);
+            obj.defineOwnProperty(context, "get", getDesc, false);
+
+            PropertyDescriptor setDesc = new PropertyDescriptor();
+            setDesc.set(Names.VALUE, desc.get(Names.SET));
+            setDesc.set(Names.WRITABLE, true);
+            setDesc.set(Names.CONFIGURABLE, true);
+            setDesc.set(Names.ENUMERABLE, true);
+            obj.defineOwnProperty(context, "set", setDesc, false);
         }
 
-        obj.defineOwnProperty(context, "enumerable", new PropertyDescriptor() {
-            {
-                set(Names.VALUE, desc.get(Names.ENUMERABLE));
-                set(Names.WRITABLE, true);
-                set(Names.CONFIGURABLE, true);
-                set(Names.ENUMERABLE, true);
-            }
-        }, false);
-        obj.defineOwnProperty(context, "configurable", new PropertyDescriptor() {
-            {
-                set(Names.VALUE, desc.get(Names.CONFIGURABLE));
-                set(Names.WRITABLE, true);
-                set(Names.CONFIGURABLE, true);
-                set(Names.ENUMERABLE, true);
-            }
-        }, false);
+        PropertyDescriptor enumerableDesc = new PropertyDescriptor();
+        enumerableDesc.set(Names.VALUE, desc.get(Names.ENUMERABLE));
+        enumerableDesc.set(Names.WRITABLE, true);
+        enumerableDesc.set(Names.CONFIGURABLE, true);
+        enumerableDesc.set(Names.ENUMERABLE, true);
+        obj.defineOwnProperty(context, "enumerable", enumerableDesc, false);
+
+        PropertyDescriptor configurableDesc = new PropertyDescriptor();
+        configurableDesc.set(Names.VALUE, desc.get(Names.CONFIGURABLE));
+        configurableDesc.set(Names.WRITABLE, true);
+        configurableDesc.set(Names.CONFIGURABLE, true);
+        configurableDesc.set(Names.ENUMERABLE, true);
+        obj.defineOwnProperty(context, "configurable", configurableDesc, false);
 
         return obj;
     }

@@ -42,18 +42,14 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
         }
 
         if (args[0] != Types.UNDEFINED) {
-            o.defineOwnProperty(context, "message", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, Types.toString( context, args[0]) );
-                }
-            }, false);
+            PropertyDescriptor messageDesc = new PropertyDescriptor();
+            messageDesc.set(Names.VALUE, Types.toString( context, args[0]) );
+            o.defineOwnProperty(context, "message", messageDesc, false);
         }
 
-        o.defineOwnProperty(context, "stack", new PropertyDescriptor() {
-            {
-                set(Names.GET, new StackGetter(context));
-            }
-        }, false);
+        PropertyDescriptor stackDesc = new PropertyDescriptor();
+        stackDesc.set(Names.GET, new StackGetter(context));
+        o.defineOwnProperty(context, "stack", stackDesc, false);
 
         return o;
     }

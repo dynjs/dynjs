@@ -48,14 +48,12 @@ public class Split extends AbstractNativeFunction {
         }
 
         if (args[0] == Types.UNDEFINED) {
-            a.defineOwnProperty(context, "0", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, s);
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
+            PropertyDescriptor zeroDesc = new PropertyDescriptor();
+            zeroDesc.set(Names.VALUE, s);
+            zeroDesc.set(Names.WRITABLE, true);
+            zeroDesc.set(Names.CONFIGURABLE, true);
+            zeroDesc.set(Names.ENUMERABLE, true);
+            a.defineOwnProperty(context, "0", zeroDesc, false);
             return a;
         }
 
@@ -64,14 +62,12 @@ public class Split extends AbstractNativeFunction {
             if (z != null) {
                 return a;
             }
-            a.defineOwnProperty(context, "0", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, s);
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
+            PropertyDescriptor zeroDesc = new PropertyDescriptor();
+            zeroDesc.set(Names.VALUE, s);
+            zeroDesc.set(Names.WRITABLE, true);
+            zeroDesc.set(Names.CONFIGURABLE, true);
+            zeroDesc.set(Names.ENUMERABLE, true);
+            a.defineOwnProperty(context, "0", zeroDesc, false);
             return a;
         }
 
@@ -87,14 +83,12 @@ public class Split extends AbstractNativeFunction {
                     ++q;
                 } else {
                     final String t = s.substring(p, q);
-                    a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
-                        {
-                            set(Names.VALUE, t);
-                            set(Names.WRITABLE, true);
-                            set(Names.CONFIGURABLE, true);
-                            set(Names.ENUMERABLE, true);
-                        }
-                    }, false);
+                    PropertyDescriptor tDesc = new PropertyDescriptor();
+                    tDesc.set(Names.VALUE, t);
+                    tDesc.set(Names.WRITABLE, true);
+                    tDesc.set(Names.CONFIGURABLE, true);
+                    tDesc.set(Names.ENUMERABLE, true);
+                    a.defineOwnProperty(context, "" + lengthA, tDesc, false);
                     ++lengthA;
                     if ( lengthA == lim ) {
                         return a;
@@ -103,15 +97,13 @@ public class Split extends AbstractNativeFunction {
                     int numCaps = z.beg.length - 1;
                     for ( int i = 0 ; i < numCaps ; ++i ) {
                         final int capNum = i+1;
-                        a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
-                            {
-                                //set(Names.VALUE, z.group(capNum));
-                                set(Names.VALUE, s.substring(z.beg[capNum], z.end[capNum]) );
-                                set(Names.WRITABLE, true);
-                                set(Names.CONFIGURABLE, true);
-                                set(Names.ENUMERABLE, true);
-                            }
-                        }, false);
+                        PropertyDescriptor substrDesc = new PropertyDescriptor();
+                        //substrDesc.set(Names.VALUE, z.group(capNum));
+                        substrDesc.set(Names.VALUE, s.substring(z.beg[capNum], z.end[capNum]) );
+                        substrDesc.set(Names.WRITABLE, true);
+                        substrDesc.set(Names.CONFIGURABLE, true);
+                        substrDesc.set(Names.ENUMERABLE, true);
+                        a.defineOwnProperty(context, "" + lengthA, substrDesc, false);
                         ++lengthA;
                         if ( lengthA == lim ) {
                             return a;
@@ -122,14 +114,12 @@ public class Split extends AbstractNativeFunction {
             }
         }
         final String t = s.substring( p, sLen );
-        a.defineOwnProperty(context, "" + lengthA, new PropertyDescriptor() {
-            {
-                set(Names.VALUE, t );
-                set(Names.WRITABLE, true);
-                set(Names.CONFIGURABLE, true);
-                set(Names.ENUMERABLE, true);
-            }
-        }, false);
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, t );
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.CONFIGURABLE, true);
+        desc.set(Names.ENUMERABLE, true);
+        a.defineOwnProperty(context, "" + lengthA, desc, false);
         
         return a;
     }

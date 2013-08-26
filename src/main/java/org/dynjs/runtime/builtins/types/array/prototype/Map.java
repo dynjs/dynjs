@@ -41,14 +41,12 @@ public class Map extends AbstractNativeFunction {
             if (kPresent) {
                 Object kValue = o.get(context, "" + k);
                 final Object mappedValue = context.call(callbackFn, t, kValue, k, o);
-                a.defineOwnProperty(context, "" + k, new PropertyDescriptor() {
-                    {
-                        set(Names.VALUE, mappedValue);
-                        set(Names.WRITABLE, true);
-                        set(Names.CONFIGURABLE, true);
-                        set(Names.ENUMERABLE, true);
-                    }
-                }, false);
+                PropertyDescriptor desc = new PropertyDescriptor();
+                desc.set(Names.VALUE, mappedValue);
+                desc.set(Names.WRITABLE, true);
+                desc.set(Names.CONFIGURABLE, true);
+                desc.set(Names.ENUMERABLE, true);
+                a.defineOwnProperty(context, "" + k, desc, false);
             }
         }
 

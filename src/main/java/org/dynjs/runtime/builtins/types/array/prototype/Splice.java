@@ -38,14 +38,12 @@ public class Splice extends AbstractNonConstructorFunction {
         for (long k = 0; k < actualDeleteCount; ++k) {
             if (o.hasProperty(context, "" + (actualStart + k))) {
                 final Object fromValue = o.get(context, "" + (actualStart + k));
-                a.defineOwnProperty(context, "" + k, new PropertyDescriptor() {
-                    {
-                        set(Names.VALUE, fromValue);
-                        set(Names.WRITABLE, true);
-                        set(Names.CONFIGURABLE, true);
-                        set(Names.ENUMERABLE, true);
-                    }
-                }, false);
+                PropertyDescriptor desc = new PropertyDescriptor();
+                desc.set(Names.VALUE, fromValue);
+                desc.set(Names.WRITABLE, true);
+                desc.set(Names.CONFIGURABLE, true);
+                desc.set(Names.ENUMERABLE, true);
+                a.defineOwnProperty(context, "" + k, desc, false);
             }
         }
 

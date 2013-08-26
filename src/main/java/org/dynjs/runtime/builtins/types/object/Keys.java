@@ -33,14 +33,12 @@ public class Keys extends AbstractNativeFunction {
         NameEnumerator names = jsObj.getOwnEnumerablePropertyNames();
         while (names.hasNext()) {
             final String name = names.next();
-            array.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, name);
-                    set(Names.WRITABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                    set(Names.ENUMERABLE, true);
-                }
-            }, false);
+            PropertyDescriptor desc = new PropertyDescriptor();
+            desc.set(Names.VALUE, name);
+            desc.set(Names.WRITABLE, true);
+            desc.set(Names.CONFIGURABLE, true);
+            desc.set(Names.ENUMERABLE, true);
+            array.defineOwnProperty(context, "" + i, desc, false);
             ++i;
         }
         return array;

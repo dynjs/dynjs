@@ -23,14 +23,12 @@ public class DynArray extends DynObject {
     public DynArray(GlobalObject globalObject) {
         super(globalObject);
         setClassName("Array");
-        super.defineOwnProperty(null, "length", new PropertyDescriptor() {
-            {
-                set(Names.WRITABLE, true);
-                set(Names.CONFIGURABLE, true);
-                set(Names.ENUMERABLE, true);
-                set(Names.VALUE, 0L);
-            }
-        }, false);
+        PropertyDescriptor lengthDesc = new PropertyDescriptor();
+        lengthDesc.set(Names.WRITABLE, true);
+        lengthDesc.set(Names.CONFIGURABLE, true);
+        lengthDesc.set(Names.ENUMERABLE, true);
+        lengthDesc.set(Names.VALUE, 0L);
+        super.defineOwnProperty(null, "length", lengthDesc, false);
         setPrototype(globalObject.getPrototypeFor("Array"));
     }
 
@@ -89,11 +87,9 @@ public class DynArray extends DynObject {
             }
 
             if (newWritable == false) {
-                super.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                    {
-                        set(Names.WRITABLE, false);
-                    }
-                }, false);
+                PropertyDescriptor lengthDesc = new PropertyDescriptor();
+                lengthDesc.set(Names.WRITABLE, false);
+                super.defineOwnProperty(context, "length", lengthDesc, false);
             }
 
             return true;

@@ -23,12 +23,9 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
             throw new AssertionError("10.2.1.1.2: Binding already exists for " + name);
         }
 
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set(Names.VALUE, Types.UNDEFINED);
-                set(Names.CONFIGURABLE, configurable);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, Types.UNDEFINED);
+        desc.set(Names.CONFIGURABLE, configurable);
         this.mutableBindings.put(name, desc);
     }
 
@@ -107,11 +104,8 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
     public void createImmutableBinding(final String name) {
         // 10.2.1.1.7
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set(Names.VALUE, Types.UNDEFINED);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, Types.UNDEFINED);
         this.immutableBindings.put(name, desc);
 
     }

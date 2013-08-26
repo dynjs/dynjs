@@ -43,26 +43,22 @@ public class Concat extends AbstractNonConstructorFunction {
 
                 for (long k = 0; k < len; ++k) {
                     final Object subElement = jsE.get(context, "" + k);
-                    array.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                        {
-                            set( Names.VALUE, subElement);
-                            set( Names.WRITABLE, true);
-                            set( Names.CONFIGURABLE, true);
-                            set( Names.ENUMERABLE, true);
-                        }
-                    }, false);
+                    PropertyDescriptor desc = new PropertyDescriptor();
+                    desc.set( Names.VALUE, subElement);
+                    desc.set( Names.WRITABLE, true);
+                    desc.set( Names.CONFIGURABLE, true);
+                    desc.set( Names.ENUMERABLE, true);
+                    array.defineOwnProperty(context, "" + n, desc, false);
                     ++n;
                 }
             } else {
                 final Object finalE = e;
-                array.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                    {
-                        set( Names.VALUE, finalE);
-                        set( Names.WRITABLE, true);
-                        set( Names.CONFIGURABLE, true);
-                        set( Names.ENUMERABLE, true);
-                    }
-                }, false);
+                PropertyDescriptor desc = new PropertyDescriptor();
+                desc.set( Names.VALUE, finalE);
+                desc.set( Names.WRITABLE, true);
+                desc.set( Names.CONFIGURABLE, true);
+                desc.set( Names.ENUMERABLE, true);
+                array.defineOwnProperty(context, "" + n, desc, false);
                 ++n;
             }
         }

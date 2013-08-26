@@ -30,14 +30,11 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void createMutableBinding(ExecutionContext context, final String name, final boolean configValue) {
         // 10.2.1.2.2
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set(Names.VALUE, Types.UNDEFINED);
-                set(Names.WRITABLE, true);
-                set(Names.ENUMERABLE, true);
-                set(Names.CONFIGURABLE, configValue);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, Types.UNDEFINED);
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.ENUMERABLE, true);
+        desc.set(Names.CONFIGURABLE, configValue);
         this.object.defineOwnProperty(context, name, desc, true);
     }
 

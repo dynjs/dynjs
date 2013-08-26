@@ -76,24 +76,20 @@ public class BuiltinNumber extends AbstractBuiltinType {
     }
 
     protected static void defineReadOnlyProperty(final JSObject on, final GlobalObject globalObject, String name, final Number value) {
-        on.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set(Names.VALUE, value);
-                set(Names.WRITABLE, false);
-                set(Names.ENUMERABLE, false);
-                set(Names.CONFIGURABLE, false);
-            }
-        }, false);
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, value);
+        desc.set(Names.WRITABLE, false);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.CONFIGURABLE, false);
+        on.defineOwnProperty(null, name, desc, false);
     }
 
     protected static void defineReadOnlyFunction(final JSObject on, final GlobalObject globalObject, String name, final Object value) {
-        on.defineOwnProperty(null, name, new PropertyDescriptor() {
-            {
-                set(Names.VALUE, value);
-                set(Names.WRITABLE, false);
-                set(Names.ENUMERABLE, false);
-                set(Names.CONFIGURABLE, false);
-            }
-        }, false);
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, value);
+        desc.set(Names.WRITABLE, false);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.CONFIGURABLE, false);
+        on.defineOwnProperty(null, name, desc, false);
     }
 }

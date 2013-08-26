@@ -85,45 +85,37 @@ public class BuiltinArray extends AbstractBuiltinType {
             arraySelf = (DynArray) self;
         }
         if (args.length == 1 && args[0] instanceof Number) {
-            arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, args[0]);
-                    set(Names.WRITABLE, true);
-                    set(Names.ENUMERABLE, false);
-                    set(Names.CONFIGURABLE, false);
-                }
-            }, false);
+            PropertyDescriptor lengthDesc = new PropertyDescriptor();
+            lengthDesc.set(Names.VALUE, args[0]);
+            lengthDesc.set(Names.WRITABLE, true);
+            lengthDesc.set(Names.ENUMERABLE, false);
+            lengthDesc.set(Names.CONFIGURABLE, false);
+            arraySelf.defineOwnProperty(context, "length", lengthDesc, false);
         } else {
             Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
             int numArgs = (int) argsObj.get(context, "length");
             if (numArgs == 0 ) {
-                arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                    {
-                        set(Names.VALUE, 0L );
-                        set(Names.WRITABLE, true);
-                        set(Names.ENUMERABLE, false);
-                        set(Names.CONFIGURABLE, false);
-                    }
-                }, false );
+                PropertyDescriptor lengthDesc = new PropertyDescriptor();
+                lengthDesc.set(Names.VALUE, 0L);
+                lengthDesc.set(Names.WRITABLE, true);
+                lengthDesc.set(Names.ENUMERABLE, false);
+                lengthDesc.set(Names.CONFIGURABLE, false);
+                arraySelf.defineOwnProperty(context, "length", lengthDesc, false);
             } else {
-                arraySelf.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                    {
-                        set(Names.VALUE, (long) args.length);
-                        set(Names.WRITABLE, true);
-                        set(Names.ENUMERABLE, false);
-                        set(Names.CONFIGURABLE, false);
-                    }
-                }, false);
+                PropertyDescriptor lengthDesc = new PropertyDescriptor();
+                lengthDesc.set(Names.VALUE, (long) args.length);
+                lengthDesc.set(Names.WRITABLE, true);
+                lengthDesc.set(Names.ENUMERABLE, false);
+                lengthDesc.set(Names.CONFIGURABLE, false);
+                arraySelf.defineOwnProperty(context, "length", lengthDesc, false);
                 for (int i = 0; i < args.length; ++i) {
                     final int finalI = i;
-                    arraySelf.defineOwnProperty(context, "" + i, new PropertyDescriptor() {
-                        {
-                            set( Names.VALUE, args[finalI] );
-                            set( Names.WRITABLE, true );
-                            set( Names.ENUMERABLE, true );
-                            set( Names.CONFIGURABLE, true );
-                        }
-                    }, false);
+                    PropertyDescriptor desc = new PropertyDescriptor();
+                    desc.set( Names.VALUE, args[finalI] );
+                    desc.set( Names.WRITABLE, true );
+                    desc.set( Names.ENUMERABLE, true );
+                    desc.set( Names.CONFIGURABLE, true );
+                    arraySelf.defineOwnProperty(context, "" + i, desc, false);
                 }
             }
         }

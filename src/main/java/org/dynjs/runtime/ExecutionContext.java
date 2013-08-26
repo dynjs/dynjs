@@ -374,14 +374,11 @@ public class ExecutionContext {
         // 10.6
 
         Arguments obj = new Arguments(getGlobalObject());
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set(Names.VALUE, arguments.length);
-                set(Names.WRITABLE, true);
-                set(Names.ENUMERABLE, false);
-                set(Names.CONFIGURABLE, true);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, arguments.length);
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.ENUMERABLE, false);
+        desc.set(Names.CONFIGURABLE, true);
         obj.defineOwnProperty(this, "length", desc, false);
 
         String[] names = function.getFormalParameters();
@@ -393,14 +390,11 @@ public class ExecutionContext {
 
         for (int i = 0; i < arguments.length; ++i) {
             final Object val = arguments[i];
-            desc = new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, val);
-                    set(Names.WRITABLE, true);
-                    set(Names.ENUMERABLE, true);
-                    set(Names.CONFIGURABLE, true);
-                }
-            };
+            desc = new PropertyDescriptor();
+            desc.set(Names.VALUE, val);
+            desc.set(Names.WRITABLE, true);
+            desc.set(Names.ENUMERABLE, true);
+            desc.set(Names.CONFIGURABLE, true);
 
             obj.defineOwnProperty(this, "" + i, desc, false);
 
@@ -411,13 +405,10 @@ public class ExecutionContext {
                         if (!mappedNames.contains(name)) {
                             mappedNames.add(name);
 
-                            desc = new PropertyDescriptor() {
-                                {
-                                    set(Names.SET, new ArgSetter(env, name));
-                                    set(Names.GET, new ArgGetter(env, name));
-                                    set(Names.CONFIGURABLE, true);
-                                }
-                            };
+                            desc = new PropertyDescriptor();
+                            desc.set(Names.SET, new ArgSetter(env, name));
+                            desc.set(Names.GET, new ArgGetter(env, name));
+                            desc.set(Names.CONFIGURABLE, true);
                             map.defineOwnProperty(this, "" + i, desc, false);
                         }
                     }
@@ -432,33 +423,27 @@ public class ExecutionContext {
         if (function.isStrict()) {
             final JSFunction thrower = (JSFunction) getGlobalObject().get(this, "__throwTypeError");
 
-            obj.defineOwnProperty(this, "caller", new PropertyDescriptor() {
-                {
-                    set(Names.GET, thrower);
-                    set(Names.SET, thrower);
-                    set(Names.ENUMERABLE, false);
-                    set(Names.CONFIGURABLE, false);
-                }
-            }, false);
+            PropertyDescriptor callerDesc = new PropertyDescriptor();
+            callerDesc.set(Names.GET, thrower);
+            callerDesc.set(Names.SET, thrower);
+            callerDesc.set(Names.ENUMERABLE, false);
+            callerDesc.set(Names.CONFIGURABLE, false);
+            obj.defineOwnProperty(this, "caller", callerDesc, false);
 
-            obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
-                {
-                    set(Names.GET, thrower);
-                    set(Names.SET, thrower);
-                    set(Names.ENUMERABLE, false);
-                    set(Names.CONFIGURABLE, false);
-                }
-            }, false);
+            PropertyDescriptor calleeDesc = new PropertyDescriptor();
+            calleeDesc.set(Names.GET, thrower);
+            calleeDesc.set(Names.SET, thrower);
+            calleeDesc.set(Names.ENUMERABLE, false);
+            calleeDesc.set(Names.CONFIGURABLE, false);
+            obj.defineOwnProperty(this, "callee", calleeDesc, false);
 
         } else {
-            obj.defineOwnProperty(this, "callee", new PropertyDescriptor() {
-                {
-                    set(Names.VALUE, function);
-                    set(Names.WRITABLE, true);
-                    set(Names.ENUMERABLE, false);
-                    set(Names.CONFIGURABLE, true);
-                }
-            }, false);
+            PropertyDescriptor calleeDesc = new PropertyDescriptor();
+            calleeDesc.set(Names.VALUE, function);
+            calleeDesc.set(Names.WRITABLE, true);
+            calleeDesc.set(Names.ENUMERABLE, false);
+            calleeDesc.set(Names.CONFIGURABLE, true);
+            obj.defineOwnProperty(this, "callee", calleeDesc, false);
 
         }
 
@@ -478,14 +463,11 @@ public class ExecutionContext {
                 JSObject globalObject = ((ObjectEnvironmentRecord) env).getBindingObject();
                 PropertyDescriptor existingProp = (PropertyDescriptor) globalObject.getProperty(this, identifier, false);
                 if (existingProp.isConfigurable()) {
-                    PropertyDescriptor newProp = new PropertyDescriptor() {
-                        {
-                            set(Names.VALUE, Types.UNDEFINED);
-                            set(Names.WRITABLE, true);
-                            set(Names.ENUMERABLE, true);
-                            set(Names.CONFIGURABLE, configurableBindings);
-                        }
-                    };
+                    PropertyDescriptor newProp = new PropertyDescriptor();
+                    newProp.set(Names.VALUE, Types.UNDEFINED);
+                    newProp.set(Names.WRITABLE, true);
+                    newProp.set(Names.ENUMERABLE, true);
+                    newProp.set(Names.CONFIGURABLE, configurableBindings);
                     globalObject.defineOwnProperty(this, identifier, newProp, true);
                 } else if (existingProp.isAccessorDescriptor() || (!existingProp.isWritable() && !existingProp.isEnumerable())) {
                     throw new ThrowException(this, createTypeError("unable to bind function '" + identifier + "'"));
