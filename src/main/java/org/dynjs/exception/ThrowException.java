@@ -30,11 +30,12 @@ public class ThrowException extends DynJSException {
     protected void setUpStackElements(final ExecutionContext context) {
         this.stack = new ArrayList<StackElement>();
         context.collectStackElements(this.stack);
+        int stackSize = this.stack.size();
 
         StackTraceElement[] javaElements = getStackTrace();
 
-        StackTraceElement[] elements = new StackTraceElement[javaElements.length + this.stack.size()];
-        for (int i = 0; i < this.stack.size(); ++i) {
+        StackTraceElement[] elements = new StackTraceElement[javaElements.length + stackSize];
+        for (int i = 0; i < stackSize; ++i) {
             StackElement e = stack.get(i);
             String cn = "<global>";
             String fn = null;
@@ -48,7 +49,7 @@ public class ThrowException extends DynJSException {
             elements[i] = new StackTraceElement(cn, fn, e.fileName, e.lineNumber);
         }
         for (int i = 0; i < javaElements.length; ++i) {
-            elements[i + this.stack.size()] = javaElements[i];
+            elements[i + stackSize] = javaElements[i];
         }
         setStackTrace(elements);
     }

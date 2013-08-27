@@ -394,57 +394,54 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
 
     @Override
     public CodeBlock jsGetValue(final Class<?> throwIfNot) {
-        return new CodeBlock() {
-            {
-                // IN: reference
-                LabelNode end = new LabelNode();
-                LabelNode throwRef = new LabelNode();
-
-                dup();
-                // ref ref
-                instance_of(p(Reference.class));
-                // ref isref?
-                iffalse(end);
-                checkcast(p(Reference.class));
-                // ref
-                dup();
-                // ref ref
-                invokevirtual(p(Reference.class), "isUnresolvableReference", sig(boolean.class));
-                // ref unresolv?
-                iftrue(throwRef);
-                // ref
-                dup();
-                // ref ref
-                invokevirtual(p(Reference.class), "getReferencedName", sig(String.class));
-                // ref name
-                aload(Arities.EXECUTION_CONTEXT);
-                // ref name context
-                swap();
-                // ref context name
-                invokedynamic("dyn:getProperty|getMethod", sig(Object.class, Reference.class, ExecutionContext.class, String.class), DynJSBootstrapper.HANDLE,
-                        DynJSBootstrapper.ARGS);
+        LabelNode end = new LabelNode();
+        LabelNode throwRef = new LabelNode();
+        CodeBlock codeBlock = new CodeBlock()
+            // IN: reference
+            .dup()
+            // ref ref
+            .instance_of(p(Reference.class))
+            // ref isref?
+            .iffalse(end)
+            .checkcast(p(Reference.class))
+            // ref
+            .dup()
+            // ref ref
+            .invokevirtual(p(Reference.class), "isUnresolvableReference", sig(boolean.class))
+            // ref unresolv?
+            .iftrue(throwRef)
+            // ref
+            .dup()
+            // ref ref
+            .invokevirtual(p(Reference.class), "getReferencedName", sig(String.class))
+            // ref name
+            .aload(Arities.EXECUTION_CONTEXT)
+            // ref name context
+            .swap()
+            // ref context name
+            .invokedynamic("dyn:getProperty|getMethod", sig(Object.class, Reference.class, ExecutionContext.class, String.class), DynJSBootstrapper.HANDLE,
+                          DynJSBootstrapper.ARGS);
+            // value
+        if (throwIfNot != null) {
+            codeBlock.dup()
+                // value value
+                .instance_of(p(throwIfNot))
+                // value bool
+                .iftrue(end)
                 // value
-                if (throwIfNot != null) {
-                    dup();
-                    // value value
-                    instance_of(p(throwIfNot));
-                    // value bool
-                    iftrue(end);
-                    // value
-                    pop();
-                    append(jsThrowTypeError("expected " + throwIfNot.getName()));
-                }
-                // result
-                go_to(end);
+                .pop()
+                .append(jsThrowTypeError("expected " + throwIfNot.getName()));
+        }
+        // result
+        codeBlock.go_to(end)
 
-                label(throwRef);
-                append(jsThrowReferenceError("unable to dereference"));
+            .label(throwRef)
+            .append(jsThrowReferenceError("unable to dereference"))
 
-                label(end);
-                // value
-                nop();
-            }
-        };
+            .label(end)
+            // value
+            .nop();
+        return codeBlock;
     }
 
 }

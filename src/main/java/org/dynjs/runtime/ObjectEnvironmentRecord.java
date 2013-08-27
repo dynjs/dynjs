@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class ObjectEnvironmentRecord implements EnvironmentRecord {
 
@@ -29,14 +30,11 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public void createMutableBinding(ExecutionContext context, final String name, final boolean configValue) {
         // 10.2.1.2.2
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set("Value", Types.UNDEFINED);
-                set("Writable", true);
-                set("Enumerable", true);
-                set("Configurable", configValue);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, Types.UNDEFINED);
+        desc.set(Names.WRITABLE, true);
+        desc.set(Names.ENUMERABLE, true);
+        desc.set(Names.CONFIGURABLE, configValue);
         this.object.defineOwnProperty(context, name, desc, true);
     }
 
@@ -49,7 +47,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.2.4
-        Object d = this.object.getProperty(context, name);
+        Object d = this.object.getProperty(context, name, false);
         if (d == Types.UNDEFINED) {
             if (strict) {
                 throw new ThrowException(context, context.createReferenceError(name + " is not defined"));

@@ -40,7 +40,7 @@ public class SingleClassCompiler extends AbstractPartialCompiler {
             ++i;
         }
 
-        cls.defineMethod("initializeCode", Opcodes.ACC_PRIVATE, sig(void.class), new CodeBlock() { { voidreturn(); } });
+        cls.defineMethod("initializeCode", Opcodes.ACC_PRIVATE, sig(void.class), new CodeBlock().voidreturn());
         cls.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Completion.class, ExecutionContext.class), new SingleClassCaller(cls.getClassName(), chunks.size()));
     }
 }

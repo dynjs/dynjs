@@ -33,30 +33,27 @@ public class BooleanMethodGenerator extends MethodGenerator {
 
         signature[0] = method.getReturnType();
 
-        jiteClass.defineMethod(method.getName(), method.getModifiers() & ~Modifier.ABSTRACT, sig(signature), new CodeBlock() {
-            {
-                LabelNode noImpl = new LabelNode();
-                LabelNode complete = new LabelNode();
+        LabelNode noImpl = new LabelNode();
+        LabelNode complete = new LabelNode();
+        CodeBlock codeBlock =  new CodeBlock();
+        callJavascriptImplementation(method, jiteClass, codeBlock, noImpl);
+        // result
+        coerceTo(Boolean.class, jiteClass, codeBlock);
+        // Boolean
+        codeBlock.invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class))
+            // boolean
+            .go_to(complete)
 
-                callJavascriptImplementation(method, jiteClass, this, noImpl);
-                // result
-                coerceTo(Boolean.class, jiteClass, this);
-                // Boolean
-                invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
-                // boolean
-                go_to(complete);
-
-                label(noImpl);
+            .label(noImpl);
                 
-                callSuperImplementation(method, superClass, this);
-                // result
+        callSuperImplementation(method, superClass, codeBlock);
+        // result
 
-                label(complete);
-                // result
-                ireturn();
-            }
-        });
+        codeBlock.label(complete)
+            // result
+            .ireturn();
 
+        jiteClass.defineMethod(method.getName(), method.getModifiers() & ~Modifier.ABSTRACT, sig(signature), codeBlock);
     }
 
     @Override

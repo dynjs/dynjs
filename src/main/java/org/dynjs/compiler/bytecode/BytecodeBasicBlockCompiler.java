@@ -51,28 +51,26 @@ public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler impleme
                 new String[] {});
 
         cls.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, String.class, boolean.class, List.class, List.class ),
-                new CodeBlock() {
-                    {
-                        aload(Arities.THIS);
-                        // this
-                        aload(1);
-                        // this filename
-                        iload(2);
-                        // this filename strict
-                        aload(3);
-                        // this filename strict vardecls
-                        aload(4);
-                        // this filename strict vardecls fndecls
-                        invokespecial(p(BytecodeBasicBlock.class), "<init>",
-                                sig(void.class, String.class, boolean.class, List.class, List.class) );
-                        // <empty>
-                        aload( Arities.THIS );
-                        // this
-                        invokevirtual(cls.getClassName().replace('.', '/'), "initializeCode", sig(void.class));
-                        // <empty>
-                        voidreturn();
-                    }
-                });
+                new CodeBlock()
+                    .aload(Arities.THIS)
+                    // this
+                    .aload(1)
+                    // this filename
+                    .iload(2)
+                    // this filename strict
+                    .aload(3)
+                    // this filename strict vardecls
+                    .aload(4)
+                    // this filename strict vardecls fndecls
+                    .invokespecial(p(BytecodeBasicBlock.class), "<init>",
+                                  sig(void.class, String.class, boolean.class, List.class, List.class) )
+                    // <empty>
+                    .aload( Arities.THIS )
+                    // this
+                    .invokevirtual(cls.getClassName().replace('.', '/'), "initializeCode", sig(void.class))
+                    // <empty>
+                    .voidreturn()
+                );
 
         DynamicClassLoader cl = new DynamicClassLoader(getConfig().getClassLoader());
 

@@ -16,20 +16,19 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class DynArray extends DynObject {
 
     public DynArray(GlobalObject globalObject) {
         super(globalObject);
         setClassName("Array");
-        super.defineOwnProperty(null, "length", new PropertyDescriptor() {
-            {
-                set("Writable", true);
-                set("Configurable", true);
-                set("Enumerable", true);
-                set("Value", 0L);
-            }
-        }, false);
+        PropertyDescriptor lengthDesc = new PropertyDescriptor();
+        lengthDesc.set(Names.WRITABLE, true);
+        lengthDesc.set(Names.CONFIGURABLE, true);
+        lengthDesc.set(Names.ENUMERABLE, true);
+        lengthDesc.set(Names.VALUE, 0L);
+        super.defineOwnProperty(null, "length", lengthDesc, false);
         setPrototype(globalObject.getPrototypeFor("Array"));
     }
 
@@ -54,16 +53,16 @@ public class DynArray extends DynObject {
                 return super.defineOwnProperty(context, "length", newLenDesc, shouldThrow);
             }
 
-            if (oldLenDesc.get("Writable") == Boolean.FALSE) {
+            if (oldLenDesc.get(Names.WRITABLE) == Boolean.FALSE) {
                 return reject(context, shouldThrow);
             }
 
             boolean newWritable = false;
-            if ((!oldLenDesc.hasWritable()) || oldLenDesc.get("Writable") == Boolean.TRUE) {
+            if ((!oldLenDesc.hasWritable()) || oldLenDesc.get(Names.WRITABLE) == Boolean.TRUE) {
                 newWritable = true;
             } else {
                 newWritable = false;
-                newLenDesc.set("Writable", true);
+                newLenDesc.set(Names.WRITABLE, true);
             }
 
             boolean succeeded = super.defineOwnProperty(context, "length", newLenDesc, shouldThrow);
@@ -88,11 +87,9 @@ public class DynArray extends DynObject {
             }
 
             if (newWritable == false) {
-                super.defineOwnProperty(context, "length", new PropertyDescriptor() {
-                    {
-                        set("Writable", false);
-                    }
-                }, false);
+                PropertyDescriptor lengthDesc = new PropertyDescriptor();
+                lengthDesc.set(Names.WRITABLE, false);
+                super.defineOwnProperty(context, "length", lengthDesc, false);
             }
 
             return true;
@@ -100,7 +97,7 @@ public class DynArray extends DynObject {
 
         if (isArrayIndex(context, name)) {
             Long index = Types.toUint32(context, name);
-            if ((index.longValue() > oldLen) && oldLenDesc.get("Writable") == Boolean.FALSE) {
+            if ((index.longValue() > oldLen) && oldLenDesc.get(Names.WRITABLE) == Boolean.FALSE) {
                 return reject(context, shouldThrow);
             }
             boolean succeeded = super.defineOwnProperty(context, name, desc, shouldThrow);

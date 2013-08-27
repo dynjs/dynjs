@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
@@ -16,34 +17,29 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.scope = scope;
         this.strict = strict;
         setClassName("Function");
-        defineOwnProperty(null, "length", new PropertyDescriptor() {
-            {
-                set("Value", (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
+        PropertyDescriptor lengthDesc =  new PropertyDescriptor();
+        lengthDesc.set(Names.VALUE, (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
+        lengthDesc.set(Names.WRITABLE, false);
+        lengthDesc.set(Names.CONFIGURABLE, false);
+        lengthDesc.set(Names.ENUMERABLE, false);
+        defineOwnProperty(null, "length", lengthDesc, false);
 
         if (strict) {
             final Object thrower = scope.getGlobalObject().get(null, "__throwTypeError");
             if (thrower != null) {
-                defineOwnProperty(null, "caller", new PropertyDescriptor() {
-                    {
-                        set("Set", thrower);
-                        set("Get", thrower);
-                        set("Configurable", false);
-                        set("Enumerable", false);
-                    }
-                }, false);
-                defineOwnProperty(null, "arguments", new PropertyDescriptor() {
-                    {
-                        set("Set", thrower);
-                        set("Get", thrower);
-                        set("Configurable", false);
-                        set("Enumerable", false);
-                    }
-                }, true);
+                PropertyDescriptor callerDesc = new PropertyDescriptor();
+                callerDesc.set(Names.SET, thrower);
+                callerDesc.set(Names.GET, thrower);
+                callerDesc.set(Names.CONFIGURABLE, false);
+                callerDesc.set(Names.ENUMERABLE, false);
+                defineOwnProperty(null, "caller", callerDesc, false);
+
+                PropertyDescriptor argDesc = new PropertyDescriptor();
+                argDesc.set(Names.SET, thrower);
+                argDesc.set(Names.GET, thrower);
+                argDesc.set(Names.CONFIGURABLE, false);
+                argDesc.set(Names.ENUMERABLE, false);
+                defineOwnProperty(null, "arguments", argDesc, true);
             }
         }
 

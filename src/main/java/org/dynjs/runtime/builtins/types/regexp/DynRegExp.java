@@ -9,6 +9,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.jcodings.specific.UTF8Encoding;
 import org.joni.Matcher;
 import org.joni.Option;
@@ -83,74 +84,62 @@ public class DynRegExp extends DynObject {
     public void setPatternAndFlags(ExecutionContext context, final String pattern, final String flags) {
         checkSyntaxOfFlags(context, flags);
 
-        defineOwnProperty(null, "source", new PropertyDescriptor() {
-            {
-                set("Value", pattern);
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
+        PropertyDescriptor sourceDesc = new PropertyDescriptor();
+        sourceDesc.set(Names.VALUE, pattern);
+        sourceDesc.set(Names.WRITABLE, false);
+        sourceDesc.set(Names.CONFIGURABLE, false);
+        sourceDesc.set(Names.ENUMERABLE, false);
+        defineOwnProperty(null, "source", sourceDesc, false);
 
         if (flags != null) {
-            defineOwnProperty(null, "multiline", new PropertyDescriptor() {
-                {
-                    set("Value", flags.contains("m"));
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
-                }
-            }, false);
-            defineOwnProperty(null, "global", new PropertyDescriptor() {
-                {
-                    set("Value", flags.contains("g"));
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
-                }
-            }, false);
-            defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
-                {
-                    set("Value", flags.contains("i"));
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
-                }
-            }, false);
+            PropertyDescriptor multilineDesc = new PropertyDescriptor();
+            multilineDesc.set(Names.VALUE, flags.contains("m"));
+            multilineDesc.set(Names.WRITABLE, false);
+            multilineDesc.set(Names.CONFIGURABLE, false);
+            multilineDesc.set(Names.ENUMERABLE, false);
+            defineOwnProperty(null, "multiline", multilineDesc, false);
+
+            PropertyDescriptor globalDesc = new PropertyDescriptor();
+            globalDesc.set(Names.VALUE, flags.contains("g"));
+            globalDesc.set(Names.WRITABLE, false);
+            globalDesc.set(Names.CONFIGURABLE, false);
+            globalDesc.set(Names.ENUMERABLE, false);
+            defineOwnProperty(null, "global", globalDesc, false);
+
+            PropertyDescriptor ignoreCaseDesc = new PropertyDescriptor();
+            ignoreCaseDesc.set(Names.VALUE, flags.contains("i"));
+            ignoreCaseDesc.set(Names.WRITABLE, false);
+            ignoreCaseDesc.set(Names.CONFIGURABLE, false);
+            ignoreCaseDesc.set(Names.ENUMERABLE, false);
+            defineOwnProperty(null, "ignoreCase", ignoreCaseDesc, false);
         } else {
-            defineOwnProperty(null, "multiline", new PropertyDescriptor() {
-                {
-                    set("Value", false);
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
-                }
-            }, false);
-            defineOwnProperty(null, "global", new PropertyDescriptor() {
-                {
-                    set("Value", false);
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
-                }
-            }, false);
-            defineOwnProperty(null, "ignoreCase", new PropertyDescriptor() {
-                {
-                    set("Value", false);
-                    set("Writable", false);
-                    set("Configurable", false);
-                    set("Enumerable", false);
-                }
-            }, false);
+            PropertyDescriptor multilineDesc = new PropertyDescriptor();
+            multilineDesc.set(Names.VALUE, false);
+            multilineDesc.set(Names.WRITABLE, false);
+            multilineDesc.set(Names.CONFIGURABLE, false);
+            multilineDesc.set(Names.ENUMERABLE, false);
+            defineOwnProperty(null, "multiline", multilineDesc, false);
+
+            PropertyDescriptor globalDesc = new PropertyDescriptor();
+            globalDesc.set(Names.VALUE, false);
+            globalDesc.set(Names.WRITABLE, false);
+            globalDesc.set(Names.CONFIGURABLE, false);
+            globalDesc.set(Names.ENUMERABLE, false);
+            defineOwnProperty(null, "global", globalDesc, false);
+
+            PropertyDescriptor ignoreCaseDesc = new PropertyDescriptor();
+            ignoreCaseDesc.set(Names.VALUE, false);
+            ignoreCaseDesc.set(Names.WRITABLE, false);
+            ignoreCaseDesc.set(Names.CONFIGURABLE, false);
+            ignoreCaseDesc.set(Names.ENUMERABLE, false);
+            defineOwnProperty(null, "ignoreCase", ignoreCaseDesc, false);
         }
-        defineOwnProperty(null, "lastIndex", new PropertyDescriptor() {
-            {
-                set("Value", 0L);
-                set("Writable", true);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
+        PropertyDescriptor lastIndexDesc = new PropertyDescriptor();
+        lastIndexDesc.set(Names.VALUE, 0L);
+        lastIndexDesc.set(Names.WRITABLE, true);
+        lastIndexDesc.set(Names.CONFIGURABLE, false);
+        lastIndexDesc.set(Names.ENUMERABLE, false);
+        defineOwnProperty(null, "lastIndex", lastIndexDesc, false);
 
         int flagsInt = 0;
 

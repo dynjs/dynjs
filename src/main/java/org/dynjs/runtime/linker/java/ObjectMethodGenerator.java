@@ -32,32 +32,28 @@ public class ObjectMethodGenerator extends MethodGenerator {
 
         signature[0] = method.getReturnType();
 
-        jiteClass.defineMethod(method.getName(), method.getModifiers() & ~Modifier.ABSTRACT, sig(signature), new CodeBlock() {
-            {
-                LabelNode noImpl = new LabelNode();
-                LabelNode complete = new LabelNode();
+        LabelNode noImpl = new LabelNode();
+        LabelNode complete = new LabelNode();
+        CodeBlock codeBlock = new CodeBlock();
+        callJavascriptImplementation(method, jiteClass, codeBlock, noImpl);
+        // result
+        codeBlock.go_to(complete)
+
+            .label(noImpl);
+            // empty
                 
-                callJavascriptImplementation(method, jiteClass, this, noImpl);
-                // result
-                go_to(complete);
+        callSuperImplementation(method, superClass, codeBlock);
+        // result
 
-                label(noImpl);
-                // empty
-                
-                callSuperImplementation(method, superClass, this);
-                // result
-
-                label(complete);
-                // result
-                if (method.getReturnType() == Void.TYPE) {
-                    voidreturn();
-                } else {
-                    coerceForReturn(method, jiteClass, this);
-                    areturn();
-                }
-            }
-        });
-
+        codeBlock.label(complete);
+        // result
+        if (method.getReturnType() == Void.TYPE) {
+            codeBlock.voidreturn();
+        } else {
+            coerceForReturn(method, jiteClass, codeBlock);
+            codeBlock.areturn();
+        }
+        jiteClass.defineMethod(method.getName(), method.getModifiers() & ~Modifier.ABSTRACT, sig(signature), codeBlock);
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class Concat extends AbstractNonConstructorFunction {
@@ -42,26 +43,22 @@ public class Concat extends AbstractNonConstructorFunction {
 
                 for (long k = 0; k < len; ++k) {
                     final Object subElement = jsE.get(context, "" + k);
-                    array.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                        {
-                            set( "Value", subElement);
-                            set( "Writable", true);
-                            set( "Configurable", true);
-                            set( "Enumerable", true);
-                        }
-                    }, false);
+                    PropertyDescriptor desc = new PropertyDescriptor();
+                    desc.set( Names.VALUE, subElement);
+                    desc.set( Names.WRITABLE, true);
+                    desc.set( Names.CONFIGURABLE, true);
+                    desc.set( Names.ENUMERABLE, true);
+                    array.defineOwnProperty(context, "" + n, desc, false);
                     ++n;
                 }
             } else {
                 final Object finalE = e;
-                array.defineOwnProperty(context, "" + n, new PropertyDescriptor() {
-                    {
-                        set( "Value", finalE);
-                        set( "Writable", true);
-                        set( "Configurable", true);
-                        set( "Enumerable", true);
-                    }
-                }, false);
+                PropertyDescriptor desc = new PropertyDescriptor();
+                desc.set( Names.VALUE, finalE);
+                desc.set( Names.WRITABLE, true);
+                desc.set( Names.CONFIGURABLE, true);
+                desc.set( Names.ENUMERABLE, true);
+                array.defineOwnProperty(context, "" + n, desc, false);
                 ++n;
             }
         }

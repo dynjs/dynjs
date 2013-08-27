@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
@@ -22,12 +23,9 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
             throw new AssertionError("10.2.1.1.2: Binding already exists for " + name);
         }
 
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set("Value", Types.UNDEFINED);
-                set("Configurable", configurable);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, Types.UNDEFINED);
+        desc.set(Names.CONFIGURABLE, configurable);
         this.mutableBindings.put(name, desc);
     }
 
@@ -59,7 +57,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
 
         PropertyDescriptor desc = this.immutableBindings.get(name);
-        if ((desc != null) && (desc.get("Initialized") == null)) {
+        if ((desc != null) && (desc.get(Names.INITIALIZED) == null)) {
             if (strict) {
                 throw new ThrowException(context, context.createTypeError(name + " is not initialized"));
             }
@@ -106,11 +104,8 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
     public void createImmutableBinding(final String name) {
         // 10.2.1.1.7
-        PropertyDescriptor desc = new PropertyDescriptor() {
-            {
-                set("Value", Types.UNDEFINED);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, Types.UNDEFINED);
         this.immutableBindings.put(name, desc);
 
     }
@@ -119,7 +114,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         // 10.2.1.1.8
         PropertyDescriptor desc = this.immutableBindings.get(name);
         desc.setValue(value);
-        desc.set("Initialized", Boolean.TRUE);
+        desc.set(Names.INITIALIZED, Boolean.TRUE);
     }
 
     public boolean isGlobal() {
