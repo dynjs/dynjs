@@ -21,6 +21,7 @@ public class DefineSetter extends AbstractNativeFunction {
 
             PropertyDescriptor descriptor = new PropertyDescriptor();
             descriptor.setConfigurable(true);
+            descriptor.setEnumerable(true);
             if (obj.hasProperty(context, name)) {
                 descriptor = (PropertyDescriptor) obj.getOwnProperty(context, name);
             }
