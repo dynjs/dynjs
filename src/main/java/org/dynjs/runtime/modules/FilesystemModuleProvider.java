@@ -39,6 +39,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String generateModuleID(ExecutionContext context, String moduleName) {
         Runner runtime = context.getGlobalObject().getRuntime().newRunner();
         List<String> requirePaths = (List<String>) runtime.withSource("require.paths").evaluate();
