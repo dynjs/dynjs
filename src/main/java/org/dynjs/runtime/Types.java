@@ -435,7 +435,7 @@ public class Types {
                             newResult.append(0);
                         }
 
-                        String digits = matcher.group(1);
+                        String digits = matcher.group(1).replace(".", "");
                         if (digits.startsWith("-")) {
                             newResult.append(digits.substring(1));
                             newResult.insert(0, "-");
