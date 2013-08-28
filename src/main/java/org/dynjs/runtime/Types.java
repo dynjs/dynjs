@@ -315,7 +315,7 @@ public class Types {
             }
         }
 
-        int posInt = (int) (sign(n) * Math.floor(Math.abs(n.intValue())));
+        long posInt = (long) (sign(n) * Math.floor(Math.abs(n.longValue())));
 
         return modulo(posInt, 65536);
     }
