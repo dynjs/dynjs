@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class Arguments extends DynObject {
 
@@ -35,14 +36,15 @@ public class Arguments extends DynObject {
     }
 
     @Override
-    public Object getOwnProperty(ExecutionContext context, String name) {
+    public Object getOwnProperty(ExecutionContext context, String name, boolean dupe) {
+        // Always dupe here since we call .setValue on the returned property
         // 10.6 [[GetOwnProperty]]
-        Object d = super.getOwnProperty(context, name);
+        Object d = super.getOwnProperty(context, name, true);
         if (d == Types.UNDEFINED) {
             return d;
         }
 
-        Object isMapped = this.map.getOwnProperty(context, name);
+        Object isMapped = this.map.getOwnProperty(context, name, true);
         if (isMapped != Types.UNDEFINED) {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             desc.setValue(this.map.get(context, name));
@@ -63,10 +65,10 @@ public class Arguments extends DynObject {
             if (desc.isAccessorDescriptor()) {
                 this.map.delete(context, name, false);
             } else {
-                if (desc.isPresent("Value")) {
+                if (desc.isPresent(Names.VALUE)) {
                     this.map.put(context, name, desc.getValue(), shouldThrow);
                 }
-                if (desc.isPresent("Writable") && !desc.isWritable()) {
+                if (desc.isPresent(Names.WRITABLE) && !desc.isWritable()) {
                     this.map.delete(context, name, false);
                 }
             }

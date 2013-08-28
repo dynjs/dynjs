@@ -383,7 +383,7 @@ public class Types {
         long len = Types.toUint32(context, o.get(context, "length"));
 
         for (long i = 0; i < len; ++i) {
-            if (o.getOwnProperty(context, "" + i) == Types.UNDEFINED) {
+            if (o.getOwnProperty(context, "" + i, false) == Types.UNDEFINED) {
                 return true;
             }
         }
@@ -398,6 +398,7 @@ public class Types {
         return o;
     }
 
+    private static Pattern EXP_PATTERN = Pattern.compile("^(.*)e([+-])([0-9]+)$");
     public static String toString(ExecutionContext context, Object o) {
         if (o == Types.UNDEFINED) {
             return "undefined";
@@ -416,8 +417,7 @@ public class Types {
             }
             String result = Types.rewritePossiblyExponentialValue(o.toString());
 
-            Pattern expPattern = Pattern.compile("^(.*)e([+-])([0-9]+)$");
-            Matcher matcher = expPattern.matcher(result);
+            Matcher matcher = EXP_PATTERN.matcher(result);
             if (matcher.matches()) {
                 int expValue = Integer.parseInt(matcher.group(3));
                 if (matcher.group(2).equals("+")) {

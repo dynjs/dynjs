@@ -4,6 +4,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class DynString extends PrimitiveDynObject {
@@ -22,19 +23,17 @@ public class DynString extends PrimitiveDynObject {
     public void setPrimitiveValue(final Object value) {
         // 15.5.5.1
         super.setPrimitiveValue(value);
-        defineOwnProperty(null, "length", new PropertyDescriptor() {
-            {
-                set("Value", (long) ((String) value).length());
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", false);
-            }
-        }, false);
+        PropertyDescriptor lengthDesc = new PropertyDescriptor();
+        lengthDesc.set(Names.VALUE, (long) ((String) value).length());
+        lengthDesc.set(Names.WRITABLE, false);
+        lengthDesc.set(Names.CONFIGURABLE, false);
+        lengthDesc.set(Names.ENUMERABLE, false);
+        defineOwnProperty(null, "length", lengthDesc, false);
     }
 
     @Override
-    public Object getOwnProperty(ExecutionContext context, String name) {
-        Object d = super.getOwnProperty(context, name);
+    public Object getOwnProperty(ExecutionContext context, String name, boolean dupe) {
+        Object d = super.getOwnProperty(context, name, dupe);
         if (d != Types.UNDEFINED) {
             return d;
         }
@@ -52,14 +51,12 @@ public class DynString extends PrimitiveDynObject {
 
         final String resultStr = str.substring((int) index, (int) index + 1);
 
-        return new PropertyDescriptor() {
-            {
-                set("Value", resultStr);
-                set("Writable", false);
-                set("Configurable", false);
-                set("Enumerable", true);
-            }
-        };
+        PropertyDescriptor desc = new PropertyDescriptor();
+        desc.set(Names.VALUE, resultStr);
+        desc.set(Names.WRITABLE, false);
+        desc.set(Names.CONFIGURABLE, false);
+        desc.set(Names.ENUMERABLE, true);
+        return desc;
     }
 
 }

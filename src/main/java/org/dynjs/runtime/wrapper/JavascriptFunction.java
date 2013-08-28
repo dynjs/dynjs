@@ -13,6 +13,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
 
@@ -25,30 +26,26 @@ public class JavascriptFunction extends AbstractFunction {
         this.code = code;
 
         final DynObject proto = new DynObject(scope.getGlobalObject());
-        proto.defineOwnProperty(null, "constructor", new PropertyDescriptor() {
-            {
-                set("Value", JavascriptFunction.this);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
-            }
-        }, false);
-        defineOwnProperty(null, "prototype", new PropertyDescriptor() {
-            {
-                set("Value", proto);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", false);
-            }
-        }, false);
-        defineOwnProperty(null, "name", new PropertyDescriptor() {
-            {
-                set("Value", identifier);
-                set("Writable", true);
-                set("Enumerable", false);
-                set("Configurable", true);
-            }
-        }, false);
+        PropertyDescriptor constructorDesc = new PropertyDescriptor();
+        constructorDesc.set(Names.VALUE, JavascriptFunction.this);
+        constructorDesc.set(Names.WRITABLE, true);
+        constructorDesc.set(Names.ENUMERABLE, false);
+        constructorDesc.set(Names.CONFIGURABLE, true);
+        proto.defineOwnProperty(null, "constructor", constructorDesc, false);
+
+        PropertyDescriptor prototypeDesc = new PropertyDescriptor();
+        prototypeDesc.set(Names.VALUE, proto);
+        prototypeDesc.set(Names.WRITABLE, true);
+        prototypeDesc.set(Names.ENUMERABLE, false);
+        prototypeDesc.set(Names.CONFIGURABLE, false);
+        defineOwnProperty(null, "prototype", prototypeDesc, false);
+
+        PropertyDescriptor nameDesc = new PropertyDescriptor();
+        nameDesc.set(Names.VALUE, identifier);
+        nameDesc.set(Names.WRITABLE, true);
+        nameDesc.set(Names.ENUMERABLE, false);
+        nameDesc.set(Names.CONFIGURABLE, true);
+        defineOwnProperty(null, "name", nameDesc, false);
     }
     
     @Override

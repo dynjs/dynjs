@@ -105,30 +105,28 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public CodeBlock jsGetValue(final Class<?> throwIfNot) {
-        return new CodeBlock() {
-            {
-                // IN: reference
-                aload(Arities.EXECUTION_CONTEXT);
-                // reference context
-                swap();
-                // context reference
-                invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
+        CodeBlock codeBlock = new CodeBlock()
+            // IN: reference
+            .aload(Arities.EXECUTION_CONTEXT)
+            // reference context
+            .swap()
+            // context reference
+            .invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
+            // value
+        if (throwIfNot != null) {
+            LabelNode end = new LabelNode();
+            codeBlock.dup()
+                // value value
+                .instance_of(p(throwIfNot))
+                // value bool
+                .iftrue(end)
                 // value
-                if (throwIfNot != null) {
-                    LabelNode end = new LabelNode();
-                    dup();
-                    // value value
-                    instance_of(p(throwIfNot));
-                    // value bool
-                    iftrue(end);
-                    // value
-                    pop();
-                    append(jsThrowTypeError("expected " + throwIfNot.getName()));
-                    label(end);
-                    nop();
-                }
-            }
-        };
+                .pop()
+                .append(jsThrowTypeError("expected " + throwIfNot.getName()))
+                .label(end)
+                .nop();
+        }
+        return codeBlock;
     }
 
     public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {

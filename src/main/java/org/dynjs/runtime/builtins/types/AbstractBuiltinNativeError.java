@@ -5,6 +5,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
+import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.StackGetter;
 import org.dynjs.runtime.Types;
 
@@ -41,18 +42,14 @@ public class AbstractBuiltinNativeError extends AbstractBuiltinType {
         }
 
         if (args[0] != Types.UNDEFINED) {
-            o.defineOwnProperty(context, "message", new PropertyDescriptor() {
-                {
-                    set("Value", Types.toString( context, args[0]) );
-                }
-            }, false);
+            PropertyDescriptor messageDesc = new PropertyDescriptor();
+            messageDesc.set(Names.VALUE, Types.toString( context, args[0]) );
+            o.defineOwnProperty(context, "message", messageDesc, false);
         }
 
-        o.defineOwnProperty(context, "stack", new PropertyDescriptor() {
-            {
-                set("Get", new StackGetter(context));
-            }
-        }, false);
+        PropertyDescriptor stackDesc = new PropertyDescriptor();
+        stackDesc.set(Names.GET, new StackGetter(context));
+        o.defineOwnProperty(context, "stack", stackDesc, false);
 
         return o;
     }
