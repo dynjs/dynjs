@@ -53,7 +53,8 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
      * 
      * @see <a href="http://wiki.commonjs.org/wiki/Modules/1.1">CommonJS Spec</a>
      * @param context The execution context of the request
-     * @param moduleId The name of the module to load   @return The loaded module or <code>null</code if un-loadable.
+     * @param moduleId The name of the module to load   @return The loaded module or <code>null</code> if un-loadable.
+     * @return the module's exports
      */
     public Object findAndLoad(ExecutionContext context, String moduleId) {
         // if the module ID is null, we can't find the module, so bail

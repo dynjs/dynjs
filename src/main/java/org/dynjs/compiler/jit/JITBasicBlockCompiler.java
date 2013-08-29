@@ -21,9 +21,9 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
 
     private InterpretingVisitorFactory interpFactory;
     private BytecodeBasicBlockCompiler jitCompiler;
+
     private static final Executor compilationQueue = Executors.newFixedThreadPool(8, new ThreadFactory() {
             private final AtomicInteger count = new AtomicInteger(1);
-
             public Thread newThread(Runnable runnable) {
                 Thread thread = new Thread(runnable);
                 thread.setName("JITBasicBlockCompiler-" + count.getAndIncrement());

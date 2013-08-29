@@ -94,7 +94,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         } catch (ThrowException e) {
             throw e;
         } catch (NoSuchMethodError e) {
-            throw new ThrowException(context, context.createTypeError("not callable"));
+            throw new ThrowException(context, context.createTypeError("not callable: " + function.toString()));
         } catch (Throwable e) {
             throw new ThrowException(context, e);
         }
