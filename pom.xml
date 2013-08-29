@@ -216,8 +216,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.8.1</version>
                 <configuration>
-                    <show>private</show>
+                    <show>package</show>
                     <nohelp>true</nohelp>
+                    <quiet>true</quiet>
                 </configuration>
                 <executions>
                     <execution>
@@ -327,7 +328,7 @@
                 <executions>
                     <execution>
                         <id>Jasmine Integration Tests</id>
-                        <phase>package</phase>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
