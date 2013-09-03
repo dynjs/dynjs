@@ -73,7 +73,7 @@ public class Stringify extends AbstractNativeFunction {
 
         if (Types.type(space).equals("number")) {
             long spaceInt = Types.toInteger(context, space);
-            if (spaceInt < 10) {
+            if (spaceInt > 10) {
                 spaceInt = 10;
             }
             for (long i = 0; i < spaceInt; ++i) {
