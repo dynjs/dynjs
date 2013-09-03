@@ -93,7 +93,8 @@ public class Stringify extends AbstractNativeFunction {
         JSObject wrapper = BuiltinObject.newObject(context);
         wrapper.put(context, "", value, false);
 
-        return str(context, stack, indent, gap, replacerFunction, propertyList, wrapper, "");
+        String strResult = str(context, stack, indent, gap, replacerFunction, propertyList, wrapper, "");
+        return strResult == null ? Types.UNDEFINED : strResult;
     }
 
     protected String str(ExecutionContext context,
