@@ -188,7 +188,7 @@ public class URLCodec {
                     } else {
                         char l = (char) (((v - 0x10000) & 0x3FF) + 0xDC00);
                         char h = (char) ((((v - 0x10000) >> 10) & 0x3FF) + 0xD800);
-                        s = new String(new char[] { l, h });
+                        s = new String(new char[] { h, l });
                     }
                 }
 
