@@ -1,6 +1,7 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
@@ -15,11 +16,15 @@ public class Concat extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.4.5
         Types.checkObjectCoercible(context, self);
+
+        Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
+        int numArgs = (int) argsObj.get(context, "length");
+
         StringBuilder s = new StringBuilder();
         
         s.append( Types.toString(context, self));
         
-        for ( int i = 0 ; i < args.length; ++i ) {
+        for ( int i = 0 ; i < numArgs; ++i ) {
             s.append( Types.toString( context, args[i] ) );
         }
         
