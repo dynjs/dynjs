@@ -1,6 +1,6 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -9,7 +9,7 @@ import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.joni.Region;
 
-public class Search extends AbstractNativeFunction {
+public class Search extends AbstractNonConstructorFunction {
 
     public Search(GlobalObject globalObject) {
         super(globalObject, "regexp");

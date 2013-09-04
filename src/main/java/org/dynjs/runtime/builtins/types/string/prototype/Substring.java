@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class Substring extends AbstractNativeFunction {
+public class Substring extends AbstractNonConstructorFunction {
 
     public Substring(GlobalObject globalObject) {
         super(globalObject, "start", "end");

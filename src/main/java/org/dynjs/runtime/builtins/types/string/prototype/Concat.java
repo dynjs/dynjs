@@ -1,12 +1,12 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class Concat extends AbstractNativeFunction {
+public class Concat extends AbstractNonConstructorFunction {
 
     public Concat(GlobalObject globalObject) {
         super(globalObject, "string1");
