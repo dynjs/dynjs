@@ -58,12 +58,6 @@ public class Require extends AbstractNativeFunction {
         this.moduleProviders.add(new ClasspathModuleProvider(globalObject));
 
         this.loadPaths.add(System.getProperty("user.dir") + "/");
-        this.loadPaths.add(System.getProperty("user.dir") + "/node_modules");
-        this.loadPaths.add(System.getProperty("user.home") + "/node_modules/");
-        this.loadPaths.add(System.getProperty("user.home") + "/.node_modules/");
-        this.loadPaths.add(System.getProperty("user.home") + "/.node_libraries/");
-        this.loadPaths.add("/usr/local/lib/node/");
-        this.loadPaths.add("/usr/local/lib/node_modules/");
 
         String customRequirePath = this.getCustomRequirePath();
         if (customRequirePath != null) {
@@ -98,6 +92,10 @@ public class Require extends AbstractNativeFunction {
 
     public List<ModuleProvider> getModuleProviders() {
         return this.moduleProviders;
+    }
+
+    public void addModuleProvider(ModuleProvider provider) {
+        this.moduleProviders.add(provider);
     }
 
     public void removeLoadPath(String path) {
