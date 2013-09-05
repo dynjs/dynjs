@@ -58,11 +58,6 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
     }
 
     @Test
-    public void testFindsPackagedModules() {
-        assertThat(eval("require('amodule').message")).isEqualTo("Hello world");
-    }
-
-    @Test
     public void testExportsFunctions() {
         assertThat(eval("require('my_module').sayHello();")).isEqualTo("Hello again");
     }
@@ -117,9 +112,4 @@ public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSuppor
         assertThat(eval("flavor()")).isEqualTo("nacho cheese");
     }
 
-    @Test
-    public void testModuleLibDir() {
-        eval("var snack = require('snack')");
-        assertThat(eval("snack.flavor")).isEqualTo("nacho cheese");
-    }
 }

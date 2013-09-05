@@ -109,7 +109,7 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
      * @param originalName the module name
      * @return the normalized name
      */
-    String normalizeName(String originalName) {
+    protected String normalizeName(String originalName) {
         if (originalName == null || originalName.endsWith(".js")) {
             return originalName;
         }
