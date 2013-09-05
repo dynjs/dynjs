@@ -1,12 +1,12 @@
 package org.dynjs.runtime.builtins.types.function.prototype;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 
-public class ToString extends AbstractNativeFunction {
+public class ToString extends AbstractNonConstructorFunction {
 
     public ToString(GlobalObject globalObject) {
         super(globalObject);

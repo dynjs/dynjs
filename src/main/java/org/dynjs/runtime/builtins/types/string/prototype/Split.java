@@ -2,7 +2,7 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import java.util.regex.MatchResult;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
@@ -13,7 +13,7 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.joni.Region;
 
-public class Split extends AbstractNativeFunction {
+public class Split extends AbstractNonConstructorFunction {
 
     public Split(GlobalObject globalObject) {
         super(globalObject, "separator", "limit");

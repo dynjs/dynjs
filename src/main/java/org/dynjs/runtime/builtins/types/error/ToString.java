@@ -22,21 +22,23 @@ public class ToString extends AbstractNativeFunction {
 
         JSObject jsSelf = (JSObject) self;
 
-        Object name = jsSelf.get(context, "name");
-        if (name == Types.UNDEFINED) {
+        Object nameObj = jsSelf.get(context, "name");
+        String name = "";
+        if (nameObj == Types.UNDEFINED) {
             name = "Error";
         } else {
-            name = Types.toString(context, name);
+            name = Types.toString(context, nameObj);
         }
 
-        Object message = jsSelf.get(context, "message");
-        if (message == Types.UNDEFINED) {
+        Object messageObj = jsSelf.get(context, "message");
+        String message = "";
+        if (messageObj == Types.UNDEFINED) {
             message = "";
         } else {
-            message = Types.toString(context, message);
+            message = Types.toString(context, messageObj);
         }
 
-        if (name.toString().equals("") && message.toString().equals("")) {
+        if (nameObj == Types.UNDEFINED && messageObj == Types.UNDEFINED) {
             return "Error";
         }
 

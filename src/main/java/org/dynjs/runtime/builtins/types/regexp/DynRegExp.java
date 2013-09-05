@@ -47,8 +47,13 @@ public class DynRegExp extends DynObject {
                     | Syntax.OP2_ESC_V_VTAB
                     ),
 
-            (Syntax.GNU_REGEX_BV
+            (Syntax.CONTEXT_INDEP_ANCHORS
+                    | Syntax.CONTEXT_INDEP_REPEAT_OPS
                     | Syntax.CONTEXT_INVALID_REPEAT_OPS
+                    | Syntax.ALLOW_INVALID_INTERVAL
+                    | Syntax.BACKSLASH_ESCAPE_IN_CC
+                    | Syntax.ALLOW_DOUBLE_RANGE_OP_IN_CC
+                    | Syntax.DIFFERENT_LEN_ALT_LOOK_BEHIND
                     //| Syntax.STRICT_CHECK_BACKREF
             ),
 
