@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class Slice extends AbstractNativeFunction {
+public class Slice extends AbstractNonConstructorFunction {
 
     public Slice(GlobalObject globalObject) {
         super(globalObject, "start", "end");

@@ -10,7 +10,7 @@ import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.joni.Region;
 
-public class Replace extends AbstractNativeFunction {
+public class Replace extends AbstractNonConstructorFunction {
 
     public Replace(GlobalObject globalObject) {
         super(globalObject, "searchValue", "replaceValue");

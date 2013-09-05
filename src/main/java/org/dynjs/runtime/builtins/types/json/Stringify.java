@@ -73,7 +73,7 @@ public class Stringify extends AbstractNativeFunction {
 
         if (Types.type(space).equals("number")) {
             long spaceInt = Types.toInteger(context, space);
-            if (spaceInt < 10) {
+            if (spaceInt > 10) {
                 spaceInt = 10;
             }
             for (long i = 0; i < spaceInt; ++i) {
@@ -93,7 +93,8 @@ public class Stringify extends AbstractNativeFunction {
         JSObject wrapper = BuiltinObject.newObject(context);
         wrapper.put(context, "", value, false);
 
-        return str(context, stack, indent, gap, replacerFunction, propertyList, wrapper, "");
+        String strResult = str(context, stack, indent, gap, replacerFunction, propertyList, wrapper, "");
+        return strResult == null ? Types.UNDEFINED : strResult;
     }
 
     protected String str(ExecutionContext context,

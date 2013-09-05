@@ -1,6 +1,6 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
@@ -11,7 +11,7 @@ import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 
-public class Match extends AbstractNativeFunction {
+public class Match extends AbstractNonConstructorFunction {
 
     public Match(GlobalObject globalObject) {
         super(globalObject, "regexp");

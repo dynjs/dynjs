@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types.string.prototype;
 
-import org.dynjs.runtime.AbstractNativeFunction;
+import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Types;
 
-public class ToLocaleLowerCase extends AbstractNativeFunction {
+public class ToLocaleLowerCase extends AbstractNonConstructorFunction {
 
     public ToLocaleLowerCase(GlobalObject globalObject) {
         super(globalObject);

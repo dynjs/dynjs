@@ -34,6 +34,9 @@ public class Parse extends AbstractNativeFunction {
             JsonParser parser = factory.createJsonParser(jsonText);
             parser.nextToken();
             unfiltered = parse(context, parser);
+            if (parser.nextToken() != null) {
+                throw new ThrowException(context, context.createSyntaxError("unexpected token"));
+            }
         } catch (IOException e) {
             JSObject error = context.createSyntaxError(e.getMessage());
             throw new ThrowException(context, error);

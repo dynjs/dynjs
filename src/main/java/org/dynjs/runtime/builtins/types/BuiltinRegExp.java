@@ -31,6 +31,8 @@ public class BuiltinRegExp extends AbstractBuiltinType {
     public void initialize(GlobalObject globalObject, JSObject proto) {
         proto.setPrototype(globalObject.getPrototypeFor("Object"));
         defineNonEnumerableProperty(proto, "constructor", this);
+        // compile is deprecated but test262 expects it to exist anyway
+        defineNonEnumerableProperty(proto, "compile", this);
         defineNonEnumerableProperty(proto, "exec", new Exec(globalObject));
         defineNonEnumerableProperty(proto, "test", new Test(globalObject));
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
