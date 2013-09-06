@@ -24,55 +24,6 @@ import org.joni.exception.SyntaxException;
 
 public class DynRegExp extends DynObject {
 
-    public static final Syntax Javascript = new Syntax(
-            ((Syntax.GNU_REGEX_OP
-                    | Syntax.OP_QMARK_NON_GREEDY
-                    | Syntax.OP_ESC_OCTAL3
-                    | Syntax.OP_ESC_X_HEX2
-                    //| Syntax.OP_ESC_X_BRACE_HEX8
-                    | Syntax.OP_ESC_CONTROL_CHARS
-                    | Syntax.OP_ESC_C_CONTROL
-                    | Syntax.OP_DECIMAL_BACKREF
-                    | Syntax.OP_ESC_D_DIGIT
-                    | Syntax.OP_ESC_S_WHITE_SPACE
-                    | Syntax.OP_ESC_W_WORD
-            ) & ~Syntax.OP_ESC_LTGT_WORD_BEGIN_END),
-
-            (Syntax.OP2_ESC_CAPITAL_Q_QUOTE
-                    | Syntax.OP2_QMARK_GROUP_EFFECT
-                    | Syntax.OP2_OPTION_PERL
-                    | Syntax.OP2_ESC_P_BRACE_CHAR_PROPERTY
-                    | Syntax.OP2_ESC_P_BRACE_CIRCUMFLEX_NOT
-                    | Syntax.OP2_ESC_U_HEX4
-                    | Syntax.OP2_ESC_V_VTAB
-                    ),
-
-            (Syntax.CONTEXT_INDEP_ANCHORS
-                    | Syntax.CONTEXT_INDEP_REPEAT_OPS
-                    | Syntax.CONTEXT_INVALID_REPEAT_OPS
-                    | Syntax.ALLOW_INVALID_INTERVAL
-                    | Syntax.BACKSLASH_ESCAPE_IN_CC
-                    | Syntax.ALLOW_DOUBLE_RANGE_OP_IN_CC
-                    | Syntax.DIFFERENT_LEN_ALT_LOOK_BEHIND
-                    //| Syntax.STRICT_CHECK_BACKREF
-            ),
-
-            //Option.SINGLELINE,
-            0,
-
-            new MetaCharTable(
-                    '\\', /* esc */
-                    INEFFECTIVE_META_CHAR, /* anychar '.' */
-                    INEFFECTIVE_META_CHAR, /* anytime '*' */
-                    INEFFECTIVE_META_CHAR, /* zero or one time '?' */
-                    INEFFECTIVE_META_CHAR, /* one or more time '+' */
-                    INEFFECTIVE_META_CHAR /* anychar anytime */
-            )
-            );
-
-    static {
-    }
-
     private Regex pattern;
 
     public DynRegExp(GlobalObject globalObject) {
@@ -159,7 +110,7 @@ public class DynRegExp extends DynObject {
         }
         try {
             byte[] patternBytes = pattern.getBytes("UTF-8");
-            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Javascript, new WarnCallback() {
+            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.JavaScript, new WarnCallback() {
                 @Override
                 public void warn(String message) {
                     System.err.println("WARN: " + message);
