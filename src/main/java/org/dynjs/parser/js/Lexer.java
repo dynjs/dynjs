@@ -929,7 +929,7 @@ public class Lexer {
                 text.append(octalDigit());
             }
         }
-
+				// decode it in same way like for HexEscape
         int code = Integer.decode(text.toString());
         return Character.toString((char) code);
     }
