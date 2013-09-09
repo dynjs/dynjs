@@ -930,6 +930,7 @@ public class Lexer {
             }
         }
 				// decode it in same way like for HexEscape
+				//
         int code = Integer.decode(text.toString());
         return Character.toString((char) code);
     }
