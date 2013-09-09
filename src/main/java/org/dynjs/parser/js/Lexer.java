@@ -930,7 +930,8 @@ public class Lexer {
             }
         }
 
-        return text.toString();
+        int code = Integer.decode(text.toString());
+        return Character.toString((char) code);
     }
 
     protected boolean isOctalDigit(int c) {
