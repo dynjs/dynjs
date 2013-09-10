@@ -2,7 +2,12 @@ package org.dynjs.runtime.builtins.types.regexp;
 
 import static org.joni.constants.MetaChar.*;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynObject;
@@ -109,7 +114,16 @@ public class DynRegExp extends DynObject {
             flagsInt = flagsInt | Option.IGNORECASE;
         }
         try {
-            byte[] patternBytes = pattern.getBytes("UTF-8");
+            // We can't use pattern.getBytes("UTF-8") here because any
+            // malformed input will get mapped to the ? character which
+            // screws up the regexp
+            Charset charset= Charset.forName("UTF-8");
+            CharsetEncoder encoder = charset.newEncoder();
+            encoder.onMalformedInput(CodingErrorAction.REPLACE);
+            encoder.replaceWith(new byte[] { (byte) 1 });
+            ByteBuffer patternBuffer = encoder.encode(CharBuffer.wrap(pattern));
+            byte[] patternBytes = new byte[patternBuffer.limit()];
+            patternBuffer.get(patternBytes, 0, patternBytes.length);
             this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.JavaScript, new WarnCallback() {
                 @Override
                 public void warn(String message) {
@@ -119,7 +133,7 @@ public class DynRegExp extends DynObject {
 
         } catch (JOniException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
-        } catch (UnsupportedEncodingException e) {
+        } catch (CharacterCodingException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         }
     }
