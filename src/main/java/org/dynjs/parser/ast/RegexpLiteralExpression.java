@@ -11,7 +11,8 @@ import org.dynjs.runtime.ExecutionContext;
 public class RegexpLiteralExpression extends BaseExpression {
 
     static class RegexpLiteralExpressionParser {
-        private static final String REG_EXP_PATTERN = "^\\/(.*)\\/([igm]{0,})$";
+        // \u0085 is not a line terminator in JS but is in Java regexes
+        private static final String REG_EXP_PATTERN = "^\\/((?:.|\u0085)*)\\/([igm]{0,})$";
 
         static RegexpLiteralExpressionParser parse(String text) {
             Pattern pattern = Pattern.compile(REG_EXP_PATTERN);

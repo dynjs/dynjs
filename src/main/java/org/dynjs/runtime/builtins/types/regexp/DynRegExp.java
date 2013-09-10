@@ -2,7 +2,12 @@ package org.dynjs.runtime.builtins.types.regexp;
 
 import static org.joni.constants.MetaChar.*;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynObject;
@@ -23,55 +28,6 @@ import org.joni.exception.JOniException;
 import org.joni.exception.SyntaxException;
 
 public class DynRegExp extends DynObject {
-
-    public static final Syntax Javascript = new Syntax(
-            ((Syntax.GNU_REGEX_OP
-                    | Syntax.OP_QMARK_NON_GREEDY
-                    | Syntax.OP_ESC_OCTAL3
-                    | Syntax.OP_ESC_X_HEX2
-                    //| Syntax.OP_ESC_X_BRACE_HEX8
-                    | Syntax.OP_ESC_CONTROL_CHARS
-                    | Syntax.OP_ESC_C_CONTROL
-                    | Syntax.OP_DECIMAL_BACKREF
-                    | Syntax.OP_ESC_D_DIGIT
-                    | Syntax.OP_ESC_S_WHITE_SPACE
-                    | Syntax.OP_ESC_W_WORD
-            ) & ~Syntax.OP_ESC_LTGT_WORD_BEGIN_END),
-
-            (Syntax.OP2_ESC_CAPITAL_Q_QUOTE
-                    | Syntax.OP2_QMARK_GROUP_EFFECT
-                    | Syntax.OP2_OPTION_PERL
-                    | Syntax.OP2_ESC_P_BRACE_CHAR_PROPERTY
-                    | Syntax.OP2_ESC_P_BRACE_CIRCUMFLEX_NOT
-                    | Syntax.OP2_ESC_U_HEX4
-                    | Syntax.OP2_ESC_V_VTAB
-                    ),
-
-            (Syntax.CONTEXT_INDEP_ANCHORS
-                    | Syntax.CONTEXT_INDEP_REPEAT_OPS
-                    | Syntax.CONTEXT_INVALID_REPEAT_OPS
-                    | Syntax.ALLOW_INVALID_INTERVAL
-                    | Syntax.BACKSLASH_ESCAPE_IN_CC
-                    | Syntax.ALLOW_DOUBLE_RANGE_OP_IN_CC
-                    | Syntax.DIFFERENT_LEN_ALT_LOOK_BEHIND
-                    //| Syntax.STRICT_CHECK_BACKREF
-            ),
-
-            //Option.SINGLELINE,
-            0,
-
-            new MetaCharTable(
-                    '\\', /* esc */
-                    INEFFECTIVE_META_CHAR, /* anychar '.' */
-                    INEFFECTIVE_META_CHAR, /* anytime '*' */
-                    INEFFECTIVE_META_CHAR, /* zero or one time '?' */
-                    INEFFECTIVE_META_CHAR, /* one or more time '+' */
-                    INEFFECTIVE_META_CHAR /* anychar anytime */
-            )
-            );
-
-    static {
-    }
 
     private Regex pattern;
 
@@ -158,8 +114,17 @@ public class DynRegExp extends DynObject {
             flagsInt = flagsInt | Option.IGNORECASE;
         }
         try {
-            byte[] patternBytes = pattern.getBytes("UTF-8");
-            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Javascript, new WarnCallback() {
+            // We can't use pattern.getBytes("UTF-8") here because any
+            // malformed input will get mapped to the ? character which
+            // screws up the regexp
+            Charset charset= Charset.forName("UTF-8");
+            CharsetEncoder encoder = charset.newEncoder();
+            encoder.onMalformedInput(CodingErrorAction.REPLACE);
+            encoder.replaceWith(new byte[] { (byte) 1 });
+            ByteBuffer patternBuffer = encoder.encode(CharBuffer.wrap(pattern));
+            byte[] patternBytes = new byte[patternBuffer.limit()];
+            patternBuffer.get(patternBytes, 0, patternBytes.length);
+            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.JavaScript, new WarnCallback() {
                 @Override
                 public void warn(String message) {
                     System.err.println("WARN: " + message);
@@ -168,7 +133,7 @@ public class DynRegExp extends DynObject {
 
         } catch (JOniException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
-        } catch (UnsupportedEncodingException e) {
+        } catch (CharacterCodingException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         }
     }
