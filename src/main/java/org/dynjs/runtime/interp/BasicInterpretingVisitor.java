@@ -221,10 +221,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (each != null) {
                 each.accept(context, this, strict);
                 value = getValue(context, pop());
+                array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             }
-            array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             ++i;
         }
+        array.put(context, "length", (long) i, true);
 
         push(array);
     }
