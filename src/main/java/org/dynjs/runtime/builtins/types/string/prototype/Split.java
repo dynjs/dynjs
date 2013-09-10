@@ -82,7 +82,7 @@ public class Split extends AbstractNonConstructorFunction {
                 if (e == p) {
                     ++q;
                 } else {
-                    final String t = s.substring(p, q);
+                    final String t = s.substring(p,Math.max(q, z.beg[0]));
                     PropertyDescriptor tDesc = new PropertyDescriptor();
                     tDesc.set(Names.VALUE, t);
                     tDesc.set(Names.WRITABLE, true);
