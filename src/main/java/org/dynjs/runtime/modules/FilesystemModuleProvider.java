@@ -23,7 +23,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
     }
 
     @Override
-    boolean load(DynJS runtime, ExecutionContext context, String moduleID) {
+    protected boolean load(DynJS runtime, ExecutionContext context, String moduleID) {
         File file = new File(moduleID);
         if (file.exists()) {
             runtime.evaluate("require.addLoadPath('" + file.getParent() + "')");
