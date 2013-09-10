@@ -17,6 +17,7 @@
 package org.dynjs.runtime.builtins;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.dynjs.exception.ThrowException;
@@ -38,7 +39,7 @@ import org.dynjs.runtime.modules.*;
 public class Require extends AbstractNativeFunction {
 
     private List<ModuleProvider> moduleProviders = new ArrayList<>();
-    private List<String> loadPaths = new ArrayList<>();
+    private LinkedList<String> loadPaths = new LinkedList<>();
 
     public Require(GlobalObject globalObject) {
         super(globalObject, "name");
@@ -54,10 +55,8 @@ public class Require extends AbstractNativeFunction {
         javaClassModuleProvider.addModule(new UtilModule());
 
         this.moduleProviders.add(javaClassModuleProvider);
-        this.moduleProviders.add(new FilesystemModuleProvider(globalObject));
         this.moduleProviders.add(new ClasspathModuleProvider(globalObject));
-
-        this.loadPaths.add(System.getProperty("user.dir") + "/");
+        this.moduleProviders.add(new FilesystemModuleProvider(globalObject));
 
         String customRequirePath = this.getCustomRequirePath();
         if (customRequirePath != null) {
@@ -66,6 +65,8 @@ public class Require extends AbstractNativeFunction {
                 this.loadPaths.add(path);
             }
         }
+
+        this.loadPaths.add(System.getProperty("user.dir") + "/");
 
         this.put("paths", loadPaths);
         this.put("addLoadPath", new AbstractNativeFunction(globalObject) {
@@ -85,6 +86,16 @@ public class Require extends AbstractNativeFunction {
                     return Types.NULL;
                 }
                 removeLoadPath((String) args[0]);
+                return loadPaths;
+            }
+        });
+        this.put("pushLoadPath", new AbstractNativeFunction(globalObject) {
+            @Override
+            public Object call(ExecutionContext context, Object self, Object... args) {
+                if (args[0] == null || args[0] == Types.UNDEFINED || args[0] == Types.NULL) {
+                    return Types.NULL;
+                }
+                pushLoadPath((String) args[0]);
                 return loadPaths;
             }
         });
@@ -108,6 +119,11 @@ public class Require extends AbstractNativeFunction {
         this.put("paths", loadPaths);
     }
 
+    public void pushLoadPath(String path) {
+        this.loadPaths.push(path);
+        this.put("paths", loadPaths);
+    }
+
     @Override
     public Object call(ExecutionContext context, Object self, Object... arguments) {
         if (arguments[0] == Types.UNDEFINED) {
@@ -116,7 +132,9 @@ public class Require extends AbstractNativeFunction {
 
         String moduleName = (String) arguments[0];
         List<ModuleProvider> moduleProviders = this.getModuleProviders();
-        for (ModuleProvider provider : moduleProviders) {
+        // Load module providers in reverse order
+        for (int i = moduleProviders.size(); i > 0; i--) {
+            ModuleProvider provider = moduleProviders.get(i-1);
             // if a module provider can generate a module ID, then it can
             // load the module.
             // TODO: Maybe change the method name to be more accurate/descriptive.

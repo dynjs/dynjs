@@ -15,7 +15,7 @@ public class RequireTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testRequirePaths() {
-        assertThat(eval("require.paths")).isInstanceOf(ArrayList.class);
+        assertThat(eval("require.paths")).isInstanceOf(List.class);
     }
 
     @Test
