@@ -929,8 +929,10 @@ public class Lexer {
                 text.append(octalDigit());
             }
         }
-
-        return text.toString();
+				// decode it in same way like for HexEscape
+				//
+        int code = Integer.decode(text.toString());
+        return Character.toString((char) code);
     }
 
     protected boolean isOctalDigit(int c) {
