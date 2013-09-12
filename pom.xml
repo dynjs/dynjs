@@ -173,8 +173,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.akiellor.jasmine</groupId>
-            <artifactId>jasmine</artifactId>
-            <version>0.0.3</version>
+            <artifactId>jasmine-cli</artifactId>
+            <version>0.0.9</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
