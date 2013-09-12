@@ -1,5 +1,6 @@
 package org.dynjs.runtime.interp;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1011,7 +1012,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             push(Double.valueOf(javafied));
         } else {
-            push(Long.valueOf(text, expr.getRadix()));
+            try {
+                push(Long.valueOf(text, expr.getRadix()));
+            } catch (NumberFormatException e) {
+                push(Double.valueOf(new BigInteger(text, expr.getRadix()).doubleValue()));
+            }
         }
     }
 
