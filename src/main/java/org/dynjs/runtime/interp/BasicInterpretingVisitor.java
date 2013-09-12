@@ -902,12 +902,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.longValue() == 0L) {
-                    System.err.println("rl: zero");
                     if (lval.longValue() == 0L) {
-                        System.err.println("ll: zero");
                         push(Double.NaN);
                         return;
-                    } else if (lval.longValue() >= 0L) {
+                    } else if (isSameSign(lval, rval)) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -939,7 +937,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 }
                 
                 long modResult = lval.longValue() % rval.longValue();
-                push(modResult);
+                if (modResult == 0 && isNegative(lval)) {
+                    push(-0.0);
+                } else {
+                    push(modResult);
+                }
                 return;
             }
         }
