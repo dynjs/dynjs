@@ -18,15 +18,16 @@ public class Join extends AbstractNonConstructorFunction {
 
         JSObject array = Types.toObject(context, self);
         long len = Types.toUint32(context, array.get(context, "length"));
-        if (len == 0) {
-            return "";
-        }
 
         String separator = ",";
         if (args.length >= 1) {
             if (args[0] != Types.UNDEFINED) {
                 separator = Types.toString(context, args[0]);
             }
+        }
+
+        if (len == 0) {
+            return "";
         }
 
         StringBuilder buf = new StringBuilder();
