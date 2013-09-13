@@ -333,7 +333,7 @@ public class Types {
         Number n = toNumber(context, o);
 
         if (n instanceof Double) {
-            if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
+            if (((Double) n).isInfinite() || ((Double) n).isNaN() || ((Double) n).doubleValue() == -0) {
                 return (long) 0;
             }
         }
