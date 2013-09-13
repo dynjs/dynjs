@@ -85,6 +85,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
+import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 
@@ -888,12 +889,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     push(Double.NaN);
                     return;
                 }
-                double primaryModulo = lval.doubleValue() % rval.doubleValue();
-                if (isRepresentableByLong(primaryModulo)) {
-                    push((long) primaryModulo);
-                } else {
-                    push(primaryModulo);
-                }
+                push(BuiltinNumber.modulo(lval, rval));
                 return;
             }
         } else {
@@ -937,12 +933,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     return;
                 }
                 
-                long modResult = lval.longValue() % rval.longValue();
-                if (modResult == 0 && isNegative(lval)) {
-                    push(-0.0);
-                } else {
-                    push(modResult);
-                }
+                push(BuiltinNumber.modulo(lval, rval));
                 return;
             }
         }
@@ -1012,11 +1003,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             push(Double.valueOf(javafied));
         } else {
-            try {
-                push(Long.valueOf(text, expr.getRadix()));
-            } catch (NumberFormatException e) {
-                push(Double.valueOf(new BigInteger(text, expr.getRadix()).doubleValue()));
-            }
+            push(Types.parseLongOrDouble(text, expr.getRadix()));
         }
     }
 

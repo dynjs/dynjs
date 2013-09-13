@@ -92,4 +92,15 @@ public class BuiltinNumber extends AbstractBuiltinType {
         desc.set(Names.CONFIGURABLE, false);
         on.defineOwnProperty(null, name, desc, false);
     }
+
+    public static Number modulo(Number a, Number b) {
+        double remainder = a.doubleValue() % b.doubleValue();
+        if (remainder == 0 && Double.compare(a.doubleValue(), 0.0) < 0) {
+            return -0.0;
+        }
+        if (remainder == (long) remainder) {
+            return (long) remainder;
+        }
+        return remainder;
+    }
 }

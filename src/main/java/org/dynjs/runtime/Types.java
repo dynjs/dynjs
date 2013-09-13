@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -415,6 +416,13 @@ public class Types {
             if (((Number) o).doubleValue() == -0) {
                 return "0";
             }
+
+            if (o instanceof Double) {
+                Double dbl = (Double) o;
+                if (dbl.doubleValue() == (long) dbl.doubleValue()) {
+                    o = dbl.longValue();
+                }
+            }
             String result = Types.rewritePossiblyExponentialValue(o.toString());
 
             Matcher matcher = EXP_PATTERN.matcher(result);
@@ -741,5 +749,19 @@ public class Types {
         }
 
         return value;
+    }
+
+    public static Object parseLongOrDouble(String text, int radix) {
+        Double dbl;
+        if (radix == 10) {
+            dbl = Double.valueOf(text);
+        } else {
+            dbl = Double.valueOf(new BigInteger(text, radix).doubleValue());
+        }
+        if (dbl.doubleValue() == (long) dbl.doubleValue()) {
+            return Long.valueOf(dbl.longValue());
+        } else {
+            return dbl;
+        }
     }
 }
