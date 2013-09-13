@@ -1,5 +1,6 @@
 package org.dynjs.runtime.interp;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,10 +222,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (each != null) {
                 each.accept(context, this, strict);
                 value = getValue(context, pop());
+                array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             }
-            array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             ++i;
         }
+        array.put(context, "length", (long) i, true);
 
         push(array);
     }
@@ -901,12 +903,10 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 return;
             case "/":
                 if (rval.longValue() == 0L) {
-                    System.err.println("rl: zero");
                     if (lval.longValue() == 0L) {
-                        System.err.println("ll: zero");
                         push(Double.NaN);
                         return;
-                    } else if (lval.longValue() >= 0L) {
+                    } else if (isSameSign(lval, rval)) {
                         push(Double.POSITIVE_INFINITY);
                         return;
                     } else {
@@ -938,7 +938,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 }
                 
                 long modResult = lval.longValue() % rval.longValue();
-                push(modResult);
+                if (modResult == 0 && isNegative(lval)) {
+                    push(-0.0);
+                } else {
+                    push(modResult);
+                }
                 return;
             }
         }
@@ -1008,7 +1012,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             push(Double.valueOf(javafied));
         } else {
-            push(Long.valueOf(text, expr.getRadix()));
+            try {
+                push(Long.valueOf(text, expr.getRadix()));
+            } catch (NumberFormatException e) {
+                push(Double.valueOf(new BigInteger(text, expr.getRadix()).doubleValue()));
+            }
         }
     }
 
