@@ -23,12 +23,23 @@ public class DynString extends PrimitiveDynObject {
     public void setPrimitiveValue(final Object value) {
         // 15.5.5.1
         super.setPrimitiveValue(value);
+        String str = (String) value;
+        int length = str.length();
         PropertyDescriptor lengthDesc = new PropertyDescriptor();
-        lengthDesc.set(Names.VALUE, (long) ((String) value).length());
+        lengthDesc.set(Names.VALUE, (long) length);
         lengthDesc.set(Names.WRITABLE, false);
         lengthDesc.set(Names.CONFIGURABLE, false);
         lengthDesc.set(Names.ENUMERABLE, false);
         defineOwnProperty(null, "length", lengthDesc, false);
+
+        for (int i = 0; i < length; i++) {
+            PropertyDescriptor desc = new PropertyDescriptor();
+            desc.set(Names.VALUE, str.substring(i, i + 1));
+            desc.set(Names.WRITABLE, false);
+            desc.set(Names.CONFIGURABLE, false);
+            desc.set(Names.ENUMERABLE, true);
+            defineOwnProperty(null, "" + i, desc, false);
+        }
     }
 
     @Override
