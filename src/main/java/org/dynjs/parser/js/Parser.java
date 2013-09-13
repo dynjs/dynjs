@@ -1194,6 +1194,8 @@ public class Parser {
             return tryStatement();
         case DEBUGGER:
             return debuggerStatement();
+        case FUNCTION:
+            return functionDeclaration();
         }
 
         if (la(2) == COLON) {
