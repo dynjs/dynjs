@@ -563,4 +563,7 @@ public class ExecutionContext {
         return "ExecutionContext: " + System.identityHashCode( this ) + "; parent=" + this.parent;
     }
 
+    public DynamicClassLoader getClassLoader() {
+        return getConfig().getClassLoader();
+    }
 }
