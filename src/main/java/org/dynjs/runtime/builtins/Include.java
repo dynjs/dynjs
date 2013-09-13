@@ -45,7 +45,7 @@ public class Include extends AbstractNativeFunction {
                         .withSource(includeFile)
                         .execute();
             } else {
-                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(includePath);
+                InputStream is = context.getClassLoader().getResourceAsStream(includePath);
                 if (is == null) {
                     throw new FileNotFoundException(includePath);
                 }
