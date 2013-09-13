@@ -42,10 +42,15 @@ public class DynRegExp extends DynObject {
         setPatternAndFlags(null, pattern, flags);
     }
 
-    public void setPatternAndFlags(ExecutionContext context, final String pattern, final String flags) {
+    public void setPatternAndFlags(ExecutionContext context, String pattern, final String flags) {
         checkSyntaxOfFlags(context, flags);
 
         PropertyDescriptor sourceDesc = new PropertyDescriptor();
+        // 15.10.4.1:
+        // If P is the empty String, this specification can be met by letting S be "(?:)".
+        if (pattern.equals("")) {
+            pattern = "(?:)";
+        }
         sourceDesc.set(Names.VALUE, pattern);
         sourceDesc.set(Names.WRITABLE, false);
         sourceDesc.set(Names.CONFIGURABLE, false);
