@@ -333,7 +333,7 @@ public class Types {
         Number n = toNumber(context, o);
 
         if (n instanceof Double) {
-            if (((Double) n).isInfinite() || ((Double) n).isNaN()) {
+            if (((Double) n).isInfinite() || ((Double) n).isNaN() || ((Double) n).doubleValue() == -0) {
                 return (long) 0;
             }
         }
@@ -422,9 +422,23 @@ public class Types {
                 int expValue = Integer.parseInt(matcher.group(3));
                 if (matcher.group(2).equals("+")) {
                     if (expValue <= 20) {
-                        StringBuilder newResult = new StringBuilder().append(matcher.group(1));
-                        for (int i = 0; i < expValue; ++i) {
-                            newResult.append("0");
+                        String digits = matcher.group(1).replace(".", "");
+                        StringBuilder newResult = new StringBuilder();
+                        int offset = 0;
+                        if (digits.startsWith("-")) {
+                            newResult.append("-");
+                            offset = 1;
+                        }
+                        for (int i = offset; i <= expValue; ++i) {
+                            if (i >= digits.length()) {
+                                newResult.append("0");
+                            } else {
+                                newResult.append(digits.charAt(i));
+                            }
+                        }
+                        if (newResult.length() < digits.length()) {
+                            newResult.append(".");
+                            newResult.append(digits.substring(newResult.length() - 1));
                         }
                         result = newResult.toString();
                     }

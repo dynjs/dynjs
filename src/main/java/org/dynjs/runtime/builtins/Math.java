@@ -62,8 +62,7 @@ public class Math extends DynObject {
     }
 
     public static Object coerceLongIfPossible(double d) {
-        // TODO: I believe this is broken for doubles expressed in scientific notation
-        if (Double.isInfinite(d) || Double.isNaN(d) || (d - java.lang.Math.ceil(d) != 0) || Double.MAX_VALUE == d)
+        if (Double.isInfinite(d) || Double.isNaN(d) || (d - java.lang.Math.ceil(d) != 0) || d > Long.MAX_VALUE)
             return d;
         else
             return (long) d;

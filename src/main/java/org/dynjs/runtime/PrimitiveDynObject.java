@@ -23,11 +23,6 @@ public class PrimitiveDynObject extends DynObject {
         return this.value;
     }
 
-    @Override
-    public Object defaultValue(ExecutionContext context, String hint) {
-        return value;
-    }
-
     public String toString() {
         return "[" + getClass().getSimpleName() + ": value=" + this.value + "]";
     }

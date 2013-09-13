@@ -25,6 +25,8 @@ public class Push extends AbstractNonConstructorFunction {
             }
         }
 
+        array.put(context, "length", n, true);
+
         return n;
     }
     

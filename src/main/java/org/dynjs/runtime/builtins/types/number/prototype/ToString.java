@@ -23,7 +23,11 @@ public class ToString extends AbstractNativeFunction {
         }
 
         if (self instanceof DynNumber || self instanceof Long || self instanceof Double || self instanceof Integer) {
-            return Types.toNumber(context, self).toString();
+            if (radix == 10) {
+                return Types.toString(context, Types.toNumber(context, self));
+            } else {
+                return Types.toNumber(context, self).toString();
+            }
         }
         throw new ThrowException(context, context.createTypeError("Number.prototype.toString() only allowed on Numbers"));
     }

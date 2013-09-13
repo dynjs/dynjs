@@ -15,6 +15,8 @@
  */
 package org.dynjs.runtime.builtins;
 
+import java.math.BigInteger;
+
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
@@ -104,7 +106,11 @@ public class ParseInt extends AbstractNonConstructorFunction {
             return Double.NaN;
         }
         
-        return sign * Long.parseLong(z, (int) r);
+        try {
+            return sign * Long.parseLong(z, (int) r);
+        } catch (NumberFormatException e) {
+            return sign * new BigInteger(z, (int) r).doubleValue();
+        }
     }
 
     static boolean isRadixDigit(char c, long radix) {
