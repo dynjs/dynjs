@@ -72,9 +72,7 @@ public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler impleme
                     .voidreturn()
                 );
 
-        DynamicClassLoader cl = new DynamicClassLoader(getConfig().getClassLoader());
-
-        CompilationPlanner planner = new CompilationPlanner(getConfig(), cl, getFactory());
+        CompilationPlanner planner = new CompilationPlanner(getConfig(), context.getClassLoader(), getFactory());
 
         PartialCompiler compiler = null;
         if (body instanceof BlockStatement) {
@@ -84,7 +82,7 @@ public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler impleme
         }
 
         compiler.define(cls, context, false);
-        Class<BytecodeBasicBlock> blockClass = defineClass(cl, cls);
+        Class<BytecodeBasicBlock> blockClass = defineClass(context.getClassLoader(), cls);
 
         Position position = body.getPosition();
 
