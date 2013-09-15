@@ -4,6 +4,7 @@ import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Runner;
+import org.dynjs.runtime.builtins.Require;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +42,12 @@ public class FilesystemModuleProvider extends ModuleProvider {
     @Override
     @SuppressWarnings("unchecked")
     public String generateModuleID(ExecutionContext context, String moduleName) {
-        Runner runtime = context.getGlobalObject().getRuntime().newRunner();
-        List<String> requirePaths = (List<String>) runtime.withSource("require.paths").evaluate();
-        File moduleFile = findFile(requirePaths, moduleName);
-        if (moduleFile != null && moduleFile.exists()) {
-            return moduleFile.getAbsolutePath();
+        Object require = context.getGlobalObject().get("require");
+        if (require instanceof Require) {
+            File moduleFile = findFile(((Require)require).getLoadPaths(), moduleName);
+            if (moduleFile != null && moduleFile.exists()) {
+                return moduleFile.getAbsolutePath();
+            }
         }
         return null;
     }

@@ -162,4 +162,8 @@ public class Require extends AbstractNativeFunction {
     public void setupDebugContext() {
         this.debugContext = "<native function: require>";
     }
+
+    public List<String> getLoadPaths() {
+        return loadPaths;
+    }
 }
