@@ -196,19 +196,30 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
 
         expr.getRhs().accept(context, this, strict);
-        Long rhsNum = Types.toInt32(context, getValue(context, pop()));
 
         if (expr.getOp().equals("<<")) {
-            push(lhsNum.longValue() << rhsNum.intValue());
+            // 11.7.1
+            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            int shiftCount = rhsNum.intValue() & 0x1F;
+            push((int) (lhsNum.longValue() << shiftCount));
         } else if (expr.getOp().equals(">>")) {
-            push(lhsNum.longValue() >> rhsNum.intValue());
+            // 11.7.2
+            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            int shiftCount = rhsNum.intValue() & 0x1F;
+            push((int) (lhsNum.longValue() >> shiftCount));
         } else if (expr.getOp().equals(">>>")) {
-            push(lhsNum.longValue() >>> rhsNum.intValue());
+            // 11.7.3
+            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            int shiftCount = rhsNum.intValue() & 0x1F;
+            push(lhsNum.longValue() >>> shiftCount);
         } else if (expr.getOp().equals("&")) {
+            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
             push(lhsNum.longValue() & rhsNum.longValue());
         } else if (expr.getOp().equals("|")) {
+            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
             push(lhsNum.longValue() | rhsNum.longValue());
         } else if (expr.getOp().equals("^")) {
+            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
             push(lhsNum.longValue() ^ rhsNum.longValue());
         }
     }
@@ -1539,5 +1550,4 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
         return (n == (long) n);
     }
-
 }
