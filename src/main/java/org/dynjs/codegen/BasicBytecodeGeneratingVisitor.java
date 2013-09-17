@@ -278,39 +278,80 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     public void visit(ExecutionContext context, BitwiseExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         append(jsGetValue());
+        // value
         if (expr.getOp().equals(">>>")) {
             append(jsToUint32());
         } else {
             append(jsToInt32());
         }
+        // Number
         invokevirtual(p(Number.class), "longValue", sig(long.class));
+        // long
 
         expr.getRhs().accept(context, this, strict);
         append(jsGetValue());
-        append(jsToUint32());
-        invokevirtual(p(Number.class), "longValue", sig(long.class));
-        // int int
+        // long value
 
+        switch (expr.getOp()) {
+        case "<<":
+        case ">>":
+        case ">>>":
+            // 11.7.1 - 11.7.3
+            append(jsToUint32());
+            // long Number
+            invokevirtual(p(Number.class), "longValue", sig(long.class));
+            // long long
+            l2i();
+            // long int
+            ldc(0x1F);
+            // long int int
+            iand();
+            // long int
+            break;
+        case "&":
+        case "|":
+        case "^":
+            append(jsToInt32());
+            // long Number
+            invokevirtual(p(Number.class), "longValue", sig(long.class));
+            // long long
+            break;
+        }
         if (expr.getOp().equals("<<")) {
-            l2i();
             lshl();
+            // long
+            l2i();
+            // int
+            append(convertTopToInteger());
+            // Integer
         } else if (expr.getOp().equals(">>")) {
-            l2i();
             lshr();
-        } else if (expr.getOp().equals(">>>")) {
+            // long
             l2i();
+            // int
+            append(convertTopToInteger());
+            // Integer
+        } else if (expr.getOp().equals(">>>")) {
             lushr();
+            // long
+            append(convertTopToLong());
+            // Long
         } else if (expr.getOp().equals("&")) {
             land();
+            // long
+            append(convertTopToLong());
+            // Long
         } else if (expr.getOp().equals("|")) {
             lor();
+            // long
+            append(convertTopToLong());
+            // Long
         } else if (expr.getOp().equals("^")) {
             lxor();
+            // long
+            append(convertTopToLong());
+            // Long
         }
-        // long
-
-        append(convertTopToLong());
-        // Long
     }
 
     @Override

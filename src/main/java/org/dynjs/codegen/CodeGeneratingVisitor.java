@@ -387,6 +387,12 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
             .invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
     }
 
+    public CodeBlock convertTopToInteger() {
+        return new CodeBlock()
+            // IN: int
+            .invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
+    }
+
     public CodeBlock convertTopTwoToPrimitiveDoubles() {
         return new CodeBlock()
             // IN Number Number
