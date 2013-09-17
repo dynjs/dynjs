@@ -1,53 +1,15 @@
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.runtime.builtins.DecodeUri;
-import org.dynjs.runtime.builtins.DecodeUriComponent;
-import org.dynjs.runtime.builtins.DynJSBuiltin;
-import org.dynjs.runtime.builtins.EncodeUri;
-import org.dynjs.runtime.builtins.EncodeUriComponent;
-import org.dynjs.runtime.builtins.Escape;
-import org.dynjs.runtime.builtins.Eval;
-import org.dynjs.runtime.builtins.Include;
-import org.dynjs.runtime.builtins.Intl;
-import org.dynjs.runtime.builtins.IsFinite;
-import org.dynjs.runtime.builtins.IsNaN;
-import org.dynjs.runtime.builtins.JSON;
-import org.dynjs.runtime.builtins.Math;
-import org.dynjs.runtime.builtins.ParseFloat;
-import org.dynjs.runtime.builtins.ParseInt;
-import org.dynjs.runtime.builtins.Print;
-import org.dynjs.runtime.builtins.Require;
-import org.dynjs.runtime.builtins.ThrowTypeError;
-import org.dynjs.runtime.builtins.Unescape;
-import org.dynjs.runtime.builtins.types.AbstractBuiltinType;
-import org.dynjs.runtime.builtins.types.BuiltinArray;
-import org.dynjs.runtime.builtins.types.BuiltinBoolean;
-import org.dynjs.runtime.builtins.types.BuiltinDate;
-import org.dynjs.runtime.builtins.types.BuiltinError;
-import org.dynjs.runtime.builtins.types.BuiltinEvalError;
-import org.dynjs.runtime.builtins.types.BuiltinFunction;
-import org.dynjs.runtime.builtins.types.BuiltinNumber;
-import org.dynjs.runtime.builtins.types.BuiltinObject;
-import org.dynjs.runtime.builtins.types.BuiltinRangeError;
-import org.dynjs.runtime.builtins.types.BuiltinReferenceError;
-import org.dynjs.runtime.builtins.types.BuiltinRegExp;
-import org.dynjs.runtime.builtins.types.BuiltinString;
-import org.dynjs.runtime.builtins.types.BuiltinSyntaxError;
-import org.dynjs.runtime.builtins.types.BuiltinTypeError;
-import org.dynjs.runtime.builtins.types.BuiltinURIError;
-import org.dynjs.runtime.java.JavaPackage;
-import org.dynjs.runtime.modules.ClasspathModuleProvider;
-import org.dynjs.runtime.modules.ConsoleModule;
-import org.dynjs.runtime.modules.FilesystemModuleProvider;
-import org.dynjs.runtime.modules.JavaClassModuleProvider;
-import org.dynjs.runtime.modules.ModuleProvider;
-import org.dynjs.runtime.modules.UtilModule;
 import org.dynjs.runtime.PropertyDescriptor.Names;
+import org.dynjs.runtime.builtins.*;
+import org.dynjs.runtime.builtins.Math;
+import org.dynjs.runtime.builtins.types.*;
+import org.dynjs.runtime.java.JavaPackage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlobalObject extends DynObject {
 

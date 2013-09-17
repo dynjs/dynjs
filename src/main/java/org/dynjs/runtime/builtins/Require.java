@@ -45,7 +45,9 @@ public class Require extends AbstractNativeFunction {
         super(globalObject, "name");
         DynObject module = new DynObject(globalObject);
         module.put("id", "dynjs");
+        module.put("exports", new DynObject(globalObject));
         globalObject.put("module", module);
+        globalObject.put("exports", module.get("exports"));
 
         // ----------------------------------------
         // Module-provider setup

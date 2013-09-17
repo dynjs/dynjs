@@ -11,5 +11,14 @@ describe("CommonJS require()", function() {
 
   });
 
+  describe("global module", function() {
+    it("should have an id and exports property", function() {
+      expect(typeof module).toBe('object');
+      expect(typeof module.id).toBe('string');
+      expect(typeof module.exports).toBe('object');
+      expect(typeof exports).toBe('object');
+    });
+  });
+
 });
 
