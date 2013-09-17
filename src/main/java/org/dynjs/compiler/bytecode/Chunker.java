@@ -9,7 +9,7 @@ import org.dynjs.parser.ast.BlockStatement;
 
 public class Chunker {
 
-    public static final int CHUNK_LIMIT = 2_500;
+    public static final int CHUNK_LIMIT = 200;
     public static final int STATEMENT_THRESHOLD = 1_000;
     public static final int CHUNKS_PER_CLASS = 50;
 
