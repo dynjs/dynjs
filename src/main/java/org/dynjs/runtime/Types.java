@@ -751,7 +751,7 @@ public class Types {
         return value;
     }
 
-    public static Object parseLongOrDouble(String text, int radix) {
+    public static Number parseLongOrDouble(String text, int radix) {
         Double dbl;
         if (radix == 10) {
             dbl = Double.valueOf(text);

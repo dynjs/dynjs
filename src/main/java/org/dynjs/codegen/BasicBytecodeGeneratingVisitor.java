@@ -1821,8 +1821,9 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
             invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
         } else if (text.indexOf(".") > 0) {
             ldc(text);
-            invokestatic(p(Double.class), "valueOf", sig(Double.class, String.class));
-            // Double
+            ldc(10);
+            invokestatic(p(Types.class), "parseLongOrDouble", sig(Number.class, String.class, int.class));
+            // Long or Double
         } else {
             if (text.startsWith("0x") || text.startsWith("0X")) {
                 String realText = text.substring(2);
@@ -1842,7 +1843,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 } else {
                     ldc(text);
                     bipush(expr.getRadix());
-                    invokestatic(p(Types.class), "parseLongOrDouble", sig(Object.class, String.class, int.class));
+                    invokestatic(p(Types.class), "parseLongOrDouble", sig(Number.class, String.class, int.class));
                     // Long or Double
                 }
             }
