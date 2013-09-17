@@ -58,7 +58,7 @@ public class DynArray extends DynObject {
             }
 
             boolean newWritable = false;
-            if ((!oldLenDesc.hasWritable()) || oldLenDesc.get(Names.WRITABLE) == Boolean.TRUE) {
+            if ((!newLenDesc.hasWritable()) || newLenDesc.get(Names.WRITABLE) == Boolean.TRUE) {
                 newWritable = true;
             } else {
                 newWritable = false;
@@ -97,7 +97,7 @@ public class DynArray extends DynObject {
 
         if (isArrayIndex(context, name)) {
             Long index = Types.toUint32(context, name);
-            if ((index.longValue() > oldLen) && oldLenDesc.get(Names.WRITABLE) == Boolean.FALSE) {
+            if ((index.longValue() >= oldLen) && oldLenDesc.get(Names.WRITABLE) == Boolean.FALSE) {
                 return reject(context, shouldThrow);
             }
             boolean succeeded = super.defineOwnProperty(context, name, desc, shouldThrow);

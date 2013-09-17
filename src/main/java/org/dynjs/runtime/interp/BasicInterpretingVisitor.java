@@ -85,6 +85,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
+import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 
@@ -195,19 +196,30 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
 
         expr.getRhs().accept(context, this, strict);
-        Long rhsNum = Types.toInt32(context, getValue(context, pop()));
 
         if (expr.getOp().equals("<<")) {
-            push(lhsNum.longValue() << rhsNum.intValue());
+            // 11.7.1
+            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            int shiftCount = rhsNum.intValue() & 0x1F;
+            push((int) (lhsNum.longValue() << shiftCount));
         } else if (expr.getOp().equals(">>")) {
-            push(lhsNum.longValue() >> rhsNum.intValue());
+            // 11.7.2
+            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            int shiftCount = rhsNum.intValue() & 0x1F;
+            push((int) (lhsNum.longValue() >> shiftCount));
         } else if (expr.getOp().equals(">>>")) {
-            push(lhsNum.longValue() >>> rhsNum.intValue());
+            // 11.7.3
+            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            int shiftCount = rhsNum.intValue() & 0x1F;
+            push(lhsNum.longValue() >>> shiftCount);
         } else if (expr.getOp().equals("&")) {
+            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
             push(lhsNum.longValue() & rhsNum.longValue());
         } else if (expr.getOp().equals("|")) {
+            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
             push(lhsNum.longValue() | rhsNum.longValue());
         } else if (expr.getOp().equals("^")) {
+            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
             push(lhsNum.longValue() ^ rhsNum.longValue());
         }
     }
@@ -888,12 +900,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     push(Double.NaN);
                     return;
                 }
-                double primaryModulo = lval.doubleValue() % rval.doubleValue();
-                if (isRepresentableByLong(primaryModulo)) {
-                    push((long) primaryModulo);
-                } else {
-                    push(primaryModulo);
-                }
+                push(BuiltinNumber.modulo(lval, rval));
                 return;
             }
         } else {
@@ -937,12 +944,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     return;
                 }
                 
-                long modResult = lval.longValue() % rval.longValue();
-                if (modResult == 0 && isNegative(lval)) {
-                    push(-0.0);
-                } else {
-                    push(modResult);
-                }
+                push(BuiltinNumber.modulo(lval, rval));
                 return;
             }
         }
@@ -1012,11 +1014,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             push(Double.valueOf(javafied));
         } else {
-            try {
-                push(Long.valueOf(text, expr.getRadix()));
-            } catch (NumberFormatException e) {
-                push(Double.valueOf(new BigInteger(text, expr.getRadix()).doubleValue()));
-            }
+            push(Types.parseLongOrDouble(text, expr.getRadix()));
         }
     }
 
@@ -1552,5 +1550,4 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
         return (n == (long) n);
     }
-
 }

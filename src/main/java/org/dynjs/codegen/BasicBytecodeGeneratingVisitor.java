@@ -89,6 +89,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
+import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
@@ -1700,15 +1701,17 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         if (!expr.getOp().equals("/")) {
             append(ifEitherIsDouble(doubleNums));
 
-            append(convertTopTwoToPrimitiveLongs());
             if (expr.getOp().equals("*")) {
+                append(convertTopTwoToPrimitiveLongs());
                 lmul();
+                append(convertTopToLong());
             } else if (expr.getOp().equals("/")) {
+                append(convertTopTwoToPrimitiveLongs());
                 ldiv();
+                append(convertTopToLong());
             } else if (expr.getOp().equals("%")) {
-                lrem();
+                invokestatic(p(BuiltinNumber.class), "modulo", sig(Number.class, Number.class, Number.class));
             }
-            append(convertTopToLong());
             go_to(end);
 
             label(doubleNums);
@@ -1798,8 +1801,8 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
                 } else {
                     ldc(text);
                     bipush(expr.getRadix());
-                    invokestatic(p(Long.class), "valueOf", sig(Long.class, String.class, int.class));
-                    // Long
+                    invokestatic(p(Types.class), "parseLongOrDouble", sig(Object.class, String.class, int.class));
+                    // Long or Double
                 }
             }
         }
