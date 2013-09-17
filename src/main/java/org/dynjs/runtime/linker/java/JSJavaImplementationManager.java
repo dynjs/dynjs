@@ -42,7 +42,7 @@ public class JSJavaImplementationManager {
     }
 
     public Object getImplementationWrapper(Class<?> targetClass, ExecutionContext context, JSObject implementation) throws Exception {
-        Class<?> implClass = getImplementationWrapper(targetClass);
+        Class<?> implClass = getImplementationWrapper(targetClass, context.getClassLoader());
 
         Constructor<?> ctor = implClass.getConstructor(ExecutionContext.class, JSObject.class);
 
@@ -84,17 +84,17 @@ public class JSJavaImplementationManager {
         return null;
     }
 
-    public Class<?> getImplementationWrapper(Class<?> targetClass) {
+    public Class<?> getImplementationWrapper(Class<?> targetClass, DynamicClassLoader classLoader) {
         Class<?> implClass = this.implementations.get(targetClass);
         if (implClass == null) {
-            implClass = createImplementationWrapper(targetClass);
+            implClass = createImplementationWrapper(targetClass, classLoader);
             this.implementations.put(targetClass, implClass);
         }
 
         return implClass;
     }
 
-    private Class<?> createImplementationWrapper(Class<?> targetClass) {
+    private Class<?> createImplementationWrapper(Class<?> targetClass, DynamicClassLoader classLoader) {
         final String className = "org/dynjs/gen/impl/" + targetClass.getSimpleName() + "JS_" + counter.getAndIncrement();
 
         final Class<?> superClass = (targetClass.isInterface() ? Object.class : targetClass);
@@ -133,9 +133,7 @@ public class JSJavaImplementationManager {
 
         byte[] bytecode = jiteClass.toBytes(JDKVersion.V1_7);
 
-        DynamicClassLoader cl = new DynamicClassLoader(Thread.currentThread().getContextClassLoader());
-
-        return cl.define(jiteClass.getClassName().replace('/', '.'), bytecode);
+        return classLoader.define(jiteClass.getClassName().replace('/', '.'), bytecode);
     }
 
     private void defineMethods(Class<?> targetClass, JiteClass jiteClass, Class<?> superClass) {

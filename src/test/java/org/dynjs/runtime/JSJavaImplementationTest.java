@@ -17,7 +17,7 @@ public class JSJavaImplementationTest extends AbstractDynJSTestSupport {
         ShadowObjectLinkStrategy shadowLinker = new ShadowObjectLinkStrategy(null);
         JSJavaImplementationManager manager = new JSJavaImplementationManager(shadowLinker);
         
-        Class<Runnable> implClass  = (Class<Runnable>) manager.getImplementationWrapper(Runnable.class);
+        Class<Runnable> implClass  = (Class<Runnable>) manager.getImplementationWrapper(Runnable.class, getContext().getClassLoader());
         
         assertThat( implClass ).isNotNull();
         
