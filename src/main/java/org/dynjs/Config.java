@@ -19,7 +19,7 @@ public class Config {
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
 
     private boolean debug = false;
-    private final ClassLoader classLoader;
+    private final DynamicClassLoader classLoader;
     private Clock clock = SystemClock.INSTANCE;
     private TimeZone timeZone = TimeZone.getDefault();
     private Locale locale = Locale.getDefault();
@@ -98,7 +98,7 @@ public class Config {
         return this.nodePackageManagerEnabled;
     }
 
-    public ClassLoader getClassLoader() {
+    public DynamicClassLoader getClassLoader() {
         return this.classLoader;
     }
 

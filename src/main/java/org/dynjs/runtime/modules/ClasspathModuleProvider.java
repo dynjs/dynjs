@@ -20,7 +20,7 @@ public class ClasspathModuleProvider extends ModuleProvider {
 
     @Override
     public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {
-        ClassLoader classLoader = context.getGlobalObject().getConfig().getClassLoader();
+        ClassLoader classLoader = context.getClassLoader();
         // System.err.println("Classloader: " + classLoader.toString());
         // System.err.println("Looking for module " + moduleId);
         try {
@@ -45,8 +45,7 @@ public class ClasspathModuleProvider extends ModuleProvider {
 
     @Override
     public String generateModuleID(ExecutionContext context, String moduleName) {
-        ClassLoader classLoader = context.getGlobalObject().getConfig()
-                .getClassLoader();
+        ClassLoader classLoader = context.getClassLoader();
         String name = normalizeName(moduleName);
         URL moduleURL = classLoader.getResource(name);
         if (moduleURL != null) {

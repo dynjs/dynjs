@@ -19,7 +19,7 @@ public class JavaPackage extends DynObject {
         Object result = super.get(context, name);
         if (result == Types.UNDEFINED) {
 
-            ClassLoader cl = context.getConfig().getClassLoader();
+            ClassLoader cl = context.getClassLoader();
             try {
                 Class<?> cls = cl.loadClass(fullPath(name));
                 return cls;
