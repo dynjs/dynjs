@@ -2,18 +2,13 @@ package org.dynjs.runtime.modules;
 
 import org.dynjs.runtime.*;
 
-import java.util.HashMap;
-
 /**
  * Provider for loading Javascript modules.
  * 
  * @author Bob McWhirter
+ * @author Lance Ball
  */
-public abstract class ModuleProvider extends AbstractNativeFunction {
-
-    public ModuleProvider(GlobalObject globalObject) {
-        super(globalObject, "moduleId" );
-    }
+public abstract class ModuleProvider {
 
     /**
      * Load a module.
@@ -39,14 +34,6 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
      */
     public abstract String generateModuleID(ExecutionContext context, String moduleName);
 
-    @Override
-    public Object call(ExecutionContext context, Object self, Object... args) {
-        if (args.length != 1 || !(args[0] instanceof String)) {
-            return context.createTypeError("Module providers require a module ID");
-        }
-        return this.findAndLoad(context, (String) args[0]);
-    }
-
     /**
      * A template method used by require() which is responsible for ensuring the
      * module loading contract is enforced by subclasses.
@@ -56,26 +43,9 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
      * @param moduleId The name of the module to load   @return The loaded module or <code>null</code> if un-loadable.
      * @return the module's exports
      */
-    public Object findAndLoad(ExecutionContext context, String moduleId) {
-        // if the module ID is null, we can't find the module, so bail
-        if (moduleId == null) {
-            return null;
-        }
-
-        // check the cache & return if found
-        if (CACHE.containsKey(moduleId)) {
-            return CACHE.get(moduleId);
-        }
-
-        // add ID + empty module.exports object to cache
-        JSObject module = new DynObject(context.getGlobalObject());
-        Object exports = new DynObject(context.getGlobalObject());
-        
+    public Object findAndLoad(ExecutionContext context, String moduleId, JSObject module, JSObject exports) {
+        // setup our module/exports/id in the execution context
         LexicalEnvironment localEnv = context.getVariableEnvironment();
-        
-        module.put(context, "exports", exports, true);
-        module.put(context, "id", moduleId, false);
-        
         localEnv.getRecord().createMutableBinding(context, "module", false);
         localEnv.getRecord().createMutableBinding(context, "exports", false);
         localEnv.getRecord().createMutableBinding(context, "id", false);
@@ -83,26 +53,9 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
         localEnv.getRecord().setMutableBinding(context, "module", module, false);
         localEnv.getRecord().setMutableBinding(context, "exports", exports, false);
         localEnv.getRecord().setMutableBinding(context, "id", moduleId, false);
-        
-        CACHE.put(moduleId, exports);
-
-
-        // try to load the module
-        // if successful, add to the cache
-        if (this.load(context.getGlobalObject().getRuntime(), context, moduleId)) {
-            exports = module.get(context, "exports");
-            CACHE.put(moduleId, exports);
-            return exports;
-        } else {
-            CACHE.remove(moduleId);
-            return null;
-        }
+        return (this.load(context.getGlobalObject().getRuntime(), context, moduleId)) ?  module.get(context, "exports") : null;
     }
 
-    public static void clearCache() {
-        CACHE.clear();
-    }
-    
     /**
      * Helper method. Since module names should not include the .js extension, but the actual
      * modules themselves usually do.
@@ -115,6 +68,4 @@ public abstract class ModuleProvider extends AbstractNativeFunction {
         }
         return originalName + ".js";
     }
-    
-    private static final HashMap<String, Object> CACHE = new HashMap<>();
 }

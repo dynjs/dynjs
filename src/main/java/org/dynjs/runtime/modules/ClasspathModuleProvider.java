@@ -1,22 +1,15 @@
 package org.dynjs.runtime.modules;
 
+import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.ExecutionContext;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Runner;
-
 public class ClasspathModuleProvider extends ModuleProvider {
-
-    public ClasspathModuleProvider(GlobalObject globalObject) {
-        super(globalObject);
-    }
 
     @Override
     public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {

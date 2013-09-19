@@ -15,10 +15,6 @@ import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class JavaClassModuleProvider extends ModuleProvider {
 
-    public JavaClassModuleProvider(GlobalObject globalObject) {
-        super(globalObject);
-    }
-
     public void addModule(Object module) throws InvalidModuleException {
         Module moduleAnno = module.getClass().getAnnotation(Module.class);
 
@@ -83,7 +79,7 @@ public class JavaClassModuleProvider extends ModuleProvider {
         return new JavaFunction(globalObject, module, method);
     }
 
-    private Map<String, Object> modules = new HashMap<String, Object>();
+    private Map<String, Object> modules = new HashMap<>();
 
     @Override
     public String generateModuleID(ExecutionContext context, String moduleName) {

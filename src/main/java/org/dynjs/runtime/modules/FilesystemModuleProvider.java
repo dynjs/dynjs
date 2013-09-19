@@ -2,8 +2,6 @@ package org.dynjs.runtime.modules;
 
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Runner;
 import org.dynjs.runtime.builtins.Require;
 
 import java.io.File;
@@ -18,10 +16,6 @@ import java.util.List;
  * @author Bob McWhirter
  */
 public class FilesystemModuleProvider extends ModuleProvider {
-
-    public FilesystemModuleProvider(GlobalObject globalObject) {
-        super(globalObject);
-    }
 
     @Override
     protected boolean load(DynJS runtime, ExecutionContext context, String moduleID) {

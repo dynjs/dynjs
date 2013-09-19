@@ -16,16 +16,10 @@
 
 package org.dynjs.runtime.builtins;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.modules.*;
 
 /**
@@ -52,20 +46,18 @@ public class Require extends AbstractNativeFunction {
         // ----------------------------------------
         // Module-provider setup
         // ----------------------------------------
-        JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider(globalObject);
+        JavaClassModuleProvider javaClassModuleProvider = new JavaClassModuleProvider();
         javaClassModuleProvider.addModule(new ConsoleModule());
         javaClassModuleProvider.addModule(new UtilModule());
 
         this.moduleProviders.add(javaClassModuleProvider);
-        this.moduleProviders.add(new ClasspathModuleProvider(globalObject));
-        this.moduleProviders.add(new FilesystemModuleProvider(globalObject));
+        this.moduleProviders.add(new ClasspathModuleProvider());
+        this.moduleProviders.add(new FilesystemModuleProvider());
 
         String customRequirePath = this.getCustomRequirePath();
         if (customRequirePath != null) {
             String[] paths = customRequirePath.split(":");
-            for(String path : paths) {
-                this.loadPaths.add(path);
-            }
+            Collections.addAll(this.loadPaths, paths);
         }
 
         this.loadPaths.add(System.getProperty("user.dir") + "/");
@@ -137,12 +129,25 @@ public class Require extends AbstractNativeFunction {
         // Load module providers in reverse order
         for (int i = moduleProviders.size(); i > 0; i--) {
             ModuleProvider provider = moduleProviders.get(i-1);
-            // if a module provider can generate a module ID, then it can
-            // load the module.
-            // TODO: Maybe change the method name to be more accurate/descriptive.
             String moduleId = provider.generateModuleID(context, moduleName);
+
+            // if a module provider can generate a module ID, then it can load the module.
             if (moduleId != null) {
-                return context.call(provider, context.getGlobalObject(), moduleId);
+                // first check to see if we have the module cached, if so return it
+                if (cache.containsKey(moduleId)) {
+                    return cache.get(moduleId);
+                }
+                // add ID + empty module.exports object to cache
+                JSObject module = new DynObject(context.getGlobalObject());
+                JSObject exports = new DynObject(context.getGlobalObject());
+                module.put(context, "exports", exports, true);
+                module.put(context, "id", moduleId, false);
+                cache.put(moduleId, exports);
+                Object exported = provider.findAndLoad(context, moduleId, module, exports);
+                if (exported != null) {
+                    cache.put(moduleId, exported);
+                }
+                return exported;
             }
         }
         throw new ThrowException(context, context.createError("Error", "cannot load module " + moduleName));
@@ -168,4 +173,6 @@ public class Require extends AbstractNativeFunction {
     public List<String> getLoadPaths() {
         return loadPaths;
     }
+
+    private final HashMap<String, Object> cache = new HashMap<>();
 }
