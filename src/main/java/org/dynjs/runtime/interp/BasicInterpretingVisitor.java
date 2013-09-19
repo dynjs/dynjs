@@ -790,11 +790,15 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
 
-        if (!(rhs instanceof JSFunction)) {
-            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
+        if (rhs instanceof JSObject) {
+            if (!(rhs instanceof JSFunction)) {
+                throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
+            }
+            push(((JSFunction) rhs).hasInstance(context, lhs));
+        } else if (rhs instanceof Class) {
+            Class clazz = (Class) rhs;
+            push(lhs.getClass().getName().equals(clazz.getName()));
         }
-
-        push(((JSFunction) rhs).hasInstance(context, lhs));
     }
 
     @Override
