@@ -23,7 +23,7 @@ public abstract class ModuleProvider {
      * @param moduleID The id of the module to load.
      * @return <code>true</code> if the module was loaded, false if not
      */
-    abstract boolean load(DynJS runtime, ExecutionContext context, String moduleID);
+    public abstract boolean load(DynJS runtime, ExecutionContext context, String moduleID);
 
     /**
      * Generate a unique module ID for <code>moduleName</code>
