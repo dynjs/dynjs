@@ -16,6 +16,7 @@ import org.projectodd.rephract.mop.java.JavaClassLinkStrategy;
 import org.projectodd.rephract.mop.java.ResolverManager;
 
 import com.headius.invokebinder.Binder;
+import org.projectodd.rephract.mop.java.ReturnFilters;
 
 public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionContext> {
 
@@ -23,7 +24,7 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
 
     public JSJavaClassLinkStrategy(LinkLogger logger, ResolverManager manager) {
         super(ExecutionContext.class, logger);
-        this.javaLinkStrategy = new JavaClassLinkStrategy(logger, manager);
+        this.javaLinkStrategy = new JavaClassLinkStrategy(logger, manager, new ReturnFilters());
     }
 
     @Override
