@@ -21,7 +21,7 @@
         <version.invokebinder>1.2</version.invokebinder>
         <version.jitescript>0.3.0</version.jitescript>
         <version.joni>2.1.0</version.joni>
-        <version.rephract>1.x.incremental.57</version.rephract>
+        <version.rephract>1.1.0</version.rephract>
     </properties>
 
     <developers>
