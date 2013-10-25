@@ -129,7 +129,7 @@ public class DynRegExp extends DynObject {
             ByteBuffer patternBuffer = encoder.encode(CharBuffer.wrap(pattern));
             byte[] patternBytes = new byte[patternBuffer.limit()];
             patternBuffer.get(patternBytes, 0, patternBytes.length);
-            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.JavaScript, new WarnCallback() {
+            this.pattern = new Regex(patternBytes, 0, patternBytes.length, flagsInt, UTF8Encoding.INSTANCE, Syntax.ECMAScript, new WarnCallback() {
                 @Override
                 public void warn(String message) {
                     System.err.println("WARN: " + message);
