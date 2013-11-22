@@ -53,7 +53,6 @@ public class JavaNullReplacingLinkStrategy extends ContextualLinkStrategy<Execut
     @Override
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-        // TODO Auto-generated method stub
         StrategicLink link = super.linkCall(chain, receiver, self, args, binder, guardBinder);
         if (link != null) {
             MethodHandle target = link.getTarget();

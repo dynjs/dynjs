@@ -7,6 +7,7 @@ import org.dynjs.runtime.DynObject;
 
 public class Thing {
     public int someNum = 100;
+    public Object someThing = "Not null";
     
     public boolean oppositeOf(boolean tf) {
         return !tf;
@@ -18,6 +19,15 @@ public class Thing {
 
     public Thing(List[] lists) {
         super();
+    }
+
+    public Thing(Object obj) {
+      super();
+      someThing = obj;
+    }
+
+    public boolean gotNull() {
+      return someThing == null;
     }
     
     public String intMethod(int arg) {

@@ -27,6 +27,11 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     public DynJSCoercionMatrix(JSJavaImplementationManager manager) throws NoSuchMethodException, IllegalAccessException {
         this.manager = manager;
         Lookup lookup = MethodHandles.lookup();
+
+        // Convert JavaScript null and undefined values to Java null
+        addCoercion(0, Object.class, Types.Null.class, lookup.findStatic(DynJSCoercionMatrix.class, "jsToJavaNull", methodType(Object.class, Object.class)));
+
+        // Convert JavaScript objects to Strings
         addCoercion(3, String.class, JSObject.class, lookup.findStatic(DynJSCoercionMatrix.class, "objectToString", methodType(String.class, JSObject.class)));
 
         DynArrayCoercer dynArrayCoercer = new DynArrayCoercer();
@@ -49,6 +54,10 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
             return context.call((JSFunction) toString, object).toString();
         }
 
+        return null;
+    }
+
+    public static Object jsToJavaNull(Object jsNull) {
         return null;
     }
 

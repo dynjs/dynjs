@@ -16,4 +16,7 @@
 package org.dynjs.runtime.java;
 
 public class SayHiToJava {
+    public static boolean isNull(Object object) {
+      return object == null;
+    }
 }
