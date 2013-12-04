@@ -18,5 +18,47 @@ describe("Java language interop", function() {
     });
   });
 
+  describe("Dynamic dispatch of implemented interface functions should work", function() {
+    var actions = {
+      doIt: function() {
+        return "doIt";
+      }
+    };
+
+    function lookup(name, defaultReturn) {
+      return function() {
+        return (actions[name] ? actions[name].apply(null, arguments) : defaultReturn);
+      };
+    }
+
+    var foo = new org.dynjs.runtime.java.Foobar({
+      doIt: lookup("doIt", "Default"),
+      doItDifferently: lookup("doItDifferently", "Default"),
+      doItWithParameters: lookup("doItWithParameters", "Default")
+    });
+
+    it("should handle defaults", function() {
+      expect(foo.doIt()).toBe("doIt");
+      expect(foo.doItDifferently()).toBe("Default");
+      expect(foo.doItWithParameters("Fajitas!")).toBe("Default");
+    });
+    
+    it("should handle changes to the defaults", function() {
+      actions.doItDifferently = function() {
+        return "doItDifferently";
+      };
+      expect(foo.doItDifferently()).toBe("doItDifferently");
+    });
+    
+    it("should handle parameters supplied to the function", function() {
+      actions.doItWithParameters = function() {
+        return Array.prototype.slice.apply(arguments)[0];
+      };
+      expect(foo.doItWithParameters("Fajitas!")).toBe("Fajitas!");
+      expect(foo.callWithParameters("Nachos!")).toBe("Nachos!");
+    });
+    
+  });
+
 });
 
