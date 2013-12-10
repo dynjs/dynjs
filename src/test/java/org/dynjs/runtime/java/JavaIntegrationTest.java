@@ -610,4 +610,17 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("b.callImplementedParentGetLong()")).isEqualTo(8L);
         assertThat(b.callImplementedParentGetLong()).isEqualTo(8L);
     }
+
+    @Test
+    @Ignore
+    public void testBooleanInAbstractClassMethodSignature() {
+        eval("var impl = { " +
+                "doIt: function() { return 'doIt'; }," +
+                "doItDifferently: function() { return 'doItDifferently'; }," +
+                "doItWithParameters: function() { return 'doItWithParameters'; }" +
+                "};" +
+              "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+        assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("doItWithParameters");
+
+    }
 }

@@ -18,7 +18,7 @@ describe("Java language interop", function() {
     });
   });
 
-  describe("Dynamic dispatch of implemented interface functions should work", function() {
+  xdescribe("Dynamic dispatch of implemented interface functions should work", function() {
     var actions = {
       doIt: function() {
         return "doIt";
@@ -40,7 +40,7 @@ describe("Java language interop", function() {
     it("should handle defaults", function() {
       expect(foo.doIt()).toBe("doIt");
       expect(foo.doItDifferently()).toBe("Default");
-      expect(foo.doItWithParameters("Fajitas!")).toBe("Default");
+      expect(foo.doItWithParameters("Fajitas!", true)).toBe("Default");
     });
     
     it("should handle changes to the defaults", function() {
@@ -54,8 +54,8 @@ describe("Java language interop", function() {
       actions.doItWithParameters = function() {
         return Array.prototype.slice.apply(arguments)[0];
       };
-      expect(foo.doItWithParameters("Fajitas!")).toBe("Fajitas!");
-      expect(foo.callWithParameters("Nachos!")).toBe("Nachos!");
+      expect(foo.doItWithParameters("Fajitas!", true)).toBe("Fajitas!");
+      expect(foo.callWithParameters("Nachos!", true)).toBe("Nachos!");
     });
     
   });
