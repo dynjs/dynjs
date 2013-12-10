@@ -32,7 +32,6 @@ public class JSJavaImplementationManager {
 
     private Map<Class<?>, Class<?>> implementations = new HashMap<>();
 
-    private BooleanMethodGenerator booleanMethodGenerator = new BooleanMethodGenerator();
     private ObjectMethodGenerator objectMethodGenerator = new ObjectMethodGenerator();
 
     private ShadowObjectLinkStrategy shadowLinker;
@@ -157,12 +156,7 @@ public class JSJavaImplementationManager {
     }
 
     private void defineMethod(final Method method, final JiteClass jiteClass, final Class<?> superClass) {
-        Class<?> returnType = method.getReturnType();
-        if (returnType == Boolean.TYPE) {
-            booleanMethodGenerator.defineMethod(method, jiteClass, superClass);
-        } else {
-            objectMethodGenerator.defineMethod(method, jiteClass, superClass);
-        }
+        objectMethodGenerator.defineMethod(method, jiteClass, superClass);
     }
     
     private List<Method> getMethods(Class<?> targetClass) {

@@ -10,10 +10,10 @@ import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.Types.Undefined;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.objectweb.asm.tree.LabelNode;
 
 public abstract class MethodGenerator {
@@ -27,10 +27,12 @@ public abstract class MethodGenerator {
         LabelNode internalHasImpl = new LabelNode();
 
         block.aload(Arities.THIS);
+        // this
         block.getfield(jiteClass.getClassName().replace('.', '/'), "implementation", ci(JSObject.class));
         // obj
 
         block.aload(Arities.THIS);
+        // obj this
         block.getfield(jiteClass.getClassName().replace('.', '/'), "context", ci(ExecutionContext.class));
         // obj context
 
@@ -63,30 +65,46 @@ public abstract class MethodGenerator {
         block.getfield(jiteClass.getClassName().replace('.', '/'), "context", ci(ExecutionContext.class));
         // fn context
 
-        block.swap();
-        // context fn
-
         block.aload(Arities.THIS);
-        // context fn this
+        // fn context this
 
         block.ldc(params.length);
+        // fn context this length
         block.anewarray(p(Object.class));
-        // context fn this args
+        // fn context this args
 
         for (int i = 0; i < params.length; ++i) {
+            Class<?> param = params[i];
             block.dup();
-            // context fn this args args
+            // fn context this args args
             block.ldc(i);
-            block.aload(i + 1);
-            // context fn this args args arg-I
+            // fn context this args args index
+            if (param == int.class) {
+                block.iload(i + 1);
+                // fn context this args args index int
+                block.invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
+                // fn context this args args index Integer
+            } else if (param == boolean.class) {
+                block.iload(i + 1);
+                // fn context this args args index int
+                block.invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+                // fn context this args args index Boolean
+            } else {
+                block.aload(i + 1);
+                // fn context this args args index arg-I
+            }
             block.aastore();
-            // context fn this args
+            // fn context this args
         }
 
-        // context fn this args
-
-        block.invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, JSFunction.class, Object.class, Object[].class));
+        // fn context this args
+        block.invokedynamic("dyn:call", sig(method.getReturnType(), Object.class, ExecutionContext.class, Object.class, Object[].class),
+                DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
         // result
+        if (method.getReturnType() == Void.TYPE) {
+            // aconst_null();
+            handleDefaultReturnValue(block);
+        }
     }
 
     protected void callSuperImplementation(Method method, Class<?> superClass, CodeBlock block) {
@@ -96,7 +114,7 @@ public abstract class MethodGenerator {
         } catch (NoSuchMethodException e) {
         } catch (SecurityException e) {
         }
-        
+
 
         final boolean hasSuper = superMethodFound || Modifier.isProtected(method.getModifiers());
         if (hasSuper) {
@@ -108,11 +126,16 @@ public abstract class MethodGenerator {
             }
 
             signature[0] = method.getReturnType();
-            
+
 
             block.aload(Arities.THIS);
             for (int i = 0; i < params.length; ++i) {
-                block.aload(i + 1);
+                Class<?> param = params[i];
+                if (param == int.class || param == boolean.class) {
+                    block.iload(i + 1);
+                } else {
+                    block.aload(i + 1);
+                }
             }
             block.invokespecial(p(superClass), method.getName(), sig(signature));
             if (method.getReturnType() == Void.TYPE) {
@@ -126,17 +149,4 @@ public abstract class MethodGenerator {
 
     protected abstract void handleDefaultReturnValue(CodeBlock block);
 
-    protected void coerceForReturn(Method method, JiteClass jiteClass, CodeBlock block) {
-        coerceTo(method.getReturnType(), jiteClass, block);
-    }
-
-    protected void coerceTo(Class<?> type, JiteClass jiteClass, CodeBlock block) {
-        block.aload(Arities.THIS);
-        block.invokevirtual(jiteClass.getClassName().replace('.', '/'), "getClass", sig(Class.class));
-        block.invokevirtual(p(Class.class), "getClassLoader", sig(ClassLoader.class));
-        block.ldc(type.getName());
-        block.invokevirtual(p(ClassLoader.class), "loadClass", sig(Class.class, String.class));
-        block.invokestatic(p(JavaTypes.class), "coerceTo", sig(Object.class, Object.class, Class.class));
-        block.checkcast(p(type));
-    }
 }

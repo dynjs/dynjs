@@ -18,7 +18,7 @@ describe("Java language interop", function() {
     });
   });
 
-  xdescribe("Dynamic dispatch of implemented interface functions should work", function() {
+  describe("Dynamic dispatch of implemented interface functions should work", function() {
     var actions = {
       doIt: function() {
         return "doIt";
@@ -56,6 +56,19 @@ describe("Java language interop", function() {
       };
       expect(foo.doItWithParameters("Fajitas!", true)).toBe("Fajitas!");
       expect(foo.callWithParameters("Nachos!", true)).toBe("Nachos!");
+    });
+
+    xit("should handle primitive parameters and return types", function() {
+      actions.doItWithInt = function() {
+        return Array.prototype.slice.apply(arguments)[0];
+      };
+      actions.doItWithBoolean = function(param) {
+        return param;
+      };
+      expect(foo.doItWithInt(5)).toBe(5);
+      expect(foo.callWithInt(5)).toBe(5);
+      expect(foo.doItWithBoolean(true)).toBe(true);
+      expect(foo.callWithBoolean(true)).toBe(true);
     });
     
   });
