@@ -32,6 +32,7 @@ public class ClasspathModuleProvider extends ModuleProvider {
         }
         catch(Exception e) {
             System.err.println("There was an error loading the module " + moduleId + ". Error message: " + e.getMessage());
+            e.printStackTrace();
         }
         return false;
     }
