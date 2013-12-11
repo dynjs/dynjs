@@ -33,12 +33,29 @@ public class ObjectMethodGenerator extends MethodGenerator {
         CodeBlock codeBlock = new CodeBlock();
         callJavascriptImplementation(method, jiteClass, codeBlock, noImpl);
         // result
-        // Coerce our JavaScript Long values to the appropriate return type
-        if (returnType == int.class) {
+        // Coerce our JavaScript values to the appropriate return type
+        if (returnType == int.class || returnType == short.class) {
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToInteger", sig(Integer.class, Number.class));
             codeBlock.invokevirtual(p(Integer.class), "intValue", sig(int.class));
+        } else if (returnType == long.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToLong", sig(Long.class, Number.class));
+            codeBlock.invokevirtual(p(Long.class), "longValue", sig(long.class));
+        } else if (returnType == float.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToFloat", sig(Float.class, Number.class));
+            codeBlock.invokevirtual(p(Float.class), "floatValue", sig(float.class));
+        } else if (returnType == double.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToDouble", sig(Double.class, Number.class));
+            codeBlock.invokevirtual(p(Double.class), "doubleValue", sig(double.class));
         } else if (returnType == Integer.class) {
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToInteger", sig(Integer.class, Number.class));
+        } else if (returnType == Long.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToLong", sig(Long.class, Number.class));
+        } else if (returnType == Short.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToShort", sig(Short.class, Number.class));
+        } else if (returnType == Float.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToFloat", sig(Float.class, Number.class));
+        } else if (returnType == Double.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToDouble", sig(Double.class, Number.class));
         }
         codeBlock.go_to(complete);
 
@@ -51,8 +68,14 @@ public class ObjectMethodGenerator extends MethodGenerator {
         // result
         if (returnType == Void.TYPE) {
             codeBlock.voidreturn();
-        } else if (returnType == int.class || returnType == boolean.class) {
+        } else if (returnType == int.class || returnType == boolean.class || returnType == short.class) {
             codeBlock.ireturn();
+        } else if (returnType == long.class) {
+            codeBlock.lreturn();
+        } else if (returnType == float.class) {
+            codeBlock.freturn();
+        } else if (returnType == double.class) {
+            codeBlock.dreturn();
         } else {
             codeBlock.areturn();
         }

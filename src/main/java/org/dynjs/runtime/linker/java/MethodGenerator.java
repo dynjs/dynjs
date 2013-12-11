@@ -79,11 +79,20 @@ public abstract class MethodGenerator {
             // fn context this args args
             block.ldc(i);
             // fn context this args args index
-            if (param == int.class) {
+            if (param == int.class || param == short.class) {
                 block.iload(i + 1);
                 // fn context this args args index int
                 block.invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
                 // fn context this args args index Integer
+            } else if (param == long.class) {
+                block.lload(i + 1);
+                block.invokestatic(p(Long.class), "valueOf", sig(Long.class, long.class));
+            } else if (param == float.class) {
+                block.fload(i + 1);
+                block.invokestatic(p(Float.class), "valueOf", sig(Float.class, float.class));
+            } else if (param == double.class) {
+                block.dload(i + 1);
+                block.invokestatic(p(Double.class), "valueOf", sig(Double.class, double.class));
             } else if (param == boolean.class) {
                 block.iload(i + 1);
                 // fn context this args args index int
@@ -98,9 +107,10 @@ public abstract class MethodGenerator {
         }
 
         Class<?> returnType = method.getReturnType();
-        // JavaScript returns all numbers as Longs
-        if (Number.class.isAssignableFrom(returnType) || returnType == int.class) {
-            returnType = Long.class;
+        // Sort out our real return type later and all numerics as Numbers
+        if (Number.class.isAssignableFrom(returnType) || returnType == int.class || returnType == short.class
+                || returnType == long.class || returnType == float.class || returnType == double.class) {
+            returnType = Number.class;
         }
         // fn context this args
         block.invokedynamic("dyn:call", sig(returnType, Object.class, ExecutionContext.class, Object.class, Object[].class),
@@ -136,8 +146,14 @@ public abstract class MethodGenerator {
             block.aload(Arities.THIS);
             for (int i = 0; i < params.length; ++i) {
                 Class<?> param = params[i];
-                if (param == int.class || param == boolean.class) {
+                if (param == int.class || param == boolean.class || param == short.class) {
                     block.iload(i + 1);
+                } else if (param == long.class) {
+                    block.lload(i + 1);
+                } else if (param == float.class) {
+                    block.fload(i + 1);
+                } else if (param == double.class) {
+                    block.dload(i + 1);
                 } else {
                     block.aload(i + 1);
                 }
