@@ -617,14 +617,20 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "doIt: function() { return 'doIt'; }," +
                 "doItDifferently: function() { return 'doItDifferently'; }," +
                 "doItWithParameters: function(param, tf) { return param + (tf ? 'true' : 'false'); }," +
-                "doItWithInt: function(param) { return param; }," +
+                "doItWithInt: function(param) { return param + 1; }," +
+                "doItWithPrimitiveInt: function(param) { return param + 1; }," +
                 "doItWithBoolean: function(param) { return param; }" +
                 "};" +
               "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
         assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("some stringtrue");
-        assertThat(eval("foobar.doItWithInt(5);")).isEqualTo(5);
+
+        assertThat(eval("foobar.doItWithInt(5);")).isEqualTo(6);
+        assertThat(eval("foobar.callWithInt(5);")).isEqualTo(6);
+
+        assertThat(eval("foobar.doItWithPrimitiveInt(5);")).isEqualTo(6);
+        assertThat(eval("foobar.callWithPrimitiveInt(5);")).isEqualTo(6);
+
         assertThat(eval("foobar.doItWithBoolean(true);")).isEqualTo(true);
-        assertThat(eval("foobar.callWithInt(5);")).isEqualTo(5);
         assertThat(eval("foobar.callWithBoolean(true);")).isEqualTo(true);
     }
 }

@@ -9,6 +9,7 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.objectweb.asm.tree.LabelNode;
+import org.projectodd.rephract.mop.java.CoercionMatrix;
 
 public class ObjectMethodGenerator extends MethodGenerator {
     
@@ -32,6 +33,13 @@ public class ObjectMethodGenerator extends MethodGenerator {
         CodeBlock codeBlock = new CodeBlock();
         callJavascriptImplementation(method, jiteClass, codeBlock, noImpl);
         // result
+        // Coerce our JavaScript Long values to the appropriate return type
+        if (returnType == int.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToInteger", sig(Integer.class, Number.class));
+            codeBlock.invokevirtual(p(Integer.class), "intValue", sig(int.class));
+        } else if (returnType == Integer.class) {
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToInteger", sig(Integer.class, Number.class));
+        }
         codeBlock.go_to(complete);
 
         codeBlock.label(noImpl);
@@ -41,7 +49,7 @@ public class ObjectMethodGenerator extends MethodGenerator {
 
         codeBlock.label(complete);
         // result
-        if (method.getReturnType() == Void.TYPE) {
+        if (returnType == Void.TYPE) {
             codeBlock.voidreturn();
         } else if (returnType == int.class || returnType == boolean.class) {
             codeBlock.ireturn();

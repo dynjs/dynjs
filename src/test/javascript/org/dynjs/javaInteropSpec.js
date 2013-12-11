@@ -34,7 +34,10 @@ describe("Java language interop", function() {
     var foo = new org.dynjs.runtime.java.Foobar({
       doIt: lookup("doIt", "Default"),
       doItDifferently: lookup("doItDifferently", "Default"),
-      doItWithParameters: lookup("doItWithParameters", "Default")
+      doItWithParameters: lookup("doItWithParameters", "Default"),
+      doItWithInt: lookup("doItWithInt", -1),
+      doItWithPrimitiveInt: lookup("doItWithPrimitiveInt", -1),
+      doItWithBoolean: lookup("doItWithBoolean", false)
     });
 
     it("should handle defaults", function() {
@@ -58,15 +61,23 @@ describe("Java language interop", function() {
       expect(foo.callWithParameters("Nachos!", true)).toBe("Nachos!");
     });
 
-    xit("should handle primitive parameters and return types", function() {
-      actions.doItWithInt = function() {
-        return Array.prototype.slice.apply(arguments)[0];
+    it("should handle primitive parameters and return types", function() {
+      actions.doItWithInt = function(param) {
+        return param + 1;
       };
+      actions.doItWithPrimitiveInt = function(param) {
+        return param + 1;
+      }
       actions.doItWithBoolean = function(param) {
         return param;
       };
-      expect(foo.doItWithInt(5)).toBe(5);
-      expect(foo.callWithInt(5)).toBe(5);
+
+      expect(foo.doItWithInt(5)).toBe(6);
+      expect(foo.callWithInt(5)).toBe(6);
+
+      expect(foo.doItWithPrimitiveInt(5)).toBe(6);
+      expect(foo.callWithPrimitiveInt(6)).toBe(7);
+
       expect(foo.doItWithBoolean(true)).toBe(true);
       expect(foo.callWithBoolean(true)).toBe(true);
     });

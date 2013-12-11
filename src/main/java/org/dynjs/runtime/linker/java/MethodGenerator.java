@@ -97,11 +97,16 @@ public abstract class MethodGenerator {
             // fn context this args
         }
 
+        Class<?> returnType = method.getReturnType();
+        // JavaScript returns all numbers as Longs
+        if (Number.class.isAssignableFrom(returnType) || returnType == int.class) {
+            returnType = Long.class;
+        }
         // fn context this args
-        block.invokedynamic("dyn:call", sig(method.getReturnType(), Object.class, ExecutionContext.class, Object.class, Object[].class),
+        block.invokedynamic("dyn:call", sig(returnType, Object.class, ExecutionContext.class, Object.class, Object[].class),
                 DynJSBootstrapper.HANDLE, DynJSBootstrapper.ARGS);
         // result
-        if (method.getReturnType() == Void.TYPE) {
+        if (returnType == Void.TYPE) {
             // aconst_null();
             handleDefaultReturnValue(block);
         }
