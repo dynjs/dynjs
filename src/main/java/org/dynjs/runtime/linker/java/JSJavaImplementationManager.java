@@ -32,7 +32,6 @@ public class JSJavaImplementationManager {
 
     private Map<Class<?>, Class<?>> implementations = new HashMap<>();
 
-    private BooleanMethodGenerator booleanMethodGenerator = new BooleanMethodGenerator();
     private ObjectMethodGenerator objectMethodGenerator = new ObjectMethodGenerator();
 
     private ShadowObjectLinkStrategy shadowLinker;
@@ -114,16 +113,25 @@ public class JSJavaImplementationManager {
 
         CodeBlock codeBlock = new CodeBlock()
             .aload(Arities.THIS)
+             // this
             .invokespecial(superClassName, "<init>", sig(void.class))
+             // <empty>
 
             .aload(Arities.THIS)
+             // this
             .aload(1)
+             // this context
             .putfield(className.replace('.', '/'), "context", ci(ExecutionContext.class))
+             // <empty>
 
             .aload(Arities.THIS)
+             // this
             .aload(2)
+             // this JSObject
             .putfield(className.replace('.', '/'), "implementation", ci(JSObject.class))
+             // <empty>
             .aload(2)
+             // JSObject
 
             .voidreturn();
 
@@ -148,13 +156,7 @@ public class JSJavaImplementationManager {
     }
 
     private void defineMethod(final Method method, final JiteClass jiteClass, final Class<?> superClass) {
-
-        Class<?> returnType = method.getReturnType();
-        if (returnType == Boolean.TYPE) {
-            booleanMethodGenerator.defineMethod(method, jiteClass, superClass);
-        } else {
-            objectMethodGenerator.defineMethod(method, jiteClass, superClass);
-        }
+        objectMethodGenerator.defineMethod(method, jiteClass, superClass);
     }
     
     private List<Method> getMethods(Class<?> targetClass) {

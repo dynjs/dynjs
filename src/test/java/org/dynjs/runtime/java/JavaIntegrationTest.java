@@ -612,15 +612,56 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
-    public void testBooleanInAbstractClassMethodSignature() {
-        eval("var impl = { " +
+    public void testPrimitivesInAbstractClassMethodSignature() {
+        eval( "var doInt = function(param) { return param + 1; };" +
+              "var impl = { " +
                 "doIt: function() { return 'doIt'; }," +
                 "doItDifferently: function() { return 'doItDifferently'; }," +
-                "doItWithParameters: function() { return 'doItWithParameters'; }" +
+                "doItWithParameters: function(param, tf) { return param + (tf ? 'true' : 'false'); }," +
+                "doItWithInt: doInt," +
+                "doItWithPrimitiveInt: doInt," +
+                "doItWithLong: doInt," +
+                "doItWithPrimitiveLong: doInt," +
+                "doItWithShort: doInt," +
+                "doItWithPrimitiveShort: doInt," +
+                "doItWithFloat: function(param) { return param + 1.1; }," +
+                "doItWithPrimitiveFloat: function(param) { return param + 1.1; }," +
+                "doItWithDouble: function(param) { return param + 1.1; }," +
+                "doItWithPrimitiveDouble: function(param) { return param + 1.1; }," +
+                "doItWithBoolean: function(param) { return param; }," +
+                "doItWithPrimitiveBoolean: function(param) { return true; }" +
                 "};" +
               "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
-        assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("doItWithParameters");
+        assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("some stringtrue");
 
+        assertThat(eval("foobar.doItWithInt(5);")).isEqualTo(6);
+        assertThat(eval("foobar.callWithInt(5);")).isEqualTo(6);
+        assertThat(eval("foobar.doItWithPrimitiveInt(5);")).isEqualTo(6);
+        assertThat(eval("foobar.callWithPrimitiveInt(5);")).isEqualTo(6);
+
+        assertThat(eval("foobar.doItWithLong(5);")).isEqualTo(6L);
+        assertThat(eval("foobar.callWithLong(5);")).isEqualTo(6L);
+        assertThat(eval("foobar.doItWithPrimitiveLong(5);")).isEqualTo(6L);
+        assertThat(eval("foobar.callWithPrimitiveLong(5);")).isEqualTo(6L);
+
+        assertThat(eval("foobar.doItWithShort(5);")).isEqualTo((short) 6);
+        assertThat(eval("foobar.callWithShort(5);")).isEqualTo((short) 6);
+        assertThat(eval("foobar.doItWithPrimitiveShort(5);")).isEqualTo((short) 6);
+        assertThat(eval("foobar.callWithPrimitiveShort(5);")).isEqualTo((short) 6);
+
+        assertThat(eval("foobar.doItWithFloat(5.0);")).isEqualTo(6.1F);
+        assertThat(eval("foobar.callWithFloat(5.0);")).isEqualTo(6.1F);
+        assertThat(eval("foobar.doItWithPrimitiveFloat(5.0);")).isEqualTo(6.1F);
+        assertThat(eval("foobar.callWithPrimitiveFloat(5.0);")).isEqualTo(6.1F);
+
+        assertThat(eval("foobar.doItWithDouble(5.0);")).isEqualTo(6.1);
+        assertThat(eval("foobar.callWithDouble(5.0);")).isEqualTo(6.1);
+        assertThat(eval("foobar.doItWithPrimitiveDouble(5.0);")).isEqualTo(6.1);
+        assertThat(eval("foobar.callWithPrimitiveDouble(5.0);")).isEqualTo(6.1);
+
+        assertThat(eval("foobar.doItWithBoolean(true);")).isEqualTo(true);
+        assertThat(eval("foobar.callWithBoolean(true);")).isEqualTo(true);
+        assertThat(eval("foobar.doItWithPrimitiveBoolean(true);")).isEqualTo(true);
+        assertThat(eval("foobar.callWithPrimitiveBoolean(true);")).isEqualTo(true);
     }
 }

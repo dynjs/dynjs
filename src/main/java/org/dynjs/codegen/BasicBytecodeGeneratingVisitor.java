@@ -1436,7 +1436,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         label(isCallable);
         // context ref function self array
 
-        // call ExecutionContext#call(fn, self, args) -> Object
+        // call ExecutionContext#call(ref, fn, self, args) -> Object
         invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, Object.class, JSFunction.class, Object.class, Object[].class));
         // obj
     }
