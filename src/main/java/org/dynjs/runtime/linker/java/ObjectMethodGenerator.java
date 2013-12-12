@@ -56,6 +56,10 @@ public class ObjectMethodGenerator extends MethodGenerator {
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToFloat", sig(Float.class, Number.class));
         } else if (returnType == Double.class) {
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToDouble", sig(Double.class, Number.class));
+//        } else if (returnType == boolean.class) {
+//            // ensure we return a boolean whether we have a Boolean or boolean here
+//            codeBlock.invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+//            codeBlock.invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
         }
         codeBlock.go_to(complete);
 

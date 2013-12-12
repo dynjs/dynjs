@@ -664,4 +664,13 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("foobar.doItWithPrimitiveBoolean(true);")).isEqualTo(true);
         assertThat(eval("foobar.callWithPrimitiveBoolean(true);")).isEqualTo(true);
     }
+
+    @Test
+    @Ignore
+    public void testSomeInterface() {
+        assertThat(eval("var obj = new org.dynjs.runtime.java.SomeInterface({" +
+                "handleObjectBoolean: function(o) { return true; }" +
+                "});"));
+        assertThat(eval("obj.handleObjectBoolean('foo')")).isEqualTo(true);
+    }
 }

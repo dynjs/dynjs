@@ -37,7 +37,9 @@ describe("Java language interop", function() {
       doItWithParameters: lookup("doItWithParameters", "Default"),
       doItWithInt: lookup("doItWithInt", -1),
       doItWithPrimitiveInt: lookup("doItWithPrimitiveInt", -1),
-      doItWithBoolean: lookup("doItWithBoolean", false)
+      doItWithBoolean: lookup("doItWithBoolean", false),
+      doItWithPrimitiveBoolean: lookup("doItWithBoolean", false),
+      doItWithObjectReturningBoolean: lookup("doItWithObjectReturningBoolean", false)
     });
 
     it("should handle defaults", function() {
@@ -67,9 +69,15 @@ describe("Java language interop", function() {
       };
       actions.doItWithPrimitiveInt = function(param) {
         return param + 1;
-      }
+      };
       actions.doItWithBoolean = function(param) {
         return param;
+      };
+      actions.doItWithPrimitiveBoolean = function(param) {
+        return param;
+      };
+      actions.doItWithObjectReturningBoolean = function(param) {
+        return true;
       };
 
       expect(foo.doItWithInt(5)).toBe(6);
@@ -80,7 +88,21 @@ describe("Java language interop", function() {
 
       expect(foo.doItWithBoolean(true)).toBe(true);
       expect(foo.callWithBoolean(true)).toBe(true);
+
+      expect(foo.doItWithPrimitiveBoolean(true)).toBe(true);
+      expect(foo.callWithPrimitiveBoolean(true)).toBe(true);
+
+      expect(foo.doItWithObjectReturningBoolean(new java.lang.String("foo"))).toBe(true);
     });
+
+//    var obj = new org.dynjs.runtime.java.SomeInterface({
+//      handleObjectBoolean: function(o) { return true; }
+//    });
+//
+//    it("should be better", function() {
+//      expect(obj).not.toBe(null);
+//      expect(obj).not.toBe(undefined);
+//    });
     
   });
 

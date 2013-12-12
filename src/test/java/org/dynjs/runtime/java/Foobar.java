@@ -15,6 +15,7 @@ public abstract class Foobar implements Foo {
     public abstract double doItWithPrimitiveDouble(double param);
     public abstract Boolean doItWithBoolean(Boolean param);
     public abstract boolean doItWithPrimitiveBoolean(boolean param);
+    public abstract boolean doItWithObjectReturningBoolean(Object param);
 
     public String callWithParameters(String param, boolean tf) {
         return doItWithParameters(param, tf);
@@ -56,4 +57,5 @@ public abstract class Foobar implements Foo {
     public boolean callWithPrimitiveBoolean(boolean param) {
         return doItWithPrimitiveBoolean(param);
     }
+
 }
