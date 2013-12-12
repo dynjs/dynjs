@@ -649,15 +649,15 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("foobar.doItWithPrimitiveShort(5);")).isEqualTo((short) 6);
         assertThat(eval("foobar.callWithPrimitiveShort(5);")).isEqualTo((short) 6);
 
-        assertThat(eval("foobar.doItWithFloat(5.0);")).isEqualTo(6.1F);
-        assertThat(eval("foobar.callWithFloat(5.0);")).isEqualTo(6.1F);
-        assertThat(eval("foobar.doItWithPrimitiveFloat(5.0);")).isEqualTo(6.1F);
-        assertThat(eval("foobar.callWithPrimitiveFloat(5.0);")).isEqualTo(6.1F);
+        assertThat(eval("foobar.doItWithFloat(5.0);")).isEqualTo(6.1f);
+        assertThat(eval("foobar.callWithFloat(5.0);")).isEqualTo(6.1f);
+        assertThat(eval("foobar.doItWithPrimitiveFloat(5.0);")).isEqualTo(6.1f);
+        assertThat(eval("foobar.callWithPrimitiveFloat(5.0);")).isEqualTo(6.1f);
 
-        assertThat(eval("foobar.doItWithDouble(5.0);")).isEqualTo(6.1);
-        assertThat(eval("foobar.callWithDouble(5.0);")).isEqualTo(6.1);
-        assertThat(eval("foobar.doItWithPrimitiveDouble(5.0);")).isEqualTo(6.1);
-        assertThat(eval("foobar.callWithPrimitiveDouble(5.0);")).isEqualTo(6.1);
+        assertThat(eval("foobar.doItWithDouble(5.0);")).isEqualTo(6.1d);
+        assertThat(eval("foobar.callWithDouble(5.0);")).isEqualTo(6.1d);
+        assertThat(eval("foobar.doItWithPrimitiveDouble(5.0);")).isEqualTo(6.1d);
+        assertThat(eval("foobar.callWithPrimitiveDouble(5.0);")).isEqualTo(6.1d);
 
         assertThat(eval("foobar.doItWithBoolean(true);")).isEqualTo(true);
         assertThat(eval("foobar.callWithBoolean(true);")).isEqualTo(true);
@@ -666,11 +666,22 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
     public void testSomeInterface() {
         assertThat(eval("var obj = new org.dynjs.runtime.java.SomeInterface({" +
-                "handleObjectBoolean: function(o) { return true; }" +
+                "handleObjectBoolean: function(o) { return true; }," +
+                "handleObjectInt: function(o) { return 5; }," +
+                "handleObjectLong: function(o) { return 5; }," +
+                "handleObjectShort: function(o) { return 5; }," +
+                "handleObjectFloat: function(o) { return 1.0; }," +
+                "handleObjectDouble: function(o) { return 1.1; }," +
+                "handleObjectString: function(o) { return 'bar'; }" +
                 "});"));
         assertThat(eval("obj.handleObjectBoolean('foo')")).isEqualTo(true);
+        assertThat(eval("obj.handleObjectInt('foo')")).isEqualTo(5);
+        assertThat(eval("obj.handleObjectLong('foo')")).isEqualTo(5L);
+        assertThat(eval("obj.handleObjectShort('foo')")).isEqualTo((short) 5);
+        assertThat(eval("obj.handleObjectFloat('foo')")).isEqualTo(1.0f);
+        assertThat(eval("obj.handleObjectDouble('foo')")).isEqualTo(1.1d);
+        assertThat(eval("obj.handleObjectString('foo')")).isEqualTo("bar");
     }
 }

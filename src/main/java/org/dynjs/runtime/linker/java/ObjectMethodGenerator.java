@@ -56,10 +56,6 @@ public class ObjectMethodGenerator extends MethodGenerator {
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToFloat", sig(Float.class, Number.class));
         } else if (returnType == Double.class) {
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToDouble", sig(Double.class, Number.class));
-//        } else if (returnType == boolean.class) {
-//            // ensure we return a boolean whether we have a Boolean or boolean here
-//            codeBlock.invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
-//            codeBlock.invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
         }
         codeBlock.go_to(complete);
 
@@ -87,8 +83,18 @@ public class ObjectMethodGenerator extends MethodGenerator {
     }
 
     @Override
-    protected void handleDefaultReturnValue(CodeBlock block) {
-        block.aconst_null();
+    protected void handleDefaultReturnValue(Class<?> returnType, CodeBlock block) {
+        if (returnType == Void.TYPE || Object.class.isAssignableFrom(returnType)) {
+            block.aconst_null();
+        } else if (returnType == int.class || returnType == short.class || returnType == boolean.class) {
+            block.ldc(0);
+        } else if (returnType == long.class) {
+            block.ldc(0L);
+        } else if (returnType == float.class) {
+            block.ldc(0.0f);
+        } else if (returnType == double.class) {
+            block.ldc(0.0d);
+        }
     }
 
 

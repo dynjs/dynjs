@@ -118,7 +118,7 @@ public abstract class MethodGenerator {
         // result
         if (returnType == Void.TYPE) {
             // aconst_null();
-            handleDefaultReturnValue(block);
+            handleDefaultReturnValue(returnType, block);
         }
     }
 
@@ -160,14 +160,13 @@ public abstract class MethodGenerator {
             }
             block.invokespecial(p(superClass), method.getName(), sig(signature));
             if (method.getReturnType() == Void.TYPE) {
-                // aconst_null();
-                handleDefaultReturnValue(block);
+                handleDefaultReturnValue(method.getReturnType(), block);
             }
         } else {
-            handleDefaultReturnValue(block);
+            handleDefaultReturnValue(method.getReturnType(), block);
         }
     }
 
-    protected abstract void handleDefaultReturnValue(CodeBlock block);
+    protected abstract void handleDefaultReturnValue(Class<?> returnType, CodeBlock block);
 
 }
