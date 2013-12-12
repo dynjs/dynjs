@@ -16,6 +16,12 @@ public abstract class Foobar implements Foo {
     public abstract Boolean doItWithBoolean(Boolean param);
     public abstract boolean doItWithPrimitiveBoolean(boolean param);
     public abstract boolean doItWithObjectReturningBoolean(Object param);
+    public abstract Character doItWithChar(Character param);
+    public abstract char doItWithPrimitiveChar(char param);
+    public abstract Byte doItWithByte(Byte param);
+    public abstract byte doItWithPrimitiveByte(byte param);
+
+    public abstract int[] doItWithPrimitiveIntArray(int[] param);
 
     public String callWithParameters(String param, boolean tf) {
         return doItWithParameters(param, tf);
@@ -56,6 +62,18 @@ public abstract class Foobar implements Foo {
     }
     public boolean callWithPrimitiveBoolean(boolean param) {
         return doItWithPrimitiveBoolean(param);
+    }
+    public Character callWithChar(Character param) {
+        return doItWithChar(param);
+    }
+    public char callWithPrimitiveChar(char param) {
+        return doItWithPrimitiveChar(param);
+    }
+    public Byte callWithByte(Byte param) {
+        return doItWithByte(param);
+    }
+    public byte callWithPrimitiveByte(byte param) {
+        return doItWithPrimitiveByte(param);
     }
 
 }

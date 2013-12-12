@@ -613,11 +613,18 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testPrimitivesInAbstractClassMethodSignature() {
-        eval( "var doInt = function(param) { return param + 1; };" +
+        eval("var impl = { " +
+                "doItWithParameters: function(param, tf) { return param + (tf ? 'true' : 'false'); }" +
+              "};" +
+              "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+
+        assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("some stringtrue");
+    }
+
+    @Test
+    public void testNumbersInAbstractClassMethodSignature() {
+        eval("var doInt = function(param) { return param + 1; };" +
               "var impl = { " +
-                "doIt: function() { return 'doIt'; }," +
-                "doItDifferently: function() { return 'doItDifferently'; }," +
-                "doItWithParameters: function(param, tf) { return param + (tf ? 'true' : 'false'); }," +
                 "doItWithInt: doInt," +
                 "doItWithPrimitiveInt: doInt," +
                 "doItWithLong: doInt," +
@@ -628,11 +635,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "doItWithPrimitiveFloat: function(param) { return param + 1.1; }," +
                 "doItWithDouble: function(param) { return param + 1.1; }," +
                 "doItWithPrimitiveDouble: function(param) { return param + 1.1; }," +
-                "doItWithBoolean: function(param) { return param; }," +
-                "doItWithPrimitiveBoolean: function(param) { return true; }" +
-                "};" +
+              "};" +
               "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
-        assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("some stringtrue");
 
         assertThat(eval("foobar.doItWithInt(5);")).isEqualTo(6);
         assertThat(eval("foobar.callWithInt(5);")).isEqualTo(6);
@@ -658,11 +662,59 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("foobar.callWithDouble(5.0);")).isEqualTo(6.1d);
         assertThat(eval("foobar.doItWithPrimitiveDouble(5.0);")).isEqualTo(6.1d);
         assertThat(eval("foobar.callWithPrimitiveDouble(5.0);")).isEqualTo(6.1d);
+    }
+
+    @Test
+    public void testBooleansInAbstractClassMethodSignature() {
+        eval("var impl = { " +
+                "doItWithBoolean: function(param) { return param; }," +
+                "doItWithPrimitiveBoolean: function(param) { return true; }" +
+              "};" +
+              "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
 
         assertThat(eval("foobar.doItWithBoolean(true);")).isEqualTo(true);
         assertThat(eval("foobar.callWithBoolean(true);")).isEqualTo(true);
         assertThat(eval("foobar.doItWithPrimitiveBoolean(true);")).isEqualTo(true);
         assertThat(eval("foobar.callWithPrimitiveBoolean(true);")).isEqualTo(true);
+    }
+
+    @Test
+    public void testCharactersInAbstractClassMethodSignature() {
+        eval("var impl = { " +
+                "doItWithChar: function(param) { return 'c'; }," +
+                "doItWithPrimitiveChar: function(param) { return 'c'; }" +
+                "};" +
+                "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+
+        assertThat(eval("foobar.doItWithChar('a');")).isEqualTo('c');
+        assertThat(eval("foobar.callWithChar('a');")).isEqualTo('c');
+        assertThat(eval("foobar.doItWithPrimitiveChar('a');")).isEqualTo('c');
+        assertThat(eval("foobar.callWithPrimitiveChar('a');")).isEqualTo('c');
+    }
+
+    @Test
+    public void testBytesInAbstractClassMethodSignature() {
+        eval("var impl = { " +
+                "doItWithByte: function(param) { return 1; }," +
+                "doItWithPrimitiveByte: function(param) { return 1; }" +
+                "};" +
+                "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+
+        assertThat(eval("foobar.doItWithByte(0);")).isEqualTo((byte) 1);
+        assertThat(eval("foobar.callWithByte(0);")).isEqualTo((byte) 1);
+        assertThat(eval("foobar.doItWithPrimitiveByte(0);")).isEqualTo((byte) 1);
+        assertThat(eval("foobar.callWithPrimitiveByte(0);")).isEqualTo((byte) 1);
+    }
+
+    @Test
+    @Ignore // currently we can't override any java methods that return arrays
+    public void testArraysInAbstractClassMethodSignature() {
+        eval("var impl = { " +
+                "doItWithPrimitiveIntArray: function(param) { return [1, 2, 3]; }," +
+                "};" +
+                "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+
+        assertThat(eval("foobar.doItWithPrimitiveIntArray([0]);")).isEqualTo((byte) 1);
     }
 
     @Test
@@ -674,6 +726,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "handleObjectShort: function(o) { return 5; }," +
                 "handleObjectFloat: function(o) { return 1.0; }," +
                 "handleObjectDouble: function(o) { return 1.1; }," +
+                "handleObjectChar: function(o) { return 'c'; }," +
+                "handleObjectByte: function(o) { return 1; }," +
                 "handleObjectString: function(o) { return 'bar'; }" +
                 "});"));
         assertThat(eval("obj.handleObjectBoolean('foo')")).isEqualTo(true);
@@ -682,6 +736,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("obj.handleObjectShort('foo')")).isEqualTo((short) 5);
         assertThat(eval("obj.handleObjectFloat('foo')")).isEqualTo(1.0f);
         assertThat(eval("obj.handleObjectDouble('foo')")).isEqualTo(1.1d);
+        assertThat(eval("obj.handleObjectChar('foo')")).isEqualTo('c');
+        assertThat(eval("obj.handleObjectByte('foo')")).isEqualTo((byte) 1);
         assertThat(eval("obj.handleObjectString('foo')")).isEqualTo("bar");
     }
 }

@@ -7,5 +7,7 @@ public interface SomeInterface {
     short handleObjectShort(Object obj);
     float handleObjectFloat(Object obj);
     double handleObjectDouble(Object obj);
+    char handleObjectChar(Object obj);
+    byte handleObjectByte(Object obj);
     String handleObjectString(Object obj);
 }

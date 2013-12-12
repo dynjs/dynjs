@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
+import org.dynjs.runtime.linker.DynJSCoercionMatrix;
 import org.objectweb.asm.tree.LabelNode;
 import org.projectodd.rephract.mop.java.CoercionMatrix;
 
@@ -34,28 +35,48 @@ public class ObjectMethodGenerator extends MethodGenerator {
         callJavascriptImplementation(method, jiteClass, codeBlock, noImpl);
         // result
         // Coerce our JavaScript values to the appropriate return type
-        if (returnType == int.class || returnType == short.class) {
-            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToInteger", sig(Integer.class, Number.class));
-            codeBlock.invokevirtual(p(Integer.class), "intValue", sig(int.class));
+        if (returnType == int.class) {
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToPrimitiveInteger", sig(int.class, Number.class));
         } else if (returnType == long.class) {
-            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToLong", sig(Long.class, Number.class));
-            codeBlock.invokevirtual(p(Long.class), "longValue", sig(long.class));
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToPrimitiveLong", sig(long.class, Number.class));
+        } else if (returnType == short.class) {
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToPrimitiveShort", sig(short.class, Number.class));
         } else if (returnType == float.class) {
-            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToFloat", sig(Float.class, Number.class));
-            codeBlock.invokevirtual(p(Float.class), "floatValue", sig(float.class));
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToPrimitiveFloat", sig(float.class, Number.class));
         } else if (returnType == double.class) {
-            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToDouble", sig(Double.class, Number.class));
-            codeBlock.invokevirtual(p(Double.class), "doubleValue", sig(double.class));
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToPrimitiveDouble", sig(double.class, Number.class));
         } else if (returnType == Integer.class) {
+            codeBlock.checkcast(p(Number.class));
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToInteger", sig(Integer.class, Number.class));
         } else if (returnType == Long.class) {
+            codeBlock.checkcast(p(Number.class));
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToLong", sig(Long.class, Number.class));
         } else if (returnType == Short.class) {
+            codeBlock.checkcast(p(Number.class));
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToShort", sig(Short.class, Number.class));
         } else if (returnType == Float.class) {
+            codeBlock.checkcast(p(Number.class));
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToFloat", sig(Float.class, Number.class));
         } else if (returnType == Double.class) {
+            codeBlock.checkcast(p(Number.class));
             codeBlock.invokestatic(p(CoercionMatrix.class), "numberToDouble", sig(Double.class, Number.class));
+        } else if (returnType == char.class) {
+            codeBlock.checkcast(p(String.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "stringToPrimitiveCharacter", sig(char.class, String.class));
+        } else if (returnType == Character.class) {
+            codeBlock.checkcast(p(String.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "stringToCharacter", sig(Character.class, String.class));
+        } else if (returnType == byte.class) {
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(CoercionMatrix.class), "numberToPrimitiveByte", sig(byte.class, Number.class));
+        } else if (returnType == Byte.class) {
+            codeBlock.checkcast(p(Number.class));
+            codeBlock.invokestatic(p(DynJSCoercionMatrix.class), "numberToByte", sig(Byte.class, Number.class));
         }
         codeBlock.go_to(complete);
 
@@ -68,7 +89,9 @@ public class ObjectMethodGenerator extends MethodGenerator {
         // result
         if (returnType == Void.TYPE) {
             codeBlock.voidreturn();
-        } else if (returnType == int.class || returnType == boolean.class || returnType == short.class) {
+        } else if (returnType == int.class || returnType == short.class ||
+                returnType == boolean.class || returnType == char.class ||
+                returnType == byte.class) {
             codeBlock.ireturn();
         } else if (returnType == long.class) {
             codeBlock.lreturn();
@@ -86,7 +109,9 @@ public class ObjectMethodGenerator extends MethodGenerator {
     protected void handleDefaultReturnValue(Class<?> returnType, CodeBlock block) {
         if (returnType == Void.TYPE || Object.class.isAssignableFrom(returnType)) {
             block.aconst_null();
-        } else if (returnType == int.class || returnType == short.class || returnType == boolean.class) {
+        } else if (returnType == int.class || returnType == short.class ||
+                returnType == boolean.class || returnType == char.class ||
+                returnType == byte.class) {
             block.ldc(0);
         } else if (returnType == long.class) {
             block.ldc(0L);

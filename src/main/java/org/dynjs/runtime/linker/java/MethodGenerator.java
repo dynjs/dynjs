@@ -79,7 +79,7 @@ public abstract class MethodGenerator {
             // fn context this args args
             block.ldc(i);
             // fn context this args args index
-            if (param == int.class || param == short.class) {
+            if (param == int.class || param == short.class || param == byte.class) {
                 block.iload(i + 1);
                 // fn context this args args index int
                 block.invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
@@ -98,6 +98,11 @@ public abstract class MethodGenerator {
                 // fn context this args args index int
                 block.invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
                 // fn context this args args index Boolean
+            } else if (param == char.class) {
+                block.iload(i + 1);
+                // fn context this args args index char
+                block.invokestatic(p(String.class), "valueOf", sig(String.class, char.class));
+                // fn context this args args index String
             } else {
                 block.aload(i + 1);
                 // fn context this args args index arg-I
@@ -108,9 +113,13 @@ public abstract class MethodGenerator {
 
         Class<?> returnType = method.getReturnType();
         // Sort out our real return type later and all numerics as Numbers
-        if (Number.class.isAssignableFrom(returnType) || returnType == int.class || returnType == short.class
-                || returnType == long.class || returnType == float.class || returnType == double.class) {
+        if (Number.class.isAssignableFrom(returnType) || returnType == int.class ||
+                returnType == short.class || returnType == long.class ||
+                returnType == float.class || returnType == double.class ||
+                returnType == byte.class) {
             returnType = Number.class;
+        } else if (returnType == char.class || returnType == Character.class) {
+            returnType = String.class;
         }
         // fn context this args
         block.invokedynamic("dyn:call", sig(returnType, Object.class, ExecutionContext.class, Object.class, Object[].class),
@@ -146,7 +155,9 @@ public abstract class MethodGenerator {
             block.aload(Arities.THIS);
             for (int i = 0; i < params.length; ++i) {
                 Class<?> param = params[i];
-                if (param == int.class || param == boolean.class || param == short.class) {
+                if (param == int.class || param == short.class ||
+                        param == boolean.class || param == char.class ||
+                        param == byte.class) {
                     block.iload(i + 1);
                 } else if (param == long.class) {
                     block.lload(i + 1);

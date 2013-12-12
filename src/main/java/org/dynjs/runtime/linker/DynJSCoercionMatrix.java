@@ -34,6 +34,16 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         // Convert JavaScript objects to Strings
         addCoercion(3, String.class, JSObject.class, lookup.findStatic(DynJSCoercionMatrix.class, "objectToString", methodType(String.class, JSObject.class)));
 
+        // Byte conversions
+        // TODO: These belong in Rephract's CoercionMatrix
+        addCoercion( 0, Byte.class, byte.class, MethodHandles.identity(byte.class) );
+        addCoercion( 0, Byte.class, Byte.class, MethodHandles.identity(Byte.class) );
+        addCoercion( 1, Byte.class, Short.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
+        addCoercion( 1, Byte.class, Integer.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
+        addCoercion( 1, Byte.class, Long.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
+        addCoercion( 2, Byte.class, Double.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
+        addCoercion( 2, Byte.class, Float.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
+
         DynArrayCoercer dynArrayCoercer = new DynArrayCoercer();
         addArrayCoercion(1, boolean[].class, DynArray.class, dynArrayCoercer);
         addArrayCoercion(1, byte[].class, DynArray.class, dynArrayCoercer);
@@ -59,6 +69,10 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
 
     public static Object jsToJavaNull(Object jsNull) {
         return null;
+    }
+
+    public static Byte numberToByte(Number value) {
+        return value.byteValue();
     }
 
     // ----------------------------------------------------------------------
