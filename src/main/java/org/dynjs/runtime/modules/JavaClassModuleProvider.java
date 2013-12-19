@@ -50,8 +50,8 @@ public class JavaClassModuleProvider extends ModuleProvider {
     private JSObject buildExports(ExecutionContext context, String moduleName, Object javaModule) throws IllegalAccessException {
         Method[] methods = javaModule.getClass().getMethods();
 
-        JSObject module  = (JSObject) context.getGlobalObject().get("module");
-        JSObject exports = (JSObject) module.get(null, "exports");
+		JSObject module = (JSObject) context.getVariableEnvironment().getRecord().getBindingValue(context, "module", true);
+		JSObject exports = (JSObject) module.get(context, "exports");
 
         for (Method method : methods) {
             Export exportAnno = method.getAnnotation(Export.class);
