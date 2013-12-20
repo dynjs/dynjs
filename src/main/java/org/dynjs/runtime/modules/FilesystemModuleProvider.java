@@ -34,13 +34,17 @@ public class FilesystemModuleProvider extends ModuleProvider {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String generateModuleID(ExecutionContext context, String moduleName) {
         Object require = context.getGlobalObject().get("require");
         if (require instanceof Require) {
             File moduleFile = findFile(((Require)require).getLoadPaths(), moduleName);
             if (moduleFile != null && moduleFile.exists()) {
-                return moduleFile.getAbsolutePath();
+                try {
+                    return moduleFile.getCanonicalPath();
+                } catch(IOException e) {
+                    System.err.println("There was an error generating id of module " + moduleName + ". Error message: " + e.getMessage());
+                    return moduleFile.getAbsolutePath();
+                }
             }
         }
         return null;
