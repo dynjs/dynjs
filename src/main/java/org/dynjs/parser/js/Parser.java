@@ -927,7 +927,7 @@ public class Parser {
             switch (la()) {
             case DOT:
                 consume(DOT);
-                String identifier = consume(IDENTIFIER).getText();
+                String identifier = consume().getText();
                 expr = factory.dotOperator(expr, identifier);
                 break;
             case LEFT_BRACKET:

@@ -28,6 +28,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
                 return true;
             } catch (IOException e) {
                 System.err.println("There was an error loading the module " + moduleID + ". Error message: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return false;
