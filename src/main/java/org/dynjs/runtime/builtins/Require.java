@@ -138,8 +138,9 @@ public class Require extends AbstractNativeFunction {
                     return cache.get(moduleId);
                 }
                 // add ID + empty module.exports object to cache
-                JSObject module = new DynObject(context.getGlobalObject());
-                JSObject exports = new DynObject(context.getGlobalObject());
+                GlobalObject globalObject = context.getGlobalObject();
+                JSObject module = new DynObject(globalObject);
+                JSObject exports = new DynObject(globalObject);
                 module.put(context, "exports", exports, true);
                 module.put(context, "id", moduleId, false);
                 cache.put(moduleId, exports);

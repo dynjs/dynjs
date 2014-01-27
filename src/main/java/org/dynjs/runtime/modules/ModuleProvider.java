@@ -18,12 +18,12 @@ public abstract class ModuleProvider {
      * <code>false</code> if not handled.
      * </p>
      * 
-     * @param runtime The active runtime.
+     *
      * @param context The context of the request.
      * @param moduleID The id of the module to load.
      * @return <code>true</code> if the module was loaded, false if not
      */
-    protected abstract boolean load(DynJS runtime, ExecutionContext context, String moduleID);
+    protected abstract boolean load(ExecutionContext context, String moduleID);
 
     /**
      * Generate a unique module ID for <code>moduleName</code>
@@ -45,15 +45,16 @@ public abstract class ModuleProvider {
      */
     public Object findAndLoad(ExecutionContext context, String moduleId, JSObject module, JSObject exports) {
         // setup our module/exports/id in the execution context
+        setMutableBinding(context, "module", module);
+        setMutableBinding(context, "exports", exports);
+        setMutableBinding(context, "id", moduleId);
+        return (this.load(context, moduleId)) ?  module.get(context, "exports") : null;
+    }
+
+    protected void setMutableBinding(ExecutionContext context, String name, Object value) {
         LexicalEnvironment localEnv = context.getVariableEnvironment();
-        localEnv.getRecord().createMutableBinding(context, "module", false);
-        localEnv.getRecord().createMutableBinding(context, "exports", false);
-        localEnv.getRecord().createMutableBinding(context, "id", false);
-        
-        localEnv.getRecord().setMutableBinding(context, "module", module, false);
-        localEnv.getRecord().setMutableBinding(context, "exports", exports, false);
-        localEnv.getRecord().setMutableBinding(context, "id", moduleId, false);
-        return (this.load(context.getGlobalObject().getRuntime(), context, moduleId)) ?  module.get(context, "exports") : null;
+        localEnv.getRecord().createMutableBinding(context, name, false);
+        localEnv.getRecord().setMutableBinding(context, name, value, false);
     }
 
     /**

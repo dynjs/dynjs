@@ -1,6 +1,5 @@
 package org.dynjs.runtime.modules;
 
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 
 import java.io.BufferedReader;
@@ -12,7 +11,7 @@ import java.net.URL;
 public class ClasspathModuleProvider extends ModuleProvider {
 
     @Override
-    public boolean load(DynJS runtime, ExecutionContext context, String moduleId) {
+    public boolean load(ExecutionContext context, String moduleId) {
         ClassLoader classLoader = context.getClassLoader();
         // System.err.println("Classloader: " + classLoader.toString());
         // System.err.println("Looking for module " + moduleId);

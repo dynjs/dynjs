@@ -18,7 +18,8 @@ import java.util.List;
 public class FilesystemModuleProvider extends ModuleProvider {
 
     @Override
-    protected boolean load(DynJS runtime, ExecutionContext context, String moduleID) {
+    protected boolean load(ExecutionContext context, String moduleID) {
+        DynJS runtime = context.getGlobalObject().getRuntime();
         File file = new File(moduleID);
         if (file.exists()) {
             runtime.evaluate("require.addLoadPath('" + file.getParent() + "')");

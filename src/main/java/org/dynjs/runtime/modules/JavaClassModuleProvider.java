@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dynjs.exception.InvalidModuleException;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
@@ -32,7 +31,7 @@ public class JavaClassModuleProvider extends ModuleProvider {
     }
 
     @Override
-    public boolean load(DynJS runtime, ExecutionContext context, String moduleName) {
+    public boolean load(ExecutionContext context, String moduleName) {
         Object javaModule = modules.get(moduleName);
 
         if (javaModule == null) {
