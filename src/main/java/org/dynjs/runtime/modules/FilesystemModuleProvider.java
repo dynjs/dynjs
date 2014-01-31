@@ -18,7 +18,7 @@ import java.util.List;
 public class FilesystemModuleProvider extends ModuleProvider {
 
     @Override
-    protected boolean load(ExecutionContext context, String moduleID) {
+    public boolean load(ExecutionContext context, String moduleID) {
         DynJS runtime = context.getGlobalObject().getRuntime();
         File file = new File(moduleID);
         if (file.exists()) {

@@ -129,9 +129,9 @@ public class Require extends AbstractNativeFunction {
         // Load module providers in reverse order
         for (int i = moduleProviders.size(); i > 0; i--) {
             ModuleProvider provider = moduleProviders.get(i-1);
-            String moduleId = provider.generateModuleID(context, moduleName);
 
             // if a module provider can generate a module ID, then it can load the module.
+            String moduleId = provider.generateModuleID(context, moduleName);
             if (moduleId != null) {
                 // first check to see if we have the module cached, if so return it
                 if (cache.containsKey(moduleId)) {
@@ -144,11 +144,18 @@ public class Require extends AbstractNativeFunction {
                 module.put(context, "exports", exports, true);
                 module.put(context, "id", moduleId, false);
                 cache.put(moduleId, exports);
-                Object exported = provider.findAndLoad(context, moduleId, module, exports);
-                if (exported != null) {
+
+                // setup our module/exports/id in the execution context
+                ModuleProvider.setLocalVar(context, "module", module);
+                ModuleProvider.setLocalVar(context, "exports", exports);
+                ModuleProvider.setLocalVar(context, "id", moduleId);
+
+                if (provider.load(context, moduleId)) {
+                    final Object exported = module.get(context, "exports");
                     cache.put(moduleId, exported);
-                }
-                return exported;
+                    return exported;
+                };
+                return null;
             }
         }
         throw new ThrowException(context, context.createError("Error", "cannot load module " + moduleName));

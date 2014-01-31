@@ -14,7 +14,7 @@ public abstract class ModuleProvider {
      * Load a module.
      * 
      * <p>
-     * Given a context and a module name, load the module or return
+     * Given a context and a module ID, load the module or return
      * <code>false</code> if not handled.
      * </p>
      * 
@@ -23,38 +23,42 @@ public abstract class ModuleProvider {
      * @param moduleID The id of the module to load.
      * @return <code>true</code> if the module was loaded, false if not
      */
-    protected abstract boolean load(ExecutionContext context, String moduleID);
+    public abstract boolean load(ExecutionContext context, String moduleID);
 
     /**
-     * Generate a unique module ID for <code>moduleName</code>
+     * Generate a unique module ID for <code>moduleName</code> if it can be resolved.
      * 
      * @param context the current execution context
      * @param moduleName the name of the module
-     * @return the module ID
+     * @return the module ID or null if the module can't be found
      */
     public abstract String generateModuleID(ExecutionContext context, String moduleName);
 
     /**
-     * A template method used by require() which is responsible for ensuring the
-     * module loading contract is enforced by subclasses.
-     * 
-     * @see <a href="http://wiki.commonjs.org/wiki/Modules/1.1">CommonJS Spec</a>
-     * @param context The execution context of the request
-     * @param moduleId The name of the module to load   @return The loaded module or <code>null</code> if un-loadable.
-     * @return the module's exports
+     * A convenience for module providers. Sets a scoped variable on the provided
+     * ExecutionContext.
+     *
+     * @param context The execution context to bind the variable to
+     * @param name The name of the variable
+     * @param value The value to set the variable to
      */
-    public Object findAndLoad(ExecutionContext context, String moduleId, JSObject module, JSObject exports) {
-        // setup our module/exports/id in the execution context
-        setMutableBinding(context, "module", module);
-        setMutableBinding(context, "exports", exports);
-        setMutableBinding(context, "id", moduleId);
-        return (this.load(context, moduleId)) ?  module.get(context, "exports") : null;
-    }
-
-    protected void setMutableBinding(ExecutionContext context, String name, Object value) {
-        LexicalEnvironment localEnv = context.getVariableEnvironment();
+    public static void setLocalVar(ExecutionContext context, String name, Object value) {
+        LexicalEnvironment localEnv = context.getLexicalEnvironment();
         localEnv.getRecord().createMutableBinding(context, name, false);
         localEnv.getRecord().setMutableBinding(context, name, value, false);
+    }
+
+    /**
+     * A convenience for module providers. Gets a scoped variable from
+     * the provided ExecutionContext
+     * @return The value of the variable
+     */
+    public static Object getLocalVar(ExecutionContext context, String name) {
+        LexicalEnvironment localEnv = context.getLexicalEnvironment();
+        if (localEnv.getRecord().hasBinding(context, name)) {
+            return localEnv.getRecord().getBindingValue(context, name, false);
+        }
+        return null;
     }
 
     /**
