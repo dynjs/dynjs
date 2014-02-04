@@ -16,6 +16,20 @@ describe("Java language interop", function() {
       thing = new org.dynjs.runtime.java.Thing(null);
       expect(thing.gotNull()).toBe(true);
     });
+
+    it("should treat Java Floats as JS Numbers", function() {
+      var foo = new org.dynjs.runtime.java.DefaultFoo();
+      expect((typeof foo.getSomeFloat())).toBe('number');
+      expect(foo.getSomeFloat().toString()).toBe('3.14');
+      //expect(foo.getSomeFloat() === 3.14).toBe(true);
+    });
+
+    it("should treat Java Doubles as JS Numbers", function() {
+      var foo = new org.dynjs.runtime.java.DefaultFoo();
+      expect((typeof foo.getSomeDouble())).toBe('number');
+      expect(foo.getSomeDouble().toString()).toBe('3.14');
+      //expect(foo.getSomeFloat() === 3.14).toBe(true);
+    });
   });
 
   describe("Dynamic dispatch of implemented interface functions should work", function() {
@@ -95,15 +109,6 @@ describe("Java language interop", function() {
       expect(foo.doItWithObjectReturningBoolean(new java.lang.String("foo"))).toBe(true);
     });
 
-//    var obj = new org.dynjs.runtime.java.SomeInterface({
-//      handleObjectBoolean: function(o) { return true; }
-//    });
-//
-//    it("should be better", function() {
-//      expect(obj).not.toBe(null);
-//      expect(obj).not.toBe(undefined);
-//    });
-    
   });
 
 });

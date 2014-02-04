@@ -30,4 +30,12 @@ public class DefaultFoo extends AbstractFoo {
     public String doIt(String arg, Number num, String other, Number otherNum) {
         return "Yet another way";
     }
+
+    public Float getSomeFloat() {
+        return 3.14F;
+    }
+
+    public Double getSomeDouble() {
+        return 3.14;
+    }
 }

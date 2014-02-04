@@ -22,7 +22,7 @@ public class ToString extends AbstractNativeFunction {
             throw new ThrowException(context, context.createRangeError("Number.prototype.toString([radix]) must have a radix between 2 and 36, inclusive."));
         }
 
-        if (self instanceof DynNumber || self instanceof Long || self instanceof Double || self instanceof Integer) {
+        if (self instanceof DynNumber || self instanceof Long || self instanceof Double || self instanceof Integer || self instanceof Float) {
             if (radix == 10) {
                 return Types.toString(context, Types.toNumber(context, self));
             } else {
