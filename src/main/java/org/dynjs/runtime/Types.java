@@ -649,8 +649,6 @@ public class Types {
                     && ((Number) rhs).doubleValue() == Double.NaN) {
                 return false;
             }
-//            System.out.println("lhs doubleValue: " + ((Number)lhs).doubleValue());
-//            System.out.println("rhs doubleValue: " + ((Number)rhs).doubleValue());
             return ((Number) lhs).doubleValue() == ((Number) rhs).doubleValue();
         }
 

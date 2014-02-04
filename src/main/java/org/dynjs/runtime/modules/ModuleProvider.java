@@ -51,6 +51,8 @@ public abstract class ModuleProvider {
     /**
      * A convenience for module providers. Gets a scoped variable from
      * the provided ExecutionContext
+     * @param context The context to search for name
+     * @param name The name of the variable
      * @return The value of the variable
      */
     public static Object getLocalVar(ExecutionContext context, String name) {

@@ -21,14 +21,14 @@ describe("Java language interop", function() {
       var foo = new org.dynjs.runtime.java.DefaultFoo();
       expect((typeof foo.getSomeFloat())).toBe('number');
       expect(foo.getSomeFloat().toString()).toBe('3.14');
-      //expect(foo.getSomeFloat() === 3.14).toBe(true);
+      expect(foo.getSomeFloat()).toBeCloseTo(3.14);
     });
 
     it("should treat Java Doubles as JS Numbers", function() {
       var foo = new org.dynjs.runtime.java.DefaultFoo();
       expect((typeof foo.getSomeDouble())).toBe('number');
       expect(foo.getSomeDouble().toString()).toBe('3.14');
-      //expect(foo.getSomeFloat() === 3.14).toBe(true);
+      expect(foo.getSomeDouble() === 3.14).toBe(true);
     });
   });
 
