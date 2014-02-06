@@ -175,7 +175,7 @@
         <dependency>
             <groupId>com.github.akiellor.jasmine</groupId>
             <artifactId>jasmine-cli</artifactId>
-            <version>0.0.11</version>
+            <version>0.0.12</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -339,6 +339,8 @@
                             <arguments>
                                 <argument>--pattern</argument>
                                 <argument>./src/test/javascript/**/*Spec.js</argument>
+                                <argument>--format</argument>
+                                <argument>DOC</argument>
                             </arguments>
                         </configuration>
                     </execution>

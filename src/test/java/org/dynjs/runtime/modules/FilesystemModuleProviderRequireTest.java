@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dynjs.runtime.builtins;
+package org.dynjs.runtime.modules;
 
 import static org.fest.assertions.Assertions.*;
 
@@ -21,53 +21,25 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.java.Thing;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
-    
-    @Test
-    public void findsModulesOnTheClasspath() {
-        eval("foo = require('foo')");
-        assertThat(eval("foo")).isInstanceOf(JSFunction.class);
-        assertThat(eval("foo()")).isEqualTo("bacon");
+public class FilesystemModuleProviderRequireTest extends AbstractDynJSTestSupport {
+
+    @Before
+    public void setUpLater() {
+        String testLoadPath = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/";
+        eval("require.addLoadPath('" + testLoadPath + "')");
     }
 
-    @Test
-    public void filenameAppearsInStackTrace() {
-        eval("var error = require('error')");
-        assertThat((String)eval("error().stack")).contains("error.js");
-    }
-
-    @Test
-    public void allowsFileExtension() {
-        eval("foo = require('foo.js')");
-        assertThat(eval("foo")).isInstanceOf(JSFunction.class);
-        assertThat(eval("foo()")).isEqualTo("bacon");
-    }
-
-    @Test
-    public void testSupportsNestedRequires() {
-        eval("x = require('outer')");
-        assertThat(eval("x.quadruple")).isInstanceOf(JSFunction.class);
-        assertThat(eval("x.quadruple(4)")).isEqualTo(16L);
-    }
-    
-    @Test
-    public void supportsPackagedModules() {
-        eval("foobar = require('foobar')");
-        assertThat(eval("foobar")).isInstanceOf(JSFunction.class);
-        assertThat(eval("foobar()")).isEqualTo("crunchy");
-    }
-    
-    @Test(expected=ThrowException.class)
-    public void throwsWhenModuleIsNotFound() {
-        eval("x = require('does_not_exist');");
-    }
-    
     @Test(expected = ThrowException.class)
     public void testThrowsWithoutAnArgument() {
         eval("require();");
+    }
+
+    @Test(expected = ThrowException.class)
+    public void testThrowsWhenTheFileIsNotFound() {
+        eval("require('nonexistant_module');");
     }
 
     @Test
@@ -81,6 +53,11 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testAllowsFileExtension() {
+        assertThat(eval("require('my_module.js').message;")).isEqualTo("Hello world");
+    }
+
+    @Test
     public void testExportsFunctions() {
         assertThat(eval("require('my_module').sayHello();")).isEqualTo("Hello again");
     }
@@ -89,7 +66,7 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
     public void testAllowsSettingExportsToAnArbitraryThing() {
         assertThat(eval("require('my_export_thingy').doesSomething();")).isEqualTo("A thingy!");
     }
-    
+
     @Test
     public void testHasPrivateFunctions() {
         assertThat(eval("require('my_module').farewell();")).isEqualTo("Goodbye, cruel world.");
@@ -100,7 +77,14 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
     public void testKeepsPrivateVariablesPrivate() {
         assertThat(eval("require('my_module').privateVariable")).isEqualTo(Types.UNDEFINED);
     }
-    
+
+    @Test
+    public void testSupportsNestedRequires() {
+        eval("x = require('outer')");
+        assertThat(eval("x.quadruple")).isInstanceOf(JSFunction.class);
+        assertThat(eval("x.quadruple(4)")).isEqualTo(16L);
+    }
+
     @Test
     public void testSupportsModuleDotExportNotation() {
         eval("x = require('module_dot_export')");
@@ -110,7 +94,8 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
     
     @Test
     public void testModuleId() {
-        assertThat(eval("require('my_module').module_id")).isEqualTo("my_module.js");
+        String path = System.getProperty("user.dir") + "/src/test/resources/org/dynjs/runtime/builtins/my_module.js";
+        assertThat(eval("require('my_module').module_id")).isEqualTo(path);
     }
     
     @Test
@@ -122,9 +107,17 @@ public class ClasspathModuleProviderTest extends AbstractDynJSTestSupport {
     }
     
     @Test
-    public void testExportsJavaClasses() {
-        eval("var Thing = require('exports_java')");
-        eval("thing = new Thing()");
-        assertThat(eval("thing")).isInstanceOf(Thing.class);
+    public void testExportsAnonymousFunctions() {
+        eval("var flavor = require('func.js')");
+        assertThat(eval("flavor()")).isEqualTo("nacho cheese");
     }
+
+    @Test
+    public void testRequireInDefineGetterFunction() {
+        eval("var obj = {};");
+        eval("function load() { return require('my_module'); };");
+        eval("obj.__defineGetter__('foo', load);");
+        assertThat(eval("obj.foo.message")).isEqualTo("Hello world");
+    }
+
 }

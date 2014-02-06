@@ -17,15 +17,22 @@ import java.util.List;
  */
 public class FilesystemModuleProvider extends ModuleProvider {
 
+    private final Require nativeRequire;
+
+    public FilesystemModuleProvider(Require require) {
+        this.nativeRequire = require;
+    }
+
     @Override
     public boolean load(ExecutionContext context, String moduleID) {
         DynJS runtime = context.getGlobalObject().getRuntime();
         File file = new File(moduleID);
         if (file.exists()) {
-            runtime.evaluate("require.addLoadPath('" + file.getParent() + "')");
+            final String parent = file.getParent();
+            nativeRequire.addLoadPath(parent);
             try {
                 runtime.newRunner().withContext(context).withSource(file).execute();
-                runtime.evaluate("require.removeLoadPath('" + file.getParent() + "')");
+                nativeRequire.removeLoadPath(parent);
                 return true;
             } catch (IOException e) {
                 System.err.println("There was an error loading the module " + moduleID + ". Error message: " + e.getMessage());
@@ -37,16 +44,13 @@ public class FilesystemModuleProvider extends ModuleProvider {
 
     @Override
     public String generateModuleID(ExecutionContext context, String moduleName) {
-        Object require = context.getGlobalObject().get("require");
-        if (require instanceof Require) {
-            File moduleFile = findFile(((Require)require).getLoadPaths(), moduleName);
-            if (moduleFile != null && moduleFile.exists()) {
-                try {
-                    return moduleFile.getCanonicalPath();
-                } catch(IOException e) {
-                    System.err.println("There was an error generating id of module " + moduleName + ". Error message: " + e.getMessage());
-                    return moduleFile.getAbsolutePath();
-                }
+        File moduleFile = findFile(nativeRequire.getLoadPaths(), moduleName);
+        if (moduleFile != null && moduleFile.exists()) {
+            try {
+                return moduleFile.getCanonicalPath();
+            } catch(IOException e) {
+                System.err.println("There was an error generating id of module " + moduleName + ". Error message: " + e.getMessage());
+                return moduleFile.getAbsolutePath();
             }
         }
         return null;

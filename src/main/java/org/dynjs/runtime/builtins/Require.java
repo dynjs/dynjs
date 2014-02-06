@@ -52,7 +52,7 @@ public class Require extends AbstractNativeFunction {
 
         this.moduleProviders.add(javaClassModuleProvider);
         this.moduleProviders.add(new ClasspathModuleProvider());
-        this.moduleProviders.add(new FilesystemModuleProvider());
+        this.moduleProviders.add(new FilesystemModuleProvider(this));
 
         String customRequirePath = this.getCustomRequirePath();
         if (customRequirePath != null) {

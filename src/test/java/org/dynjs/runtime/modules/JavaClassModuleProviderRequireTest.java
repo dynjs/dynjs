@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dynjs.runtime.builtins;
+package org.dynjs.runtime.modules;
 
 import static org.fest.assertions.Assertions.*;
 
