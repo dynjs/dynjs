@@ -13,8 +13,13 @@ describe("Java language interop", function() {
     });
 
     it("should pass JavaScript Types.NULL as Java null to Java constructors", function() {
-      thing = new org.dynjs.runtime.java.Thing(null);
+      var thing = new org.dynjs.runtime.java.Thing(null);
       expect(thing.gotNull()).toBe(true);
+    });
+
+    xit("should keep null Java return values as null in Javascript", function() {
+      var thing = new org.dynjs.runtime.java.Thing();
+      expect(thing.getSomeNull()).toBe(null);
     });
 
     it("should treat Java Floats as JS Numbers", function() {

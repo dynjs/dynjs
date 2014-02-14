@@ -15,4 +15,9 @@ public class TypesTest extends AbstractDynJSTestSupport {
     public void testHexStringToNumber() {
         assertThat( Types.toNumber( getContext(), "0xFF" ) ).isEqualTo( 255L );
     }
+
+    @Test
+    public void testNull() {
+        assertThat( Types.NULL == new Types.Null() );
+    }
 }

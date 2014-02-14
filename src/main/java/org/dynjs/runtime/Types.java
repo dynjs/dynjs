@@ -56,6 +56,12 @@ public class Types {
     }
 
     public static JSObject toObject(ExecutionContext context, Object o) {
+        if (o == Types.UNDEFINED) {
+            throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
+        }
+        if (o == Types.NULL) {
+            throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
+        }
         if (o instanceof JSObject) {
             return (JSObject) o;
         }
@@ -67,19 +73,19 @@ public class Types {
         }
         if (o instanceof Boolean) {
             return new DynBoolean(context.getGlobalObject(), (Boolean) o);
-        }
-        if (o == Types.UNDEFINED) {
-            throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
-        }
-        if (o == Types.NULL) {
-            throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
         }
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
 
     public static Object toThisObject(ExecutionContext context, Object o) {
+        if (o == Types.UNDEFINED) {
+            throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
+        }
+        if (o == Types.NULL) {
+            throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
+        }
         if (o instanceof JSObject) {
-            return (JSObject) o;
+            return o;
         }
         if (o instanceof String) {
             return new DynString(context.getGlobalObject(), (String) o);
@@ -89,12 +95,6 @@ public class Types {
         }
         if (o instanceof Boolean) {
             return new DynBoolean(context.getGlobalObject(), (Boolean) o);
-        }
-        if (o == Types.UNDEFINED) {
-            throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
-        }
-        if (o == Types.NULL) {
-            throw new ThrowException(context, context.createTypeError("null cannot be converted to an object"));
         }
         // return new PrimitiveDynObject(context.getGlobalObject(), o);
         return o;
@@ -118,16 +118,16 @@ public class Types {
             return (Number) o;
         }
 
-        if (o instanceof JSObject) {
-            return toNumber(context, toPrimitive(context, o, "Number"));
-        }
-
         if (o == Types.UNDEFINED) {
             return Double.NaN;
         }
 
         if (o == Types.NULL) {
             return 0L;
+        }
+
+        if (o instanceof JSObject) {
+            return toNumber(context, toPrimitive(context, o, "Number"));
         }
 
         if (o instanceof Boolean) {
@@ -699,9 +699,6 @@ public class Types {
 
     public static class Undefined {
 
-        private Undefined() {
-        }
-
         public String typeof() {
             return "undefined";
         }
@@ -713,8 +710,6 @@ public class Types {
     }
 
     public static class Null {
-        private Null() {
-        }
 
         public String typeof() {
             return "object";

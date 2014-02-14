@@ -29,6 +29,8 @@ public class Create extends AbstractNativeFunction {
         if (o != Types.NULL) {
             JSObject jsObj = (JSObject) o;
             newObj.setPrototype(jsObj);
+        } else {
+            newObj.setPrototype(null);
         }
 
         Object props = args[1];

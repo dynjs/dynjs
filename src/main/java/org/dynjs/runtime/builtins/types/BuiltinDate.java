@@ -125,6 +125,7 @@ public class BuiltinDate extends AbstractBuiltinType {
 
         defineNonEnumerableProperty(proto, "getYear", new GetYear(globalObject));
         defineNonEnumerableProperty(proto, "setYear", new SetYear(globalObject));
+        defineNonEnumerableProperty(proto, "__proto__", proto);
     }
 
     @Override

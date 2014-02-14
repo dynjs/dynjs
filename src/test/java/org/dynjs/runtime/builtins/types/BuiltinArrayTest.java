@@ -2,10 +2,7 @@ package org.dynjs.runtime.builtins.types;
 
 import static org.fest.assertions.Assertions.*;
 
-import org.dynjs.runtime.AbstractDynJSTestSupport;
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.junit.Test;
 
 public class BuiltinArrayTest extends AbstractDynJSTestSupport {
@@ -65,7 +62,8 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         eval("var x = new Array(0);");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
         assertThat(x.getPrototype()).isInstanceOf(DynArray.class);
-        assertThat(x.getPrototype().get(null, "constructor")).isInstanceOf(BuiltinArray.class);
+        JSObject prototype = (JSObject) x.getPrototype();
+        assertThat(prototype.get(null, "constructor")).isInstanceOf(BuiltinArray.class);
     }
 
     @Test
@@ -87,7 +85,8 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         eval("var ctor = Array.prototype.constructor; var x = new ctor()");
         DynArray x = (DynArray) getContext().resolve("x").getValue(getContext());
         assertThat(x.getPrototype()).isInstanceOf(DynArray.class);
-        assertThat(x.getPrototype().get(null, "constructor")).isInstanceOf(BuiltinArray.class);
+        JSObject prototype = (JSObject) x.getPrototype();
+        assertThat(prototype.get(null, "constructor")).isInstanceOf(BuiltinArray.class);
     }
 
     @Test
