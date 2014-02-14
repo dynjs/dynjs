@@ -25,7 +25,6 @@ public class BuiltinBoolean extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "constructor", this );
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
-        defineNonEnumerableProperty(proto, "__proto__", proto);
     }
 
     @Override

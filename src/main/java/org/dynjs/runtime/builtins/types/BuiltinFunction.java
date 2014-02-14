@@ -52,7 +52,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "apply", new Apply(globalObject));
         defineNonEnumerableProperty(proto, "call", new Call(globalObject));
         defineNonEnumerableProperty(proto, "bind", new Bind(globalObject));
-        defineNonEnumerableProperty(proto, "__proto__", proto);
+        //defineNonEnumerableProperty(proto, "__proto__", proto);
     }
 
     @Override
@@ -107,7 +107,6 @@ public class BuiltinFunction extends AbstractBuiltinType {
                 }
             }
             function.setPrototype(getPrototype());
-            defineNonEnumerableProperty(function, "__proto__", getPrototype());
             return function;
         } catch (ParserException e) {
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));

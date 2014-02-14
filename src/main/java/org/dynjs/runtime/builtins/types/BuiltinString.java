@@ -66,7 +66,6 @@ public class BuiltinString extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toLocaleUpperCase", new ToLocaleUpperCase(globalObject) );
         defineNonEnumerableProperty(proto, "trim", new Trim(globalObject) );
         defineNonEnumerableProperty(proto, "replace", new Replace(globalObject) ); // http://es5.github.com/#x15.5.4.11
-        defineNonEnumerableProperty(proto, "__proto__", proto);
     }
 
     @Override

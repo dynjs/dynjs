@@ -70,8 +70,6 @@ public class BuiltinArray extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "reduce", new Reduce(globalObject));
         defineNonEnumerableProperty(proto, "reduceRight", new ReduceRight(globalObject));
 
-        defineNonEnumerableProperty(proto, "__proto__", proto);
-
         // Array.foo()
         defineNonEnumerableProperty(this, "isArray", new IsArray(globalObject));
     }

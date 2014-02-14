@@ -36,10 +36,14 @@ public class BuiltinObject extends AbstractBuiltinType {
             defineNonEnumerableProperty(proto, "__lookupSetter__", new LookupSetter(globalObject));
         }
         // Support deprecated (but widely used) Object.prototype.__proto__
-        defineNonEnumerableProperty(proto, "__proto__", proto);
+        PropertyDescriptor descriptor = new PropertyDescriptor();
+        descriptor.setEnumerable(false);
+        descriptor.setConfigurable(true);
+        descriptor.setGetter(new Proto(globalObject));
+        proto.defineOwnProperty(null, "__proto__", descriptor, false);
 
         // Object.foo
-        defineNonEnumerableProperty(this, "getPrototypeOf", new GetPrototypeOf(globalObject) );
+        defineNonEnumerableProperty(this, "getPrototypeOf", new GetPrototypeOf(globalObject));
         defineNonEnumerableProperty(this, "getOwnPropertyDescriptor", new GetOwnPropertyDescriptor(globalObject) );
         defineNonEnumerableProperty(this, "getOwnPropertyNames", new GetOwnPropertyNames(globalObject) );
         defineNonEnumerableProperty(this, "create", new Create(globalObject) );

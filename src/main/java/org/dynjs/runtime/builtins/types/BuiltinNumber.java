@@ -36,7 +36,6 @@ public class BuiltinNumber extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "toFixed", new ToFixed(globalObject));
         defineNonEnumerableProperty(proto, "toExponential", new ToExponential(globalObject));
         defineNonEnumerableProperty(proto, "toPrecision", new ToPrecision(globalObject));
-        defineNonEnumerableProperty(proto, "__proto__", proto);
 
         defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
         defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);

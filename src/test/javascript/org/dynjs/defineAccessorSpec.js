@@ -38,8 +38,10 @@ describe("Object.create", function() {
 describe("the __proto__ property", function() {
   it("should be Object.prototype for Objects", function() {
     var a = new Object();
+    a.__proto__
     validateProto(a, Object.prototype);
     a = {};
+    a.__proto__
     validateProto(a, Object.prototype);
   });
 
@@ -86,8 +88,7 @@ describe("the __proto__ property", function() {
     };
     var a = new Foo();
     expect(Object.getPrototypeOf(a)).toBe(Foo.prototype);
-    //    TODO: FIX THIS
-//    validateProto(a, Foo.prototype);
+    validateProto(a, Foo.prototype);
   });
 
   it("should be undefined for an object created with Object.create(null)", function() {
@@ -117,3 +118,4 @@ describe("the __proto__ property", function() {
     expect(obj.__proto__).toBe(proto);
   }
 });
+
