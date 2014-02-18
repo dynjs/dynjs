@@ -40,6 +40,7 @@ public class BuiltinObject extends AbstractBuiltinType {
         descriptor.setEnumerable(false);
         descriptor.setConfigurable(true);
         descriptor.setGetter(new Proto(globalObject));
+        descriptor.setSetter(new Proto(globalObject));
         proto.defineOwnProperty(null, "__proto__", descriptor, false);
 
         // Object.foo

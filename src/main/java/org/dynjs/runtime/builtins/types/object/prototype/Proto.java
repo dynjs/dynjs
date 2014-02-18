@@ -1,10 +1,7 @@
 package org.dynjs.runtime.builtins.types.object.prototype;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.*;
 
 public class Proto extends AbstractNativeFunction {
 
@@ -19,6 +16,13 @@ public class Proto extends AbstractNativeFunction {
         }
 
         JSObject jsObj = (JSObject) self;
+        if (args.length == 1) {
+            if (!jsObj.isExtensible()) {
+                throw new ThrowException(context, context.createTypeError("must be extenible"));
+            }
+            JSObject newProto = (JSObject)args[0];
+            jsObj.setPrototype(newProto);
+        }
 
         return jsObj.getPrototype();
     }

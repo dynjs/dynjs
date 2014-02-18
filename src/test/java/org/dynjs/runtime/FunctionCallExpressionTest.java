@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.builtins.types.BuiltinFunction;
 import org.junit.Test;
 
 public class FunctionCallExpressionTest extends AbstractDynJSTestSupport {

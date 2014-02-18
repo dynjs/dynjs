@@ -112,6 +112,33 @@ describe("the __proto__ property", function() {
     expect(Object.getPrototypeOf(a)).toBe(Object.prototype);
   });
 
+  it("should throw a TypeError when setting __proto__ if the object is not extensible",
+      function() {
+        var a = {};
+        Object.preventExtensions(a);
+        try {
+          a.__proto__ = undefined;
+          expect(false).toBe(true);
+        } catch(e) {
+          // success
+          expect(a.__proto__).toBe(Object.prototype);
+        }
+  });
+
+  xit("should allow Object.prototype.__proto__ to be set", function() {
+    // TODO: This test should pass, and replicating it in the REPL
+    // shows that it works as expected. However, the Jasmine test
+    // runner hangs when we set Object.prototype.__proto__ to anything
+    // unexpected, even if we repair the damage later.
+    var a = {};
+    Object.prototype.__proto__ = {
+          foo: function() {print("HERE"); return 'bar';},
+        __proto__: null
+    };
+    Object.prototype.__proto__ = null;
+    expect(a.foo()).toBe('bar');
+  });
+
   function validateProto(obj, proto) {
     expect(obj.__proto__).toNotBe(null);
     expect(obj.__proto__).toNotBe(undefined);
