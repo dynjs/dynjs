@@ -1199,7 +1199,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict) {
-        List<VariableDeclaration> decls = statement.getVariableDeclarations();
+        List<VariableDeclaration> decls = statement.getDeclarationList();
         for (VariableDeclaration each : decls) {
             each.accept(context, this, strict);
             pop();

@@ -18,12 +18,17 @@ public abstract class AbstractDynJSTestSupport {
 
     @Before
     public void setUp() {
-        this.config = new Config();
-        this.config.setDebug(false);
+        this.config = createConfig();
+        this.runtime = new DynJS(this.config);
+    }
+
+    protected Config createConfig() {
+        Config config = new Config();
+        config.setDebug(false);
         config.setClock(new ManualClock(fixedInstant));
         config.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         config.setLocale(Locale.US);
-        this.runtime = new DynJS(this.config);
+        return config;
     }
 
     protected Object eval(String... lines) {
