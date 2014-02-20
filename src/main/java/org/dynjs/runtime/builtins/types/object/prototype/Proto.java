@@ -20,8 +20,10 @@ public class Proto extends AbstractNativeFunction {
             if (!jsObj.isExtensible()) {
                 throw new ThrowException(context, context.createTypeError("must be extenible"));
             }
-            JSObject newProto = (JSObject)args[0];
-            jsObj.setPrototype(newProto);
+            if (args[0] instanceof JSObject) {
+                JSObject newProto = (JSObject)args[0];
+                jsObj.setPrototype(newProto);
+            }
         }
 
         return jsObj.getPrototype();
