@@ -22,8 +22,10 @@ import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.ForExprInStatement;
+import org.dynjs.parser.ast.ForExprOfStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
+import org.dynjs.parser.ast.ForVarDeclOfStatement;
 import org.dynjs.parser.ast.ForVarDeclStatement;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -31,6 +33,7 @@ import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
+import org.dynjs.parser.ast.OfOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
@@ -107,9 +110,13 @@ public interface CodeVisitor {
 
     void visit(ExecutionContext context, ForExprInStatement statement, boolean strict);
 
+    void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict);
+
     void visit(ExecutionContext context, ForExprStatement statement, boolean strict);
 
     void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict);
+
+    void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict);
 
     void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict);
 
@@ -124,6 +131,8 @@ public interface CodeVisitor {
     void visit(ExecutionContext context, IfStatement statement, boolean strict);
 
     void visit(ExecutionContext context, InOperatorExpression expr, boolean strict);
+
+    void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict);
 
     void visit(ExecutionContext context, InstanceofExpression expr, boolean strict);
 

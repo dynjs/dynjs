@@ -42,8 +42,10 @@ import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.ForExprInStatement;
+import org.dynjs.parser.ast.ForExprOfStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
+import org.dynjs.parser.ast.ForVarDeclOfStatement;
 import org.dynjs.parser.ast.ForVarDeclStatement;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -52,6 +54,7 @@ import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
+import org.dynjs.parser.ast.OfOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
@@ -296,6 +299,10 @@ public class ASTFactory {
         return new InOperatorExpression(lhs, rhs);
     }
 
+    public Expression ofOperator(Expression lhs, Expression rhs) {
+        return new OfOperatorExpression(lhs, rhs);
+    }
+
     public Expression deleteOperator(Expression expr) {
         return new DeleteOpExpression(expr);
     }
@@ -461,8 +468,16 @@ public class ASTFactory {
         return new ForExprInStatement(position, lhs, rhs, body);
     }
 
+    public ForExprOfStatement forOfStatement(Position position, Expression lhs, Expression rhs, Statement body) {
+        return new ForExprOfStatement(position, lhs, rhs, body);
+    }
+
     public ForVarDeclInStatement forInStatement(Position position, VariableDeclaration decl, Expression rhs, Statement body) {
         return new ForVarDeclInStatement(position, decl, rhs, body);
+    }
+
+    public ForVarDeclOfStatement forOfStatement(Position position, VariableDeclaration decl, Expression rhs, Statement body) {
+        return new ForVarDeclOfStatement(position, decl, rhs, body);
     }
 
     public DoWhileStatement doWhileStatement(Position position, Statement body, Expression expr) {
