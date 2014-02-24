@@ -211,7 +211,8 @@ public class Replace extends AbstractNonConstructorFunction {
             this.end = end;
         }
 
-        public String capture() {
+        public Object capture() {
+            if (start < 0 || end < 0) { return Types.UNDEFINED; }
             return original.substring(start, Math.min(original.length(), end));
         }
     }

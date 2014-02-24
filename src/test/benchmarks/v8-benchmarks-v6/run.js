@@ -65,5 +65,5 @@ for (var i = 1; i <= runs; i++) {
                              NotifyError: PrintError,
                              NotifyScore: PrintScore });
   print('');
-  gc();
+  //gc();
 }
