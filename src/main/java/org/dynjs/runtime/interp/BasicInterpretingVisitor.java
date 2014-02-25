@@ -28,6 +28,7 @@ import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
+import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
@@ -39,6 +40,7 @@ import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
+import org.dynjs.parser.ast.IntegerNumberExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
@@ -478,6 +480,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, FloatingNumberExpression expr, boolean strict) {
+        push(expr.getValue());
+    }
+
+    @Override
     public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
         statement.getRhs().accept(context, this, strict);
 
@@ -802,6 +809,11 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, IntegerNumberExpression expr, boolean strict) {
+        push(expr.getValue());
+    }
+
+    @Override
     public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
@@ -980,46 +992,6 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, NullLiteralExpression expr, boolean strict) {
         push(Types.NULL);
-    }
-
-    @Override
-    public void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict) {
-        String text = expr.getText();
-
-        if (text.indexOf('.') == 0) {
-            text = "0" + text;
-            push(Double.valueOf(text));
-            return;
-        }
-
-        if (text.indexOf('.') > 0) {
-            double primaryValue = Double.valueOf(text);
-            if (primaryValue == (long) primaryValue) {
-                push((long) primaryValue);
-            } else {
-                push(primaryValue);
-            }
-            return;
-        }
-
-        if (text.startsWith("0x") || text.startsWith("0X")) {
-            text = text.substring(2);
-            push(Long.valueOf(text, 16));
-            return;
-        }
-
-        int eLoc = text.toLowerCase().indexOf('e');
-        if (eLoc > 0) {
-
-            String base = text.substring(0, eLoc);
-            String exponent = text.substring(eLoc);
-
-            String javafied = base + ".0" + exponent;
-
-            push(Double.valueOf(javafied));
-        } else {
-            push(Types.parseLongOrDouble(text, expr.getRadix()));
-        }
     }
 
     @Override
