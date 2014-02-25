@@ -34,8 +34,10 @@ import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.ForExprInStatement;
+import org.dynjs.parser.ast.ForExprOfStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
+import org.dynjs.parser.ast.ForVarDeclOfStatement;
 import org.dynjs.parser.ast.ForVarDeclStatement;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -43,6 +45,7 @@ import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
+import org.dynjs.parser.ast.OfOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
@@ -1034,6 +1037,156 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict) {
+        LabelNode nextName = new LabelNode();
+        LabelNode checkCompletion = new LabelNode();
+        LabelNode bringForward = new LabelNode();
+        LabelNode doBreak = new LabelNode();
+        LabelNode doContinue = new LabelNode();
+        LabelNode undefEnd = new LabelNode();
+        LabelNode end = new LabelNode();
+
+        normalCompletion();
+        // completion
+        statement.getRhs().accept(context, this, strict);
+        // completion val
+        append(jsGetValue());
+        // completion val
+        dup();
+        // completion val val
+        append(jsPushUndefined());
+        // completion val val UNDEF
+        if_acmpeq(undefEnd);
+        // completion val
+        dup();
+        // completion val val
+        append(jsPushNull());
+        // completion val val NULL
+        if_acmpeq(undefEnd);
+        // completion val
+        append(jsToObject());
+        // completion jsObj
+
+        // -----------------------------------------------
+        // completion jsObj
+        invokeinterface(p(JSObject.class), "getAllEnumerablePropertyNames", sig(NameEnumerator.class));
+        // completion name-enum
+        astore(4);
+        // completion
+        label(nextName);
+        // completion
+        aload(4);
+        // completion name-enum
+        invokevirtual(p(NameEnumerator.class), "hasNext", sig(boolean.class));
+        // completion bool
+        iffalse(end);
+        // completion
+        aload(4);
+        // completion name-enum
+        invokevirtual(p(NameEnumerator.class), "next", sig(String.class));
+        // completion str
+        append(jsToObject());
+        // completion str jsObj
+        swap();
+        // completion jsObj str
+        invokevirtual(p(ExecutionContext.class), "createPropertyReference", sig(Reference.class, JSObject.class, String.class));
+        // completion val
+        statement.getExpr().accept(context, this, strict);
+        // completion val ref
+        swap();
+        // completion ref val
+        aload(Arities.EXECUTION_CONTEXT);
+        // completion ref val context
+        swap();
+        // completion ref context val
+        invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
+        // completion
+        invokeCompiledStatementBlock("For", statement.getBlock(), strict);
+        // completion(prev) completion(cur)
+        dup();
+        // completion(prev) completion(cur) completion(cur)
+        append(jsCompletionValue());
+        // completion(prev) completion(cur) val(cur)
+        ifnull(bringForward);
+        // completion(prev) completion(cur)
+
+        // ----------------------------------
+        // has value
+        swap();
+        // completion(cur) completion(prev)
+        pop();
+        // completion(cur)
+        go_to(checkCompletion);
+
+        // ----------------------------------------
+        // bring previous value forward
+
+        label(bringForward);
+        // completion(prev) completion(cur)
+        dup_x1();
+        // completion(cur) completion(prev) completion(cur)
+        swap();
+        // completion(cur) completion(cur) completion(prev)
+        append(jsGetValue());
+        // completion(cur) completion(cur) val(prev)
+        putfield(p(Completion.class), "value", ci(Object.class));
+        // completion(cur)
+
+        // -----------------------------------------------
+        label(checkCompletion);
+        // completion(cur)
+        dup();
+        // completion(cur) completion(cur)
+        append(handleCompletion(nextName, doBreak, doContinue, end));
+        // completion
+
+        // ----------------------------------------
+        // BREAK
+        label(doBreak);
+        // completion(block,BREAK)
+        dup();
+        // completion completion
+        append(jsCompletionTarget());
+        // completion target
+        append(statement.isInLabelSet());
+        // completion bool
+        iffalse(end);
+        // completion
+        convertToNormalCompletion();
+        // completion(block,NORMAL)
+        go_to(end);
+
+        // ----------------------------------------
+        // CONTINUE
+
+        label(doContinue);
+        // completion(block,CONTINUE)
+        dup();
+        // completion completion
+        append(jsCompletionTarget());
+        // completion target
+        append(statement.isInLabelSet());
+        // completion bool
+        iffalse(end);
+        // completion
+        go_to(nextName);
+
+        // -----------------------------------------------
+        // RHS is undefined
+        // completion undef
+        label(undefEnd);
+        // completion undef
+        pop();
+        // completion
+
+        // -----------------------------------------------
+
+        label(end);
+        // completion
+        nop();
+    }
+
+    @Override
     public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
@@ -1083,6 +1236,166 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         invokevirtual(p(NameEnumerator.class), "next", sig(String.class));
         // completion str
 
+        statement.getDeclaration().accept(context, this, strict);
+        // completion
+        pop();
+        // <EMPTY>
+        aload(Arities.EXECUTION_CONTEXT);
+        // context
+        ldc(statement.getDeclaration().getIdentifier());
+        // context identifier
+        invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class));
+        // reference
+
+        // completion str ref
+        swap();
+        // completion ref str
+        aload(Arities.EXECUTION_CONTEXT);
+        // completion ref str context
+        swap();
+        // completion ref context str
+        invokevirtual(p(Reference.class), "putValue", sig(void.class, ExecutionContext.class, Object.class));
+        // completion
+        invokeCompiledStatementBlock("For", statement.getBlock(), strict);
+        // completion(prev) completion(cur)
+        dup();
+        // completion(prev) completion(cur) completion(cur)
+        append(jsCompletionValue());
+        // completion(prev) completion(cur) val(cur)
+        ifnull(bringForward);
+        // completion(prev) completion(cur)
+
+        // ----------------------------------
+        // has value
+        swap();
+        // completion(cur) completion(prev)
+        pop();
+        // completion(cur)
+        go_to(checkCompletion);
+
+        // ----------------------------------------
+        // bring previous value forward
+
+        label(bringForward);
+        // completion(prev) completion(cur)
+        dup_x1();
+        // completion(cur) completion(prev) completion(cur)
+        swap();
+        // completion(cur) completion(cur) completion(prev)
+        append(jsGetValue());
+        // completion(cur) completion(cur) val(prev)
+        putfield(p(Completion.class), "value", ci(Object.class));
+        // completion(cur)
+
+        // -----------------------------------------------
+        label(checkCompletion);
+        // completion(cur)
+        dup();
+        // completion(cur) completion(cur)
+        append(handleCompletion(nextName, doBreak, doContinue, end));
+        // completion
+
+        // ----------------------------------------
+        // BREAK
+        label(doBreak);
+        // completion(block,BREAK)
+        dup();
+        // completion completion
+        append(jsCompletionTarget());
+        // completion target
+        append(statement.isInLabelSet());
+        // completion bool
+        iffalse(end);
+        // completion
+        convertToNormalCompletion();
+        // completion(block,NORMAL)
+        go_to(end);
+
+        // ----------------------------------------
+        // CONTINUE
+
+        label(doContinue);
+        // completion(block,CONTINUE)
+        dup();
+        // completion completion
+        append(jsCompletionTarget());
+        // completion target
+        append(statement.isInLabelSet());
+        // completion bool
+        iffalse(end);
+        // completion
+        go_to(nextName);
+
+        // -----------------------------------------------
+        // RHS is undefined
+        // completion undef
+        label(undefEnd);
+        // completion undef
+        pop();
+        // completion
+
+        // -----------------------------------------------
+
+        label(end);
+        // completion
+        nop();
+    }
+
+    @Override
+    public void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict) {
+        LabelNode nextName = new LabelNode();
+        LabelNode checkCompletion = new LabelNode();
+        LabelNode bringForward = new LabelNode();
+        LabelNode doBreak = new LabelNode();
+        LabelNode doContinue = new LabelNode();
+        LabelNode undefEnd = new LabelNode();
+        LabelNode end = new LabelNode();
+
+        normalCompletion();
+        // completion
+        statement.getRhs().accept(context, this, strict);
+        // completion val
+        append(jsGetValue());
+        // completion val
+        dup();
+        // completion val val
+        append(jsPushUndefined());
+        // completion val val UNDEF
+        if_acmpeq(undefEnd);
+        // completion val
+        dup();
+        // completion val val
+        append(jsPushNull());
+        // completion val val NULL
+        if_acmpeq(undefEnd);
+        // completion val
+        append(jsToObject());
+        // completion jsObj
+
+        // -----------------------------------------------
+        // completion jsObj
+        invokeinterface(p(JSObject.class), "getAllEnumerablePropertyNames", sig(NameEnumerator.class));
+        // completion name-enum
+        astore(4);
+        // completion
+        label(nextName);
+        // completion
+        aload(4);
+        // completion name-enum
+        invokevirtual(p(NameEnumerator.class), "hasNext", sig(boolean.class));
+        // completion bool
+        iffalse(end);
+        // completion
+        aload(4);
+        // completion name-enum
+        invokevirtual(p(NameEnumerator.class), "next", sig(String.class));
+        // completion str
+        append(jsToObject());
+        // completion str jsObj
+        swap();
+        // completion jsObj str
+        invokevirtual(p(ExecutionContext.class), "createPropertyReference", sig(Reference.class, JSObject.class, String.class));
+        // completion val
         statement.getDeclaration().accept(context, this, strict);
         // completion
         pop();
@@ -1517,6 +1830,57 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
     @Override
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
+        LabelNode typeError = new LabelNode();
+        LabelNode end = new LabelNode();
+
+        expr.getLhs().accept(context, this, strict);
+        // obj(lhs)
+        append(jsGetValue());
+        // val(lhs)
+
+        expr.getRhs().accept(context, this, strict);
+        // val(lhs) obj(rhs)
+        append(jsGetValue());
+        // val(lhs) val(rhs)
+
+        dup();
+        // val(lhs) val(rhs) val(rhs)
+        instance_of(p(JSObject.class));
+        // val(lhs) val(rhs) bool
+
+        iffalse(typeError);
+        // val(lhs) val(rhs)
+        checkcast(p(JSObject.class));
+        // val(lhs) obj(rhs)
+        swap();
+        // obj(rhs) val(lhs)
+        append(jsToString());
+        // obj(rhs) str(lhs)
+        aload(Arities.EXECUTION_CONTEXT);
+        // obj(rhs) str(lhs) context
+        swap();
+        // object(rhs) context str(lhs);
+        invokeinterface(p(JSObject.class), "hasProperty", sig(boolean.class, ExecutionContext.class, String.class));
+        // bool
+        go_to(end);
+
+        label(typeError);
+        // val(lhs) val(rhs)
+        pop();
+        pop();
+        iconst_0();
+        i2b();
+        // bool
+        append(jsThrowTypeError("not an object"));
+
+        label(end);
+        invokestatic(p(Boolean.class), "valueOf", sig(Boolean.class, boolean.class));
+        // Boolean
+
+    }
+
+    @Override
+    public void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict) {
         LabelNode typeError = new LabelNode();
         LabelNode end = new LabelNode();
 
