@@ -137,7 +137,13 @@ public class ASTFactory {
 
             return new FloatingNumberExpression(position, text, 10, Double.valueOf(javafied));
         } else {
-            return new IntegerNumberExpression(position, text, 10, Long.valueOf(text));
+            double dbl = Double.valueOf(text).doubleValue();
+
+            if (dbl == (long) dbl) {
+                return new IntegerNumberExpression(position, text, 10, (long) dbl);
+            } else {
+                return new FloatingNumberExpression(position, text, 10, dbl);
+            }
         }
     }
 
