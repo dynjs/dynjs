@@ -21,6 +21,7 @@ import org.dynjs.parser.ast.DotExpression;
 import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.ExpressionStatement;
+import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
@@ -32,6 +33,7 @@ import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
+import org.dynjs.parser.ast.IntegerNumberExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
@@ -105,6 +107,8 @@ public interface CodeVisitor {
 
     void visit(ExecutionContext context, ExpressionStatement statement, boolean strict);
 
+    void visit(ExecutionContext context, FloatingNumberExpression expr, boolean strict);
+
     void visit(ExecutionContext context, ForExprInStatement statement, boolean strict);
 
     void visit(ExecutionContext context, ForExprStatement statement, boolean strict);
@@ -127,6 +131,8 @@ public interface CodeVisitor {
 
     void visit(ExecutionContext context, InstanceofExpression expr, boolean strict);
 
+    void visit(ExecutionContext context, IntegerNumberExpression expr, boolean strict);
+
     void visit(ExecutionContext context, LogicalExpression expr, boolean strict);
 
     void visit(ExecutionContext context, LogicalNotOperatorExpression expr, boolean strict);
@@ -140,8 +146,6 @@ public interface CodeVisitor {
     void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict);
 
     void visit(ExecutionContext context, NullLiteralExpression expr, boolean strict);
-
-    void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict);
 
     void visit(ExecutionContext context, ObjectLiteralExpression expr, boolean strict);
 

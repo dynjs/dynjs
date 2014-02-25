@@ -33,6 +33,7 @@ import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
+import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
@@ -44,6 +45,7 @@ import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
+import org.dynjs.parser.ast.IntegerNumberExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
@@ -889,6 +891,11 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, FloatingNumberExpression expr, boolean strict) {
+        visit(context, (NumberLiteralExpression) expr, strict);
+    }
+
+    @Override
     public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
@@ -1616,6 +1623,11 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, IntegerNumberExpression expr, boolean strict) {
+        visit(context, (NumberLiteralExpression) expr, strict);
+    }
+
+    @Override
     public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
         LabelNode end = new LabelNode();
 
@@ -1812,7 +1824,6 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         getstatic(p(Types.class), "NULL", ci(Types.Null.class));
     }
 
-    @Override
     public void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict) {
         String text = expr.getText();
 

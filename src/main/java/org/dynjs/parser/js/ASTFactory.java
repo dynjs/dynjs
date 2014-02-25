@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.js;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.dynjs.parser.Statement;
@@ -41,6 +42,7 @@ import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
+import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
@@ -53,6 +55,7 @@ import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
+import org.dynjs.parser.ast.IntegerNumberExpression;
 import org.dynjs.parser.ast.LogicalExpression;
 import org.dynjs.parser.ast.LogicalNotOperatorExpression;
 import org.dynjs.parser.ast.MultiplicativeExpression;
@@ -83,6 +86,7 @@ import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
+import org.dynjs.runtime.Types;
 
 public class ASTFactory {
 
@@ -109,15 +113,50 @@ public class ASTFactory {
     }
 
     public NumberLiteralExpression decimalLiteral(Position position, String text) {
-        return new NumberLiteralExpression(position, text, 10);
+        if (text.indexOf('.') == 0) {
+            text = "0" + text;
+            return new FloatingNumberExpression(position, text, 10, Double.valueOf(text));
+        }
+
+        if (text.indexOf('.') > 0) {
+            double primaryValue = Double.valueOf(text);
+            if (primaryValue == (long) primaryValue) {
+                return new IntegerNumberExpression(position, text, 10, (long) primaryValue);
+            } else {
+                return new FloatingNumberExpression(position, text, 10, primaryValue);
+            }
+        }
+
+        int eLoc = text.toLowerCase().indexOf('e');
+        if (eLoc > 0) {
+
+            String base = text.substring(0, eLoc);
+            String exponent = text.substring(eLoc);
+
+            String javafied = base + ".0" + exponent;
+
+            return new FloatingNumberExpression(position, text, 10, Double.valueOf(javafied));
+        } else {
+            double dbl = Double.valueOf(text).doubleValue();
+
+            if (dbl == (long) dbl) {
+                return new IntegerNumberExpression(position, text, 10, (long) dbl);
+            } else {
+                return new FloatingNumberExpression(position, text, 10, dbl);
+            }
+        }
     }
 
     public NumberLiteralExpression hexLiteral(Position position, String text) {
-        return new NumberLiteralExpression(position, text, 16);
+        String javafied = text;
+        if (javafied.startsWith("0x") || javafied.startsWith("0X")) {
+            javafied = javafied.substring(2);
+        }
+        return new IntegerNumberExpression(position, text, 16, new BigInteger(javafied, 16).longValue());
     }
 
     public NumberLiteralExpression octalLiteral(Position position, String text) {
-        return new NumberLiteralExpression(position, text, 8);
+        return new IntegerNumberExpression(position, text, 16, new BigInteger(text, 8).longValue());
     }
 
     public RegexpLiteralExpression regexpLiteral(Position position, String text) {
