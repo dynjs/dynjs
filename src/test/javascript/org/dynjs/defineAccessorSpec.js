@@ -38,10 +38,8 @@ describe("Object.create", function() {
 describe("the __proto__ property", function() {
   it("should be Object.prototype for Objects", function() {
     var a = new Object();
-    a.__proto__
     validateProto(a, Object.prototype);
     a = {};
-    a.__proto__
     validateProto(a, Object.prototype);
   });
 
@@ -123,6 +121,13 @@ describe("the __proto__ property", function() {
           // success
           expect(a.__proto__).toBe(Object.prototype);
         }
+  });
+
+  it("should not treat __proto__ as special when parsing JSON", function() {
+    var x = JSON.parse('{"__proto__":[]}');
+    expect(Object.getPrototypeOf(x)).toBe(Object.prototype);
+    expect(Array.isArray(x.__proto__)).toBe(true);
+    expect(x.hasOwnProperty('__proto__')).toBe(true);
   });
 
   xit("should allow Object.prototype.__proto__ to be set", function() {

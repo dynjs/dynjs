@@ -7,14 +7,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.NameEnumerator;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 
@@ -120,6 +113,13 @@ public class Parse extends AbstractNativeFunction {
         while (p.nextToken() != JsonToken.END_OBJECT) {
             String name = p.getCurrentName();
             Object value = parse(context, p);
+            System.err.println("Putting: " + name + " as " + value.toString());
+            PropertyDescriptor newDesc = new PropertyDescriptor();
+            newDesc.set(PropertyDescriptor.Names.VALUE, value);
+            newDesc.set(PropertyDescriptor.Names.WRITABLE, true);
+            newDesc.set(PropertyDescriptor.Names.ENUMERABLE, true);
+            newDesc.set(PropertyDescriptor.Names.CONFIGURABLE, true);
+            obj.defineOwnProperty(context, name, newDesc, false);
             obj.put(context, name, value, false);
         }
         return obj;
