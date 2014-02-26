@@ -563,7 +563,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (lhsRef instanceof Reference) {
                 Reference propertyRef = context.createPropertyReference(obj, each);
-                ((Reference) lhsRef).putValue(context, propertyRef);
+                ((Reference) lhsRef).putValue(context, propertyRef.getValue(context));
             }
 
             // statement.getBlock().accept(context, this, strict);
