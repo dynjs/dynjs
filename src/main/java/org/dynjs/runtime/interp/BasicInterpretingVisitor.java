@@ -727,7 +727,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             Reference varRef = context.resolve(varName);
             Reference propertyRef = context.createPropertyReference(obj, each);
 
-            varRef.putValue(context, propertyRef);
+            varRef.putValue(context, propertyRef.getValue(context));
 
             // statement.getBlock().accept(context, this, strict);
             // Completion completion = (Completion) pop();
