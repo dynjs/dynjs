@@ -36,6 +36,7 @@ public class Lexer {
             add("throw");
             add("delete");
             add("in");
+            add("of");
             add("try");
 
             add("null");

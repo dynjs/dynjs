@@ -30,8 +30,10 @@ import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
+import org.dynjs.parser.ast.ForExprOfStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
+import org.dynjs.parser.ast.ForVarDeclOfStatement;
 import org.dynjs.parser.ast.ForVarDeclStatement;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -39,6 +41,7 @@ import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
+import org.dynjs.parser.ast.OfOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.IntegerNumberExpression;
 import org.dynjs.parser.ast.LogicalExpression;
@@ -537,6 +540,59 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict) {
+        statement.getRhs().accept(context, this, strict);
+
+        Object exprRef = pop();
+        Object exprValue = getValue(context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            push(Completion.createNormal());
+            return;
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+            statement.getExpr().accept(context, this, strict);
+            Object lhsRef = pop();
+
+            if (lhsRef instanceof Reference) {
+                Reference propertyRef = context.createPropertyReference(obj, each);
+                ((Reference) lhsRef).putValue(context, propertyRef);
+            }
+
+            // statement.getBlock().accept(context, this, strict);
+            // Completion completion = (Completion) pop();
+            Completion completion = invokeCompiledBlockStatement(context, "ForOf", statement.getBlock());
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(v));
+                } else {
+                    push(completion);
+                }
+                return;
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                push(completion);
+                return;
+            }
+        }
+
+        push(Completion.createNormal(v));
+    }
+
+    @Override
     public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
@@ -622,6 +678,60 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             // statement.getBlock().accept(context, this, strict);
             // Completion completion = (Completion) pop();
             Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || statement.getLabels().contains(completion.target)) {
+                    push(Completion.createNormal(v));
+                } else {
+                    push(completion);
+                }
+                return;
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                push(completion);
+                return;
+            }
+        }
+
+        push(Completion.createNormal(v));
+
+    }
+
+    @Override
+    public void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict) {
+        statement.getDeclaration().accept(context, this, strict);
+        String varName = (String) pop();
+
+        statement.getRhs().accept(context, this, strict);
+
+        Object exprRef = pop();
+        Object exprValue = getValue(context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            push(Completion.createNormal());
+            return;
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+            Reference varRef = context.resolve(varName);
+            Reference propertyRef = context.createPropertyReference(obj, each);
+
+            varRef.putValue(context, propertyRef);
+
+            // statement.getBlock().accept(context, this, strict);
+            // Completion completion = (Completion) pop();
+            Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsOf", statement.getBlock());
 
             if (completion.value != null) {
                 v = completion.value;
@@ -776,6 +886,21 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
     @Override
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
+        expr.getLhs().accept(context, this, strict);
+        Object lhs = getValue(context, pop());
+
+        expr.getRhs().accept(context, this, strict);
+        Object rhs = getValue(context, pop());
+
+        if (!(rhs instanceof JSObject)) {
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
+        }
+
+        push(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
+    }
+
+    @Override
+    public void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = getValue(context, pop());
 

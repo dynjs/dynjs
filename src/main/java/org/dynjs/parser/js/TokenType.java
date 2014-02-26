@@ -27,6 +27,7 @@ public enum TokenType {
     THROW("throw"),
     DELETE("delete"),
     IN("in"),
+    OF("of"),
     TRY("try"),
     
     PRINT("print"),

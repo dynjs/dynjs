@@ -445,6 +445,7 @@ public class Parser {
         case THROW:
         case DELETE:
         case IN:
+        case OF:
         case TRY:
         case NULL:
         case TRUE:
@@ -719,7 +720,7 @@ public class Parser {
     public Expression relationalExpression(boolean noIn) {
         Expression expr = shiftExpression();
 
-        while (la() == LESS_THAN || la() == LESS_THAN_EQUAL || la() == GREATER_THAN || la() == GREATER_THAN_EQUAL || la() == INSTANCEOF || (!noIn && la() == IN)) {
+        while (la() == LESS_THAN || la() == LESS_THAN_EQUAL || la() == GREATER_THAN || la() == GREATER_THAN_EQUAL || la() == INSTANCEOF || (!noIn && (la() == IN || la() ==OF))) {
             switch (la()) {
             case LESS_THAN:
                 consume();
@@ -1647,6 +1648,17 @@ public class Parser {
                 Statement body = statement();
 
                 return factory.forInStatement(position, varDeclList.get(0), rhs, body);
+            } else if (la() == OF) {
+                if (varDeclList.size() != 1) {
+                    throw new SyntaxError(varDeclList.get(1).getPosition(), "only one variable declaration is allowed");
+                }
+                // for ( var-decl of ... )
+                consume(OF);
+                Expression rhs = expression();
+                consume(RIGHT_PAREN);
+                Statement body = statement();
+
+                return factory.forOfStatement(position, varDeclList.get(0), rhs, body);
             } else {
                 // for ( var-decl-list ; ... ; ... )
                 consume(SEMICOLON);
@@ -1679,6 +1691,13 @@ public class Parser {
                 consume(RIGHT_PAREN);
                 Statement body = statement();
                 return factory.forInStatement(position, initializer, rhs, body);
+            } else if (la() == OF) {
+                consume(OF);
+                // for ( expr of expr )
+                Expression rhs = expression();
+                consume(RIGHT_PAREN);
+                Statement body = statement();
+                return factory.forOfStatement(position, initializer, rhs, body);
             } else {
                 // for ( ... ; ... ; ... )
                 consume(SEMICOLON);
