@@ -26,8 +26,10 @@ import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
+import org.dynjs.parser.ast.ForExprOfStatement;
 import org.dynjs.parser.ast.ForExprStatement;
 import org.dynjs.parser.ast.ForVarDeclInStatement;
+import org.dynjs.parser.ast.ForVarDeclOfStatement;
 import org.dynjs.parser.ast.ForVarDeclStatement;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.FunctionDeclaration;
@@ -35,6 +37,7 @@ import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
 import org.dynjs.parser.ast.InOperatorExpression;
+import org.dynjs.parser.ast.OfOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.IntegerNumberExpression;
 import org.dynjs.parser.ast.LogicalExpression;
@@ -197,6 +200,13 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
+    public void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict) {
+        statement.getExpr().accept(context, this, strict);
+        statement.getRhs().accept(context, this, strict);
+        statement.getBlock().accept(context, this, strict);
+    }
+
+    @Override
     public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
@@ -215,6 +225,12 @@ public class DefaultVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
+        statement.getDeclaration().accept(context, this, strict);
+        statement.getRhs().accept(context, this, strict);
+    }
+
+    @Override
+    public void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict) {
         statement.getDeclaration().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
     }
@@ -273,6 +289,11 @@ public class DefaultVisitor implements CodeVisitor {
 
     @Override
     public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
+        walkBinaryExpression(context, expr, strict);
+    }
+
+    @Override
+    public void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
