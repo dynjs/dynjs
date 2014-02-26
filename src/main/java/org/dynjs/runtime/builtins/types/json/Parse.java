@@ -113,7 +113,6 @@ public class Parse extends AbstractNativeFunction {
         while (p.nextToken() != JsonToken.END_OBJECT) {
             String name = p.getCurrentName();
             Object value = parse(context, p);
-            System.err.println("Putting: " + name + " as " + value.toString());
             PropertyDescriptor newDesc = new PropertyDescriptor();
             newDesc.set(PropertyDescriptor.Names.VALUE, value);
             newDesc.set(PropertyDescriptor.Names.WRITABLE, true);
