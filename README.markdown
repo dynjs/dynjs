@@ -13,9 +13,9 @@ We've got a [Jira](https://jira.codehaus.org/browse/DYNJS) over at Codehaus. Ple
 
 ### Getting JDK7
 
-OSX users can get it at [java site](http://java.sun.com).
+OSX can get information on installing at the [java site](http://www.java.com/en/download/faq/java_mac.xml).
 
-Download and install it to your user(not to the entire machine) and before
+Download and install it to your user (not to the entire machine) and before
 running `mvn install` run (or use Java7 as default compiler):
 		
 		export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
