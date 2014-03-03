@@ -6,6 +6,7 @@ import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.builtins.*;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.*;
+import org.dynjs.runtime.java.JSAdapter;
 import org.dynjs.runtime.java.JavaPackage;
 
 import java.util.ArrayList;
@@ -43,6 +44,10 @@ public class GlobalObject extends DynObject {
         registerBuiltinType("TypeError", new BuiltinTypeError(this));
         registerBuiltinType("URIError", new BuiltinURIError(this));
         registerBuiltinType("EvalError", new BuiltinEvalError(this));
+
+        if (runtime.getConfig().isRhinoCompatible()) {
+            registerBuiltinType("JSAdapter", new JSAdapter(this));
+        }
 
         initializeBuiltinTypes();
 

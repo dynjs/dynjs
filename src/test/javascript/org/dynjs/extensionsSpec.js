@@ -28,6 +28,19 @@ describe("defineSetter", function() {
   });
 });
 
+describe("Object.defineProperty", function() {
+  it("should allow setting a getter function", function() {
+    var a = {};
+    var b = 'bar';
+    Object.defineProperty(a, 'foo', {
+      get: function() { return b; },
+      set: function() {},
+      enumerable: true,
+      configurable: true});
+    expect(a.foo).toBe(b);
+  });
+});
+
 describe("Object.create", function() {
   xit("should create an object with a null prototype if null is passed", function() {
     var o = Object.create(null);
@@ -150,4 +163,37 @@ describe("the __proto__ property", function() {
     expect(obj.__proto__).toBe(proto);
   }
 });
+
+
+describe("JSAdapter", function() {
+  it("should provide a __get__ override", function() {
+    var x = new JSAdapter({
+      __get__: function(name) { return name; }
+    });
+    expect(x.foo).toBe("foo");
+    expect(x['bar']).toBe("bar");
+  });
+
+  it("should provide a __set__ override", function() {
+    var z = "foo";
+    var x = new JSAdapter({
+      __set__: function(name, value) { z = value; }
+    });
+    x.foo = "bar";
+    expect(z).toBe("bar");
+  });
+
+  it("should behave like a regular JS object", function() {
+    var x = new JSAdapter({})
+    expect(x.__proto__).toNotBe(null);
+    expect(x.__proto__).toBe(Object.prototype);
+    x.foo = "foo";
+    expect(x.foo).toBe("foo");
+    x.bar = function() {
+      return "foobar";
+    };
+    expect(x.bar()).toBe("foobar");
+  });
+});
+
 
