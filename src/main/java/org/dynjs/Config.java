@@ -28,7 +28,7 @@ public class Config {
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
-    private boolean invokeDynamicEnabled = true;
+    private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean nodePackageManagerEnabled = true;
     private boolean rhinoCompatible = true;
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
@@ -46,9 +46,6 @@ public class Config {
     }
 
     private void initializeOptions() {
-        if (System.getProperty("dynjs.disable.indy") != null) {
-            setInvokeDynamicEnabled(false);
-        }
         if (System.getProperty("dynjs.disable.npm") != null) {
             setNodePackageManagerEnabled(false);
         }
