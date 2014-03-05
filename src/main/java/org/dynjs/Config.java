@@ -30,7 +30,7 @@ public class Config {
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean nodePackageManagerEnabled = true;
-    private boolean rhinoCompatible = true;
+    private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
 
     private Object[] argv;
@@ -48,9 +48,6 @@ public class Config {
     private void initializeOptions() {
         if (System.getProperty("dynjs.disable.npm") != null) {
             setNodePackageManagerEnabled(false);
-        }
-        if (System.getProperty("dynjs.rhino.compat") != null) {
-            setRhinoCompatible(false);
         }
     }
 
