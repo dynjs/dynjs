@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import com.headius.options.Option;
 import org.dynjs.Config;
 import org.dynjs.runtime.DynJS;
 import org.kohsuke.args4j.CmdLineException;
@@ -52,6 +53,8 @@ public class Main {
 
             if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
                 showUsage();
+            } else if (dynJsArguments.isProperties()) {
+                showProperties();
             } else if (dynJsArguments.getFilename() != null) {
                 executeFile(dynJsArguments.getFilename());
             } else if (dynJsArguments.isConsole()) {
@@ -65,6 +68,15 @@ public class Main {
             stream.println();
             showUsage();
         }
+    }
+
+    private void showProperties() {
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append("# These properties can be used to alter runtime behavior for perf or compatibility.\n")
+                .append("# Specify them by passing directly to Java -Ddynjs.<property>=<value>\n");
+        stream.print(sb.toString());
+        stream.println(Option.formatOptions(Options.PROPERTIES));
     }
 
     private void executeFile(String filename) throws IOException {

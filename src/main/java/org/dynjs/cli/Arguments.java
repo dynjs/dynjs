@@ -29,6 +29,7 @@ public class Arguments {
     static final String VERSION = "--version";
     static final String DEBUG = "--debug";
     static final String FILE = "--file";
+    static final String PROPERTIES = "--properties";
 
     @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
     private boolean console;
@@ -41,6 +42,9 @@ public class Arguments {
 
     @Option(name = DEBUG, usage = "Run REPL in debug mode.")
     private boolean debug;
+
+    @Option(name = PROPERTIES, usage = "Shows config properties.")
+    private boolean properties;
 
     @Argument(usage = "File to be executed by dynjs", required = false, metaVar = "FILE")
     private List<String> arguments = new ArrayList<>();
@@ -55,7 +59,7 @@ public class Arguments {
     }
 
     public boolean isEmpty() {
-        return !(console || help || version || debug) && arguments.isEmpty();
+        return !(console || help || version || debug || properties) && arguments.isEmpty();
     }
 
     public boolean isConsole() {
@@ -72,6 +76,10 @@ public class Arguments {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public boolean isProperties() {
+        return properties;
     }
 
     public String getFilename() {
