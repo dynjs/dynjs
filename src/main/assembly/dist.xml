@@ -19,6 +19,12 @@
             <outputDirectory></outputDirectory>
             <destName>dynjs.jar</destName>
         </file>
+        <file>
+            <source>src/main/assembly/dynjs.sh</source>
+            <outputDirectory>bin</outputDirectory>
+            <destName>dynjs</destName>
+            <fileMode>0755</fileMode>
+        </file>
     </files>
 </assembly>
 
