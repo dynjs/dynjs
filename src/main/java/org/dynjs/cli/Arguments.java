@@ -15,12 +15,12 @@
  */
 package org.dynjs.cli;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dynjs.Config;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Arguments {
 
@@ -86,7 +86,7 @@ public class Arguments {
 
     public String getFilename() {
         if (arguments.size() > 0) {
-            return arguments.get( 0 );
+            return arguments.get(0);
         } else {
             return null;
         }
