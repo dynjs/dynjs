@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.dynjs.cli.Options;
 import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.GlobalObjectFactory;
@@ -27,43 +28,19 @@ public class Config {
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
-    private boolean invokeDynamicEnabled = true;
-    private boolean nodePackageManagerEnabled = true;
-    private boolean rhinoCompatible = true;
-    private CompileMode compileMode = CompileMode.JIT;
+    private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
+    private boolean nodePackageManagerEnabled = Options.COMPATIBILITY_NPM.load();
+    private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
+    private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
 
     private Object[] argv;
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
-        initializeOptions();
     }
 
     public Config(ClassLoader parentClassLoader) {
         this.classLoader = new DynamicClassLoader(parentClassLoader);
-        initializeOptions();
-    }
-
-    private void initializeOptions() {
-        if (System.getProperty("dynjs.disable.indy") != null) {
-            setInvokeDynamicEnabled(false);
-        }
-        if (System.getProperty("dynjs.disable.npm") != null) {
-            setNodePackageManagerEnabled(false);
-        }
-        if (System.getProperty("dynjs.rhino.compat") != null) {
-            setRhinoCompatible(false);
-        }
-        String compileMode = System.getProperty("dynjs.compile.mode");
-        if (compileMode != null) {
-            if (compileMode.equals("off")) {
-                this.compileMode = CompileMode.OFF;
-            } else if (compileMode.equals("force")) {
-                this.compileMode = CompileMode.FORCE;
-            } else if (compileMode.equals("jit")) {
-                this.compileMode = CompileMode.JIT;
-            }
-        }
     }
 
     private void setRhinoCompatible(boolean rhinoCompatible) {

@@ -15,12 +15,12 @@
  */
 package org.dynjs.cli;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dynjs.Config;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Arguments {
 
@@ -29,18 +29,24 @@ public class Arguments {
     static final String VERSION = "--version";
     static final String DEBUG = "--debug";
     static final String FILE = "--file";
+    static final String PROPERTIES = "--properties";
+    public static final String VERSION_SHORT = "-v";
+    public static final String HELP_SHORT = "-h";
 
     @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
     private boolean console;
 
-    @Option(name = HELP, usage = "Shows current screen. Running without parameters also shows this.")
+    @Option(name = HELP, aliases = {HELP_SHORT}, usage = "Shows current screen. Running without parameters also shows this.")
     private boolean help;
 
-    @Option(name = VERSION, usage = "Shows current dynjs version.")
+    @Option(name = VERSION, aliases = {VERSION_SHORT}, usage = "Shows current dynjs version.")
     private boolean version;
 
     @Option(name = DEBUG, usage = "Run REPL in debug mode.")
     private boolean debug;
+
+    @Option(name = PROPERTIES, usage = "Shows config properties.")
+    private boolean properties;
 
     @Argument(usage = "File to be executed by dynjs", required = false, metaVar = "FILE")
     private List<String> arguments = new ArrayList<>();
@@ -55,7 +61,7 @@ public class Arguments {
     }
 
     public boolean isEmpty() {
-        return !(console || help || version || debug) && arguments.isEmpty();
+        return !(console || help || version || debug || properties) && arguments.isEmpty();
     }
 
     public boolean isConsole() {
@@ -74,9 +80,13 @@ public class Arguments {
         return debug;
     }
 
+    public boolean isProperties() {
+        return properties;
+    }
+
     public String getFilename() {
         if (arguments.size() > 0) {
-            return arguments.get( 0 );
+            return arguments.get(0);
         } else {
             return null;
         }
