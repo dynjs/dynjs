@@ -30,14 +30,16 @@ public class Arguments {
     static final String DEBUG = "--debug";
     static final String FILE = "--file";
     static final String PROPERTIES = "--properties";
+    public static final String VERSION_SHORT = "-v";
+    public static final String HELP_SHORT = "-h";
 
     @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
     private boolean console;
 
-    @Option(name = HELP, usage = "Shows current screen. Running without parameters also shows this.")
+    @Option(name = HELP, aliases = {HELP_SHORT}, usage = "Shows current screen. Running without parameters also shows this.")
     private boolean help;
 
-    @Option(name = VERSION, usage = "Shows current dynjs version.")
+    @Option(name = VERSION, aliases = {VERSION_SHORT}, usage = "Shows current dynjs version.")
     private boolean version;
 
     @Option(name = DEBUG, usage = "Run REPL in debug mode.")
