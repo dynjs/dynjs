@@ -92,6 +92,7 @@ public class GlobalObject extends DynObject {
 
         defineGlobalProperty("Packages", new JavaPackage(this, null));
         defineGlobalProperty("java",     new JavaPackage(this, "java"));
+        defineGlobalProperty("javax",    new JavaPackage(this, "javax"));
         defineGlobalProperty("org",      new JavaPackage(this, "org"));
         defineGlobalProperty("com",      new JavaPackage(this, "com"));
         defineGlobalProperty("io",       new JavaPackage(this, "io"));
