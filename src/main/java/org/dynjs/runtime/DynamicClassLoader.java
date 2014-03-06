@@ -15,14 +15,17 @@
  */
 package org.dynjs.runtime;
 
-public class DynamicClassLoader extends ClassLoader {
+import java.net.URL;
+import java.net.URLClassLoader;
+
+public class DynamicClassLoader extends URLClassLoader {
 
     public DynamicClassLoader(ClassLoader parentClassLoader) {
-        super(parentClassLoader);
+        super(new URL[0], parentClassLoader);
     }
 
     public DynamicClassLoader() {
-        super();
+        super(new URL[0]);
     }
 
     public Class<?> define(String className, byte[] bytecode) {
