@@ -68,7 +68,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("encodeURIComponent", new EncodeUriComponent(this));
         defineGlobalProperty("decodeURIComponent", new DecodeUriComponent(this));
 
-        if (runtime.getConfig().isNodePackageManagerEnabled()) {
+        if (runtime.getConfig().isCommonJSCompatible()) {
             defineGlobalProperty("require", new Require(this));
         }
         defineGlobalProperty("include", new Include(this));

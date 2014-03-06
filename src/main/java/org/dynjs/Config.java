@@ -29,7 +29,7 @@ public class Config {
     private String basePackage = DEFAULT_BASE_PACKAGE;
     private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
-    private boolean nodePackageManagerEnabled = Options.COMPATIBILITY_NPM.load();
+    private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
 
@@ -67,12 +67,12 @@ public class Config {
         return this.compileMode;
     }
 
-    public void setNodePackageManagerEnabled(boolean enabled) {
-        this.nodePackageManagerEnabled = enabled;
+    public void setCommonJSCompatible(boolean enabled) {
+        this.commonJSCompatible = enabled;
     }
 
-    public boolean isNodePackageManagerEnabled() {
-        return this.nodePackageManagerEnabled;
+    public boolean isCommonJSCompatible() {
+        return this.commonJSCompatible;
     }
 
     public DynamicClassLoader getClassLoader() {
