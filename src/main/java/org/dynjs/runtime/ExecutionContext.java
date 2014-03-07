@@ -19,11 +19,7 @@ public class ExecutionContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        ExecutionContext context = new ExecutionContext(null, env, env, env.getGlobalObject(), false);
-        context.clock = runtime.getConfig().getClock();
-        context.timeZone = runtime.getConfig().getTimeZone();
-        context.locale = runtime.getConfig().getLocale();
-        return context;
+        return new ExecutionContext(null, env, env, env.getGlobalObject(), false);
     }
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
@@ -47,9 +43,6 @@ public class ExecutionContext {
     private String fileName;
     private String debugContext = "<eval>";
 
-    private Clock clock;
-    private TimeZone timeZone;
-    private Locale locale;
     private Object functionReference;
 
     public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
@@ -85,26 +78,15 @@ public class ExecutionContext {
     }
 
     public Clock getClock() {
-        if (this.parent != null) {
-            return this.parent.getClock();
-        }
-        return this.clock;
+        return getGlobalObject().getConfig().getClock();
     }
 
     public TimeZone getTimeZone() {
-        if (this.parent != null) {
-            return this.parent.getTimeZone();
-        }
-
-        return this.timeZone;
+        return getGlobalObject().getConfig().getTimeZone();
     }
 
     public Locale getLocale() {
-        if (this.parent != null) {
-            return this.parent.getLocale();
-        }
-
-        return this.locale;
+        return getGlobalObject().getConfig().getLocale();
     }
 
     void setStrict(boolean strict) {
