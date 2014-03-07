@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -23,9 +24,10 @@ public class ExecutionContext {
         context.clock = runtime.getConfig().getClock();
         context.timeZone = runtime.getConfig().getTimeZone();
         context.locale = runtime.getConfig().getLocale();
+        context.outputStream = runtime.getConfig().getOutputStream();
         return context;
     }
-    
+
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
         ExecutionContext context = ExecutionContext.createEvalExecutionContext(runtime);
         listener.initialize(context);
@@ -51,6 +53,7 @@ public class ExecutionContext {
     private TimeZone timeZone;
     private Locale locale;
     private Object functionReference;
+    private PrintStream outputStream;
 
     public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.parent = parent;
@@ -58,6 +61,18 @@ public class ExecutionContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+    }
+
+    public PrintStream getOutputStream() {
+        if (this.outputStream == null) {
+            if (this.getParent() == null) {
+                return System.out;
+            } else {
+                return this.getParent().getOutputStream();
+            }
+        } else {
+            return this.outputStream;
+        }
     }
 
     public Object getFunctionReference() {
@@ -558,7 +573,7 @@ public class ExecutionContext {
     public JSObject getPrototypeFor(String type) {
         return getGlobalObject().getPrototypeFor(type);
     }
-    
+
     public String toString() {
         return "ExecutionContext: " + System.identityHashCode( this ) + "; parent=" + this.parent;
     }
