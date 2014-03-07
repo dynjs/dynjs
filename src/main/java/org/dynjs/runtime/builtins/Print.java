@@ -28,10 +28,10 @@ public class Print extends AbstractNonConstructorFunction {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        System.out.println(Types.toString(context, args[0]));
+        context.getConfig().getOutputStream().println(Types.toString(context, args[0]));
         return Types.UNDEFINED;
     }
-    
+
     @Override
     public void setFileName() {
         this.filename = "org/dynjs/runtime/builtins/Print.java";

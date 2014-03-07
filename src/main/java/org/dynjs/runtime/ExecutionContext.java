@@ -25,7 +25,7 @@ public class ExecutionContext {
         context.locale = runtime.getConfig().getLocale();
         return context;
     }
-    
+
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
         ExecutionContext context = ExecutionContext.createEvalExecutionContext(runtime);
         listener.initialize(context);
@@ -558,7 +558,7 @@ public class ExecutionContext {
     public JSObject getPrototypeFor(String type) {
         return getGlobalObject().getPrototypeFor(type);
     }
-    
+
     public String toString() {
         return "ExecutionContext: " + System.identityHashCode( this ) + "; parent=" + this.parent;
     }
