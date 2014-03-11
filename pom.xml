@@ -197,6 +197,7 @@
         </dependency>
     </dependencies>
     <build>
+        <defaultGoal>install</defaultGoal>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
