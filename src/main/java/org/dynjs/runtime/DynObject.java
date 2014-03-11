@@ -33,12 +33,15 @@ public class DynObject implements JSObject, Map<String, Object> {
     private final Map<String, PropertyDescriptor> properties = new LinkedHashMap<>();
     private boolean extensible = true;
 
-    public DynObject(GlobalObject globalObject) {
+    // Used by globalObject constructor and for ShadowObjectLinkStrategy
+    public DynObject() {
         setClassName("Object");
         setExtensible(true);
-        if (globalObject != null) {
-            setPrototype(globalObject.getPrototypeFor("Object"));
-        }
+    }
+
+    public DynObject(GlobalObject globalObject) {
+        this();
+        setPrototype(globalObject.getPrototypeFor("Object"));
     }
 
     // ------------------------------------------------------------------------

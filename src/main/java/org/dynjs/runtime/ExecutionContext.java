@@ -19,7 +19,7 @@ public class ExecutionContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        return new ExecutionContext(null, env, env, env.getGlobalObject(), false);
+        return new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
     }
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
@@ -33,6 +33,7 @@ public class ExecutionContext {
         return createGlobalExecutionContext(runtime);
     }
 
+    private DynJS runtime;
     private ExecutionContext parent;
     private LexicalEnvironment lexicalEnvironment;
     private LexicalEnvironment variableEnvironment;
@@ -45,7 +46,8 @@ public class ExecutionContext {
 
     private Object functionReference;
 
-    public ExecutionContext(ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
+    public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
+        this.runtime = runtime;
         this.parent = parent;
         this.lexicalEnvironment = lexicalEnvironment;
         this.variableEnvironment = variableEnvironment;
@@ -78,15 +80,15 @@ public class ExecutionContext {
     }
 
     public Clock getClock() {
-        return getGlobalObject().getConfig().getClock();
+        return this.runtime.getConfig().getClock();
     }
 
     public TimeZone getTimeZone() {
-        return getGlobalObject().getConfig().getTimeZone();
+        return this.runtime.getConfig().getTimeZone();
     }
 
     public Locale getLocale() {
-        return getGlobalObject().getConfig().getLocale();
+        return this.runtime.getConfig().getLocale();
     }
 
     void setStrict(boolean strict) {
@@ -239,7 +241,7 @@ public class ExecutionContext {
             evalVarEnv = strictVarEnv;
         }
 
-        context = new ExecutionContext(this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
+        context = new ExecutionContext(this.runtime, this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
         context.fileName = eval.getFileName();
@@ -253,7 +255,7 @@ public class ExecutionContext {
             thisBinding = thisArg;
         } else {
             if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
-                thisBinding = this.getLexicalEnvironment().getGlobalObject();
+                thisBinding = getGlobalObject();
             } else if (!(thisArg instanceof JSObject)) {
                 // thisBinding = Types.toObject(this, thisArg);
                 thisBinding = Types.toThisObject(this, thisArg);
@@ -265,7 +267,7 @@ public class ExecutionContext {
         LexicalEnvironment scope = function.getScope();
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
-        ExecutionContext context = new ExecutionContext(this, localEnv, localEnv, thisBinding, function.isStrict());
+        ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
         context.performDeclarationBindingInstantiation(function, arguments);
         context.fileName = function.getFileName();
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
@@ -388,8 +390,8 @@ public class ExecutionContext {
                             mappedNames.add(name);
 
                             desc = new PropertyDescriptor();
-                            desc.set(Names.SET, new ArgSetter(env, name));
-                            desc.set(Names.GET, new ArgGetter(env, name));
+                            desc.set(Names.SET, new ArgSetter(getGlobalObject(), env, name));
+                            desc.set(Names.GET, new ArgGetter(getGlobalObject(), env, name));
                             desc.set(Names.CONFIGURABLE, true);
                             map.defineOwnProperty(this, "" + i, desc, false);
                         }
@@ -479,7 +481,7 @@ public class ExecutionContext {
     }
 
     public GlobalObject getGlobalObject() {
-        return this.lexicalEnvironment.getGlobalObject();
+        return this.runtime.getGlobalObject();
     }
 
     public JSCompiler getCompiler() {
@@ -495,7 +497,7 @@ public class ExecutionContext {
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {
-        return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry(statementNumber);
+        return getGlobalObject().retrieveBlockEntry(statementNumber);
     }
 
     public JSObject createTypeError(String message) {
