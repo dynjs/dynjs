@@ -477,7 +477,7 @@ public class ExecutionContext {
     }
 
     public Config getConfig() {
-        return getGlobalObject().getConfig();
+        return this.runtime.getConfig();
     }
 
     public GlobalObject getGlobalObject() {
@@ -485,11 +485,15 @@ public class ExecutionContext {
     }
 
     public JSCompiler getCompiler() {
-        return getGlobalObject().getCompiler();
+        return this.runtime.getCompiler();
     }
 
     public BlockManager getBlockManager() {
         return getGlobalObject().getBlockManager();
+    }
+
+    public DynJS getRuntime() {
+        return this.runtime;
     }
 
     public Reference createPropertyReference(Object base, String propertyName) {
@@ -548,6 +552,6 @@ public class ExecutionContext {
     }
 
     public DynamicClassLoader getClassLoader() {
-        return getConfig().getClassLoader();
+        return getRuntime().getConfig().getClassLoader();
     }
 }

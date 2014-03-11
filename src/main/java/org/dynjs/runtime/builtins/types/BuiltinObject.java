@@ -28,7 +28,7 @@ public class BuiltinObject extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "isPrototypeOf", new IsPrototypeOf(globalObject) );
         defineNonEnumerableProperty(proto, "propertyIsEnumerable", new PropertyIsEnumerable(globalObject) );
         defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
-        if (globalObject.getConfig().isRhinoCompatible()) {
+        if (globalObject.getRuntime().getConfig().isRhinoCompatible()) {
             // TODO: this is probably not an exhaustive list of rhino-specific functions, but it will do for a start
             defineNonEnumerableProperty(proto, "__defineGetter__", new DefineGetter(globalObject));
             defineNonEnumerableProperty(proto, "__defineSetter__", new DefineSetter(globalObject));

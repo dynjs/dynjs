@@ -32,14 +32,13 @@ public class Include extends AbstractNativeFunction {
         String includePath = Types.toString(context, args[0]);
         File includeFile = new File(includePath);
 
-        DynJS runtime = context.getGlobalObject().getRuntime();
         try {
             ExecutionContext parent = context.getParent();
             while (parent != null) {
                 context = parent;
                 parent = context.getParent();
             }
-            Runner runner = runtime.newRunner();
+            Runner runner = context.getRuntime().newRunner();
             if (includeFile.exists()) {
                 runner.withContext(context)
                         .withSource(includeFile)

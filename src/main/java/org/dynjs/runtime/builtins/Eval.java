@@ -46,7 +46,7 @@ public class Eval extends AbstractNonConstructorFunction {
         Object code = args[0];
         if (code instanceof String) {
             try {
-                Runner runner = context.getGlobalObject().getRuntime().newRunner();
+                Runner runner = context.getRuntime().newRunner();
                 Object result = runner.withContext(context.getParent())
                         .forceStrict(context.getParent().isStrict() && direct)
                         .directEval(direct)

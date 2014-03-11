@@ -127,14 +127,6 @@ public class GlobalObject extends DynObject {
         return this.runtime;
     }
 
-    public Config getConfig() {
-        return getRuntime().getConfig();
-    }
-
-    public JSCompiler getCompiler() {
-        return this.runtime.getCompiler();
-    }
-
     public BlockManager getBlockManager() {
         return this.blockManager;
     }

@@ -1,6 +1,5 @@
 package org.dynjs.runtime.modules;
 
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.builtins.Require;
 
@@ -25,13 +24,12 @@ public class FilesystemModuleProvider extends ModuleProvider {
 
     @Override
     public boolean load(ExecutionContext context, String moduleID) {
-        DynJS runtime = context.getGlobalObject().getRuntime();
         File file = new File(moduleID);
         if (file.exists()) {
             final String parent = file.getParent();
             nativeRequire.addLoadPath(parent);
             try {
-                runtime.newRunner().withContext(context).withSource(file).execute();
+                context.getRuntime().newRunner().withContext(context).withSource(file).execute();
                 nativeRequire.removeLoadPath(parent);
                 return true;
             } catch (IOException e) {
