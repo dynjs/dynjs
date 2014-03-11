@@ -493,7 +493,7 @@ public class ExecutionContext {
     }
 
     public Reference createPropertyReference(Object base, String propertyName) {
-        return new Reference(getGlobalObject(), propertyName, base, isStrict());
+        return new Reference(propertyName, base, isStrict());
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {

@@ -5,13 +5,11 @@ import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class Reference {
 
-    private JSObject globalObject;
     private Object base;
     private String referencedName;
     private boolean strict;
 
-    public Reference(JSObject globalObject, String referencedName, Object base, boolean strict) {
-        this.globalObject = globalObject;
+    public Reference(String referencedName, Object base, boolean strict) {
         this.referencedName = referencedName;
         this.base = base;
         this.strict = strict;
@@ -93,7 +91,7 @@ public class Reference {
             if (isStrictReference()) {
                 throw new ThrowException(context, context.createReferenceError(referencedName + " is not defined"));
             } else {
-                this.globalObject.put(context, this.referencedName, value, false);
+                context.getGlobalObject().put(context, this.referencedName, value, false);
             }
         } else if (isPropertyReference()) {
             if (!hasPrimitiveBase()) {

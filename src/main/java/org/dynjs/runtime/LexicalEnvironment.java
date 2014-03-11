@@ -38,11 +38,11 @@ public class LexicalEnvironment {
         // 10.2.2.1
         boolean exists = record.hasBinding(context, name);
         if (exists) {
-            return new Reference(context.getGlobalObject(), name, this.record, strict);
+            return new Reference(name, this.record, strict);
         }
 
         if (outer == null) {
-            return new Reference(context.getGlobalObject(), name, Types.UNDEFINED, strict);
+            return new Reference(name, Types.UNDEFINED, strict);
         }
         
         return outer.getIdentifierReference(context, name, strict);
