@@ -384,6 +384,7 @@
                         <descriptors>
                             <descriptor>src/main/assembly/assembly.xml</descriptor>
                             <descriptor>src/main/assembly/dist.xml</descriptor>
+                            <descriptor>src/main/assembly/launcher.xml</descriptor>
                         </descriptors>
                     </configuration>
                 <executions>
