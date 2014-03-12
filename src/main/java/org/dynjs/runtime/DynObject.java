@@ -443,6 +443,10 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     }
 
+    public String toString() {
+        return "[object Object]";
+    }
+
     protected boolean reject(ExecutionContext context, boolean shouldThrow) {
         if (shouldThrow) {
             throw new ThrowException(context, context.createTypeError("unable to perform operation"));
