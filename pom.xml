@@ -352,17 +352,7 @@
                             </arguments>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>generate-executable</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
                 </executions>
-                <configuration>
-                  <executable>src/main/assembly/genexe.sh</executable>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -410,9 +400,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                     <configuration>
                         <descriptors>
-                            <descriptor>src/main/assembly/assembly.xml</descriptor>
                             <descriptor>src/main/assembly/dist.xml</descriptor>
-                            <descriptor>src/main/assembly/launcher.xml</descriptor>
                         </descriptors>
                     </configuration>
                 <executions>

@@ -15,12 +15,12 @@
     </dependencySets>
     <files>
         <file>
-            <source>${project.build.directory}/dynjs-${project.version}.jar</source>
+            <source>${project.basedir}/${project.artifactId}.jar</source>
             <outputDirectory></outputDirectory>
             <destName>dynjs.jar</destName>
         </file>
         <file>
-            <source>src/main/assembly/dynjs.sh</source>
+            <source>${project.basedir}/bin/dynjs</source>
             <outputDirectory>bin</outputDirectory>
             <destName>dynjs</destName>
             <fileMode>0755</fileMode>
