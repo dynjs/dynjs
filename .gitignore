@@ -22,9 +22,9 @@ atlassian-ide-plugin.xml
 temp-testng-customsuite.xml
 test-output
 target
-bin
 out.slql
 profiles.xml
+lib
 
 # General folders
 local
@@ -45,5 +45,5 @@ nb-configuration.xml
 # versioning output
 src/main/resources/version.properties
 
-# generated exe
-bin/dynjs
+# ignore generated jar output
+dynjs.jar
