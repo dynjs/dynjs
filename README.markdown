@@ -6,7 +6,7 @@
 
 ## Bug Reports
 
-We've got a [Jira](https://jira.codehaus.org/browse/DYNJS) over at Codehaus. Please let us know what issues you find!
+We've using [GitHub Issues](https://github.com/dynjs/dynjs/issues/). Please let us know what issues you find!
 
 ## Setting up environment
 
