@@ -1,4 +1,4 @@
-# dynjs - invokedynamic-based javascript impl
+# dynjs - ECMAScript Runtime for the JVM
 
 [![Build Status](https://secure.travis-ci.org/dynjs/dynjs.png)](http://travis-ci.org/dynjs/dynjs)
 
