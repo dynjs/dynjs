@@ -31,7 +31,7 @@ running `mvn install` run (or use Java7 as default compiler):
 
 ### Download
 
-Alternatively download the [latest version](https://dynjs.ci.cloudbees.com/job/dynjs/ws/target/dynjs-all.jar) from our CI job.
+Alternatively download the [latest dynjs dist zip package](https://projectodd.ci.cloudbees.com/job/dynjs-snapshot/lastSuccessfulBuild/artifact/target/) from our CI job, then unpack it somewhere. As a convenience, you can symlink `bin/dynjs` to some directory enlisted on your `$PATH`, it should work fine!
 
 ### Running 
 
