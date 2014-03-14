@@ -35,7 +35,7 @@ public class Bind extends AbstractNativeFunction {
             argValues = new Object[0];
         }
 
-        return new BoundFunction(context.getGlobalObject(), getScope(), target, thisArg, argValues);
+        return new BoundFunction(getScope(), target, thisArg, argValues);
     }
 
 }

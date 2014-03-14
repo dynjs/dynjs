@@ -28,7 +28,7 @@ public class FunctionCompiler {
             code = context.getCompiler().compileBasicBlock(context, "FunctionBody", body, strict);
             entry.setCompiled(code);
         }
-        JavascriptFunction function = new JavascriptFunction(context.getGlobalObject(), identifier, code, lexEnv, strict, formalParameters);
+        JavascriptFunction function = new JavascriptFunction(identifier, code, lexEnv, strict, formalParameters);
         if ( identifier != null ) {
             ((DeclarativeEnvironmentRecord)lexEnv.getRecord()).initializeImmutableBinding(identifier, function);
         }

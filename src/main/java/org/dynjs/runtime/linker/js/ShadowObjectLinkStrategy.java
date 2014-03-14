@@ -32,7 +32,7 @@ public class ShadowObjectLinkStrategy extends ContextualLinkStrategy<ExecutionCo
     public JSObject getShadowObject(Object primary, boolean create) {
         JSObject shadow = this.shadowObjects.get(primary);
         if (shadow == null && create) {
-            shadow = new DynObject();
+            shadow = new DynObject(null);
             this.shadowObjects.put(primary, shadow);
         }
         return shadow;

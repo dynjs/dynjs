@@ -11,19 +11,19 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     protected String filename;
 
     public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
-        super(globalObject, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
+        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
         setupDebugContext();
         setFileName();
     }
 
     public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
-        super(globalObject, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
+        super(LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
         setupDebugContext();
         setFileName();
     }
 
-    public AbstractNativeFunction(final GlobalObject globalObject, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super(globalObject, scope, strict, formalParameters);
+    public AbstractNativeFunction(final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+        super(scope, strict, formalParameters);
         setupDebugContext();
         setFileName();
     }

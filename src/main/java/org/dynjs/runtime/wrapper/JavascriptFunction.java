@@ -11,7 +11,6 @@ import org.dynjs.runtime.BasicBlockDelegate;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.PropertyDescriptor.Names;
@@ -22,11 +21,11 @@ public class JavascriptFunction extends AbstractFunction {
 
     private BasicBlock code;
 
-    public JavascriptFunction(final GlobalObject globalObject, final String identifier, final BasicBlock code, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super(globalObject, scope, strict, formalParameters);
+    public JavascriptFunction(final String identifier, final BasicBlock code, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+        super(scope, strict, formalParameters);
         this.code = code;
 
-        final DynObject proto = new DynObject(globalObject);
+        final DynObject proto = new DynObject(scope.getGlobalObject());
         PropertyDescriptor constructorDesc = new PropertyDescriptor();
         constructorDesc.set(Names.VALUE, JavascriptFunction.this);
         constructorDesc.set(Names.WRITABLE, true);
