@@ -119,18 +119,7 @@ public class DynObject implements JSObject, Map<String, Object> {
             return x;
         }
 
-        PropertyDescriptor dup = null;
-        if (x.isDataDescriptor()) {
-            // System.err.println("isData");
-            dup = x.duplicate(Names.VALUE, Names.WRITABLE, Names.ENUMERABLE, Names.CONFIGURABLE);
-        } else {
-            // System.err.println("isAccesor");
-            dup = x.duplicate(Names.GET, Names.SET, Names.ENUMERABLE, Names.CONFIGURABLE);
-        }
-
-        // System.err.println("return: " + name + " > " + dup);
-
-        return dup;
+        return x.duplicate();
     }
 
     @Override

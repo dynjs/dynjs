@@ -56,7 +56,7 @@ public class PropertyDescriptor {
             desc.set(Names.VALUE, defaultValue);
             desc.set(Names.WRITABLE, defaultWritable);
             desc.set(Names.CONFIGURABLE, defaultConfigurable);
-            desc.set(Names.ENUMERABLE, defaultEnumerable); 
+            desc.set(Names.ENUMERABLE, defaultEnumerable);
         }
         return desc;
     }
@@ -322,26 +322,35 @@ public class PropertyDescriptor {
         return v;
     }
 
-    public PropertyDescriptor duplicate(byte... attributes) {
-        PropertyDescriptor d = new PropertyDescriptor();
-        for (int i = 0; i < attributes.length; ++i) {
-            switch (attributes[i]) {
-            case Names.VALUE:
-                d.value = this.value;
-                break;
-            case Names.SET:
-                d.set = this.set;
-                break;
-            case Names.GET:
-                d.get = this.get;
-                break;
-            case Names.WRITABLE:
-            case Names.CONFIGURABLE:
-            case Names.ENUMERABLE:
-                d.setFlag(attributes[i], getFlag(attributes[i]));
-                break;
-            }
+    public PropertyDescriptor duplicate() {
+        if (isDataDescriptor()) {
+            // System.err.println("isData");
+            return duplicateDataDescriptor();
+        } else {
+            // System.err.println("isAccesor");
+            return duplicateAccessorDescriptor();
         }
+    }
+
+    private PropertyDescriptor duplicateDataDescriptor() {
+        PropertyDescriptor d = new PropertyDescriptor();
+
+        d.value = this.value;
+        d.writable = this.writable;
+        d.enumerable = this.enumerable;
+        d.configurable = this.configurable;
+
+        return d;
+    }
+
+    private PropertyDescriptor duplicateAccessorDescriptor() {
+        PropertyDescriptor d = new PropertyDescriptor();
+
+        d.get = this.get;
+        d.set = this.set;
+        d.enumerable = this.enumerable;
+        d.configurable = this.configurable;
+
         return d;
     }
 
