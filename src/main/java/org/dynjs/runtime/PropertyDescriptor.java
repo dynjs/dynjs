@@ -301,31 +301,19 @@ public class PropertyDescriptor {
     }
 
     public PropertyDescriptor duplicate() {
+        // 8.12.1 (steps 2-7)
+        PropertyDescriptor d = new PropertyDescriptor();
+
         if (isDataDescriptor()) {
             // System.err.println("isData");
-            return duplicateDataDescriptor();
+            d.value = this.value;
+            d.writable = this.writable;
         } else {
             // System.err.println("isAccesor");
-            return duplicateAccessorDescriptor();
+            d.get = this.get;
+            d.set = this.set;
         }
-    }
 
-    private PropertyDescriptor duplicateDataDescriptor() {
-        PropertyDescriptor d = new PropertyDescriptor();
-
-        d.value = this.value;
-        d.writable = this.writable;
-        d.enumerable = this.enumerable;
-        d.configurable = this.configurable;
-
-        return d;
-    }
-
-    private PropertyDescriptor duplicateAccessorDescriptor() {
-        PropertyDescriptor d = new PropertyDescriptor();
-
-        d.get = this.get;
-        d.set = this.set;
         d.enumerable = this.enumerable;
         d.configurable = this.configurable;
 

@@ -105,7 +105,7 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public Object getOwnProperty(ExecutionContext context, String name, boolean dupe) {
-        // 8.12.1
+        // 8.12.1 (step 1)
         // Returns PropertyDescriptor or UNDEFINED
         PropertyDescriptor x = this.properties.get(name);
 
