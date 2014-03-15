@@ -300,28 +300,6 @@ public class PropertyDescriptor {
         return false;
     }
 
-    public Object getWithDefault(byte name) {
-        Object v = get(name);
-        if (v == null) {
-            switch (name) {
-            case Names.VALUE:
-                return defaultValue;
-            case Names.SET:
-                return defaultSet;
-            case Names.GET:
-                return defaultGet;
-            case Names.WRITABLE:
-                return defaultWritable;
-            case Names.CONFIGURABLE:
-                return defaultConfigurable;
-            case Names.ENUMERABLE:
-                return defaultEnumerable;
-            }
-        }
-
-        return v;
-    }
-
     public PropertyDescriptor duplicate() {
         if (isDataDescriptor()) {
             // System.err.println("isData");
@@ -401,29 +379,17 @@ public class PropertyDescriptor {
 
     public boolean isAccessorDescriptor() {
         // 8.10.1
-        if (this.get == null && this.set == null) {
-            return false;
-        }
-
-        return true;
+        return this.get != null || this.set != null;
     }
 
     public boolean isDataDescriptor() {
         // 8.10.2
-        if (this.value == null && getFlag(Names.WRITABLE) == null) {
-            return false;
-        }
-
-        return true;
+        return this.value != null || getFlag(Names.WRITABLE) != null;
     }
 
     public boolean isGenericDescriptor() {
         // 8.10.3
-        if (isAccessorDescriptor() == false && isDataDescriptor() == false) {
-            return true;
-        }
-
-        return false;
+        return isAccessorDescriptor() == false && isDataDescriptor() == false;
     }
 
     public static Object fromPropertyDescriptor(ExecutionContext context, Object d) {
