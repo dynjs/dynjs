@@ -14,6 +14,8 @@ public class PropertyDescriptor {
     private Object value;
     private Object set;
     private Object get;
+    // FIXME: 4 full words allocs for these flags.  2 bits per flag can use a single word
+    // (Java uses full word even when data type is smaller)
     private byte writable;
     private byte configurable;
     private byte enumerable;
