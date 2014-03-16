@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class DynObject implements JSObject, Map<String, Object> {
 
@@ -373,10 +372,10 @@ public class DynObject implements JSObject, Map<String, Object> {
             }
             newDesc = PropertyDescriptor.newAccessorPropertyDescriptor();
             if (current.hasSet()) {
-                newDesc.set(Names.SET, current.get(Names.SET));
+                newDesc.setSetter(current.getSetter());
             }
             if (current.hasGet()) {
-                newDesc.set(Names.GET, current.get(Names.GET));
+                newDesc.setGetter(current.getGetter());
             }
             // System.err.println("DEF.accessor: " + name + " > " + newDesc);
         }

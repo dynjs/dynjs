@@ -1,23 +1,8 @@
 package org.dynjs.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.dynjs.exception.ThrowException;
 
 public class PropertyDescriptor {
-
-    // because enums are a full-fledged class that take
-    // too much memory
-    public static final class Names {
-        public static final byte VALUE = 0;
-        public static final byte SET = 1;
-        public static final byte GET = 2;
-        public static final byte WRITABLE = 3;
-        public static final byte CONFIGURABLE = 4;
-        public static final byte ENUMERABLE = 5;
-        public static final byte INITIALIZED = 6;
-    }
 
     private static final Object defaultValue = Types.UNDEFINED;
     private static final Object defaultSet = Types.UNDEFINED;
@@ -129,47 +114,12 @@ public class PropertyDescriptor {
         return "[PropertyDescriptor value=" + this.value + "; writable=" + this.isWritable() + "; enumerable=" + this.isEnumerable() + "; configurable=" + this.isConfigurable() + "; setter=" + this.set+ "; getter=" + this.get + "]"; 
     }
 
-    private Boolean getFlag(byte name) {
-        switch(name) {
-        case Names.WRITABLE:
-            return byteToBoolean(this.writable);
-        case Names.CONFIGURABLE:
-            return byteToBoolean(this.configurable);
-        case Names.ENUMERABLE:
-            return byteToBoolean(this.enumerable);
-        case Names.INITIALIZED:
-            return byteToBoolean(this.initialized);
-        }
-        return null;
-    }
-
-    private void setFlag(byte name, Object value) {
-        switch(name) {
-        case Names.WRITABLE:
-            this.writable = objectToByte(value);
-            break;
-        case Names.CONFIGURABLE:
-            this.configurable = objectToByte(value);
-            break;
-        case Names.ENUMERABLE:
-            this.enumerable = objectToByte(value);
-            break;
-        case Names.INITIALIZED:
-            this.initialized = objectToByte(value);
-            break;
-        }
-    }
-
-    private static Boolean byteToBoolean(byte value) {
-        return value == UNDEFINED_FLAG ? null : value == TRUE_FLAG ? true : false;
-    }
-
-    private static byte objectToByte(Object value) {
-        return value == Types.UNDEFINED ? UNDEFINED_FLAG : ((Boolean) value) ? TRUE_FLAG : FALSE_FLAG;
-    }
-
     public boolean isWritable() {
         return this.writable == TRUE_FLAG ? true : false;
+    }
+
+    public Object getWritable() {
+        return !hasWritable() ? Types.UNDEFINED : isWritable();
     }
 
     public boolean hasWritable() {
@@ -177,11 +127,15 @@ public class PropertyDescriptor {
     }
 
     public void setWritable(boolean writable) {
-        setFlag(Names.WRITABLE, writable);
+        this.writable = writable ? TRUE_FLAG : FALSE_FLAG;
     }
 
     public boolean isConfigurable() {
         return this.configurable == TRUE_FLAG ? true : false;
+    }
+
+    public Object getConfigurable() {
+        return !hasConfigurable() ? Types.UNDEFINED : isConfigurable();
     }
 
     public boolean hasConfigurable() {
@@ -189,15 +143,19 @@ public class PropertyDescriptor {
     }
 
     public void setConfigurable(boolean configurable) {
-        setFlag(Names.CONFIGURABLE, configurable);
+        this.configurable = configurable ? TRUE_FLAG : FALSE_FLAG;
     }
 
     public boolean isEnumerable() {
         return this.enumerable == TRUE_FLAG ? true : false;
     }
 
+    public Object getEnumerable() {
+        return !hasEnumerable() ? Types.UNDEFINED : isEnumerable();
+    }
+
     public void setEnumerable(boolean enumerable) {
-        setFlag(Names.ENUMERABLE, enumerable);
+        this.enumerable = enumerable ? TRUE_FLAG : FALSE_FLAG;
     }
 
     public boolean hasEnumerable() {
@@ -228,7 +186,7 @@ public class PropertyDescriptor {
         return this.set;
     }
 
-    public void setSetter(JSFunction setter) {
+    public void setSetter(Object setter) {
         this.set = setter;
     }
     
@@ -240,7 +198,7 @@ public class PropertyDescriptor {
         return this.get;
     }
 
-    public void setGetter(JSFunction getter) {
+    public void setGetter(Object getter) {
         this.get = getter;
     }
     
@@ -251,44 +209,6 @@ public class PropertyDescriptor {
     public boolean isEmpty() {
         return this.value == null && this.set == null && this.get == null &&
                 !hasWritable() && !hasConfigurable() && !hasEnumerable();
-    }
-
-    public void set(byte name, Object value) {
-        switch (name) {
-        case Names.VALUE:
-            this.value = value;
-            break;
-        case Names.SET:
-            this.set = value;
-            break;
-        case Names.GET:
-            this.get = value;
-            break;
-        case Names.WRITABLE:
-        case Names.CONFIGURABLE:
-        case Names.ENUMERABLE:
-        case Names.INITIALIZED:
-            setFlag(name, value);
-            break;
-        }
-    }
-
-    public Object get(byte name) {
-        switch (name) {
-        case Names.VALUE:
-            return (this.value != null ? this.value : Types.UNDEFINED);
-        case Names.SET:
-            return (this.set != null ? this.set : Types.UNDEFINED);
-        case Names.GET:
-            return (this.get != null ? this.get : Types.UNDEFINED);
-        case Names.WRITABLE:
-        case Names.CONFIGURABLE:
-        case Names.ENUMERABLE:
-        case Names.INITIALIZED:
-            Boolean value = getFlag(name);
-            return (value != null ? value : Types.UNDEFINED); 
-        }
-        return Types.UNDEFINED;
     }
 
     public PropertyDescriptor duplicate() {
@@ -379,7 +299,7 @@ public class PropertyDescriptor {
             obj.defineOwnProperty(context, "value",
                     PropertyDescriptor.newDataPropertyDescriptor(desc.getValue(), true, true, true), false);
             obj.defineOwnProperty(context, "writable",
-                    PropertyDescriptor.newDataPropertyDescriptor(desc.get(Names.WRITABLE), true, true, true), false);
+                    PropertyDescriptor.newDataPropertyDescriptor(desc.getWritable(), true, true, true), false);
         } else {
             obj.defineOwnProperty(context, "get",
                     PropertyDescriptor.newDataPropertyDescriptor(desc.getGetter(), true, true, true), false);
@@ -388,9 +308,9 @@ public class PropertyDescriptor {
         }
 
         obj.defineOwnProperty(context, "enumerable",
-                PropertyDescriptor.newDataPropertyDescriptor(desc.get(Names.ENUMERABLE), true, true, true), false);
+                PropertyDescriptor.newDataPropertyDescriptor(desc.getEnumerable(), true, true, true), false);
         obj.defineOwnProperty(context, "configurable",
-                PropertyDescriptor.newDataPropertyDescriptor(desc.get(Names.CONFIGURABLE), true, true, true), false);
+                PropertyDescriptor.newDataPropertyDescriptor(desc.getConfigurable(), true, true, true), false);
 
         return obj;
     }
@@ -418,17 +338,17 @@ public class PropertyDescriptor {
         }
         if (obj.hasProperty(context, "get")) {
             Object getter = obj.get(context, "get");
-            if ((!Types.isCallable(getter)) && (getter != Types.UNDEFINED)) {
+            if (!Types.isCallable(getter) && getter != Types.UNDEFINED) {
                 throw new ThrowException(context, context.createTypeError("get must be callable"));
             }
-            d.set(Names.GET, getter);
+            d.get = getter;
         }
         if (obj.hasProperty(context, "set")) {
             Object setter = obj.get(context, "set");
-            if ((!Types.isCallable(setter)) && (setter != Types.UNDEFINED)) {
+            if ((!Types.isCallable(setter)) && setter != Types.UNDEFINED) {
                 throw new ThrowException(context, context.createTypeError("set must be callable"));
             }
-            d.set(Names.SET, setter);
+            d.set = setter;
         }
 
         if ((d.hasGet() || d.hasSet()) && (d.hasWritable() || d.hasValue())) {

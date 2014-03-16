@@ -12,7 +12,6 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class ExecutionContext {
 
@@ -382,8 +381,8 @@ public class ExecutionContext {
                             mappedNames.add(name);
 
                             PropertyDescriptor desc = new PropertyDescriptor();
-                            desc.set(Names.SET, new ArgSetter(env, name));
-                            desc.set(Names.GET, new ArgGetter(env, name));
+                            desc.setSetter(new ArgSetter(env, name));
+                            desc.setGetter(new ArgGetter(env, name));
                             desc.setConfigurable(true);
                             map.defineOwnProperty(this, "" + i, desc, false);
                         }
