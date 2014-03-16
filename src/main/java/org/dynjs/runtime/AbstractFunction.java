@@ -1,7 +1,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public abstract class AbstractFunction extends DynObject implements JSFunction {
 
@@ -17,29 +16,17 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
         this.scope = scope;
         this.strict = strict;
         setClassName("Function");
-        PropertyDescriptor lengthDesc =  new PropertyDescriptor();
-        lengthDesc.set(Names.VALUE, (long) formalParameters.length); // http://es5.github.com/#x15.3.3.2
-        lengthDesc.set(Names.WRITABLE, false);
-        lengthDesc.set(Names.CONFIGURABLE, false);
-        lengthDesc.set(Names.ENUMERABLE, false);
-        defineOwnProperty(null, "length", lengthDesc, false);
+        // http://es5.github.com/#x15.3.3.2
+        defineOwnProperty(null, "length",
+                PropertyDescriptor.newDataPropertyDescriptor((long) formalParameters.length, false, false, false), false);
 
         if (strict) {
             final Object thrower = scope.getGlobalObject().get(null, "__throwTypeError");
             if (thrower != null) {
-                PropertyDescriptor callerDesc = new PropertyDescriptor();
-                callerDesc.set(Names.SET, thrower);
-                callerDesc.set(Names.GET, thrower);
-                callerDesc.set(Names.CONFIGURABLE, false);
-                callerDesc.set(Names.ENUMERABLE, false);
-                defineOwnProperty(null, "caller", callerDesc, false);
-
-                PropertyDescriptor argDesc = new PropertyDescriptor();
-                argDesc.set(Names.SET, thrower);
-                argDesc.set(Names.GET, thrower);
-                argDesc.set(Names.CONFIGURABLE, false);
-                argDesc.set(Names.ENUMERABLE, false);
-                defineOwnProperty(null, "arguments", argDesc, true);
+                defineOwnProperty(null, "caller",
+                        PropertyDescriptor.newAccessorPropertyDescriptor(thrower, thrower), false);
+                defineOwnProperty(null, "arguments",
+                        PropertyDescriptor.newAccessorPropertyDescriptor(thrower, thrower), true);
             }
         }
 

@@ -5,7 +5,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
@@ -47,12 +46,8 @@ public class Slice extends AbstractNonConstructorFunction {
             boolean kPresent = o.hasProperty(context, "" + k);
             if (kPresent) {
                 final Object kValue = o.get(context, "" + k);
-                PropertyDescriptor desc = new PropertyDescriptor();
-                desc.set(Names.VALUE, kValue);
-                desc.set(Names.WRITABLE, true);
-                desc.set(Names.CONFIGURABLE, true);
-                desc.set(Names.ENUMERABLE, true);
-                a.defineOwnProperty(context, "" + n, desc, false);
+                a.defineOwnProperty(context, "" + n,
+                        PropertyDescriptor.newDataPropertyDescriptor(kValue, true, true, true), false);
             }
             ++k;
             ++n;

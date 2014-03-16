@@ -1,7 +1,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class Arguments extends DynObject {
 
@@ -65,10 +64,10 @@ public class Arguments extends DynObject {
             if (desc.isAccessorDescriptor()) {
                 this.map.delete(context, name, false);
             } else {
-                if (desc.isPresent(Names.VALUE)) {
+                if (desc.hasValue()) {
                     this.map.put(context, name, desc.getValue(), shouldThrow);
                 }
-                if (desc.isPresent(Names.WRITABLE) && !desc.isWritable()) {
+                if (desc.hasWritable() && !desc.isWritable()) {
                     this.map.delete(context, name, false);
                 }
             }

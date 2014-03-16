@@ -1,8 +1,5 @@
 package org.dynjs.runtime;
 
-import org.dynjs.Config;
-import org.dynjs.compiler.JSCompiler;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.builtins.*;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.*;
@@ -102,12 +99,8 @@ public class GlobalObject extends DynObject {
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
-        PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, type);
-        desc.set(Names.ENUMERABLE, false);
-        desc.set(Names.WRITABLE, true);
-        desc.set(Names.CONFIGURABLE, true);
-        defineOwnProperty(null, name, desc, false);
+        defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(type, true, true, false), false);
         put(null, "__Builtin_" + name, type, false);
         this.builtinTypes.add(type);
     }
@@ -136,21 +129,13 @@ public class GlobalObject extends DynObject {
     }
 
     public void defineGlobalProperty(final String name, final Object value) {
-        PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, value);
-        desc.set(Names.WRITABLE, true);
-        desc.set(Names.ENUMERABLE, false);
-        desc.set(Names.CONFIGURABLE, true);
-        defineOwnProperty(null, name, desc, false);
+        defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, false), false);
     }
 
     public void defineReadOnlyGlobalProperty(final String name, final Object value) {
-        PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, value);
-        desc.set(Names.WRITABLE, false);
-        desc.set(Names.CONFIGURABLE, false);
-        desc.set(Names.ENUMERABLE, false);
-        defineOwnProperty(null, name, desc, false);
+        defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
     }
 
     public JSObject getPrototypeFor(String type) {

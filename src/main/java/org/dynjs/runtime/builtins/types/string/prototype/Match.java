@@ -6,7 +6,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
@@ -62,12 +61,8 @@ public class Match extends AbstractNonConstructorFunction {
 
                 final Object matchStr = ((JSObject) result).get(context, "0");
 
-                PropertyDescriptor desc = new PropertyDescriptor();
-                desc.set(Names.VALUE, matchStr);
-                desc.set(Names.WRITABLE, true);
-                desc.set(Names.CONFIGURABLE, true);
-                desc.set(Names.ENUMERABLE, true);
-                a.defineOwnProperty(context, "" + n, desc, false);
+                a.defineOwnProperty(context, "" + n,
+                        PropertyDescriptor.newDataPropertyDescriptor(matchStr, true, true, true), false);
                 
                 ++n;
             }

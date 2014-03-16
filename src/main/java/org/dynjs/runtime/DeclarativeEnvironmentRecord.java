@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
@@ -24,8 +23,8 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
 
         PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, Types.UNDEFINED);
-        desc.set(Names.CONFIGURABLE, configurable);
+        desc.setValue(Types.UNDEFINED);
+        desc.setConfigurable(configurable);
         this.mutableBindings.put(name, desc);
     }
 
@@ -57,7 +56,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
 
         PropertyDescriptor desc = this.immutableBindings.get(name);
-        if ((desc != null) && (desc.get(Names.INITIALIZED) == null)) {
+        if (desc != null && !desc.hasInitialized()) {
             if (strict) {
                 throw new ThrowException(context, context.createTypeError(name + " is not initialized"));
             }
@@ -105,7 +104,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
     public void createImmutableBinding(final String name) {
         // 10.2.1.1.7
         PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, Types.UNDEFINED);
+        desc.setValue(Types.UNDEFINED);
         this.immutableBindings.put(name, desc);
 
     }
@@ -114,7 +113,7 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         // 10.2.1.1.8
         PropertyDescriptor desc = this.immutableBindings.get(name);
         desc.setValue(value);
-        desc.set(Names.INITIALIZED, Boolean.TRUE);
+        desc.setInitialized(true);
     }
 
     public boolean isGlobal() {

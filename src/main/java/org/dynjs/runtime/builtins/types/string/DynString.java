@@ -4,7 +4,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class DynString extends PrimitiveDynObject {
@@ -25,20 +24,12 @@ public class DynString extends PrimitiveDynObject {
         super.setPrimitiveValue(value);
         String str = (String) value;
         int length = str.length();
-        PropertyDescriptor lengthDesc = new PropertyDescriptor();
-        lengthDesc.set(Names.VALUE, (long) length);
-        lengthDesc.set(Names.WRITABLE, false);
-        lengthDesc.set(Names.CONFIGURABLE, false);
-        lengthDesc.set(Names.ENUMERABLE, false);
-        defineOwnProperty(null, "length", lengthDesc, false);
+        defineOwnProperty(null, "length",
+                PropertyDescriptor.newDataPropertyDescriptor((long) length, false, false, false), false);
 
         for (int i = 0; i < length; i++) {
-            PropertyDescriptor desc = new PropertyDescriptor();
-            desc.set(Names.VALUE, str.substring(i, i + 1));
-            desc.set(Names.WRITABLE, false);
-            desc.set(Names.CONFIGURABLE, false);
-            desc.set(Names.ENUMERABLE, true);
-            defineOwnProperty(null, "" + i, desc, false);
+            defineOwnProperty(null, "" + i,
+                    PropertyDescriptor.newDataPropertyDescriptor(str.substring(i, i + 1), false, false, true), false);
         }
     }
 
@@ -62,12 +53,7 @@ public class DynString extends PrimitiveDynObject {
 
         final String resultStr = str.substring((int) index, (int) index + 1);
 
-        PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, resultStr);
-        desc.set(Names.WRITABLE, false);
-        desc.set(Names.CONFIGURABLE, false);
-        desc.set(Names.ENUMERABLE, true);
-        return desc;
+        return PropertyDescriptor.newDataPropertyDescriptor(resultStr, false, false, true);
     }
 
 }

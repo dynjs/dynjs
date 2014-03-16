@@ -7,7 +7,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
@@ -41,12 +40,8 @@ public class Map extends AbstractNativeFunction {
             if (kPresent) {
                 Object kValue = o.get(context, "" + k);
                 final Object mappedValue = context.call(callbackFn, t, kValue, k, o);
-                PropertyDescriptor desc = new PropertyDescriptor();
-                desc.set(Names.VALUE, mappedValue);
-                desc.set(Names.WRITABLE, true);
-                desc.set(Names.CONFIGURABLE, true);
-                desc.set(Names.ENUMERABLE, true);
-                a.defineOwnProperty(context, "" + k, desc, false);
+                a.defineOwnProperty(context, "" + k,
+                        PropertyDescriptor.newDataPropertyDescriptor(mappedValue, true, true, true), false);
             }
         }
 

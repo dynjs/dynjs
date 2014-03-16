@@ -1,7 +1,6 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class Reference {
 
@@ -76,7 +75,7 @@ public class Reference {
             return value;
         }
 
-        Object getter = desc.get(Names.GET);
+        Object getter = desc.getGetter();
 
         if (getter == Types.UNDEFINED) {
             return Types.UNDEFINED;

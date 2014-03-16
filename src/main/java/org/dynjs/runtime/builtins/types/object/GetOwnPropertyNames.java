@@ -7,7 +7,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class GetOwnPropertyNames extends AbstractNativeFunction {
@@ -33,12 +32,8 @@ public class GetOwnPropertyNames extends AbstractNativeFunction {
         NameEnumerator names = jsObj.getOwnPropertyNames();
         while (names.hasNext()) {
             final String name = names.next();
-            PropertyDescriptor desc = new PropertyDescriptor();
-            desc.set(Names.VALUE, name);
-            desc.set(Names.WRITABLE, true);
-            desc.set(Names.CONFIGURABLE, true);
-            desc.set(Names.ENUMERABLE, true);
-            array.defineOwnProperty(context, "" + i, desc, false);
+            array.defineOwnProperty(context, "" + i,
+                    PropertyDescriptor.newDataPropertyDescriptor(name, true, true, true), false);
             ++i;
         }
 

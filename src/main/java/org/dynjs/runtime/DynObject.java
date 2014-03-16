@@ -166,7 +166,7 @@ public class DynObject implements JSObject, Map<String, Object> {
         if ((ownDesc != Types.UNDEFINED) && ((PropertyDescriptor) ownDesc).isDataDescriptor()) {
             // System.err.println("setting value on non-UNDEF");
             PropertyDescriptor newDesc = new PropertyDescriptor();
-            newDesc.set(Names.VALUE, value);
+            newDesc.setValue(value);
             defineOwnProperty(context, name, newDesc, shouldThrow);
             return;
         }
@@ -174,15 +174,11 @@ public class DynObject implements JSObject, Map<String, Object> {
         Object desc = getProperty(context, name, false);
 
         if ((desc != Types.UNDEFINED) && ((PropertyDescriptor) desc).isAccessorDescriptor()) {
-            JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).get(Names.SET);
+            JSFunction setter = (JSFunction) ((PropertyDescriptor) desc).getSetter();
             context.call(setter, this, value);
         } else {
-            PropertyDescriptor newDesc = new PropertyDescriptor();
-            newDesc.set(Names.VALUE, value);
-            newDesc.set(Names.WRITABLE, true);
-            newDesc.set(Names.ENUMERABLE, true);
-            newDesc.set(Names.CONFIGURABLE, true);
-            defineOwnProperty(context, name, newDesc, shouldThrow);
+            defineOwnProperty(context, name,
+                    PropertyDescriptor.newDataPropertyDescriptor(value, true, true, true), shouldThrow);
         }
     }
 
@@ -204,18 +200,17 @@ public class DynObject implements JSObject, Map<String, Object> {
         if (d != Types.UNDEFINED) {
             PropertyDescriptor desc = (PropertyDescriptor) d;
             if (desc.isAccessorDescriptor()) {
-                if (desc.get(Names.SET) == Types.UNDEFINED) {
+                if (desc.getSetter() == Types.UNDEFINED) {
                     // System.err.println("NO SET");
                     return false;
                 }
                 return true;
             } else {
-                Object writable = desc.get(Names.WRITABLE);
                 // System.err.println("writable? " + writable);
-                if (writable == Types.UNDEFINED) {
+                if (!desc.hasWritable()) {
                     return true;
                 }
-                return (Boolean) writable;
+                return desc.isWritable();
             }
         }
 
@@ -236,7 +231,7 @@ public class DynObject implements JSObject, Map<String, Object> {
 
         PropertyDescriptor desc = (PropertyDescriptor) d;
 
-        if (desc.get(Names.CONFIGURABLE) == Boolean.TRUE) {
+        if (desc.isConfigurable()) {
             this.properties.remove(name);
             return true;
         }
@@ -304,15 +299,8 @@ public class DynObject implements JSObject, Map<String, Object> {
             if (!isExtensible()) {
                 return reject(context, shouldThrow);
             } else {
-                PropertyDescriptor newDesc = null;
-                if (desc.isGenericDescriptor() || desc.isDataDescriptor()) {
-                    newDesc = desc.duplicateWithDefaults(Names.VALUE, Names.WRITABLE, Names.ENUMERABLE, Names.CONFIGURABLE);
-                } else {
-                    newDesc = desc.duplicateWithDefaults(Names.GET, Names.SET, Names.ENUMERABLE, Names.CONFIGURABLE);
-                }
-
                 // System.err.println("DEF.initial: " + name + " > " + newDesc);
-                this.properties.put(name, newDesc);
+                this.properties.put(name, desc.duplicateWithDefaults());
                 return true;
             }
         }
@@ -327,10 +315,8 @@ public class DynObject implements JSObject, Map<String, Object> {
             if (desc.hasConfigurable() && desc.isConfigurable()) {
                 return reject(context, shouldThrow);
             }
-            Object currentEnumerable = current.get(Names.ENUMERABLE);
-            Object descEnumerable = desc.get(Names.ENUMERABLE);
 
-            if ((currentEnumerable != Types.UNDEFINED && descEnumerable != Types.UNDEFINED) && (currentEnumerable != descEnumerable)) {
+            if (current.hasEnumerable() && desc.hasEnumerable() && current.isEnumerable() != desc.isEnumerable()) {
                 return reject(context, shouldThrow);
             }
         }
@@ -347,16 +333,15 @@ public class DynObject implements JSObject, Map<String, Object> {
             }
             if (current.isDataDescriptor()) {
                 // System.err.println("accessor");
-                newDesc = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+                newDesc = PropertyDescriptor.newAccessorPropertyDescriptor();
             } else {
                 // System.err.println("data");
-                newDesc = PropertyDescriptor.newDataPropertyDescriptor(true);
+                newDesc = PropertyDescriptor.newDataPropertyDescriptor();
             }
             // System.err.println("DEF.mismatch: " + name + " > " + newDesc);
         } else if (current.isDataDescriptor() && desc.isDataDescriptor()) {
             if (!current.isConfigurable()) {
-                Object currentWritable = current.get(Names.WRITABLE);
-                if ((currentWritable != Types.UNDEFINED) && !current.isWritable()) {
+                if (current.hasWritable() && !current.isWritable()) {
                     if (desc.isWritable()) {
                         return reject(context, shouldThrow);
                     }
@@ -366,13 +351,13 @@ public class DynObject implements JSObject, Map<String, Object> {
                     }
                 }
             }
-            newDesc = PropertyDescriptor.newDataPropertyDescriptor(true);
+            newDesc = PropertyDescriptor.newDataPropertyDescriptor();
 
             if (current.hasValue()) {
-                newDesc.set(Names.VALUE, current.get(Names.VALUE));
+                newDesc.setValue(current.getValue());
             }
             if (current.hasWritable()) {
-                newDesc.set(Names.WRITABLE, current.get(Names.WRITABLE));
+                newDesc.setWritable(current.isWritable());
             }
             // System.err.println("DEF.data: " + name + " > " + newDesc);
         } else if (current.isAccessorDescriptor() && desc.isAccessorDescriptor()) {
@@ -386,7 +371,7 @@ public class DynObject implements JSObject, Map<String, Object> {
                     return reject(context, shouldThrow);
                 }
             }
-            newDesc = PropertyDescriptor.newAccessorPropertyDescriptor(true);
+            newDesc = PropertyDescriptor.newAccessorPropertyDescriptor();
             if (current.hasSet()) {
                 newDesc.set(Names.SET, current.get(Names.SET));
             }
@@ -397,10 +382,10 @@ public class DynObject implements JSObject, Map<String, Object> {
         }
 
         if (current.hasConfigurable()) {
-            newDesc.set(Names.CONFIGURABLE, current.get(Names.CONFIGURABLE));
+            newDesc.setConfigurable(current.isConfigurable());
         }
         if (current.hasEnumerable()) {
-            newDesc.set(Names.ENUMERABLE, current.get(Names.ENUMERABLE));
+            newDesc.setEnumerable(current.isEnumerable());
         }
 
         newDesc.copyAll(desc);
@@ -480,22 +465,14 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
-        PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, value);
-        desc.set(Names.WRITABLE, true);
-        desc.set(Names.ENUMERABLE, false);
-        desc.set(Names.CONFIGURABLE, true);
-        this.defineOwnProperty(null, name, desc, false);
+        this.defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, false), false);
     }
 
     @Override
     public void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value) {
-        PropertyDescriptor desc = new PropertyDescriptor();
-        desc.set(Names.VALUE, value);
-        desc.set(Names.WRITABLE, false);
-        desc.set(Names.ENUMERABLE, false);
-        desc.set(Names.CONFIGURABLE, false);
-        this.defineOwnProperty(null, name, desc, false);
+        this.defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
     }
 
     // java.util.Map

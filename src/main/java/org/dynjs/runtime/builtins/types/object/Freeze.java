@@ -7,7 +7,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class Freeze extends AbstractNativeFunction {
@@ -34,14 +33,10 @@ public class Freeze extends AbstractNativeFunction {
             Object d = jsObj.getOwnProperty(context, name);
             if (d != Types.UNDEFINED) {
                 PropertyDescriptor desc = (PropertyDescriptor) d;
-                if (desc.isDataDescriptor()) {
-                    Object isWritable = desc.get(Names.WRITABLE);
-                    if (isWritable == Boolean.TRUE) {
-                        desc.set(Names.WRITABLE, false);
-                    }
+                if (desc.isDataDescriptor() && desc.isWritable()) {
+                    desc.setWritable(false);
                 }
-                Object isConfigurable = desc.get(Names.CONFIGURABLE);
-                if (isConfigurable == Boolean.TRUE) {
+                if (desc.isConfigurable()) {
                     desc.setConfigurable(false);
                 }
                 jsObj.defineOwnProperty(context, name, desc, true);

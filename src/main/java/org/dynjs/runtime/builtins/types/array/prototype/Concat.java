@@ -9,7 +9,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 
 public class Concat extends AbstractNonConstructorFunction {
@@ -43,22 +42,14 @@ public class Concat extends AbstractNonConstructorFunction {
 
                 for (long k = 0; k < len; ++k) {
                     final Object subElement = jsE.get(context, "" + k);
-                    PropertyDescriptor desc = new PropertyDescriptor();
-                    desc.set( Names.VALUE, subElement);
-                    desc.set( Names.WRITABLE, true);
-                    desc.set( Names.CONFIGURABLE, true);
-                    desc.set( Names.ENUMERABLE, true);
-                    array.defineOwnProperty(context, "" + n, desc, false);
+                    array.defineOwnProperty(context, "" + n,
+                            PropertyDescriptor.newDataPropertyDescriptor(subElement, true, true, true), false);
                     ++n;
                 }
             } else {
                 final Object finalE = e;
-                PropertyDescriptor desc = new PropertyDescriptor();
-                desc.set( Names.VALUE, finalE);
-                desc.set( Names.WRITABLE, true);
-                desc.set( Names.CONFIGURABLE, true);
-                desc.set( Names.ENUMERABLE, true);
-                array.defineOwnProperty(context, "" + n, desc, false);
+                array.defineOwnProperty(context, "" + n,
+                        PropertyDescriptor.newDataPropertyDescriptor(finalE, true, true, true), false);
                 ++n;
             }
         }

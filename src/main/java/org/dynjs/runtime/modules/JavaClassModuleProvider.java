@@ -10,7 +10,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 
 public class JavaClassModuleProvider extends ModuleProvider {
 
@@ -67,7 +66,7 @@ public class JavaClassModuleProvider extends ModuleProvider {
 
             final JSFunction function = buildFunction(context.getGlobalObject(), javaModule, method);
             PropertyDescriptor desc = new PropertyDescriptor();
-            desc.set(Names.VALUE, function);
+            desc.setValue(function);
             function.setDebugContext(moduleName + "." + exportName);
             exports.defineOwnProperty(context, exportName, desc, false);
         }

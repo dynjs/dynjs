@@ -5,7 +5,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.PropertyDescriptor.Names;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 
@@ -38,12 +37,8 @@ public class Splice extends AbstractNonConstructorFunction {
         for (long k = 0; k < actualDeleteCount; ++k) {
             if (o.hasProperty(context, "" + (actualStart + k))) {
                 final Object fromValue = o.get(context, "" + (actualStart + k));
-                PropertyDescriptor desc = new PropertyDescriptor();
-                desc.set(Names.VALUE, fromValue);
-                desc.set(Names.WRITABLE, true);
-                desc.set(Names.CONFIGURABLE, true);
-                desc.set(Names.ENUMERABLE, true);
-                a.defineOwnProperty(context, "" + k, desc, false);
+                a.defineOwnProperty(context, "" + k,
+                        PropertyDescriptor.newDataPropertyDescriptor(fromValue, true, true, true), false);
             }
         }
 
