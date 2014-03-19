@@ -1,40 +1,31 @@
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ThreadContextManager {
-    
-    private static ThreadLocal<List<ExecutionContext>> threadContext = new ThreadLocal<>();
-    
+
+    private static ThreadLocal<ThreadContext> threadContext = new ThreadLocal<>();
+
     public static ExecutionContext currentContext() {
-        List<ExecutionContext> currentList = threadContext.get();
-        if ( currentList == null || currentList.isEmpty() ) {
+        final ThreadContext ctx = threadContext.get();
+        if (ctx == null) {
             return null;
         }
-        
-        return currentList.get(0);
+        return ctx.getCurrentContext();
     }
-    
+
     public static void pushContext(ExecutionContext context) {
-        List<ExecutionContext> currentList = threadContext.get();
-        if ( currentList == null ) {
-            currentList = new ArrayList<>();
-            threadContext.set(currentList);
+        final ThreadContext ctx = threadContext.get();
+        if (ctx == null) {
+            threadContext.set(new ThreadContext());
         }
-        currentList.add(context);
+        threadContext.get().pushContext(context);
     }
-    
+
     public static void popContext() {
-        List<ExecutionContext> currentList = threadContext.get();
-        if ( currentList == null ) {
-            throw new IllegalStateException( "Cannot pop ExecutionContext from empty stack" );
+        final ThreadContext ctx = threadContext.get();
+        if (ctx == null) {
+            throw new IllegalStateException("Cannot pop ExecutionContext from empty stack");
         }
-        currentList.remove( currentList.size() - 1 );
-        
-        //if ( currentList.isEmpty() ) {
-            //threadContext.remove();
-        //}
+        ctx.popContext();
     }
 
 }
