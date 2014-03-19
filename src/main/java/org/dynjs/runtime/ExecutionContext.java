@@ -18,7 +18,7 @@ public class ExecutionContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        return new ExecutionContext(runtime, null, env, env, env.getGlobalObject(), false);
+        return new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
     }
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
@@ -381,8 +381,8 @@ public class ExecutionContext {
                             mappedNames.add(name);
 
                             PropertyDescriptor desc = new PropertyDescriptor();
-                            desc.setSetter(new ArgSetter(env, name));
-                            desc.setGetter(new ArgGetter(env, name));
+                            desc.setSetter(new ArgSetter(getGlobalObject(), env, name));
+                            desc.setGetter(new ArgGetter(getGlobalObject(), env, name));
                             desc.setConfigurable(true);
                             map.defineOwnProperty(this, "" + i, desc, false);
                         }
@@ -454,7 +454,7 @@ public class ExecutionContext {
     }
 
     public GlobalObject getGlobalObject() {
-        return this.lexicalEnvironment.getGlobalObject();
+        return this.runtime.getGlobalObject();
     }
 
     public JSCompiler getCompiler() {
@@ -474,7 +474,7 @@ public class ExecutionContext {
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {
-        return this.lexicalEnvironment.getGlobalObject().retrieveBlockEntry(statementNumber);
+        return getGlobalObject().retrieveBlockEntry(statementNumber);
     }
 
     public JSObject createTypeError(String message) {

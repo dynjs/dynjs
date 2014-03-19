@@ -16,7 +16,7 @@ public class GlobalObject extends DynObject {
     private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
 
     public GlobalObject(DynJS runtime) {
-        super(null);
+        super();
         this.runtime = runtime;
         this.blockManager = new BlockManager();
 

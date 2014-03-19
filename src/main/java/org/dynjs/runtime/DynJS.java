@@ -14,6 +14,7 @@ public class DynJS {
     private Config config;
     private JSCompiler compiler;
     private ExecutionContext context;
+    private GlobalObject globalObject;
 
     public DynJS() {
         this(new Config());
@@ -22,7 +23,12 @@ public class DynJS {
     public DynJS(Config config) {
         this.config = config;
         this.compiler = new JSCompiler(config);
+        this.globalObject = GlobalObject.newGlobalObject(this);
         this.context = ExecutionContext.createGlobalExecutionContext(this);
+    }
+
+    public GlobalObject getGlobalObject() {
+        return this.globalObject;
     }
 
     public Config getConfig() {
