@@ -7,6 +7,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.StackElement;
 import org.dynjs.runtime.StackGetter;
+import org.dynjs.runtime.ThreadContextManager;
 import org.dynjs.runtime.Types;
 
 public class ThrowException extends DynJSException {
@@ -29,7 +30,7 @@ public class ThrowException extends DynJSException {
 
     protected void setUpStackElements(final ExecutionContext context) {
         this.stack = new ArrayList<StackElement>();
-        context.collectStackElements(this.stack);
+        ThreadContextManager.getThreadContext().collectStackElements(this.stack);
         int stackSize = this.stack.size();
 
         StackTraceElement[] javaElements = getStackTrace();

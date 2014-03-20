@@ -10,7 +10,7 @@ public class StackGetter extends AbstractNativeFunction {
     public StackGetter(ExecutionContext context) {
         super(context.getGlobalObject());
         final List<StackElement> stack = new ArrayList<>();
-        context.collectStackElements(stack);
+        ThreadContextManager.getThreadContext().collectStackElements(stack);
         this.stack = stack;
     }
 

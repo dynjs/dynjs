@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.StackElement;
+import org.dynjs.runtime.ThreadContextManager;
 
 @Module(name = "dyn_console")
 public class ConsoleModule {
@@ -29,7 +30,7 @@ public class ConsoleModule {
     @Export
     public void trace(ExecutionContext context, Object self) {
         List<StackElement> stack = new ArrayList<>();
-        context.getParent().collectStackElements(stack);
+        ThreadContextManager.getThreadContext().collectStackElements(stack);
         for (StackElement each : stack) {
             log(context, self, each.toString() );
         }

@@ -1,0 +1,2692 @@
+JAVA PROFILE 1.0.1, created Sat Mar 15 09:48:04 2014
+
+Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  - Neither the name of Oracle nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Header for -agentlib:hprof (or -Xrunhprof) ASCII Output (JDK 5.0 JVMTI based)
+
+WARNING!  This file format is under development, and is subject to
+change without notice.
+
+This file contains the following types of records:
+
+THREAD START
+THREAD END      mark the lifetime of Java threads
+
+TRACE           represents a Java stack trace.  Each trace consists
+                of a series of stack frames.  Other records refer to
+                TRACEs to identify (1) where object allocations have
+                taken place, (2) the frames in which GC roots were
+                found, and (3) frequently executed methods.
+
+HEAP DUMP       is a complete snapshot of all live objects in the Java
+                heap.  Following distinctions are made:
+
+                ROOT    root set as determined by GC
+                CLS     classes 
+                OBJ     instances
+                ARR     arrays
+
+SITES           is a sorted list of allocation sites.  This identifies
+                the most heavily allocated object types, and the TRACE
+                at which those allocations occurred.
+
+CPU SAMPLES     is a statistical profile of program execution.  The VM
+                periodically samples all running threads, and assigns
+                a quantum to active TRACEs in those threads.  Entries
+                in this record are TRACEs ranked by the percentage of
+                total quanta they consumed; top-ranked TRACEs are
+                typically hot spots in the program.
+
+CPU TIME        is a profile of program execution obtained by measuring
+                the time spent in individual methods (excluding the time
+                spent in callees), as well as by counting the number of
+                times each method is called. Entries in this record are
+                TRACEs ranked by the percentage of total CPU time. The
+                "count" field indicates the number of times each TRACE 
+                is invoked.
+
+MONITOR TIME    is a profile of monitor contention obtained by measuring
+                the time spent by a thread waiting to enter a monitor.
+                Entries in this record are TRACEs ranked by the percentage
+                of total monitor contention time and a brief description
+                of the monitor.  The "count" field indicates the number of 
+                times the monitor was contended at that TRACE.
+
+MONITOR DUMP    is a complete snapshot of all the monitors and threads in 
+                the System.
+
+HEAP DUMP, SITES, CPU SAMPLES|TIME and MONITOR DUMP|TIME records are generated 
+at program exit.  They can also be obtained during program execution by typing 
+Ctrl-\ (on Solaris) or by typing Ctrl-Break (on Win32).
+
+--------
+
+THREAD START (obj=50000185, id = 200001, name="main", group="main")
+THREAD END (id = 200001)
+THREAD START (obj=50000185, id = 200005, name="DestroyJavaVM", group="main")
+THREAD START (obj=500004b8, id = 200006, name="Thread-0", group="main")
+THREAD END (id = 200006)
+THREAD END (id = 200005)
+TRACE 300370:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.Reference.getValue(Reference.java:52)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+TRACE 300284:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:157)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+TRACE 300275:
+	org.dynjs.runtime.LexicalEnvironment.getIdentifierReference(LexicalEnvironment.java:49)
+	org.dynjs.runtime.ExecutionContext.resolve(ExecutionContext.java:99)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:870)
+	org.dynjs.parser.ast.IdentifierReferenceExpression.accept(IdentifierReferenceExpression.java:56)
+TRACE 300320:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+TRACE 300311:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.AbstractFunction.get(AbstractFunction.java:83)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:161)
+TRACE 300298:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.wrapper.JavascriptFunction.call(JavascriptFunction.java:58)
+TRACE 300385:
+	java.util.HashMap.putVal(HashMap.java:628)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+TRACE 300404:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getVariableDeclarations(JavascriptFunction.java:77)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:467)
+TRACE 300399:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:315)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300357:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+TRACE 300287:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300388:
+	org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations(BlockStatement.java:83)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFunctionDeclarations(InterpretedBasicBlock.java:58)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getFunctionDeclarations(JavascriptFunction.java:72)
+	org.dynjs.runtime.ExecutionContext.performFunctionDeclarationBindings(ExecutionContext.java:439)
+TRACE 300321:
+	org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations(BlockStatement.java:82)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFunctionDeclarations(InterpretedBasicBlock.java:58)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getFunctionDeclarations(JavascriptFunction.java:72)
+	org.dynjs.runtime.ExecutionContext.performFunctionDeclarationBindings(ExecutionContext.java:439)
+TRACE 300336:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+TRACE 300358:
+	java.util.HashMap.getNode(HashMap.java:578)
+	java.util.LinkedHashMap.get(LinkedHashMap.java:438)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:110)
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+TRACE 300365:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:97)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getVariableDeclarations(JavascriptFunction.java:77)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:467)
+TRACE 300401:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:366)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300542:
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:267)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300405:
+	java.util.HashMap.putVal(HashMap.java:628)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:25)
+TRACE 300362:
+	org.dynjs.parser.ast.BlockStatement.getPosition(BlockStatement.java:40)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFileName(InterpretedBasicBlock.java:38)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getFileName(JavascriptFunction.java:53)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:272)
+TRACE 300308:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.DynObject.put(DynObject.java:181)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+TRACE 300422:
+	java.util.regex.Pattern$Loop.matchInit(Pattern.java:4795)
+	java.util.regex.Pattern$Prolog.match(Pattern.java:4732)
+	java.util.regex.Pattern$GroupTail.match(Pattern.java:4708)
+	java.util.regex.Pattern$Curly.match1(Pattern.java:4278)
+TRACE 300380:
+	java.util.HashMap.putVal(HashMap.java:634)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:418)
+	org.dynjs.runtime.DynObject.put(DynObject.java:181)
+TRACE 300396:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:340)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300289:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:253)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300472:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:430)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300378:
+	java.util.HashMap.hash(HashMap.java:338)
+	java.util.HashMap.get(HashMap.java:556)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:59)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+TRACE 300489:
+	java.util.HashMap.putVal(HashMap.java:663)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+TRACE 300435:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:348)
+TRACE 300418:
+	java.util.HashMap.putVal(HashMap.java:628)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+TRACE 300383:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1613)
+TRACE 300322:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:368)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300465:
+	org.dynjs.runtime.Types.compareRelational(Types.java:515)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1277)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:776)
+TRACE 300562:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:55)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+TRACE 300318:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.ObjectEnvironmentRecord.getBindingValue(ObjectEnvironmentRecord.java:50)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+TRACE 300440:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300389:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:192)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+TRACE 300425:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:383)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300392:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.AbstractBinaryExpression.getPosition(AbstractBinaryExpression.java:24)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+TRACE 300560:
+	org.dynjs.runtime.DynObject.put(DynObject.java:167)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300279:
+	java.util.HashMap.putVal(HashMap.java:656)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:418)
+	org.dynjs.runtime.DynObject.put(DynObject.java:181)
+TRACE 300359:
+	java.util.regex.Pattern$Curly.match1(Pattern.java:4284)
+	java.util.regex.Pattern$Curly.match(Pattern.java:4227)
+	java.util.regex.Pattern$GroupHead.match(Pattern.java:4649)
+	java.util.regex.Pattern$Begin.match(Pattern.java:3516)
+TRACE 300391:
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.wrapper.JavascriptFunction.call(JavascriptFunction.java:58)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+TRACE 300410:
+	org.dynjs.parser.ast.AbstractBinaryExpression.getFunctionDeclarations(AbstractBinaryExpression.java:42)
+	org.dynjs.parser.ast.AssignmentExpression.getFunctionDeclarations(AssignmentExpression.java:45)
+	org.dynjs.parser.ast.ExpressionStatement.getFunctionDeclarations(ExpressionStatement.java:50)
+	org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations(BlockStatement.java:82)
+TRACE 300412:
+	java.util.regex.Pattern$Curly.match0(Pattern.java:4263)
+	java.util.regex.Pattern$Curly.match(Pattern.java:4225)
+	java.util.regex.Pattern$GroupHead.match(Pattern.java:4649)
+	java.util.regex.Pattern$Begin.match(Pattern.java:3516)
+TRACE 300480:
+	java.util.HashMap.putVal(HashMap.java:628)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:348)
+TRACE 300382:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:349)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300478:
+	java.util.HashMap.putVal(HashMap.java:628)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:330)
+TRACE 300393:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1613)
+TRACE 300084:
+	java.lang.ClassLoader.defineClass1(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:442)
+TRACE 300536:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:832)
+TRACE 300487:
+	org.dynjs.parser.ast.AssignmentExpression.getFunctionDeclarations(AssignmentExpression.java:45)
+	org.dynjs.parser.ast.ExpressionStatement.getFunctionDeclarations(ExpressionStatement.java:50)
+	org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations(BlockStatement.java:82)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFunctionDeclarations(InterpretedBasicBlock.java:58)
+TRACE 300544:
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.Reference.getValue(Reference.java:52)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+TRACE 300281:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1557)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300306:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:974)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+TRACE 300343:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+TRACE 300369:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:823)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300379:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:25)
+TRACE 300340:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:97)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+TRACE 300543:
+	java.util.regex.Pattern$Curly.match0(Pattern.java:4259)
+	java.util.regex.Pattern$Curly.match(Pattern.java:4225)
+	java.util.regex.Pattern$GroupHead.match(Pattern.java:4649)
+	java.util.regex.Pattern$Begin.match(Pattern.java:3516)
+TRACE 300373:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:262)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300323:
+	org.dynjs.runtime.Reference.putValue(Reference.java:90)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300413:
+	org.dynjs.parser.ast.AbstractBinaryExpression.getFunctionDeclarations(AbstractBinaryExpression.java:42)
+	org.dynjs.parser.ast.AbstractBinaryExpression.getFunctionDeclarations(AbstractBinaryExpression.java:42)
+	org.dynjs.parser.ast.AssignmentExpression.getFunctionDeclarations(AssignmentExpression.java:45)
+	org.dynjs.parser.ast.ExpressionStatement.getFunctionDeclarations(ExpressionStatement.java:50)
+TRACE 300602:
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:274)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300461:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300419:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:453)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300444:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.wrapper.JavascriptFunction.call(JavascriptFunction.java:58)
+TRACE 300482:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:157)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:46)
+TRACE 300573:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:366)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300466:
+	java.util.HashMap.putVal(HashMap.java:663)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+TRACE 300569:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:25)
+	org.dynjs.runtime.AbstractNativeFunction.<init>(AbstractNativeFunction.java:26)
+	org.dynjs.runtime.ArgSetter.<init>(ArgSetter.java:8)
+TRACE 300561:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1398)
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+TRACE 300434:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+TRACE 300499:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:22)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:348)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300590:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.FunctionCallExpression.getPosition(FunctionCallExpression.java:36)
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.AbstractBinaryExpression.getPosition(AbstractBinaryExpression.java:24)
+TRACE 300416:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:823)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300324:
+	org.dynjs.runtime.Reference.putValue(Reference.java:90)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300409:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:333)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300414:
+	java.lang.Long.toString(Long.java:398)
+	java.lang.Long.toString(Long.java:1032)
+	org.dynjs.runtime.Types.toString(Types.java:426)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+TRACE 300598:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:154)
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:154)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+TRACE 300597:
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300592:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1398)
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300520:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:330)
+TRACE 300502:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1532)
+	org.dynjs.parser.ast.VariableStatement.accept(VariableStatement.java:71)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300476:
+	org.dynjs.parser.ast.ExpressionStatement.getFunctionDeclarations(ExpressionStatement.java:50)
+	org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations(BlockStatement.java:82)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFunctionDeclarations(InterpretedBasicBlock.java:58)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getFunctionDeclarations(JavascriptFunction.java:72)
+TRACE 300471:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300468:
+	java.util.HashMap.putVal(HashMap.java:663)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:348)
+TRACE 300467:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:481)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300460:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300449:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300445:
+	org.dynjs.parser.ast.VariableStatement.accept(VariableStatement.java:71)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+TRACE 300439:
+	java.util.HashMap.getNode(HashMap.java:578)
+	java.util.LinkedHashMap.get(LinkedHashMap.java:438)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:110)
+	org.dynjs.runtime.DynObject.put(DynObject.java:175)
+TRACE 300282:
+	java.util.HashMap.getNode(HashMap.java:578)
+	java.util.LinkedHashMap.get(LinkedHashMap.java:438)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:110)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+TRACE 300398:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:290)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1613)
+TRACE 300395:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+TRACE 300376:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:290)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.wrapper.JavascriptFunction.call(JavascriptFunction.java:58)
+TRACE 300374:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1612)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:881)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300363:
+	java.util.HashMap.getNode(HashMap.java:571)
+	java.util.HashMap.get(HashMap.java:556)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:71)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+TRACE 300326:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:360)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300317:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:57)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+TRACE 300426:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1317)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300361:
+	java.util.HashMap.getNode(HashMap.java:578)
+	java.util.LinkedHashMap.get(LinkedHashMap.java:438)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:110)
+	org.dynjs.runtime.DynObject.canPut(DynObject.java:203)
+TRACE 300493:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:25)
+	org.dynjs.runtime.AbstractNativeFunction.<init>(AbstractNativeFunction.java:26)
+	org.dynjs.runtime.ArgGetter.<init>(ArgGetter.java:8)
+TRACE 300344:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300576:
+	org.dynjs.runtime.Types.stringToNumber(Types.java:217)
+	org.dynjs.runtime.Types.toNumber(Types.java:141)
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.isArrayIndex(DynArray.java:123)
+TRACE 300584:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+TRACE 300431:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300280:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1552)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300550:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding(DeclarativeEnvironmentRecord.java:36)
+	org.dynjs.runtime.Reference.putValue(Reference.java:103)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1188)
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+TRACE 300283:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300406:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.FunctionCallExpression.getPosition(FunctionCallExpression.java:36)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+TRACE 300459:
+	org.dynjs.runtime.Reference.putValue(Reference.java:103)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1522)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1530)
+TRACE 300450:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:329)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300400:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300470:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.FunctionCallExpression.getPosition(FunctionCallExpression.java:36)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+TRACE 300448:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1520)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1530)
+	org.dynjs.parser.ast.VariableStatement.accept(VariableStatement.java:71)
+TRACE 300411:
+	java.util.HashMap.hash(HashMap.java:338)
+	java.util.LinkedHashMap.get(LinkedHashMap.java:438)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:110)
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+TRACE 300458:
+	org.dynjs.runtime.Reference.putValue(Reference.java:103)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300329:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:383)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300327:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:362)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300436:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:453)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1552)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+TRACE 300463:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:192)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+TRACE 300589:
+	java.lang.Long.getChars(Long.java:469)
+	java.lang.Long.toString(Long.java:398)
+	java.lang.Long.toString(Long.java:1032)
+	org.dynjs.runtime.Types.toString(Types.java:426)
+TRACE 300547:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.Arguments.get(Arguments.java:29)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:52)
+TRACE 300594:
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:776)
+	org.dynjs.parser.ast.ForVarDeclStatement.accept(ForVarDeclStatement.java:69)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300408:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:348)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300274:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1554)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300263:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:361)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300650:
+	org.dynjs.runtime.LexicalEnvironment.getIdentifierReference(LexicalEnvironment.java:49)
+	org.dynjs.runtime.ExecutionContext.resolve(ExecutionContext.java:99)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1521)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300364:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1153)
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+TRACE 300479:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.AbstractUnaryOperatorExpression.getPosition(AbstractUnaryOperatorExpression.java:19)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+TRACE 300567:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+TRACE 300407:
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+TRACE 300424:
+	java.util.HashMap.putVal(HashMap.java:663)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:25)
+TRACE 300438:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:253)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300557:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.AbstractBinaryExpression.getPosition(AbstractBinaryExpression.java:24)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+TRACE 300518:
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFunctionDeclarations(InterpretedBasicBlock.java:58)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getFunctionDeclarations(JavascriptFunction.java:72)
+	org.dynjs.runtime.ExecutionContext.performFunctionDeclarationBindings(ExecutionContext.java:439)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:337)
+TRACE 300531:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:430)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300508:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:22)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:330)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300580:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding(DeclarativeEnvironmentRecord.java:36)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:349)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300565:
+	org.dynjs.parser.ast.AbstractUnaryOperatorExpression.getFunctionDeclarations(AbstractUnaryOperatorExpression.java:31)
+	org.dynjs.parser.ast.AbstractBinaryExpression.getFunctionDeclarations(AbstractBinaryExpression.java:42)
+	org.dynjs.parser.ast.AssignmentExpression.getFunctionDeclarations(AssignmentExpression.java:45)
+	org.dynjs.parser.ast.ExpressionStatement.getFunctionDeclarations(ExpressionStatement.java:50)
+TRACE 300285:
+	org.dynjs.runtime.Reference.getValue(Reference.java:52)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:823)
+TRACE 300570:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300571:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1530)
+TRACE 300575:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:978)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300356:
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:943)
+TRACE 300345:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300334:
+	org.dynjs.runtime.Reference.putValue(Reference.java:90)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300331:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:430)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300587:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:97)
+	org.dynjs.parser.ast.AbstractForStatement.getVariableDeclarations(AbstractForStatement.java:49)
+	org.dynjs.parser.ast.ForVarDeclStatement.getVariableDeclarations(ForVarDeclStatement.java:43)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+TRACE 300593:
+	org.dynjs.runtime.Types.stringToNumber(Types.java:217)
+	org.dynjs.runtime.Types.toNumber(Types.java:141)
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:99)
+TRACE 300622:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:103)
+TRACE 300603:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.Arguments.get(Arguments.java:29)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:46)
+TRACE 300613:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:154)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.Reference.getValue(Reference.java:52)
+TRACE 300636:
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:47)
+	org.dynjs.runtime.DynObject.put(DynObject.java:181)
+	org.dynjs.runtime.builtins.types.array.prototype.Pop.call(Pop.java:30)
+TRACE 300635:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1612)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:784)
+	org.dynjs.parser.ast.ForVarDeclStatement.accept(ForVarDeclStatement.java:69)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300457:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding(DeclarativeEnvironmentRecord.java:36)
+	org.dynjs.runtime.Reference.putValue(Reference.java:103)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300456:
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:472)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300452:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:430)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300451:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1267)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+TRACE 300614:
+	org.dynjs.runtime.Types.compareRelational(Types.java:515)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1285)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1552)
+TRACE 300659:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:974)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+TRACE 300086:
+	java.lang.ClassLoader.findBootstrapClass(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.findBootstrapClassOrNull(ClassLoader.java:1012)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:413)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:411)
+TRACE 300443:
+	org.dynjs.parser.ast.AbstractBinaryExpression.getPosition(AbstractBinaryExpression.java:24)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300441:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300226:
+	org.joni.Regex.<init>(Regex.java:162)
+	org.joni.Regex.<init>(Regex.java:139)
+	org.dynjs.runtime.builtins.types.regexp.DynRegExp.setPatternAndFlags(DynRegExp.java:132)
+	org.dynjs.runtime.builtins.types.regexp.DynRegExp.<init>(DynRegExp.java:42)
+TRACE 300630:
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getVariableDeclarations(JavascriptFunction.java:77)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:467)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+TRACE 300475:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1166)
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300429:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:97)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:57)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+TRACE 300428:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:979)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300427:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:473)
+TRACE 300483:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:976)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:253)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300420:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:877)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300485:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1612)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1557)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300490:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:976)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300417:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:57)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+TRACE 300491:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:943)
+	org.dynjs.parser.ast.LogicalExpression.accept(LogicalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300415:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding(DeclarativeEnvironmentRecord.java:36)
+	org.dynjs.runtime.Reference.putValue(Reference.java:103)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1522)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300304:
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+TRACE 300492:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300495:
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getVariableDeclarations(JavascriptFunction.java:77)
+TRACE 300646:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:831)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+TRACE 300504:
+	java.util.HashMap.hash(HashMap.java:338)
+	java.util.HashMap.get(HashMap.java:556)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:71)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+TRACE 300509:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding(DeclarativeEnvironmentRecord.java:36)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:333)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300510:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding(DeclarativeEnvironmentRecord.java:36)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:474)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300291:
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+TRACE 300512:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.AbstractBinaryExpression.getPosition(AbstractBinaryExpression.java:24)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.parser.ast.BlockStatement.getPosition(BlockStatement.java:40)
+TRACE 300516:
+	java.util.HashMap.putVal(HashMap.java:663)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:330)
+TRACE 300517:
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1613)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:881)
+TRACE 300387:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:949)
+	org.dynjs.parser.ast.LogicalExpression.accept(LogicalExpression.java:14)
+TRACE 300652:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:55)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:45)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+TRACE 300384:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300549:
+	java.util.HashMap.newNode(HashMap.java:1717)
+	java.util.HashMap.putVal(HashMap.java:630)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+TRACE 300554:
+	org.dynjs.runtime.Reference.putValue(Reference.java:103)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1188)
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:811)
+TRACE 300625:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300377:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300375:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:22)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:473)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300276:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:877)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300563:
+	java.lang.Long.getChars(Long.java:469)
+	java.lang.Long.toString(Long.java:398)
+	java.lang.Long.toString(Long.java:1032)
+	org.dynjs.runtime.DynArray.isArrayIndex(DynArray.java:123)
+TRACE 300564:
+	org.dynjs.runtime.Types.stringToNumber(Types.java:241)
+	org.dynjs.runtime.Types.toNumber(Types.java:141)
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.isArrayIndex(DynArray.java:123)
+TRACE 300224:
+	java.util.zip.Inflater.inflateBytes(Inflater.java:Unknown line)
+	java.util.zip.Inflater.inflate(Inflater.java:259)
+	java.util.zip.InflaterInputStream.read(InflaterInputStream.java:152)
+	java.util.zip.InflaterInputStream.read(InflaterInputStream.java:122)
+TRACE 300497:
+	org.dynjs.parser.ast.DotExpression.getPosition(DotExpression.java:41)
+	org.dynjs.parser.ast.AbstractUnaryOperatorExpression.getPosition(AbstractUnaryOperatorExpression.java:19)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.parser.ast.BlockStatement.getPosition(BlockStatement.java:40)
+TRACE 300032:
+	sun.misc.URLClassPath$JarLoader$1.run(URLClassPath.java:675)
+	sun.misc.URLClassPath$JarLoader$1.run(URLClassPath.java:667)
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+	sun.misc.URLClassPath$JarLoader.ensureOpen(URLClassPath.java:666)
+TRACE 300043:
+	java.io.FileInputStream.read(FileInputStream.java:Unknown line)
+	java.io.DataInputStream.readShort(DataInputStream.java:313)
+	sun.util.calendar.ZoneInfoFile.load(ZoneInfoFile.java:310)
+	sun.util.calendar.ZoneInfoFile.access$000(ZoneInfoFile.java:60)
+TRACE 300054:
+	java.util.zip.ZipFile.getInflater(ZipFile.java:455)
+	java.util.zip.ZipFile.getInputStream(ZipFile.java:374)
+	java.util.jar.JarFile.getInputStream(JarFile.java:437)
+	sun.misc.JarIndex.getJarIndex(JarIndex.java:137)
+TRACE 300059:
+	java.util.zip.ZipFile.open(ZipFile.java:Unknown line)
+	java.util.zip.ZipFile.<init>(ZipFile.java:220)
+	java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	java.util.jar.JarFile.<init>(JarFile.java:158)
+TRACE 300087:
+	java.lang.Class.getDeclaredMethods0(Class.java:Unknown line)
+	java.lang.Class.privateGetDeclaredMethods(Class.java:2672)
+	java.lang.Class.getMethod0(Class.java:2913)
+	java.lang.Class.getMethod(Class.java:1755)
+TRACE 300090:
+	sun.misc.URLClassPath$JarLoader.checkResource(URLClassPath.java:758)
+	sun.misc.URLClassPath$JarLoader.getResource(URLClassPath.java:843)
+	sun.misc.URLClassPath.getResource(URLClassPath.java:199)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:351)
+TRACE 300107:
+	java.lang.ApplicationShutdownHooks.<clinit>(ApplicationShutdownHooks.java:50)
+	java.lang.Runtime.addShutdownHook(Runtime.java:211)
+	java.util.logging.LogManager.<init>(LogManager.java:246)
+	java.util.logging.LogManager$1.run(LogManager.java:197)
+TRACE 300155:
+	java.util.concurrent.atomic.AtomicLong.<clinit>(AtomicLong.java:58)
+	java.lang.reflect.Proxy$ProxyClassFactory.<clinit>(Proxy.java:562)
+	java.lang.reflect.Proxy.<clinit>(Proxy.java:240)
+	sun.reflect.annotation.AnnotationParser$1.run(AnnotationParser.java:305)
+TRACE 300186:
+	sun.misc.Unsafe.getLong(Unsafe.java:Unknown line)
+	java.nio.DirectLongBufferU.get(DirectLongBufferU.java:253)
+	sun.misc.PerfCounter.get(PerfCounter.java:83)
+	sun.misc.PerfCounter.add(PerfCounter.java:97)
+TRACE 300221:
+	java.lang.String.regionMatches(String.java:1339)
+	java.lang.String.equalsIgnoreCase(String.java:1101)
+	sun.net.www.protocol.jar.Handler.parseURL(Handler.java:146)
+	java.net.URL.<init>(URL.java:615)
+TRACE 300223:
+	java.util.zip.Inflater.inflateBytes(Inflater.java:Unknown line)
+	java.util.zip.Inflater.inflate(Inflater.java:259)
+	java.util.zip.InflaterInputStream.read(InflaterInputStream.java:152)
+	sun.misc.Resource.getBytes(Resource.java:124)
+TRACE 300225:
+	java.lang.ClassLoader.preDefineClass(ClassLoader.java:653)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:758)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:442)
+TRACE 300227:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:436)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:411)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+TRACE 300228:
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:43)
+	org.dynjs.runtime.DefaultObjectFactory.newGlobalObject(DefaultObjectFactory.java:6)
+	org.dynjs.runtime.GlobalObject.newGlobalObject(GlobalObject.java:123)
+	org.dynjs.runtime.LexicalEnvironment.newGlobalEnvironment(LexicalEnvironment.java:14)
+TRACE 300229:
+	java.net.URLClassLoader.findClass(URLClassLoader.java:363)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:411)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+TRACE 300230:
+	org.dynjs.runtime.builtins.types.BuiltinArray.initialize(BuiltinArray.java:68)
+	org.dynjs.runtime.builtins.types.AbstractBuiltinType.initialize(AbstractBuiltinType.java:21)
+	org.dynjs.runtime.GlobalObject.initializeBuiltinTypes(GlobalObject.java:118)
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:52)
+TRACE 300231:
+	java.util.zip.ZipFile.getEntry(ZipFile.java:Unknown line)
+	java.util.zip.ZipFile.getEntry(ZipFile.java:311)
+	java.util.jar.JarFile.getEntry(JarFile.java:232)
+	java.util.jar.JarFile.getJarEntry(JarFile.java:215)
+TRACE 300232:
+	org.dynjs.runtime.builtins.types.BuiltinDate.initialize(BuiltinDate.java:81)
+	org.dynjs.runtime.builtins.types.AbstractBuiltinType.initialize(AbstractBuiltinType.java:21)
+	org.dynjs.runtime.GlobalObject.initializeBuiltinTypes(GlobalObject.java:118)
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:52)
+TRACE 300233:
+	org.dynjs.runtime.builtins.types.BuiltinDate.initialize(BuiltinDate.java:102)
+	org.dynjs.runtime.builtins.types.AbstractBuiltinType.initialize(AbstractBuiltinType.java:21)
+	org.dynjs.runtime.GlobalObject.initializeBuiltinTypes(GlobalObject.java:118)
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:52)
+TRACE 300234:
+	org.dynjs.runtime.builtins.Require.<init>(Require.java:49)
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:72)
+	org.dynjs.runtime.DefaultObjectFactory.newGlobalObject(DefaultObjectFactory.java:6)
+	org.dynjs.runtime.GlobalObject.newGlobalObject(GlobalObject.java:123)
+TRACE 300241:
+	org.dynjs.runtime.builtins.JSON.<init>(JSON.java:27)
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:85)
+	org.dynjs.runtime.DefaultObjectFactory.newGlobalObject(DefaultObjectFactory.java:6)
+	org.dynjs.runtime.GlobalObject.newGlobalObject(GlobalObject.java:123)
+TRACE 300242:
+	org.dynjs.runtime.builtins.Math.<init>(Math.java:58)
+	org.dynjs.runtime.GlobalObject.<init>(GlobalObject.java:86)
+	org.dynjs.runtime.DefaultObjectFactory.newGlobalObject(DefaultObjectFactory.java:6)
+	org.dynjs.runtime.GlobalObject.newGlobalObject(GlobalObject.java:123)
+TRACE 300243:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:415)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	org.dynjs.parser.js.Lexer.<clinit>(Lexer.java:12)
+TRACE 300245:
+	org.dynjs.parser.js.Parser.statement(Parser.java:1169)
+	org.dynjs.parser.js.Parser.sourceElement(Parser.java:1165)
+	org.dynjs.parser.js.Parser.sourceElements(Parser.java:1138)
+	org.dynjs.parser.js.Parser.program(Parser.java:171)
+TRACE 300252:
+	org.dynjs.parser.js.Parser.memberExpression(Parser.java:901)
+	org.dynjs.parser.js.Parser.callExpression(Parser.java:925)
+	org.dynjs.parser.js.Parser.leftHandSideExpression(Parser.java:888)
+	org.dynjs.parser.js.Parser.postfixExpression(Parser.java:868)
+TRACE 300253:
+	org.dynjs.parser.js.CircularCharBuffer.peek(CircularCharBuffer.java:54)
+	org.dynjs.parser.js.Lexer.la(Lexer.java:76)
+	org.dynjs.parser.js.Lexer.nextToken(Lexer.java:232)
+	org.dynjs.parser.js.TokenQueue.peekToken(TokenQueue.java:60)
+TRACE 300254:
+	org.dynjs.runtime.Completion$Type.<clinit>(Completion.java:5)
+	org.dynjs.runtime.Completion.createNormal(Completion.java:23)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:855)
+	org.dynjs.parser.ast.FunctionDeclaration.accept(FunctionDeclaration.java:82)
+TRACE 300256:
+	org.dynjs.parser.js.Parser.memberExpression(Parser.java:903)
+	org.dynjs.parser.js.Parser.callExpression(Parser.java:925)
+	org.dynjs.parser.js.Parser.leftHandSideExpression(Parser.java:888)
+	org.dynjs.parser.js.Parser.postfixExpression(Parser.java:868)
+TRACE 300257:
+	org.dynjs.parser.js.Lexer.multiLineComment(Lexer.java:660)
+	org.dynjs.parser.js.Lexer.nextToken(Lexer.java:349)
+	org.dynjs.parser.js.TokenQueue.peekToken(TokenQueue.java:60)
+	org.dynjs.parser.js.TokenQueue.peek(TokenQueue.java:74)
+TRACE 300258:
+	java.util.concurrent.atomic.AtomicInteger.incrementAndGet(AtomicInteger.java:186)
+	org.dynjs.parser.ast.AbstractStatement.<init>(AbstractStatement.java:40)
+	org.dynjs.parser.ast.BlockStatement.<init>(BlockStatement.java:31)
+	org.dynjs.parser.js.ASTFactory.block(ASTFactory.java:427)
+TRACE 300259:
+	sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1875)
+	sun.misc.FloatingDecimal.parseDouble(FloatingDecimal.java:110)
+	java.lang.Double.parseDouble(Double.java:546)
+	java.lang.Double.valueOf(Double.java:510)
+TRACE 300260:
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:22)
+	org.dynjs.runtime.wrapper.JavascriptFunction.<init>(JavascriptFunction.java:25)
+	org.dynjs.compiler.FunctionCompiler.compile(FunctionCompiler.java:31)
+	org.dynjs.compiler.JSCompiler.compileFunction(JSCompiler.java:50)
+TRACE 300261:
+	java.lang.StringBuilder.append(StringBuilder.java:208)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300262:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:827)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300264:
+	java.lang.Object.getClass(Object.java:Unknown line)
+	org.dynjs.runtime.Types.compareEquality(Types.java:554)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:461)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300265:
+	java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:648)
+	java.lang.StringBuilder.append(StringBuilder.java:208)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:383)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300266:
+	java.lang.Double.doubleToRawLongBits(Double.java:Unknown line)
+	java.lang.Math.getExponent(Math.java:1840)
+	java.lang.StrictMath.floorOrCeil(StrictMath.java:374)
+	java.lang.StrictMath.floor(StrictMath.java:359)
+TRACE 300267:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.hasBinding(DeclarativeEnvironmentRecord.java:16)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:340)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300268:
+	org.dynjs.parser.ast.BlockStatement.getPosition(BlockStatement.java:36)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getFileName(InterpretedBasicBlock.java:38)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getFileName(JavascriptFunction.java:53)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:272)
+TRACE 300269:
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+TRACE 300270:
+	org.dynjs.parser.ast.IntegerNumberExpression.accept(IntegerNumberExpression.java:18)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+TRACE 300271:
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:832)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+TRACE 300273:
+	java.lang.Long.toString(Long.java:397)
+	java.lang.Long.toString(Long.java:1032)
+	org.dynjs.runtime.Types.toString(Types.java:426)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+TRACE 300277:
+	org.dynjs.runtime.Arguments.getOwnProperty(Arguments.java:42)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:366)
+TRACE 300278:
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:157)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:370)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300286:
+	org.dynjs.runtime.Types.compareEquality(Types.java:572)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:459)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:949)
+TRACE 300288:
+	java.lang.StringBuilder.toString(StringBuilder.java:407)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300290:
+	org.dynjs.runtime.Types.toString(Types.java:404)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+TRACE 300292:
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:470)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300293:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:812)
+	org.dynjs.parser.ast.ForVarDeclStatement.accept(ForVarDeclStatement.java:69)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300294:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:348)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300295:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:362)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300296:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300297:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1552)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300299:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.push(BasicInterpretingVisitor.java:110)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1317)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300300:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:784)
+	org.dynjs.parser.ast.ForVarDeclStatement.accept(ForVarDeclStatement.java:69)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300301:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.push(BasicInterpretingVisitor.java:110)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1119)
+	org.dynjs.parser.ast.NullLiteralExpression.accept(NullLiteralExpression.java:38)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+TRACE 300302:
+	java.util.Arrays.copyOf(Arrays.java:3175)
+	java.util.ArrayList.toArray(ArrayList.java:361)
+	java.util.ArrayList.addAll(ArrayList.java:562)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+TRACE 300305:
+	java.lang.StrictMath.floor(StrictMath.java:359)
+	java.lang.Math.floor(Math.java:442)
+	org.dynjs.runtime.Types.toInt32(Types.java:365)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:200)
+TRACE 300307:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.pop(BasicInterpretingVisitor.java:114)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:975)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+TRACE 300309:
+	org.dynjs.runtime.ThreadContextManager.popContext(ThreadContextManager.java:29)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:214)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300310:
+	org.dynjs.runtime.Types.toString(Types.java:426)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+TRACE 300312:
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:272)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300313:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:220)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300314:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:811)
+	org.dynjs.parser.ast.ForVarDeclStatement.accept(ForVarDeclStatement.java:69)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300315:
+	org.dynjs.runtime.ThreadContextManager.popContext(ThreadContextManager.java:29)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:214)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300316:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.pop(BasicInterpretingVisitor.java:114)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:877)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300319:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1559)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300325:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300328:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:366)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300330:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:379)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300332:
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300333:
+	java.lang.StringBuilder.<init>(StringBuilder.java:89)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300335:
+	org.dynjs.runtime.Types.toInt32(Types.java:363)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:200)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+TRACE 300337:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.pop(BasicInterpretingVisitor.java:114)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1531)
+	org.dynjs.parser.ast.VariableStatement.accept(VariableStatement.java:71)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300338:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.pop(BasicInterpretingVisitor.java:114)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:193)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+TRACE 300339:
+	org.dynjs.runtime.Reference.getValue(Reference.java:51)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1520)
+TRACE 300341:
+	java.util.regex.Pattern$GroupHead.match(Pattern.java:4647)
+	java.util.regex.Pattern$Begin.match(Pattern.java:3516)
+	java.util.regex.Matcher.match(Matcher.java:1270)
+	java.util.regex.Matcher.matches(Matcher.java:604)
+TRACE 300342:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1270)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300346:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300347:
+	java.util.ArrayList.iterator(ArrayList.java:819)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:90)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+TRACE 300348:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300349:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:844)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300350:
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+TRACE 300351:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:827)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300352:
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+TRACE 300353:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:821)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300354:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:221)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300355:
+	java.util.ArrayList.iterator(ArrayList.java:819)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:90)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+	org.dynjs.runtime.wrapper.JavascriptFunction.getVariableDeclarations(JavascriptFunction.java:77)
+TRACE 300360:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.push(BasicInterpretingVisitor.java:110)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:265)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300366:
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1613)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:879)
+TRACE 300367:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.pop(BasicInterpretingVisitor.java:114)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1154)
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300368:
+	java.util.HashMap.getNode(HashMap.java:571)
+	java.util.HashMap.containsKey(HashMap.java:595)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.hasBinding(DeclarativeEnvironmentRecord.java:16)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:55)
+TRACE 300371:
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:157)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.Arguments.<init>(Arguments.java:11)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:360)
+TRACE 300372:
+	org.dynjs.runtime.Types.rewritePossiblyExponentialValue(Types.java:730)
+	org.dynjs.runtime.Types.toString(Types.java:426)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+TRACE 300381:
+	org.dynjs.runtime.Types.rewritePossiblyExponentialValue(Types.java:730)
+	org.dynjs.runtime.Types.toString(Types.java:426)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+TRACE 300386:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300390:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1268)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300394:
+	org.dynjs.parser.ast.NewOperatorExpression.accept(NewOperatorExpression.java:52)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300397:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:979)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300402:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:418)
+	org.dynjs.runtime.DynObject.put(DynObject.java:181)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+TRACE 300403:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300421:
+	org.dynjs.parser.ast.NewOperatorExpression.accept(NewOperatorExpression.java:52)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visitMinus(BasicInterpretingVisitor.java:164)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:122)
+	org.dynjs.parser.ast.AdditiveExpression.accept(AdditiveExpression.java:13)
+TRACE 300423:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:262)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300430:
+	org.dynjs.runtime.Types.toInt32(Types.java:358)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:200)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+TRACE 300432:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:978)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+TRACE 300433:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1267)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+TRACE 300437:
+	java.util.Collections$EmptyList.toArray(Collections.java:4504)
+	java.util.ArrayList.addAll(ArrayList.java:562)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+TRACE 300442:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.AbstractForStatement.getVariableDeclarations(AbstractForStatement.java:49)
+	org.dynjs.parser.ast.ForVarDeclStatement.getVariableDeclarations(ForVarDeclStatement.java:43)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+TRACE 300446:
+	org.dynjs.runtime.Types.compareRelational(Types.java:515)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1277)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+TRACE 300447:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:963)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:253)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300453:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300454:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:59)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+TRACE 300455:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300462:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:193)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300464:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:832)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300469:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+TRACE 300473:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:832)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300474:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1552)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+TRACE 300477:
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1613)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:879)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300481:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1612)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:879)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300484:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1271)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:875)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300486:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:473)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300488:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:97)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:57)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations(InterpretedBasicBlock.java:53)
+TRACE 300494:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.DynObject.put(DynObject.java:181)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1188)
+TRACE 300496:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1166)
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300498:
+	org.dynjs.parser.ast.PostOpExpression.accept(PostOpExpression.java:33)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300500:
+	org.dynjs.runtime.DynArray.<init>(DynArray.java:24)
+	org.dynjs.runtime.builtins.types.BuiltinArray.createNewObject(BuiltinArray.java:127)
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:171)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1110)
+TRACE 300501:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:203)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300503:
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:97)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:95)
+	org.dynjs.parser.ast.IfStatement.getVariableDeclarations(IfStatement.java:54)
+TRACE 300505:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1270)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+TRACE 300506:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:455)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:943)
+	org.dynjs.parser.ast.LogicalExpression.accept(LogicalExpression.java:14)
+TRACE 300507:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300511:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:203)
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300513:
+	java.util.Arrays.copyOf(Arrays.java:3175)
+	java.util.ArrayList.toArray(ArrayList.java:361)
+	java.util.ArrayList.addAll(ArrayList.java:562)
+	org.dynjs.parser.ast.BlockStatement.getVariableDeclarations(BlockStatement.java:93)
+TRACE 300514:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:452)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:949)
+	org.dynjs.parser.ast.LogicalExpression.accept(LogicalExpression.java:14)
+TRACE 300515:
+	org.dynjs.parser.ast.BitwiseExpression.accept(BitwiseExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+TRACE 300519:
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:33)
+	org.dynjs.runtime.Arguments.<init>(Arguments.java:11)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:360)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300523:
+	java.math.BigDecimal.divideAndRound(BigDecimal.java:4295)
+	java.math.BigDecimal.divideAndRoundByTenPow(BigDecimal.java:4089)
+	java.math.BigDecimal.<init>(BigDecimal.java:948)
+	org.dynjs.runtime.builtins.types.number.prototype.ToPrecision.call(ToPrecision.java:32)
+TRACE 300525:
+	java.lang.Object.getClass(Object.java:Unknown line)
+	org.dynjs.runtime.Types.compareEquality(Types.java:554)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:459)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+TRACE 300526:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:375)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300527:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:390)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300528:
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:254)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300529:
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:366)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300530:
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:201)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+TRACE 300532:
+	org.dynjs.runtime.Types.compareEquality(Types.java:554)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:459)
+	org.dynjs.parser.ast.EqualityOperatorExpression.accept(EqualityOperatorExpression.java:29)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1398)
+TRACE 300533:
+	org.dynjs.parser.ast.MultiplicativeExpression.accept(MultiplicativeExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visitPlus(BasicInterpretingVisitor.java:127)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:120)
+	org.dynjs.parser.ast.AdditiveExpression.accept(AdditiveExpression.java:13)
+TRACE 300534:
+	org.dynjs.parser.ast.AbstractUnaryOperatorExpression.getPosition(AbstractUnaryOperatorExpression.java:19)
+	org.dynjs.parser.ast.ExpressionStatement.getPosition(ExpressionStatement.java:34)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:281)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300535:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1107)
+	org.dynjs.parser.ast.NewOperatorExpression.accept(NewOperatorExpression.java:52)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+	org.dynjs.parser.ast.AssignmentExpression.accept(AssignmentExpression.java:32)
+TRACE 300537:
+	org.dynjs.runtime.ExecutionContext.resolve(ExecutionContext.java:99)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:45)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300538:
+	java.lang.StringBuilder.toString(StringBuilder.java:407)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:52)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300539:
+	java.lang.Long.getChars(Long.java:469)
+	java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:674)
+	java.lang.StringBuilder.append(StringBuilder.java:214)
+	org.dynjs.runtime.builtins.types.array.prototype.Pop.call(Pop.java:29)
+TRACE 300540:
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:165)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1110)
+	org.dynjs.parser.ast.NewOperatorExpression.accept(NewOperatorExpression.java:52)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+TRACE 300541:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:408)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300545:
+	org.dynjs.runtime.PropertyDescriptor.duplicate(PropertyDescriptor.java:329)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:125)
+	org.dynjs.runtime.DynObject.getOwnProperty(DynObject.java:103)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:38)
+TRACE 300546:
+	org.dynjs.runtime.DynObject.put(DynObject.java:167)
+	org.dynjs.runtime.builtins.types.array.prototype.Push.call(Push.java:23)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+TRACE 300548:
+	org.dynjs.runtime.LexicalEnvironment.getIdentifierReference(LexicalEnvironment.java:49)
+	org.dynjs.runtime.ExecutionContext.resolve(ExecutionContext.java:99)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:45)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+TRACE 300551:
+	org.dynjs.runtime.DynObject.canPut(DynObject.java:203)
+	org.dynjs.runtime.DynObject.put(DynObject.java:167)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+TRACE 300552:
+	org.dynjs.runtime.DynObject.canPut(DynObject.java:203)
+	org.dynjs.runtime.DynObject.put(DynObject.java:167)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+TRACE 300553:
+	org.dynjs.runtime.DynObject.canPut(DynObject.java:203)
+	org.dynjs.runtime.DynObject.put(DynObject.java:167)
+	org.dynjs.runtime.builtins.types.array.prototype.Pop.call(Pop.java:30)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+TRACE 300555:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300556:
+	java.util.regex.Matcher.matches(Matcher.java:604)
+	org.dynjs.runtime.Types.rewritePossiblyExponentialValue(Types.java:732)
+	org.dynjs.runtime.Types.toString(Types.java:426)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+TRACE 300558:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1553)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300559:
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:267)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:188)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1110)
+TRACE 300566:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1166)
+TRACE 300568:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1195)
+	org.dynjs.parser.ast.PreOpExpression.accept(PreOpExpression.java:33)
+TRACE 300572:
+	org.dynjs.runtime.builtins.types.function.prototype.Call.call(Call.java:26)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300574:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:60)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:45)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+TRACE 300577:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:456)
+TRACE 300578:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:979)
+TRACE 300579:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.<init>(DeclarativeEnvironmentRecord.java:12)
+	org.dynjs.runtime.LexicalEnvironment.newDeclarativeEnvironment(LexicalEnvironment.java:6)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:268)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300581:
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:157)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.Arguments.<init>(Arguments.java:11)
+TRACE 300582:
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1552)
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+TRACE 300583:
+	org.dynjs.runtime.Types.compareRelational(Types.java:516)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1277)
+	org.dynjs.parser.ast.RelationalExpression.accept(RelationalExpression.java:14)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:776)
+TRACE 300585:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:329)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:188)
+TRACE 300586:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:366)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300588:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.DynArray.<init>(DynArray.java:31)
+	org.dynjs.runtime.builtins.types.BuiltinArray.createNewObject(BuiltinArray.java:127)
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:171)
+TRACE 300591:
+	org.dynjs.runtime.LexicalEnvironment.newDeclarativeEnvironment(LexicalEnvironment.java:6)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:268)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300595:
+	org.dynjs.runtime.builtins.types.array.prototype.Pop.call(Pop.java:29)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+TRACE 300596:
+	java.lang.System.currentTimeMillis(System.java:Unknown line)
+	org.dynjs.SystemClock.currentTimeMillis(SystemClock.java:14)
+	org.dynjs.runtime.builtins.types.BuiltinDate.call(BuiltinDate.java:144)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+TRACE 300599:
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:161)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.Arguments.<init>(Arguments.java:13)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:360)
+TRACE 300600:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:983)
+	org.dynjs.parser.ast.BracketExpression.accept(BracketExpression.java:45)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300601:
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:315)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:188)
+TRACE 300604:
+	java.util.HashMap.putVal(HashMap.java:663)
+	java.util.HashMap.put(HashMap.java:611)
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding(DeclarativeEnvironmentRecord.java:29)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:473)
+TRACE 300605:
+	java.util.ArrayList.iterator(ArrayList.java:819)
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:470)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+TRACE 300606:
+	org.dynjs.runtime.PropertyDescriptor.copyAll(PropertyDescriptor.java:389)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:417)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:110)
+	org.dynjs.runtime.DynObject.put(DynObject.java:196)
+TRACE 300607:
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300608:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1398)
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300609:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1398)
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300610:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visitPlus(BasicInterpretingVisitor.java:138)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:120)
+	org.dynjs.parser.ast.AdditiveExpression.accept(AdditiveExpression.java:13)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+TRACE 300611:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:326)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:25)
+	org.dynjs.runtime.AbstractNativeFunction.<init>(AbstractNativeFunction.java:26)
+	org.dynjs.runtime.ArgGetter.<init>(ArgGetter.java:8)
+TRACE 300612:
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:47)
+	org.dynjs.runtime.builtins.types.BuiltinArray.call(BuiltinArray.java:103)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+TRACE 300615:
+	org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue(DeclarativeEnvironmentRecord.java:60)
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.builtins.types.BuiltinArray.call(BuiltinArray.java:95)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+TRACE 300616:
+	org.dynjs.runtime.Types.stringToNumber(Types.java:241)
+	org.dynjs.runtime.Types.toNumber(Types.java:141)
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:99)
+TRACE 300617:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.hasProperty(DynObject.java:160)
+	org.dynjs.runtime.ObjectEnvironmentRecord.hasBinding(ObjectEnvironmentRecord.java:27)
+	org.dynjs.runtime.LexicalEnvironment.getIdentifierReference(LexicalEnvironment.java:49)
+TRACE 300618:
+	org.dynjs.runtime.AbstractFunction.get(AbstractFunction.java:83)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:161)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.Arguments.<init>(Arguments.java:11)
+TRACE 300619:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:411)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300620:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visitPlus(BasicInterpretingVisitor.java:130)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:120)
+	org.dynjs.parser.ast.AdditiveExpression.accept(AdditiveExpression.java:13)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+TRACE 300621:
+	java.lang.Long.getChars(Long.java:469)
+	java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:674)
+	java.lang.StringBuilder.append(StringBuilder.java:214)
+	org.dynjs.runtime.builtins.types.array.prototype.Pop.call(Pop.java:28)
+TRACE 300623:
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:52)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300624:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:766)
+	org.dynjs.parser.ast.ForVarDeclStatement.accept(ForVarDeclStatement.java:69)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300626:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:312)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:103)
+	org.dynjs.runtime.DynObject.put(DynObject.java:196)
+	org.dynjs.runtime.builtins.types.array.prototype.Push.call(Push.java:23)
+TRACE 300627:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:831)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+TRACE 300628:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1400)
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+TRACE 300629:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300631:
+	org.dynjs.runtime.AbstractFunction.get(AbstractFunction.java:83)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:161)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.Arguments.<init>(Arguments.java:13)
+TRACE 300632:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:453)
+TRACE 300633:
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:396)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300634:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:262)
+TRACE 300637:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:831)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1519)
+	org.dynjs.parser.ast.VariableDeclaration.accept(VariableDeclaration.java:43)
+TRACE 300638:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:831)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:480)
+	org.dynjs.parser.ast.ExpressionStatement.accept(ExpressionStatement.java:54)
+TRACE 300639:
+	org.dynjs.runtime.DynObject.get(DynObject.java:78)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:157)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:46)
+	org.dynjs.runtime.AbstractNativeFunction.<init>(AbstractNativeFunction.java:26)
+TRACE 300640:
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:961)
+	org.dynjs.parser.ast.DotExpression.accept(DotExpression.java:66)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:253)
+TRACE 300641:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.compiledBlockStatement(BasicInterpretingVisitor.java:1603)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement(BasicInterpretingVisitor.java:1612)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:879)
+	org.dynjs.parser.ast.IfStatement.accept(IfStatement.java:81)
+TRACE 300642:
+	org.dynjs.runtime.DynObject.put(DynObject.java:175)
+	org.dynjs.runtime.builtins.types.array.prototype.Push.call(Push.java:23)
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:67)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+TRACE 300643:
+	java.lang.Object.getClass(Object.java:Unknown line)
+	org.dynjs.runtime.Types.compareStrictEquality(Types.java:629)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1365)
+	org.dynjs.parser.ast.SwitchStatement.accept(SwitchStatement.java:77)
+TRACE 300644:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1315)
+	org.dynjs.parser.ast.ReturnStatement.accept(ReturnStatement.java:49)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+TRACE 300645:
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:46)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.call(ExecutionContext.java:152)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:850)
+TRACE 300647:
+	org.dynjs.runtime.AbstractNativeFunction.call(AbstractNativeFunction.java:46)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:203)
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:188)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1110)
+TRACE 300648:
+	org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings(ExecutionContext.java:467)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:354)
+	org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext(ExecutionContext.java:271)
+	org.dynjs.runtime.ExecutionContext.internalCall(ExecutionContext.java:200)
+TRACE 300649:
+	org.dynjs.runtime.Types.stringToNumber(Types.java:257)
+	org.dynjs.runtime.Types.toNumber(Types.java:141)
+	org.dynjs.runtime.Types.toUint32(Types.java:334)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:99)
+TRACE 300651:
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:320)
+	org.dynjs.runtime.Arguments.defineOwnProperty(Arguments.java:59)
+	org.dynjs.runtime.ExecutionContext.createArgumentsObject(ExecutionContext.java:430)
+	org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation(ExecutionContext.java:342)
+TRACE 300653:
+	org.dynjs.runtime.ExecutionContext.construct(ExecutionContext.java:165)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1110)
+	org.dynjs.parser.ast.NewOperatorExpression.accept(NewOperatorExpression.java:52)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:261)
+TRACE 300654:
+	org.dynjs.parser.ast.WhileStatement.accept(WhileStatement.java:64)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:286)
+	org.dynjs.parser.ast.BlockStatement.accept(BlockStatement.java:102)
+	org.dynjs.runtime.interp.InterpretedBasicBlock.call(InterpretedBasicBlock.java:28)
+TRACE 300655:
+	org.dynjs.runtime.AbstractFunction.get(AbstractFunction.java:83)
+	org.dynjs.runtime.GlobalObject.getPrototypeFor(GlobalObject.java:161)
+	org.dynjs.runtime.DynObject.<init>(DynObject.java:40)
+	org.dynjs.runtime.AbstractFunction.<init>(AbstractFunction.java:15)
+TRACE 300656:
+	org.dynjs.runtime.DynObject.getProperty(DynObject.java:145)
+	org.dynjs.runtime.DynObject.put(DynObject.java:185)
+	org.dynjs.runtime.Reference.putValue(Reference.java:98)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:264)
+TRACE 300657:
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:834)
+	org.dynjs.parser.ast.FunctionCallExpression.accept(FunctionCallExpression.java:85)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1398)
+	org.dynjs.parser.ast.TernaryExpression.accept(TernaryExpression.java:60)
+TRACE 300658:
+	org.dynjs.runtime.Reference.getValue(Reference.java:57)
+	org.dynjs.runtime.Types.getValue(Types.java:397)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.getValue(BasicInterpretingVisitor.java:1617)
+	org.dynjs.runtime.interp.BasicInterpretingVisitor.visit(BasicInterpretingVisitor.java:1271)
+TRACE 300660:
+	java.util.regex.Pattern$Curly.match0(Pattern.java:4259)
+	java.util.regex.Pattern$Curly.match(Pattern.java:4225)
+	java.util.regex.Matcher.match(Matcher.java:1270)
+	java.util.regex.Matcher.matches(Matcher.java:604)
+TRACE 300661:
+	org.dynjs.runtime.PropertyDescriptor.copyAll(PropertyDescriptor.java:386)
+	org.dynjs.runtime.DynObject.defineOwnProperty(DynObject.java:417)
+	org.dynjs.runtime.DynArray.defineOwnProperty(DynArray.java:110)
+	org.dynjs.runtime.DynObject.put(DynObject.java:196)
+CPU SAMPLES BEGIN (total = 2008) Sat Mar 15 09:48:26 2014
+rank   self  accum   count trace method
+   1  5.68%  5.68%     114 300370 org.dynjs.runtime.DynObject.getProperty
+   2  5.53% 11.21%     111 300284 org.dynjs.runtime.DynObject.getProperty
+   3  3.49% 14.69%      70 300275 org.dynjs.runtime.LexicalEnvironment.getIdentifierReference
+   4  3.24% 17.93%      65 300320 java.util.HashMap.putVal
+   5  2.39% 20.32%      48 300311 org.dynjs.runtime.DynObject.getProperty
+   6  2.29% 22.61%      46 300298 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+   7  1.84% 24.45%      37 300385 java.util.HashMap.putVal
+   8  1.74% 26.20%      35 300404 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+   9  1.74% 27.94%      35 300399 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+  10  1.59% 29.53%      32 300357 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  11  1.44% 30.98%      29 300287 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  12  1.39% 32.37%      28 300388 org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations
+  13  1.29% 33.67%      26 300321 org.dynjs.parser.ast.BlockStatement.getFunctionDeclarations
+  14  1.25% 34.91%      25 300336 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  15  1.15% 36.06%      23 300358 java.util.HashMap.getNode
+  16  1.15% 37.20%      23 300365 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+  17  1.15% 38.35%      23 300401 org.dynjs.runtime.DynObject.defineOwnProperty
+  18  1.10% 39.44%      22 300542 org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext
+  19  1.05% 40.49%      21 300405 java.util.HashMap.putVal
+  20  1.05% 41.53%      21 300362 org.dynjs.parser.ast.BlockStatement.getPosition
+  21  1.00% 42.53%      20 300308 org.dynjs.runtime.DynObject.defineOwnProperty
+  22  0.95% 43.48%      19 300422 java.util.regex.Pattern$Loop.matchInit
+  23  0.90% 44.37%      18 300380 java.util.HashMap.putVal
+  24  0.85% 45.22%      17 300396 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+  25  0.80% 46.02%      16 300289 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  26  0.75% 46.76%      15 300472 org.dynjs.runtime.DynObject.defineOwnProperty
+  27  0.75% 47.51%      15 300378 java.util.HashMap.hash
+  28  0.75% 48.26%      15 300489 java.util.HashMap.putVal
+  29  0.70% 48.95%      14 300435 java.util.HashMap.putVal
+  30  0.65% 49.60%      13 300418 java.util.HashMap.putVal
+  31  0.65% 50.25%      13 300383 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  32  0.65% 50.90%      13 300322 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+  33  0.65% 51.54%      13 300465 org.dynjs.runtime.Types.compareRelational
+  34  0.65% 52.19%      13 300562 org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue
+  35  0.65% 52.84%      13 300318 org.dynjs.runtime.DynObject.getProperty
+  36  0.60% 53.44%      12 300440 org.dynjs.runtime.DynObject.defineOwnProperty
+  37  0.60% 54.03%      12 300389 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  38  0.60% 54.63%      12 300425 org.dynjs.runtime.DynObject.defineOwnProperty
+  39  0.55% 55.18%      11 300392 org.dynjs.parser.ast.DotExpression.getPosition
+  40  0.55% 55.73%      11 300560 org.dynjs.runtime.DynObject.put
+  41  0.50% 56.23%      10 300279 java.util.HashMap.putVal
+  42  0.50% 56.72%      10 300359 java.util.regex.Pattern$Curly.match1
+  43  0.50% 57.22%      10 300391 org.dynjs.parser.ast.BlockStatement.accept
+  44  0.50% 57.72%      10 300410 org.dynjs.parser.ast.AbstractBinaryExpression.getFunctionDeclarations
+  45  0.50% 58.22%      10 300412 java.util.regex.Pattern$Curly.match0
+  46  0.45% 58.67%       9 300480 java.util.HashMap.putVal
+  47  0.45% 59.11%       9 300382 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+  48  0.45% 59.56%       9 300478 java.util.HashMap.putVal
+  49  0.45% 60.01%       9 300393 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  50  0.45% 60.46%       9 300084 java.lang.ClassLoader.defineClass1
+  51  0.45% 60.91%       9 300536 org.dynjs.runtime.Reference.getValue
+  52  0.45% 61.35%       9 300487 org.dynjs.parser.ast.AssignmentExpression.getFunctionDeclarations
+  53  0.40% 61.75%       8 300544 org.dynjs.runtime.DynObject.get
+  54  0.40% 62.15%       8 300281 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  55  0.40% 62.55%       8 300306 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  56  0.40% 62.95%       8 300343 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  57  0.40% 63.35%       8 300369 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  58  0.40% 63.75%       8 300379 java.util.HashMap.putVal
+  59  0.40% 64.14%       8 300340 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+  60  0.35% 64.49%       7 300543 java.util.regex.Pattern$Curly.match0
+  61  0.35% 64.84%       7 300373 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  62  0.35% 65.19%       7 300323 org.dynjs.runtime.Reference.putValue
+  63  0.35% 65.54%       7 300413 org.dynjs.parser.ast.AbstractBinaryExpression.getFunctionDeclarations
+  64  0.35% 65.89%       7 300602 org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext
+  65  0.35% 66.24%       7 300461 org.dynjs.parser.ast.FunctionCallExpression.accept
+  66  0.35% 66.58%       7 300419 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  67  0.35% 66.93%       7 300444 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  68  0.35% 67.28%       7 300482 org.dynjs.runtime.DynObject.getProperty
+  69  0.30% 67.58%       6 300573 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+  70  0.30% 67.88%       6 300466 java.util.HashMap.putVal
+  71  0.30% 68.18%       6 300569 org.dynjs.runtime.DynObject.defineOwnProperty
+  72  0.30% 68.48%       6 300561 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  73  0.30% 68.77%       6 300434 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+  74  0.30% 69.07%       6 300499 org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding
+  75  0.30% 69.37%       6 300590 org.dynjs.parser.ast.DotExpression.getPosition
+  76  0.30% 69.67%       6 300416 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  77  0.30% 69.97%       6 300324 org.dynjs.runtime.Reference.putValue
+  78  0.30% 70.27%       6 300409 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+  79  0.25% 70.52%       5 300414 java.lang.Long.toString
+  80  0.25% 70.77%       5 300598 org.dynjs.runtime.DynObject.getProperty
+  81  0.25% 71.02%       5 300597 org.dynjs.parser.ast.TernaryExpression.accept
+  82  0.25% 71.26%       5 300592 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  83  0.25% 71.51%       5 300520 java.util.HashMap.putVal
+  84  0.25% 71.76%       5 300502 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  85  0.25% 72.01%       5 300476 org.dynjs.parser.ast.ExpressionStatement.getFunctionDeclarations
+  86  0.25% 72.26%       5 300471 org.dynjs.parser.ast.FunctionCallExpression.accept
+  87  0.25% 72.51%       5 300468 java.util.HashMap.putVal
+  88  0.25% 72.76%       5 300467 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  89  0.25% 73.01%       5 300460 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  90  0.25% 73.26%       5 300449 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  91  0.25% 73.51%       5 300445 org.dynjs.parser.ast.VariableStatement.accept
+  92  0.25% 73.75%       5 300439 java.util.HashMap.getNode
+  93  0.25% 74.00%       5 300282 java.util.HashMap.getNode
+  94  0.25% 74.25%       5 300398 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  95  0.25% 74.50%       5 300395 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+  96  0.25% 74.75%       5 300376 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+  97  0.25% 75.00%       5 300374 org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement
+  98  0.25% 75.25%       5 300363 java.util.HashMap.getNode
+  99  0.25% 75.50%       5 300326 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 100  0.25% 75.75%       5 300317 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 101  0.20% 75.95%       4 300426 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 102  0.20% 76.15%       4 300361 java.util.HashMap.getNode
+ 103  0.20% 76.34%       4 300493 org.dynjs.runtime.DynObject.defineOwnProperty
+ 104  0.20% 76.54%       4 300344 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 105  0.20% 76.74%       4 300576 org.dynjs.runtime.Types.stringToNumber
+ 106  0.20% 76.94%       4 300584 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 107  0.20% 77.14%       4 300431 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 108  0.20% 77.34%       4 300280 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 109  0.20% 77.54%       4 300550 org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding
+ 110  0.20% 77.74%       4 300283 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 111  0.20% 77.94%       4 300406 org.dynjs.parser.ast.DotExpression.getPosition
+ 112  0.20% 78.14%       4 300459 org.dynjs.runtime.Reference.putValue
+ 113  0.20% 78.34%       4 300450 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+ 114  0.20% 78.54%       4 300400 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 115  0.15% 78.69%       3 300470 org.dynjs.parser.ast.DotExpression.getPosition
+ 116  0.15% 78.83%       3 300448 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 117  0.15% 78.98%       3 300411 java.util.HashMap.hash
+ 118  0.15% 79.13%       3 300458 org.dynjs.runtime.Reference.putValue
+ 119  0.15% 79.28%       3 300329 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 120  0.15% 79.43%       3 300327 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 121  0.15% 79.58%       3 300436 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 122  0.15% 79.73%       3 300463 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 123  0.15% 79.88%       3 300589 java.lang.Long.getChars
+ 124  0.15% 80.03%       3 300547 org.dynjs.runtime.DynObject.getProperty
+ 125  0.15% 80.18%       3 300594 org.dynjs.parser.ast.RelationalExpression.accept
+ 126  0.15% 80.33%       3 300408 org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding
+ 127  0.15% 80.48%       3 300274 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 128  0.15% 80.63%       3 300263 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 129  0.15% 80.78%       3 300650 org.dynjs.runtime.LexicalEnvironment.getIdentifierReference
+ 130  0.15% 80.93%       3 300364 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 131  0.15% 81.08%       3 300479 org.dynjs.parser.ast.DotExpression.getPosition
+ 132  0.15% 81.23%       3 300567 org.dynjs.runtime.Reference.getValue
+ 133  0.15% 81.37%       3 300407 org.dynjs.parser.ast.IfStatement.getVariableDeclarations
+ 134  0.15% 81.52%       3 300424 java.util.HashMap.putVal
+ 135  0.15% 81.67%       3 300438 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 136  0.15% 81.82%       3 300557 org.dynjs.parser.ast.DotExpression.getPosition
+ 137  0.15% 81.97%       3 300518 org.dynjs.runtime.interp.InterpretedBasicBlock.getFunctionDeclarations
+ 138  0.15% 82.12%       3 300531 org.dynjs.runtime.DynObject.defineOwnProperty
+ 139  0.15% 82.27%       3 300508 org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding
+ 140  0.15% 82.42%       3 300580 org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding
+ 141  0.10% 82.52%       2 300565 org.dynjs.parser.ast.AbstractUnaryOperatorExpression.getFunctionDeclarations
+ 142  0.10% 82.62%       2 300285 org.dynjs.runtime.Reference.getValue
+ 143  0.10% 82.72%       2 300570 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+ 144  0.10% 82.82%       2 300571 org.dynjs.parser.ast.FunctionCallExpression.accept
+ 145  0.10% 82.92%       2 300575 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 146  0.10% 83.02%       2 300356 org.dynjs.parser.ast.BitwiseExpression.accept
+ 147  0.10% 83.12%       2 300345 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 148  0.10% 83.22%       2 300334 org.dynjs.runtime.Reference.putValue
+ 149  0.10% 83.32%       2 300331 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 150  0.10% 83.42%       2 300587 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 151  0.10% 83.52%       2 300593 org.dynjs.runtime.Types.stringToNumber
+ 152  0.10% 83.62%       2 300622 java.util.HashMap.putVal
+ 153  0.10% 83.72%       2 300603 org.dynjs.runtime.DynObject.getProperty
+ 154  0.10% 83.81%       2 300613 org.dynjs.runtime.DynObject.getProperty
+ 155  0.10% 83.91%       2 300636 org.dynjs.runtime.Types.toUint32
+ 156  0.10% 84.01%       2 300635 org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement
+ 157  0.10% 84.11%       2 300457 org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding
+ 158  0.10% 84.21%       2 300456 org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings
+ 159  0.10% 84.31%       2 300452 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 160  0.10% 84.41%       2 300451 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 161  0.10% 84.51%       2 300614 org.dynjs.runtime.Types.compareRelational
+ 162  0.10% 84.61%       2 300659 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 163  0.10% 84.71%       2 300086 java.lang.ClassLoader.findBootstrapClass
+ 164  0.10% 84.81%       2 300443 org.dynjs.parser.ast.AbstractBinaryExpression.getPosition
+ 165  0.10% 84.91%       2 300441 org.dynjs.parser.ast.FunctionCallExpression.accept
+ 166  0.10% 85.01%       2 300226 org.joni.Regex.<init>
+ 167  0.10% 85.11%       2 300630 org.dynjs.runtime.interp.InterpretedBasicBlock.getVariableDeclarations
+ 168  0.10% 85.21%       2 300475 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 169  0.10% 85.31%       2 300429 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 170  0.10% 85.41%       2 300428 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 171  0.10% 85.51%       2 300427 java.util.HashMap.putVal
+ 172  0.10% 85.61%       2 300483 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 173  0.10% 85.71%       2 300420 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 174  0.10% 85.81%       2 300485 org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement
+ 175  0.10% 85.91%       2 300490 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 176  0.10% 86.01%       2 300417 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 177  0.10% 86.11%       2 300491 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 178  0.10% 86.21%       2 300415 org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding
+ 179  0.10% 86.30%       2 300304 org.dynjs.runtime.ExecutionContext.internalCall
+ 180  0.10% 86.40%       2 300492 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 181  0.10% 86.50%       2 300495 org.dynjs.parser.ast.IfStatement.getVariableDeclarations
+ 182  0.10% 86.60%       2 300646 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 183  0.10% 86.70%       2 300504 java.util.HashMap.hash
+ 184  0.10% 86.80%       2 300509 org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding
+ 185  0.10% 86.90%       2 300510 org.dynjs.runtime.DeclarativeEnvironmentRecord.setMutableBinding
+ 186  0.10% 87.00%       2 300291 java.util.HashMap.putVal
+ 187  0.10% 87.10%       2 300512 org.dynjs.parser.ast.DotExpression.getPosition
+ 188  0.10% 87.20%       2 300516 java.util.HashMap.putVal
+ 189  0.10% 87.30%       2 300517 org.dynjs.parser.ast.BlockStatement.accept
+ 190  0.10% 87.40%       2 300387 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 191  0.10% 87.50%       2 300652 org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue
+ 192  0.10% 87.60%       2 300384 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 193  0.10% 87.70%       2 300549 java.util.HashMap.newNode
+ 194  0.10% 87.80%       2 300554 org.dynjs.runtime.Reference.putValue
+ 195  0.10% 87.90%       2 300625 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 196  0.10% 88.00%       2 300377 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 197  0.10% 88.10%       2 300375 org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding
+ 198  0.10% 88.20%       2 300276 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 199  0.10% 88.30%       2 300563 java.lang.Long.getChars
+ 200  0.10% 88.40%       2 300564 org.dynjs.runtime.Types.stringToNumber
+ 201  0.10% 88.50%       2 300224 java.util.zip.Inflater.inflateBytes
+ 202  0.05% 88.55%       1 300497 org.dynjs.parser.ast.DotExpression.getPosition
+ 203  0.05% 88.60%       1 300032 sun.misc.URLClassPath$JarLoader$1.run
+ 204  0.05% 88.65%       1 300043 java.io.FileInputStream.read
+ 205  0.05% 88.70%       1 300054 java.util.zip.ZipFile.getInflater
+ 206  0.05% 88.75%       1 300059 java.util.zip.ZipFile.open
+ 207  0.05% 88.79%       1 300087 java.lang.Class.getDeclaredMethods0
+ 208  0.05% 88.84%       1 300090 sun.misc.URLClassPath$JarLoader.checkResource
+ 209  0.05% 88.89%       1 300107 java.lang.ApplicationShutdownHooks.<clinit>
+ 210  0.05% 88.94%       1 300155 java.util.concurrent.atomic.AtomicLong.<clinit>
+ 211  0.05% 88.99%       1 300186 sun.misc.Unsafe.getLong
+ 212  0.05% 89.04%       1 300221 java.lang.String.regionMatches
+ 213  0.05% 89.09%       1 300223 java.util.zip.Inflater.inflateBytes
+ 214  0.05% 89.14%       1 300225 java.lang.ClassLoader.preDefineClass
+ 215  0.05% 89.19%       1 300227 java.lang.ClassLoader.loadClass
+ 216  0.05% 89.24%       1 300228 org.dynjs.runtime.GlobalObject.<init>
+ 217  0.05% 89.29%       1 300229 java.net.URLClassLoader.findClass
+ 218  0.05% 89.34%       1 300230 org.dynjs.runtime.builtins.types.BuiltinArray.initialize
+ 219  0.05% 89.39%       1 300231 java.util.zip.ZipFile.getEntry
+ 220  0.05% 89.44%       1 300232 org.dynjs.runtime.builtins.types.BuiltinDate.initialize
+ 221  0.05% 89.49%       1 300233 org.dynjs.runtime.builtins.types.BuiltinDate.initialize
+ 222  0.05% 89.54%       1 300234 org.dynjs.runtime.builtins.Require.<init>
+ 223  0.05% 89.59%       1 300241 org.dynjs.runtime.builtins.JSON.<init>
+ 224  0.05% 89.64%       1 300242 org.dynjs.runtime.builtins.Math.<init>
+ 225  0.05% 89.69%       1 300243 java.lang.ClassLoader.loadClass
+ 226  0.05% 89.74%       1 300245 org.dynjs.parser.js.Parser.statement
+ 227  0.05% 89.79%       1 300252 org.dynjs.parser.js.Parser.memberExpression
+ 228  0.05% 89.84%       1 300253 org.dynjs.parser.js.CircularCharBuffer.peek
+ 229  0.05% 89.89%       1 300254 org.dynjs.runtime.Completion$Type.<clinit>
+ 230  0.05% 89.94%       1 300256 org.dynjs.parser.js.Parser.memberExpression
+ 231  0.05% 89.99%       1 300257 org.dynjs.parser.js.Lexer.multiLineComment
+ 232  0.05% 90.04%       1 300258 java.util.concurrent.atomic.AtomicInteger.incrementAndGet
+ 233  0.05% 90.09%       1 300259 sun.misc.FloatingDecimal.readJavaFormatString
+ 234  0.05% 90.14%       1 300260 org.dynjs.runtime.AbstractFunction.<init>
+ 235  0.05% 90.19%       1 300261 java.lang.StringBuilder.append
+ 236  0.05% 90.24%       1 300262 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 237  0.05% 90.29%       1 300264 java.lang.Object.getClass
+ 238  0.05% 90.34%       1 300265 java.lang.AbstractStringBuilder.append
+ 239  0.05% 90.39%       1 300266 java.lang.Double.doubleToRawLongBits
+ 240  0.05% 90.44%       1 300267 org.dynjs.runtime.DeclarativeEnvironmentRecord.hasBinding
+ 241  0.05% 90.49%       1 300268 org.dynjs.parser.ast.BlockStatement.getPosition
+ 242  0.05% 90.54%       1 300269 org.dynjs.parser.ast.ReturnStatement.accept
+ 243  0.05% 90.59%       1 300270 org.dynjs.parser.ast.IntegerNumberExpression.accept
+ 244  0.05% 90.64%       1 300271 org.dynjs.runtime.Types.getValue
+ 245  0.05% 90.69%       1 300273 java.lang.Long.toString
+ 246  0.05% 90.74%       1 300277 org.dynjs.runtime.Arguments.getOwnProperty
+ 247  0.05% 90.79%       1 300278 org.dynjs.runtime.GlobalObject.getPrototypeFor
+ 248  0.05% 90.84%       1 300286 org.dynjs.runtime.Types.compareEquality
+ 249  0.05% 90.89%       1 300288 java.lang.StringBuilder.toString
+ 250  0.05% 90.94%       1 300290 org.dynjs.runtime.Types.toString
+ 251  0.05% 90.99%       1 300292 org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings
+ 252  0.05% 91.04%       1 300293 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 253  0.05% 91.09%       1 300294 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+ 254  0.05% 91.14%       1 300295 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 255  0.05% 91.19%       1 300296 org.dynjs.parser.ast.FunctionCallExpression.accept
+ 256  0.05% 91.24%       1 300297 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 257  0.05% 91.28%       1 300299 org.dynjs.runtime.interp.BasicInterpretingVisitor.push
+ 258  0.05% 91.33%       1 300300 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 259  0.05% 91.38%       1 300301 org.dynjs.runtime.interp.BasicInterpretingVisitor.push
+ 260  0.05% 91.43%       1 300302 java.util.Arrays.copyOf
+ 261  0.05% 91.48%       1 300305 java.lang.StrictMath.floor
+ 262  0.05% 91.53%       1 300307 org.dynjs.runtime.interp.BasicInterpretingVisitor.pop
+ 263  0.05% 91.58%       1 300309 org.dynjs.runtime.ThreadContextManager.popContext
+ 264  0.05% 91.63%       1 300310 org.dynjs.runtime.Types.toString
+ 265  0.05% 91.68%       1 300312 org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext
+ 266  0.05% 91.73%       1 300313 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 267  0.05% 91.78%       1 300314 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 268  0.05% 91.83%       1 300315 org.dynjs.runtime.ThreadContextManager.popContext
+ 269  0.05% 91.88%       1 300316 org.dynjs.runtime.interp.BasicInterpretingVisitor.pop
+ 270  0.05% 91.93%       1 300319 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 271  0.05% 91.98%       1 300325 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 272  0.05% 92.03%       1 300328 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 273  0.05% 92.08%       1 300330 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 274  0.05% 92.13%       1 300332 org.dynjs.runtime.Reference.putValue
+ 275  0.05% 92.18%       1 300333 java.lang.StringBuilder.<init>
+ 276  0.05% 92.23%       1 300335 org.dynjs.runtime.Types.toInt32
+ 277  0.05% 92.28%       1 300337 org.dynjs.runtime.interp.BasicInterpretingVisitor.pop
+ 278  0.05% 92.33%       1 300338 org.dynjs.runtime.interp.BasicInterpretingVisitor.pop
+ 279  0.05% 92.38%       1 300339 org.dynjs.runtime.Reference.getValue
+ 280  0.05% 92.43%       1 300341 java.util.regex.Pattern$GroupHead.match
+ 281  0.05% 92.48%       1 300342 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 282  0.05% 92.53%       1 300346 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 283  0.05% 92.58%       1 300347 java.util.ArrayList.iterator
+ 284  0.05% 92.63%       1 300348 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 285  0.05% 92.68%       1 300349 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 286  0.05% 92.73%       1 300350 org.dynjs.runtime.ExecutionContext.call
+ 287  0.05% 92.78%       1 300351 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 288  0.05% 92.83%       1 300352 org.dynjs.runtime.ExecutionContext.call
+ 289  0.05% 92.88%       1 300353 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 290  0.05% 92.93%       1 300354 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 291  0.05% 92.98%       1 300355 java.util.ArrayList.iterator
+ 292  0.05% 93.03%       1 300360 org.dynjs.runtime.interp.BasicInterpretingVisitor.push
+ 293  0.05% 93.08%       1 300366 org.dynjs.parser.ast.ReturnStatement.accept
+ 294  0.05% 93.13%       1 300367 org.dynjs.runtime.interp.BasicInterpretingVisitor.pop
+ 295  0.05% 93.18%       1 300368 java.util.HashMap.getNode
+ 296  0.05% 93.23%       1 300371 org.dynjs.runtime.GlobalObject.getPrototypeFor
+ 297  0.05% 93.28%       1 300372 org.dynjs.runtime.Types.rewritePossiblyExponentialValue
+ 298  0.05% 93.33%       1 300381 org.dynjs.runtime.Types.rewritePossiblyExponentialValue
+ 299  0.05% 93.38%       1 300386 org.dynjs.parser.ast.FunctionCallExpression.accept
+ 300  0.05% 93.43%       1 300390 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 301  0.05% 93.48%       1 300394 org.dynjs.parser.ast.NewOperatorExpression.accept
+ 302  0.05% 93.53%       1 300397 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 303  0.05% 93.58%       1 300402 org.dynjs.runtime.DynObject.defineOwnProperty
+ 304  0.05% 93.63%       1 300403 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 305  0.05% 93.68%       1 300421 org.dynjs.parser.ast.NewOperatorExpression.accept
+ 306  0.05% 93.73%       1 300423 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 307  0.05% 93.77%       1 300430 org.dynjs.runtime.Types.toInt32
+ 308  0.05% 93.82%       1 300432 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 309  0.05% 93.87%       1 300433 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 310  0.05% 93.92%       1 300437 java.util.Collections$EmptyList.toArray
+ 311  0.05% 93.97%       1 300442 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 312  0.05% 94.02%       1 300446 org.dynjs.runtime.Types.compareRelational
+ 313  0.05% 94.07%       1 300447 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 314  0.05% 94.12%       1 300453 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 315  0.05% 94.17%       1 300454 org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue
+ 316  0.05% 94.22%       1 300455 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 317  0.05% 94.27%       1 300462 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 318  0.05% 94.32%       1 300464 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 319  0.05% 94.37%       1 300469 org.dynjs.parser.ast.FunctionCallExpression.accept
+ 320  0.05% 94.42%       1 300473 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 321  0.05% 94.47%       1 300474 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 322  0.05% 94.52%       1 300477 org.dynjs.runtime.interp.InterpretedBasicBlock.call
+ 323  0.05% 94.57%       1 300481 org.dynjs.runtime.interp.BasicInterpretingVisitor.invokeCompiledBlockStatement
+ 324  0.05% 94.62%       1 300484 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 325  0.05% 94.67%       1 300486 org.dynjs.runtime.DeclarativeEnvironmentRecord.createMutableBinding
+ 326  0.05% 94.72%       1 300488 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 327  0.05% 94.77%       1 300494 org.dynjs.runtime.DynObject.defineOwnProperty
+ 328  0.05% 94.82%       1 300496 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 329  0.05% 94.87%       1 300498 org.dynjs.parser.ast.PostOpExpression.accept
+ 330  0.05% 94.92%       1 300500 org.dynjs.runtime.DynArray.<init>
+ 331  0.05% 94.97%       1 300501 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 332  0.05% 95.02%       1 300503 org.dynjs.parser.ast.BlockStatement.getVariableDeclarations
+ 333  0.05% 95.07%       1 300505 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 334  0.05% 95.12%       1 300506 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 335  0.05% 95.17%       1 300507 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 336  0.05% 95.22%       1 300511 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 337  0.05% 95.27%       1 300513 java.util.Arrays.copyOf
+ 338  0.05% 95.32%       1 300514 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 339  0.05% 95.37%       1 300515 org.dynjs.parser.ast.BitwiseExpression.accept
+ 340  0.05% 95.42%       1 300519 org.dynjs.runtime.DynObject.<init>
+ 341  0.05% 95.47%       1 300523 java.math.BigDecimal.divideAndRound
+ 342  0.05% 95.52%       1 300525 java.lang.Object.getClass
+ 343  0.05% 95.57%       1 300526 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 344  0.05% 95.62%       1 300527 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 345  0.05% 95.67%       1 300528 org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext
+ 346  0.05% 95.72%       1 300529 org.dynjs.runtime.Arguments.defineOwnProperty
+ 347  0.05% 95.77%       1 300530 org.dynjs.runtime.ExecutionContext.internalCall
+ 348  0.05% 95.82%       1 300532 org.dynjs.runtime.Types.compareEquality
+ 349  0.05% 95.87%       1 300533 org.dynjs.parser.ast.MultiplicativeExpression.accept
+ 350  0.05% 95.92%       1 300534 org.dynjs.parser.ast.AbstractUnaryOperatorExpression.getPosition
+ 351  0.05% 95.97%       1 300535 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 352  0.05% 96.02%       1 300537 org.dynjs.runtime.ExecutionContext.resolve
+ 353  0.05% 96.07%       1 300538 java.lang.StringBuilder.toString
+ 354  0.05% 96.12%       1 300539 java.lang.Long.getChars
+ 355  0.05% 96.17%       1 300540 org.dynjs.runtime.ExecutionContext.construct
+ 356  0.05% 96.22%       1 300541 org.dynjs.runtime.DynObject.getProperty
+ 357  0.05% 96.26%       1 300545 org.dynjs.runtime.PropertyDescriptor.duplicate
+ 358  0.05% 96.31%       1 300546 org.dynjs.runtime.DynObject.put
+ 359  0.05% 96.36%       1 300548 org.dynjs.runtime.LexicalEnvironment.getIdentifierReference
+ 360  0.05% 96.41%       1 300551 org.dynjs.runtime.DynObject.canPut
+ 361  0.05% 96.46%       1 300552 org.dynjs.runtime.DynObject.canPut
+ 362  0.05% 96.51%       1 300553 org.dynjs.runtime.DynObject.canPut
+ 363  0.05% 96.56%       1 300555 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 364  0.05% 96.61%       1 300556 java.util.regex.Matcher.matches
+ 365  0.05% 96.66%       1 300558 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 366  0.05% 96.71%       1 300559 org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext
+ 367  0.05% 96.76%       1 300566 org.dynjs.runtime.Reference.getValue
+ 368  0.05% 96.81%       1 300568 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 369  0.05% 96.86%       1 300572 org.dynjs.runtime.builtins.types.function.prototype.Call.call
+ 370  0.05% 96.91%       1 300574 org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue
+ 371  0.05% 96.96%       1 300577 org.dynjs.runtime.Reference.getValue
+ 372  0.05% 97.01%       1 300578 org.dynjs.runtime.Reference.getValue
+ 373  0.05% 97.06%       1 300579 org.dynjs.runtime.DeclarativeEnvironmentRecord.<init>
+ 374  0.05% 97.11%       1 300581 org.dynjs.runtime.DynObject.get
+ 375  0.05% 97.16%       1 300582 org.dynjs.parser.ast.RelationalExpression.accept
+ 376  0.05% 97.21%       1 300583 org.dynjs.runtime.Types.compareRelational
+ 377  0.05% 97.26%       1 300585 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+ 378  0.05% 97.31%       1 300586 org.dynjs.runtime.DynObject.defineOwnProperty
+ 379  0.05% 97.36%       1 300588 org.dynjs.runtime.DynObject.defineOwnProperty
+ 380  0.05% 97.41%       1 300591 org.dynjs.runtime.LexicalEnvironment.newDeclarativeEnvironment
+ 381  0.05% 97.46%       1 300595 org.dynjs.runtime.builtins.types.array.prototype.Pop.call
+ 382  0.05% 97.51%       1 300596 java.lang.System.currentTimeMillis
+ 383  0.05% 97.56%       1 300599 org.dynjs.runtime.GlobalObject.getPrototypeFor
+ 384  0.05% 97.61%       1 300600 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 385  0.05% 97.66%       1 300601 org.dynjs.runtime.ExecutionContext.performDeclarationBindingInstantiation
+ 386  0.05% 97.71%       1 300604 java.util.HashMap.putVal
+ 387  0.05% 97.76%       1 300605 java.util.ArrayList.iterator
+ 388  0.05% 97.81%       1 300606 org.dynjs.runtime.PropertyDescriptor.copyAll
+ 389  0.05% 97.86%       1 300607 org.dynjs.runtime.ExecutionContext.createFunctionExecutionContext
+ 390  0.05% 97.91%       1 300608 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 391  0.05% 97.96%       1 300609 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 392  0.05% 98.01%       1 300610 org.dynjs.runtime.interp.BasicInterpretingVisitor.visitPlus
+ 393  0.05% 98.06%       1 300611 org.dynjs.runtime.DynObject.defineOwnProperty
+ 394  0.05% 98.11%       1 300612 org.dynjs.runtime.Types.toUint32
+ 395  0.05% 98.16%       1 300615 org.dynjs.runtime.DeclarativeEnvironmentRecord.getBindingValue
+ 396  0.05% 98.21%       1 300616 org.dynjs.runtime.Types.stringToNumber
+ 397  0.05% 98.26%       1 300617 org.dynjs.runtime.DynObject.getProperty
+ 398  0.05% 98.31%       1 300618 org.dynjs.runtime.AbstractFunction.get
+ 399  0.05% 98.36%       1 300619 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 400  0.05% 98.41%       1 300620 org.dynjs.runtime.interp.BasicInterpretingVisitor.visitPlus
+ 401  0.05% 98.46%       1 300621 java.lang.Long.getChars
+ 402  0.05% 98.51%       1 300623 org.dynjs.runtime.AbstractNativeFunction.call
+ 403  0.05% 98.56%       1 300624 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 404  0.05% 98.61%       1 300626 org.dynjs.runtime.DynObject.defineOwnProperty
+ 405  0.05% 98.66%       1 300627 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 406  0.05% 98.71%       1 300628 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 407  0.05% 98.75%       1 300629 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 408  0.05% 98.80%       1 300631 org.dynjs.runtime.AbstractFunction.get
+ 409  0.05% 98.85%       1 300632 org.dynjs.runtime.Reference.getValue
+ 410  0.05% 98.90%       1 300633 org.dynjs.runtime.ExecutionContext.createArgumentsObject
+ 411  0.05% 98.95%       1 300634 org.dynjs.runtime.Reference.getValue
+ 412  0.05% 99.00%       1 300637 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 413  0.05% 99.05%       1 300638 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 414  0.05% 99.10%       1 300639 org.dynjs.runtime.DynObject.get
+ 415  0.05% 99.15%       1 300640 org.dynjs.parser.ast.FunctionCallExpression.accept
+ 416  0.05% 99.20%       1 300641 org.dynjs.runtime.interp.BasicInterpretingVisitor.compiledBlockStatement
+ 417  0.05% 99.25%       1 300642 org.dynjs.runtime.DynObject.put
+ 418  0.05% 99.30%       1 300643 java.lang.Object.getClass
+ 419  0.05% 99.35%       1 300644 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 420  0.05% 99.40%       1 300645 org.dynjs.runtime.AbstractNativeFunction.call
+ 421  0.05% 99.45%       1 300647 org.dynjs.runtime.AbstractNativeFunction.call
+ 422  0.05% 99.50%       1 300648 org.dynjs.runtime.ExecutionContext.performVariableDeclarationBindings
+ 423  0.05% 99.55%       1 300649 org.dynjs.runtime.Types.stringToNumber
+ 424  0.05% 99.60%       1 300651 org.dynjs.runtime.DynObject.defineOwnProperty
+ 425  0.05% 99.65%       1 300653 org.dynjs.runtime.ExecutionContext.construct
+ 426  0.05% 99.70%       1 300654 org.dynjs.parser.ast.WhileStatement.accept
+ 427  0.05% 99.75%       1 300655 org.dynjs.runtime.AbstractFunction.get
+ 428  0.05% 99.80%       1 300656 org.dynjs.runtime.DynObject.getProperty
+ 429  0.05% 99.85%       1 300657 org.dynjs.runtime.interp.BasicInterpretingVisitor.visit
+ 430  0.05% 99.90%       1 300658 org.dynjs.runtime.Reference.getValue
+ 431  0.05% 99.95%       1 300660 java.util.regex.Pattern$Curly.match0
+ 432  0.05% 100.00%       1 300661 org.dynjs.runtime.PropertyDescriptor.copyAll
+CPU SAMPLES END

@@ -58,7 +58,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     }
 
     public static String objectToString(JSObject object) {
-        ExecutionContext context = ThreadContextManager.currentContext();
+        ExecutionContext context = ThreadContextManager.getThreadContext().getCurrentContext();
         Object toString = object.get(context, "toString");
         if (toString instanceof JSFunction) {
             return context.call((JSFunction) toString, object).toString();
@@ -158,7 +158,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         return Binder.from(methodType(target, Object.class))
                 .insert(0, this.manager)
                 .insert(1, target)
-                .insert(2, ThreadContextManager.currentContext() )
+                .insert(2, ThreadContextManager.getThreadContext().getCurrentContext() )
                 .insert(3, methodName )
                 .invoke(method);
     }

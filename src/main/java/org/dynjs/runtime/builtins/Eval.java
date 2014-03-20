@@ -24,6 +24,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Runner;
+import org.dynjs.runtime.ThreadContextManager;
 import org.dynjs.runtime.Types;
 
 public class Eval extends AbstractNonConstructorFunction {
@@ -46,9 +47,10 @@ public class Eval extends AbstractNonConstructorFunction {
         Object code = args[0];
         if (code instanceof String) {
             try {
+                ExecutionContext parentContext = ThreadContextManager.getThreadContext().getParentContext();
                 Runner runner = context.getRuntime().newRunner();
-                Object result = runner.withContext(context.getParent())
-                        .forceStrict(context.getParent().isStrict() && direct)
+                Object result = runner.withContext(parentContext)
+                        .forceStrict(parentContext.isStrict() && direct)
                         .directEval(direct)
                         .withSource((String) code)
                         .evaluate();

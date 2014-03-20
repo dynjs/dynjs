@@ -18,7 +18,7 @@ public class ExecutionContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        return new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
+        return ThreadContextManager.getThreadContext().pushContext(runtime, env, env, runtime.getGlobalObject(), false);
     }
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
@@ -33,33 +33,34 @@ public class ExecutionContext {
     }
 
     private DynJS runtime;
-    private ExecutionContext parent;
     private LexicalEnvironment lexicalEnvironment;
     private LexicalEnvironment variableEnvironment;
     private Object thisBinding;
-    private boolean strict;
+    private boolean strict = false;
 
-    private int lineNumber;
-    private String fileName;
+    private int lineNumber = -1;
+    private String fileName = "";
     private String debugContext = "<eval>";
 
     private Object functionReference;
 
-    public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
+    public void init(DynJS runtime, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.runtime = runtime;
-        this.parent = parent;
         this.lexicalEnvironment = lexicalEnvironment;
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
     }
 
-    public Object getFunctionReference() {
-        return this.functionReference;
+    public void reset() {
+        // Not all fields need to be reset
+        this.lexicalEnvironment = null;
+        this.variableEnvironment = null;
+        this.thisBinding = null;
     }
 
-    public ExecutionContext getParent() {
-        return this.parent;
+    public Object getFunctionReference() {
+        return this.functionReference;
     }
 
     public LexicalEnvironment getLexicalEnvironment() {
@@ -114,8 +115,9 @@ public class ExecutionContext {
     // ----------------------------------------------------------------------
 
     public Completion execute(JSProgram program) {
-        try {
-            ThreadContextManager.pushContext(this);
+        // SKETCHYNOTE: Push and pop should never happen to persistent global ExecutionContext.
+        //try {
+            //ThreadContextManager.pushContext(this);
             setStrict(program.isStrict());
             this.fileName = program.getFileName();
             performDeclarationBindingInstantiation(program);
@@ -126,19 +128,18 @@ public class ExecutionContext {
             } catch (Throwable t) {
                 throw new ThrowException(this, t);
             }
-        } finally {
-            ThreadContextManager.popContext();
-        }
+        //} finally {
+//            ThreadContextManager.popContext();
+//        }
     }
 
     public Object eval(JSProgram eval, boolean direct) {
         try {
             ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
-            ThreadContextManager.pushContext(evalContext);
             Completion result = eval.execute(evalContext);
             return result.value;
         } finally {
-            ThreadContextManager.popContext();
+            ThreadContextManager.getThreadContext().popContext();
         }
     }
 
@@ -197,7 +198,6 @@ public class ExecutionContext {
         // 13.2.1
         try {
             ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
-            ThreadContextManager.pushContext(fnContext);
             try {
                 Object value = function.call(fnContext);
                 if (value == null) {
@@ -210,7 +210,7 @@ public class ExecutionContext {
                 throw new ThrowException(fnContext, e);
             }
         } finally {
-            ThreadContextManager.popContext();
+            ThreadContextManager.getThreadContext().popContext();
         }
     }
 
@@ -218,7 +218,6 @@ public class ExecutionContext {
 
     public ExecutionContext createEvalExecutionContext(JSProgram eval, boolean direct) {
         // 10.4.2 (with caller)
-        ExecutionContext context = null;
 
         Object evalThisBinding = null;
         LexicalEnvironment evalLexEnv = null;
@@ -240,7 +239,7 @@ public class ExecutionContext {
             evalVarEnv = strictVarEnv;
         }
 
-        context = new ExecutionContext(this.runtime, this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
+        ExecutionContext context = ThreadContextManager.getThreadContext().pushContext(this.runtime, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
         context.fileName = eval.getFileName();
@@ -266,7 +265,7 @@ public class ExecutionContext {
         LexicalEnvironment scope = function.getScope();
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
-        ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
+        ExecutionContext context = ThreadContextManager.getThreadContext().pushContext(this.runtime, localEnv, localEnv, thisBinding, function.isStrict());
         context.performDeclarationBindingInstantiation(function, arguments);
         context.fileName = function.getFileName();
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
@@ -465,6 +464,10 @@ public class ExecutionContext {
         return getGlobalObject().getBlockManager();
     }
 
+    public String getDebugContext() {
+        return this.debugContext;
+    }
+
     public DynJS getRuntime() {
         return this.runtime;
     }
@@ -509,19 +512,12 @@ public class ExecutionContext {
 
     }
 
-    public void collectStackElements(List<StackElement> elements) {
-        elements.add(new StackElement(this.fileName, this.lineNumber, this.debugContext));
-        if (parent != null) {
-            parent.collectStackElements(elements);
-        }
-    }
-
     public JSObject getPrototypeFor(String type) {
         return getGlobalObject().getPrototypeFor(type);
     }
 
     public String toString() {
-        return "ExecutionContext: " + System.identityHashCode( this ) + "; parent=" + this.parent;
+        return "ExecutionContext: " + System.identityHashCode( this );
     }
 
     public DynamicClassLoader getClassLoader() {
