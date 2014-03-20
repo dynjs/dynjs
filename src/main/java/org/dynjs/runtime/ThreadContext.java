@@ -63,7 +63,7 @@ public class ThreadContext {
     }
 
     public void collectStackElements(List<StackElement> elements) {
-        for (int i = contextIndex-1; i >= 0; i++) {
+        for (int i = contextIndex-1; i >= 0; i--) {
             ExecutionContext current = contexts[i];
 
             elements.add(new StackElement(current.getFileName(), current.getLineNumber(), current.getDebugContext()));
