@@ -349,6 +349,8 @@
                                 <argument>./src/test/javascript/**/*Spec.js</argument>
                                 <argument>--format</argument>
                                 <argument>DOC</argument>
+                                <argument>--compile-mode</argument>
+                                <argument>OFF</argument>
                             </arguments>
                         </configuration>
                     </execution>
