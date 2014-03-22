@@ -23,6 +23,7 @@
         <version.joni>2.1.0</version.joni>
         <version.options>1.0</version.options>
         <version.rephract>1.1.0</version.rephract>
+        <version.jnr-posix>3.0.1</version.jnr-posix>
     </properties>
 
     <developers>
@@ -151,6 +152,12 @@
             <groupId>org.jruby.joni</groupId>
             <artifactId>joni</artifactId>
             <version>${version.joni}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jnr</groupId>
+            <artifactId>jnr-posix</artifactId>
+            <version>${version.jnr-posix}</version>
             <scope>compile</scope>
         </dependency>
 
