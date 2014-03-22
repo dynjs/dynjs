@@ -2,8 +2,12 @@ package org.dynjs.compiler;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
+import org.dynjs.compiler.bytecode.ByteCodeFunctionCompiler;
 import org.dynjs.compiler.bytecode.BytecodeBasicBlockCompiler;
+import org.dynjs.compiler.bytecode.BytecodeProgramCompiler;
 import org.dynjs.compiler.interpreter.InterpretingBasicBlockCompiler;
+import org.dynjs.compiler.interpreter.InterpretingFunctionCompiler;
+import org.dynjs.compiler.interpreter.InterpretingProgramCompiler;
 import org.dynjs.compiler.jit.JITBasicBlockCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.ProgramTree;
@@ -20,24 +24,24 @@ public class JSCompiler {
     private BasicBlockCompiler basicBlockCompiler;
 
     public JSCompiler(Config config) {
-
         CodeGeneratingVisitorFactory factory = new CodeGeneratingVisitorFactory(config.isInvokeDynamicEnabled());
-        
-        this.programCompiler = new ProgramCompiler();
-        this.functionCompiler = new FunctionCompiler();
-        
         InterpretingVisitorFactory interpFactory = new InterpretingVisitorFactory( config.isInvokeDynamicEnabled() );
-        
 
         switch ( config.getCompileMode() ) {
         case OFF:
             this.basicBlockCompiler = new InterpretingBasicBlockCompiler( interpFactory );
+            this.functionCompiler = new InterpretingFunctionCompiler( interpFactory );
+            this.programCompiler = new InterpretingProgramCompiler( interpFactory );
             break;
         case FORCE:
             this.basicBlockCompiler = new BytecodeBasicBlockCompiler(config, factory);
+            this.functionCompiler = new ByteCodeFunctionCompiler();
+            this.programCompiler = new BytecodeProgramCompiler();
             break;
         case JIT:
             this.basicBlockCompiler = new JITBasicBlockCompiler(config, interpFactory, factory);
+            this.functionCompiler = new ByteCodeFunctionCompiler(); // FIXME: Add JIT
+            this.programCompiler = new BytecodeProgramCompiler(); // FIXME: Add JIT
             break;
         }
     }

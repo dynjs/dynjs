@@ -513,9 +513,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 ((Reference) lhsRef).putValue(context, each);
             }
 
-            // statement.getBlock().accept(context, this, strict);
-            // Completion completion = (Completion) pop();
-            Completion completion = invokeCompiledBlockStatement(context, "ForIn", statement.getBlock());
+            statement.getBlock().accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            //Completion completion = invokeCompiledBlockStatement(context, "ForIn", statement.getBlock());
 
             if (completion.value != null) {
                 v = completion.value;
@@ -566,9 +566,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 ((Reference) lhsRef).putValue(context, propertyRef.getValue(context));
             }
 
-            // statement.getBlock().accept(context, this, strict);
-            // Completion completion = (Completion) pop();
-            Completion completion = invokeCompiledBlockStatement(context, "ForOf", statement.getBlock());
+            statement.getBlock().accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            //Completion completion = invokeCompiledBlockStatement(context, "ForOf", statement.getBlock());
 
             if (completion.value != null) {
                 v = completion.value;
@@ -612,9 +612,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     break;
                 }
             }
-            // body.accept(context, this, strict);
-            // Completion completion = (Completion) pop();
-            Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
+            body.accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            //Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
 
             if (completion.value != null && completion.value != Types.UNDEFINED) {
                 v = completion.value;
@@ -675,9 +675,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             varRef.putValue(context, each);
 
-            // statement.getBlock().accept(context, this, strict);
-            // Completion completion = (Completion) pop();
-            Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
+            statement.getBlock().accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
 
             if (completion.value != null) {
                 v = completion.value;
@@ -729,9 +729,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             varRef.putValue(context, propertyRef.getValue(context));
 
-            // statement.getBlock().accept(context, this, strict);
-            // Completion completion = (Completion) pop();
-            Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsOf", statement.getBlock());
+            statement.getBlock().accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsOf", statement.getBlock());
 
             if (completion.value != null) {
                 v = completion.value;
@@ -779,9 +779,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 }
             }
 
-            // body.accept(context, this, strict);
-            // Completion completion = (Completion) pop();
-            Completion completion = invokeCompiledBlockStatement(context, "ForVarDecl", body);
+            body.accept(context, this, strict);
+            Completion completion = (Completion) pop();
+            //Completion completion = invokeCompiledBlockStatement(context, "ForVarDecl", body);
 
             if (completion.value != null && completion.value != Types.UNDEFINED) {
                 v = completion.value;
