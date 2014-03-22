@@ -31,7 +31,7 @@ public class Config {
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
-    private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
+    private CompileMode compileMode = CompileMode.OFF;//Options.CLI_COMPILE_MODE.load();
 
     private Object[] argv;
 
