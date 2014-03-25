@@ -72,8 +72,14 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "} )");
 
         assertThat(result.doIt()).isEqualTo("done in javascript");
-
     }
+
+    @Test
+    public void testInterfaceStaticFinalFields() {
+        String result = (String) eval("org.dynjs.runtime.java.Foo.SOME_STATIC_FINAL_STRING");
+        assertThat(result).isEqualTo("a static final string on an interface");
+    }
+
 
     @Test
     public void testImplementAnAbstractClass() {
