@@ -18,7 +18,10 @@ package org.dynjs.cli;
 import org.dynjs.Config;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.MultiFileOptionHandler;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +33,10 @@ public class Arguments {
     static final String DEBUG = "--debug";
     static final String FILE = "--file";
     static final String PROPERTIES = "--properties";
+    static final String CLASSPATH = "--classpath";
     public static final String VERSION_SHORT = "-v";
     public static final String HELP_SHORT = "-h";
+    public static final String CLASSPATH_SHORT = "-cp";
 
     @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
     private boolean console;
@@ -48,6 +53,9 @@ public class Arguments {
     @Option(name = PROPERTIES, usage = "Shows config properties.")
     private boolean properties;
 
+    @Option(name = CLASSPATH, aliases = {CLASSPATH_SHORT}, handler = MultiFileOptionHandler.class, usage = "Append items to classpath")
+    private List<File> classpath = new ArrayList<>();
+
     @Argument(usage = "File to be executed by dynjs", required = false, metaVar = "FILE")
     private List<String> arguments = new ArrayList<>();
 
@@ -57,6 +65,15 @@ public class Arguments {
             config.setDebug(true);
         }
         config.setArgv(arguments.toArray());
+        if (!classpath.isEmpty()) {
+            for (File file : classpath) {
+                try {
+                    config.getClasspath().push(file.getAbsolutePath());
+                } catch (MalformedURLException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        }
         return config;
     }
 
@@ -90,5 +107,9 @@ public class Arguments {
         } else {
             return null;
         }
+    }
+
+    public List<File> getClasspath() {
+        return classpath;
     }
 }

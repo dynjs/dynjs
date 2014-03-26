@@ -24,6 +24,9 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ExampleMode;
 
+import java.io.File;
+import java.util.List;
+
 public class ArgumentsTest {
     private CmdLineParser parser;
     private Arguments arguments;
@@ -87,6 +90,14 @@ public class ArgumentsTest {
         assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.getFilename()).isNotEmpty();
         assertThat(arguments.getFilename()).isEqualTo(filename);
+    }
+
+    @Test
+    public void checkMultipleClasspathItems() throws CmdLineException {
+        parser.parseArgument(new String[] {"-cp", "a.jar:b.jar:c.jar"});
+
+        final List<File> classpath = arguments.getClasspath();
+        assertThat(classpath).hasSize(3);
     }
 
     @Test(expected = CmdLineException.class)
