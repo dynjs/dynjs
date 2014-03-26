@@ -16,15 +16,17 @@ public class Classpath {
 
     @Override
     public String toString() {
-        if (classLoader.getURLs().length == 0) { return "[]"; }
-        StringBuffer stringBuffer = new StringBuffer("[");
+        if (classLoader.getURLs().length == 0) {
+            return "[]";
+        }
+        StringBuilder builder = new StringBuilder("[");
         for (URL url : classLoader.getURLs()) {
-            stringBuffer.append(url.toExternalForm());
-            stringBuffer.append(", ");
+            builder.append(url.toExternalForm());
+            builder.append(", ");
         }
         // chop off the last two characters: ", "
-        stringBuffer.delete(stringBuffer.length()-2, stringBuffer.length());
-        stringBuffer.append("]");
-        return stringBuffer.toString();
+        builder.delete(builder.length() - 2, builder.length());
+        builder.append("]");
+        return builder.toString();
     }
 }
