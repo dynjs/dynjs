@@ -403,6 +403,25 @@
                             <outputDirectory>${project.basedir}/lib</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>classpath-test</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>me.qmx.vraptor-authz</groupId>
+                                    <artifactId>vraptor-authz</artifactId>
+                                    <version>0.2</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/fixtures</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
