@@ -38,16 +38,16 @@ public class Arguments {
     public static final String HELP_SHORT = "-h";
     public static final String CLASSPATH_SHORT = "-cp";
 
-    @Option(name = CONSOLE, usage = "Opens a REPL console to test small expressions.")
+    @Option(name = CONSOLE, usage = "Opens a REPL console.")
     private boolean console;
 
-    @Option(name = HELP, aliases = {HELP_SHORT}, usage = "Shows current screen. Running without parameters also shows this.")
+    @Option(name = HELP, aliases = {HELP_SHORT}, usage = "Shows this help screen.")
     private boolean help;
 
     @Option(name = VERSION, aliases = {VERSION_SHORT}, usage = "Shows current dynjs version.")
     private boolean version;
 
-    @Option(name = DEBUG, usage = "Run REPL in debug mode.")
+    @Option(name = DEBUG, usage = "Enables debug mode.")
     private boolean debug;
 
     @Option(name = PROPERTIES, usage = "Shows config properties.")
@@ -56,7 +56,7 @@ public class Arguments {
     @Option(name = CLASSPATH, aliases = {CLASSPATH_SHORT}, handler = MultiFileOptionHandler.class, usage = "Append items to classpath")
     private List<File> classpath = new ArrayList<>();
 
-    @Argument(usage = "File to be executed by dynjs", required = false, metaVar = "FILE")
+    @Argument(usage = "Arguments", required = false, metaVar = "ARGS")
     private List<String> arguments = new ArrayList<>();
 
     public Config getConfig() {

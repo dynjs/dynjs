@@ -25,6 +25,7 @@ import org.dynjs.Config;
 import org.dynjs.runtime.DynJS;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.OptionHandlerFilter;
 
 public class Main {
 
@@ -99,9 +100,7 @@ public class Main {
     }
 
     private void showUsage() {
-        StringBuilder usageText = new StringBuilder("Usage: dynjs [--console |--debug | --help | --version |FILE]\n");
-        usageText.append("Starts the dynjs console or executes FILENAME depending the parameters\n");
-        stream.println(usageText.toString());
+        stream.println("usage: dynjs" + parser.printExample(OptionHandlerFilter.ALL, null) + "\n");
         parser.printUsage(stream);
     }
     
