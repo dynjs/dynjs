@@ -22,7 +22,7 @@
         <version.jitescript>0.3.1</version.jitescript>
         <version.joni>2.1.0</version.joni>
         <version.options>1.0</version.options>
-        <version.rephract>1.1.0</version.rephract>
+        <version.rephract>1.1.1</version.rephract>
         <version.jnr-posix>3.0.1</version.jnr-posix>
     </properties>
 
