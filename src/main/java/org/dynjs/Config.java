@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.dynjs.cli.Options;
+import org.dynjs.runtime.Classpath;
 import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.GlobalObjectFactory;
@@ -32,15 +33,22 @@ public class Config {
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = CompileMode.OFF;//Options.CLI_COMPILE_MODE.load();
+    private final Classpath classpath;
+
+    public Classpath getClasspath() {
+        return classpath;
+    }
 
     private Object[] argv;
 
     public Config() {
         this.classLoader = new DynamicClassLoader();
+        this.classpath = new Classpath(this.classLoader);
     }
 
     public Config(ClassLoader parentClassLoader) {
         this.classLoader = new DynamicClassLoader(parentClassLoader);
+        this.classpath = new Classpath(this.classLoader);
     }
 
     private void setRhinoCompatible(boolean rhinoCompatible) {
