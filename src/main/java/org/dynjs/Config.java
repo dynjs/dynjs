@@ -16,6 +16,7 @@ public class Config {
         OFF,
         FORCE,
         JIT,
+        IR,
     }
 
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
@@ -32,7 +33,7 @@ public class Config {
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
-    private CompileMode compileMode = CompileMode.OFF;//Options.CLI_COMPILE_MODE.load();
+    private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
     private final Classpath classpath;
 
     public Classpath getClasspath() {

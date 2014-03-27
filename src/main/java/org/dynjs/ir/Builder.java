@@ -62,6 +62,7 @@ import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.OfOperatorExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
+import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.ast.PropertyGet;
 import org.dynjs.parser.ast.PropertySet;
 import org.dynjs.parser.ast.RegexpLiteralExpression;
@@ -82,8 +83,16 @@ import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
+import org.dynjs.runtime.JSProgram;
 
 public class Builder implements CodeVisitor {
+    public static JSProgram compile(ProgramTree program) {
+        // FIXME: builder will be stateless so only construct one ever not one per compile
+        Builder builder = new Builder();
+        program.accept(null, builder, program.isStrict());
+        return null;  // FIXME: Make JSPRogram of result.
+    }
+
     @Override
     public Object visit(Object context, AdditiveExpression expr, boolean strict) {
         return unimplemented(context, expr, strict);

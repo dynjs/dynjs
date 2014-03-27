@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.ir.Builder;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.js.JavascriptParser;
 import org.dynjs.parser.js.ParserException;
@@ -123,6 +125,10 @@ public class Runner {
     }
 
     private JSProgram compile(ProgramTree tree) {
+        // FIXME: getCompiler will go away so just add special IR check for now.
+        if (context.getConfig().getCompileMode() == Config.CompileMode.IR) {
+            return Builder.compile(tree);
+        }
         JSCompiler compiler = this.context.getCompiler();
         return compiler.compileProgram(this.context, tree, this.forceStrict);
     }
