@@ -15,7 +15,9 @@
  */
 package org.dynjs.ir;
 
+import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AdditiveExpression;
 import org.dynjs.parser.ast.ArrayLiteralExpression;
 import org.dynjs.parser.ast.AssignmentExpression;
@@ -91,6 +93,8 @@ public class Builder implements CodeVisitor {
     public static JSProgram compile(ProgramTree program) {
         Scope scope = (Scope) program.accept(new Scope(), BUILDER, program.isStrict());
 
+        // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
+
         return new IRJSProgram(scope, program.getPosition().getFileName(), program.isStrict());
     }
 
@@ -120,15 +124,20 @@ public class Builder implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, BlockStatement statement, boolean strict) {
+    public Object visit(Object context, BlockStatement block, boolean strict) {
         Scope scope = (Scope) context;
+
+        // FIXME: How can we use what the parser provides to good effect?
+        for (Statement statement: block.getBlockContent()) {
+            statement.accept(context, this, strict);
+        }
 
         return scope;
     }
 
     @Override
     public Object visit(Object context, BooleanLiteralExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        return new BooleanLiteral(expr.getValue());
     }
 
     @Override

@@ -15,5 +15,5 @@
  */
 package org.dynjs.ir;
 
-public interface Operand {
+public class Operand {
 }
