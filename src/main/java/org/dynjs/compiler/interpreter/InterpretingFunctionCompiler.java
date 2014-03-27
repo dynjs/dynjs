@@ -23,6 +23,14 @@ public class InterpretingFunctionCompiler implements FunctionCompiler {
     }
 
     public JSFunction compile(final ExecutionContext context, final String identifier, final String[] formalParameters, final Statement body, final boolean strict) {
+        int statementNumber = body.getStatementNumber();
+        BlockManager.Entry entry = context.getBlockManager().retrieve(statementNumber);
+        BasicBlock code = entry.getCompiled();
+        if (code == null) {
+            code = new InterpretedBasicBlock(this.factory, body, strict);
+            entry.setCompiled(code);
+        }
+
         LexicalEnvironment lexEnv = null;
 
         if ( identifier != null ) {
@@ -32,13 +40,7 @@ public class InterpretingFunctionCompiler implements FunctionCompiler {
         } else {
             lexEnv = context.getLexicalEnvironment();
         }
-        int statementNumber = body.getStatementNumber();
-        BlockManager.Entry entry = context.getBlockManager().retrieve(statementNumber);
-        BasicBlock code = entry.getCompiled();
-        if (code == null) {
-            code = new InterpretedBasicBlock(this.factory, body, strict);
-            entry.setCompiled(code);
-        }
+
         JavascriptFunction function = new JavascriptFunction(context.getGlobalObject(), identifier, code, lexEnv, strict, formalParameters);
         if ( identifier != null ) {
             ((DeclarativeEnvironmentRecord)lexEnv.getRecord()).initializeImmutableBinding(identifier, function);
