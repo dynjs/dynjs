@@ -24,6 +24,7 @@ public class FunctionDescriptor {
     private final Position position;
     private final String identifier;
     private final Parameter[] formalParameters;
+    private final String[] formalParameterNames;
     private final BlockStatement block;
     private boolean strict;
 
@@ -34,10 +35,18 @@ public class FunctionDescriptor {
         this.position = position;
         this.identifier = identifier;
         this.formalParameters = formalParameters;
+        this.formalParameterNames = generateFormalParameterNames();
         this.block = block;
         this.strict = strict;
     }
-    
+
+    private final String[] generateFormalParameterNames() {
+        String[] names = new String[ this.formalParameters.length ];
+        for ( int i = 0 ; i < names.length; ++i) {
+            names[i] = this.formalParameters[i].getIdentifier();
+        }
+        return names;
+    }
 
     public Position getPosition() {
         return this.position;
@@ -48,11 +57,7 @@ public class FunctionDescriptor {
     }
 
     public String[] getFormalParameterNames() {
-        String[] names = new String[ this.formalParameters.length ];
-        for ( int i = 0 ; i < names.length; ++i) {
-            names[i] = this.formalParameters[i].getIdentifier();
-        }
-        return names;
+        return formalParameterNames;
     }
 
     public BlockStatement getBlock() {
