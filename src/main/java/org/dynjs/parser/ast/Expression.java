@@ -11,7 +11,7 @@ public interface Expression {
 
     String dump(String indent);
     
-    void accept(Object context, CodeVisitor visitor, boolean strict);
+    Object accept(Object context, CodeVisitor visitor, boolean strict);
     
     int getSizeMetric();
     

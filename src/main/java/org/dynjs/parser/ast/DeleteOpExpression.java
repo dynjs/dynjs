@@ -26,8 +26,8 @@ public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
     }
     
     @Override
-    public void accept(Object context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit( context, this, strict );
     }
 
     public String toString() {

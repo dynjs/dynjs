@@ -1,5 +1,6 @@
 package org.dynjs.runtime.interp;
 
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.BlockManager;
 
 public class InterpretingVisitorFactory {
@@ -10,7 +11,7 @@ public class InterpretingVisitorFactory {
         this.invokeDynamicEnabled = invokeDynamicEnabled;
     }
     
-    public InterpretingVisitor createVisitor(BlockManager blockManager) {
+    public CodeVisitor createVisitor(BlockManager blockManager) {
         if ( this.invokeDynamicEnabled ) {
             return new InvokeDynamicInterpretingVisitor(blockManager);
         } else {

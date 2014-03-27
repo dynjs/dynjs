@@ -28,7 +28,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
     }
 
     @Override
-    public void visit(Object context, VariableDeclaration expr, boolean strict) {
+    public Object visit(Object context, VariableDeclaration expr, boolean strict) {
         if (expr.getExpr() == null) {
             ldc(expr.getIdentifier());
             // str
@@ -49,10 +49,11 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             ldc(expr.getIdentifier());
             // str
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, AssignmentExpression expr, boolean strict) {
+    public Object visit(Object context, AssignmentExpression expr, boolean strict) {
         LabelNode throwRefError = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -118,11 +119,11 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
 
         label(end);
         nop();
-
+        return null;
     }
 
     @Override
-    public void visit(Object context, NewOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
         LabelNode end = new LabelNode();
         // 11.2.2
 
@@ -157,10 +158,11 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
 
         label(end);
         nop();
+        return null;
     }
 
     @Override
-    public void visit(Object context, FunctionCallExpression expr, boolean strict) {
+    public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
         LabelNode propertyRef = new LabelNode();
         LabelNode noSelf = new LabelNode();
         LabelNode doCall = new LabelNode();
@@ -262,6 +264,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         invokedynamic("dyn:call", sig(Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class), DynJSBootstrapper.HANDLE,
                 DynJSBootstrapper.ARGS);
         // value
+        return null;
     }
 
     /*

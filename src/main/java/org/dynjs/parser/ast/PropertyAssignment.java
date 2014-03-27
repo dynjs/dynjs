@@ -15,7 +15,7 @@ public abstract class PropertyAssignment {
         return this.name;
     }
 
-    public abstract void accept(Object context, CodeVisitor visitor, boolean strict);
+    public abstract Object accept(Object context, CodeVisitor visitor, boolean strict);
 
     public abstract int getSizeMetric();
 

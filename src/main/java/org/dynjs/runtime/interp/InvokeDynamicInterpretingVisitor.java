@@ -22,18 +22,15 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public void visit(Object context, AssignmentExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = pop();
+    public Object visit(Object context, AssignmentExpression expr, boolean strict) {
+        
+        Object lhs = expr.getLhs().accept(context, this, strict);
         if (!(lhs instanceof Reference)) {
             throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(expr.getLhs() + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
-        
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (lhsRef.isUnresolvableReference() && strict) {
             throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhsRef.getReferencedName() + " is not defined"));
@@ -46,7 +43,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         } catch (Throwable e) {
             throw new ThrowException((ExecutionContext) context, e);
         }
-        push(rhs);
+        return(rhs);
 
         // lhsRef.putValue(context, rhs);
         // invokedynamic("dyn:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
@@ -54,9 +51,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public void visit(Object context, FunctionCallExpression expr, boolean strict) {
-        expr.getMemberExpression().accept(context, this, strict);
-        Object ref = pop();
+    public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
+        Object ref = expr.getMemberExpression().accept(context, this, strict);
         Object function = getValue(context, ref);
 
         List<Expression> argExprs = expr.getArgumentExpressions();
@@ -65,8 +61,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         int i = 0;
 
         for (Expression each : argExprs) {
-            each.accept(context, this, strict);
-            Object value = getValue(context,pop());
+
+            Object value = getValue(context,each.accept(context, this, strict));
             args[i] = value;
             ++i;
         }
@@ -90,7 +86,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         try {
-            push(DynJSBootstrapper.getInvokeHandler().call(function, (ExecutionContext) context, thisValue, args));
+            return(DynJSBootstrapper.getInvokeHandler().call(function, (ExecutionContext) context, thisValue, args));
         } catch (ThrowException e) {
             throw e;
         } catch (NoSuchMethodError e) {
@@ -101,22 +97,21 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public void visit(Object context, NewOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object memberExpr = getValue(context, pop());
+    public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
+
+        Object memberExpr = getValue(context, expr.getExpr().accept(context, this, strict));
 
         Object[] args = new Object[expr.getArgumentExpressions().size()];
 
         int i = 0;
 
         for (Expression each : expr.getArgumentExpressions()) {
-            each.accept(context, this, strict);
-            args[i] = getValue(context, pop());
+            args[i] = getValue(context, each.accept(context, this, strict));
             ++i;
         }
 
         try {
-            push( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, (ExecutionContext) context, args) );
+            return( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, (ExecutionContext) context, args) );
         } catch (NoSuchMethodError e) {
             throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("cannot construct with: " + memberExpr));
         } catch (ThrowException e) {
@@ -124,7 +119,6 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         } catch (Throwable e) {
             throw new ThrowException((ExecutionContext) context, e);
         }
-        return;
     }
 
     protected Object getValue(ExecutionContext context, Object obj) {

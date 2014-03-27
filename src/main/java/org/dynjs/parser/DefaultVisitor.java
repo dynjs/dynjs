@@ -70,7 +70,6 @@ import org.dynjs.parser.ast.VariableStatement;
 import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
-import org.dynjs.runtime.ExecutionContext;
 
 public class DefaultVisitor implements CodeVisitor {
 
@@ -85,128 +84,150 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(Object context, AdditiveExpression expr, boolean strict) {
+    public Object visit(Object context, AdditiveExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, BitwiseExpression expr, boolean strict) {
+    public Object visit(Object context, BitwiseExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ArrayLiteralExpression expr, boolean strict) {
+    public Object visit(Object context, ArrayLiteralExpression expr, boolean strict) {
         for (Expression each : expr.getExprs()) {
             each.accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, AssignmentExpression expr, boolean strict) {
+    public Object visit(Object context, AssignmentExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, BitwiseInversionOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, BitwiseInversionOperatorExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, BlockStatement statement, boolean strict) {
+    public Object visit(Object context, BlockStatement statement, boolean strict) {
         for (Statement each : statement.getBlockContent()) {
             each.accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, BooleanLiteralExpression expr, boolean strict) {
+    public Object visit(Object context, BooleanLiteralExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, BreakStatement statement, boolean strict) {
+    public Object visit(Object context, BreakStatement statement, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, CaseClause clause, boolean strict) {
+    public Object visit(Object context, CaseClause clause, boolean strict) {
         clause.getExpression().accept(context, this, strict);
         clause.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, DefaultCaseClause clause, boolean strict) {
+    public Object visit(Object context, DefaultCaseClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, CatchClause clause, boolean strict) {
+    public Object visit(Object context, CatchClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, CompoundAssignmentExpression expr, boolean strict) {
+    public Object visit(Object context, CompoundAssignmentExpression expr, boolean strict) {
         expr.getRootExpr().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ContinueStatement statement, boolean strict) {
+    public Object visit(Object context, ContinueStatement statement, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, DeleteOpExpression expr, boolean strict) {
+    public Object visit(Object context, DeleteOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, DoWhileStatement statement, boolean strict) {
+    public Object visit(Object context, DoWhileStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, EmptyStatement statement, boolean strict) {
+    public Object visit(Object context, EmptyStatement statement, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, EqualityOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, EqualityOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, CommaOperator expr, boolean strict) {
+    public Object visit(Object context, CommaOperator expr, boolean strict) {
         expr.getLhs().accept( context, this, strict );
         expr.getRhs().accept( context, this, strict );
+        return null;
     }
 
     @Override
-    public void visit(Object context, ExpressionStatement statement, boolean strict) {
+    public Object visit(Object context, ExpressionStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, FloatingNumberExpression expr, boolean strict) {
+    public Object visit(Object context, FloatingNumberExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, ForExprInStatement statement, boolean strict) {
+    public Object visit(Object context, ForExprInStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ForExprOfStatement statement, boolean strict) {
+    public Object visit(Object context, ForExprOfStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ForExprStatement statement, boolean strict) {
+    public Object visit(Object context, ForExprStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
         }
@@ -220,22 +241,25 @@ public class DefaultVisitor implements CodeVisitor {
         }
 
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ForVarDeclInStatement statement, boolean strict) {
+    public Object visit(Object context, ForVarDeclInStatement statement, boolean strict) {
         statement.getDeclaration().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ForVarDeclOfStatement statement, boolean strict) {
+    public Object visit(Object context, ForVarDeclOfStatement statement, boolean strict) {
         statement.getDeclaration().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ForVarDeclStatement statement, boolean strict) {
+    public Object visit(Object context, ForVarDeclStatement statement, boolean strict) {
         if (statement.getDeclarationList() != null) {
             for ( VariableDeclaration each : statement.getDeclarationList() ) {
                 each.accept(context, this, strict);
@@ -251,185 +275,215 @@ public class DefaultVisitor implements CodeVisitor {
         }
 
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, FunctionCallExpression expr, boolean strict) {
+    public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
         expr.getMemberExpression().accept(context, this, strict);
 
         for (Expression each : expr.getArgumentExpressions()) {
             each.accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, FunctionDeclaration statement, boolean strict) {
+    public Object visit(Object context, FunctionDeclaration statement, boolean strict) {
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, FunctionExpression expr, boolean strict) {
+    public Object visit(Object context, FunctionExpression expr, boolean strict) {
         expr.getDescriptor().getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
+    public Object visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, IfStatement statement, boolean strict) {
+    public Object visit(Object context, IfStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
         statement.getThenBlock().accept(context, this, strict);
         if (statement.getElseBlock() != null) {
             statement.getElseBlock().accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, InOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, InOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, OfOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, OfOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, InstanceofExpression expr, boolean strict) {
+    public Object visit(Object context, InstanceofExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, IntegerNumberExpression expr, boolean strict) {
+    public Object visit(Object context, IntegerNumberExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, LogicalExpression expr, boolean strict) {
+    public Object visit(Object context, LogicalExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, LogicalNotOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, LogicalNotOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, DotExpression expr, boolean strict) {
+    public Object visit(Object context, DotExpression expr, boolean strict) {
         expr.getLhs().accept( context, this, strict );
+        return null;
     }
     
     @Override
-    public void visit(Object context, BracketExpression expr, boolean strict) {
+    public Object visit(Object context, BracketExpression expr, boolean strict) {
         expr.getLhs().accept( context, this, strict );
         expr.getRhs().accept( context, this, strict );
+        return null;
     }
 
     @Override
-    public void visit(Object context, MultiplicativeExpression expr, boolean strict) {
+    public Object visit(Object context, MultiplicativeExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, NewOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, NullLiteralExpression expr, boolean strict) {
+    public Object visit(Object context, NullLiteralExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, ObjectLiteralExpression expr, boolean strict) {
+    public Object visit(Object context, ObjectLiteralExpression expr, boolean strict) {
         for (PropertyAssignment each : expr.getPropertyAssignments()) {
             each.accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, PostOpExpression expr, boolean strict) {
+    public Object visit(Object context, PostOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, PreOpExpression expr, boolean strict) {
+    public Object visit(Object context, PreOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
-
+        return null;
     }
 
     @Override
-    public void visit(Object context, NamedValue namedValue, boolean strict) {
+    public Object visit(Object context, NamedValue namedValue, boolean strict) {
         namedValue.getExpr().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, PropertyGet propertyGet, boolean strict) {
+    public Object visit(Object context, PropertyGet propertyGet, boolean strict) {
         propertyGet.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, PropertySet propertySet, boolean strict) {
+    public Object visit(Object context, PropertySet propertySet, boolean strict) {
         propertySet.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, RegexpLiteralExpression expr, boolean strict) {
+    public Object visit(Object context, RegexpLiteralExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, RelationalExpression expr, boolean strict) {
+    public Object visit(Object context, RelationalExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ReturnStatement statement, boolean strict) {
+    public Object visit(Object context, ReturnStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, StrictEqualityOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, StrictEqualityOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, StringLiteralExpression expr, boolean strict) {
+    public Object visit(Object context, StringLiteralExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, SwitchStatement statement, boolean strict) {
+    public Object visit(Object context, SwitchStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         for (CaseClause each : statement.getCaseClauses()) {
             each.accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, TernaryExpression expr, boolean strict) {
+    public Object visit(Object context, TernaryExpression expr, boolean strict) {
         expr.getTest().accept(context, this, strict);
         expr.getThenExpr().accept(context, this, strict);
         expr.getElseExpr().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, ThisExpression expr, boolean strict) {
+    public Object visit(Object context, ThisExpression expr, boolean strict) {
         // no-op
+        return null;
     }
 
     @Override
-    public void visit(Object context, ThrowStatement statement, boolean strict) {
+    public Object visit(Object context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
-
+        return null;
     }
 
     @Override
-    public void visit(Object context, TryStatement statement, boolean strict) {
+    public Object visit(Object context, TryStatement statement, boolean strict) {
         statement.getTryBlock().accept(context, this, strict);
         if (statement.getCatchClause() != null) {
             statement.getCatchClause().accept(context, this, strict);
@@ -437,53 +491,61 @@ public class DefaultVisitor implements CodeVisitor {
         if (statement.getFinallyBlock() != null) {
             statement.getFinallyBlock().accept(context, this, strict);
         }
-
+        return null;
     }
 
     @Override
-    public void visit(Object context, TypeOfOpExpression expr, boolean strict) {
+    public Object visit(Object context, TypeOfOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, UnaryMinusExpression expr, boolean strict) {
+    public Object visit(Object context, UnaryMinusExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, UnaryPlusExpression expr, boolean strict) {
+    public Object visit(Object context, UnaryPlusExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, VariableDeclaration expr, boolean strict) {
+    public Object visit(Object context, VariableDeclaration expr, boolean strict) {
         if (expr.getExpr() != null) {
             expr.getExpr().accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, VariableStatement statement, boolean strict) {
+    public Object visit(Object context, VariableStatement statement, boolean strict) {
         for (VariableDeclaration each : statement.getVariableDeclarations()) {
             each.accept(context, this, strict);
         }
+        return null;
     }
 
     @Override
-    public void visit(Object context, VoidOperatorExpression expr, boolean strict) {
+    public Object visit(Object context, VoidOperatorExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, WhileStatement statement, boolean strict) {
+    public Object visit(Object context, WhileStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
     @Override
-    public void visit(Object context, WithStatement statement, boolean strict) {
+    public Object visit(Object context, WithStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
+        return null;
     }
 
 }

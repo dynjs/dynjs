@@ -42,8 +42,8 @@ public class CatchClause {
         return this.block.dump( indent + "  " );
     }
 
-    public void accept(Object context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit( context, this, strict );
     }
 
     public Collection<? extends VariableDeclaration> getVariableDeclarations() {

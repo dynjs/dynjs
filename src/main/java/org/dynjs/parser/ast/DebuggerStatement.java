@@ -20,8 +20,9 @@ public class DebuggerStatement extends BaseStatement {
     }
 
     @Override
-    public void accept(Object context, CodeVisitor visitor, boolean strict) {
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         //visitor.visit( context, this, strict );
+        return null;
     }
 
 }
