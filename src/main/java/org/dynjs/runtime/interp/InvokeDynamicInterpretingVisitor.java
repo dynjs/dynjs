@@ -22,11 +22,11 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, AssignmentExpression expr, boolean strict) {
+    public void visit(Object context, AssignmentExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         Object lhs = pop();
         if (!(lhs instanceof Reference)) {
-            throw new ThrowException(context, context.createReferenceError(expr.getLhs() + " is not a reference"));
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(expr.getLhs() + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
@@ -36,15 +36,15 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         Object rhs = getValue(context, pop());
 
         if (lhsRef.isUnresolvableReference() && strict) {
-            throw new ThrowException(context, context.createReferenceError(lhsRef.getReferencedName() + " is not defined"));
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhsRef.getReferencedName() + " is not defined"));
         }
 
         try {
-            DynJSBootstrapper.getInvokeHandler().set(lhsRef, context, lhsRef.getReferencedName(), rhs);
+            DynJSBootstrapper.getInvokeHandler().set(lhsRef, (ExecutionContext) context, lhsRef.getReferencedName(), rhs);
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ThrowException(context, e);
+            throw new ThrowException((ExecutionContext) context, e);
         }
         push(rhs);
 
@@ -54,7 +54,7 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
+    public void visit(Object context, FunctionCallExpression expr, boolean strict) {
         expr.getMemberExpression().accept(context, this, strict);
         Object ref = pop();
         Object function = getValue(context, ref);
@@ -90,18 +90,18 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         try {
-            push(DynJSBootstrapper.getInvokeHandler().call(function, context, thisValue, args));
+            push(DynJSBootstrapper.getInvokeHandler().call(function, (ExecutionContext) context, thisValue, args));
         } catch (ThrowException e) {
             throw e;
         } catch (NoSuchMethodError e) {
-            throw new ThrowException(context, context.createTypeError("not callable: " + function.toString()));
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("not callable: " + function.toString()));
         } catch (Throwable e) {
-            throw new ThrowException(context, e);
+            throw new ThrowException((ExecutionContext) context, e);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
+    public void visit(Object context, NewOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
         Object memberExpr = getValue(context, pop());
 
@@ -116,13 +116,13 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         try {
-            push( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, context, args) );
+            push( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, (ExecutionContext) context, args) );
         } catch (NoSuchMethodError e) {
-            throw new ThrowException(context, context.createTypeError("cannot construct with: " + memberExpr));
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("cannot construct with: " + memberExpr));
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ThrowException(context, e);
+            throw new ThrowException((ExecutionContext) context, e);
         }
         return;
     }

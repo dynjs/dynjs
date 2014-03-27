@@ -46,7 +46,6 @@ import org.dynjs.parser.ast.MultiplicativeExpression;
 import org.dynjs.parser.ast.NamedValue;
 import org.dynjs.parser.ast.NewOperatorExpression;
 import org.dynjs.parser.ast.NullLiteralExpression;
-import org.dynjs.parser.ast.NumberLiteralExpression;
 import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
@@ -75,139 +74,139 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class DefaultVisitor implements CodeVisitor {
 
-    protected void walkBinaryExpression(ExecutionContext context, AbstractBinaryExpression expr, boolean strict) {
+    protected void walkBinaryExpression(Object context, AbstractBinaryExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         expr.getRhs().accept(context, this, strict);
     }
 
-    protected void walkUnaryExpression(ExecutionContext context, AbstractUnaryOperatorExpression expr, boolean strict) {
+    protected void walkUnaryExpression(Object context, AbstractUnaryOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
 
     }
 
     @Override
-    public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
+    public void visit(Object context, AdditiveExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, BitwiseExpression expr, boolean strict) {
+    public void visit(Object context, BitwiseExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ArrayLiteralExpression expr, boolean strict) {
+    public void visit(Object context, ArrayLiteralExpression expr, boolean strict) {
         for (Expression each : expr.getExprs()) {
             each.accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, AssignmentExpression expr, boolean strict) {
+    public void visit(Object context, AssignmentExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, BitwiseInversionOperatorExpression expr, boolean strict) {
+    public void visit(Object context, BitwiseInversionOperatorExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, BlockStatement statement, boolean strict) {
+    public void visit(Object context, BlockStatement statement, boolean strict) {
         for (Statement each : statement.getBlockContent()) {
             each.accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, BooleanLiteralExpression expr, boolean strict) {
+    public void visit(Object context, BooleanLiteralExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, BreakStatement statement, boolean strict) {
+    public void visit(Object context, BreakStatement statement, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, CaseClause clause, boolean strict) {
+    public void visit(Object context, CaseClause clause, boolean strict) {
         clause.getExpression().accept(context, this, strict);
         clause.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, DefaultCaseClause clause, boolean strict) {
+    public void visit(Object context, DefaultCaseClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, CatchClause clause, boolean strict) {
+    public void visit(Object context, CatchClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, CompoundAssignmentExpression expr, boolean strict) {
+    public void visit(Object context, CompoundAssignmentExpression expr, boolean strict) {
         expr.getRootExpr().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ContinueStatement statement, boolean strict) {
+    public void visit(Object context, ContinueStatement statement, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, DeleteOpExpression expr, boolean strict) {
+    public void visit(Object context, DeleteOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, DoWhileStatement statement, boolean strict) {
+    public void visit(Object context, DoWhileStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, EmptyStatement statement, boolean strict) {
+    public void visit(Object context, EmptyStatement statement, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, EqualityOperatorExpression expr, boolean strict) {
+    public void visit(Object context, EqualityOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, CommaOperator expr, boolean strict) {
+    public void visit(Object context, CommaOperator expr, boolean strict) {
         expr.getLhs().accept( context, this, strict );
         expr.getRhs().accept( context, this, strict );
     }
 
     @Override
-    public void visit(ExecutionContext context, ExpressionStatement statement, boolean strict) {
+    public void visit(Object context, ExpressionStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, FloatingNumberExpression expr, boolean strict) {
+    public void visit(Object context, FloatingNumberExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
+    public void visit(Object context, ForExprInStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict) {
+    public void visit(Object context, ForExprOfStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
+    public void visit(Object context, ForExprStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
         }
@@ -224,19 +223,19 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
+    public void visit(Object context, ForVarDeclInStatement statement, boolean strict) {
         statement.getDeclaration().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict) {
+    public void visit(Object context, ForVarDeclOfStatement statement, boolean strict) {
         statement.getDeclaration().accept(context, this, strict);
         statement.getRhs().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict) {
+    public void visit(Object context, ForVarDeclStatement statement, boolean strict) {
         if (statement.getDeclarationList() != null) {
             for ( VariableDeclaration each : statement.getDeclarationList() ) {
                 each.accept(context, this, strict);
@@ -255,7 +254,7 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
+    public void visit(Object context, FunctionCallExpression expr, boolean strict) {
         expr.getMemberExpression().accept(context, this, strict);
 
         for (Expression each : expr.getArgumentExpressions()) {
@@ -264,22 +263,22 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionDeclaration statement, boolean strict) {
+    public void visit(Object context, FunctionDeclaration statement, boolean strict) {
         statement.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
+    public void visit(Object context, FunctionExpression expr, boolean strict) {
         expr.getDescriptor().getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, IdentifierReferenceExpression expr, boolean strict) {
+    public void visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, IfStatement statement, boolean strict) {
+    public void visit(Object context, IfStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
         statement.getThenBlock().accept(context, this, strict);
         if (statement.getElseBlock() != null) {
@@ -288,123 +287,123 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
+    public void visit(Object context, InOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict) {
+    public void visit(Object context, OfOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, InstanceofExpression expr, boolean strict) {
+    public void visit(Object context, InstanceofExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, IntegerNumberExpression expr, boolean strict) {
+    public void visit(Object context, IntegerNumberExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
+    public void visit(Object context, LogicalExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, LogicalNotOperatorExpression expr, boolean strict) {
+    public void visit(Object context, LogicalNotOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, DotExpression expr, boolean strict) {
+    public void visit(Object context, DotExpression expr, boolean strict) {
         expr.getLhs().accept( context, this, strict );
     }
     
     @Override
-    public void visit(ExecutionContext context, BracketExpression expr, boolean strict) {
+    public void visit(Object context, BracketExpression expr, boolean strict) {
         expr.getLhs().accept( context, this, strict );
         expr.getRhs().accept( context, this, strict );
     }
 
     @Override
-    public void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict) {
+    public void visit(Object context, MultiplicativeExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
+    public void visit(Object context, NewOperatorExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, NullLiteralExpression expr, boolean strict) {
+    public void visit(Object context, NullLiteralExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, ObjectLiteralExpression expr, boolean strict) {
+    public void visit(Object context, ObjectLiteralExpression expr, boolean strict) {
         for (PropertyAssignment each : expr.getPropertyAssignments()) {
             each.accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, PostOpExpression expr, boolean strict) {
+    public void visit(Object context, PostOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, PreOpExpression expr, boolean strict) {
+    public void visit(Object context, PreOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
 
     }
 
     @Override
-    public void visit(ExecutionContext context, NamedValue namedValue, boolean strict) {
+    public void visit(Object context, NamedValue namedValue, boolean strict) {
         namedValue.getExpr().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
+    public void visit(Object context, PropertyGet propertyGet, boolean strict) {
         propertyGet.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
+    public void visit(Object context, PropertySet propertySet, boolean strict) {
         propertySet.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, RegexpLiteralExpression expr, boolean strict) {
+    public void visit(Object context, RegexpLiteralExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, RelationalExpression expr, boolean strict) {
+    public void visit(Object context, RelationalExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ReturnStatement statement, boolean strict) {
+    public void visit(Object context, ReturnStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, StrictEqualityOperatorExpression expr, boolean strict) {
+    public void visit(Object context, StrictEqualityOperatorExpression expr, boolean strict) {
         walkBinaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, StringLiteralExpression expr, boolean strict) {
+    public void visit(Object context, StringLiteralExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, SwitchStatement statement, boolean strict) {
+    public void visit(Object context, SwitchStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         for (CaseClause each : statement.getCaseClauses()) {
             each.accept(context, this, strict);
@@ -412,25 +411,25 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, TernaryExpression expr, boolean strict) {
+    public void visit(Object context, TernaryExpression expr, boolean strict) {
         expr.getTest().accept(context, this, strict);
         expr.getThenExpr().accept(context, this, strict);
         expr.getElseExpr().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ThisExpression expr, boolean strict) {
+    public void visit(Object context, ThisExpression expr, boolean strict) {
         // no-op
     }
 
     @Override
-    public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
+    public void visit(Object context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
 
     }
 
     @Override
-    public void visit(ExecutionContext context, TryStatement statement, boolean strict) {
+    public void visit(Object context, TryStatement statement, boolean strict) {
         statement.getTryBlock().accept(context, this, strict);
         if (statement.getCatchClause() != null) {
             statement.getCatchClause().accept(context, this, strict);
@@ -442,47 +441,47 @@ public class DefaultVisitor implements CodeVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, TypeOfOpExpression expr, boolean strict) {
+    public void visit(Object context, TypeOfOpExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, UnaryMinusExpression expr, boolean strict) {
+    public void visit(Object context, UnaryMinusExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, UnaryPlusExpression expr, boolean strict) {
+    public void visit(Object context, UnaryPlusExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableDeclaration expr, boolean strict) {
+    public void visit(Object context, VariableDeclaration expr, boolean strict) {
         if (expr.getExpr() != null) {
             expr.getExpr().accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableStatement statement, boolean strict) {
+    public void visit(Object context, VariableStatement statement, boolean strict) {
         for (VariableDeclaration each : statement.getVariableDeclarations()) {
             each.accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
+    public void visit(Object context, VoidOperatorExpression expr, boolean strict) {
         walkUnaryExpression(context, expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, WhileStatement statement, boolean strict) {
+    public void visit(Object context, WhileStatement statement, boolean strict) {
         statement.getTest().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, WithStatement statement, boolean strict) {
+    public void visit(Object context, WithStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         statement.getBlock().accept(context, this, strict);
     }

@@ -38,7 +38,7 @@ public interface Statement {
     List<FunctionDeclaration> getFunctionDeclarations();
     List<VariableDeclaration> getVariableDeclarations();
 
-    void accept(ExecutionContext context, CodeVisitor visitor, boolean strict);
+    void accept(Object context, CodeVisitor visitor, boolean strict);
     
     int getSizeMetric();
 }

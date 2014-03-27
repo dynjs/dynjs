@@ -14,7 +14,8 @@ public class Types {
     public static final Undefined UNDEFINED = new Undefined();
     public static final Null NULL = new Null();
 
-    public static void checkObjectCoercible(ExecutionContext context, Object o) {
+    public static void checkObjectCoercible(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (o == Types.UNDEFINED) {
             throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object"));
         }
@@ -26,7 +27,8 @@ public class Types {
         return;
     }
 
-    public static void checkObjectCoercible(ExecutionContext context, Object o, String debug) {
+    public static void checkObjectCoercible(Object executionContext, Object o, String debug) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (o == Types.UNDEFINED) {
             throw new ThrowException(context, context.createTypeError("undefined cannot be coerced to an object: " + debug));
         }
@@ -55,7 +57,8 @@ public class Types {
         return left.equals(right);
     }
 
-    public static JSObject toObject(ExecutionContext context, Object o) {
+    public static JSObject toObject(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (o == Types.UNDEFINED) {
             throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
         }
@@ -77,7 +80,8 @@ public class Types {
         return new PrimitiveDynObject(context.getGlobalObject(), o);
     }
 
-    public static Object toThisObject(ExecutionContext context, Object o) {
+    public static Object toThisObject(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (o == Types.UNDEFINED) {
             throw new ThrowException(context, context.createTypeError("undefined cannot be converted to an object"));
         }
@@ -100,11 +104,13 @@ public class Types {
         return o;
     }
 
-    public static Object toPrimitive(ExecutionContext context, Object o) {
+    public static Object toPrimitive(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         return toPrimitive(context, o, null);
     }
 
-    public static Object toPrimitive(ExecutionContext context, Object o, String preferredType) {
+    public static Object toPrimitive(Object executionContext, Object o, String preferredType) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 9.1
         if (o instanceof JSObject) {
             return ((JSObject) o).defaultValue(context, preferredType);
@@ -112,7 +118,8 @@ public class Types {
         return o;
     }
 
-    public static Number toNumber(ExecutionContext context, Object o) {
+    public static Number toNumber(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 9.3
         if (o instanceof Number) {
             return (Number) o;
@@ -295,7 +302,8 @@ public class Types {
         return true;
     }
 
-    public static Long toInteger(ExecutionContext context, Object o) {
+    public static Long toInteger(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         Number number = toNumber(context, o);
         if (number instanceof Double) {
             if (((Double) number).isNaN()) {
@@ -306,7 +314,8 @@ public class Types {
         return number.longValue();
     }
 
-    public static Long toUint16(ExecutionContext context, Object o) {
+    public static Long toUint16(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 9.7
         Number n = toNumber(context, o);
 
@@ -329,7 +338,8 @@ public class Types {
         return 1;
     }
 
-    public static Long toUint32(ExecutionContext context, Object o) {
+    public static Long toUint32(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 9.5
         Number n = toNumber(context, o);
 
@@ -354,7 +364,8 @@ public class Types {
         return (a % b + b) % b;
     }
 
-    public static Long toInt32(ExecutionContext context, Object o) {
+    public static Long toInt32(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         Number number = toNumber(context, o);
         if (Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue())) {
             return 0L;
@@ -376,7 +387,8 @@ public class Types {
         return (o instanceof JSCallable);
     }
 
-    public static boolean isSparse(ExecutionContext context, JSObject o) {
+    public static boolean isSparse(Object executionContext, JSObject o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (!o.hasProperty(context, "length")) {
             return false;
         }
@@ -392,7 +404,8 @@ public class Types {
         return false;
     }
 
-    public static Object getValue(ExecutionContext context, Object o) {
+    public static Object getValue(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (o instanceof Reference) {
             return ((Reference) o).getValue(context);
         }
@@ -400,7 +413,8 @@ public class Types {
     }
 
     private static Pattern EXP_PATTERN = Pattern.compile("^(.*)e([+-])([0-9]+)$");
-    public static String toString(ExecutionContext context, Object o) {
+    public static String toString(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         if (o == Types.UNDEFINED) {
             return "undefined";
         }
@@ -473,7 +487,8 @@ public class Types {
         return o.toString();
     }
 
-    public static String typeof(ExecutionContext context, Object o) {
+    public static String typeof(Object executionContext, Object o) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 11.4.3
         Object val = o;
         if (o instanceof Reference) {
@@ -487,8 +502,9 @@ public class Types {
         return type(val);
     }
 
-    public static Object compareRelational(ExecutionContext context, Object x,
+    public static Object compareRelational(Object executionContext, Object x,
             Object y, boolean leftFirst) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 11.8.5
 
         Object px = null;
@@ -548,7 +564,8 @@ public class Types {
 
     }
 
-    public static boolean compareEquality(ExecutionContext context, Object lhs, Object rhs) {
+    public static boolean compareEquality(Object executionContext, Object lhs, Object rhs) {
+        ExecutionContext context = (ExecutionContext) executionContext;
         // 11.9.3
 
         if (lhs.getClass().equals(rhs.getClass()) || (lhs instanceof Number && rhs instanceof Number)) {
@@ -618,7 +635,7 @@ public class Types {
         return false;
     }
 
-    public static boolean compareStrictEquality(ExecutionContext context, Object lhs, Object rhs) {
+    public static boolean compareStrictEquality(Object executionContext, Object lhs, Object rhs) {
         // 11.9.6
         
 //        System.err.println( "lhs: " + lhs.getClass() + " // " + lhs );

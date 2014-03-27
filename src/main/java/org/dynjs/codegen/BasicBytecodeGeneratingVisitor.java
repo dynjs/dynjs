@@ -280,7 +280,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, BitwiseExpression expr, boolean strict) {
+    public void visit(Object context, BitwiseExpression expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         append(jsGetValue());
         // value
@@ -360,7 +360,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ArrayLiteralExpression expr, boolean strict) {
+    public void visit(Object context, ArrayLiteralExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         invokestatic(p(BuiltinArray.class), "newArray", sig(DynArray.class, ExecutionContext.class));
@@ -414,7 +414,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, AssignmentExpression expr, boolean strict) {
+    public void visit(Object context, AssignmentExpression expr, boolean strict) {
         LabelNode throwRefError = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -469,7 +469,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, BitwiseInversionOperatorExpression expr, boolean strict) {
+    public void visit(Object context, BitwiseInversionOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
         // obj
         append(jsGetValue());
@@ -487,7 +487,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, BlockStatement statement, boolean strict) {
+    public void visit(Object context, BlockStatement statement, boolean strict) {
         // 12.1
         LabelNode abrupt = new LabelNode();
         LabelNode end = new LabelNode();
@@ -574,7 +574,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, BooleanLiteralExpression expr, boolean strict) {
+    public void visit(Object context, BooleanLiteralExpression expr, boolean strict) {
         if (expr.getValue()) {
             getstatic(p(Boolean.class), "TRUE", ci(Boolean.class));
         } else {
@@ -583,27 +583,27 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, BreakStatement statement, boolean strict) {
+    public void visit(Object context, BreakStatement statement, boolean strict) {
         breakCompletion(statement.getTarget());
     }
 
     @Override
-    public void visit(ExecutionContext context, CaseClause clause, boolean strict) {
+    public void visit(Object context, CaseClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, DefaultCaseClause clause, boolean strict) {
+    public void visit(Object context, DefaultCaseClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, CatchClause clause, boolean strict) {
+    public void visit(Object context, CatchClause clause, boolean strict) {
         clause.getBlock().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, CompoundAssignmentExpression expr, boolean strict) {
+    public void visit(Object context, CompoundAssignmentExpression expr, boolean strict) {
         expr.getRootExpr().accept(context, this, strict);
         // value
 
@@ -627,12 +627,12 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ContinueStatement statement, boolean strict) {
+    public void visit(Object context, ContinueStatement statement, boolean strict) {
         continueCompletion(statement.getTarget());
     }
 
     @Override
-    public void visit(ExecutionContext context, DeleteOpExpression expr, boolean strict) {
+    public void visit(Object context, DeleteOpExpression expr, boolean strict) {
         LabelNode checkAsProperty = new LabelNode();
         LabelNode handleEnvRec = new LabelNode();
         LabelNode returnTrue = new LabelNode();
@@ -756,7 +756,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, DoWhileStatement statement, boolean strict) {
+    public void visit(Object context, DoWhileStatement statement, boolean strict) {
         LabelNode begin = new LabelNode();
         LabelNode normalTarget = new LabelNode();
         LabelNode breakTarget = new LabelNode();
@@ -827,12 +827,12 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, EmptyStatement statement, boolean strict) {
+    public void visit(Object context, EmptyStatement statement, boolean strict) {
         normalCompletion();
     }
 
     @Override
-    public void visit(ExecutionContext context, EqualityOperatorExpression expr, boolean strict) {
+    public void visit(Object context, EqualityOperatorExpression expr, boolean strict) {
         LabelNode returnTrue = new LabelNode();
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
@@ -870,7 +870,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, CommaOperator expr, boolean strict) {
+    public void visit(Object context, CommaOperator expr, boolean strict) {
         expr.getLhs().accept(context, this, strict);
         jsGetValue();
         pop();
@@ -879,7 +879,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ExpressionStatement statement, boolean strict) {
+    public void visit(Object context, ExpressionStatement statement, boolean strict) {
         Expression expr = statement.getExpr();
         if (expr instanceof FunctionDeclaration) {
             normalCompletion();
@@ -894,12 +894,12 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FloatingNumberExpression expr, boolean strict) {
+    public void visit(Object context, FloatingNumberExpression expr, boolean strict) {
         visit(context, (NumberLiteralExpression) expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
+    public void visit(Object context, ForExprInStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
         LabelNode bringForward = new LabelNode();
@@ -1044,7 +1044,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict) {
+    public void visit(Object context, ForExprOfStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
         LabelNode bringForward = new LabelNode();
@@ -1194,7 +1194,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
+    public void visit(Object context, ForVarDeclInStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
         LabelNode bringForward = new LabelNode();
@@ -1349,7 +1349,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict) {
+    public void visit(Object context, ForVarDeclOfStatement statement, boolean strict) {
         LabelNode nextName = new LabelNode();
         LabelNode checkCompletion = new LabelNode();
         LabelNode bringForward = new LabelNode();
@@ -1509,7 +1509,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
+    public void visit(Object context, ForExprStatement statement, boolean strict) {
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
             pop();
@@ -1518,7 +1518,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict) {
+    public void visit(Object context, ForVarDeclStatement statement, boolean strict) {
         List<VariableDeclaration> decls = statement.getDeclarationList();
         for (VariableDeclaration each : decls) {
             each.accept(context, this, strict);
@@ -1527,7 +1527,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         visitFor(context, statement, strict);
     }
 
-    public void visitFor(ExecutionContext context, AbstractForStatement statement, boolean strict) {
+    public void visitFor(Object context, AbstractForStatement statement, boolean strict) {
         LabelNode begin = new LabelNode();
         LabelNode bringForward = new LabelNode();
         LabelNode hasValue = new LabelNode();
@@ -1651,7 +1651,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
+    public void visit(Object context, FunctionCallExpression expr, boolean strict) {
         LabelNode propertyRef = new LabelNode();
         LabelNode noSelf = new LabelNode();
         LabelNode doCall = new LabelNode();
@@ -1762,18 +1762,18 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionDeclaration statement, boolean strict) {
+    public void visit(Object context, FunctionDeclaration statement, boolean strict) {
         normalCompletion();
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
+    public void visit(Object context, FunctionExpression expr, boolean strict) {
         compiledFunction(expr.getDescriptor().getIdentifier(), expr.getDescriptor().getFormalParameterNames(), expr.getDescriptor().getBlock(), expr.getDescriptor()
                 .isStrict());
     }
 
     @Override
-    public void visit(ExecutionContext context, IdentifierReferenceExpression expr, boolean strict) {
+    public void visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         ldc(expr.getIdentifier());
@@ -1783,7 +1783,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, IfStatement statement, boolean strict) {
+    public void visit(Object context, IfStatement statement, boolean strict) {
         LabelNode elseBranch = new LabelNode();
         LabelNode noElseBranch = new LabelNode();
         LabelNode end = new LabelNode();
@@ -1836,7 +1836,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
+    public void visit(Object context, InOperatorExpression expr, boolean strict) {
         LabelNode typeError = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -1887,7 +1887,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict) {
+    public void visit(Object context, OfOperatorExpression expr, boolean strict) {
         LabelNode typeError = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -1938,7 +1938,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, InstanceofExpression expr, boolean strict) {
+    public void visit(Object context, InstanceofExpression expr, boolean strict) {
         LabelNode typeError = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -1987,12 +1987,12 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, IntegerNumberExpression expr, boolean strict) {
+    public void visit(Object context, IntegerNumberExpression expr, boolean strict) {
         visit(context, (NumberLiteralExpression) expr, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
+    public void visit(Object context, LogicalExpression expr, boolean strict) {
         LabelNode end = new LabelNode();
 
         expr.getLhs().accept(context, this, strict);
@@ -2027,7 +2027,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, LogicalNotOperatorExpression expr, boolean strict) {
+    public void visit(Object context, LogicalNotOperatorExpression expr, boolean strict) {
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -2050,7 +2050,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, DotExpression expr, boolean strict) {
+    public void visit(Object context, DotExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         expr.getLhs().accept(context, this, strict);
@@ -2070,7 +2070,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, BracketExpression expr, boolean strict) {
+    public void visit(Object context, BracketExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         expr.getLhs().accept(context, this, strict);
@@ -2094,7 +2094,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict) {
+    public void visit(Object context, MultiplicativeExpression expr, boolean strict) {
         LabelNode doubleNums = new LabelNode();
         LabelNode returnNaN = new LabelNode();
         LabelNode end = new LabelNode();
@@ -2159,7 +2159,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
+    public void visit(Object context, NewOperatorExpression expr, boolean strict) {
         LabelNode end = new LabelNode();
         // 11.2.2
 
@@ -2184,11 +2184,11 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, NullLiteralExpression expr, boolean strict) {
+    public void visit(Object context, NullLiteralExpression expr, boolean strict) {
         getstatic(p(Types.class), "NULL", ci(Types.Null.class));
     }
 
-    public void visit(ExecutionContext context, NumberLiteralExpression expr, boolean strict) {
+    public void visit(Object context, NumberLiteralExpression expr, boolean strict) {
         String text = expr.getText();
 
         if (text.indexOf('.') == 0) {
@@ -2226,7 +2226,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ObjectLiteralExpression expr, boolean strict) {
+    public void visit(Object context, ObjectLiteralExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
 
@@ -2243,7 +2243,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, PostOpExpression expr, boolean strict) {
+    public void visit(Object context, PostOpExpression expr, boolean strict) {
         LabelNode doubleNum = new LabelNode();
         LabelNode invalid = new LabelNode();
         LabelNode end = new LabelNode();
@@ -2350,7 +2350,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, PreOpExpression expr, boolean strict) {
+    public void visit(Object context, PreOpExpression expr, boolean strict) {
         LabelNode storeNewValue = new LabelNode();
         LabelNode doubleNum = new LabelNode();
         LabelNode invalid = new LabelNode();
@@ -2445,7 +2445,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
+    public void visit(Object context, PropertyGet propertyGet, boolean strict) {
         // IN obj
         dup();
         // obj obj
@@ -2485,7 +2485,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
+    public void visit(Object context, PropertySet propertySet, boolean strict) {
         // IN obj
         dup();
         // obj obj
@@ -2525,7 +2525,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, NamedValue namedValue, boolean strict) {
+    public void visit(Object context, NamedValue namedValue, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // obj obj context
         ldc(namedValue.getName());
@@ -2554,7 +2554,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, RegexpLiteralExpression expr, boolean strict) {
+    public void visit(Object context, RegexpLiteralExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         ldc(expr.getPattern());
@@ -2566,7 +2566,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, RelationalExpression expr, boolean strict) {
+    public void visit(Object context, RelationalExpression expr, boolean strict) {
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -2635,7 +2635,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ReturnStatement statement, boolean strict) {
+    public void visit(Object context, ReturnStatement statement, boolean strict) {
         // 12.9
         if (statement.getExpr() == null) {
             append(jsPushUndefined());
@@ -2647,7 +2647,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, StrictEqualityOperatorExpression expr, boolean strict) {
+    public void visit(Object context, StrictEqualityOperatorExpression expr, boolean strict) {
         LabelNode returnTrue = new LabelNode();
         LabelNode returnFalse = new LabelNode();
         LabelNode end = new LabelNode();
@@ -2685,12 +2685,12 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, StringLiteralExpression expr, boolean strict) {
+    public void visit(Object context, StringLiteralExpression expr, boolean strict) {
         ldc(expr.getLiteral());
     }
 
     @Override
-    public void visit(ExecutionContext context, SwitchStatement statement, boolean strict) {
+    public void visit(Object context, SwitchStatement statement, boolean strict) {
         LabelNode end = new LabelNode();
 
         normalCompletion();
@@ -2832,7 +2832,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, TernaryExpression expr, boolean strict) {
+    public void visit(Object context, TernaryExpression expr, boolean strict) {
         LabelNode elseBranch = new LabelNode();
         LabelNode end = new LabelNode();
 
@@ -2859,13 +2859,13 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, ThisExpression expr, boolean strict) {
+    public void visit(Object context, ThisExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         invokevirtual(p(ExecutionContext.class), "getThisBinding", sig(Object.class));
     }
 
     @Override
-    public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
+    public void visit(Object context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         append(jsGetValue());
         // val
@@ -2886,7 +2886,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, TryStatement statement, boolean strict) {
+    public void visit(Object context, TryStatement statement, boolean strict) {
         LabelNode end = new LabelNode();
 
         LabelNode tryStart = new LabelNode();
@@ -3075,7 +3075,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, TypeOfOpExpression expr, boolean strict) {
+    public void visit(Object context, TypeOfOpExpression expr, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         expr.getExpr().accept(context, this, strict);
@@ -3085,7 +3085,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, UnaryMinusExpression expr, boolean strict) {
+    public void visit(Object context, UnaryMinusExpression expr, boolean strict) {
         LabelNode doubleNum = new LabelNode();
         LabelNode zero = new LabelNode();
         LabelNode end = new LabelNode();
@@ -3161,7 +3161,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, UnaryPlusExpression expr, boolean strict) {
+    public void visit(Object context, UnaryPlusExpression expr, boolean strict) {
         // 11.4.6
         expr.getExpr().accept(context, this, strict);
         // val
@@ -3171,7 +3171,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableDeclaration expr, boolean strict) {
+    public void visit(Object context, VariableDeclaration expr, boolean strict) {
         if (expr.getExpr() == null) {
             ldc(expr.getIdentifier());
             // str
@@ -3192,7 +3192,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableStatement statement, boolean strict) {
+    public void visit(Object context, VariableStatement statement, boolean strict) {
         for (VariableDeclaration each : statement.getVariableDeclarations()) {
             each.accept(context, this, strict);
             // identifier
@@ -3203,7 +3203,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
+    public void visit(Object context, VoidOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
         append(jsGetValue());
         pop();
@@ -3211,7 +3211,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, WhileStatement statement, boolean strict) {
+    public void visit(Object context, WhileStatement statement, boolean strict) {
         LabelNode end = new LabelNode();
         LabelNode breakTarget = new LabelNode();
         LabelNode continueTarget = new LabelNode();
@@ -3285,7 +3285,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     }
 
     @Override
-    public void visit(ExecutionContext context, WithStatement statement, boolean strict) {
+    public void visit(Object context, WithStatement statement, boolean strict) {
         aload(Arities.EXECUTION_CONTEXT);
         // context
         statement.getExpr().accept(context, this, strict);

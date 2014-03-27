@@ -66,11 +66,11 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
     }
 
     @Override
-    public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
+    public void visit(Object context, AdditiveExpression expr, boolean strict) {
         if (expr.getOp().equals("+")) {
-            visitPlus(context, expr, strict);
+            visitPlus((ExecutionContext) context, expr, strict);
         } else {
-            visitMinus(context, expr, strict);
+            visitMinus((ExecutionContext) context, expr, strict);
         }
     }
 

@@ -39,7 +39,7 @@ public class VariableDeclaration {
         return buf.toString();
     }
 
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
+    public void accept(Object context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
     }
 
