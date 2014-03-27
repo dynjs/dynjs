@@ -7,3 +7,6 @@ jdk:
   - openjdk7
 notifications:
   irc: "irc.freenode.org#dynjs"
+branches:
+  except:
+    - ir
