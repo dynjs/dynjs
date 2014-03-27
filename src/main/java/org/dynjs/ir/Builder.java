@@ -86,11 +86,12 @@ import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
 
 public class Builder implements CodeVisitor {
+    private static Builder BUILDER = new Builder();
+
     public static JSProgram compile(ProgramTree program) {
-        // FIXME: builder will be stateless so only construct one ever not one per compile
-        Builder builder = new Builder();
-        program.accept(null, builder, program.isStrict());
-        return null;  // FIXME: Make JSPRogram of result.
+        Scope scope = (Scope) program.accept(new Scope(), BUILDER, program.isStrict());
+
+        return new IRJSProgram(scope, program.getPosition().getFileName(), program.isStrict());
     }
 
     @Override
@@ -120,7 +121,9 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, BlockStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        Scope scope = (Scope) context;
+
+        return scope;
     }
 
     @Override

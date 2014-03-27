@@ -1,10 +1,13 @@
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class VariableDeclaration {
+    public static final List<VariableDeclaration> EMPTY_LIST = new ArrayList<>();
 
     private Position position;
     private String identifier;

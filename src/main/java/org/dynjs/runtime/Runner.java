@@ -82,6 +82,7 @@ public class Runner {
             JSProgram program = compile(tree);
 
             Completion completion = this.context.execute(program);
+            System.out.println("Completion: " + completion);
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(this.context, this.context.createSyntaxError("illegal break or continue"));
             }
@@ -126,6 +127,7 @@ public class Runner {
 
     private JSProgram compile(ProgramTree tree) {
         // FIXME: getCompiler will go away so just add special IR check for now.
+
         if (context.getConfig().getCompileMode() == Config.CompileMode.IR) {
             return Builder.compile(tree);
         }
