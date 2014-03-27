@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dynjs.ir;
+package org.dynjs.ir.instructions;
 
-public class Instruction {
-    /**
-     * This instruction can set or hint or some useful information onto the scope it belongs
-     * to.
-     *
-     * @param scope is where this instruciton lives
-     * @return true if scope had information added otherwise return false
-     */
-    public boolean computeScopeFlags(Scope scope) {
-        return false;
+import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
+
+/**
+ * Return from the current scope with the provided operand (or undefined).
+ * This instruction will be added if one is not explicitly present in the
+ * underlying program.
+ */
+public class ReturnInstruction extends Instruction {
+    private Operand value;
+
+    public ReturnInstruction(Operand value) {
+        this.value = value;
+    }
+
+    public Operand getValue() {
+        return value;
+    }
+
+    public String toString() {
+        return "return " + getValue() + ";";
     }
 }
