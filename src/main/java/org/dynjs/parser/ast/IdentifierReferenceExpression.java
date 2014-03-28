@@ -48,7 +48,7 @@ public class IdentifierReferenceExpression extends BaseExpression {
     }
 
     public String dumpData() {
-        return "'" + identifier + "'";
+        return identifier;
     }
     
     public int getSizeMetric() {

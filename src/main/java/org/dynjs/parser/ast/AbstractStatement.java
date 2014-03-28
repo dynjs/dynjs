@@ -161,7 +161,13 @@ public abstract class AbstractStatement implements Statement {
     }
 
     public String dump(String indent) {
-        return indent + getClass().getSimpleName() + ":" + getPosition().getLine() + "\n";
+        String data = dumpData();
+
+        return indent + getClass().getSimpleName() + ":" + getPosition().getLine() + " " +
+                (data != null ? (" (" + data + ")") : "") + "\n";
     }
 
+    public String dumpData() {
+        return null;
+    }
 }

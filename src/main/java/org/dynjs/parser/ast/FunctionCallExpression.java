@@ -75,7 +75,7 @@ public class FunctionCallExpression extends AbstractExpression {
         buffer.append( super.dump( indent ) );
         buffer.append( this.memberExpr.dump( indent + "  " ) );
         for ( Expression arg : argExprs ) {
-            buffer.append( arg.dump( indent + "  - " ) );
+            buffer.append( arg.dump( indent + "  " ) );
         }
         return buffer.toString();
     }
