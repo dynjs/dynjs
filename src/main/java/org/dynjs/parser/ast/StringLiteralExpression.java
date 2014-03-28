@@ -59,8 +59,8 @@ public class StringLiteralExpression extends BaseExpression {
         return 1;
     }
     
-    public String dump(String indent) {
-        return super.dump(indent) + indent + "[" + toString() + "]";
+    public String dumpData() {
+        return "\"" + this.literal + "\"";
     }
 
     @Override
