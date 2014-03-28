@@ -374,6 +374,25 @@
                             <outputDirectory>${project.build.directory}/fixtures</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>benchmark</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.mozilla</groupId>
+                                    <artifactId>rhino</artifactId>
+                                    <version>1.7R4</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/benchmark</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
