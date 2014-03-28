@@ -27,6 +27,8 @@ import org.dynjs.runtime.ExecutionContext;
 public class BlockStatement extends AbstractStatement {
 
     private final List<Statement> blockContent;
+    private List<FunctionDeclaration> functionDeclarations = null;
+    private List<VariableDeclaration> variableDeclarations = null;
 
     public BlockStatement(final List<Statement> blockContent) {
         this.blockContent = blockContent;
@@ -69,6 +71,10 @@ public class BlockStatement extends AbstractStatement {
     }
 
     public List<FunctionDeclaration> getFunctionDeclarations() {
+        if (this.functionDeclarations != null) {
+            return this.functionDeclarations;
+        }
+
         if (this.blockContent == null) {
             return Collections.emptyList();
         }
@@ -82,10 +88,16 @@ public class BlockStatement extends AbstractStatement {
             decls.addAll(each.getFunctionDeclarations());
         }
 
+        this.functionDeclarations = decls;
+
         return decls;
     }
 
     public List<VariableDeclaration> getVariableDeclarations() {
+        if (this.variableDeclarations != null) {
+            return this.variableDeclarations;
+        }
+
         List<VariableDeclaration> decls = new ArrayList<>();
         for (Statement each : this.blockContent) {
             if (each instanceof VariableStatement) {
@@ -95,6 +107,9 @@ public class BlockStatement extends AbstractStatement {
                 decls.addAll(each.getVariableDeclarations());
             }
         }
+
+        this.variableDeclarations = decls;
+
         return decls;
     }
 
