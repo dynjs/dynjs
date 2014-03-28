@@ -82,7 +82,6 @@ public class Runner {
             JSProgram program = compile(tree);
 
             Completion completion = this.context.execute(program);
-            System.out.println("Completion: " + completion);
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(this.context, this.context.createSyntaxError("illegal break or continue"));
             }
