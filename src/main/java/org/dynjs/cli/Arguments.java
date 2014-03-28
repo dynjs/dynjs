@@ -27,6 +27,7 @@ import java.util.List;
 
 public class Arguments {
 
+    static final String AST = "--ast";
     static final String CONSOLE = "--console";
     static final String HELP = "--help";
     static final String VERSION = "--version";
@@ -37,6 +38,9 @@ public class Arguments {
     public static final String VERSION_SHORT = "-v";
     public static final String HELP_SHORT = "-h";
     public static final String CLASSPATH_SHORT = "-cp";
+
+    @Option(name = AST, usage = "Displays sources AST")
+    private boolean ast;
 
     @Option(name = CONSOLE, usage = "Opens a REPL console.")
     private boolean console;
@@ -75,6 +79,10 @@ public class Arguments {
             }
         }
         return config;
+    }
+
+    public boolean isAST() {
+        return ast;
     }
 
     public boolean isEmpty() {

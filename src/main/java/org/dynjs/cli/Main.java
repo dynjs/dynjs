@@ -56,6 +56,8 @@ public class Main {
                 showUsage();
             } else if (dynJsArguments.isProperties()) {
                 showProperties();
+            } else if (dynJsArguments.isAST()) {
+                showAST(dynJsArguments.getFilename());
             } else if (dynJsArguments.getFilename() != null) {
                 executeFile(dynJsArguments.getFilename());
             } else if (dynJsArguments.isConsole()) {
@@ -68,6 +70,15 @@ public class Main {
             stream.println(e.getMessage());
             stream.println();
             showUsage();
+        }
+    }
+
+    private void showAST(String filename) throws IOException {
+        try {
+            initializeRuntime();
+            stream.println(runtime.newRunner().withSource( new File( filename ) ).parseSourceCode().dump("  "));
+        } catch (FileNotFoundException e) {
+            stream.println("File " + filename + " not found");
         }
     }
 
