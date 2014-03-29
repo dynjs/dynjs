@@ -20,11 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.dynjs.ir.operands.LocalVariable;
+import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
 
 // FIXME: Modelled as single scope now but I doubt this will hold for long.
 public class Scope {
     private Scope parent;
+
+    private Map<Integer, Variable> temporaryVariables = new HashMap<>();
+    private int temporaryVariablesIndex = 0;
 
     private Map<String, Variable> localVariables = new HashMap<>();
     // What next variable index will be (also happens to be current size
@@ -67,10 +71,25 @@ public class Scope {
         Variable variable = findVariable(name);
 
         if (variable == null) {
-            variable = new LocalVariable(name, localVariablesIndex);
+            variable = new LocalVariable(this, name, localVariablesIndex);
             localVariables.put(name, variable);
             localVariablesIndex++;
         }
+
+        return variable;
+    }
+
+    // FIXME: Do I care about all the boxing here of index?
+    public Variable acquireTemporaryVariable(int index) {
+        Variable variable = temporaryVariables.get(index);
+
+        return variable == null ? createTemporaryVariable() : variable;
+    }
+
+    public Variable createTemporaryVariable() {
+        Variable variable = new TemporaryVariable(temporaryVariablesIndex);
+
+        temporaryVariablesIndex++;
 
         return variable;
     }

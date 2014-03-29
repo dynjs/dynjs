@@ -1,7 +1,8 @@
 package org.dynjs.ir.operands;
 
+import org.dynjs.ir.Scope;
+
 /**
- * Local variable in the current scope.
  * Offset is an identifier for the JIT and a location
  * identifier for the Interpreter.
  */
@@ -9,7 +10,7 @@ public class LocalVariable extends Variable {
     private String name;
     private int offset;
 
-    public LocalVariable(String name, int offset) {
+    public LocalVariable(Scope scope, String name, int offset) {
         this.name = name;
         this.offset = offset;
     }
