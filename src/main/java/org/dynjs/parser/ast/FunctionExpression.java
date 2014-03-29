@@ -42,6 +42,14 @@ public class FunctionExpression extends AbstractExpression {
         return this.descriptor.getSizeMetric() + 15;
     }
 
+    public String dump(String indent) {
+        return super.dump(indent) + this.descriptor.getBlock().dump(indent + "  ");
+    }
+
+    public String dumpData() {
+        return "function(" + this.descriptor.getFormalParametersAsString() + ")";
+    }
+
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");

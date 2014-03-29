@@ -66,27 +66,14 @@ public class FunctionDeclaration extends AbstractStatement {
     }
 
     public String dumpData() {
-        return this.getIdentifier() + "(" + this.getFormalParametersAsString() + ")";
+        return this.getIdentifier() + "(" + this.descriptor.getFormalParametersAsString() + ")";
     }
 
-    private String getFormalParametersAsString() {
-        StringBuilder buf = new StringBuilder();
-
-        String[] params = this.descriptor.getFormalParameterNames();
-        for (int i = 0; i < params.length; ++i) {
-            if (i > 0) {
-                buf.append(", ");
-            }
-            buf.append(params[i]);
-        }
-
-        return buf.toString();
-    }
 
     public String toIndentedString(String indent) {
         StringBuilder buf = new StringBuilder();
         buf.append(indent).append("function").append(this.descriptor.getIdentifier() == null ? "" : " " + this.descriptor.getIdentifier()).append("(");
-        buf.append(getFormalParametersAsString());
+        buf.append(this.descriptor.getFormalParametersAsString());
         buf.append(") {\n");
         buf.append(this.descriptor.getBlock().toIndentedString(indent + "  "));
         buf.append("}");
