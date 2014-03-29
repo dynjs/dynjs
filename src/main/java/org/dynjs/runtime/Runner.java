@@ -109,7 +109,7 @@ public class Runner {
         }
     }
 
-    private ProgramTree parseSourceCode() {
+    public ProgramTree parseSourceCode() {
         JavascriptParser parser = new JavascriptParser( this.context );
         try {
             return parser.parse(this.source, this.fileName, this.forceStrict );

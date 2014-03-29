@@ -48,6 +48,20 @@ public class FunctionDescriptor {
         return names;
     }
 
+    public String getFormalParametersAsString() {
+        StringBuilder buf = new StringBuilder();
+
+        String[] params = getFormalParameterNames();
+        for (int i = 0; i < params.length; ++i) {
+            if (i > 0) {
+                buf.append(", ");
+            }
+            buf.append(params[i]);
+        }
+
+        return buf.toString();
+    }
+
     public Position getPosition() {
         return this.position;
     }

@@ -34,7 +34,7 @@ public class VariableDeclaration {
     public String dump(String indent) {
         StringBuilder buf = new StringBuilder();
 
-        buf.append(indent + "var " + this.identifier + "\n");
+        buf.append(indent + getClass().getSimpleName() + "(" + this.identifier + ")\n");
         if (this.expr != null) {
             buf.append(this.expr.dump(indent + "  "));
         }

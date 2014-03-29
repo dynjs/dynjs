@@ -45,6 +45,10 @@ public abstract class NumberLiteralExpression extends BaseExpression {
     public String toString() {
         return this.text;
     }
+
+    public String dumpData() {
+        return this.text;
+    }
     
     public int getSizeMetric() {
         return 3;

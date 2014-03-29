@@ -58,7 +58,11 @@ public class DotExpression extends AbstractExpression {
     }
     
     public String dump(String indent) {
-        return super.dump(indent) + getLhs().dump( indent + "  " ) + this.identifier;
+        return super.dump(indent) + getLhs().dump(indent + "  ");
+    }
+
+    public String dumpData() {
+        return this.identifier;
     }
 
     @Override

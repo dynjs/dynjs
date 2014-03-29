@@ -66,6 +66,16 @@ public class ArrayLiteralExpression extends BaseExpression {
         return size + 3;
     }
 
+    public String dump(String indent) {
+        StringBuilder buf = new StringBuilder(super.dump(indent));
+
+        for (Expression expr: this.exprs) {
+            buf.append(expr.dump(indent + "  "));
+        }
+
+        return buf.toString();
+    }
+
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("[");

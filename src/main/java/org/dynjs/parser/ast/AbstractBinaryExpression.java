@@ -44,7 +44,11 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     }
 
     public String dump(String indent) {
-        return super.dump(indent) + this.lhs.dump(indent + "  ") + "\n" + this.rhs.dump(indent + "  ");
+        return super.dump(indent) + this.lhs.dump(indent + "  ") + this.rhs.dump(indent + "  ");
+    }
+
+    public String dumpData() {
+        return this.op;
     }
 
     public String toString() {

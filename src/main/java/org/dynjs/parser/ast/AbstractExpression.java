@@ -26,7 +26,14 @@ public abstract class AbstractExpression implements Expression {
     public abstract Position getPosition();
 
     public String dump(String indent) {
-        return indent + getClass().getName() + "\n";
+        String data = dumpData();
+
+        return indent + getClass().getSimpleName() + ":" + getPosition().getLine() + " " +
+                (data != null ? (" (" + data + ")") : "") + "\n";
+    }
+
+    public String dumpData() {
+        return null;
     }
     
     public List<FunctionDeclaration> getFunctionDeclarations() {
