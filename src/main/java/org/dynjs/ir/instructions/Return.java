@@ -23,10 +23,10 @@ import org.dynjs.ir.Operand;
  * This instruction will be added if one is not explicitly present in the
  * underlying program.
  */
-public class ReturnInstruction extends Instruction {
+public class Return extends Instruction {
     private Operand value;
 
-    public ReturnInstruction(Operand value) {
+    public Return(Operand value) {
         this.value = value;
     }
 

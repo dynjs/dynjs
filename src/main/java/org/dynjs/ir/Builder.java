@@ -15,7 +15,11 @@
  */
 package org.dynjs.ir;
 
+import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
+import org.dynjs.ir.operands.Undefined;
+import org.dynjs.ir.operands.Variable;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AdditiveExpression;
@@ -38,6 +42,7 @@ import org.dynjs.parser.ast.DoWhileStatement;
 import org.dynjs.parser.ast.DotExpression;
 import org.dynjs.parser.ast.EmptyStatement;
 import org.dynjs.parser.ast.EqualityOperatorExpression;
+import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.ExpressionStatement;
 import org.dynjs.parser.ast.FloatingNumberExpression;
 import org.dynjs.parser.ast.ForExprInStatement;
@@ -91,7 +96,7 @@ public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
     public static JSProgram compile(ProgramTree program) {
-        Scope scope = (Scope) program.accept(new Scope(), BUILDER, program.isStrict());
+        Scope scope = (Scope) program.accept(new Scope(null), BUILDER, program.isStrict());
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
@@ -357,7 +362,12 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, ReturnStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        Scope scope = (Scope) context;
+        Operand returnValue = (Operand) acceptOrUndefined(context, statement.getExpr(), strict);
+
+        scope.addInstruction(new Return(returnValue));
+
+        return returnValue;
     }
 
     @Override
@@ -412,7 +422,13 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, VariableDeclaration expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+        Variable variable = scope.acquireLocalVariable(expr.getIdentifier());
+        Operand value = (Operand) acceptOrUndefined(context, expr.getExpr(), strict);
+
+        scope.addInstruction(new Copy(variable, value));
+
+        return value;
     }
 
     @Override
@@ -437,5 +453,9 @@ public class Builder implements CodeVisitor {
 
     private Object unimplemented(Object context, Object expr, boolean strict) {
         throw new RuntimeException("EXPR: '" + expr + "' is unimplemented.");
+    }
+
+    private Object acceptOrUndefined(Object context, Expression expr, boolean strict) {
+        return expr != null ? expr.accept(context, this, strict) : Undefined.UNDEFINED;
     }
 }

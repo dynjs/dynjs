@@ -15,5 +15,63 @@
  */
 package org.dynjs.ir;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.dynjs.ir.operands.LocalVariable;
+import org.dynjs.ir.operands.Variable;
+
+// FIXME: Modelled as single scope now but I doubt this will hold for long.
 public class Scope {
+    private Scope parent;
+
+    private Map<String, Variable> localVariables = new HashMap<>();
+    // What next variable index will be (also happens to be current size
+    private int localVariablesIndex = 0;
+
+    private List<Instruction> instructions = new ArrayList<>();
+
+    public Scope(Scope parent) {
+        this.parent = parent;
+    }
+
+    public Instruction addInstruction(Instruction instruction) {
+        instructions.add(instruction);
+
+        return instruction;
+    }
+
+    /**
+     * Tries to find a variable or returns null if it cannot.  This
+     * will walk all scopes to find a captured variable.
+     */
+    public Variable findVariable(String name) {
+        Variable variable = localVariables.get(name);
+
+        if (variable != null) {
+            return variable;
+        }
+
+        if (parent != null) {
+            return parent.findVariable(name);
+        }
+
+        return null;
+    }
+
+    /**
+     * Return an existing variable or return a new one made in this scope.
+     */
+    public Variable acquireLocalVariable(String name) {
+        Variable variable = findVariable(name);
+
+        if (variable == null) {
+            variable = new LocalVariable(name, localVariablesIndex);
+            localVariables.put(name, variable);
+            localVariablesIndex++;
+        }
+
+        return variable;
+    }
 }
