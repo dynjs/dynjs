@@ -18,6 +18,8 @@ package org.dynjs.ir;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
+import org.dynjs.ir.operands.FloatNumber;
+import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.parser.CodeVisitor;
@@ -213,7 +215,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, FloatingNumberExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        return new FloatNumber(expr.getValue());
     }
 
     @Override
@@ -288,7 +290,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, IntegerNumberExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        return new IntegerNumber(expr.getValue());
     }
 
     @Override

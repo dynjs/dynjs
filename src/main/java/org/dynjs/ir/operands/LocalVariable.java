@@ -1,6 +1,7 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Scope;
+import org.dynjs.runtime.Types;
 
 /**
  * Offset is an identifier for the JIT and a location
@@ -8,19 +9,20 @@ import org.dynjs.ir.Scope;
  */
 public class LocalVariable extends Variable {
     private String name;
-    private int offset;
 
     public LocalVariable(Scope scope, String name, int offset) {
-        this.name = name;
-        this.offset = offset;
-    }
+        super(offset);
 
-    public int getOffset() {
-        return offset;
+        this.name = name;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Object retrieve(Object[] temps, Object[] vars) {
+        return vars[getOffset()];
     }
 }

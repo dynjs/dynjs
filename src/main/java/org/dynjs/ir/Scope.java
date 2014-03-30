@@ -46,6 +46,10 @@ public class Scope {
         return instruction;
     }
 
+    public List<Instruction> getInstructions() {
+        return instructions;
+    }
+
     /**
      * Tries to find a variable or returns null if it cannot.  This
      * will walk all scopes to find a captured variable.
@@ -62,6 +66,10 @@ public class Scope {
         }
 
         return null;
+    }
+
+    public int getLocalVariableSize() {
+        return localVariablesIndex;
     }
 
     /**
@@ -92,5 +100,9 @@ public class Scope {
         temporaryVariablesIndex++;
 
         return variable;
+    }
+
+    public int getTemporaryVariableSize() {
+        return temporaryVariablesIndex;
     }
 }

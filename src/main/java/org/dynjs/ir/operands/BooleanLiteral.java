@@ -15,4 +15,9 @@ public class BooleanLiteral extends Operand {
     public String toString() {
         return "" + truth;
     }
+
+    @Override
+    public Object retrieve(Object[] temps, Object[] vars) {
+        return truth;
+    }
 }

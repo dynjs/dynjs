@@ -15,5 +15,6 @@
  */
 package org.dynjs.ir;
 
-public class Operand {
+public abstract class Operand {
+    public abstract Object retrieve(Object[] temps, Object[] vars);
 }

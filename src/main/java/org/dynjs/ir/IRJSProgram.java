@@ -16,11 +16,17 @@
 package org.dynjs.ir;
 
 import java.util.List;
+import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.Return;
+import org.dynjs.ir.operands.LocalVariable;
+import org.dynjs.ir.operands.Variable;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.Types;
 
 public class IRJSProgram implements JSProgram {
     private Scope scope;
@@ -34,9 +40,28 @@ public class IRJSProgram implements JSProgram {
     }
     @Override
     public Completion execute(ExecutionContext context) {
-        // FIXME: Do something with instructions generated from scope
-        // FIXME: Figure out how Completion works
-        return null;
+        Object result = Types.UNDEFINED;
+        Object[] temps = new Object[scope.getTemporaryVariableSize()];
+        Object[] vars = new Object[scope.getLocalVariableSize()];
+
+        for (Instruction instr: scope.getInstructions()) {
+            if (instr instanceof Copy) {
+                Variable variable = ((Copy) instr).getResult();
+                int offset = variable.getOffset();
+                Object value = ((Copy) instr).getValue().retrieve(temps, vars);
+
+                if (variable instanceof LocalVariable) {
+                    vars[offset] = value;
+                } else {
+                    temps[offset] = value;
+                }
+            } else if (instr instanceof Return) {
+                result = ((Return) instr).getValue().retrieve(temps, vars);
+                break;
+            }
+        }
+
+        return Completion.createNormal(result);
     }
 
     @Override
