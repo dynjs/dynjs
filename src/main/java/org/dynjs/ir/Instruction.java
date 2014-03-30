@@ -26,4 +26,11 @@ public class Instruction {
     public boolean computeScopeFlags(Scope scope) {
         return false;
     }
+
+    /**
+     * Dump out this instruction in a string frield format for debugging purposes.
+     */
+    public String dump(String indent) {
+        return indent + getClass().getSimpleName();
+    }
 }

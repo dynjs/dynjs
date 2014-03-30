@@ -16,5 +16,7 @@
 package org.dynjs.ir;
 
 public abstract class Operand {
-    public abstract Object retrieve(Object[] temps, Object[] vars);
+    public Object retrieve(Object[] temps, Object[] vars) {
+        throw new RuntimeException("Operand: " + getClass().getSimpleName() + "should not be retrieved.");
+    }
 }

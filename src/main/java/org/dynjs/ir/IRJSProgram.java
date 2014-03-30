@@ -27,6 +27,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
 import org.dynjs.runtime.Types;
+import org.jruby.dirgra.DirectedGraph;
 
 public class IRJSProgram implements JSProgram {
     private Scope scope;

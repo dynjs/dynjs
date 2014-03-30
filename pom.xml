@@ -18,6 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.aesh>0.38</version.aesh>
+        <version.dirgra>0.1</version.dirgra>
         <version.invokebinder>1.2</version.invokebinder>
         <version.jitescript>0.3.1</version.jitescript>
         <version.joni>2.1.0</version.joni>
@@ -114,6 +115,12 @@
             <groupId>org.projectodd.rephract</groupId>
             <artifactId>rephract</artifactId>
             <version>${version.rephract}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>dirgra</artifactId>
+            <version>${version.dirgra}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

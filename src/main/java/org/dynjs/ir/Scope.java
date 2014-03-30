@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
@@ -104,5 +105,9 @@ public class Scope {
 
     public int getTemporaryVariableSize() {
         return temporaryVariablesIndex;
+    }
+
+    public Label getNewLabel() {
+        return new Label(); // FIXME: Actually implement label operand
     }
 }
