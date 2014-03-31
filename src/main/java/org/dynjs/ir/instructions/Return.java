@@ -37,4 +37,8 @@ public class Return extends Instruction {
     public String toString() {
         return "return " + getValue() + ";";
     }
+
+    public boolean transfersControl() {
+        return true;
+    }
 }

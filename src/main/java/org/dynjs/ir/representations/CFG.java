@@ -8,6 +8,13 @@ import java.util.Map;
 import java.util.Stack;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Scope;
+import org.dynjs.ir.instructions.Branch;
+import org.dynjs.ir.instructions.ExceptionRegionEndMarker;
+import org.dynjs.ir.instructions.ExceptionRegionStartMarker;
+import org.dynjs.ir.instructions.Jump;
+import org.dynjs.ir.instructions.LabelInstr;
+import org.dynjs.ir.instructions.Return;
+import org.dynjs.ir.instructions.ThrowException;
 import org.dynjs.ir.operands.Label;
 import org.jruby.dirgra.DirectedGraph;
 
@@ -29,7 +36,11 @@ public class CFG {
     private BasicBlock entryBB;
     private BasicBlock exitBB;
 
-    /** The graph itself */
+    /**
+     * BB that traps all exception-edges out of the CFG.  frame popping & clean up loc.
+     */
+    private BasicBlock globalEnsureBB;
+
     private DirectedGraph<BasicBlock> graph;
 
     private int nextBBId;       // Next available basic block id
@@ -74,8 +85,77 @@ public class CFG {
         // First real bb
         BasicBlock firstBB = createBB(nestedExceptionRegions);
 
+        // Build the rest!
+        BasicBlock currBB = firstBB;
+        BasicBlock newBB;
+        boolean bbEnded = false;
+        boolean nextBBIsFallThrough = true;
         for (Instruction i : instructions) {
-            // FIXME: bleh
+            if (i instanceof LabelInstr) {
+                Label l = ((LabelInstr) i).getLabel();
+                newBB = createBB(l, nestedExceptionRegions);
+
+                // Jump instruction bbs dont add an edge to the succeeding bb by default
+                if (nextBBIsFallThrough) graph.addEdge(currBB, newBB, EdgeType.FALL_THROUGH);
+                currBB = newBB;
+                bbEnded = false;
+                nextBBIsFallThrough = true;
+
+                // Add forward reference edges
+                List<BasicBlock> frefs = forwardRefs.get(l);
+                if (frefs != null) {
+                    for (BasicBlock b : frefs) {
+                        graph.addEdge(b, newBB, EdgeType.REGULAR);
+                    }
+                }
+            } else if (bbEnded && i instanceof ExceptionRegionEndMarker) {
+                newBB = createBB(nestedExceptionRegions);
+                // Jump instruction bbs dont add an edge to the succeeding bb by default
+                if (nextBBIsFallThrough) graph.addEdge(currBB, newBB, EdgeType.FALL_THROUGH); // currBB cannot be null!
+                currBB = newBB;
+                bbEnded = false;
+                nextBBIsFallThrough = true;
+            }
+
+            if (i instanceof ExceptionRegionStartMarker) {
+                // We dont need the instruction anymore -- so it is not added to the CFG.
+                ExceptionRegionStartMarker ersmi = (ExceptionRegionStartMarker) i;
+                ExceptionRegion rr = new ExceptionRegion(ersmi.getLabel(), currBB);
+                rr.addBB(currBB);
+                allExceptionRegions.add(rr);
+
+                if (!nestedExceptionRegions.empty()) {
+                    nestedExceptionRegions.peek().addNestedRegion(rr);
+                }
+
+                nestedExceptionRegions.push(rr);
+            } else if (i instanceof ExceptionRegionEndMarker) {
+                // We dont need the instruction anymore -- so it is not added to the CFG.
+                nestedExceptionRegions.pop().setEndBB(currBB);
+            } else if (i.transfersControl()) {
+                bbEnded = true;
+                currBB.addInstr(i);
+                Label tgt;
+                nextBBIsFallThrough = false;
+                if (i instanceof Branch) {
+                    tgt = ((Branch) i).getTarget();
+                    nextBBIsFallThrough = true;
+                } else if (i instanceof Jump) {
+                    tgt = ((Jump) i).getTarget();
+                } else if (i instanceof Return) {
+                    tgt = null;
+                    returnBBs.add(currBB);
+                } else if (i instanceof ThrowException) {
+                    tgt = null;
+                    exceptionBBs.add(currBB);
+                } else {
+                    throw new RuntimeException("Unhandled case in CFG builder for basic block ending instr: " + i);
+                }
+
+                if (tgt != null) addEdge(currBB, tgt, forwardRefs);
+            } else if (!(i instanceof LabelInstr)) {
+                currBB.addInstr(i);
+            }
         }
 
         return graph;
@@ -100,5 +180,32 @@ public class CFG {
 
         // Reset so later dataflow analyses get all basic blocks
         postOrderList = null;
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void addEdge(BasicBlock source, BasicBlock destination, Object type) {
+        graph.findOrCreateVertexFor(source).addEdgeTo(destination, type);
+    }
+
+    private void addEdge(BasicBlock src, Label targetLabel, Map<Label, List<BasicBlock>> forwardRefs) {
+        BasicBlock target = bbMap.get(targetLabel);
+
+        if (target != null) {
+            graph.addEdge(src, target, EdgeType.REGULAR);
+            return;
+        }
+
+        // Add a forward reference from target -> source
+        List<BasicBlock> forwardReferences = forwardRefs.get(targetLabel);
+
+        if (forwardReferences == null) {
+            forwardReferences = new ArrayList<BasicBlock>();
+            forwardRefs.put(targetLabel, forwardReferences);
+        }
+
+        forwardReferences.add(src);
     }
 }

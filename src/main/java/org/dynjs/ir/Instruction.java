@@ -38,6 +38,11 @@ public class Instruction {
         return false;
     }
 
+    // jump/branch/return/exception (e.g. can jump out of current instr list)
+    public boolean transfersControl() {
+        return false;
+    }
+
     /**
      * Dump out this instruction in a string frield format for debugging purposes.
      */
