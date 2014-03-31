@@ -135,9 +135,12 @@ public class Builder implements CodeVisitor {
         Scope scope = (Scope) context;
 
         // FIXME: How can we use what the parser provides to good effect?
+        Operand value = Undefined.UNDEFINED;
         for (Statement statement: block.getBlockContent()) {
-            statement.accept(context, this, strict);
+            value = (Operand) statement.accept(context, this, strict);
         }
+
+        scope.addInstruction(new Return(value));
 
         return scope;
     }
@@ -265,7 +268,9 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+
+        return scope.findVariable(expr.getIdentifier());
     }
 
     @Override
@@ -441,7 +446,11 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, VariableStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        for (VariableDeclaration decl: statement.getVariableDeclarations()) {
+            decl.accept(context, this, strict);
+        }
+
+        return Undefined.UNDEFINED;
     }
 
     @Override

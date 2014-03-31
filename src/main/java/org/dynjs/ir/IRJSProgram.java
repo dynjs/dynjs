@@ -62,6 +62,8 @@ public class IRJSProgram implements JSProgram {
             }
         }
 
+        System.out.println("RESULT is " + result);
+
         return Completion.createNormal(result);
     }
 
