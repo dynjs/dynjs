@@ -98,6 +98,10 @@ public class BasicBlock implements ExplicitVertexID, Comparable {
         return 1;
     }
 
+    public void swallowBB(BasicBlock foodBB) {
+        instructions.addAll(foodBB.getInstructions());
+    }
+
     @Override
     public String toString() {
         return "BB [" + id + ":" + label + "]";

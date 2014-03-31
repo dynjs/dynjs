@@ -44,6 +44,13 @@ public class Instruction {
     }
 
     /**
+     * Can this instruction potentially raise a JS Exception?
+     */
+    public boolean canRaiseException() {
+        return false;
+    }
+
+    /**
      * Dump out this instruction in a string frield format for debugging purposes.
      */
     public String dump(String indent) {

@@ -1,10 +1,13 @@
 package org.dynjs.ir.representations;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Scope;
@@ -17,6 +20,7 @@ import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.instructions.ThrowException;
 import org.dynjs.ir.operands.Label;
 import org.jruby.dirgra.DirectedGraph;
+import org.jruby.dirgra.Edge;
 
 /**
   */
@@ -177,6 +181,8 @@ public class CFG {
             }
         }
 
+        buildExitBasicBlock(nestedExceptionRegions, firstBB, returnBBs, exceptionBBs, nextBBIsFallThrough, currBB, entryBB);
+
         return graph;
     }
 
@@ -226,6 +232,178 @@ public class CFG {
         }
 
         forwardReferences.add(src);
+    }
+
+    /**
+     * Create special empty exit BasicBlock that all BasicBlocks will eventually
+     * flow into.  All Edges to this 'dummy' BasicBlock will get marked with
+     * an edge type of EXIT.
+     *
+     * Special BasicBlocks worth noting:
+     * 1. Exceptions, Returns, Entry(why?) -> ExitBB
+     * 2. Returns -> ExitBB
+     */
+    private BasicBlock buildExitBasicBlock(Stack<ExceptionRegion> nestedExceptionRegions, BasicBlock firstBB,
+                                           List<BasicBlock> returnBBs, List<BasicBlock> exceptionBBs, boolean nextIsFallThrough, BasicBlock currBB, BasicBlock entryBB) {
+        exitBB = createBB(nestedExceptionRegions);
+
+        graph.addEdge(entryBB, exitBB, EdgeType.EXIT);
+        graph.addEdge(entryBB, firstBB, EdgeType.FALL_THROUGH);
+
+        for (BasicBlock rb : returnBBs) {
+            graph.addEdge(rb, exitBB, EdgeType.EXIT);
+        }
+
+        for (BasicBlock rb : exceptionBBs) {
+            graph.addEdge(rb, exitBB, EdgeType.EXIT);
+        }
+
+        if (nextIsFallThrough) graph.addEdge(currBB, exitBB, EdgeType.EXIT);
+
+        return exitBB;
+    }
+
+    public void collapseStraightLineBBs() {
+        // Collect cfgs in a list first since the cfg/graph API returns an iterator
+        // over live data.  But, basic block merging modifies that live data.
+        //
+        // SSS FIXME: So, we need a cfg/graph API that returns an iterator over
+        // frozen data rather than live data.
+        List<BasicBlock> cfgBBs = new ArrayList<BasicBlock>();
+        for (BasicBlock b: getBasicBlocks()) cfgBBs.add(b);
+
+        Set<BasicBlock> mergedBBs = new HashSet<BasicBlock>();
+        for (BasicBlock b: cfgBBs) {
+            if (!mergedBBs.contains(b) && (outDegree(b) == 1)) {
+                for (Edge<BasicBlock> e : getOutgoingEdges(b)) {
+                    BasicBlock outB = e.getDestination().getData();
+                    if ((e.getType() != EdgeType.EXCEPTION) && (inDegree(outB) == 1) && (mergeBBs(b, outB) == true)) {
+                        mergedBBs.add(outB);
+                    }
+                }
+            }
+        }
+    }
+
+    private void deleteOrphanedBlocks(DirectedGraph<BasicBlock> graph) {
+        // System.out.println("\nGraph:\n" + toStringGraph());
+        // System.out.println("\nInstructions:\n" + toStringInstrs());
+
+        // FIXME: Quick and dirty implementation
+        while (true) {
+            BasicBlock bbToRemove = null;
+            for (BasicBlock b : graph.allData()) {
+                if (b == entryBB) continue; // Skip entry bb!
+
+                // Every other bb should have at least one incoming edge
+                if (graph.findVertexFor(b).getIncomingEdges().isEmpty()) {
+                    bbToRemove = b;
+                    break;
+                }
+            }
+            if (bbToRemove == null) break;
+
+            removeBB(bbToRemove);
+        }
+    }
+
+    public Collection<BasicBlock> getBasicBlocks() {
+        return graph.allData();
+    }
+
+    public Set<Edge<BasicBlock>> getOutgoingEdges(BasicBlock block) {
+        return graph.findVertexFor(block).getOutgoingEdges();
+    }
+
+    public BasicBlock getRescuerBBFor(BasicBlock block) {
+        return rescuerMap.get(block);
+    }
+
+    public int inDegree(BasicBlock b) {
+        return graph.findVertexFor(b).inDegree();
+    }
+
+    private boolean mergeBBs(BasicBlock a, BasicBlock b) {
+        BasicBlock aR = getRescuerBBFor(a);
+        BasicBlock bR = getRescuerBBFor(b);
+        // We can merge 'a' and 'b' if one of the following is true:
+        // 1. 'a' and 'b' are both not empty
+        //    They are protected by the same rescue block.
+        //    NOTE: We need not check the ensure block map because all ensure blocks are already
+        //    captured in the bb rescue block map.  So, if aR == bR, it is guaranteed that the
+        //    ensure blocks for the two are identical.
+        // 2. One of 'a' or 'b' is empty.  We dont need to check for rescue block match because
+        //    an empty basic block cannot raise an exception, can it?
+        if ((aR == bR) || a.isEmpty() || b.isEmpty()) {
+            // First, remove straight-line jump, if present
+            Instruction lastInstr = a.getLastInstr();
+            if (lastInstr instanceof Jump) a.removeInstr(lastInstr);
+
+            // Swallow b's instrs.
+            a.swallowBB(b);
+
+            // Fixup edges
+            graph.removeEdge(a, b);
+            for (Edge<BasicBlock> e : getOutgoingEdges(b)) {
+                addEdge(a, e.getDestination().getData(), e.getType());
+            }
+
+            // Delete bb
+            removeBB(b);
+
+            // Update rescue map
+            if (aR == null && bR != null) {
+                setRescuerBB(a, bR);
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void optimize() {
+        List<Edge> toRemove = new ArrayList<Edge>();
+
+        for (BasicBlock b : graph.allData()) {
+            boolean noExceptions = true;
+            for (Instruction i : b.getInstructions()) {
+                if (i.canRaiseException()) {
+                    noExceptions = false;
+                    break;
+                }
+            }
+
+            if (noExceptions) {
+                for (Edge<BasicBlock> e : graph.findVertexFor(b).getOutgoingEdgesOfType(EdgeType.EXCEPTION)) {
+                    BasicBlock source = e.getSource().getData();
+                    BasicBlock destination = e.getDestination().getData();
+                    toRemove.add(e);
+
+                    if (rescuerMap.get(source) == destination) rescuerMap.remove(source);
+                }
+            }
+        }
+
+        if (!toRemove.isEmpty()) {
+            for (Edge edge: toRemove) {
+                graph.removeEdge(edge);
+            }
+        }
+
+        deleteOrphanedBlocks(graph);
+
+        collapseStraightLineBBs();
+    }
+
+    public int outDegree(BasicBlock b) {
+        return graph.findVertexFor(b).outDegree();
+    }
+
+    public void removeBB(BasicBlock b) {
+        graph.removeVertexFor(b);
+        bbMap.remove(b.getLabel());
+        rescuerMap.remove(b);
     }
 
     public void setRescuerBB(BasicBlock block, BasicBlock rescuerBlock) {
