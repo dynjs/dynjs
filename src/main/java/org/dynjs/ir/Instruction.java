@@ -16,6 +16,17 @@
 package org.dynjs.ir;
 
 public class Instruction {
+    // Mutable state to make it easier for jumping around
+    private int ipc = -1;
+
+    public int getIPC() {
+        return ipc;
+    }
+
+    public void setIPC(int ipc) {
+        this.ipc = ipc;
+    }
+
     /**
      * This instruction can set or hint or some useful information onto the scope it belongs
      * to.
