@@ -324,25 +324,6 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         check("var result = undefined === undefined;");
     }
 
-    /*
-    @Test
-    @Ignore
-    public void testJavaRequireFunctionLoading() {
-        getConfig().addBuiltin("javaRequire", DynJSCompiler.wrapFunction(getContext(), new JavaRequireFunction()));
-        getDynJS().eval(getContext(), "var NiceClass = javaRequire('org.dynjs.runtime.java.SayHiToJava');");
-        getDynJS().eval(getContext(), "var x = new NiceClass");
-
-        assertThat(getContext().getScope().resolve("NiceClass"))
-                .isNotNull()
-                .isInstanceOf(Class.class)
-                .isEqualTo(SayHiToJava.class);
-
-        assertThat(getContext().getScope().resolve("x"))
-                .isInstanceOf(SayHiToJava.class);
-
-    }
-     */
-
     @Test
     public void testThis() {
         check("var x = {name:'myName', lol:function(){return this.name;}}; var result = x.name == 'myName' && x.lol() == 'myName';");

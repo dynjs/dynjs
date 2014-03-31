@@ -320,7 +320,7 @@ public class PropertyDescriptor {
     public static PropertyDescriptor toPropertyDescriptor(ExecutionContext context, Object o) {
         // 8.10.5
         if (!(o instanceof JSObject)) {
-            throw new ThrowException(context, context.createTypeError("attribtues must be an object"));
+            throw new ThrowException(context, context.createTypeError("attributes must be an object"));
         }
 
         JSObject obj = (JSObject) o;

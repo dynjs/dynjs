@@ -47,6 +47,21 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
     }
 
+    // FIXME: describe spec deviance
+    public void assignMutableBinding(ExecutionContext context, String name, Object value, boolean configurable, boolean strict) {
+        final boolean exists = hasBinding(context, name);
+        if (!exists) {
+            PropertyDescriptor desc = new PropertyDescriptor();
+            desc.setValue(value);
+            desc.setConfigurable(configurable);
+            this.mutableBindings.put(name, desc);
+        } else {
+            PropertyDescriptor desc = this.mutableBindings.get(name);
+            desc.setValue(value);
+            return;
+        }
+    }
+
     @Override
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.1.4

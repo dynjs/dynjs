@@ -325,11 +325,7 @@ public class ExecutionContext {
                 v = arguments[i];
             }
 
-            if (!env.hasBinding(this, names[i])) {
-                env.createMutableBinding(this, names[i], false);
-            }
-
-            env.setMutableBinding(this, names[i], v, function.isStrict());
+            env.assignMutableBinding(this, names[i], v, false, function.isStrict());
         }
 
         // * 5

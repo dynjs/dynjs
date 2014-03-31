@@ -21,6 +21,15 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
+/**
+ * 12.2 Variable Statement
+ * 
+ * var a;
+ * var a = 1;
+ * var a, b;
+ * var a = 1, b = 2;
+ * ...
+ */
 public class VariableStatement extends BaseStatement {
 
     private List<VariableDeclaration> decls;
