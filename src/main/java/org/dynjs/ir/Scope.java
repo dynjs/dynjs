@@ -37,6 +37,8 @@ public class Scope {
 
     private List<Instruction> instructions = new ArrayList<>();
 
+    private Map<String, Integer> nextVarIndex;
+
     public Scope(Scope parent) {
         this.parent = parent;
     }
@@ -107,7 +109,27 @@ public class Scope {
         return temporaryVariablesIndex;
     }
 
+    protected int getPrefixCountSize(String prefix) {
+        Integer index = nextVarIndex.get(prefix);
+
+        if (index == null) return 0;
+
+        return index.intValue();
+    }
+
+    protected int allocateNextPrefixedName(String prefix) {
+        int index = getPrefixCountSize(prefix);
+
+        nextVarIndex.put(prefix, index + 1);
+
+        return index;
+    }
+
+    public Label getNewLabel(String prefix) {
+        return new Label(prefix, allocateNextPrefixedName(prefix));
+    }
+
     public Label getNewLabel() {
-        return new Label(); // FIXME: Actually implement label operand
+        return getNewLabel("LBL");
     }
 }

@@ -158,6 +158,25 @@ public class CFG {
             }
         }
 
+        // Process all rescued regions
+        for (ExceptionRegion rr : allExceptionRegions) {
+            // When this exception region represents an unrescued region
+            // from a copied ensure block, we have a dummy label
+            Label rescueLabel = rr.getFirstRescueBlockLabel();
+            if (!Label.UNRESCUED_REGION_LABEL.equals(rescueLabel)) {
+                BasicBlock firstRescueBB = bbMap.get(rescueLabel);
+                // Mark the BB as a rescue entry BB
+                firstRescueBB.markRescueEntryBB();
+
+                // Record a mapping from the region's exclusive basic blocks to the first bb that will start exception handling for all their exceptions.
+                // Add an exception edge from every exclusive bb of the region to firstRescueBB
+                for (BasicBlock b : rr.getExclusiveBBs()) {
+                    setRescuerBB(b, firstRescueBB);
+                    graph.addEdge(b, firstRescueBB, EdgeType.EXCEPTION);
+                }
+            }
+        }
+
         return graph;
     }
 
@@ -207,5 +226,9 @@ public class CFG {
         }
 
         forwardReferences.add(src);
+    }
+
+    public void setRescuerBB(BasicBlock block, BasicBlock rescuerBlock) {
+        rescuerMap.put(block, rescuerBlock);
     }
 }
