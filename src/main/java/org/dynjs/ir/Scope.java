@@ -37,7 +37,7 @@ public class Scope {
 
     private List<Instruction> instructions = new ArrayList<>();
 
-    private Map<String, Integer> nextVarIndex;
+    private Map<String, Integer> nextVarIndex = new HashMap<>();
 
     public Scope(Scope parent) {
         this.parent = parent;
