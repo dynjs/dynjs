@@ -14,4 +14,9 @@ public abstract class Variable extends Operand {
     public int getOffset() {
         return offset;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

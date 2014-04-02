@@ -20,4 +20,9 @@ public class Copy extends Instruction {
     public Operand getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return result + " = " + value;
+    }
 }
