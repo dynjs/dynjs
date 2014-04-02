@@ -24,6 +24,8 @@ import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.StringLiteral;
 import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
+import org.dynjs.ir.representations.BasicBlock;
+import org.dynjs.ir.representations.CFG;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AdditiveExpression;
@@ -95,12 +97,18 @@ import org.dynjs.parser.ast.VoidOperatorExpression;
 import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
+import org.jruby.dirgra.DirectedGraph;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
     public static JSProgram compile(ProgramTree program) {
         Scope scope = (Scope) program.accept(new Scope(null), BUILDER, program.isStrict());
+
+        final CFG cfg = new CFG(scope);
+        final DirectedGraph<BasicBlock> graph = cfg.build(scope.getInstructions());
+        System.out.println(cfg.toStringInstrs());
+        System.out.println(graph.toString());
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
