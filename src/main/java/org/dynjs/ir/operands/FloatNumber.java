@@ -17,4 +17,9 @@ public class FloatNumber extends Operand {
     public Object retrieve(Object[] temps, Object[] vars) {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Float:" + this.value;
+    }
 }
