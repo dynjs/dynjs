@@ -25,6 +25,7 @@ import org.jruby.dirgra.Edge;
 /**
   */
 public class CFG {
+
     public enum EdgeType {
         REGULAR,       // Any non-special edge.  Not really used.
         EXCEPTION,     // Edge to exception handling basic blocks
@@ -50,6 +51,17 @@ public class CFG {
     private int nextBBId;       // Next available basic block id
 
     LinkedList<BasicBlock> postOrderList; // Post order traversal list of the cfg
+
+    public CFG(Scope scope) {
+        this.scope = scope;
+        this.graph = new DirectedGraph<BasicBlock>();
+        this.bbMap = new HashMap<Label, BasicBlock>();
+        this.rescuerMap = new HashMap<BasicBlock, BasicBlock>();
+        this.nextBBId = 0;
+        this.entryBB = this.exitBB = null;
+        this.globalEnsureBB = null;
+        this.postOrderList = null;
+    }
 
     public int getNextBBID() {
         nextBBId++;
