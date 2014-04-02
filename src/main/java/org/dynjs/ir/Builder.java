@@ -21,6 +21,7 @@ import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.FloatNumber;
 import org.dynjs.ir.operands.IntegerNumber;
+import org.dynjs.ir.operands.StringLiteral;
 import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.parser.CodeVisitor;
@@ -417,7 +418,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, StringLiteralExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        return new StringLiteral(expr.getLiteral());
     }
 
     @Override
