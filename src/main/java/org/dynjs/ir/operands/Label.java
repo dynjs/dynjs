@@ -17,4 +17,9 @@ public class Label extends Operand {
     public Object retrieve(Object[] temps, Object[] vars) {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return prefix + "_" + id;
+    }
 }
