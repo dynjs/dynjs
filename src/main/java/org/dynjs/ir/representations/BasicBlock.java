@@ -107,6 +107,16 @@ public class BasicBlock implements ExplicitVertexID, Comparable {
         return "BB [" + id + ":" + label + "]";
     }
 
+    public String toStringInstrs() {
+        StringBuilder buf = new StringBuilder(toString() + "\n");
+
+        for (Instruction instr : getInstructions()) {
+            buf.append('\t').append(instr).append('\n');
+        }
+
+        return buf.toString();
+    }
+
     public String dump(String indent) {
         StringBuilder buf = new StringBuilder(indent + toString() + "\n");
 
