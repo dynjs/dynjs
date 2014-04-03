@@ -16,14 +16,19 @@
 package org.dynjs.ir;
 
 import org.dynjs.ir.instructions.Add;
+import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.Jump;
+import org.dynjs.ir.instructions.LabelInstr;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
 import org.dynjs.ir.operands.IntegerNumber;
+import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.StringLiteral;
+import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.This;
 import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
@@ -189,7 +194,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, BooleanLiteralExpression expr, boolean strict) {
-        return new BooleanLiteral(expr.getValue());
+        return expr.getValue() ? BooleanLiteral.TRUE : BooleanLiteral.FALSE;
     }
 
     @Override
@@ -331,8 +336,32 @@ public class Builder implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, IfStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+    public Object visit(Object context, IfStatement ifNode, boolean strict) {
+        Scope scope = (Scope) context;
+        Label falseLabel = scope.getNewLabel();
+        Label doneLabel  = scope.getNewLabel();
+
+        // FIXME: Change this new BEQ to one which can use more specialized branches when more are made
+        scope.addInstruction(new BEQ((Operand) ifNode.getTest().accept(context, this, strict),
+                BooleanLiteral.FALSE, falseLabel));
+
+        // Build the then part of the if-statement
+        Operand thenResult = (Operand) ifNode.getThenBlock().accept(context, this, strict);
+        Variable result = getValueInTemporaryVariable(scope, thenResult);
+        scope.addInstruction(new Jump(doneLabel));
+
+        // Build the else part of the if-statement
+        scope.addInstruction(new LabelInstr(falseLabel));
+        if (ifNode.getElseBlock() != null) {
+            Operand elseResult = (Variable) ifNode.getElseBlock().accept(context, this, strict);
+            scope.addInstruction(new Copy(result, getValueInTemporaryVariable(scope, elseResult)));
+        } else {
+            scope.addInstruction(new Copy(result, Undefined.UNDEFINED));
+        }
+
+         scope.addInstruction(new LabelInstr(doneLabel));
+
+         return result;
     }
 
     @Override
@@ -531,5 +560,19 @@ public class Builder implements CodeVisitor {
 
     private Object acceptOrUndefined(Object context, Expression expr, boolean strict) {
         return expr != null ? expr.accept(context, this, strict) : Undefined.UNDEFINED;
+    }
+
+    private Variable copyAndReturnValue(Scope scope, Operand value) {
+        Variable variable = scope.createTemporaryVariable();
+
+        scope.addInstruction(new Copy(variable, value));
+
+        return variable;
+    }
+
+    private Variable getValueInTemporaryVariable(Scope scope, Operand value) {
+        if (value != null && value instanceof TemporaryVariable) return (Variable) value;
+
+        return copyAndReturnValue(scope, value);
     }
 }

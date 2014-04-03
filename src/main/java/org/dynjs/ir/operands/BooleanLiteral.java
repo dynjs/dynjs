@@ -6,6 +6,9 @@ import org.dynjs.ir.Operand;
  * Represent a literal 'true' or 'false'
  */
 public class BooleanLiteral extends Operand {
+    public static BooleanLiteral TRUE = new BooleanLiteral(true);
+    public static BooleanLiteral FALSE = new BooleanLiteral(false);
+
     private boolean truth;
 
     public BooleanLiteral(boolean truth) {
