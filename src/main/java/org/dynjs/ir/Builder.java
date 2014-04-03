@@ -226,7 +226,24 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, DoWhileStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        Scope scope = (Scope) context;
+        final Label startLabel = scope.getNewLabel();
+        final Label doneLabel = scope.getNewLabel();
+
+        scope.addInstruction(new LabelInstr(startLabel));
+
+        // BODY
+        statement.getBlock().accept(context, this, strict);
+
+        // TEST
+        scope.addInstruction(new BEQ((Operand) statement.getTest().accept(context, this, strict),
+                BooleanLiteral.FALSE, doneLabel));
+        scope.addInstruction(new Jump(startLabel));
+
+        // END
+        scope.addInstruction(new LabelInstr(doneLabel));
+
+        return Undefined.UNDEFINED;
     }
 
     @Override
