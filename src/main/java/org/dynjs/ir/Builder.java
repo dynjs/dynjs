@@ -188,8 +188,6 @@ public class Builder implements CodeVisitor {
             value = (Operand) statement.accept(context, this, strict);
         }
 
-        scope.addInstruction(new Return(value));
-
         return value;
     }
 

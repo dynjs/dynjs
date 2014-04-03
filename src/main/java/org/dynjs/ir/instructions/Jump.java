@@ -16,4 +16,8 @@ public class Jump extends Instruction {
     public Label getTarget() {
         return target;
     }
+
+    public String toString() {
+        return "jump -> " + target;
+    }
 }
