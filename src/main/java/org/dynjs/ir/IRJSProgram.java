@@ -34,19 +34,30 @@ public class IRJSProgram implements JSProgram {
     private Scope scope;
     private String filename;
     boolean isStrict;
+    private Instruction[] instructions;
 
     public IRJSProgram(Scope scope, String filename, boolean isStrict) {
         this.scope = scope;
         this.filename = filename;
         this.isStrict = isStrict;
+        this.instructions = scope.prepareForInterpret();
+
+        System.out.println("PROGRAM:");
+        int size = instructions.length;
+        for (int i = 0; i < size; i++) {
+            System.out.println("" + instructions[i]);
+        }
     }
     @Override
     public Completion execute(ExecutionContext context) {
         Object result = Types.UNDEFINED;
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
         Object[] vars = new Object[scope.getLocalVariableSize()];
+        int size = instructions.length;
 
-        for (Instruction instr: scope.getInstructions()) {
+        for (int i = 0; i < size; i++) {
+            Instruction instr = instructions[i];
+
             if (instr instanceof Copy) {
                 Variable variable = ((Copy) instr).getResult();
                 if (variable instanceof OffsetVariable) {

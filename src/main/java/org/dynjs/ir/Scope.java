@@ -23,6 +23,10 @@ import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
+import org.dynjs.ir.representations.BasicBlock;
+import org.dynjs.ir.representations.CFG;
+import org.dynjs.ir.representations.CFGLinearizer;
+import org.jruby.dirgra.DirectedGraph;
 
 // FIXME: Modelled as single scope now but I doubt this will hold for long.
 public class Scope {
@@ -38,6 +42,8 @@ public class Scope {
     private List<Instruction> instructions = new ArrayList<>();
 
     private Map<String, Integer> nextVarIndex = new HashMap<>();
+
+    HashMap<Integer, Integer> rescueMap;
 
     public Scope(Scope parent) {
         this.parent = parent;
@@ -131,5 +137,59 @@ public class Scope {
 
     public Label getNewLabel() {
         return getNewLabel("LBL");
+    }
+
+
+    public Instruction[] prepareForInterpret() {
+        final CFG cfg = new CFG(this);
+        final DirectedGraph<BasicBlock> graph = cfg.build(getInstructions());
+
+        // FIXME: Add debug config for this
+        System.out.println(cfg.toStringInstrs());
+        System.out.println(graph.toString());
+
+        // FIXME: We don't save this linearized set yet
+        return prepareIPCs(CFGLinearizer.linearize(cfg), cfg);
+    }
+
+    private Instruction[] prepareIPCs(List<BasicBlock> list, CFG cfg) {
+        // Set up IPCs
+        List<Instruction> newInstrs = new ArrayList<Instruction>();
+        HashMap<Label, Integer> labelIPCMap = new HashMap<Label, Integer>();
+        int ipc = 0;
+        for (BasicBlock basicBlock: list) {
+            Label label = basicBlock.getLabel();
+            labelIPCMap.put(label, ipc);
+            // This assumes if multiple equal/same labels exist which are scattered around the scope
+            // must be the same Java instance or only this one will get a targetPC set.
+            label.setTargetIPC(ipc);
+            List<Instruction> bbInstrs = basicBlock.getInstructions();
+            int bbInstrsLength = bbInstrs.size();
+            for (int i = 0; i < bbInstrsLength; i++) {
+                Instruction instr = bbInstrs.get(i);
+
+                newInstrs.add(instr);
+                instr.setIPC(ipc);
+                ipc++;
+            }
+        }
+
+        cfg.getExitBB().getLabel().setTargetIPC(ipc + 1);  // Exit BasicBlock IPC
+
+
+        setupRescueMap(list, cfg); // Set up the rescue map
+
+        return newInstrs.toArray(new Instruction[newInstrs.size()]);
+    }
+
+    public void setupRescueMap(List<BasicBlock> list, CFG cfg) {
+        rescueMap = new HashMap<Integer, Integer>();
+        for (BasicBlock basicBlock : list) {
+            BasicBlock rescuerBB = cfg.getRescuerBBFor(basicBlock);
+            int rescuerPC = (rescuerBB == null) ? -1 : rescuerBB.getLabel().getTargetIPC();
+            for (Instruction instruction : basicBlock.getInstructions()) {
+                rescueMap.put(instruction.getIPC(), rescuerPC);
+            }
+        }
     }
 }

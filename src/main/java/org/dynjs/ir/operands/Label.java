@@ -7,6 +7,7 @@ public class Label extends Operand {
 
     public final String prefix;
     public final int id;
+    private int targetIPC = -1;
 
     public Label(String prefix, int id) {
         this.prefix = prefix;
@@ -21,5 +22,13 @@ public class Label extends Operand {
     @Override
     public String toString() {
         return prefix + "_" + id;
+    }
+
+    public int getTargetIPC() {
+        return targetIPC;
+    }
+
+    public void setTargetIPC(int targetIPC) {
+        this.targetIPC = targetIPC;
     }
 }
