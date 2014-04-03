@@ -13,4 +13,8 @@ public class Undefined extends Operand {
     public Object retrieve(Object[] temps, Object[] vars) {
         return Types.UNDEFINED;
     }
+
+    public String toString() {
+        return "%undefined";
+    }
 }
