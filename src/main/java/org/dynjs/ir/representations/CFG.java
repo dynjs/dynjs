@@ -131,7 +131,7 @@ public class CFG {
                         graph.addEdge(b, newBB, EdgeType.REGULAR);
                     }
                 }
-            } else if (bbEnded && i instanceof ExceptionRegionEndMarker) {
+            } else if (bbEnded && !(i instanceof ExceptionRegionEndMarker)) {
                 newBB = createBB(nestedExceptionRegions);
                 // Jump instruction bbs dont add an edge to the succeeding bb by default
                 if (nextBBIsFallThrough) graph.addEdge(currBB, newBB, EdgeType.FALL_THROUGH); // currBB cannot be null!
@@ -158,24 +158,24 @@ public class CFG {
             } else if (i.transfersControl()) {
                 bbEnded = true;
                 currBB.addInstr(i);
-                Label tgt;
+                Label target;
                 nextBBIsFallThrough = false;
                 if (i instanceof Branch) {
-                    tgt = ((Branch) i).getTarget();
+                    target = ((Branch) i).getTarget();
                     nextBBIsFallThrough = true;
                 } else if (i instanceof Jump) {
-                    tgt = ((Jump) i).getTarget();
+                    target = ((Jump) i).getTarget();
                 } else if (i instanceof Return) {
-                    tgt = null;
+                    target = null;
                     returnBBs.add(currBB);
                 } else if (i instanceof ThrowException) {
-                    tgt = null;
+                    target = null;
                     exceptionBBs.add(currBB);
                 } else {
                     throw new RuntimeException("Unhandled case in CFG builder for basic block ending instr: " + i);
                 }
 
-                if (tgt != null) addEdge(currBB, tgt, forwardRefs);
+                if (target != null) addEdge(currBB, target, forwardRefs);
             } else if (!(i instanceof LabelInstr)) {
                 currBB.addInstr(i);
             }

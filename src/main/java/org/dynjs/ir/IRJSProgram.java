@@ -82,7 +82,7 @@ public class IRJSProgram implements JSProgram {
             } else if (instr instanceof BEQ) {
                 BEQ beq = (BEQ) instr;
                 Object arg1 = beq.getArg1().retrieve(temps, vars);
-                Object arg2 = beq.getArg1().retrieve(temps, vars);
+                Object arg2 = beq.getArg2().retrieve(temps, vars);
 
                 if (arg1.equals(arg2)) {
                     ipc = beq.getTarget().getTargetIPC();

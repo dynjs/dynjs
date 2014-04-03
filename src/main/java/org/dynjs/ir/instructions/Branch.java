@@ -13,4 +13,9 @@ public abstract class Branch extends Instruction {
     public Label getTarget() {
         return target;
     }
+
+    @Override
+    public boolean transfersControl() {
+        return true;
+    }
 }
