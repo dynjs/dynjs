@@ -299,7 +299,8 @@ public class Builder implements CodeVisitor {
 
         final Operand operand = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);
 
-        scope.addInstruction(new Call(result, operand, args.toArray(new Operand[]{})));
+        // FIXME: member is the name right?  so first operand shold be this which is likely a temp
+        scope.addInstruction(new Call(result, operand, operand, args.toArray(new Operand[]{})));
 
         return result;
     }

@@ -23,6 +23,6 @@ public class Copy extends Instruction {
 
     @Override
     public String toString() {
-        return result + " = " + value;
+        return "copy " + result + ", " + value;
     }
 }

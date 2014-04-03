@@ -16,6 +16,6 @@ public abstract class OffsetVariable extends Variable {
 
     @Override
     public String toString() {
-        return getName() + "(" + offset + ")";
+        return getName() + "{" + offset + "}";
     }
 }
