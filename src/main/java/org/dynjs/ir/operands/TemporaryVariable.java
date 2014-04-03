@@ -1,6 +1,6 @@
 package org.dynjs.ir.operands;
 
-public class TemporaryVariable extends Variable {
+public class TemporaryVariable extends OffsetVariable {
     public TemporaryVariable(int offset) {
         super(offset);
     }

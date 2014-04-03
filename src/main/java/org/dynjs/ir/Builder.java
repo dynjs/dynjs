@@ -20,6 +20,7 @@ import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
+import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.StringLiteral;
@@ -247,13 +248,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, ExpressionStatement statement, boolean strict) {
-        Scope scope = (Scope) context;
-        Variable variable = scope.createTemporaryVariable();
-        Operand value = (Operand) acceptOrUndefined(context, statement.getExpr(), strict);
-
-        scope.addInstruction(new Copy(variable, value));
-
-        return value;
+        return acceptOrUndefined(context, statement.getExpr(), strict);
     }
 
     @Override
@@ -306,7 +301,7 @@ public class Builder implements CodeVisitor {
 
         scope.addInstruction(new Call(result, operand, args.toArray(new Operand[]{})));
 
-        return unimplemented(context, expr, strict);
+        return result;
     }
 
     @Override
@@ -322,8 +317,15 @@ public class Builder implements CodeVisitor {
     @Override
     public Object visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
         Scope scope = (Scope) context;
+        Variable variable = scope.findVariable(expr.getIdentifier());
 
-        return scope.findVariable(expr.getIdentifier());
+        // FIXME: Should this error out in strict mode?
+        if (variable == null) {
+            variable = scope.createTemporaryVariable();
+            scope.addInstruction(new Copy(variable, new DynamicVariable(expr.getIdentifier())));
+        }
+
+        return variable;
     }
 
     @Override

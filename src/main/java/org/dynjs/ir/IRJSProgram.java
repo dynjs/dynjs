@@ -19,6 +19,7 @@ import java.util.List;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.LocalVariable;
+import org.dynjs.ir.operands.OffsetVariable;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -48,13 +49,17 @@ public class IRJSProgram implements JSProgram {
         for (Instruction instr: scope.getInstructions()) {
             if (instr instanceof Copy) {
                 Variable variable = ((Copy) instr).getResult();
-                int offset = variable.getOffset();
-                Object value = ((Copy) instr).getValue().retrieve(temps, vars);
+                if (variable instanceof OffsetVariable) {
+                    int offset = ((OffsetVariable) variable).getOffset();
+                    Object value = ((Copy) instr).getValue().retrieve(temps, vars);
 
-                if (variable instanceof LocalVariable) {
-                    vars[offset] = value;
+                    if (variable instanceof LocalVariable) {
+                        vars[offset] = value;
+                    } else {
+                        temps[offset] = value;
+                    }
                 } else {
-                    temps[offset] = value;
+                    // FIXME: Lookup dynamicvariable
                 }
             } else if (instr instanceof Return) {
                 result = ((Return) instr).getValue().retrieve(temps, vars);
