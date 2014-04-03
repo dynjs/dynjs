@@ -27,6 +27,7 @@ import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
+import org.dynjs.ir.operands.Null;
 import org.dynjs.ir.operands.StringLiteral;
 import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.This;
@@ -404,7 +405,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, NullLiteralExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        return Null.NULL;
     }
 
     @Override
