@@ -44,4 +44,9 @@ public class BooleanLiteralExpression extends BaseExpression {
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
+
+    @Override
+    public String dumpData() {
+        return "" + value;
+    }
 }
