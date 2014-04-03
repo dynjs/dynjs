@@ -16,7 +16,9 @@
 package org.dynjs.ir;
 
 import java.util.List;
+import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.OffsetVariable;
@@ -55,8 +57,10 @@ public class IRJSProgram implements JSProgram {
         Object[] vars = new Object[scope.getLocalVariableSize()];
         int size = instructions.length;
 
-        for (int i = 0; i < size; i++) {
-            Instruction instr = instructions[i];
+        int ipc = 0;
+        while (ipc < size) {
+            Instruction instr = instructions[ipc];
+            ipc++;
 
             if (instr instanceof Copy) {
                 Variable variable = ((Copy) instr).getResult();
@@ -71,6 +75,16 @@ public class IRJSProgram implements JSProgram {
                     }
                 } else {
                     // FIXME: Lookup dynamicvariable
+                }
+            } else if (instr instanceof Jump) {
+                ipc = ((Jump) instr).getTarget().getTargetIPC();
+            } else if (instr instanceof BEQ) {
+                BEQ beq = (BEQ) instr;
+                Object arg1 = beq.getArg1().retrieve(temps, vars);
+                Object arg2 = beq.getArg1().retrieve(temps, vars);
+
+                if (arg1.equals(arg2)) {
+                    ipc = beq.getTarget().getTargetIPC();
                 }
             } else if (instr instanceof Return) {
                 result = ((Return) instr).getValue().retrieve(temps, vars);
