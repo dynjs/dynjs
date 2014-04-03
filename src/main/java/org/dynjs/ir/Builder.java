@@ -480,7 +480,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, ThisExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        return This.THIS;
     }
 
     @Override
