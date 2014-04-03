@@ -230,7 +230,7 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, EmptyStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        return Undefined.UNDEFINED;
     }
 
     @Override
@@ -534,7 +534,23 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, WhileStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        Scope scope = (Scope) context;
+        final Label startLabel = scope.getNewLabel();
+        final Label doneLabel = scope.getNewLabel();
+
+        scope.addInstruction(new LabelInstr(startLabel));
+        // TEST
+        scope.addInstruction(new BEQ((Operand) statement.getTest().accept(context, this, strict),
+                BooleanLiteral.FALSE, doneLabel));
+
+        // THEN
+        statement.getBlock().accept(context, this, strict);
+        scope.addInstruction(new Jump(startLabel));
+
+        // END
+        scope.addInstruction(new LabelInstr(doneLabel));
+
+        return Undefined.UNDEFINED;
     }
 
     @Override
