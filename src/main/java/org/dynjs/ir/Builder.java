@@ -344,7 +344,7 @@ public class Builder implements CodeVisitor {
         // Build the else part of the if-statement
         scope.addInstruction(new LabelInstr(falseLabel));
         if (ifNode.getElseBlock() != null) {
-            Operand elseResult = (Variable) ifNode.getElseBlock().accept(context, this, strict);
+            Operand elseResult = (Operand) ifNode.getElseBlock().accept(context, this, strict);
             scope.addInstruction(new Copy(result, getValueInTemporaryVariable(scope, elseResult)));
         } else {
             scope.addInstruction(new Copy(result, Undefined.UNDEFINED));

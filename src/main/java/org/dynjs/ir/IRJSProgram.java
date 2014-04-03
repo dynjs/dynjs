@@ -61,6 +61,7 @@ public class IRJSProgram implements JSProgram {
         while (ipc < size) {
             Instruction instr = instructions[ipc];
             ipc++;
+            System.out.println("EX: " + instr);
 
             if (instr instanceof Copy) {
                 Variable variable = ((Copy) instr).getResult();

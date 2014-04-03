@@ -12,6 +12,6 @@ public class TemporaryVariable extends OffsetVariable {
 
     @Override
     public Object retrieve(Object[] temps, Object[] vars) {
-        return vars[getOffset()];
+        return temps[getOffset()];
     }
 }
