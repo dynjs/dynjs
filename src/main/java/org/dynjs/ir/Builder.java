@@ -114,7 +114,8 @@ public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
     public static JSProgram compile(ProgramTree program) {
-        Scope scope = (Scope) program.accept(new Scope(null), BUILDER, program.isStrict());
+        Scope scope = new Scope(null);
+        program.accept(scope, BUILDER, program.isStrict());
 
         final CFG cfg = new CFG(scope);
         final DirectedGraph<BasicBlock> graph = cfg.build(scope.getInstructions());
@@ -189,7 +190,7 @@ public class Builder implements CodeVisitor {
 
         scope.addInstruction(new Return(value));
 
-        return scope;
+        return value;
     }
 
     @Override
