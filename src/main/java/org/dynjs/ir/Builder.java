@@ -329,30 +329,27 @@ public class Builder implements CodeVisitor {
     @Override
     public Object visit(Object context, IfStatement ifNode, boolean strict) {
         Scope scope = (Scope) context;
-        Label falseLabel = scope.getNewLabel();
+        Label elseLabel = scope.getNewLabel();
         Label doneLabel  = scope.getNewLabel();
 
-        // FIXME: Change this new BEQ to one which can use more specialized branches when more are made
+        // IF
         scope.addInstruction(new BEQ((Operand) ifNode.getTest().accept(context, this, strict),
-                BooleanLiteral.FALSE, falseLabel));
+                BooleanLiteral.FALSE, elseLabel));
 
-        // Build the then part of the if-statement
-        Operand thenResult = (Operand) ifNode.getThenBlock().accept(context, this, strict);
-        Variable result = getValueInTemporaryVariable(scope, thenResult);
+        // THEN
+        ifNode.getThenBlock().accept(context, this, strict);
         scope.addInstruction(new Jump(doneLabel));
 
-        // Build the else part of the if-statement
-        scope.addInstruction(new LabelInstr(falseLabel));
+        // ELSE
+        scope.addInstruction(new LabelInstr(elseLabel));
         if (ifNode.getElseBlock() != null) {
-            Operand elseResult = (Operand) ifNode.getElseBlock().accept(context, this, strict);
-            scope.addInstruction(new Copy(result, getValueInTemporaryVariable(scope, elseResult)));
-        } else {
-            scope.addInstruction(new Copy(result, Undefined.UNDEFINED));
+            ifNode.getElseBlock().accept(context, this, strict);
         }
 
-         scope.addInstruction(new LabelInstr(doneLabel));
+        // END
+        scope.addInstruction(new LabelInstr(doneLabel));
 
-         return result;
+        return Undefined.UNDEFINED;
     }
 
     @Override

@@ -10,6 +10,11 @@ public class BEQ extends Branch {
     private Operand arg1;
     private Operand arg2;
 
+    // FIXME: Add more specialized branches here
+    public static Branch create(Operand arg1, Operand arg2, Label target) {
+        return new BEQ(arg1, arg2, target);
+    }
+
     public BEQ(Operand arg1, Operand arg2, Label target) {
         super(target);
 
