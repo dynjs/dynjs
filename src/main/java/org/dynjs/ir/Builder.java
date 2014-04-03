@@ -24,6 +24,7 @@ import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.StringLiteral;
+import org.dynjs.ir.operands.This;
 import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
@@ -300,7 +301,7 @@ public class Builder implements CodeVisitor {
         final Operand operand = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);
 
         // FIXME: member is the name right?  so first operand shold be this which is likely a temp
-        scope.addInstruction(new Call(result, operand, operand, args.toArray(new Operand[]{})));
+        scope.addInstruction(new Call(result, This.THIS, operand, args.toArray(new Operand[]{})));
 
         return result;
     }
