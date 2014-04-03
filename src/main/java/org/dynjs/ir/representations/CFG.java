@@ -78,6 +78,12 @@ public class CFG {
     }
 
     /**
+     * How many BasicBlocks are there in this CFG?
+     */
+    public int size() {
+        return graph.size();
+    }
+    /**
      *  Build the Control Flow Graph
      */
     public DirectedGraph<BasicBlock> build(List<Instruction> instructions) {
@@ -324,8 +330,32 @@ public class CFG {
         return graph.allData();
     }
 
+    public BasicBlock getBBForLabel(Label label) {
+        return bbMap.get(label);
+    }
+
     public Set<Edge<BasicBlock>> getOutgoingEdges(BasicBlock block) {
         return graph.findVertexFor(block).getOutgoingEdges();
+    }
+
+    public BasicBlock getIncomingSourceOfType(BasicBlock block, Object type) {
+        return graph.findVertexFor(block).getIncomingSourceDataOfType(type);
+    }
+
+    public Iterable<BasicBlock> getOutgoingDestinations(BasicBlock block) {
+        return graph.findVertexFor(block).getOutgoingDestinationsData();
+    }
+
+    public BasicBlock getOutgoingDestinationOfType(BasicBlock block, Object type) {
+        return graph.findVertexFor(block).getOutgoingDestinationDataOfType(type);
+    }
+
+    public Iterable<BasicBlock> getOutgoingDestinationsOfType(BasicBlock block, Object type) {
+        return graph.findVertexFor(block).getOutgoingDestinationsDataOfType(type);
+    }
+
+    public Iterable<BasicBlock> getOutgoingDestinationsNotOfType(BasicBlock block, Object type) {
+        return graph.findVertexFor(block).getOutgoingDestinationsDataNotOfType(type);
     }
 
     public BasicBlock getRescuerBBFor(BasicBlock block) {
