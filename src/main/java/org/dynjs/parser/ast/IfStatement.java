@@ -71,6 +71,18 @@ public class IfStatement extends BaseStatement {
 
         return buf.toString();
     }
+
+    public String dump(String indent) {
+        StringBuilder buf = new StringBuilder(super.dump(indent));
+
+        buf.append(testExpr.dump(indent + "  "));
+        buf.append(thenBlock.dump(indent + "  "));
+        if (elseBlock != null) {
+            buf.append(elseBlock.dump(indent + "  "));
+        }
+
+        return buf.toString();
+    }
     
     public int getSizeMetric() {
         return this.testExpr.getSizeMetric() + 7;
