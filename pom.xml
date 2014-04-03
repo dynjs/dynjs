@@ -25,6 +25,7 @@
         <version.rephract>1.1.1</version.rephract>
         <version.jnr-posix>3.0.1</version.jnr-posix>
         <version.args4j>2.0.26</version.args4j>
+        <test.pattern>**/*Spec.js</test.pattern>
     </properties>
 
     <developers>
@@ -555,7 +556,7 @@
                                     <classpathScope>test</classpathScope>
                                     <arguments>
                                         <argument>--pattern</argument>
-                                        <argument>./src/test/javascript/**/*Spec.js</argument>
+                                        <argument>${test.pattern}</argument>
                                         <argument>--format</argument>
                                         <argument>DOC</argument>
                                         <argument>--compile-mode</argument>
