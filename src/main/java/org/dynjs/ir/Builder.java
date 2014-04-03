@@ -16,6 +16,7 @@
 package org.dynjs.ir;
 
 import org.dynjs.ir.instructions.Add;
+import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
@@ -98,6 +99,9 @@ import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
 import org.jruby.dirgra.DirectedGraph;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
@@ -289,6 +293,19 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
+        Scope scope = (Scope) context;
+        final Variable result = scope.createTemporaryVariable();
+        final List<Expression> argumentExpressions = expr.getArgumentExpressions();
+        final List<Operand> args = new ArrayList<Operand>();
+        for (Expression argumentExpression : argumentExpressions) {
+            Operand arg = (Operand) acceptOrUndefined(context, argumentExpression, strict);
+            args.add(arg);
+        }
+
+        final Operand operand = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);
+
+        scope.addInstruction(new Call(result, operand, args.toArray(new Operand[]{})));
+
         return unimplemented(context, expr, strict);
     }
 
