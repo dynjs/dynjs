@@ -540,12 +540,16 @@ public class Builder implements CodeVisitor {
         switch (expr.getOp()) {
             case "<":
                 scope.addInstruction(new LT(result, lhsValue, rhsValue));
+                break;
             case ">":
                 scope.addInstruction(new LT(result, rhsValue, lhsValue));
+                break;
             case "<=":
                 scope.addInstruction(new LE(result, lhsValue, rhsValue));
+                break;
             case ">=":
                 scope.addInstruction(new LE(result, rhsValue, lhsValue));
+                break;
         }
 
         return result;

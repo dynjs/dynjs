@@ -27,4 +27,8 @@ public class LE extends Instruction implements ResultInstruction {
     public Operand getArg2() {
         return arg2;
     }
+
+    public String toString() {
+        return "" + arg1 + " <= " + arg2;
+    }
 }
