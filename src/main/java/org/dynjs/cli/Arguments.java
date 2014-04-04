@@ -33,11 +33,13 @@ public class Arguments {
     static final String VERSION = "--version";
     static final String DEBUG = "--debug";
     static final String FILE = "--file";
+    static final String EVAL = "--eval";
     static final String PROPERTIES = "--properties";
     static final String CLASSPATH = "--classpath";
     public static final String VERSION_SHORT = "-v";
     public static final String HELP_SHORT = "-h";
     public static final String CLASSPATH_SHORT = "-cp";
+    public static final String EVAL_SHORT = "-e";
 
     @Option(name = AST, usage = "Displays sources AST")
     private boolean ast;
@@ -59,6 +61,9 @@ public class Arguments {
 
     @Option(name = CLASSPATH, aliases = {CLASSPATH_SHORT}, handler = MultiFileOptionHandler.class, usage = "Append items to classpath")
     private List<File> classpath = new ArrayList<>();
+
+    @Option(name = EVAL, aliases = {EVAL_SHORT}, usage = "Evaluates the given expression", metaVar = "EXPR")
+    private String eval = "";
 
     @Argument(usage = "Arguments", required = false, metaVar = "ARGS")
     private List<String> arguments = new ArrayList<>();
@@ -83,10 +88,6 @@ public class Arguments {
 
     public boolean isAST() {
         return ast;
-    }
-
-    public boolean isEmpty() {
-        return !(console || help || version || debug || properties) && arguments.isEmpty();
     }
 
     public boolean isConsole() {
@@ -119,5 +120,9 @@ public class Arguments {
 
     public List<File> getClasspath() {
         return classpath;
+    }
+
+    public String getEval() {
+        return this.eval;
     }
 }

@@ -15,17 +15,19 @@
  */
 package org.dynjs.cli;
 
-import static org.dynjs.cli.Arguments.*;
-import static org.fest.assertions.Assertions.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.ExampleMode;
 
 import java.io.File;
 import java.util.List;
+
+import static org.dynjs.cli.Arguments.CONSOLE;
+import static org.dynjs.cli.Arguments.DEBUG;
+import static org.dynjs.cli.Arguments.HELP;
+import static org.dynjs.cli.Arguments.VERSION;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class ArgumentsTest {
     private CmdLineParser parser;
@@ -39,62 +41,51 @@ public class ArgumentsTest {
     }
 
     @Test
-    public void usageCannotBeEmpty() {
-        assertThat(parser.printExample(ExampleMode.ALL)).isNotEmpty();
-    }
-
-    @Test
     public void callWithNoArgument() throws CmdLineException {
-        parser.parseArgument(new String[] {});
+        parser.parseArgument(new String[]{});
 
-        assertThat(arguments.isEmpty()).isTrue();
     }
 
     @Test
     public void callWithConsoleArgument() throws CmdLineException {
-        parser.parseArgument(new String[] { CONSOLE });
+        parser.parseArgument(new String[]{CONSOLE});
 
-        assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isConsole()).isTrue();
     }
 
     @Test
     public void callWithDebugArgument() throws CmdLineException {
-        parser.parseArgument(new String[] { DEBUG });
+        parser.parseArgument(new String[]{DEBUG});
 
-        assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isDebug()).isTrue();
     }
 
     @Test
     public void callWithHelpArgument() throws CmdLineException {
-        parser.parseArgument(new String[] { HELP });
+        parser.parseArgument(new String[]{HELP});
 
-        assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isHelp()).isTrue();
     }
 
     @Test
     public void callWithVersionArgument() throws CmdLineException {
-        parser.parseArgument(new String[] { VERSION });
+        parser.parseArgument(new String[]{VERSION});
 
-        assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.isVersion()).isTrue();
     }
 
     @Test
     public void callWithFilenameArgument() throws CmdLineException {
         final String filename = "meh.js";
-        parser.parseArgument(new String[] { filename });
+        parser.parseArgument(new String[]{filename});
 
-        assertThat(arguments.isEmpty()).isFalse();
         assertThat(arguments.getFilename()).isNotEmpty();
         assertThat(arguments.getFilename()).isEqualTo(filename);
     }
 
     @Test
     public void checkMultipleClasspathItems() throws CmdLineException {
-        parser.parseArgument(new String[] {"-cp", "a.jar:b.jar:c.jar"});
+        parser.parseArgument(new String[]{"-cp", "a.jar:b.jar:c.jar"});
 
         final List<File> classpath = arguments.getClasspath();
         assertThat(classpath).hasSize(3);
@@ -102,11 +93,11 @@ public class ArgumentsTest {
 
     @Test(expected = CmdLineException.class)
     public void callWithUnexpectedArgument() throws CmdLineException {
-        parser.parseArgument(new String[] { "--whatever" });
+        parser.parseArgument(new String[]{"--whatever"});
     }
 
     @Test
     public void callWithUnexpectedArgumentOrder() throws CmdLineException {
-        parser.parseArgument(new String[] { "meh.js", HELP });
+        parser.parseArgument(new String[]{"meh.js", HELP});
     }
 }
