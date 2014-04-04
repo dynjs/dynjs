@@ -20,6 +20,8 @@ import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Jump;
+import org.dynjs.ir.instructions.LE;
+import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.LabelInstr;
 import org.dynjs.ir.instructions.Mul;
 import org.dynjs.ir.instructions.Return;
@@ -108,6 +110,7 @@ import org.dynjs.runtime.JSProgram;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.dynjs.runtime.Types;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
@@ -515,7 +518,23 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, RelationalExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+        Variable result = scope.createTemporaryVariable();
+        Operand lhsValue = (Operand) expr.getLhs().accept(context, this, strict);
+        Operand rhsValue = (Operand) expr.getRhs().accept(context, this, strict);
+
+        switch (expr.getOp()) {
+            case "<":
+                scope.addInstruction(new LT(result, lhsValue, rhsValue));
+            case ">":
+                scope.addInstruction(new LT(result, rhsValue, lhsValue));
+            case "<=":
+                scope.addInstruction(new LE(result, lhsValue, rhsValue));
+            case ">=":
+                scope.addInstruction(new LE(result, rhsValue, lhsValue));
+        }
+
+        return result;
     }
 
     @Override
