@@ -31,6 +31,6 @@ public class LT extends Instruction implements ResultInstruction {
     }
 
     public String toString() {
-        return "" + arg1 + " < " + arg2;
+        return "" + result + " = " + arg1 + " < " + arg2;
     }
 }

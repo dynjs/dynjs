@@ -33,4 +33,8 @@ public class Add extends Instruction implements ResultInstruction {
     public Operand getRHS() {
         return rhs;
     }
+
+    public String toString() {
+        return "" + result + " = " + lhs + " + " + rhs;
+    }
 }

@@ -23,6 +23,6 @@ public class Copy extends Instruction implements ResultInstruction {
 
     @Override
     public String toString() {
-        return "copy " + result + ", " + value;
+        return "" + result + " = " + value + " (copy)";
     }
 }
