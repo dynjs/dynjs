@@ -1,5 +1,7 @@
 package org.dynjs.ir.operands;
 
+import org.dynjs.runtime.ExecutionContext;
+
 public class TemporaryVariable extends OffsetVariable {
     public TemporaryVariable(int offset) {
         super(offset);
@@ -11,7 +13,7 @@ public class TemporaryVariable extends OffsetVariable {
     }
 
     @Override
-    public Object retrieve(Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
         return temps[getOffset()];
     }
 }

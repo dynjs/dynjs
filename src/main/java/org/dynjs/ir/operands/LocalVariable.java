@@ -1,6 +1,7 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Scope;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 
 /**
@@ -22,7 +23,7 @@ public class LocalVariable extends OffsetVariable {
     }
 
     @Override
-    public Object retrieve(Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
         return vars[getOffset()];
     }
 }

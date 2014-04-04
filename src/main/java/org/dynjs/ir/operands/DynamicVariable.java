@@ -1,6 +1,6 @@
 package org.dynjs.ir.operands;
 
-import org.dynjs.ir.Operand;
+import org.dynjs.runtime.ExecutionContext;
 
 /**
  * A variable in which we do not know it's location.
@@ -10,6 +10,11 @@ public class DynamicVariable extends Variable {
 
     public DynamicVariable(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
+        return context.resolve(name);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Operand;
+import org.dynjs.runtime.ExecutionContext;
 
 public class IntegerNumber extends Operand {
     private long value;
@@ -14,7 +15,7 @@ public class IntegerNumber extends Operand {
     }
 
     @Override
-    public Object retrieve(Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
         return value;
     }
 

@@ -1,6 +1,7 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Operand;
+import org.dynjs.runtime.ExecutionContext;
 
 public class StringLiteral extends Operand {
     private String value;
@@ -15,7 +16,7 @@ public class StringLiteral extends Operand {
     }
 
     @Override
-    public Object retrieve(Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
         return this.value;
     }
 }

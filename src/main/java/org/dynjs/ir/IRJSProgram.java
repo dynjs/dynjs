@@ -67,7 +67,7 @@ public class IRJSProgram implements JSProgram {
                 Variable variable = ((Copy) instr).getResult();
                 if (variable instanceof OffsetVariable) {
                     int offset = ((OffsetVariable) variable).getOffset();
-                    Object value = ((Copy) instr).getValue().retrieve(temps, vars);
+                    Object value = ((Copy) instr).getValue().retrieve(context, temps, vars);
 
                     if (variable instanceof LocalVariable) {
                         vars[offset] = value;
@@ -81,14 +81,14 @@ public class IRJSProgram implements JSProgram {
                 ipc = ((Jump) instr).getTarget().getTargetIPC();
             } else if (instr instanceof BEQ) {
                 BEQ beq = (BEQ) instr;
-                Object arg1 = beq.getArg1().retrieve(temps, vars);
-                Object arg2 = beq.getArg2().retrieve(temps, vars);
+                Object arg1 = beq.getArg1().retrieve(context, temps, vars);
+                Object arg2 = beq.getArg2().retrieve(context, temps, vars);
 
                 if (arg1.equals(arg2)) {
                     ipc = beq.getTarget().getTargetIPC();
                 }
             } else if (instr instanceof Return) {
-                result = ((Return) instr).getValue().retrieve(temps, vars);
+                result = ((Return) instr).getValue().retrieve(context, temps, vars);
                 break;
             }
         }
