@@ -17,10 +17,13 @@ package org.dynjs.ir;
 
 import java.util.List;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Jump;
+import org.dynjs.ir.instructions.LE;
+import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.LocalVariable;
@@ -70,7 +73,11 @@ public class IRJSProgram implements JSProgram {
             ipc++;
             System.out.println("EX: " + instr);
 
-            if (instr instanceof Copy) {
+            if (instr instanceof Add) {
+                value = add(context,
+                        ((Add) instr).getLHS().retrieve(context, temps, vars),
+                        ((Add) instr).getRHS().retrieve(context, temps, vars));
+            } else if (instr instanceof Copy) {
                 value = ((Copy) instr).getValue().retrieve(context, temps, vars);
             } else if (instr instanceof Jump) {
                 ipc = ((Jump) instr).getTarget().getTargetIPC();
@@ -100,6 +107,16 @@ public class IRJSProgram implements JSProgram {
                 }
 
                 value = context.call(ref, (JSFunction) function, thisValue, args);
+            } else if (instr instanceof LT) {
+                Object arg1  = ((LT) instr).getArg1().retrieve(context, temps, vars);
+                Object arg2  = ((LT) instr).getArg2().retrieve(context, temps, vars);
+                Object r = Types.compareRelational(context, arg1, arg2, true);
+                value = r == Types.UNDEFINED ? false : r;
+            } else if (instr instanceof LE) {
+                Object arg1  = ((LE) instr).getArg1().retrieve(context, temps, vars);
+                Object arg2  = ((LE) instr).getArg2().retrieve(context, temps, vars);
+                Object r = Types.compareRelational(context, arg1, arg2, true);
+                value = r == Boolean.TRUE || r == Types.UNDEFINED ? false : r;
             } else if (instr instanceof BEQ) {
                 BEQ beq = (BEQ) instr;
                 Object arg1 = beq.getArg1().retrieve(context, temps, vars);
@@ -154,5 +171,31 @@ public class IRJSProgram implements JSProgram {
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
         return VariableDeclaration.EMPTY_LIST;
+    }
+
+    private Object add(ExecutionContext context, Object lhs, Object rhs) {
+        if (lhs instanceof String || rhs instanceof String) {
+            return(Types.toString(context, lhs) + Types.toString(context, rhs));
+        }
+
+        Number lhsNum = Types.toNumber(context, lhs);
+        Number rhsNum = Types.toNumber(context, rhs);
+
+        if (Double.isNaN(lhsNum.doubleValue()) || Double.isNaN(rhsNum.doubleValue())) {
+            return(Double.NaN);
+        }
+
+        if (lhsNum instanceof Double || rhsNum instanceof Double) {
+            if (lhsNum.doubleValue() == 0.0 && rhsNum.doubleValue() == 0.0) {
+                if (Double.compare(lhsNum.doubleValue(), 0.0) < 0 && Double.compare(rhsNum.doubleValue(), 0.0) < 0) {
+                    return(-0.0);
+                } else {
+                    return(0.0);
+                }
+            }
+            return(lhsNum.doubleValue() + rhsNum.doubleValue());
+        }
+
+        return(lhsNum.longValue() + rhsNum.longValue());
     }
 }
