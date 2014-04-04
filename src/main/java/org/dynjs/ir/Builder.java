@@ -495,7 +495,14 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, PostOpExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+        Variable tmp = scope.createTemporaryVariable();
+        Variable variable = (Variable) expr.getExpr().accept(context, this, strict);
+
+        scope.addInstruction(new Add(tmp, variable, new IntegerNumber(1)));
+        scope.addInstruction(new Copy(variable, tmp));
+
+        return variable;
     }
 
     @Override
