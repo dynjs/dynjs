@@ -11,7 +11,7 @@ import org.dynjs.ir.operands.Variable;
  * optimization.
  */
 // FIXME: This should be merged into call when call is created
-public class Add extends Instruction {
+public class Add extends Instruction implements ResultInstruction {
     private Variable result;
     private Operand lhs;
     private Operand rhs;
