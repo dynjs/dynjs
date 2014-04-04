@@ -24,6 +24,7 @@ import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.LabelInstr;
 import org.dynjs.ir.instructions.Mul;
+import org.dynjs.ir.instructions.PropertyLookup;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
@@ -432,7 +433,13 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, DotExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+        Variable result = scope.createTemporaryVariable();
+        Operand base = (Operand) expr.getLhs().accept(context, this, strict);
+
+        scope.addInstruction(new PropertyLookup(result, base, expr.getIdentifier()));
+
+        return result;
     }
 
     @Override
