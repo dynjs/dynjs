@@ -21,6 +21,7 @@ import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LabelInstr;
+import org.dynjs.ir.instructions.Mul;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
@@ -412,7 +413,33 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, MultiplicativeExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+        Operand lhs = (Operand) expr.getLhs().accept(context, this, strict);
+        Operand rhs = (Operand) expr.getRhs().accept(context, this, strict);
+        Operand value;
+
+        // FIXME: Review numeric representation of JS to figure out overflow etc..
+        if (lhs instanceof IntegerNumber) {
+            if (rhs instanceof IntegerNumber) {
+                value = new IntegerNumber(((IntegerNumber) lhs).getValue() * ((IntegerNumber) rhs).getValue());
+            } else if (rhs instanceof FloatNumber) {
+                value = new FloatNumber(((FloatNumber) rhs).getValue() * ((IntegerNumber) lhs).getValue());
+            } else {
+                Variable tmp = scope.createTemporaryVariable();
+
+                scope.addInstruction(new Mul(tmp, lhs, rhs));
+
+                value = tmp;
+            }
+        } else {
+            Variable tmp = scope.createTemporaryVariable();
+
+            scope.addInstruction(new Mul(tmp, lhs, rhs));
+
+            value = tmp;
+        }
+
+        return value;
     }
 
     @Override
