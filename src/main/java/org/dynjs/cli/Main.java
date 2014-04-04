@@ -52,19 +52,47 @@ public class Main {
         try {
             parser.parseArgument(arguments);
 
-            if (dynJsArguments.isHelp() || dynJsArguments.isEmpty()) {
+            // short circuit options
+            if (dynJsArguments.isHelp()) {
                 showUsage();
+                return;
             } else if (dynJsArguments.isProperties()) {
                 showProperties();
-            } else if (dynJsArguments.isAST()) {
-                showAST(dynJsArguments.getFilename());
-            } else if (dynJsArguments.getFilename() != null) {
-                executeFile(dynJsArguments.getFilename());
-            } else if (dynJsArguments.isConsole()) {
-                startRepl();
+                return;
             } else if (dynJsArguments.isVersion()) {
                 showVersion();
+                return;
             }
+
+            if (dynJsArguments.isConsole()) {
+                startRepl();
+                return;
+            }
+
+            if (dynJsArguments.isAST()) {
+                if (!dynJsArguments.getEval().isEmpty()) {
+                    showAST(dynJsArguments.getEval());
+                } else if (!dynJsArguments.getFilename().isEmpty()) {
+                    showAST(new File(dynJsArguments.getFilename()));
+                } else {
+                    stream.println("please specify source to eval or file");
+                }
+                return;
+            }
+
+            if (!dynJsArguments.getEval().isEmpty()) {
+                executeSource(dynJsArguments.getEval());
+                return;
+            } else if (dynJsArguments.getFilename() != null) {
+                executeFile(new File(dynJsArguments.getFilename()));
+                return;
+            } else {
+                stream.println("please specify source to eval or file");
+            }
+
+            // last resort, show usage
+            showUsage();
+
 
         } catch (CmdLineException e) {
             stream.println(e.getMessage());
@@ -73,13 +101,23 @@ public class Main {
         }
     }
 
-    private void showAST(String filename) throws IOException {
+    private void showAST(File file) {
         try {
             initializeRuntime();
-            stream.println(runtime.newRunner().withSource( new File( filename ) ).parseSourceCode().dump("  "));
+            stream.println(runtime.newRunner().withSource( file ).parseSourceCode().dump("  "));
         } catch (FileNotFoundException e) {
-            stream.println("File " + filename + " not found");
+            stream.println("File " + file.getName() + " not found");
         }
+    }
+
+    private void executeSource(String eval) {
+        initializeRuntime();
+        runtime.newRunner().withSource( eval).execute();
+    }
+
+    private void showAST(String source) throws IOException {
+        initializeRuntime();
+        stream.println(runtime.newRunner().withSource(source).parseSourceCode().dump("  "));
     }
 
     private void showProperties() {
@@ -91,12 +129,12 @@ public class Main {
         stream.println(Option.formatOptions(Options.PROPERTIES));
     }
 
-    private void executeFile(String filename) throws IOException {
+    private void executeFile(File file) throws IOException {
         try {
             initializeRuntime();
-            runtime.newRunner().withSource( new File( filename ) ).execute();
+            runtime.newRunner().withSource( file ).execute();
         } catch (FileNotFoundException e) {
-            stream.println("File " + filename + " not found");
+            stream.println("File " + file.getName() + " not found");
         }
     }
 
