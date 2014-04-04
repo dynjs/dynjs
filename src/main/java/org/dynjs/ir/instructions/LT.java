@@ -19,7 +19,7 @@ public class LT extends Instruction implements ResultInstruction {
 
     @Override
     public Variable getResult() {
-        return null;
+        return result;
     }
 
     public Operand getArg1() {
