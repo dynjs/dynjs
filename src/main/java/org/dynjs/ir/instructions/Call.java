@@ -4,7 +4,7 @@ import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.operands.Variable;
 
-public class Call extends Instruction {
+public class Call extends Instruction implements ResultInstruction {
     private Variable result;
     private Operand self;
     private Operand identifier;
@@ -15,6 +15,22 @@ public class Call extends Instruction {
         this.self = self;
         this.identifier = identifier;
         this.args = args;
+    }
+
+    public Variable getResult() {
+        return result;
+    }
+
+    public Operand getSelf() {
+        return self;
+    }
+
+    public Operand getIdentifier() {
+        return identifier;
+    }
+
+    public Operand[] getArgs() {
+        return args;
     }
 
     public String toString() {

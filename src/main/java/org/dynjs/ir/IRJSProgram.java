@@ -16,9 +16,12 @@
 package org.dynjs.ir;
 
 import java.util.List;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.instructions.BEQ;
+import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.Jump;
+import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.OffsetVariable;
@@ -27,8 +30,11 @@ import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynObject;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.jruby.dirgra.DirectedGraph;
 
@@ -56,6 +62,7 @@ public class IRJSProgram implements JSProgram {
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
         Object[] vars = new Object[scope.getLocalVariableSize()];
         int size = instructions.length;
+        Object value = Types.UNDEFINED;
 
         int ipc = 0;
         while (ipc < size) {
@@ -64,21 +71,35 @@ public class IRJSProgram implements JSProgram {
             System.out.println("EX: " + instr);
 
             if (instr instanceof Copy) {
-                Variable variable = ((Copy) instr).getResult();
-                if (variable instanceof OffsetVariable) {
-                    int offset = ((OffsetVariable) variable).getOffset();
-                    Object value = ((Copy) instr).getValue().retrieve(context, temps, vars);
-
-                    if (variable instanceof LocalVariable) {
-                        vars[offset] = value;
-                    } else {
-                        temps[offset] = value;
-                    }
-                } else {
-                    // FIXME: Lookup dynamicvariable
-                }
+                value = ((Copy) instr).getValue().retrieve(context, temps, vars);
             } else if (instr instanceof Jump) {
                 ipc = ((Jump) instr).getTarget().getTargetIPC();
+            } else if (instr instanceof Call) {
+                Call call = (Call) instr;
+                Object ref = call.getIdentifier().retrieve(context, temps, vars);
+                Object function = Types.getValue(context, ref);
+                Operand[] opers = call.getArgs();
+                Object[] args = new Object[opers.length];
+
+                for (int i = 0; i < args.length; i++) {
+                    args[i] = opers[i].retrieve(context, temps, vars);
+                }
+
+                if (!(function instanceof JSFunction)) {
+                    throw new ThrowException(context, context.createTypeError(ref + " is not calllable"));
+                }
+
+                Object thisValue = null;
+
+                if (ref instanceof Reference) {
+                    if (((Reference) ref).isPropertyReference()) {
+                        thisValue = ((Reference) ref).getBase();
+                    } else {
+                        thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
+                    }
+                }
+
+                value = context.call(ref, (JSFunction) function, thisValue, args);
             } else if (instr instanceof BEQ) {
                 BEQ beq = (BEQ) instr;
                 Object arg1 = beq.getArg1().retrieve(context, temps, vars);
@@ -90,6 +111,21 @@ public class IRJSProgram implements JSProgram {
             } else if (instr instanceof Return) {
                 result = ((Return) instr).getValue().retrieve(context, temps, vars);
                 break;
+            }
+
+            if (instr instanceof ResultInstruction) {
+                Variable variable = ((ResultInstruction) instr).getResult();
+                if (variable instanceof OffsetVariable) {
+                    int offset = ((OffsetVariable) variable).getOffset();
+
+                    if (variable instanceof LocalVariable) {
+                        vars[offset] = value;
+                    } else {
+                        temps[offset] = value;
+                    }
+                } else {
+                    // FIXME: Lookup dynamicvariable
+                }
             }
         }
 

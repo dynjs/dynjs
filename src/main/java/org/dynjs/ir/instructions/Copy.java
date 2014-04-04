@@ -4,7 +4,7 @@ import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.operands.Variable;
 
-public class Copy extends Instruction {
+public class Copy extends Instruction implements ResultInstruction {
     private Variable result;
     private Operand value;
 
