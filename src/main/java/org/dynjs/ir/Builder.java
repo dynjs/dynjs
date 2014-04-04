@@ -297,9 +297,35 @@ public class Builder implements CodeVisitor {
         return unimplemented(context, statement, strict);
     }
 
+    // FIXME: flow control may or may not be an issue but old runtime handles it explicitly after accept.
     @Override
     public Object visit(Object context, ForVarDeclStatement statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        Scope scope = (Scope) context;
+        List<VariableDeclaration> decls = statement.getDeclarationList();
+        for (VariableDeclaration each : decls) {
+            each.accept(context, this, strict);
+        }
+
+        final Label startLabel = scope.getNewLabel();
+        final Label doneLabel = scope.getNewLabel();
+
+        scope.addInstruction(new LabelInstr(startLabel));
+        // TEST
+        scope.addInstruction(new BEQ((Operand) statement.getTest().accept(context, this, strict),
+                BooleanLiteral.FALSE, doneLabel));
+
+        // BODY
+        statement.getBlock().accept(context, this, strict);
+
+        // INCREMENT
+        statement.getIncrement().accept(context, this, strict);
+
+        scope.addInstruction(new Jump(startLabel));
+
+        // END
+        scope.addInstruction(new LabelInstr(doneLabel));
+
+        return Undefined.UNDEFINED;
     }
 
     @Override
@@ -588,7 +614,7 @@ public class Builder implements CodeVisitor {
         scope.addInstruction(new BEQ((Operand) statement.getTest().accept(context, this, strict),
                 BooleanLiteral.FALSE, doneLabel));
 
-        // THEN
+        // BODY
         statement.getBlock().accept(context, this, strict);
         scope.addInstruction(new Jump(startLabel));
 
