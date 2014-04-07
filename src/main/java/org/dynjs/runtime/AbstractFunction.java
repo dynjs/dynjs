@@ -82,7 +82,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             throw new ThrowException(context, context.createTypeError("prototype must be an object"));
         }
 
-        JSObject proto = (JSObject) get(null, "prototype");
+        JSObject proto = (JSObject) o;
 
         if (proto == null || v == Types.UNDEFINED) {
             return false;
