@@ -18,18 +18,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.aesh>0.38</version.aesh>
-        <version.invokebinder>1.2</version.invokebinder>
-        <version.jitescript>0.3.2</version.jitescript>
-        <version.joni>2.1.0</version.joni>
-        <version.options>1.0</version.options>
-        <version.rephract>1.1.1</version.rephract>
-        <version.jnr-posix>3.0.1</version.jnr-posix>
         <version.args4j>2.0.26</version.args4j>
+        <version.fest-assert>1.4</version.fest-assert>
         <version.guava>14.0.1</version.guava>
+        <version.invokebinder>1.2</version.invokebinder>
         <version.jackson-core-asl>1.9.9</version.jackson-core-asl>
+        <version.jitescript>0.3.2</version.jitescript>
+        <version.jnr-posix>3.0.1</version.jnr-posix>
+        <version.joni>2.1.0</version.joni>
         <version.junit>4.8.2</version.junit>
         <version.mockito-core>1.8.5</version.mockito-core>
-        <version.fest-assert>1.4</version.fest-assert>
+        <version.options>1.0</version.options>
+        <version.rephract>1.1.1</version.rephract>
         <test.pattern>**/*Spec.js</test.pattern>
     </properties>
 
