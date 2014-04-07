@@ -25,6 +25,11 @@
         <version.rephract>1.1.1</version.rephract>
         <version.jnr-posix>3.0.1</version.jnr-posix>
         <version.args4j>2.0.26</version.args4j>
+        <version.guava>14.0.1</version.guava>
+        <version.jackson-core-asl>1.9.9</version.jackson-core-asl>
+        <version.junit>4.8.2</version.junit>
+        <version.mockito-core>1.8.5</version.mockito-core>
+        <version.fest-assert>1.4</version.fest-assert>
         <test.pattern>**/*Spec.js</test.pattern>
     </properties>
 
@@ -108,7 +113,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
+            <version>${version.guava}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -147,7 +152,7 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.9</version>
+            <version>${version.jackson-core-asl}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -167,19 +172,19 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.8.5</version>
+            <version>${version.mockito-core}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
+            <version>${version.fest-assert}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
