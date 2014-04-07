@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.aesh>0.38</version.aesh>
         <version.invokebinder>1.2</version.invokebinder>
-        <version.jitescript>0.3.1</version.jitescript>
+        <version.jitescript>0.3.2</version.jitescript>
         <version.joni>2.1.0</version.joni>
         <version.options>1.0</version.options>
         <version.rephract>1.1.1</version.rephract>
