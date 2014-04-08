@@ -45,7 +45,7 @@ public class Main {
         new Main(System.out, args).run();
     }
 
-    void run() throws IOException {
+    protected void run() throws IOException {
         try {
             getParser().parseArgument(arguments);
 
