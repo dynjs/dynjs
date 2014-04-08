@@ -109,7 +109,7 @@ public class Main {
 
     private void executeSource(String eval) {
         initializeRuntime();
-        runtime.newRunner().withSource( eval).execute();
+        runtime.newRunner().withSource(eval).execute();
     }
 
     private void showAST(String source) throws IOException {
@@ -142,7 +142,7 @@ public class Main {
 
     protected void startRepl() {
         initializeRuntime();
-        Repl repl = new Repl(runtime, System.in, getOutputStream());
+        Repl repl = new Repl(runtime, System.in, getOutputStream(), getWelcomeMessage(), getPrompt());
         repl.run();
     }
 
@@ -178,5 +178,13 @@ public class Main {
 
     protected PrintStream getOutputStream() {
         return stream;
+    }
+
+    protected String getPrompt() {
+        return Repl.PROMPT;
+    }
+
+    protected String getWelcomeMessage() {
+        return Repl.WELCOME_MESSAGE;
     }
 }
