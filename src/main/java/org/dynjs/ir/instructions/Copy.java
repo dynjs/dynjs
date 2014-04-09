@@ -2,6 +2,7 @@ package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
 public class Copy extends Instruction implements ResultInstruction {
@@ -9,6 +10,7 @@ public class Copy extends Instruction implements ResultInstruction {
     private Operand value;
 
     public Copy(Variable result, Operand value) {
+        super(Operation.COPY);
         this.result = result;
         this.value = value;
     }

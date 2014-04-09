@@ -16,8 +16,13 @@
 package org.dynjs.ir;
 
 public class Instruction {
+    private final Operation operation;
     // Mutable state to make it easier for jumping around
     private int ipc = -1;
+
+    public Instruction(Operation operation) {
+        this.operation = operation;
+    }
 
     public int getIPC() {
         return ipc;
@@ -55,5 +60,9 @@ public class Instruction {
      */
     public String dump(String indent) {
         return indent + getClass().getSimpleName();
+    }
+
+    public Operation getOperation() {
+        return operation;
     }
 }

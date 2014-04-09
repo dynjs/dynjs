@@ -2,6 +2,7 @@ package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
 public class LE extends Instruction implements ResultInstruction {
@@ -10,6 +11,7 @@ public class LE extends Instruction implements ResultInstruction {
     private Operand arg2;
 
     public LE(Variable result, Operand arg1, Operand arg2) {
+        super(Operation.LE);
         this.result = result;
         this.arg1 = arg1;
         this.arg2 = arg2;

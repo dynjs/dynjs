@@ -17,6 +17,7 @@ package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.Operation;
 
 /**
  * Return from the current scope with the provided operand (or undefined).
@@ -27,6 +28,7 @@ public class Return extends Instruction {
     private Operand value;
 
     public Return(Operand value) {
+        super(Operation.RETURN);
         this.value = value;
     }
 

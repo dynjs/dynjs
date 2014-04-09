@@ -2,6 +2,7 @@ package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
 /**
@@ -12,6 +13,7 @@ public class PropertyLookup extends Instruction implements ResultInstruction {
     private String identifier;
 
     public PropertyLookup(Variable result, Operand base, String identifier) {
+        super(Operation.PROPERTY_LOOKUP);
         this.result = result;
         this.base = base;
         this.identifier = identifier;

@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Label;
 
 /**
@@ -16,7 +17,7 @@ public class BEQ extends Branch {
     }
 
     public BEQ(Operand arg1, Operand arg2, Label target) {
-        super(target);
+        super(Operation.BEQ, target);
 
         this.arg1 = arg1;
         this.arg2 = arg2;

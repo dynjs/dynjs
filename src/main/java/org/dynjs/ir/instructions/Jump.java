@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Label;
 
 /**
@@ -10,6 +11,7 @@ public class Jump extends Instruction {
     private Label target;
 
     public Jump(Label target) {
+        super(Operation.JUMP);
         this.target = target;
     }
 

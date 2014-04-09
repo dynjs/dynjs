@@ -2,6 +2,7 @@ package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
 /**
@@ -17,6 +18,7 @@ public class Add extends Instruction implements ResultInstruction {
     private Operand rhs;
 
     public Add(Variable result, Operand lhs, Operand rhs) {
+        super(Operation.ADD);
         this.result = result;
         this.lhs = lhs;
         this.rhs = rhs;
