@@ -15,6 +15,7 @@
  */
 package org.dynjs.ir;
 
+import org.dynjs.Config;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
@@ -116,7 +117,7 @@ import org.dynjs.runtime.Types;
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
-    public static JSProgram compile(ProgramTree program) {
+    public static JSProgram compile(ProgramTree program, Config.CompileMode mode) {
         Scope scope = new Scope(null);
         program.accept(scope, BUILDER, program.isStrict());
 

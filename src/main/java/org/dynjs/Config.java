@@ -17,6 +17,11 @@ public class Config {
         FORCE,
         JIT,
         IR,
+        IRC;
+
+        public boolean isIR() {
+            return this.equals(IR) || this.equals(IRC);
+        }
     }
 
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";

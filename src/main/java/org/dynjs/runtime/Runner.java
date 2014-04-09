@@ -126,10 +126,11 @@ public class Runner {
 
     private JSProgram compile(ProgramTree tree) {
         // FIXME: getCompiler will go away so just add special IR check for now.
-
-        if (context.getConfig().getCompileMode() == Config.CompileMode.IR) {
-            return Builder.compile(tree);
+        final Config.CompileMode compileMode = context.getConfig().getCompileMode();
+        if (compileMode.isIR()) {
+            return Builder.compile(tree, compileMode);
         }
+
         JSCompiler compiler = this.context.getCompiler();
         return compiler.compileProgram(this.context, tree, this.forceStrict);
     }
