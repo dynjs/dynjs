@@ -2,6 +2,9 @@ package org.dynjs.ir;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
+import org.dynjs.ir.instructions.Add;
+import org.dynjs.ir.instructions.BEQ;
+import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.runtime.JSProgram;
 import org.objectweb.asm.ClassReader;
@@ -36,41 +39,47 @@ public class IRByteCodeCompiler {
 
         final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + "MEH");
         jiteClass.defineDefaultConstructor();
-        jiteClass.defineMethod("execute", Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class), new CodeBlock() {{
-            for (int i = 0; i < instructions.length; i++) {
-                final Instruction instruction = instructions[i];
-                switch (instruction.getOperation()) {
-                    case ADD: break;
-                    case COPY: break;
-
+        CodeBlock block = new CodeBlock();
+        for (int i = 0; i < instructions.length; i++) {
+            final Instruction instruction = instructions[i];
+            if (jumpTable.get(i) != null) {
+                for (Label label : jumpTable.get(i)) {
+//                    block = block.label(label);
                 }
             }
-            for (Instruction instruction : instructions) {
-//                System.out.println(instruction.getClass());
-//                if (instruction instanceof LabelInstr) {
-//                    final Label label = ((LabelInstr) instruction).getLabel();
-////                    label(new LabelNode());
-//                } else if (instruction instanceof Copy) {
-//                    Copy copy = (Copy) instruction;
-//                    final Variable variable = copy.getResult();
-//                    final Operand value = copy.getValue();
-//                    if (value instanceof IntegerNumber) {
-//                        pushInt((int) ((IntegerNumber) value).getValue());
-//                        istore(((LocalVariable) variable).getOffset() + varOffset);
-//                    }
-//                } else if (instruction instanceof Add) {
-////                    iadd();
-//                    nop();
-//                } else if (instruction instanceof BEQ) {
-//                }
+
+            block = block.label(labels[i]);
+            switch (instruction.getOperation()) {
+                case ADD:
+                    block = emitAdd(block, (Add) instruction);
+                    break;
+                case COPY:
+                    block = emitCopy(block, (Copy) instruction);
+                    break;
+                case BEQ:
+                    block = emitBEQ(block, (BEQ) instruction);
+
             }
-            aconst_null();
-            areturn();
-        }});
+        }
+        block = block.aconst_null().areturn();
+
+        jiteClass.defineMethod("execute", Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class), block);
         final byte[] bytes = jiteClass.toBytes();
         ClassReader reader = new ClassReader(bytes);
         CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
 
         return null;
+    }
+
+    private static CodeBlock emitBEQ(CodeBlock block, BEQ instruction) {
+        return block;
+    }
+
+    private static CodeBlock emitAdd(CodeBlock block, Add instruction) {
+        return block;
+    }
+
+    private static CodeBlock emitCopy(CodeBlock block, Copy instruction) {
+        return block;
     }
 }
