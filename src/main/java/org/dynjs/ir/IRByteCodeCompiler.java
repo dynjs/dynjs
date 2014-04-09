@@ -6,6 +6,7 @@ import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.operands.Label;
+import org.dynjs.ir.representations.BasicBlock;
 import org.dynjs.runtime.JSProgram;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -13,6 +14,8 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -20,45 +23,41 @@ import static me.qmx.jitescript.util.CodegenUtils.sig;
 public class IRByteCodeCompiler {
     public static JSProgram compile(final Scope scope, String fileName, boolean strict) {
         final int varOffset = 2;
-        final Tuple<Instruction[], Map<Integer, Label[]>> tuple = scope.prepareForCompilation();
-        final Instruction[] instructions = tuple.a;
-        final Map<Integer, Label[]> jumpTable = tuple.b;
+        final List<BasicBlock> blockList = scope.prepareForCompilation();
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
         Object[] vars = new Object[scope.getLocalVariableSize()];
+        final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
 
-        final LabelNode[] labels = new LabelNode[instructions.length + 1];
-        for (int i = 0; i < labels.length; i++) {
-            labels[i] = new LabelNode();
-        }
 
         System.out.println("VROGRAM:");
-        int size = instructions.length;
-        for (int i = 0; i < size; i++) {
-            System.out.println("" + instructions[i]);
-        }
 
         final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + "MEH");
         jiteClass.defineDefaultConstructor();
         CodeBlock block = new CodeBlock();
-        for (int i = 0; i < instructions.length; i++) {
-            final Instruction instruction = instructions[i];
-            if (jumpTable.get(i) != null) {
-                for (Label label : jumpTable.get(i)) {
-//                    block = block.label(label);
+        // first pass for gathering labels
+        for (BasicBlock bb : blockList) {
+            final Label label = bb.getLabel();
+            System.out.println("label: " + label);
+            final LabelNode labelNode = new LabelNode();
+            jumpMap.put(label, labelNode);
+        }
+
+        // second pass for emitting
+        for (BasicBlock bb : blockList) {
+            block.label(jumpMap.get(bb.getLabel()));
+
+            for (Instruction instruction : bb.getInstructions()) {
+                System.out.println(instruction);
+                switch (instruction.getOperation()) {
+                    case ADD:
+                        block = emitAdd(block, (Add) instruction);
+                        break;
+                    case COPY:
+                        block = emitCopy(block, (Copy) instruction);
+                        break;
+                    case BEQ:
+                        block = emitBEQ(block, (BEQ) instruction, jumpMap);
                 }
-            }
-
-            block = block.label(labels[i]);
-            switch (instruction.getOperation()) {
-                case ADD:
-                    block = emitAdd(block, (Add) instruction);
-                    break;
-                case COPY:
-                    block = emitCopy(block, (Copy) instruction);
-                    break;
-                case BEQ:
-                    block = emitBEQ(block, (BEQ) instruction);
-
             }
         }
         block = block.aconst_null().areturn();
@@ -71,7 +70,11 @@ public class IRByteCodeCompiler {
         return null;
     }
 
-    private static CodeBlock emitBEQ(CodeBlock block, BEQ instruction) {
+    private static CodeBlock emitBEQ(CodeBlock block, BEQ instruction, Map<Label, LabelNode> jumpMap) {
+        final Label label = instruction.getTarget();
+        System.out.println("looking for label: " + label);
+        final LabelNode node = jumpMap.get(label);
+        block.if_icmpeq(node);
         return block;
     }
 

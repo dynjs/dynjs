@@ -152,25 +152,10 @@ public class Scope {
         return prepareIPCs(CFGLinearizer.linearize(cfg), cfg);
     }
 
-    public Tuple<Instruction[], Map<Integer, Label[]>> prepareForCompilation() {
+    public List<BasicBlock> prepareForCompilation() {
         final CFG cfg = new CFG(this);
-        final DirectedGraph<BasicBlock> graph = cfg.build(getInstructions());
-
-        final List<BasicBlock> basicBlockList = CFGLinearizer.linearize(cfg);
-        Map<Integer, Label[]> ipcLabelMap = new HashMap<Integer, Label[]>();
-        final ArrayList<Instruction> newInstructions = new ArrayList<>();
-        int ipc = 0;
-        for (BasicBlock block : basicBlockList) {
-            final Label label = block.getLabel();
-            ipcLabelMap.put(ipc, catLabels(ipcLabelMap.get(ipc), label));
-            for (Instruction instruction : block.getInstructions()) {
-                newInstructions.add(instruction);
-                instruction.setIPC(ipc);
-                ipc++;
-            }
-        }
-
-        return new Tuple<>(newInstructions.toArray(new Instruction[newInstructions.size()]), ipcLabelMap);
+        cfg.build(getInstructions());
+        return CFGLinearizer.linearize(cfg);
     }
 
     private static Label[] catLabels(Label[] labels, Label cat) {
