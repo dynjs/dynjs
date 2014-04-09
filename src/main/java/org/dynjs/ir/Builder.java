@@ -123,6 +123,9 @@ public class Builder implements CodeVisitor {
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
+        if (mode == Config.CompileMode.IRC) {
+            return IRByteCodeCompiler.compile(scope, program.getPosition().getFileName(), program.isStrict());
+        }
         return new IRJSProgram(scope, program.getPosition().getFileName(), program.isStrict());
     }
 
