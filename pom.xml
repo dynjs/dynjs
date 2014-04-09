@@ -407,6 +407,7 @@
                                     <overWrite>false</overWrite>
                                 </artifactItem>
                             </artifactItems>
+                            <includeScope>runtime</includeScope>
                             <outputDirectory>${project.basedir}/lib</outputDirectory>
                         </configuration>
                     </execution>
