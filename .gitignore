@@ -42,8 +42,5 @@ nbproject
 *.iml
 nb-configuration.xml
 
-# versioning output
-src/main/resources/version.properties
-
 # ignore generated jar output
 dynjs.jar

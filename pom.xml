@@ -31,6 +31,7 @@
         <version.options>1.0</version.options>
         <version.rephract>1.1.1</version.rephract>
         <test.pattern>**/*Spec.js</test.pattern>
+        <skipGitVersion>false</skipGitVersion>
     </properties>
 
     <developers>
@@ -242,6 +243,55 @@
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.9</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>false</verbose>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>target/generated-sources/versions/version.properties</generateGitPropertiesFilename>
+                    <skip>${skipGitVersion}</skip>
+                    <gitDescribe>
+                        <skip>false</skip>
+                        <always>true</always>
+                        <abbrev>7</abbrev>
+                        <dirty>-dirty</dirty>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-sources/versions</directory>
+                                    <includes>
+                                        <include>version.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -487,41 +537,6 @@
         </pluginManagement>
     </build>
     <profiles>
-        <profile>
-            <id>version</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>pl.project13.maven</groupId>
-                        <artifactId>git-commit-id-plugin</artifactId>
-                        <version>2.1.4</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>revision</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <verbose>false</verbose>
-                            <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                            <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                            <generateGitPropertiesFilename>src/main/resources/version.properties
-                            </generateGitPropertiesFilename>
-                            <gitDescribe>
-                                <skip>false</skip>
-                                <always>true</always>
-                                <abbrev>7</abbrev>
-                                <dirty>-dirty</dirty>
-                            </gitDescribe>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>release-generate-shaded-pkg</id>
             <activation>
