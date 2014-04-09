@@ -37,9 +37,6 @@ public class Main {
     private DynJS runtime;
 
     public Main(PrintStream stream, String[] args) {
-        this.dynJsArguments = new Arguments();
-        this.parser = new CmdLineParser(dynJsArguments);
-        this.parser.setUsageWidth(80);
         this.arguments = args;
         this.stream = stream;
     }
@@ -48,34 +45,34 @@ public class Main {
         new Main(System.out, args).run();
     }
 
-    void run() throws IOException {
+    protected void run() throws IOException {
         try {
-            parser.parseArgument(arguments);
+            getParser().parseArgument(arguments);
 
             // short circuit options
-            if (dynJsArguments.isHelp()) {
+            if (getArguments().isHelp()) {
                 showUsage();
                 return;
-            } else if (dynJsArguments.isProperties()) {
+            } else if (getArguments().isProperties()) {
                 showProperties();
                 return;
-            } else if (dynJsArguments.isVersion()) {
+            } else if (getArguments().isVersion()) {
                 showVersion();
                 return;
             }
 
-            if (dynJsArguments.isConsole()) {
+            if (getArguments().isConsole()) {
                 startRepl();
                 return;
             }
 
-            if (dynJsArguments.isAST()) {
-                if (!dynJsArguments.getEval().isEmpty()) {
-                    showAST(dynJsArguments.getEval());
-                } else if (!dynJsArguments.getFilename().isEmpty()) {
-                    showAST(new File(dynJsArguments.getFilename()));
+            if (getArguments().isAST()) {
+                if (!getArguments().getEval().isEmpty()) {
+                    showAST(getArguments().getEval());
+                } else if (!getArguments().getFilename().isEmpty()) {
+                    showAST(new File(getArguments().getFilename()));
                 } else {
-                    stream.println("please specify source to eval or file");
+                    getOutputStream().println("please specify source to eval or file");
                 }
                 return;
             }
@@ -90,13 +87,23 @@ public class Main {
                 stream.println("please specify source to eval or file");
             }
 
+            if (!getArguments().getEval().isEmpty()) {
+                executeSource(getArguments().getEval());
+                return;
+            } else if (getArguments().getFilename() != null) {
+                executeFile(new File(getArguments().getFilename()));
+                return;
+            } else {
+                getOutputStream().println("please specify source to eval or file");
+            }
+
             // last resort, show usage
             showUsage();
 
 
         } catch (CmdLineException e) {
-            stream.println(e.getMessage());
-            stream.println();
+            getOutputStream().println(e.getMessage());
+            getOutputStream().println();
             showUsage();
         }
     }
@@ -104,9 +111,9 @@ public class Main {
     private void showAST(File file) {
         try {
             initializeRuntime();
-            stream.println(runtime.newRunner().withSource( file ).parseSourceCode().dump("  "));
+            getOutputStream().println(runtime.newRunner().withSource(file).parseSourceCode().dump("  "));
         } catch (FileNotFoundException e) {
-            stream.println("File " + file.getName() + " not found");
+            getOutputStream().println("File " + file.getName() + " not found");
         }
     }
 
@@ -125,8 +132,8 @@ public class Main {
         sb
                 .append("# These properties can be used to alter runtime behavior for perf or compatibility.\n")
                 .append("# Specify them by passing directly to Java -Ddynjs.<property>=<value>\n");
-        stream.print(sb.toString());
-        stream.println(Option.formatOptions(Options.PROPERTIES));
+        getOutputStream().print(sb.toString());
+        getOutputStream().println(Option.formatOptions(Options.PROPERTIES));
     }
 
     private void executeFile(File file) throws IOException {
@@ -134,28 +141,60 @@ public class Main {
             initializeRuntime();
             runtime.newRunner().withSource( file ).execute();
         } catch (FileNotFoundException e) {
-            stream.println("File " + file.getName() + " not found");
+            getOutputStream().println("File " + file.getName() + " not found");
         }
     }
 
-    private void showVersion() {
-        stream.println(DynJS.VERSION_STRING);
+    private void showUsage() {
+        getOutputStream().println("usage: " + getBinaryName() + getParser().printExample(OptionHandlerFilter.ALL, null) + "\n");
+        getParser().printUsage(getOutputStream());
     }
 
-    private void startRepl() {
+    protected void startRepl() {
         initializeRuntime();
-        Repl repl = new Repl(runtime, System.in, stream);
+        Repl repl = new Repl(runtime, System.in, getOutputStream(), getWelcomeMessage(), getPrompt());
         repl.run();
     }
 
-    private void showUsage() {
-        stream.println("usage: dynjs" + parser.printExample(OptionHandlerFilter.ALL, null) + "\n");
-        parser.printUsage(stream);
+    protected void showVersion() {
+        getOutputStream().println(DynJS.VERSION_STRING);
     }
-    
-    private void initializeRuntime() {
-        config = dynJsArguments.getConfig();
-        config.setOutputStream(this.stream);
+
+    protected DynJS initializeRuntime() {
+        config = getArguments().getConfig();
+        config.setOutputStream(getOutputStream());
         runtime = new DynJS(config);
+        return runtime;
+    }
+
+    protected Arguments getArguments() {
+        if (this.dynJsArguments == null) {
+            this.dynJsArguments = new Arguments();
+        }
+        return dynJsArguments;
+    }
+
+    protected CmdLineParser getParser() {
+        if (this.parser == null) {
+            this.parser = new CmdLineParser(getArguments());
+            this.parser.setUsageWidth(80);
+        }
+        return parser;
+    }
+
+    protected String getBinaryName() {
+        return "dynjs";
+    }
+
+    protected PrintStream getOutputStream() {
+        return stream;
+    }
+
+    protected String getPrompt() {
+        return Repl.PROMPT;
+    }
+
+    protected String getWelcomeMessage() {
+        return Repl.WELCOME_MESSAGE;
     }
 }

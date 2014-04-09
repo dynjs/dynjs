@@ -18,14 +18,21 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.aesh>0.38</version.aesh>
+        <version.args4j>2.0.26</version.args4j>
         <version.dirgra>0.1</version.dirgra>
+        <version.fest-assert>1.4</version.fest-assert>
+        <version.guava>14.0.1</version.guava>
         <version.invokebinder>1.2</version.invokebinder>
-        <version.jitescript>0.3.1</version.jitescript>
+        <version.jackson-core-asl>1.9.9</version.jackson-core-asl>
+        <version.jitescript>0.3.2</version.jitescript>
+        <version.jnr-posix>3.0.1</version.jnr-posix>
         <version.joni>2.1.0</version.joni>
+        <version.junit>4.8.2</version.junit>
+        <version.mockito-core>1.8.5</version.mockito-core>
         <version.options>1.0</version.options>
         <version.rephract>1.1.1</version.rephract>
-        <version.jnr-posix>3.0.1</version.jnr-posix>
-        <version.args4j>2.0.26</version.args4j>
+        <test.pattern>**/*Spec.js</test.pattern>
+        <skipGitVersion>false</skipGitVersion>
     </properties>
 
     <developers>
@@ -108,7 +115,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
+            <version>${version.guava}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -153,7 +160,7 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.9</version>
+            <version>${version.jackson-core-asl}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -167,25 +174,47 @@
             <artifactId>jnr-posix</artifactId>
             <version>${version.jnr-posix}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-analysis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-tree</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-util</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.8.5</version>
+            <version>${version.mockito-core}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
+            <version>${version.fest-assert}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -221,6 +250,55 @@
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.9</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>false</verbose>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>target/generated-sources/versions/version.properties</generateGitPropertiesFilename>
+                    <skip>${skipGitVersion}</skip>
+                    <gitDescribe>
+                        <skip>false</skip>
+                        <always>true</always>
+                        <abbrev>7</abbrev>
+                        <dirty>-dirty</dirty>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-sources/versions</directory>
+                                    <includes>
+                                        <include>version.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -340,6 +418,33 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.ow2.asm:asm-all</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.objectweb.asm</pattern>
+                                    <shadedPattern>org.dynjs.internal.org.objectweb.asm</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.8</version>
                 <executions>
@@ -359,6 +464,7 @@
                                     <overWrite>false</overWrite>
                                 </artifactItem>
                             </artifactItems>
+                            <includeScope>runtime</includeScope>
                             <outputDirectory>${project.basedir}/lib</outputDirectory>
                         </configuration>
                     </execution>
@@ -458,41 +564,6 @@
     </build>
     <profiles>
         <profile>
-            <id>version</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>pl.project13.maven</groupId>
-                        <artifactId>git-commit-id-plugin</artifactId>
-                        <version>2.1.4</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>revision</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <verbose>false</verbose>
-                            <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                            <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                            <generateGitPropertiesFilename>src/main/resources/version.properties
-                            </generateGitPropertiesFilename>
-                            <gitDescribe>
-                                <skip>false</skip>
-                                <always>true</always>
-                                <abbrev>7</abbrev>
-                                <dirty>-dirty</dirty>
-                            </gitDescribe>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>release-generate-shaded-pkg</id>
             <activation>
                 <property>
@@ -549,6 +620,45 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jasmine</id>
+            <activation>
+                <property>
+                    <name>maven.test.skip</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>Jasmine Integration Tests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>org.jasmine.cli.Main</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                    <arguments>
+                                        <argument>--pattern</argument>
+                                        <argument>${test.pattern}</argument>
+                                        <argument>--format</argument>
+                                        <argument>DOC</argument>
+                                        <argument>--compile-mode</argument>
+                                        <argument>OFF</argument>
+                                    </arguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
