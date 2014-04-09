@@ -1,6 +1,7 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 
@@ -9,6 +10,10 @@ import org.dynjs.runtime.Types;
  */
 public class Undefined extends Operand {
     public static final Operand UNDEFINED = new Undefined();
+
+    protected Undefined() {
+        super(OperandType.UNDEFINED);
+    }
 
     @Override
     public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {

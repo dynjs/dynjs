@@ -1,12 +1,14 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 
 public class IntegerNumber extends Operand {
     private long value;
 
     public IntegerNumber(long value) {
+        super(OperandType.INTEGER);
         this.value = value;
     }
 

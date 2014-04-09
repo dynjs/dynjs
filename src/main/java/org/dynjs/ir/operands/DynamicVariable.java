@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 
 /**
@@ -9,6 +10,7 @@ public class DynamicVariable extends Variable {
     private String name;
 
     public DynamicVariable(String name) {
+        super(OperandType.DYNAMIC_VAR);
         this.name = name;
     }
 

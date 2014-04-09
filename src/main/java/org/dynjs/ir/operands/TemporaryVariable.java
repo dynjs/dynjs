@@ -1,10 +1,11 @@
 package org.dynjs.ir.operands;
 
+import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 
 public class TemporaryVariable extends OffsetVariable {
     public TemporaryVariable(int offset) {
-        super(offset);
+        super(OperandType.TEMP_VAR, offset);
     }
 
     @Override

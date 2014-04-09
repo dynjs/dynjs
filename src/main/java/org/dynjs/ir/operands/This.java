@@ -1,6 +1,7 @@
 package org.dynjs.ir.operands;
 
 import org.dynjs.ir.Operand;
+import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 
 /**
@@ -8,6 +9,10 @@ import org.dynjs.runtime.ExecutionContext;
  */
 public class This extends Operand {
     public static final This THIS = new This();
+
+    protected This() {
+        super(OperandType.THIS);
+    }
 
     public String toString() {
         return "%this";
