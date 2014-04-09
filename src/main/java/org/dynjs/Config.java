@@ -1,14 +1,14 @@
 package org.dynjs;
 
-import java.io.PrintStream;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.dynjs.cli.Options;
 import org.dynjs.runtime.Classpath;
 import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.GlobalObjectFactory;
+
+import java.io.PrintStream;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Config {
 
@@ -155,7 +155,7 @@ public class Config {
     public void setArgv(Object[] arguments) {
         this.argv = arguments;
     }
-    
+
     public Object[] getArgv() {
         return this.argv;
     }
