@@ -5,7 +5,9 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
+import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.representations.BasicBlock;
 import org.dynjs.runtime.JSProgram;
 import org.objectweb.asm.ClassReader;
@@ -71,6 +73,7 @@ public class IRByteCodeCompiler {
     }
 
     private static CodeBlock emitBEQ(CodeBlock block, BEQ instruction, Map<Label, LabelNode> jumpMap) {
+        emitOperand(block, instruction.getArg1());
         final Label label = instruction.getTarget();
         System.out.println("looking for label: " + label);
         final LabelNode node = jumpMap.get(label);
@@ -78,11 +81,33 @@ public class IRByteCodeCompiler {
         return block;
     }
 
+    private static void emitOperand(CodeBlock block, Operand operand) {
+        switch (operand.getType()) {
+            case INTEGER:
+                emitInteger(block, (IntegerNumber) operand);
+                break;
+            case TEMP_VAR:
+                emitTempVar(block, (TemporaryVariable) operand);
+        }
+    }
+
+    private static void emitTempVar(CodeBlock block, TemporaryVariable operand) {
+        final int offset = operand.getOffset();
+
+    }
+
+    private static void emitInteger(CodeBlock block, IntegerNumber operand) {
+        block.ldc(operand.getValue());
+    }
+
     private static CodeBlock emitAdd(CodeBlock block, Add instruction) {
+
         return block;
     }
 
     private static CodeBlock emitCopy(CodeBlock block, Copy instruction) {
+        emitOperand(block, instruction.getValue());
+        emitOperand(block, instruction.getResult());
         return block;
     }
 }
