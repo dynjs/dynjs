@@ -5,6 +5,7 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.IntegerNumber;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IRByteCodeCompiler {
@@ -78,7 +80,9 @@ public class IRByteCodeCompiler {
                         break;
                     case LT:
                         emitLT(block, (LT) instruction);
-
+                        break;
+                    case JUMP:
+                        emitJump(block, (Jump) instruction, jumpMap);
                 }
             }
         }
@@ -93,11 +97,21 @@ public class IRByteCodeCompiler {
         return null;
     }
 
+    private void emitJump(CodeBlock block, Jump instruction, HashMap<Label, LabelNode> jumpMap) {
+        block.go_to(jumpMap.get(instruction.getTarget()));
+
+    }
+
     private void emitLT(CodeBlock block, LT instruction) {
+        emitOperand(block, instruction.getArg1());
+        emitOperand(block, instruction.getArg2());
+        block.invokestatic(p(IRByteCodeCompiler.class), "lt", sig(Boolean.class, Object.class, Object.class));
+        storeResult(block, instruction.getResult());
     }
 
     private void emitBEQ(CodeBlock block, BEQ instruction, Map<Label, LabelNode> jumpMap) {
         emitOperand(block, instruction.getArg1());
+        block.invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
         emitOperand(block, instruction.getArg2());
         final Label label = instruction.getTarget();
         System.out.println("looking for label: " + label);
@@ -142,23 +156,41 @@ public class IRByteCodeCompiler {
     }
 
     private void emitInteger(CodeBlock block, IntegerNumber operand) {
-        block.ldc(operand.getValue());
+        block.pushInt((int) operand.getValue());
+        block.invokestatic(p(Integer.class), "valueOf", sig(Integer.class, int.class));
     }
 
     private void emitAdd(CodeBlock block, Add instruction) {
-
+        emitOperand(block, instruction.getLHS());
+        emitOperand(block, instruction.getRHS());
+        block.invokestatic(p(IRByteCodeCompiler.class), "add", sig(Object.class, Object.class, Object.class));
+        storeResult(block, instruction.getResult());
     }
 
     private void emitCopy(CodeBlock block, Copy instruction) {
         emitOperand(block, instruction.getValue());
         final Variable result = instruction.getResult();
+        storeResult(block, result);
+    }
+
+    private void storeResult(CodeBlock block, Variable result) {
+        int offset = 0;
         switch (result.getType()) {
             case TEMP_VAR:
-                block.astore(getTempVarOffset() + ((TemporaryVariable) result).getOffset());
+                offset = getTempVarOffset() + ((TemporaryVariable) result).getOffset();
                 break;
             case LOCAL_VAR:
-                block.astore(getLocalVarOffset() + ((LocalVariable) result).getOffset());
+                offset = getLocalVarOffset() + ((LocalVariable) result).getOffset();
                 break;
         }
+        block.astore(offset);
+    }
+
+    public static Boolean lt(Object a, Object b) {
+        return false;
+    }
+
+    public static Object add(Object a, Object b) {
+        return null;
     }
 }
