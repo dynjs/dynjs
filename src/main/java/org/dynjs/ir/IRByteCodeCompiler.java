@@ -5,9 +5,13 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.LT;
+import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
+import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
+import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
 import org.dynjs.runtime.JSProgram;
 import org.objectweb.asm.ClassReader;
@@ -23,7 +27,19 @@ import java.util.Map;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IRByteCodeCompiler {
-    public static JSProgram compile(final Scope scope, String fileName, boolean strict) {
+    private final Scope scope;
+    private final String fileName;
+    private final boolean strict;
+    private final List<BasicBlock> blockList;
+
+    public IRByteCodeCompiler(Scope scope, String fileName, boolean strict) {
+        this.scope = scope;
+        this.fileName = fileName;
+        this.strict = strict;
+        this.blockList = scope.prepareForCompilation();
+    }
+
+    public JSProgram compile() {
         final int varOffset = 2;
         final List<BasicBlock> blockList = scope.prepareForCompilation();
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
@@ -52,17 +68,22 @@ public class IRByteCodeCompiler {
                 System.out.println(instruction);
                 switch (instruction.getOperation()) {
                     case ADD:
-                        block = emitAdd(block, (Add) instruction);
+                        emitAdd(block, (Add) instruction);
                         break;
                     case COPY:
-                        block = emitCopy(block, (Copy) instruction);
+                        emitCopy(block, (Copy) instruction);
                         break;
                     case BEQ:
-                        block = emitBEQ(block, (BEQ) instruction, jumpMap);
+                        emitBEQ(block, (BEQ) instruction, jumpMap);
+                        break;
+                    case LT:
+                        emitLT(block, (LT) instruction);
+
                 }
             }
         }
-        block = block.aconst_null().areturn();
+        block.aconst_null();
+        block.areturn();
 
         jiteClass.defineMethod("execute", Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class), block);
         final byte[] bytes = jiteClass.toBytes();
@@ -72,42 +93,72 @@ public class IRByteCodeCompiler {
         return null;
     }
 
-    private static CodeBlock emitBEQ(CodeBlock block, BEQ instruction, Map<Label, LabelNode> jumpMap) {
+    private void emitLT(CodeBlock block, LT instruction) {
+    }
+
+    private void emitBEQ(CodeBlock block, BEQ instruction, Map<Label, LabelNode> jumpMap) {
         emitOperand(block, instruction.getArg1());
+        emitOperand(block, instruction.getArg2());
         final Label label = instruction.getTarget();
         System.out.println("looking for label: " + label);
         final LabelNode node = jumpMap.get(label);
         block.if_icmpeq(node);
-        return block;
     }
 
-    private static void emitOperand(CodeBlock block, Operand operand) {
+    private void emitOperand(CodeBlock block, Operand operand) {
         switch (operand.getType()) {
             case INTEGER:
                 emitInteger(block, (IntegerNumber) operand);
                 break;
             case TEMP_VAR:
                 emitTempVar(block, (TemporaryVariable) operand);
+                break;
+            case LOCAL_VAR:
+                emitLocalVar(block, (LocalVariable) operand);
+                break;
+            case BOOLEAN:
+                emitBoolean(block, (BooleanLiteral) operand);
         }
     }
 
-    private static void emitTempVar(CodeBlock block, TemporaryVariable operand) {
-        final int offset = operand.getOffset();
-
+    private void emitBoolean(CodeBlock block, BooleanLiteral operand) {
+        block.pushBoolean((Boolean) operand.retrieve(null, null, null));
     }
 
-    private static void emitInteger(CodeBlock block, IntegerNumber operand) {
+    private void emitLocalVar(CodeBlock block, LocalVariable operand) {
+        block.aload(getLocalVarOffset() + operand.getOffset());
+    }
+
+    private void emitTempVar(CodeBlock block, TemporaryVariable operand) {
+        block.aload(getTempVarOffset() + operand.getOffset());
+    }
+
+    private int getTempVarOffset() {
+        return scope.getLocalVariableSize();
+    }
+
+    private int getLocalVarOffset() {
+        return 1;
+    }
+
+    private void emitInteger(CodeBlock block, IntegerNumber operand) {
         block.ldc(operand.getValue());
     }
 
-    private static CodeBlock emitAdd(CodeBlock block, Add instruction) {
+    private void emitAdd(CodeBlock block, Add instruction) {
 
-        return block;
     }
 
-    private static CodeBlock emitCopy(CodeBlock block, Copy instruction) {
+    private void emitCopy(CodeBlock block, Copy instruction) {
         emitOperand(block, instruction.getValue());
-        emitOperand(block, instruction.getResult());
-        return block;
+        final Variable result = instruction.getResult();
+        switch (result.getType()) {
+            case TEMP_VAR:
+                block.astore(getTempVarOffset() + ((TemporaryVariable) result).getOffset());
+                break;
+            case LOCAL_VAR:
+                block.astore(getLocalVarOffset() + ((LocalVariable) result).getOffset());
+                break;
+        }
     }
 }
