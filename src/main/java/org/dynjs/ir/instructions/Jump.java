@@ -15,6 +15,10 @@ public class Jump extends Instruction {
         this.target = target;
     }
 
+    public boolean transfersControl() {
+        return true;
+    }
+
     public Label getTarget() {
         return target;
     }
