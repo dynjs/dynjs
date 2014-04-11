@@ -20,6 +20,7 @@ import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.FExpr;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
@@ -30,6 +31,7 @@ import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
+import org.dynjs.ir.operands.Fn;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.Null;
@@ -71,6 +73,7 @@ import org.dynjs.parser.ast.ForVarDeclOfStatement;
 import org.dynjs.parser.ast.ForVarDeclStatement;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.FunctionDeclaration;
+import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
@@ -357,19 +360,22 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, FunctionDeclaration statement, boolean strict) {
-        Scope parentScope = (Scope) context;
-        Scope scope = new Scope(parentScope);
-
-
-
-        statement.getBlock().accept(scope, BUILDER, strict);
-
-        return new IRJSFunction(scope, statement.getIdentifier(), statement.getFormalParameters(), strict);
+        return unimplemented(context, statement, strict);
     }
 
     @Override
     public Object visit(Object context, FunctionExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope parentScope = (Scope) context;
+        Scope scope = new Scope(parentScope);
+
+
+        final FunctionDescriptor descriptor = expr.getDescriptor();
+        descriptor.getBlock().accept(scope, BUILDER, strict);
+
+        final IRJSFunction function = new IRJSFunction(scope, descriptor, strict);
+        parentScope.addInstruction(new FExpr(function));
+
+        return new Fn(function);
     }
 
     @Override

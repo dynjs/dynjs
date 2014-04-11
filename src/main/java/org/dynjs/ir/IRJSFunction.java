@@ -1,14 +1,15 @@
 package org.dynjs.ir;
 
+import org.dynjs.parser.ast.FunctionDescriptor;
+
 public class IRJSFunction {
     private final Scope scope;
-    private final String identifier;
+    private final FunctionDescriptor descriptor;
     private final boolean strict;
 
-    public IRJSFunction(Scope scope, String identifier, String[] formalParameters, boolean strict) {
+    public IRJSFunction(Scope scope, FunctionDescriptor descriptor, boolean strict) {
         this.scope = scope;
-        this.identifier = identifier;
+        this.descriptor = descriptor;
         this.strict = strict;
-//        this.scope.pushFunction(this);
     }
 }
