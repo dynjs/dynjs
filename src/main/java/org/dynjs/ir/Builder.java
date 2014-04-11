@@ -357,7 +357,14 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, FunctionDeclaration statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        Scope parentScope = (Scope) context;
+        Scope scope = new Scope(parentScope);
+
+
+
+        statement.getBlock().accept(scope, BUILDER, strict);
+
+        return new IRJSFunction(scope, statement.getIdentifier(), statement.getFormalParameters(), strict);
     }
 
     @Override
