@@ -148,7 +148,7 @@ public class IRByteCodeCompiler {
     }
 
     private int getTempVarOffset() {
-        return scope.getLocalVariableSize();
+        return getLocalVarOffset() + scope.getLocalVariableSize();
     }
 
     private int getLocalVarOffset() {
