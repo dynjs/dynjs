@@ -5,6 +5,7 @@ import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
@@ -35,7 +36,7 @@ public class Interpreter {
         while (ipc < size) {
             Instruction instr = instructions[ipc];
             ipc++;
-            //System.out.println("EX: " + instr);
+            System.out.println("EX: " + instr);
 
             switch(instr.getOperation()) {
                 case ADD:
@@ -103,6 +104,10 @@ public class Interpreter {
                 }
                 case RETURN:
                     result = ((Return) instr).getValue().retrieve(context, temps, vars);
+                    break;
+                case DEFINE_FUNCTION:
+                    // FIXME: Reusing this scope and I think it is supposed to have it's own.
+                    value = new IRJSFunction(((DefineFunction) instr).getScope(), context.getLexicalEnvironment(), context.getGlobalObject());
                     break;
             }
 

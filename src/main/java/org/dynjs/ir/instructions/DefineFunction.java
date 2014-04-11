@@ -1,7 +1,6 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.FunctionScope;
-import org.dynjs.ir.IRJSFunction;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
@@ -11,7 +10,7 @@ public class DefineFunction extends Instruction implements ResultInstruction {
     private final FunctionScope function;
 
     public DefineFunction(Variable result, FunctionScope function) {
-        super(Operation.FEXPR);
+        super(Operation.DEFINE_FUNCTION);
 
         this.result = result;
         this.function = function;
@@ -27,6 +26,6 @@ public class DefineFunction extends Instruction implements ResultInstruction {
 
     @Override
     public String toString() {
-        return "(function())";
+        return "" + result + " = function()";
     }
 }
