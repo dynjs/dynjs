@@ -43,16 +43,23 @@ public class Scope {
 
     private Map<String, Integer> nextVarIndex = new HashMap<>();
 
-    HashMap<Integer, Integer> rescueMap;
+    private HashMap<Integer, Integer> rescueMap;
 
-    public Scope(Scope parent) {
+    private boolean isStrict;
+
+    public Scope(Scope parent, boolean isStrict) {
         this.parent = parent;
+        this.isStrict = isStrict;
     }
 
     public Instruction addInstruction(Instruction instruction) {
         instructions.add(instruction);
 
         return instruction;
+    }
+
+    public boolean isStrict() {
+        return isStrict;
     }
 
     public List<Instruction> getInstructions() {

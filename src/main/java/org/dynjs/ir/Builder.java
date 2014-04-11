@@ -119,7 +119,7 @@ public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
     public static JSProgram compile(ProgramTree program, Config.CompileMode mode) {
-        Scope scope = new Scope(null);
+        Scope scope = new Scope(null, program.isStrict());
         program.accept(scope, BUILDER, program.isStrict());
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
@@ -366,7 +366,8 @@ public class Builder implements CodeVisitor {
         Scope scope = (Scope) context;
         FunctionDescriptor descriptor = expr.getDescriptor();
         Variable result = scope.createTemporaryVariable();
-        FunctionScope functionScope = new FunctionScope(scope);
+        FunctionScope functionScope = new FunctionScope(scope, descriptor.isStrict(),
+                descriptor.getFormalParameterNames(), descriptor.getPosition().getFileName());
 
         descriptor.getBlock().accept(functionScope, this, strict);
 
