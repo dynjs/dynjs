@@ -71,63 +71,75 @@ public class IRJSProgram implements JSProgram {
         while (ipc < size) {
             Instruction instr = instructions[ipc];
             ipc++;
-            System.out.println("EX: " + instr);
+            //System.out.println("EX: " + instr);
 
-            if (instr instanceof Add) {
-                value = add(context,
-                        ((Add) instr).getLHS().retrieve(context, temps, vars),
-                        ((Add) instr).getRHS().retrieve(context, temps, vars));
-            } else if (instr instanceof Copy) {
-                value = ((Copy) instr).getValue().retrieve(context, temps, vars);
-            } else if (instr instanceof Jump) {
-                ipc = ((Jump) instr).getTarget().getTargetIPC();
-            } else if (instr instanceof Call) {
-                Call call = (Call) instr;
-                Object ref = call.getIdentifier().retrieve(context, temps, vars);
-                Object function = Types.getValue(context, ref);
-                Operand[] opers = call.getArgs();
-                Object[] args = new Object[opers.length];
+            switch(instr.getOperation()) {
+                case ADD:
+                    value = add(context,
+                            ((Add) instr).getLHS().retrieve(context, temps, vars),
+                            ((Add) instr).getRHS().retrieve(context, temps, vars));
+                    break;
+                case COPY:
+                    value = ((Copy) instr).getValue().retrieve(context, temps, vars);
+                    break;
+                case JUMP:
+                    ipc = ((Jump) instr).getTarget().getTargetIPC();
+                    break;
+                case CALL:
+                    Call call = (Call) instr;
+                    Object ref = call.getIdentifier().retrieve(context, temps, vars);
+                    Object function = Types.getValue(context, ref);
+                    Operand[] opers = call.getArgs();
+                    Object[] args = new Object[opers.length];
 
-                for (int i = 0; i < args.length; i++) {
-                    args[i] = opers[i].retrieve(context, temps, vars);
-                }
-
-                if (!(function instanceof JSFunction)) {
-                    throw new ThrowException(context, context.createTypeError(ref + " is not calllable"));
-                }
-
-                Object thisValue = null;
-
-                if (ref instanceof Reference) {
-                    if (((Reference) ref).isPropertyReference()) {
-                        thisValue = ((Reference) ref).getBase();
-                    } else {
-                        thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
+                    for (int i = 0; i < args.length; i++) {
+                        args[i] = opers[i].retrieve(context, temps, vars);
                     }
-                }
 
-                value = context.call(ref, (JSFunction) function, thisValue, args);
-            } else if (instr instanceof LT) {
-                Object arg1  = ((LT) instr).getArg1().retrieve(context, temps, vars);
-                Object arg2  = ((LT) instr).getArg2().retrieve(context, temps, vars);
-                Object r = Types.compareRelational(context, arg1, arg2, true);
-                value = r == Types.UNDEFINED ? false : r;
-            } else if (instr instanceof LE) {
-                Object arg1  = ((LE) instr).getArg1().retrieve(context, temps, vars);
-                Object arg2  = ((LE) instr).getArg2().retrieve(context, temps, vars);
-                Object r = Types.compareRelational(context, arg1, arg2, true);
-                value = r == Boolean.TRUE || r == Types.UNDEFINED ? false : r;
-            } else if (instr instanceof BEQ) {
-                BEQ beq = (BEQ) instr;
-                Object arg1 = beq.getArg1().retrieve(context, temps, vars);
-                Object arg2 = beq.getArg2().retrieve(context, temps, vars);
+                    if (!(function instanceof JSFunction)) {
+                        throw new ThrowException(context, context.createTypeError(ref + " is not calllable"));
+                    }
 
-                if (arg1.equals(arg2)) {
-                    ipc = beq.getTarget().getTargetIPC();
+                    Object thisValue = null;
+
+                    // FIXME: We can probably remove this check for IRJSFunctions since we will not be using references
+                    if (ref instanceof Reference) {
+                        if (((Reference) ref).isPropertyReference()) {
+                            thisValue = ((Reference) ref).getBase();
+                        } else {
+                            thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
+                        }
+                    }
+
+                    value = context.call(ref, (JSFunction) function, thisValue, args);
+                    break;
+                case LT: {
+                    Object arg1  = ((LT) instr).getArg1().retrieve(context, temps, vars);
+                    Object arg2  = ((LT) instr).getArg2().retrieve(context, temps, vars);
+                    Object r = Types.compareRelational(context, arg1, arg2, true);
+                    value = r == Types.UNDEFINED ? false : r;
+                    break;
                 }
-            } else if (instr instanceof Return) {
-                result = ((Return) instr).getValue().retrieve(context, temps, vars);
-                break;
+                case LE: {
+                    Object arg1  = ((LE) instr).getArg1().retrieve(context, temps, vars);
+                    Object arg2  = ((LE) instr).getArg2().retrieve(context, temps, vars);
+                    Object r = Types.compareRelational(context, arg1, arg2, true);
+                    value = r == Boolean.TRUE || r == Types.UNDEFINED ? false : r;
+                    break;
+                }
+                case BEQ: {
+                    BEQ beq = (BEQ) instr;
+                    Object arg1 = beq.getArg1().retrieve(context, temps, vars);
+                    Object arg2 = beq.getArg2().retrieve(context, temps, vars);
+
+                    if (arg1.equals(arg2)) {
+                        ipc = beq.getTarget().getTargetIPC();
+                    }
+                    break;
+                }
+                case RETURN:
+                    result = ((Return) instr).getValue().retrieve(context, temps, vars);
+                    break;
             }
 
             if (instr instanceof ResultInstruction) {
