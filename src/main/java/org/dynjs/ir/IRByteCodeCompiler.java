@@ -14,6 +14,7 @@ import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
+import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.JSProgram;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -21,6 +22,8 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +96,26 @@ public class IRByteCodeCompiler {
         final byte[] bytes = jiteClass.toBytes();
         ClassReader reader = new ClassReader(bytes);
         CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
+
+        final DynamicClassLoader loader = new DynamicClassLoader();
+        final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
+
+
+        try {
+            final Method execute;
+            final Method[] declaredMethods = define.getDeclaredMethods();
+            for (Method declaredMethod : declaredMethods) {
+                System.out.println(declaredMethod);
+            }
+            execute = define.getDeclaredMethod("execute");
+            final Object invoke = execute.invoke(null);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
         return null;
     }
@@ -187,10 +210,10 @@ public class IRByteCodeCompiler {
     }
 
     public static Boolean lt(Object a, Object b) {
-        return false;
+        return ((Integer) a).compareTo((Integer) b) == -1;
     }
 
     public static Object add(Object a, Object b) {
-        return null;
+        return ((Integer) a) + ((Integer) b);
     }
 }
