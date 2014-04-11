@@ -20,7 +20,7 @@ import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
-import org.dynjs.ir.instructions.FExpr;
+import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
@@ -113,9 +113,7 @@ import org.dynjs.parser.ast.WhileStatement;
 import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.dynjs.runtime.Types;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
@@ -365,17 +363,16 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, FunctionExpression expr, boolean strict) {
-        Scope parentScope = (Scope) context;
-        Scope scope = new Scope(parentScope);
+        Scope scope = (Scope) context;
+        FunctionDescriptor descriptor = expr.getDescriptor();
+        Variable result = scope.createTemporaryVariable();
+        FunctionScope functionScope = new FunctionScope(scope);
 
+        descriptor.getBlock().accept(functionScope, this, strict);
 
-        final FunctionDescriptor descriptor = expr.getDescriptor();
-        descriptor.getBlock().accept(scope, BUILDER, strict);
+        scope.addInstruction(new DefineFunction(result, functionScope));
 
-        final IRJSFunction function = new IRJSFunction(scope, descriptor, strict);
-        parentScope.addInstruction(new FExpr(function));
-
-        return new Fn(function);
+        return result;
     }
 
     @Override
