@@ -14,12 +14,14 @@ import org.dynjs.runtime.Types;
 
 public class IRJSFunction extends DynObject implements JSFunction {
     private final FunctionScope scope;
+    private Instruction[] instructions;
     private final LexicalEnvironment lexicalEnvironment;
     private String debugContext = "";
 
     public IRJSFunction(FunctionScope scope, LexicalEnvironment lexicalEnvironment, GlobalObject globalObject) {
         super(globalObject);
         this.scope = scope;
+        this.instructions = scope.prepareForInterpret(); // FIXME This is a big up front cost...make lazy
         this.lexicalEnvironment = lexicalEnvironment;
     }
 
@@ -33,7 +35,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     @Override
     public String getFileName() {
-        return scope.getFilename();
+        return scope.getFileName();
     }
 
     // FIXME: Not sure but constructor is likely a different beast than IRJSFunction
@@ -85,7 +87,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     @Override
     public Object call(ExecutionContext context) {
-        return null;
+        return Interpreter.execute(context, scope, instructions);
     }
 
     @Override
@@ -93,13 +95,15 @@ public class IRJSFunction extends DynObject implements JSFunction {
         return scope.isStrict();
     }
 
+    // FIXME: Remove or replace once we learn how IR should handle these
     @Override
     public List<FunctionDeclaration> getFunctionDeclarations() {
-        return null;
+        return FunctionDeclaration.EMPTY_LIST;
     }
 
+    // FIXME: Remove or replace once we learn how IR should handle these
     @Override
     public List<VariableDeclaration> getVariableDeclarations() {
-        return null;
+        return VariableDeclaration.EMPTY_LIST;
     }
 }

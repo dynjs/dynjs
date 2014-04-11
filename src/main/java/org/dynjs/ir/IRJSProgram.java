@@ -43,14 +43,10 @@ import org.jruby.dirgra.DirectedGraph;
 
 public class IRJSProgram implements JSProgram {
     private Scope scope;
-    private String filename;
-    boolean isStrict;
     private Instruction[] instructions;
 
-    public IRJSProgram(Scope scope, String filename, boolean isStrict) {
+    public IRJSProgram(Scope scope) {
         this.scope = scope;
-        this.filename = filename;
-        this.isStrict = isStrict;
         this.instructions = scope.prepareForInterpret();
 
         System.out.println("PROGRAM:");
@@ -66,12 +62,12 @@ public class IRJSProgram implements JSProgram {
 
     @Override
     public String getFileName() {
-        return filename;
+        return scope.getFileName();
     }
 
     @Override
     public boolean isStrict() {
-        return isStrict;
+        return scope.isStrict();
     }
 
     // FIXME: Remove or replace once we learn how IR should handle these

@@ -46,9 +46,11 @@ public class Scope {
     private HashMap<Integer, Integer> rescueMap;
 
     private boolean isStrict;
+    private String fileName;
 
-    public Scope(Scope parent, boolean isStrict) {
+    public Scope(Scope parent, String fileName, boolean isStrict) {
         this.parent = parent;
+        this.fileName = fileName;
         this.isStrict = isStrict;
     }
 
@@ -56,6 +58,10 @@ public class Scope {
         instructions.add(instruction);
 
         return instruction;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public boolean isStrict() {

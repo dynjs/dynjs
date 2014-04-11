@@ -5,20 +5,14 @@ package org.dynjs.ir;
  */
 public class FunctionScope extends Scope {
     private String[] parameterNames;
-    private String filename;
 
-    public FunctionScope(Scope parent, boolean isStrict, String[] parameterNames, String filename) {
-        super(parent, isStrict);
+    public FunctionScope(Scope parent, String fileName, boolean isStrict, String[] parameterNames) {
+        super(parent, fileName, isStrict);
 
         this.parameterNames = parameterNames;
-        this.filename = filename;
     }
 
     public String[] getParameterNames() {
         return parameterNames;
-    }
-
-    public String getFilename() {
-        return filename;
     }
 }
