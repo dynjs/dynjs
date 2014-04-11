@@ -342,18 +342,18 @@ public class Builder implements CodeVisitor {
     @Override
     public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
         Scope scope = (Scope) context;
-        final Variable result = scope.createTemporaryVariable();
-        final List<Expression> argumentExpressions = expr.getArgumentExpressions();
-        final List<Operand> args = new ArrayList<Operand>();
-        for (Expression argumentExpression : argumentExpressions) {
-            Operand arg = (Operand) acceptOrUndefined(context, argumentExpression, strict);
-            args.add(arg);
+        Variable result = scope.createTemporaryVariable();
+        List<Expression> argumentExpressions = expr.getArgumentExpressions();
+        int argsLength = argumentExpressions.size();
+        Operand[] args = new Operand[argsLength];
+
+        for (int i = 0; i < argsLength; i++) {
+            args[i] = (Operand) acceptOrUndefined(context, argumentExpressions.get(i), strict);
         }
 
-        final Operand operand = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);
+        final Operand name = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);
 
-        // FIXME: member is the name right?  so first operand shold be this which is likely a temp
-        scope.addInstruction(new Call(result, This.THIS, operand, args.toArray(new Operand[]{})));
+        scope.addInstruction(new Call(result, This.THIS, name, args));
 
         return result;
     }
