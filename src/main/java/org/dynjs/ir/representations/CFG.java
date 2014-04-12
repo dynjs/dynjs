@@ -202,6 +202,8 @@ public class CFG {
 
         buildExitBasicBlock(nestedExceptionRegions, firstBB, returnBBs, exceptionBBs, nextBBIsFallThrough, currBB, entryBB);
 
+        optimize();
+
         return graph;
     }
 
