@@ -23,6 +23,11 @@ public class LocalVariable extends OffsetVariable {
 
     @Override
     public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
-        return vars[getOffset()];
+        try {
+            return vars[getOffset()];
+        } catch (Exception e) {
+            System.out.println("Error: Local Variable '" + name + "' cannot be retrieed.");
+            throw e;
+        }
     }
 }

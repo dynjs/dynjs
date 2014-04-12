@@ -15,6 +15,11 @@ public class TemporaryVariable extends OffsetVariable {
 
     @Override
     public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
-        return temps[getOffset()];
+        try {
+            return temps[getOffset()];
+        } catch (Exception e) {
+            System.out.println("Error: Tempory Variable '%t_" + getOffset() + "' cannot be retrieed.");
+            throw e;
+        }
     }
 }
