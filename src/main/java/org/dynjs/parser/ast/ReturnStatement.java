@@ -48,4 +48,9 @@ public class ReturnStatement extends BaseStatement {
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit(context, this, strict);
     }
+
+    @Override
+    public String dump(String indent) {
+        return super.dump(indent) + (this.expr == null ? "" : this.expr.dump(indent + "  "));
+    }
 }
