@@ -35,10 +35,6 @@ public class BracketExpression extends AbstractBinaryExpression {
     public String toString() {
         return getLhs() + "[" + getRhs() + "]";
     }
-    
-    public String dump(String indent) {
-        return super.dump(indent) + getLhs().dump( indent + "  " ) + getRhs().dump( indent + "  " );
-    }
 
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
