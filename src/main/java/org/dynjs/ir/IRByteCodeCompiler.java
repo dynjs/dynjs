@@ -5,9 +5,11 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
+import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.operands.BooleanLiteral;
+import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.LocalVariable;
@@ -15,7 +17,9 @@ import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
 import org.dynjs.runtime.DynamicClassLoader;
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.Types;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.LabelNode;
@@ -27,8 +31,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.params;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IRByteCodeCompiler {
@@ -36,6 +42,7 @@ public class IRByteCodeCompiler {
     private final String fileName;
     private final boolean strict;
     private final List<BasicBlock> blockList;
+    private final AtomicInteger methodCounter = new AtomicInteger();
 
     public IRByteCodeCompiler(Scope scope, String fileName, boolean strict) {
         this.scope = scope;
@@ -71,22 +78,7 @@ public class IRByteCodeCompiler {
 
             for (Instruction instruction : bb.getInstructions()) {
                 System.out.println(instruction);
-                switch (instruction.getOperation()) {
-                    case ADD:
-                        emitAdd(block, (Add) instruction);
-                        break;
-                    case COPY:
-                        emitCopy(block, (Copy) instruction);
-                        break;
-                    case BEQ:
-                        emitBEQ(block, (BEQ) instruction, jumpMap);
-                        break;
-                    case LT:
-                        emitLT(block, (LT) instruction);
-                        break;
-                    case JUMP:
-                        emitJump(block, (Jump) instruction, jumpMap);
-                }
+                emitInstruction(jiteClass, jumpMap, block, instruction);
             }
         }
         block.aconst_null();
@@ -120,6 +112,45 @@ public class IRByteCodeCompiler {
         return null;
     }
 
+    private void emitInstruction(JiteClass jiteClass, HashMap<Label, LabelNode> jumpMap, CodeBlock block, Instruction instruction) {
+        switch (instruction.getOperation()) {
+            case DEFINE_FUNCTION:
+                emitFunction(jiteClass, jumpMap, block, (DefineFunction) instruction);
+                break;
+            case ADD:
+                emitAdd(block, (Add) instruction);
+                break;
+            case COPY:
+                emitCopy(block, (Copy) instruction);
+                break;
+            case BEQ:
+                emitBEQ(block, (BEQ) instruction, jumpMap);
+                break;
+            case LT:
+                emitLT(block, (LT) instruction);
+                break;
+            case JUMP:
+                emitJump(block, (Jump) instruction, jumpMap);
+        }
+    }
+
+    private void emitFunction(JiteClass jiteClass, HashMap<Label, LabelNode> jumpMap, CodeBlock block, DefineFunction instruction) {
+        final FunctionScope functionScope = ((DefineFunction) instruction).getScope();
+        final String[] parameterNames = functionScope.getParameterNames();
+        final CodeBlock fnBlock = new CodeBlock();
+        final List<BasicBlock> blocks = functionScope.prepareForCompilation();
+        for (BasicBlock bb : blocks) {
+            for (Instruction fnInstr : bb.getInstructions()) {
+                emitInstruction(jiteClass, jumpMap, fnBlock, fnInstr);
+            }
+        }
+        if (!fnBlock.returns()) {
+            fnBlock.aconst_null().areturn();
+        }
+        final String methodName = nextSyntheticMethodName(functionScope);
+        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, parameterNames.length)), fnBlock);
+    }
+
     private void emitJump(CodeBlock block, Jump instruction, HashMap<Label, LabelNode> jumpMap) {
         block.go_to(jumpMap.get(instruction.getTarget()));
 
@@ -144,6 +175,9 @@ public class IRByteCodeCompiler {
 
     private void emitOperand(CodeBlock block, Operand operand) {
         switch (operand.getType()) {
+            case DYNAMIC_VAR:
+                emitDynamicVar(block, (DynamicVariable) operand);
+                break;
             case INTEGER:
                 emitInteger(block, (IntegerNumber) operand);
                 break;
@@ -156,6 +190,32 @@ public class IRByteCodeCompiler {
             case BOOLEAN:
                 emitBoolean(block, (BooleanLiteral) operand);
         }
+    }
+
+    public CodeBlock jsGetValue() {
+        CodeBlock codeBlock = new CodeBlock()
+                // IN: reference
+                .aload(1)
+                        // reference context
+                .swap()
+                        // context reference
+                .invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
+        return codeBlock;
+    }
+
+    private void emitDynamicVar(CodeBlock block, DynamicVariable operand) {
+        block
+                .aload(1)
+                        // context
+                .ldc(operand.getName())
+                        // context name
+                .invokevirtual(p(ExecutionContext.class), "resolve", sig(Object.class, String.class))
+                        // reference
+                .aload(1)
+                        // reference context
+                .swap()
+                        // context reference
+                .invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
     }
 
     private void emitBoolean(CodeBlock block, BooleanLiteral operand) {
@@ -207,6 +267,17 @@ public class IRByteCodeCompiler {
                 break;
         }
         block.astore(offset);
+    }
+
+
+    private String nextSyntheticMethodName(FunctionScope scope) {
+        final String[] parameterNames = scope.getParameterNames();
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < parameterNames.length; i++) {
+            builder.append(parameterNames[i]);
+            builder.append("_");
+        }
+        return "m_" + builder.toString() + "_" + methodCounter.getAndIncrement();
     }
 
     public static Boolean lt(Object a, Object b) {
