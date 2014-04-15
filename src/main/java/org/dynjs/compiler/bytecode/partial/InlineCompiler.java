@@ -11,7 +11,7 @@ import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 
 public class InlineCompiler extends AbstractPartialCompiler {
     

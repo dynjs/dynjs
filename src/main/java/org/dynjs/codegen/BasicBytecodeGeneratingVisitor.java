@@ -99,7 +99,7 @@ import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.dynjs.runtime.interp.InterpretingVisitorFactory;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 

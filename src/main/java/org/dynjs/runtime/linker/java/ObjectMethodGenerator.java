@@ -9,7 +9,7 @@ import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.runtime.linker.DynJSCoercionMatrix;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 import org.projectodd.rephract.mop.java.CoercionMatrix;
 
 public class ObjectMethodGenerator extends MethodGenerator {

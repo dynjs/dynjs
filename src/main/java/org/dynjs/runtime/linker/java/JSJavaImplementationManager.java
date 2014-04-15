@@ -24,7 +24,7 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
-import org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 
 public class JSJavaImplementationManager {
 

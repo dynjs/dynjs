@@ -7,7 +7,7 @@ import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public class SingleClassCaller extends CodeBlock {
 

@@ -7,7 +7,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public class CaseClause {
 

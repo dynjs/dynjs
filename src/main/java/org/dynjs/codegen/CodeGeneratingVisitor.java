@@ -25,7 +25,7 @@ import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
 import org.dynjs.runtime.interp.InterpretingVisitorFactory;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVisitor {
 

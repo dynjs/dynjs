@@ -19,7 +19,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.interp.InterpretingVisitorFactory;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGeneratingVisitor {
 
