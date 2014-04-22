@@ -1094,7 +1094,8 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        Object memberExpr = getValue(context, pop());
+        Object ref = pop();
+        Object memberExpr = getValue(context, ref);
 
         Object[] args = new Object[expr.getArgumentExpressions().size()];
 
@@ -1107,7 +1108,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
 
         if (memberExpr instanceof JSFunction) {
-            push(context.construct((JSFunction) memberExpr, args));
+            push(context.construct( ref, (JSFunction) memberExpr, args));
             return;
         }
 

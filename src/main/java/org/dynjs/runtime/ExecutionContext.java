@@ -12,6 +12,8 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.builtins.types.BuiltinString;
+import org.dynjs.runtime.builtins.types.string.DynString;
 
 public class ExecutionContext {
 
@@ -160,9 +162,22 @@ public class ExecutionContext {
 
     }
 
-    public Object construct(JSFunction function, Object... args) {
+    //public Object construct(JSFunction function, Object... args) {
+    //return construct( null, function, args );
+    //}
+
+    public Object construct(Object reference, JSFunction function, Object... args) {
         if (!function.isConstructor()) {
             throw new ThrowException(this, createTypeError("not a constructor"));
+        }
+
+        Object ctorName = function.get(this, "name");
+        if (ctorName == Types.UNDEFINED) {
+            if (reference instanceof Reference) {
+                ctorName = ((Reference) reference).getReferencedName();
+            } else {
+                ctorName = function.getDebugContext();
+            }
         }
 
         // 13.2.2
@@ -184,11 +199,14 @@ public class ExecutionContext {
         }
 
         // 8. Call the function with obj as self
-        Object result = internalCall(null, function, obj, args);
+        Object result = internalCall(reference, function, obj, args);
         // 9. If result is a JSObject return it
+
         if (result instanceof JSObject) {
-            return (JSObject) result;
+            obj = (JSObject) result;
         }
+
+        ((JSObject) obj).defineNonEnumerableProperty(this.getGlobalObject(), "__ctor__", ctorName.toString());
         // Otherwise return obj
         return obj;
     }
@@ -497,9 +515,9 @@ public class ExecutionContext {
         JSFunction func = (JSFunction) getGlobalObject().get(this, type);
         JSObject err = null;
         if (message == null) {
-            err = (JSObject) construct(func);
+            err = (JSObject) construct((Object) null, func);
         } else {
-            err = (JSObject) construct(func, message);
+            err = (JSObject) construct((Object) null, func, message);
         }
         return err;
 
@@ -517,7 +535,7 @@ public class ExecutionContext {
     }
 
     public String toString() {
-        return "ExecutionContext: " + System.identityHashCode( this ) + "; parent=" + this.parent;
+        return "ExecutionContext: " + System.identityHashCode(this) + "; parent=" + this.parent;
     }
 
     public DynamicClassLoader getClassLoader() {

@@ -114,12 +114,12 @@ public class BuiltinArray extends AbstractBuiltinType {
 
     public static DynArray newArray(ExecutionContext context) {
         JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
-        return (DynArray) context.construct(ctor);
+        return (DynArray) context.construct((Object) null, ctor);
     }
 
     public static DynArray newArray(ExecutionContext context, long len) {
         JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
-        return (DynArray) context.construct(ctor, len);
+        return (DynArray) context.construct((Object) null, ctor, len);
     }
 
     @Override

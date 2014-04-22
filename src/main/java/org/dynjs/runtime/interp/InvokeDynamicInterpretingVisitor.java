@@ -8,11 +8,7 @@ import org.dynjs.parser.ast.AssignmentExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.NewOperatorExpression;
-import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.EnvironmentRecord;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
@@ -103,7 +99,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     @Override
     public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
         expr.getExpr().accept(context, this, strict);
-        Object memberExpr = getValue(context, pop());
+        Object ref = pop();
+        Object memberExpr = getValue(context, ref);
 
         Object[] args = new Object[expr.getArgumentExpressions().size()];
 
@@ -115,10 +112,16 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             ++i;
         }
 
+        Object ctor = memberExpr;
+
+        if ( ref instanceof Reference && ctor instanceof JSFunction) {
+            ctor = new DereferencedReference((Reference) ref, ctor);
+        }
+
         try {
-            push( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, context, args) );
+            push( DynJSBootstrapper.getInvokeHandler().construct(ctor, context, args) );
         } catch (NoSuchMethodError e) {
-            throw new ThrowException(context, context.createTypeError("cannot construct with: " + memberExpr));
+            throw new ThrowException(context, context.createTypeError("cannot construct with: " + ref));
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {

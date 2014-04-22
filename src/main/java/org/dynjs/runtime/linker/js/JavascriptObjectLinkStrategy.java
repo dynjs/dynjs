@@ -175,11 +175,14 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkConstruct(StrategyChain chain, Object receiver, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-        
+
         if (isFunctionDereferencedReference(receiver)) {
             MethodHandle handle = binder
-                    .permute(1, 0, 2)
-                    .convert(Object.class, ExecutionContext.class, Reference.class, Object[].class)
+                    .convert(Object.class, DereferencedReference.class, ExecutionContext.class, Object[].class)
+                    .permute(1, 0, 0, 2)
+                    .filter(1, dereferencedReferenceFilter())
+                    .filter(2, dereferencedValueFilter())
+                    .convert(Object.class, ExecutionContext.class, Object.class, JSFunction.class, Object[].class)
                     .invokeVirtual(lookup(), "construct");
 
             MethodHandle guard = functionDereferencedReferenceGuard(guardBinder);
@@ -191,6 +194,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
             MethodHandle handle = binder
                     .permute(1, 0, 2)
                     .convert(Object.class, ExecutionContext.class, JSFunction.class, Object[].class)
+                    .insert( 1, new Class[]{ Object.class },  new Object[] { null } )
                     .invokeVirtual(lookup(), "construct");
 
             MethodHandle guard = getReceiverClassGuard(JSFunction.class, guardBinder);

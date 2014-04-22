@@ -40,8 +40,8 @@ public class InterpretingInvokeDynamicHandler {
         return this.call.getTarget().invoke(method, context, self, args);
     }
     
-    public Object construct(Object method, ExecutionContext context, Object... args) throws Throwable {
-        return this.construct.getTarget().invoke(method, context, args);
+    public Object construct(Object ctor, ExecutionContext context, Object... args) throws Throwable {
+        return this.construct.getTarget().invoke(ctor, context, args);
     }
 
 }

@@ -43,7 +43,7 @@ public class JSAdapter extends BuiltinObject {
     }
 
     public static DynObject newObject(ExecutionContext context) {
-        return (DynObject) context.construct((JSFunction) context.getGlobalObject().get(context, "__JS_Adapter"));
+        return (DynObject) context.construct((Object) null, (JSFunction) context.getGlobalObject().get(context, "__JS_Adapter"));
     }
 
     @Override
