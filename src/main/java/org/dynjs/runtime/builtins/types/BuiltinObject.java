@@ -21,7 +21,8 @@ public class BuiltinObject extends AbstractBuiltinType {
     public void initialize(GlobalObject globalObject, final JSObject proto) {
         // Object.prototype.foo()
         defineNonEnumerableProperty(proto, "constructor", this );
-        
+
+        defineNonEnumerableProperty(proto, "identity", new Identity(globalObject) );
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
         defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
         defineNonEnumerableProperty(proto, "hasOwnProperty", new HasOwnProperty(globalObject) );
@@ -78,7 +79,7 @@ public class BuiltinObject extends AbstractBuiltinType {
 
     public static DynObject newObject(ExecutionContext context) {
         BuiltinObject ctor = (BuiltinObject) context.getGlobalObject().get(context, "__Builtin_Object");
-        DynObject obj = (DynObject) context.construct(ctor);
+        DynObject obj = (DynObject) context.construct((Object) null, ctor);
         return obj;
     }
     

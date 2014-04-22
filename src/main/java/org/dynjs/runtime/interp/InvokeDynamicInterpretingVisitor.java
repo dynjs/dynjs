@@ -8,11 +8,7 @@ import org.dynjs.parser.ast.AssignmentExpression;
 import org.dynjs.parser.ast.Expression;
 import org.dynjs.parser.ast.FunctionCallExpression;
 import org.dynjs.parser.ast.NewOperatorExpression;
-import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.EnvironmentRecord;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
@@ -98,9 +94,8 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
 
     @Override
     public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
-
-        Object memberExpr = getValue(context, expr.getExpr().accept(context, this, strict));
-
+        Object ref = expr.getExpr().accept(context, this, strict);
+        Object memberExpr = getValue(context, ref);
         Object[] args = new Object[expr.getArgumentExpressions().size()];
 
         int i = 0;
@@ -110,10 +105,16 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             ++i;
         }
 
+        Object ctor = memberExpr;
+
+        if ( ref instanceof Reference && ctor instanceof JSFunction) {
+            ctor = new DereferencedReference((Reference) ref, ctor);
+        }
+
         try {
-            return( DynJSBootstrapper.getInvokeHandler().construct(memberExpr, (ExecutionContext) context, args) );
+            return( DynJSBootstrapper.getInvokeHandler().construct(ctor, (ExecutionContext) context, args) );
         } catch (NoSuchMethodError e) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("cannot construct with: " + memberExpr));
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("cannot construct with: " + ref));
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {

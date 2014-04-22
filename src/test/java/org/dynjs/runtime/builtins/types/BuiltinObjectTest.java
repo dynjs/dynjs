@@ -281,4 +281,25 @@ public class BuiltinObjectTest extends AbstractDynJSTestSupport {
         assertThat(eval("x.propertyIsEnumerable('fish')")).isEqualTo(false);
         assertThat(eval("x.propertyIsEnumerable('no_such_property')")).isEqualTo(false);
     }
+
+    @Test
+    public void testObjectIdentity() {
+        String result = (String) eval( "function foo() { return this; }",
+                "foo.prototype = { }; ",
+                "var x = new foo();",
+                "x.identity()" );
+
+        System.err.println( "RESULT: " + result );
+    }
+
+    @Test
+    public void testWeakObjectIdentity() {
+        String result = (String) eval( "var foo = function() { return this; }",
+                "foo.prototype = { }; ",
+                "var x = new foo();",
+                "x.identity()" );
+
+        System.err.println( "RESULT: " + result );
+
+    }
 }

@@ -32,6 +32,9 @@ public class GetOwnPropertyNames extends AbstractNativeFunction {
         NameEnumerator names = jsObj.getOwnPropertyNames();
         while (names.hasNext()) {
             final String name = names.next();
+            if ( name.equals( "__ctor__" ) ) {
+                continue;
+            }
             array.defineOwnProperty(context, "" + i,
                     PropertyDescriptor.newDataPropertyDescriptor(name, true, true, true), false);
             ++i;

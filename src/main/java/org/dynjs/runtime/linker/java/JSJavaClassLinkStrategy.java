@@ -71,6 +71,10 @@ public class JSJavaClassLinkStrategy extends ContextualLinkStrategy<ExecutionCon
 
         binder = binder.drop(1);
         guardBinder = guardBinder.drop(1);
+
+        binder = binder.filter(0, dereferencedValueFilter());
+        guardBinder = guardBinder.filter(0, dereferencedValueFilter());
+
         return javaLinkStrategy.linkConstruct(chain, receiver, args, binder, guardBinder);
     }
 

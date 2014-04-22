@@ -105,7 +105,7 @@ public class Interpreter {
                         throw new ThrowException(context, context.createTypeError("can only construct using functions"));
                     }
 
-                    value = context.construct((JSFunction) function, args);
+                    value = context.construct(ref, (JSFunction) function, args);
                 }
                 break;
                 case LT: {

@@ -1038,7 +1038,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
     @Override
     public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
-        Object memberExpr = getValue(context, expr.getExpr().accept(context, this, strict));
+        Object ref = expr.getExpr().accept(context, this, strict);
+        Object memberExpr = getValue(context, ref);
         Object[] args = new Object[expr.getArgumentExpressions().size()];
 
         int i = 0;
@@ -1049,8 +1050,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
 
         if (memberExpr instanceof JSFunction) {
-            return(((ExecutionContext) context).construct((JSFunction) memberExpr, args));
-            
+
+            return(((ExecutionContext) context).construct(ref, (JSFunction) memberExpr, args));
         }
 
         throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("can only construct using functions"));
