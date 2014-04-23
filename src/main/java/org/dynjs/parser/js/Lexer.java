@@ -647,7 +647,7 @@ public class Lexer {
             }
             consume();
         }
-        incrementLine();
+        //incrementLine();
     }
 
     protected void multiLineComment() {

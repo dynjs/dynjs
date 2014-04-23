@@ -44,3 +44,5 @@ nb-configuration.xml
 
 # ignore generated jar output
 dynjs.jar
+
+version.properties
