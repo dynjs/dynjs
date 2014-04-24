@@ -62,6 +62,16 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
         return size + 7;
         
     }
-    
+
+    @Override
+    public String dump(String indent) {
+        StringBuilder buf = new StringBuilder(super.dump(indent));
+
+        if (test != null) buf.append(test.dump("  " + indent));
+        if (increment != null) buf.append(increment.dump("  " + indent));
+        if (block != null) buf.append(block.dump("  " + indent));
+
+        return buf.toString();
+    }
 
 }
