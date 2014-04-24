@@ -1,13 +1,8 @@
 package org.dynjs.exception;
 
-import java.util.ArrayList;
+import org.dynjs.runtime.*;
 
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.StackElement;
-import org.dynjs.runtime.StackGetter;
-import org.dynjs.runtime.Types;
+import java.util.ArrayList;
 
 public class ThrowException extends DynJSException {
 
@@ -25,6 +20,11 @@ public class ThrowException extends DynJSException {
     public ThrowException(final ExecutionContext context, Object value) {
         this.value = value;
         setUpStackElements(context);
+        if ( value instanceof JSObject ) {
+            PropertyDescriptor stackDesc = new PropertyDescriptor();
+            stackDesc.setGetter(new JavaStackGetter(context.getGlobalObject(), this));
+            ((JSObject) value).defineOwnProperty(context, "stack", stackDesc, false);
+        }
     }
 
     protected void setUpStackElements(final ExecutionContext context) {

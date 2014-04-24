@@ -13,7 +13,7 @@ import org.dynjs.runtime.wrapper.JavascriptFunction;
 public class ByteCodeFunctionCompiler implements FunctionCompiler {
 
     public JSFunction compile(final ExecutionContext context, final String identifier, final String[] formalParameters, final Statement body, final boolean strict) {
-        if (true) new Exception().printStackTrace();
+        if (false) new Exception().printStackTrace();
         LexicalEnvironment lexEnv = null;
 
         if ( identifier != null ) {

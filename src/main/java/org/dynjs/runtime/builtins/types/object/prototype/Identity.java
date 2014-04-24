@@ -19,19 +19,24 @@ public class Identity extends AbstractNativeFunction {
 
         StringBuffer details = new StringBuffer();
 
-        details.append( "[" );
+        details.append("[");
 
         Object ctorProp = jsObj.getProperty(context, "__ctor__");
 
-        if ( ctorProp instanceof PropertyDescriptor ) {
-            details.append( ((PropertyDescriptor) ctorProp).getValue() );
+        if (ctorProp instanceof PropertyDescriptor) {
+            details.append(((PropertyDescriptor) ctorProp).getValue());
         } else {
-            details.append( "unknown" );
+            if (self instanceof JSFunction) {
+                details.append(((JSFunction) self).get(context, "name"))
+                        .append("(..)");
+            } else {
+                details.append("unknown");
+            }
         }
 
-        details.append( "@" );
-        details.append( System.identityHashCode( jsObj ) );
-        details.append( "]" );
+        details.append("@");
+        details.append(System.identityHashCode(jsObj));
+        details.append("]");
 
         return details.toString();
     }

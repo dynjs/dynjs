@@ -19,6 +19,9 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             fail( "should have thrown" );
         } catch (ThrowException e) {
             StackTraceElement[] stack = e.getStackTrace();
+            for ( int i = 0 ; i < stack.length ; ++i ) {
+                System.err.println( i + ": " + stack[i] );
+            }
             assertThat( stack[0].getLineNumber() ).isEqualTo( 13 );
         }
     }

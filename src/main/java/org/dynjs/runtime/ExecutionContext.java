@@ -1,9 +1,6 @@
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.dynjs.Clock;
 import org.dynjs.Config;
@@ -46,6 +43,8 @@ public class ExecutionContext {
     private String debugContext = "<eval>";
 
     private Object functionReference;
+
+    private List<StackElement> throwStack;
 
     public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.runtime = runtime;
@@ -213,8 +212,9 @@ public class ExecutionContext {
 
     public Object internalCall(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
+        ExecutionContext fnContext = null;
         try {
-            ExecutionContext fnContext = createFunctionExecutionContext(functionReference, function, self, args);
+            fnContext = createFunctionExecutionContext(functionReference, function, self, args);
             ThreadContextManager.pushContext(fnContext);
             try {
                 Object value = function.call(fnContext);
@@ -227,9 +227,38 @@ public class ExecutionContext {
             } catch (Throwable e) {
                 throw new ThrowException(fnContext, e);
             }
+        } catch (ThrowException t) {
+            if (t.getCause() != null) {
+                recordThrow(t.getCause(), fnContext);
+            }
+            throw t;
         } finally {
             ThreadContextManager.popContext();
         }
+    }
+
+    protected void recordThrow(Throwable t, ExecutionContext fnContext) {
+        if (this.throwStack == null) {
+            this.throwStack = new ArrayList<StackElement>();
+            this.throwStack.add(fnContext.getStackElement());
+        } else {
+            // handled lower
+        }
+    }
+
+    public boolean isThrowInProgress() {
+        return this.throwStack != null && !this.throwStack.isEmpty();
+    }
+
+    public List<StackElement> getThrowStack() {
+        return this.throwStack;
+    }
+
+    public void addThrowStack(List<StackElement> throwStack) {
+        if (this.throwStack == null) {
+            this.throwStack = new ArrayList<>();
+        }
+        this.throwStack.addAll(throwStack);
     }
 
     // ----------------------------------------------------------------------
@@ -295,6 +324,22 @@ public class ExecutionContext {
 
     public Completion executeCatch(BasicBlock block, String identifier, Object thrown) {
         // 12.14
+        if (thrown instanceof Throwable && this.throwStack != null && ! this.throwStack.isEmpty()) {
+            StackTraceElement[] originalStack = ((Throwable)thrown).getStackTrace();
+            List<StackTraceElement> newStack = new ArrayList<>();
+            for ( int i = 0 ; i < originalStack.length ; ++i ) {
+                String cn = originalStack[i].getClassName();
+                if (cn.startsWith("org.dynjs") || cn.startsWith( "java.lang.invoke" )) {
+                    break;
+                }
+                newStack.add( originalStack[i] );
+            }
+            int throwLen = this.throwStack.size();
+            for ( int i = throwLen - 1 ; i >= 0 ; --i ) {
+                newStack.add( throwStack.get(i).toStackTraceElement() );
+            }
+            ((Throwable)thrown).setStackTrace(newStack.toArray( new StackTraceElement[0]));
+        }
         LexicalEnvironment oldEnv = this.lexicalEnvironment;
         LexicalEnvironment catchEnv = LexicalEnvironment.newDeclarativeEnvironment(oldEnv);
         catchEnv.getRecord().createMutableBinding(this, identifier, false);
@@ -524,10 +569,14 @@ public class ExecutionContext {
     }
 
     public void collectStackElements(List<StackElement> elements) {
-        elements.add(new StackElement(this.fileName, this.lineNumber, this.debugContext));
+        elements.add(getStackElement());
         if (parent != null) {
             parent.collectStackElements(elements);
         }
+    }
+
+    protected StackElement getStackElement() {
+        return new StackElement(this.fileName, this.lineNumber, this.debugContext);
     }
 
     public JSObject getPrototypeFor(String type) {

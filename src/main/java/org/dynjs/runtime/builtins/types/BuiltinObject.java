@@ -23,6 +23,7 @@ public class BuiltinObject extends AbstractBuiltinType {
         defineNonEnumerableProperty(proto, "constructor", this );
 
         defineNonEnumerableProperty(proto, "identity", new Identity(globalObject) );
+        defineNonEnumerableProperty(proto, "pp", new Pp(globalObject) );
         defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
         defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject) );
         defineNonEnumerableProperty(proto, "hasOwnProperty", new HasOwnProperty(globalObject) );
