@@ -23,7 +23,7 @@ public class ThrowException extends DynJSException {
         this.value = value;
         this.context = context;
         setUpStackElements(context);
-        if ( value instanceof JSObject ) {
+        if (value instanceof JSObject) {
             PropertyDescriptor stackDesc = new PropertyDescriptor();
             stackDesc.setGetter(new JavaStackGetter(context.getGlobalObject(), this));
             ((JSObject) value).defineOwnProperty(context, "stack", stackDesc, false);
@@ -67,7 +67,7 @@ public class ThrowException extends DynJSException {
                 message += ((JSObject) value).get(null, "message");
             }
             return message;
-        } else if ( value instanceof String ) {
+        } else if (value instanceof String) {
             return value.toString();
         }
         return super.getMessage();
@@ -80,22 +80,20 @@ public class ThrowException extends DynJSException {
     @Override
     public synchronized Throwable getCause() {
         Throwable cause = super.getCause();
-        if ( cause != null ) {
+        if (cause != null) {
             return cause;
         }
 
-        if ( this.value instanceof JSObject ) {
-            Object jsCause = ((JSObject) this.value).get( this.context, "cause" );
-            if ( jsCause instanceof Throwable ) {
+        if (this.value instanceof JSObject) {
+            Object jsCause = ((JSObject) this.value).get(this.context, "cause");
+            if (jsCause instanceof Throwable) {
                 return (Throwable) jsCause;
+            } else if (jsCause != null) {
+                return new ThrowException(this.context, jsCause);
             }
-            return new ThrowException( this.context, jsCause );
         }
 
         return null;
     }
 
-    public String toString() {
-        return "[ThrowException: value=" + this.value + "; cause=" + this.getCause() + "]";
-    }
 }
