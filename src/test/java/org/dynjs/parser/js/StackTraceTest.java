@@ -56,4 +56,9 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             assertThat( stack[0].getLineNumber() ).isEqualTo( 13 );
         }
     }
+
+    @Test
+    public void testStackWrapping() {
+         eval( "var a = 42; a(); " );
+    }
 }

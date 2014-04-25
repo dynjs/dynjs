@@ -80,15 +80,19 @@ public class ThrowException extends DynJSException {
     @Override
     public synchronized Throwable getCause() {
         Throwable cause = super.getCause();
+        System.err.println( "cause-1: " + cause );
         if (cause != null) {
             return cause;
         }
 
+        System.err.println( "value-1: " + this.value );
         if (this.value instanceof JSObject) {
             Object jsCause = ((JSObject) this.value).get(this.context, "cause");
             if (jsCause instanceof Throwable) {
+                System.err.println( "cause-2: " + this.value );
                 return (Throwable) jsCause;
-            } else if (jsCause != null) {
+            } else if (jsCause != null && jsCause != Types.UNDEFINED) {
+                System.err.println( "cause-3: " + this.value );
                 return new ThrowException(this.context, jsCause);
             }
         }
