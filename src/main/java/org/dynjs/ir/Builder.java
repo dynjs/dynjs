@@ -221,7 +221,18 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, CompoundAssignmentExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+
+        // FIXME: If name of lhs is 'eval' or 'assignments' then generate a raise error instance of doing copy.
+        // This is a little out of order with basicinterp where we check this before eval'ing value below.
+
+        // Of s += 1 this is (s + 1)
+        Operand value = (Operand) expr.getRootExpr().accept(context, this, strict);
+        Variable lhs = (Variable) expr.getRootExpr().getLhs().accept(context, this, strict);
+
+        scope.addInstruction(new Copy(lhs, value));
+
+        return value;
     }
 
     @Override
