@@ -230,7 +230,12 @@ public class ExecutionContext {
         } catch (ThrowException t) {
             if (t.getCause() != null) {
                 recordThrow(t.getCause(), fnContext);
+            } else if ( t.getValue() instanceof Throwable ){
+                recordThrow((Throwable) t.getValue(), fnContext);
             }
+            throw t;
+        } catch (Throwable t) {
+            recordThrow( t, fnContext );
             throw t;
         } finally {
             ThreadContextManager.popContext();

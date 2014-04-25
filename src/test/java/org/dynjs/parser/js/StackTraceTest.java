@@ -19,9 +19,40 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             fail( "should have thrown" );
         } catch (ThrowException e) {
             StackTraceElement[] stack = e.getStackTrace();
-            for ( int i = 0 ; i < stack.length ; ++i ) {
-                System.err.println( i + ": " + stack[i] );
-            }
+            //for ( int i = 0 ; i < stack.length ; ++i ) {
+                //System.err.println( i + ": " + stack[i] );
+            //}
+            assertThat( stack[0].getLineNumber() ).isEqualTo( 13 );
+        }
+    }
+
+    @Test
+    public void testStackCreationAccuracyWithJavaException() {
+        try {
+            Object result = eval(getClass().getResourceAsStream("/java-stack.js"));
+            fail( "should have thrown" );
+        } catch (ThrowException e) {
+            StackTraceElement[] stack = e.getStackTrace();
+            //for ( int i = 0 ; i < stack.length ; ++i ) {
+                //System.err.println( i + ": " + stack[i] );
+            //}
+            assertThat( stack[0].getLineNumber() ).isEqualTo( 13 );
+        }
+    }
+
+    @Test
+    public void testStackCreationAccuracyWithWrappedJavaException() {
+        try {
+            Object result = eval(getClass().getResourceAsStream("/java-stack-wrap.js"));
+            fail( "should have thrown" );
+        } catch (ThrowException e) {
+
+            StackTraceElement[] stack = e.getStackTrace();
+            assertThat( stack[0].getLineNumber() ).isEqualTo( 22 );
+
+            Throwable cause = e.getCause();
+            assertThat( cause ).isNotNull();
+            stack = cause.getStackTrace();
             assertThat( stack[0].getLineNumber() ).isEqualTo( 13 );
         }
     }

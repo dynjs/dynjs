@@ -1000,93 +1000,93 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         if (lval instanceof Double || rval instanceof Double) {
             switch (expr.getOp()) {
-            case "*":
-                push(lval.doubleValue() * rval.doubleValue());
-                return;
-            case "/":
-                // Divide-by-zero
-                if (isZero(rval)) {
-                    if (isZero(lval)) {
+                case "*":
+                    push(lval.doubleValue() * rval.doubleValue());
+                    return;
+                case "/":
+                    // Divide-by-zero
+                    if (isZero(rval)) {
+                        if (isZero(lval)) {
+                            push(Double.NaN);
+                            return;
+                        } else if (isSameSign(lval, rval)) {
+                            push(Double.POSITIVE_INFINITY);
+                            return;
+                        } else {
+                            push(Double.NEGATIVE_INFINITY);
+                            return;
+                        }
+                    }
+
+                    // Zero-divided-by-something
+                    else if (isZero(lval)) {
+                        if (isSameSign(lval, rval)) {
+                            push(0L);
+                        } else {
+                            push(-0.0);
+                        }
+                        return;
+                    }
+
+                    // Regular math
+                    double primaryValue = lval.doubleValue() / rval.doubleValue();
+                    if (isRepresentableByLong(primaryValue)) {
+                        push((long) primaryValue);
+                    } else {
+                        push(primaryValue);
+                    }
+                    return;
+                case "%":
+                    if (rval.doubleValue() == 0.0) {
                         push(Double.NaN);
                         return;
-                    } else if (isSameSign(lval, rval)) {
-                        push(Double.POSITIVE_INFINITY);
-                        return;
-                    } else {
-                        push(Double.NEGATIVE_INFINITY);
-                        return;
                     }
-                }
-
-                // Zero-divided-by-something
-                else if (isZero(lval)) {
-                    if (isSameSign(lval, rval)) {
-                        push(0L);
-                    } else {
-                        push(-0.0);
-                    }
+                    push(BuiltinNumber.modulo(lval, rval));
                     return;
-                }
-
-                // Regular math
-                double primaryValue = lval.doubleValue() / rval.doubleValue();
-                if (isRepresentableByLong(primaryValue)) {
-                    push((long) primaryValue);
-                } else {
-                    push(primaryValue);
-                }
-                return;
-            case "%":
-                if (rval.doubleValue() == 0.0) {
-                    push(Double.NaN);
-                    return;
-                }
-                push(BuiltinNumber.modulo(lval, rval));
-                return;
             }
         } else {
             switch (expr.getOp()) {
-            case "*":
-                push(lval.longValue() * rval.longValue());
-                return;
-            case "/":
-                if (rval.longValue() == 0L) {
-                    if (lval.longValue() == 0L) {
+                case "*":
+                    push(lval.longValue() * rval.longValue());
+                    return;
+                case "/":
+                    if (rval.longValue() == 0L) {
+                        if (lval.longValue() == 0L) {
+                            push(Double.NaN);
+                            return;
+                        } else if (isSameSign(lval, rval)) {
+                            push(Double.POSITIVE_INFINITY);
+                            return;
+                        } else {
+                            push(Double.NEGATIVE_INFINITY);
+                            return;
+                        }
+                    }
+
+                    if (lval.longValue() == 0) {
+                        if (Double.compare(rval.doubleValue(), 0.0) > 0) {
+                            push(0L);
+                            return;
+                        } else {
+                            push(-0.0);
+                            return;
+                        }
+                    }
+                    double primaryResult = lval.doubleValue() / rval.longValue();
+                    if (primaryResult == (long) primaryResult) {
+                        push((long) primaryResult);
+                    } else {
+                        push(primaryResult);
+                    }
+                    return;
+                case "%":
+                    if (rval.longValue() == 0L) {
                         push(Double.NaN);
                         return;
-                    } else if (isSameSign(lval, rval)) {
-                        push(Double.POSITIVE_INFINITY);
-                        return;
-                    } else {
-                        push(Double.NEGATIVE_INFINITY);
-                        return;
                     }
-                }
 
-                if (lval.longValue() == 0) {
-                    if (Double.compare(rval.doubleValue(), 0.0) > 0) {
-                        push(0L);
-                        return;
-                    } else {
-                        push(-0.0);
-                        return;
-                    }
-                }
-                double primaryResult = lval.doubleValue() / rval.longValue();
-                if (primaryResult == (long) primaryResult) {
-                    push((long) primaryResult);
-                } else {
-                    push(primaryResult);
-                }
-                return;
-            case "%":
-                if (rval.longValue() == 0L) {
-                    push(Double.NaN);
+                    push(BuiltinNumber.modulo(lval, rval));
                     return;
-                }
-                
-                push(BuiltinNumber.modulo(lval, rval));
-                return;
             }
         }
     }
@@ -1108,7 +1108,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         }
 
         if (memberExpr instanceof JSFunction) {
-            push(context.construct( ref, (JSFunction) memberExpr, args));
+            push(context.construct(ref, (JSFunction) memberExpr, args));
             return;
         }
 
@@ -1168,21 +1168,21 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (oldValue instanceof Double) {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.doubleValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.doubleValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.doubleValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.doubleValue() - 1;
+                        break;
                 }
             } else {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.longValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.longValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.longValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.longValue() - 1;
+                        break;
                 }
             }
 
@@ -1210,21 +1210,21 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (oldValue instanceof Double) {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.doubleValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.doubleValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.doubleValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.doubleValue() - 1;
+                        break;
                 }
             } else {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.longValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.longValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.longValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.longValue() - 1;
+                        break;
                 }
             }
 
@@ -1237,7 +1237,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
         JSFunction compiledFn = context.getCompiler().compileFunction(context,
                 null,
-                new String[] {},
+                new String[]{},
                 propertyGet.getBlock(),
                 strict);
         push(compiledFn);
@@ -1247,7 +1247,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
         JSFunction compiledFn = context.getCompiler().compileFunction(context,
                 null,
-                new String[] { propertySet.getIdentifier() },
+                new String[]{propertySet.getIdentifier()},
                 propertySet.getBlock(),
                 strict);
         push(compiledFn);
@@ -1274,38 +1274,38 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         Object r = null;
 
         switch (expr.getOp()) {
-        case "<":
-            r = Types.compareRelational(context, lval, rval, true);
-            if (r == Types.UNDEFINED) {
-                push(false);
-            } else {
-                push(r);
-            }
-            return;
-        case ">":
-            r = Types.compareRelational(context, rval, lval, false);
-            if (r == Types.UNDEFINED) {
-                push(false);
-            } else {
-                push(r);
-            }
-            return;
-        case "<=":
-            r = Types.compareRelational(context, rval, lval, false);
-            if (r == Boolean.TRUE || r == Types.UNDEFINED) {
-                push(false);
-            } else {
-                push(true);
-            }
-            return;
-        case ">=":
-            r = Types.compareRelational(context, lval, rval, true);
-            if (r == Boolean.TRUE || r == Types.UNDEFINED) {
-                push(false);
-            } else {
-                push(true);
-            }
-            return;
+            case "<":
+                r = Types.compareRelational(context, lval, rval, true);
+                if (r == Types.UNDEFINED) {
+                    push(false);
+                } else {
+                    push(r);
+                }
+                return;
+            case ">":
+                r = Types.compareRelational(context, rval, lval, false);
+                if (r == Types.UNDEFINED) {
+                    push(false);
+                } else {
+                    push(r);
+                }
+                return;
+            case "<=":
+                r = Types.compareRelational(context, rval, lval, false);
+                if (r == Boolean.TRUE || r == Types.UNDEFINED) {
+                    push(false);
+                } else {
+                    push(true);
+                }
+                return;
+            case ">=":
+                r = Types.compareRelational(context, lval, rval, true);
+                if (r == Boolean.TRUE || r == Types.UNDEFINED) {
+                    push(false);
+                } else {
+                    push(true);
+                }
+                return;
         }
 
     }
@@ -1413,9 +1413,6 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
     public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
         statement.getExpr().accept(context, this, strict);
         Object throwable = getValue(context, pop());
-        // if ( throwable instanceof Throwable ) {
-        // ((Throwable) throwable).printStackTrace();
-        // }
         throw new ThrowException(context, throwable);
     }
 

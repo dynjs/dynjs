@@ -7,18 +7,21 @@ import java.util.ArrayList;
 public class ThrowException extends DynJSException {
 
     private static final long serialVersionUID = -5523478980527254739L;
-    
+    private final ExecutionContext context;
+
     private Object value;
     private ArrayList<StackElement> stack;
 
     public ThrowException(final ExecutionContext context, Throwable value) {
         super(value);
         this.value = value;
+        this.context = context;
         setUpStackElements(context);
     }
 
     public ThrowException(final ExecutionContext context, Object value) {
         this.value = value;
+        this.context = context;
         setUpStackElements(context);
         if ( value instanceof JSObject ) {
             PropertyDescriptor stackDesc = new PropertyDescriptor();
@@ -74,4 +77,25 @@ public class ThrowException extends DynJSException {
         return this.value;
     }
 
+    @Override
+    public synchronized Throwable getCause() {
+        Throwable cause = super.getCause();
+        if ( cause != null ) {
+            return cause;
+        }
+
+        if ( this.value instanceof JSObject ) {
+            Object jsCause = ((JSObject) this.value).get( this.context, "cause" );
+            if ( jsCause instanceof Throwable ) {
+                return (Throwable) jsCause;
+            }
+            return new ThrowException( this.context, jsCause );
+        }
+
+        return null;
+    }
+
+    public String toString() {
+        return "[ThrowException: value=" + this.value + "; cause=" + this.getCause() + "]";
+    }
 }
