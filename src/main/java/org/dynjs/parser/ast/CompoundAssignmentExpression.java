@@ -56,15 +56,10 @@ public class CompoundAssignmentExpression extends AbstractExpression {
         
     }
 
-    public String dumpData() {
-        return rootExpr.getOp() + "=";
-    }
-
     public String dump(String indent) {
         StringBuilder buf = new StringBuilder(super.dump(indent));
 
-        buf.append(rootExpr.getLhs().dump(indent + "  "));
-        buf.append(rootExpr.getRhs().dump(indent + "  "));
+        buf.append(rootExpr.dump(indent + "  "));
 
         return buf.toString();
     }
