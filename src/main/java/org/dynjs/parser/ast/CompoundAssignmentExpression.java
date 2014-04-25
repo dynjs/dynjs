@@ -53,7 +53,6 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     @Override
     public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
         visitor.visit( context, this, strict);
-        
     }
 
     public String dump(String indent) {
