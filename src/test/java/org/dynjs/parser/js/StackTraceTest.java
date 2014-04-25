@@ -64,8 +64,8 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             eval("var a = 42; a(); ");
             fail( "should have thrown" );
         } catch (ThrowException e) {
+            e.printStackTrace();
             assertThat(e.getCause()).isNull();
-
         }
     }
 }

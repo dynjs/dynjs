@@ -1,11 +1,6 @@
 package org.dynjs.runtime;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import static org.fest.assertions.Assertions.assertThat;
 
