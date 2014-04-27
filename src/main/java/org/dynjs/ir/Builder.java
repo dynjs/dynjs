@@ -19,6 +19,7 @@ import org.dynjs.Config;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
+import org.dynjs.ir.instructions.Constructor;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
@@ -532,7 +533,19 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        Scope scope = (Scope) context;
+        Variable tmp = scope.createTemporaryVariable();
+        Operand memberExpression = (Operand) expr.getExpr().accept(context, this, strict);
+        List<Expression> argumentExpressions = expr.getArgumentExpressions();
+        Operand args[] = new Operand[argumentExpressions.size()];
+
+        for (int i = 0; i < args.length; i++) {
+            args[i] = (Operand) argumentExpressions.get(i).accept(context, this, strict);
+        }
+
+        scope.addInstruction(new Constructor(tmp, memberExpression, args));
+
+        return tmp;
     }
 
     @Override

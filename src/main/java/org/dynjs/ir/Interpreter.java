@@ -4,6 +4,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
+import org.dynjs.ir.instructions.Constructor;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
@@ -60,7 +61,7 @@ public class Interpreter {
                 case JUMP:
                     ipc = ((Jump) instr).getTarget().getTargetIPC();
                     break;
-                case CALL:
+                case CALL: {
                     Call call = (Call) instr;
                     Object ref = call.getIdentifier().retrieve(context, temps);
                     Object function = Types.getValue(context, ref);
@@ -87,7 +88,26 @@ public class Interpreter {
                     }
 
                     value = context.call(ref, (JSFunction) function, thisValue, args);
-                    break;
+                }
+                break;
+                case CONSTRUCTOR: {
+                    Constructor constructor = (Constructor) instr;
+                    Object ref = constructor.getIdentifier().retrieve(context, temps);
+                    Object function = Types.getValue(context, ref);
+                    Operand[] opers = constructor.getArgs();
+                    Object[] args = new Object[opers.length];
+
+                    for (int i = 0; i < args.length; i++) {
+                        args[i] = opers[i].retrieve(context, temps);
+                    }
+
+                    if (!(function instanceof JSFunction)) {
+                        throw new ThrowException(context, context.createTypeError("can only construct using functions"));
+                    }
+
+                    value = context.construct((JSFunction) function, args);
+                }
+                break;
                 case LT: {
                     Object arg1  = ((LT) instr).getArg1().retrieve(context, temps);
                     Object arg2  = ((LT) instr).getArg2().retrieve(context, temps);
