@@ -28,6 +28,7 @@ import org.dynjs.ir.instructions.LabelInstr;
 import org.dynjs.ir.instructions.Mul;
 import org.dynjs.ir.instructions.PropertyLookup;
 import org.dynjs.ir.instructions.Return;
+import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
@@ -155,14 +156,22 @@ public class Builder implements CodeVisitor {
             } else {
                 Variable tmp = scope.createTemporaryVariable();
 
-                scope.addInstruction(new Add(tmp, lhs, rhs, subtract));
+                if (subtract) {
+                    scope.addInstruction(new Sub(tmp, lhs, rhs));
+                } else {
+                    scope.addInstruction(new Add(tmp, lhs, rhs));
+                }
 
                 value = tmp;
             }
         } else {
             Variable tmp = scope.createTemporaryVariable();
 
-            scope.addInstruction(new Add(tmp, lhs, rhs, subtract));
+            if (subtract) {
+                scope.addInstruction(new Sub(tmp, lhs, rhs));
+            } else {
+                scope.addInstruction(new Add(tmp, lhs, rhs));
+            }
 
             value = tmp;
         }
@@ -535,7 +544,11 @@ public class Builder implements CodeVisitor {
         Variable variable = (Variable) expr.getExpr().accept(context, this, strict);
         boolean subtract = expr.getOp().equals("-");
 
-        scope.addInstruction(new Add(tmp, variable, new IntegerNumber(1), subtract));
+        if (subtract) {
+            scope.addInstruction(new Sub(tmp, variable, new IntegerNumber(1)));
+        } else {
+            scope.addInstruction(new Add(tmp, variable, new IntegerNumber(1)));
+        }
         scope.addInstruction(new Copy(variable, tmp));
 
         return variable;

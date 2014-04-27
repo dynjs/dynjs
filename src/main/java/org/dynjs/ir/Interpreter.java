@@ -41,7 +41,12 @@ public class Interpreter {
                 case ADD:
                     value = add(context,
                             ((Add) instr).getLHS().retrieve(context, temps),
-                            ((Add) instr).getRHS().retrieve(context, temps), ((Add) instr).isSubtraction());
+                            ((Add) instr).getRHS().retrieve(context, temps));
+                    break;
+                case SUB:
+                    value = sub(context,
+                            ((Add) instr).getLHS().retrieve(context, temps),
+                            ((Add) instr).getRHS().retrieve(context, temps));
                     break;
                 case COPY:
                     value = ((Copy) instr).getValue().retrieve(context, temps);
@@ -131,7 +136,7 @@ public class Interpreter {
     }
 
     // FIXME: This breaks for non-numeric uses if isSubtraction
-    private static Object add(ExecutionContext context, Object lhs, Object rhs, boolean isSubtraction) {
+    private static Object add(ExecutionContext context, Object lhs, Object rhs) {
         if (lhs instanceof String || rhs instanceof String) {
             return(Types.toString(context, lhs) + Types.toString(context, rhs));
         }
@@ -151,17 +156,37 @@ public class Interpreter {
                     return(0.0);
                 }
             }
-            if (isSubtraction) {
-                return(lhsNum.doubleValue() - rhsNum.doubleValue());
-            } else {
-                return(lhsNum.doubleValue() + rhsNum.doubleValue());
-            }
+
+            return(lhsNum.doubleValue() - rhsNum.doubleValue());
         }
 
-        if (isSubtraction) {
-            return(lhsNum.longValue() - rhsNum.longValue());
-        } else {
-            return(lhsNum.longValue() + rhsNum.longValue());
+        return(lhsNum.longValue() + rhsNum.longValue());
+    }
+
+    private static Object sub(ExecutionContext context, Object lhs, Object rhs) {
+        if (lhs instanceof String || rhs instanceof String) {
+            return(Double.NaN);
         }
+
+        Number lhsNum = Types.toNumber(context, lhs);
+        Number rhsNum = Types.toNumber(context, rhs);
+
+        if (Double.isNaN(lhsNum.doubleValue()) || Double.isNaN(rhsNum.doubleValue())) {
+            return(Double.NaN);
+        }
+
+        if (lhsNum instanceof Double || rhsNum instanceof Double) {
+            if (lhsNum.doubleValue() == 0.0 && rhsNum.doubleValue() == 0.0) {
+                if (Double.compare(lhsNum.doubleValue(), 0.0) < 0 && Double.compare(rhsNum.doubleValue(), 0.0) < 0) {
+                    return(-0.0);
+                } else {
+                    return(0.0);
+                }
+            }
+
+            return(lhsNum.doubleValue() - rhsNum.doubleValue());
+        }
+
+        return(lhsNum.longValue() - rhsNum.longValue());
     }
 }

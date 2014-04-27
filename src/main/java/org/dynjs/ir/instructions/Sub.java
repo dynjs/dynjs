@@ -1,6 +1,5 @@
 package org.dynjs.ir.instructions;
 
-import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
@@ -11,9 +10,8 @@ import org.dynjs.ir.operands.Variable;
  * simplify this to a call or a single operand we can more easily perform that
  * optimization.
  */
-// FIXME: This should be merged into call when call is created
-public class Add extends BinaryInstr {
-    public Add(Variable result, Operand lhs, Operand rhs) {
+public class Sub extends BinaryInstr {
+    public Sub(Variable result, Operand lhs, Operand rhs) {
         super(Operation.ADD, result, lhs, rhs);
     }
 
