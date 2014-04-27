@@ -412,8 +412,7 @@ public class Builder implements CodeVisitor {
 
         // FIXME: Should this error out in strict mode?
         if (variable == null) {
-            variable = scope.createTemporaryVariable();
-            scope.addInstruction(new Copy(variable, new DynamicVariable(expr.getIdentifier())));
+            return new DynamicVariable(expr.getIdentifier());
         }
 
         return variable;
