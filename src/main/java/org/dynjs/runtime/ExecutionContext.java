@@ -9,6 +9,7 @@ import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.ir.IRJSFunction;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -290,7 +291,9 @@ public class ExecutionContext {
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
         ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
-        context.performDeclarationBindingInstantiation(function, arguments);
+        if (!(function instanceof IRJSFunction)) {
+            context.performDeclarationBindingInstantiation(function, arguments);
+        }
         context.fileName = function.getFileName();
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
