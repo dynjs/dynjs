@@ -18,7 +18,7 @@ public class This extends Operand {
         return "%this";
     }
 
-    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps) {
         return context.getThisBinding();
     }
 }

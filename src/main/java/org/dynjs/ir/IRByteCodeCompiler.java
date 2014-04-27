@@ -219,7 +219,7 @@ public class IRByteCodeCompiler {
     }
 
     private void emitBoolean(CodeBlock block, BooleanLiteral operand) {
-        block.pushBoolean((Boolean) operand.retrieve(null, null, null));
+        block.pushBoolean((Boolean) operand.retrieve(null, null));
     }
 
     private void emitLocalVar(CodeBlock block, LocalVariable operand) {

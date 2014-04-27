@@ -135,25 +135,34 @@ public class Builder implements CodeVisitor {
         Scope scope = (Scope) context;
         Operand lhs = (Operand) expr.getLhs().accept(context, this, strict);
         Operand rhs = (Operand) expr.getRhs().accept(context, this, strict);
+        boolean subtract = expr.getOp().equals("-");
         Operand value;
 
         // FIXME: Review numeric representation of JS to figure out overflow etc..
         if (lhs instanceof IntegerNumber) {
             if (rhs instanceof IntegerNumber) {
-                value = new IntegerNumber(((IntegerNumber) lhs).getValue() + ((IntegerNumber) rhs).getValue());
+                if (subtract) {
+                    value = new IntegerNumber(((IntegerNumber) lhs).getValue() - ((IntegerNumber) rhs).getValue());
+                } else {
+                    value = new IntegerNumber(((IntegerNumber) lhs).getValue() + ((IntegerNumber) rhs).getValue());
+                }
             } else if (rhs instanceof FloatNumber) {
-                value = new FloatNumber(((FloatNumber) rhs).getValue() + ((IntegerNumber) lhs).getValue());
+                if (subtract) {
+                    value = new FloatNumber(((FloatNumber) rhs).getValue() - ((IntegerNumber) lhs).getValue());
+                } else {
+                    value = new FloatNumber(((FloatNumber) rhs).getValue() + ((IntegerNumber) lhs).getValue());
+                }
             } else {
                 Variable tmp = scope.createTemporaryVariable();
 
-                scope.addInstruction(new Add(tmp, lhs, rhs));
+                scope.addInstruction(new Add(tmp, lhs, rhs, subtract));
 
                 value = tmp;
             }
         } else {
             Variable tmp = scope.createTemporaryVariable();
 
-            scope.addInstruction(new Add(tmp, lhs, rhs));
+            scope.addInstruction(new Add(tmp, lhs, rhs, subtract));
 
             value = tmp;
         }
@@ -524,8 +533,9 @@ public class Builder implements CodeVisitor {
         Scope scope = (Scope) context;
         Variable tmp = scope.createTemporaryVariable();
         Variable variable = (Variable) expr.getExpr().accept(context, this, strict);
+        boolean subtract = expr.getOp().equals("-");
 
-        scope.addInstruction(new Add(tmp, variable, new IntegerNumber(1)));
+        scope.addInstruction(new Add(tmp, variable, new IntegerNumber(1), subtract));
         scope.addInstruction(new Copy(variable, tmp));
 
         return variable;

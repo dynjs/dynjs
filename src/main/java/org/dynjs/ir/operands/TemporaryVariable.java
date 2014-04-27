@@ -14,7 +14,7 @@ public class TemporaryVariable extends OffsetVariable {
     }
 
     @Override
-    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps) {
         try {
             return temps[getOffset()];
         } catch (Exception e) {

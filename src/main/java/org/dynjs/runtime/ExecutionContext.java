@@ -42,6 +42,7 @@ public class ExecutionContext {
     private int lineNumber;
     private String fileName;
     private String debugContext = "<eval>";
+    private VariableValues vars;
 
     private Object functionReference;
 
@@ -52,6 +53,16 @@ public class ExecutionContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+    }
+
+    public VariableValues getVars() {
+        return vars;
+    }
+
+    public VariableValues allocVars(int size, VariableValues parent) {
+        vars = new VariableValues(size, parent);
+
+        return vars;
     }
 
     public Object getFunctionReference() {
@@ -123,8 +134,8 @@ public class ExecutionContext {
                 return program.execute(this);
             } catch (ThrowException e) {
                 throw e;
-            } catch (Throwable t) {
-                throw new ThrowException(this, t);
+          //  } catch (Throwable t) {
+            //    throw new ThrowException(this, t);
             }
         } finally {
             ThreadContextManager.popContext();
@@ -206,8 +217,8 @@ public class ExecutionContext {
                 return value;
             } catch (ThrowException e) {
                 throw e;
-            } catch (Throwable e) {
-                throw new ThrowException(fnContext, e);
+            //} catch (Throwable e) {
+            //    throw new ThrowException(fnContext, e);
             }
         } finally {
             ThreadContextManager.popContext();

@@ -28,7 +28,6 @@ public class Interpreter {
     public static Object execute(ExecutionContext context, Scope scope, Instruction[] instructions) {
         Object result = Types.UNDEFINED;
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
-        Object[] vars = new Object[scope.getLocalVariableSize()];
         int size = instructions.length;
         Object value = Types.UNDEFINED;
 
@@ -36,29 +35,29 @@ public class Interpreter {
         while (ipc < size) {
             Instruction instr = instructions[ipc];
             ipc++;
-            System.out.println("EX: " + instr);
+            //System.out.println("EX: " + instr);
 
             switch(instr.getOperation()) {
                 case ADD:
                     value = add(context,
-                            ((Add) instr).getLHS().retrieve(context, temps, vars),
-                            ((Add) instr).getRHS().retrieve(context, temps, vars));
+                            ((Add) instr).getLHS().retrieve(context, temps),
+                            ((Add) instr).getRHS().retrieve(context, temps), ((Add) instr).isSubtraction());
                     break;
                 case COPY:
-                    value = ((Copy) instr).getValue().retrieve(context, temps, vars);
+                    value = ((Copy) instr).getValue().retrieve(context, temps);
                     break;
                 case JUMP:
                     ipc = ((Jump) instr).getTarget().getTargetIPC();
                     break;
                 case CALL:
                     Call call = (Call) instr;
-                    Object ref = call.getIdentifier().retrieve(context, temps, vars);
+                    Object ref = call.getIdentifier().retrieve(context, temps);
                     Object function = Types.getValue(context, ref);
                     Operand[] opers = call.getArgs();
                     Object[] args = new Object[opers.length];
 
                     for (int i = 0; i < args.length; i++) {
-                        args[i] = opers[i].retrieve(context, temps, vars);
+                        args[i] = opers[i].retrieve(context, temps);
                     }
 
                     if (!(function instanceof JSFunction)) {
@@ -79,23 +78,23 @@ public class Interpreter {
                     value = context.call(ref, (JSFunction) function, thisValue, args);
                     break;
                 case LT: {
-                    Object arg1  = ((LT) instr).getArg1().retrieve(context, temps, vars);
-                    Object arg2  = ((LT) instr).getArg2().retrieve(context, temps, vars);
+                    Object arg1  = ((LT) instr).getArg1().retrieve(context, temps);
+                    Object arg2  = ((LT) instr).getArg2().retrieve(context, temps);
                     Object r = Types.compareRelational(context, arg1, arg2, true);
                     value = r == Types.UNDEFINED ? false : r;
                     break;
                 }
                 case LE: {
-                    Object arg1  = ((LE) instr).getArg1().retrieve(context, temps, vars);
-                    Object arg2  = ((LE) instr).getArg2().retrieve(context, temps, vars);
+                    Object arg1  = ((LE) instr).getArg1().retrieve(context, temps);
+                    Object arg2  = ((LE) instr).getArg2().retrieve(context, temps);
                     Object r = Types.compareRelational(context, arg1, arg2, true);
                     value = r == Boolean.TRUE || r == Types.UNDEFINED ? false : r;
                     break;
                 }
                 case BEQ: {
                     BEQ beq = (BEQ) instr;
-                    Object arg1 = beq.getArg1().retrieve(context, temps, vars);
-                    Object arg2 = beq.getArg2().retrieve(context, temps, vars);
+                    Object arg1 = beq.getArg1().retrieve(context, temps);
+                    Object arg2 = beq.getArg2().retrieve(context, temps);
 
                     if (arg1.equals(arg2)) {
                         ipc = beq.getTarget().getTargetIPC();
@@ -103,11 +102,10 @@ public class Interpreter {
                     break;
                 }
                 case RETURN:
-                    result = ((Return) instr).getValue().retrieve(context, temps, vars);
-                    break;
+                    return ((Return) instr).getValue().retrieve(context, temps);
                 case DEFINE_FUNCTION:
-                    // FIXME: Reusing this scope and I think it is supposed to have it's own.
-                    value = new IRJSFunction(((DefineFunction) instr).getScope(), context.getLexicalEnvironment(), context.getGlobalObject());
+                    value = new IRJSFunction(((DefineFunction) instr).getScope(), context.getVars(),
+                            context.getLexicalEnvironment(), context.getGlobalObject());
                     break;
             }
 
@@ -117,7 +115,7 @@ public class Interpreter {
                     int offset = ((OffsetVariable) variable).getOffset();
 
                     if (variable instanceof LocalVariable) {
-                        vars[offset] = value;
+                        context.getVars().setVar(offset, ((LocalVariable) variable).getDepth(), value);
                     } else {
                         temps[offset] = value;
                     }
@@ -132,7 +130,8 @@ public class Interpreter {
         return result;
     }
 
-    private static Object add(ExecutionContext context, Object lhs, Object rhs) {
+    // FIXME: This breaks for non-numeric uses if isSubtraction
+    private static Object add(ExecutionContext context, Object lhs, Object rhs, boolean isSubtraction) {
         if (lhs instanceof String || rhs instanceof String) {
             return(Types.toString(context, lhs) + Types.toString(context, rhs));
         }
@@ -152,9 +151,17 @@ public class Interpreter {
                     return(0.0);
                 }
             }
-            return(lhsNum.doubleValue() + rhsNum.doubleValue());
+            if (isSubtraction) {
+                return(lhsNum.doubleValue() - rhsNum.doubleValue());
+            } else {
+                return(lhsNum.doubleValue() + rhsNum.doubleValue());
+            }
         }
 
-        return(lhsNum.longValue() + rhsNum.longValue());
+        if (isSubtraction) {
+            return(lhsNum.longValue() - rhsNum.longValue());
+        } else {
+            return(lhsNum.longValue() + rhsNum.longValue());
+        }
     }
 }

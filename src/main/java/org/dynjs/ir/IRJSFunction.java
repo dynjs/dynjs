@@ -11,18 +11,23 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.VariableValues;
 
 public class IRJSFunction extends DynObject implements JSFunction {
     private final FunctionScope scope;
     private Instruction[] instructions;
     private final LexicalEnvironment lexicalEnvironment;
     private String debugContext = "";
+    // Lexically-captured values of this function
+    private VariableValues capturedValues;
 
-    public IRJSFunction(FunctionScope scope, LexicalEnvironment lexicalEnvironment, GlobalObject globalObject) {
+    public IRJSFunction(FunctionScope scope, VariableValues capturedValues, LexicalEnvironment lexicalEnvironment,
+                        GlobalObject globalObject) {
         super(globalObject);
         this.scope = scope;
         this.instructions = scope.prepareForInterpret(); // FIXME This is a big up front cost...make lazy
         this.lexicalEnvironment = lexicalEnvironment;
+        this.capturedValues = capturedValues;
     }
 
     public String[] getFormalParameters() {
@@ -87,6 +92,9 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     @Override
     public Object call(ExecutionContext context) {
+        // Allocate space for variables of this function and establish link to captured ones.
+        context.allocVars(scope.getLocalVariableSize(), capturedValues);
+
         return Interpreter.execute(context, scope, instructions);
     }
 

@@ -18,7 +18,7 @@ public class StringLiteral extends Operand {
     }
 
     @Override
-    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps) {
         return this.value;
     }
 }

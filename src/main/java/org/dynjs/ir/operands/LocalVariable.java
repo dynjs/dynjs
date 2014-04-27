@@ -10,10 +10,16 @@ import org.dynjs.runtime.ExecutionContext;
  */
 public class LocalVariable extends OffsetVariable {
     private String name;
+    private int depth;
 
-    public LocalVariable(Scope scope, String name, int offset) {
+    public LocalVariable(String name, int offset, int depth) {
         super(OperandType.LOCAL_VAR, offset);
         this.name = name;
+        this.depth = depth;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     @Override
@@ -22,12 +28,17 @@ public class LocalVariable extends OffsetVariable {
     }
 
     @Override
-    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps) {
         try {
-            return vars[getOffset()];
+            return context.getVars().getVar(getOffset(), getDepth());
         } catch (Exception e) {
-            System.out.println("Error: Local Variable '" + name + "' cannot be retrieed.");
+            System.out.println("Error: Local Variable '" + name + "' cannot be retrieved.");
             throw e;
         }
+    }
+
+    @Override
+    public String toString() {
+        return getName() + "{" + getOffset() + ", " + getDepth() + "}";
     }
 }

@@ -16,12 +16,15 @@ public class Add extends Instruction implements ResultInstruction {
     private Variable result;
     private Operand lhs;
     private Operand rhs;
+    private boolean subtract;
 
-    public Add(Variable result, Operand lhs, Operand rhs) {
+    // FIXME: This should not pass subtract in as it is invariant
+    public Add(Variable result, Operand lhs, Operand rhs, boolean subtract) {
         super(Operation.ADD);
         this.result = result;
         this.lhs = lhs;
         this.rhs = rhs;
+        this.subtract = subtract;
     }
 
     public Variable getResult() {
@@ -34,6 +37,10 @@ public class Add extends Instruction implements ResultInstruction {
 
     public Operand getRHS() {
         return rhs;
+    }
+
+    public boolean isSubtraction() {
+        return subtract;
     }
 
     public String toString() {

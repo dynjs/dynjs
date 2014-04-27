@@ -35,7 +35,7 @@ public class Scope {
     private Map<Integer, Variable> temporaryVariables = new HashMap<>();
     private int temporaryVariablesIndex = 0;
 
-    private Map<String, Variable> localVariables = new HashMap<>();
+    private Map<String, LocalVariable> localVariables = new HashMap<>();
     // What next variable index will be (also happens to be current size
     private int localVariablesIndex = 0;
 
@@ -76,15 +76,28 @@ public class Scope {
      * Tries to find a variable or returns null if it cannot.  This
      * will walk all scopes to find a captured variable.
      */
-    public Variable findVariable(String name) {
-        Variable variable = localVariables.get(name);
+    public LocalVariable findVariable(String name) {
+        return findVariable(name, 0);
+    }
+
+    /**
+     * Tries to find a variable or returns null if it cannot.  This
+     * will walk all scopes to find a captured variable.
+     */
+    public LocalVariable findVariable(String name, int depth) {
+        LocalVariable variable = localVariables.get(name);
 
         if (variable != null) {
+            // Destined scope need adjusted variable since it need to know how deep to look for it.
+            if (depth != 0) {
+                return new LocalVariable(name, variable.getOffset(), depth);
+            }
+
             return variable;
         }
 
         if (parent != null) {
-            return parent.findVariable(name);
+            return parent.findVariable(name, depth + 1);
         }
 
         return null;
@@ -98,10 +111,11 @@ public class Scope {
      * Return an existing variable or return a new one made in this scope.
      */
     public Variable acquireLocalVariable(String name) {
-        Variable variable = findVariable(name);
+        int depth = 0;
+        LocalVariable variable = findVariable(name, depth);
 
         if (variable == null) {
-            variable = new LocalVariable(this, name, localVariablesIndex);
+            variable = new LocalVariable(name, localVariablesIndex, 0);
             localVariables.put(name, variable);
             localVariablesIndex++;
         }

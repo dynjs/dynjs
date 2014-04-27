@@ -15,8 +15,8 @@ public class DynamicVariable extends Variable {
     }
 
     @Override
-    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
-        return context.resolve(name);
+    public Object retrieve(ExecutionContext context, Object[] temps) {
+        return context.resolve(name).getValue(context);
     }
 
     @Override

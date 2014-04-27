@@ -57,6 +57,9 @@ public class IRJSProgram implements JSProgram {
     }
     @Override
     public Completion execute(ExecutionContext context) {
+        // Allocate space for variables of this function and establish link to captured ones.
+        context.allocVars(scope.getLocalVariableSize(), null);
+
         return Completion.createNormal(Interpreter.execute(context, scope, instructions));
     }
 

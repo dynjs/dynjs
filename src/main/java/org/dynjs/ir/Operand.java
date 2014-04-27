@@ -29,7 +29,7 @@ public abstract class Operand {
         return type;
     }
 
-    public Object retrieve(ExecutionContext context, Object[] temps, Object[] vars) {
+    public Object retrieve(ExecutionContext context, Object[] temps) {
         throw new RuntimeException("Operand: " + getClass().getSimpleName() + "should not be retrieved.");
     }
 }
