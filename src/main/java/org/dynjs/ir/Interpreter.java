@@ -11,6 +11,7 @@ import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.instructions.Return;
+import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.OffsetVariable;
 import org.dynjs.ir.operands.Variable;
@@ -45,8 +46,8 @@ public class Interpreter {
                     break;
                 case SUB:
                     value = sub(context,
-                            ((Add) instr).getLHS().retrieve(context, temps),
-                            ((Add) instr).getRHS().retrieve(context, temps));
+                            ((Sub) instr).getLHS().retrieve(context, temps),
+                            ((Sub) instr).getRHS().retrieve(context, temps));
                     break;
                 case COPY:
                     value = ((Copy) instr).getValue().retrieve(context, temps);

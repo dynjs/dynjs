@@ -12,7 +12,7 @@ import org.dynjs.ir.operands.Variable;
  */
 public class Sub extends BinaryInstr {
     public Sub(Variable result, Operand lhs, Operand rhs) {
-        super(Operation.ADD, result, lhs, rhs);
+        super(Operation.SUB, result, lhs, rhs);
     }
 
     @Override
