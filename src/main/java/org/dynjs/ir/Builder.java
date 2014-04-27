@@ -27,6 +27,7 @@ import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.LabelInstr;
 import org.dynjs.ir.instructions.Mul;
 import org.dynjs.ir.instructions.PropertyLookup;
+import org.dynjs.ir.instructions.ReceiveFunctionParameter;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
@@ -395,8 +396,15 @@ public class Builder implements CodeVisitor {
         Scope scope = (Scope) context;
         FunctionDescriptor descriptor = expr.getDescriptor();
         Variable result = scope.createTemporaryVariable();
+        String[] parameterNames = descriptor.getFormalParameterNames();
         FunctionScope functionScope = new FunctionScope(scope, descriptor.getPosition().getFileName(),
-                descriptor.isStrict(), descriptor.getFormalParameterNames());
+                descriptor.isStrict(), parameterNames);
+
+        // Recieve all declared parameters
+        int paramsLength = parameterNames.length;
+        for (int i = 0; i < paramsLength; i++) {
+            functionScope.addInstruction(new ReceiveFunctionParameter(functionScope.acquireLocalVariable(parameterNames[i]), i));
+        }
 
         descriptor.getBlock().accept(functionScope, this, strict);
 
@@ -408,6 +416,7 @@ public class Builder implements CodeVisitor {
     @Override
     public Object visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
         Scope scope = (Scope) context;
+
         Variable variable = scope.findVariable(expr.getIdentifier());
 
         // FIXME: Should this error out in strict mode?

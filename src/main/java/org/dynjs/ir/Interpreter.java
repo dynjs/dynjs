@@ -9,6 +9,7 @@ import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
+import org.dynjs.ir.instructions.ReceiveFunctionParameter;
 import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.instructions.Sub;
@@ -27,6 +28,7 @@ import org.dynjs.runtime.Types;
 public class Interpreter {
 
     public static Object execute(ExecutionContext context, Scope scope, Instruction[] instructions) {
+        //System.out.println("Executing: " + context.getFileName() + ":" + context.getLineNumber());
         Object result = Types.UNDEFINED;
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
         int size = instructions.length;
@@ -48,6 +50,9 @@ public class Interpreter {
                     value = sub(context,
                             ((Sub) instr).getLHS().retrieve(context, temps),
                             ((Sub) instr).getRHS().retrieve(context, temps));
+                    break;
+                case RECEIVE_FUNCTION_PARAM:
+                    value = context.getFunctionParameters()[((ReceiveFunctionParameter) instr).getIndex()];
                     break;
                 case COPY:
                     value = ((Copy) instr).getValue().retrieve(context, temps);

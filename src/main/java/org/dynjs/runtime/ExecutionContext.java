@@ -44,6 +44,10 @@ public class ExecutionContext {
     private String debugContext = "<eval>";
     private VariableValues vars;
 
+    // Just stash functions passed into this context with no processing.  IRScope will detect things like 'attributes' and
+    // generate those on a case-by-case basis.
+    private Object[] functionParameters;
+
     private Object functionReference;
 
     public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
@@ -53,6 +57,14 @@ public class ExecutionContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+    }
+
+    public void setFunctionParameters(Object[] args) {
+        this.functionParameters = args;
+    }
+
+    public Object[] getFunctionParameters() {
+        return functionParameters;
     }
 
     public VariableValues getVars() {
@@ -283,6 +295,7 @@ public class ExecutionContext {
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
+        context.setFunctionParameters(arguments);
         return context;
     }
 
