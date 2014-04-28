@@ -20,10 +20,10 @@ import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSProgram;
 import org.dynjs.runtime.Types;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.util.CheckClassAdapter;
+import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;

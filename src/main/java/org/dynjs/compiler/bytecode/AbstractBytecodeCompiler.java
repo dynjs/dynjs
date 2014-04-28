@@ -10,8 +10,8 @@ import org.dynjs.codegen.CodeGeneratingVisitor;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.DynamicClassLoader;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.util.CheckClassAdapter;
+import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
+import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
 
 public abstract class AbstractBytecodeCompiler {
 

@@ -7,7 +7,7 @@ import java.util.List;
 import me.qmx.jitescript.CodeBlock;
 
 import org.dynjs.parser.js.Position;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractIteratingStatement extends BaseStatement {
 

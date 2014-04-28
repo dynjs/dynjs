@@ -6,8 +6,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
+import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.projectodd.rephract.LinkLogger;
@@ -53,29 +55,19 @@ public class JavascriptPrimitiveLinkStrategy extends ContextualLinkStrategy<Exec
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
         
-        //System.err.println("jsprimitive: link call: " + receiver.getClass() + " // " + receiver );
-        
-        
-        // * [ object(receiver) ?(context) object(self) object[](args)
- 
         if (isPrimitiveDereferencedReference(receiver) ) {
-            /*
-            MethodHandle handle = binder
-                    .permute(1, 0, 2, 3)
-                    .convert(Object.class, ExecutionContext.class, Reference.class, Object.class, Object[].class)
-                    .invokeVirtual(lookup(), "call");
 
-            MethodHandle guard = javascriptPrimitiveReferenceGuard(guardBinder);
-            return new StrategicLink(handle, guard);
-            */
             MethodHandle handle = binder
-                    .drop(0)
-                    .drop(1, binder.type().parameterCount() - 2)
-                    .convert(Object.class, ExecutionContext.class)
-                    .filter(0, createTypeErrorFilter())
+                    .convert(Object.class, DereferencedReference.class, ExecutionContext.class, Object.class, Object[].class)
+                    .permute(1, 0, 2, 3) // context, deref, self, args
+                    .drop( 1 )
+                    .drop( 2 )
+                    .convert(Object.class, ExecutionContext.class, Object.class )
+                    .fold( createTypeErrorFilter() )
+                    .drop(1,2)
                     .throwException();
 
-            MethodHandle guard = getReceiverClassGuard(JSObject.class, guardBinder);
+            MethodHandle guard = javascriptPrimitiveReferenceGuard(guardBinder);
 
             return new StrategicLink(handle, guard);
         }
@@ -85,7 +77,7 @@ public class JavascriptPrimitiveLinkStrategy extends ContextualLinkStrategy<Exec
     
     public static MethodHandle createTypeErrorFilter() throws NoSuchMethodException, IllegalAccessException {
         return MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "createTypeErrorFilter",
-                MethodType.methodType(ThrowException.class, ExecutionContext.class));
+                MethodType.methodType(ThrowException.class, ExecutionContext.class, Object.class));
     }
 
 }

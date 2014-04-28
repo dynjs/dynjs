@@ -9,6 +9,7 @@ import org.dynjs.runtime.util.SafePropertyAccessor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 public class DynJS {
@@ -59,6 +60,10 @@ public class DynJS {
 
     public Object evaluate(String source) {
         return newRunner().withSource(source).evaluate();
+    }
+
+    public Object evaluate(InputStream in) {
+        return newRunner().withSource( new InputStreamReader( in ) ).evaluate();
     }
 
     public Object evaluate(String... sourceLines) {

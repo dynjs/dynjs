@@ -16,6 +16,7 @@ import org.dynjs.runtime.Reference;
 import org.projectodd.rephract.LinkLogger;
 import org.projectodd.rephract.StrategicLink;
 import org.projectodd.rephract.StrategyChain;
+import org.projectodd.rephract.guards.Guards;
 import org.projectodd.rephract.mop.ContextualLinkStrategy;
 
 import com.headius.invokebinder.Binder;
@@ -29,7 +30,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkGetProperty(StrategyChain chain, Object receiver, String propName, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-        
+
         if (isJavascriptObjectReference(receiver)) {
             MethodHandle handle = binder
                     .filter(0, referenceBaseFilter())
@@ -85,19 +86,19 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
             MethodHandle guard = javascriptEnvironmentReferenceGuard(guardBinder);
             return new StrategicLink(handle, guard);
         }
-        
-        if (isJavascriptStrictUndefinedReference(receiver) && ((Reference)receiver).isStrictReference() ) {
+
+        if (isJavascriptStrictUndefinedReference(receiver) && ((Reference) receiver).isStrictReference()) {
             MethodHandle handle = binder
-                    .drop(2,2)
+                    .drop(2, 2)
                     .drop(1)
-                    .filter( 0, createReferenceErrorFilter())
+                    .filter(0, createReferenceErrorFilter())
                     .throwException();
-            
+
             MethodHandle guard = javascriptStrictUndefinedReferenceGuard(guardBinder);
             return new StrategicLink(handle, guard);
         }
 
-        if (isJavascriptUndefinedReference(receiver) && ! ((Reference)receiver).isStrictReference() ) {
+        if (isJavascriptUndefinedReference(receiver) && !((Reference) receiver).isStrictReference()) {
             MethodHandle handle = binder
                     .convert(void.class, Reference.class, ExecutionContext.class, String.class, Object.class)
                     .permute(1, 1, 2, 3, 0)
@@ -109,7 +110,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
             MethodHandle guard = javascriptUndefinedReferenceGuard(guardBinder);
             return new StrategicLink(handle, guard);
         }
-        
+
 
         return chain.nextStrategy();
     }
@@ -117,7 +118,7 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
     @Override
     public StrategicLink linkCall(StrategyChain chain, Object receiver, Object self, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
             IllegalAccessException {
-        
+
         if (isFunctionDereferencedReference(receiver)) {
             MethodHandle handle = binder
                     .convert(Object.class, DereferencedReference.class, ExecutionContext.class, Object.class, Object[].class)
@@ -138,7 +139,8 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
                     .convert(Object.class, ExecutionContext.class, JSFunction.class, Object.class, Object[].class)
                     .invokeVirtual(lookup(), "call");
 
-            MethodHandle guard = getReceiverClassGuard(JSFunction.class, guardBinder);
+            //MethodHandle guard = getReceiverClassGuard(JSFunction.class, guardBinder);
+            MethodHandle guard = getCallableJSObjectGuard(guardBinder);
 
             return new StrategicLink(handle, guard);
         }
@@ -146,12 +148,13 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
         if (isJavascriptDereferencedReference(receiver)) {
             MethodHandle handle = binder
                     .drop(0)
-                    .drop(1, binder.type().parameterCount() - 2)
-                    .convert(Object.class, ExecutionContext.class)
-                    .filter(0, createTypeErrorFilter())
+                    .drop(1, binder.type().parameterCount() - 1)
+                    .convert(Object.class, ExecutionContext.class, Object.class)
+                    .fold(createTypeErrorFilter())
+                    .drop( 1, 2 )
                     .throwException();
 
-            MethodHandle guard = javascriptDereferencedReferenceGuard(guardBinder);
+            MethodHandle guard = nonFunctionJavascriptDereferencedReferenceGuard(guardBinder);
 
             return new StrategicLink(handle, guard);
         }
@@ -159,12 +162,14 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
         if (receiver instanceof JSObject) {
             MethodHandle handle = binder
                     .drop(0)
-                    .drop(1, binder.type().parameterCount() - 2)
-                    .convert(Object.class, ExecutionContext.class)
-                    .filter(0, createTypeErrorFilter())
+                    .drop(1, binder.type().parameterCount() - 1)
+                    .convert(Object.class, ExecutionContext.class, Object.class)
+                    .fold(createTypeErrorFilter())
+                    .drop( 1, 2 )
                     .throwException();
 
-            MethodHandle guard = getReceiverClassGuard(JSObject.class, guardBinder);
+            //MethodHandle guard = getReceiverClassGuard(JSObject.class, guardBinder);
+            MethodHandle guard = getNoncallableJSObjectGuard(guardBinder);
 
             return new StrategicLink(handle, guard);
         }
@@ -194,10 +199,11 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
             MethodHandle handle = binder
                     .permute(1, 0, 2)
                     .convert(Object.class, ExecutionContext.class, JSFunction.class, Object[].class)
-                    .insert( 1, new Class[]{ Object.class },  new Object[] { null } )
+                    .insert(1, new Class[]{Object.class}, new Object[]{null})
                     .invokeVirtual(lookup(), "construct");
 
-            MethodHandle guard = getReceiverClassGuard(JSFunction.class, guardBinder);
+            //MethodHandle guard = getReceiverClassGuard(JSFunction.class, guardBinder);
+            MethodHandle guard = getCallableJSObjectGuard(guardBinder);
 
             return new StrategicLink(handle, guard);
         }
@@ -205,17 +211,45 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
         if (receiver instanceof JSObject) {
             MethodHandle handle = binder
                     .drop(0)
-                    .drop(1, binder.type().parameterCount() - 2)
-                    .convert(Object.class, ExecutionContext.class)
-                    .filter(0, createTypeErrorFilter())
+                    .drop(1, binder.type().parameterCount() - 1)
+                    .convert(Object.class, ExecutionContext.class, Object.class)
+                    .fold(createTypeErrorFilter())
+                    .drop(1,2)
                     .throwException();
 
-            MethodHandle guard = getReceiverClassGuard(JSObject.class, guardBinder);
+            //MethodHandle guard = getReceiverClassGuard(JSObject.class, guardBinder);
+            MethodHandle guard = getNoncallableJSObjectGuard(guardBinder);
 
             return new StrategicLink(handle, guard);
         }
 
         return chain.nextStrategy();
+    }
+
+    public static boolean callableJSObjectGuard(Object receiver) {
+        return (receiver instanceof JSFunction);
+    }
+
+    public static boolean noncallableJSObjectGuard(Object receiver) {
+        return ((receiver instanceof JSObject) && (!(receiver instanceof JSFunction)));
+    }
+
+    public static MethodHandle getCallableJSObjectGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        MethodHandle mh = MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "callableJSObjectGuard",
+                MethodType.methodType(boolean.class, Object.class));
+
+        return binder
+                .drop(1, binder.type().parameterCount() - 1)
+                .invoke(mh);
+    }
+
+    public static MethodHandle getNoncallableJSObjectGuard(Binder binder) throws NoSuchMethodException, IllegalAccessException {
+        MethodHandle mh = MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "noncallableJSObjectGuard",
+                MethodType.methodType(boolean.class, Object.class));
+
+        return binder
+                .drop(1, binder.type().parameterCount() - 1)
+                .invoke(mh);
     }
 
     public static MethodHandle dereferencedReferenceFilter() throws NoSuchMethodException, IllegalAccessException {
@@ -238,15 +272,15 @@ public class JavascriptObjectLinkStrategy extends ContextualLinkStrategy<Executi
 
     public static MethodHandle createTypeErrorFilter() throws NoSuchMethodException, IllegalAccessException {
         return MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "createTypeErrorFilter",
-                MethodType.methodType(ThrowException.class, ExecutionContext.class));
+                MethodType.methodType(ThrowException.class, ExecutionContext.class, Object.class));
     }
 
-    public static ThrowException createTypeErrorFilter(ExecutionContext context) {
-        return new ThrowException(context, context.createTypeError("not callable"));
+    public static ThrowException createTypeErrorFilter(ExecutionContext context, Object nonCallable) {
+        return new ThrowException(context, context.createTypeError("not callable: " + nonCallable));
     }
-    
+
     public static MethodHandle createReferenceErrorFilter() throws NoSuchMethodException, IllegalAccessException {
-        return MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "createTypeErrorFilter",
+        return MethodHandles.lookup().findStatic(JavascriptObjectLinkStrategy.class, "createReferenceErrorFilter",
                 MethodType.methodType(ThrowException.class, ExecutionContext.class));
     }
 

@@ -8,7 +8,7 @@ import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
 import org.dynjs.runtime.ExecutionContext;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public class MultipleClassCaller extends CodeBlock {
 

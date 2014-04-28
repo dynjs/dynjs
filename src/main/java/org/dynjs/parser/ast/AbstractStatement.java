@@ -28,7 +28,7 @@ import me.qmx.jitescript.CodeBlock;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.Completion.Type;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public abstract class AbstractStatement implements Statement {
 

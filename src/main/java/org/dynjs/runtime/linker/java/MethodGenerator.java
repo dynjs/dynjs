@@ -14,7 +14,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.Types.Undefined;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
 public abstract class MethodGenerator {
 

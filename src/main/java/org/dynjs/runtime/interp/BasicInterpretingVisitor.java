@@ -957,18 +957,15 @@ public class BasicInterpretingVisitor implements CodeVisitor {
                         
                     } else {
                         return(Double.NEGATIVE_INFINITY);
-                        
                     }
-                }
 
                 // Zero-divided-by-something
-                else if (isZero(lval)) {
+                } else if (isZero(lval)) {
                     if (isSameSign(lval, rval)) {
                         return(0L);
                     } else {
                         return(-0.0);
                     }
-                    
                 }
 
                 // Regular math
@@ -1002,7 +999,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
                         
                     } else {
                         return(Double.NEGATIVE_INFINITY);
-                        
                     }
                 }
 
@@ -1029,7 +1025,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
                 }
                 
                 return(BuiltinNumber.modulo(lval, rval));
-                
             }
         }
 
@@ -1050,7 +1045,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
 
         if (memberExpr instanceof JSFunction) {
-
             return(((ExecutionContext) context).construct(ref, (JSFunction) memberExpr, args));
         }
 
@@ -1109,21 +1103,21 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
             if (oldValue instanceof Double) {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.doubleValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.doubleValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.doubleValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.doubleValue() - 1;
+                        break;
                 }
             } else {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.longValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.longValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.longValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.longValue() - 1;
+                        break;
                 }
             }
 
@@ -1152,21 +1146,21 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
             if (oldValue instanceof Double) {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.doubleValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.doubleValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.doubleValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.doubleValue() - 1;
+                        break;
                 }
             } else {
                 switch (expr.getOp()) {
-                case "++":
-                    newValue = oldValue.longValue() + 1;
-                    break;
-                case "--":
-                    newValue = oldValue.longValue() - 1;
-                    break;
+                    case "++":
+                        newValue = oldValue.longValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.longValue() - 1;
+                        break;
                 }
             }
 
@@ -1181,7 +1175,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     public Object visit(Object context, PropertyGet propertyGet, boolean strict) {
         JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
                 null,
-                new String[] {},
+                new String[]{},
                 propertyGet.getBlock(),
                 strict);
         return(compiledFn);
@@ -1245,7 +1239,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             } else {
                 return(true);
             }
-            
         }
 
         return null; // not reached

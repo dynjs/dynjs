@@ -45,3 +45,5 @@ src/main/resources/version.properties
 
 # ignore generated jar output
 dynjs.jar
+
+version.properties
