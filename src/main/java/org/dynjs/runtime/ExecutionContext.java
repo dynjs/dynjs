@@ -149,7 +149,34 @@ public class ExecutionContext {
 
     public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
-        return internalCall(functionReference, function, self, args);
+        ExecutionContext fnContext = null;
+        try {
+            fnContext = createFunctionExecutionContext(functionReference, function, self, args);
+            ThreadContextManager.pushContext(fnContext);
+            try {
+                Object value = function.call(fnContext);
+                if (value == null) {
+                    return Types.NULL;
+                }
+                return value;
+            } catch (ThrowException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new ThrowException(fnContext, e);
+            }
+        } catch (ThrowException t) {
+            if (t.getCause() != null) {
+                recordThrow(t.getCause(), fnContext);
+            } else if ( t.getValue() instanceof Throwable ){
+                recordThrow((Throwable) t.getValue(), fnContext);
+            }
+            throw t;
+        } catch (Throwable t) {
+            recordThrow( t, fnContext );
+            throw t;
+        } finally {
+            ThreadContextManager.popContext();
+        }
     }
 
     public Object construct(Reference reference, Object... args) {
@@ -198,7 +225,7 @@ public class ExecutionContext {
         }
 
         // 8. Call the function with obj as self
-        Object result = internalCall(reference, function, obj, args);
+        Object result = call(reference, function, obj, args);
         // 9. If result is a JSObject return it
 
         if (result instanceof JSObject) {
@@ -208,38 +235,6 @@ public class ExecutionContext {
         ((JSObject) obj).defineNonEnumerableProperty(this.getGlobalObject(), "__ctor__", ctorName.toString());
         // Otherwise return obj
         return obj;
-    }
-
-    public Object internalCall(Object functionReference, JSFunction function, Object self, Object... args) {
-        // 13.2.1
-        ExecutionContext fnContext = null;
-        try {
-            fnContext = createFunctionExecutionContext(functionReference, function, self, args);
-            ThreadContextManager.pushContext(fnContext);
-            try {
-                Object value = function.call(fnContext);
-                if (value == null) {
-                    return Types.NULL;
-                }
-                return value;
-            } catch (ThrowException e) {
-                throw e;
-            } catch (Throwable e) {
-                throw new ThrowException(fnContext, e);
-            }
-        } catch (ThrowException t) {
-            if (t.getCause() != null) {
-                recordThrow(t.getCause(), fnContext);
-            } else if ( t.getValue() instanceof Throwable ){
-                recordThrow((Throwable) t.getValue(), fnContext);
-            }
-            throw t;
-        } catch (Throwable t) {
-            recordThrow( t, fnContext );
-            throw t;
-        } finally {
-            ThreadContextManager.popContext();
-        }
     }
 
     protected void recordThrow(Throwable t, ExecutionContext fnContext) {
