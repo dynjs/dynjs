@@ -922,6 +922,9 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         expr.getRhs().accept(context, this, strict);
         Object rhs = getValue(context, pop());
 
+        if (rhs == Types.UNDEFINED) {
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is undefined."));
+        }
         if (rhs instanceof JSObject) {
             if (!(rhs instanceof JSFunction)) {
                 throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
