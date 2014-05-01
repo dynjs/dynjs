@@ -17,6 +17,6 @@ public class Sub extends BinaryInstr {
 
     @Override
     public String toString() {
-        return "" + getResult() + " = " + getLHS() + " + " + getRHS();
+        return "" + getResult() + " = " + getLHS() + " - " + getRHS();
     }
 }
