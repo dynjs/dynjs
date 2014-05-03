@@ -17,6 +17,10 @@ public class Raise extends Instruction {
         this.message = message;
     }
 
+    public boolean transfersControl() {
+        return true;
+    }
+
     public String getType() {
         return type;
     }

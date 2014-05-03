@@ -6,7 +6,7 @@ import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
 /**
- * Created by enebo on 4/27/14.
+ * Construct a new object (e.g. 'new Array();').
  */
 public class Constructor extends Instruction implements ResultInstruction {
     private Variable result;
