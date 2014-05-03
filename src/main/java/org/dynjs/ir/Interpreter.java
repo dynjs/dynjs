@@ -10,6 +10,7 @@ import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
+import org.dynjs.ir.instructions.Raise;
 import org.dynjs.ir.instructions.ReceiveFunctionParameter;
 import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.instructions.Return;
@@ -70,10 +71,6 @@ public class Interpreter {
 
                     for (int i = 0; i < args.length; i++) {
                         args[i] = opers[i].retrieve(context, temps);
-                    }
-
-                    if (!(function instanceof JSFunction)) {
-                        throw new ThrowException(context, context.createTypeError(ref + " is not calllable"));
                     }
 
                     Object thisValue = null;
@@ -138,6 +135,9 @@ public class Interpreter {
                     value = new IRJSFunction(((DefineFunction) instr).getScope(), context.getVars(),
                             context.getLexicalEnvironment(), context.getGlobalObject());
                     break;
+                case RAISE:
+                    throw new ThrowException(context,
+                            context.createError(((Raise) instr).getType(), ((Raise) instr).getMessage()));
             }
 
             if (instr instanceof ResultInstruction) {

@@ -28,6 +28,7 @@ import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.LabelInstr;
 import org.dynjs.ir.instructions.Mul;
 import org.dynjs.ir.instructions.PropertyLookup;
+import org.dynjs.ir.instructions.Raise;
 import org.dynjs.ir.instructions.ReceiveFunctionParameter;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.instructions.Sub;
@@ -118,6 +119,7 @@ import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
 
 import java.util.List;
+import org.dynjs.runtime.Types;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
@@ -392,6 +394,9 @@ public class Builder implements CodeVisitor {
         // We can statically replace an attempt at calls to illegal member types with an exception
         // raise.  This should eliminate needing to actually check this within the runtime.
         if (memberExpression instanceof IllegalFunctionMemberExpression) {
+            scope.addInstruction(new Raise("TypeError", memberExpression + " is not calllable"));
+
+            return Undefined.UNDEFINED;
         }
 
         final Operand name = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);

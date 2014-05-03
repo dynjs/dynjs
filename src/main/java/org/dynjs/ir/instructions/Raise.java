@@ -4,18 +4,28 @@ import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operation;
 
 /**
- * Created by enebo on 5/3/14.
+ * Raise/throw an exception.
  */
 public class Raise extends Instruction {
+    private String type;
     private String message;
 
-    public Raise(String message) {
+    public Raise(String type, String message) {
         super(Operation.RAISE);
 
+        this.type = type;
         this.message = message;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public String toString() {
+        return "raise " + type + ", '" + message + "'";
     }
 }
