@@ -394,7 +394,7 @@ public class Builder implements CodeVisitor {
         // We can statically replace an attempt at calls to illegal member types with an exception
         // raise.  This should eliminate needing to actually check this within the runtime.
         if (memberExpression instanceof IllegalFunctionMemberExpression) {
-            scope.addInstruction(new Raise("TypeError", memberExpression + " is not calllable"));
+            scope.addInstruction(new Raise("TypeError", memberExpression + " is not callable"));
 
             return Undefined.UNDEFINED;
         }
@@ -553,8 +553,17 @@ public class Builder implements CodeVisitor {
     @Override
     public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
         Scope scope = (Scope) context;
-        Variable tmp = scope.createTemporaryVariable();
+
+        // We can statically replace an attempt at calls to illegal member types with an exception
+        // raise.  This should eliminate needing to actually check this within the runtime.
+        if (expr.getExpr() instanceof IllegalFunctionMemberExpression) {
+            scope.addInstruction(new Raise("TypeError", expr.getExpr() + " is not callable"));
+
+            return Undefined.UNDEFINED;
+        }
+
         Operand memberExpression = (Operand) expr.getExpr().accept(context, this, strict);
+        Variable tmp = scope.createTemporaryVariable();
         List<Expression> argumentExpressions = expr.getArgumentExpressions();
         Operand args[] = new Operand[argumentExpressions.size()];
 

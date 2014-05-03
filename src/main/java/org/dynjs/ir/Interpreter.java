@@ -98,10 +98,6 @@ public class Interpreter {
                         args[i] = opers[i].retrieve(context, temps);
                     }
 
-                    if (!(function instanceof JSFunction)) {
-                        throw new ThrowException(context, context.createTypeError("can only construct using functions"));
-                    }
-
                     value = context.construct(ref, (JSFunction) function, args);
                 }
                 break;
