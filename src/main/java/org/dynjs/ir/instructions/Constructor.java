@@ -32,4 +32,21 @@ public class Constructor extends Instruction implements ResultInstruction {
     public Variable getResult() {
         return result;
     }
+
+    public String toString() {
+        StringBuilder buf = new StringBuilder("new " + identifier + "(");
+
+        int count = args.length - 1;
+        for (int i = 0; i < count; i++) {
+            buf.append(args[i]).append(", ");
+        }
+
+        if (args.length != 0) {
+            buf.append(args[args.length - 1]);
+        }
+
+        buf.append(")");
+
+        return buf.toString();
+    }
 }
