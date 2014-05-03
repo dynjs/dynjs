@@ -19,7 +19,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class BooleanLiteralExpression extends BaseExpression {
+public class BooleanLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     private final boolean value;
 

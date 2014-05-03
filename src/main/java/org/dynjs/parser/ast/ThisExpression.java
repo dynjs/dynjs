@@ -13,7 +13,7 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Bob McWhirter
  * 
  */
-public class ThisExpression extends BaseExpression {
+public class ThisExpression extends BaseExpression implements IllegalFunctionMemberExpression {
     
     public ThisExpression(Position position) {
         super(position);

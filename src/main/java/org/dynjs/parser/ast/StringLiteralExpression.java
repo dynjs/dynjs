@@ -19,7 +19,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class StringLiteralExpression extends BaseExpression {
+public class StringLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     private final String literal;
     

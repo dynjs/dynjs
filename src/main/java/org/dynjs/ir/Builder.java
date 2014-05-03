@@ -80,6 +80,7 @@ import org.dynjs.parser.ast.FunctionDescriptor;
 import org.dynjs.parser.ast.FunctionExpression;
 import org.dynjs.parser.ast.IdentifierReferenceExpression;
 import org.dynjs.parser.ast.IfStatement;
+import org.dynjs.parser.ast.IllegalFunctionMemberExpression;
 import org.dynjs.parser.ast.InOperatorExpression;
 import org.dynjs.parser.ast.InstanceofExpression;
 import org.dynjs.parser.ast.IntegerNumberExpression;
@@ -384,6 +385,13 @@ public class Builder implements CodeVisitor {
 
         for (int i = 0; i < argsLength; i++) {
             args[i] = (Operand) acceptOrUndefined(context, argumentExpressions.get(i), strict);
+        }
+
+        Expression memberExpression = expr.getMemberExpression();
+
+        // We can statically replace an attempt at calls to illegal member types with an exception
+        // raise.  This should eliminate needing to actually check this within the runtime.
+        if (memberExpression instanceof IllegalFunctionMemberExpression) {
         }
 
         final Operand name = (Operand) acceptOrUndefined(context, expr.getMemberExpression(), strict);

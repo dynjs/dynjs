@@ -19,7 +19,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public abstract class NumberLiteralExpression extends BaseExpression {
+public abstract class NumberLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     private final String text;
     // FIXME: Radix is unneeded since concrete types already know their value.

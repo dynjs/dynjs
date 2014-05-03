@@ -19,7 +19,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class NullLiteralExpression extends BaseExpression {
+public class NullLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     public NullLiteralExpression(Position position) {
         super(position);
