@@ -408,7 +408,10 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, FunctionDeclaration statement, boolean strict) {
-        return unimplemented(context, statement, strict);
+        // We need to be able to define function decl before any code in the block
+        // they live in is executed so when we see them inline while building instructions
+        // we just ignore them.
+        return Undefined.UNDEFINED;
     }
 
     @Override
@@ -420,17 +423,48 @@ public class Builder implements CodeVisitor {
         FunctionScope functionScope = new FunctionScope(scope, descriptor.getPosition().getFileName(),
                 descriptor.isStrict(), parameterNames);
 
+        // 1. receive arguments are first before any mandatory items like nested functions
         // Recieve all declared parameters
         int paramsLength = parameterNames.length;
         for (int i = 0; i < paramsLength; i++) {
             functionScope.addInstruction(new ReceiveFunctionParameter(functionScope.acquireLocalVariable(parameterNames[i]), i));
         }
 
+        // 2. named functions must be visible before any code in the block executed so right after parms
+        buildDeclaredFunctions(functionScope, descriptor.getBlock().getFunctionDeclarations());
+
+        // 3. the actual block code.
         descriptor.getBlock().accept(functionScope, this, strict);
 
         scope.addInstruction(new DefineFunction(result, functionScope));
 
         return result;
+    }
+
+    private void buildDeclaredFunctions(FunctionScope parentScope, List<FunctionDeclaration> functionDeclarations) {
+        // ENEBO: reusing the temp var here since it is not actually used.
+        Variable result = parentScope.createTemporaryVariable();
+
+        for (FunctionDeclaration declaration: functionDeclarations) {
+            String[] parameterNames = declaration.getFormalParameters();
+            FunctionScope functionScope = new FunctionScope(parentScope, declaration.getPosition().getFileName(),
+                    declaration.isStrict(), declaration.getFormalParameters());
+
+            // 1. receive arguments are first before any mandatory items like nested functions
+            // Recieve all declared parameters
+            int paramsLength = parameterNames.length;
+            for (int i = 0; i < paramsLength; i++) {
+                functionScope.addInstruction(new ReceiveFunctionParameter(functionScope.acquireLocalVariable(parameterNames[i]), i));
+            }
+
+            // 2. named functions must be visible before any code in the block executed so right after parms
+            buildDeclaredFunctions(functionScope, declaration.getBlock().getFunctionDeclarations());
+
+            // 3. the actual block code.
+            declaration.getBlock().accept(functionScope, this, declaration.isStrict());
+
+            parentScope.addInstruction(new DefineFunction(result, functionScope));
+        }
     }
 
     @Override
