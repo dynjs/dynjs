@@ -55,6 +55,7 @@ import org.dynjs.parser.ast.NumberLiteralExpression;
 import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
+import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.PropertyGet;
 import org.dynjs.parser.ast.PropertySet;

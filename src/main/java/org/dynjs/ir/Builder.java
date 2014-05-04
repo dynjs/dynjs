@@ -214,6 +214,8 @@ public class Builder implements CodeVisitor {
     public Object visit(Object context, BlockStatement block, boolean strict) {
         Scope scope = (Scope) context;
 
+        buildDeclaredFunctions(scope, block.getFunctionDeclarations());
+
         // FIXME: How can we use what the parser provides to good effect?
         Operand value = Undefined.UNDEFINED;
         for (Statement statement: block.getBlockContent()) {
@@ -441,7 +443,7 @@ public class Builder implements CodeVisitor {
         return result;
     }
 
-    private void buildDeclaredFunctions(FunctionScope parentScope, List<FunctionDeclaration> functionDeclarations) {
+    private void buildDeclaredFunctions(Scope parentScope, List<FunctionDeclaration> functionDeclarations) {
         // ENEBO: reusing the temp var here since it is not actually used.
         Variable result = parentScope.createTemporaryVariable();
 
