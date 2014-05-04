@@ -423,7 +423,7 @@ public class Builder implements CodeVisitor {
         Variable result = scope.createTemporaryVariable();
         String[] parameterNames = descriptor.getFormalParameterNames();
         FunctionScope functionScope = new FunctionScope(scope, descriptor.getPosition().getFileName(),
-                descriptor.isStrict(), parameterNames);
+                descriptor.isStrict(), parameterNames, null);
 
         // 1. receive arguments are first before any mandatory items like nested functions
         // Recieve all declared parameters
@@ -450,7 +450,7 @@ public class Builder implements CodeVisitor {
         for (FunctionDeclaration declaration: functionDeclarations) {
             String[] parameterNames = declaration.getFormalParameters();
             FunctionScope functionScope = new FunctionScope(parentScope, declaration.getPosition().getFileName(),
-                    declaration.isStrict(), declaration.getFormalParameters());
+                    declaration.isStrict(), declaration.getFormalParameters(), declaration.getIdentifier());
 
             // 1. receive arguments are first before any mandatory items like nested functions
             // Recieve all declared parameters

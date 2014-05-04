@@ -18,9 +18,13 @@ import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.OffsetVariable;
 import org.dynjs.ir.operands.Variable;
+import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.ObjectEnvironmentRecord;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 
@@ -127,10 +131,33 @@ public class Interpreter {
                 }
                 case RETURN:
                     return ((Return) instr).getValue().retrieve(context, temps);
-                case DEFINE_FUNCTION:
-                    value = new IRJSFunction(((DefineFunction) instr).getScope(), context.getVars(),
+                case DEFINE_FUNCTION: {
+                    // FIXME: configurableBindings is false here but I think a define_function in an eval they should be true
+                    FunctionScope functionScope = ((DefineFunction) instr).getScope();
+                    value = new IRJSFunction(functionScope, context.getVars(),
                             context.getLexicalEnvironment(), context.getGlobalObject());
+
+                    if (functionScope.getName() != null) {
+                        EnvironmentRecord env = context.getVariableEnvironment().getRecord();
+                        String identifier = functionScope.getName();
+                        if (!env.hasBinding(context, identifier)) {
+                            env.createMutableBinding(context, identifier, false);
+                        } else if (env.isGlobal()) {
+                            JSObject globalObject = ((ObjectEnvironmentRecord) env).getBindingObject();
+                            PropertyDescriptor existingProp = (PropertyDescriptor) globalObject.getProperty(context, identifier, false);
+                            if (existingProp.isConfigurable()) {
+                                globalObject.defineOwnProperty(context, identifier,
+                                        PropertyDescriptor.newDataPropertyDescriptor(Types.UNDEFINED, true, false, true), true);
+                            } else if (existingProp.isAccessorDescriptor() || (!existingProp.isWritable() && !existingProp.isEnumerable())) {
+                                throw new ThrowException(context, context.createTypeError("unable to bind function '" + identifier + "'"));
+                            }
+                        }
+
+                        ((JSFunction) value).setDebugContext(identifier);
+                        env.setMutableBinding(context, identifier, value, functionScope.isStrict());
+                    }
                     break;
+                }
                 case RAISE:
                     throw new ThrowException(context,
                             context.createError(((Raise) instr).getType(), ((Raise) instr).getMessage()));
