@@ -7,6 +7,7 @@ import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Constructor;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.DefineFunction;
+import org.dynjs.ir.instructions.Instanceof;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LE;
 import org.dynjs.ir.instructions.LT;
@@ -169,6 +170,25 @@ public class Interpreter {
                 case RAISE:
                     throw new ThrowException(context,
                             context.createError(((Raise) instr).getType(), ((Raise) instr).getMessage()));
+                case INSTANCEOF: {
+                    Object lhs  = ((Instanceof) instr).getLHS().retrieve(context, temps);
+                    Object rhs  = ((Instanceof) instr).getRHS().retrieve(context, temps);
+
+                    if (rhs instanceof JSObject) {
+                        if (!(rhs instanceof JSFunction)) {
+                            // FIXME: Might have to pass in original rhs to instr for proper string...
+                            throw new ThrowException(context, context.createTypeError(rhs + " is not a function"));
+                        }
+
+                        value = ((JSFunction) rhs).hasInstance(context, lhs);
+                    } else if (rhs instanceof Class) {
+                        Class clazz = (Class) rhs;
+                        value = lhs.getClass().getName().equals(clazz.getName());
+                    } else {
+                        // FIXME: Review against master...
+                        throw new ThrowException(context, context.createTypeError(rhs + " is not a function"));
+                    }
+                }
             }
 
             if (instr instanceof ResultInstruction) {
