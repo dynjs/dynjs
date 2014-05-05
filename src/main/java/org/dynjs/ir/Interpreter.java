@@ -73,6 +73,10 @@ public class Interpreter {
                     Operand[] opers = call.getArgs();
                     Object[] args = new Object[opers.length];
 
+                    if (!(function instanceof JSFunction)) {
+                        throw new ThrowException(context, context.createTypeError(ref + " is not callable"));
+                    }
+
                     for (int i = 0; i < args.length; i++) {
                         args[i] = opers[i].retrieve(context, temps);
                     }
@@ -97,6 +101,10 @@ public class Interpreter {
                     Object function = Types.getValue(context, ref);
                     Operand[] opers = constructor.getArgs();
                     Object[] args = new Object[opers.length];
+
+                    if (!(function instanceof JSFunction)) {
+                        throw new ThrowException(context, context.createTypeError(ref + " is not callable"));
+                    }
 
                     for (int i = 0; i < args.length; i++) {
                         args[i] = opers[i].retrieve(context, temps);
