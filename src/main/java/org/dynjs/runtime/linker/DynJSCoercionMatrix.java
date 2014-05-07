@@ -15,10 +15,10 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.ThreadContextManager;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.linker.java.JSJavaImplementationManager;
-import org.projectodd.rephract.mop.java.CoercionMatrix;
+import org.dynjs.runtime.linker.java.jsimpl.JSJavaImplementationManager;
 
 import com.headius.invokebinder.Binder;
+import org.projectodd.rephract.java.reflect.CoercionMatrix;
 
 public class DynJSCoercionMatrix extends CoercionMatrix {
 

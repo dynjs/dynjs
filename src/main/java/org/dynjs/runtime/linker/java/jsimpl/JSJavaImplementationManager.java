@@ -1,4 +1,4 @@
-package org.dynjs.runtime.linker.java;
+package org.dynjs.runtime.linker.java.jsimpl;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
@@ -23,7 +23,8 @@ import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
+import org.dynjs.runtime.linker.java.ObjectMethodGenerator;
+import org.dynjs.runtime.linker.js.shadow.ShadowObjectLinker;
 import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 
 public class JSJavaImplementationManager {
@@ -34,9 +35,9 @@ public class JSJavaImplementationManager {
 
     private ObjectMethodGenerator objectMethodGenerator = new ObjectMethodGenerator();
 
-    private ShadowObjectLinkStrategy shadowLinker;
+    private ShadowObjectLinker shadowLinker;
 
-    public JSJavaImplementationManager(ShadowObjectLinkStrategy shadowLinker) {
+    public JSJavaImplementationManager(ShadowObjectLinker shadowLinker) {
         this.shadowLinker = shadowLinker;
     }
 
