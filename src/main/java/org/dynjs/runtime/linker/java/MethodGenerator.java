@@ -1,20 +1,19 @@
 package org.dynjs.runtime.linker.java;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
-
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.Types.Undefined;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
-import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public abstract class MethodGenerator {
 

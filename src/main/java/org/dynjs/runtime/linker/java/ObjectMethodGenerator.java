@@ -1,16 +1,16 @@
 package org.dynjs.runtime.linker.java;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.CodeBlock;
+import me.qmx.jitescript.JiteClass;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
+import org.dynjs.runtime.linker.DynJSCoercionMatrix;
+import org.projectodd.rephract.java.reflect.CoercionMatrix;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import me.qmx.jitescript.CodeBlock;
-import me.qmx.jitescript.JiteClass;
-
-import org.dynjs.runtime.linker.DynJSCoercionMatrix;
-import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
-import org.projectodd.rephract.mop.java.CoercionMatrix;
+import static me.qmx.jitescript.util.CodegenUtils.p;
+import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class ObjectMethodGenerator extends MethodGenerator {
     

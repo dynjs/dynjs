@@ -18,9 +18,6 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     }
 
     public Position getPosition() {
-        if (this.lhs == null) {
-            System.err.println("NULL: " + this.getClass());
-        }
         return this.lhs.getPosition();
     }
 

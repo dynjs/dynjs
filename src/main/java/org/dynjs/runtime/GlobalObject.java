@@ -94,6 +94,8 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("com",      new JavaPackage(this, "com"));
         defineGlobalProperty("io",       new JavaPackage(this, "io"));
 
+        defineGlobalProperty("System",   System.class);
+
         setPrototype(getPrototypeFor("Object"));
 
     }

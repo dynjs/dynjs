@@ -1,8 +1,8 @@
 package org.dynjs.runtime.linker;
 
 import org.dynjs.runtime.DynArray;
-import org.projectodd.rephract.mop.java.ArrayCoercer;
-import org.projectodd.rephract.mop.java.CoercionMatrix;
+import org.projectodd.rephract.java.reflect.ArrayCoercer;
+import org.projectodd.rephract.java.reflect.CoercionMatrix;
 
 public class DynArrayCoercer extends ArrayCoercer {
     @Override
@@ -33,7 +33,7 @@ public class DynArrayCoercer extends ArrayCoercer {
         int length = (int) dynArray.length();
         byte[] converted = new byte[length];
         for (int i = 0; i < length; i++) {
-            converted[i] = CoercionMatrix.numberToPrimitiveByte((Number)dynArray.get(i));
+            converted[i] = CoercionMatrix.numberToPrimitiveByte((Number) dynArray.get(i));
         }
         return converted;
     }

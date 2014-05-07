@@ -1,28 +1,35 @@
 package org.dynjs.runtime.linker;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
+import me.qmx.jitescript.internal.org.objectweb.asm.Handle;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
+import org.dynjs.runtime.linker.java.array.JSJavaArrayPropertyLinker;
+import org.dynjs.runtime.linker.java.clazz.JSJavaClassMethodLinker;
+import org.dynjs.runtime.linker.java.clazz.JSJavaClassPropertyLinker;
+import org.dynjs.runtime.linker.java.instance.JSJavaBoundMethodLinker;
+import org.dynjs.runtime.linker.java.instance.JSJavaInstanceMethodLinker;
+import org.dynjs.runtime.linker.java.instance.JSJavaInstancePropertyLinker;
+import org.dynjs.runtime.linker.java.jsimpl.JSJavaImplementationLinker;
+import org.dynjs.runtime.linker.java.jsimpl.JSJavaImplementationManager;
+import org.dynjs.runtime.linker.java.map.JSMapLikePropertyLinker;
+import org.dynjs.runtime.linker.js.environment.JavascriptEnvironmentLinker;
+import org.dynjs.runtime.linker.js.global.GlobalLinker;
+import org.dynjs.runtime.linker.js.object.JavascriptObjectLinker;
+import org.dynjs.runtime.linker.js.primitive.JavascriptPrimitiveLinker;
+import org.dynjs.runtime.linker.js.reference.FunctionDereferencedReferenceLinker;
+import org.dynjs.runtime.linker.js.shadow.ShadowObjectLinker;
+import org.dynjs.runtime.linker.js.undefined.JavascriptUndefinedLinker;
+import org.projectodd.rephract.LinkLogger;
+import org.projectodd.rephract.NullLinkLogger;
+import org.projectodd.rephract.RephractLinker;
+import org.projectodd.rephract.java.reflect.CoercionMatrix;
+import org.projectodd.rephract.java.reflect.ResolverManager;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 
-import org.dynjs.runtime.linker.java.JSJavaArrayLinkStrategy;
-import org.dynjs.runtime.linker.java.JSJavaClassLinkStrategy;
-import org.dynjs.runtime.linker.java.JSJavaImplementationLinkStrategy;
-import org.dynjs.runtime.linker.java.JSJavaImplementationManager;
-import org.dynjs.runtime.linker.java.JSJavaInstanceLinkStrategy;
-import org.dynjs.runtime.linker.java.JavaNullReplacingLinkStrategy;
-import org.dynjs.runtime.linker.js.JavascriptObjectLinkStrategy;
-import org.dynjs.runtime.linker.js.JavascriptPrimitiveLinkStrategy;
-import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
-import me.qmx.jitescript.internal.org.objectweb.asm.Handle;
-import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
-import org.projectodd.rephract.RephractLinker;
-import org.projectodd.rephract.LinkLogger;
-import org.projectodd.rephract.NullLinkLogger;
-import org.projectodd.rephract.mop.java.CoercionMatrix;
-import org.projectodd.rephract.mop.java.ResolverManager;
+import static me.qmx.jitescript.util.CodegenUtils.p;
 
 public class DynJSBootstrapper {
 
@@ -36,25 +43,39 @@ public class DynJSBootstrapper {
     static {
         try {
             LinkLogger logger = new NullLinkLogger();
-            
-            ShadowObjectLinkStrategy shadowLinker = new ShadowObjectLinkStrategy(logger);
-            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager( shadowLinker );
+
+            ShadowObjectLinker shadowLinker = new ShadowObjectLinker(logger);
+            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager(shadowLinker);
             CoercionMatrix coercionMatrix = new DynJSCoercionMatrix(implementationManager);
             ResolverManager manager = new ResolverManager(coercionMatrix);
 
             // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
 
             linker = new RephractLinker(logger);
-            
 
-            linker.addLinkStrategy(new JavascriptObjectLinkStrategy(logger));
-            linker.addLinkStrategy(new JavascriptPrimitiveLinkStrategy(logger));
-            linker.addLinkStrategy(new JavaNullReplacingLinkStrategy(logger));
-            linker.addLinkStrategy(new JSJavaImplementationLinkStrategy(implementationManager, logger));
-            linker.addLinkStrategy(new JSJavaClassLinkStrategy(logger, manager));
-            linker.addLinkStrategy(new JSJavaArrayLinkStrategy(logger));
-            linker.addLinkStrategy(new JSJavaInstanceLinkStrategy(logger, manager));
-            linker.addLinkStrategy(shadowLinker);
+            linker.addLinker(new JavascriptEnvironmentLinker(logger));
+
+            linker.addLinker(new FunctionDereferencedReferenceLinker(logger));
+
+            linker.addLinker(new JavascriptUndefinedLinker(logger));
+            linker.addLinker(new JavascriptObjectLinker(logger));
+            linker.addLinker(new JavascriptPrimitiveLinker(logger));
+
+            linker.addLinker(new GlobalLinker(logger));
+
+            linker.addLinker(new JSJavaBoundMethodLinker(logger, manager));
+            linker.addLinker(new JSJavaImplementationLinker(implementationManager, logger));
+
+            linker.addLinker(new JSJavaClassPropertyLinker(logger, manager));
+            linker.addLinker(new JSJavaClassMethodLinker(logger, manager));
+
+            linker.addLinker(new JSJavaArrayPropertyLinker(logger, manager));
+
+            linker.addLinker(new JSJavaInstancePropertyLinker(logger, manager));
+            linker.addLinker(new JSJavaInstanceMethodLinker(logger, manager));
+            linker.addLinker(new JSMapLikePropertyLinker(logger, manager));
+
+            linker.addLinker(shadowLinker);
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
                     p(DynJSBootstrapper.class), "bootstrap",

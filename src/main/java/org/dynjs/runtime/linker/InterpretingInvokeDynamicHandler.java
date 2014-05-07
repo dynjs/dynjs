@@ -1,10 +1,10 @@
 package org.dynjs.runtime.linker;
 
-import java.lang.invoke.CallSite;
-
 import org.dynjs.runtime.ExecutionContext;
+import org.projectodd.rephract.Linker;
 import org.projectodd.rephract.RephractLinker;
-import org.projectodd.rephract.mop.MetaObjectProtocolLinkStrategy;
+
+import java.lang.invoke.CallSite;
 
 public class InterpretingInvokeDynamicHandler {
 
@@ -24,8 +24,8 @@ public class InterpretingInvokeDynamicHandler {
         this.construct = linker.bootstrap("dyn:construct", Object.class, Object.class, ExecutionContext.class, Object[].class);
     }
 
-    public void addLinkStrategy(MetaObjectProtocolLinkStrategy linkStrategy) {
-        this.linker.addLinkStrategy(linkStrategy);
+    public void addLinker(Linker linker) {
+        this.linker.addLinker( linker );
     }
 
     public Object get(Object object, ExecutionContext context, String propertyName) throws Throwable {
