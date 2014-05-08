@@ -44,10 +44,11 @@ public class EnvironmentPropertySetLink extends SmartLink implements Guard {
     public MethodHandle target() throws Exception {
         return builder
                 .permute(0, 1, 2, 3, 0)
-                .filter(0, ReferenceBaseFilter.INSTANCE )
-                .filter(4, ReferenceStrictnessFilter.INSTANCE )
+                .convert(void.class, Object.class, ExecutionContext.class, String.class, Object.class, Object.class)
+                .filter(0, ReferenceBaseFilter.INSTANCE)
+                .filter(4, ReferenceStrictnessFilter.INSTANCE)
                 .convert(void.class, EnvironmentRecord.class, ExecutionContext.class, String.class, Object.class, boolean.class)
-                .invoke( lookup().findVirtual(EnvironmentRecord.class, "setMutableBinding", methodType( void.class, ExecutionContext.class, String.class, Object.class, boolean.class ) ))
+                .invoke(lookup().findVirtual(EnvironmentRecord.class, "setMutableBinding", methodType(void.class, ExecutionContext.class, String.class, Object.class, boolean.class)))
                 .target();
     }
 
