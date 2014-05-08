@@ -1,5 +1,6 @@
-package org.dynjs.runtime.linker.js.object;
+package org.dynjs.runtime.linker.js.environment;
 
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
@@ -18,21 +19,21 @@ import static java.lang.invoke.MethodType.methodType;
 /**
  * @author Bob McWhirter
  */
-public class JSObjectPropertySetLink extends SmartLink implements Guard {
+public class EnvironmentPropertySetLink extends SmartLink implements Guard {
 
-    public JSObjectPropertySetLink(LinkBuilder builder) throws Exception {
+    public EnvironmentPropertySetLink(LinkBuilder builder) throws Exception {
         super(builder);
-        this.builder = this.builder.guardWith( this );
+        this.builder = this.builder.guardWith(this);
     }
 
     public boolean guard(Object receiver, Object context, String propertyName, Object value) {
-        return (receiver instanceof Reference) && (((Reference) receiver).getBase() instanceof JSObject);
+        return (receiver instanceof Reference) && (((Reference) receiver).getBase() instanceof EnvironmentRecord);
     }
 
     @Override
     public MethodHandle guardMethodHandle(MethodType inputType) throws Exception {
         return lookup()
-                .findVirtual(JSObjectPropertySetLink.class, "guard", methodType(boolean.class, Object.class, Object.class, String.class, Object.class))
+                .findVirtual(EnvironmentPropertySetLink.class, "guard", methodType(boolean.class, Object.class, Object.class, String.class, Object.class))
                 .bindTo(this);
     }
 
@@ -41,12 +42,12 @@ public class JSObjectPropertySetLink extends SmartLink implements Guard {
     }
 
     public MethodHandle target() throws Exception {
-        return this.builder
+        return builder
                 .permute(0, 1, 2, 3, 0)
                 .filter(0, ReferenceBaseFilter.INSTANCE )
-                .filter(4, ReferenceStrictnessFilter.INSTANCE)
-                .convert(void.class, JSObject.class, ExecutionContext.class, String.class, Object.class, boolean.class)
-                .invoke(lookup().findVirtual(JSObject.class, "put", methodType(void.class, ExecutionContext.class, String.class, Object.class, boolean.class)))
+                .filter(4, ReferenceStrictnessFilter.INSTANCE )
+                .convert(void.class, EnvironmentRecord.class, ExecutionContext.class, String.class, Object.class, boolean.class)
+                .invoke( lookup().findVirtual(EnvironmentRecord.class, "setMutableBinding", methodType( void.class, ExecutionContext.class, String.class, Object.class, boolean.class ) ))
                 .target();
     }
 

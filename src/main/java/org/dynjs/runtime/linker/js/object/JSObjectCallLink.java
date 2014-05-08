@@ -22,7 +22,7 @@ public class JSObjectCallLink extends SmartLink implements Guard {
 
     public JSObjectCallLink(LinkBuilder builder) throws Exception {
         super(builder);
-        this.builder = this.builder.guardWith(Guards.isInstanceOf(JSFunction.class));
+        this.builder = this.builder.guardWith(this);
     }
 
     public boolean guard(Object receiver, Object context, Object self, Object[] args) {
@@ -45,7 +45,7 @@ public class JSObjectCallLink extends SmartLink implements Guard {
         return this.builder
                 .permute(1, 0, 2, 3)
                 .convert(Object.class, ExecutionContext.class, JSFunction.class, Object.class, Object[].class)
-                .invoke(lookup().findVirtual(ExecutionContext.class, "call", methodType(Object.class, ExecutionContext.class, JSFunction.class, Object.class, Object[].class)))
+                .invoke(lookup().findVirtual(ExecutionContext.class, "call", methodType(Object.class, JSFunction.class, Object.class, Object[].class)))
                 .target();
 
 

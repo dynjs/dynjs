@@ -22,15 +22,16 @@ import static java.lang.invoke.MethodType.methodType;
  */
 public class PrimitiveCallLink extends SmartLink implements Guard {
 
-    public PrimitiveCallLink(LinkBuilder builder) {
+    public PrimitiveCallLink(LinkBuilder builder) throws Exception {
         super(builder);
+        this.builder = this.builder.guardWith( this );
     }
 
-    public boolean guard(Object receiver, Object context, String propertyName) {
+    public boolean guard(Object receiver, Object context, Object self, Object[] args) {
         if ( !(receiver instanceof DereferencedReference) ) {
             return false;
         }
-        Object base = ((DereferencedReference) receiver).getReference().getBase();
+        Object base = ((DereferencedReference) receiver).getValue();
 
         return base instanceof String || base instanceof Number || base instanceof Boolean;
     }
@@ -38,7 +39,7 @@ public class PrimitiveCallLink extends SmartLink implements Guard {
     @Override
     public MethodHandle guardMethodHandle(MethodType inputType) throws Exception {
         return lookup()
-                .findVirtual(PrimitiveCallLink.class, "guard", methodType(boolean.class, Object.class, Object.class, String.class))
+                .findVirtual(PrimitiveCallLink.class, "guard", methodType(boolean.class, Object.class, Object.class, Object.class, Object[].class))
                 .bindTo(this);
     }
 

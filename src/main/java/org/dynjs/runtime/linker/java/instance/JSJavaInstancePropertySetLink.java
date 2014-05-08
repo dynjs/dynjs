@@ -1,9 +1,8 @@
 package org.dynjs.runtime.linker.java.instance;
 
-import org.dynjs.runtime.linker.java.DereferencingFilter;
+import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.dynjs.runtime.linker.java.NullReplacingFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
-import org.projectodd.rephract.java.instance.InstancePropertyGetLink;
 import org.projectodd.rephract.java.instance.InstancePropertySetLink;
 import org.projectodd.rephract.java.reflect.ResolverManager;
 
@@ -22,13 +21,14 @@ public class JSJavaInstancePropertySetLink extends InstancePropertySetLink {
 
     @Override
     public boolean guard(Object receiver, String propertyName, Object value) {
-        return super.guard(DereferencingFilter.INSTANCE.filter(receiver), propertyName, value);
+        System.err.println( "receiver: " +receiver );
+        System.err.println( "filtered: " + ReferenceValueFilter.INSTANCE.filter( receiver ) );
+        return super.guard(ReferenceValueFilter.INSTANCE.filter(receiver), propertyName, value);
     }
 
     @Override
     public MethodHandle target() throws Exception {
-        this.builder = this.builder.filter( 0, DereferencingFilter.INSTANCE );
-        MethodHandle target = super.target();
-        return MethodHandles.filterReturnValue(target, NullReplacingFilter.INSTANCE.methodHandle(MethodType.methodType(Object.class)));
+        this.builder = this.builder.filter( 0, ReferenceValueFilter.INSTANCE );
+        return super.target();
     }
 }

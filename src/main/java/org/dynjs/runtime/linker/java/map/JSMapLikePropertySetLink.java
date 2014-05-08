@@ -1,9 +1,11 @@
-package org.dynjs.runtime.linker.java.array;
+package org.dynjs.runtime.linker.java.map;
 
-import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.dynjs.runtime.linker.java.NullReplacingFilter;
+import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
-import org.projectodd.rephract.java.array.ArrayPropertySetLink;
+import org.projectodd.rephract.java.instance.InstancePropertySetLink;
+import org.projectodd.rephract.java.map.MapLikePropertySetLink;
+import org.projectodd.rephract.java.reflect.ResolverManager;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -12,10 +14,10 @@ import java.lang.invoke.MethodType;
 /**
  * @author Bob McWhirter
  */
-public class JSJavaArrayPropertySetLink extends ArrayPropertySetLink {
+public class JSMapLikePropertySetLink extends MapLikePropertySetLink {
 
-    public JSJavaArrayPropertySetLink(LinkBuilder builder) throws Exception {
-        super( builder );
+    public JSMapLikePropertySetLink(LinkBuilder builder, ResolverManager resolverManager) throws Exception {
+        super( builder, resolverManager );
     }
 
     @Override

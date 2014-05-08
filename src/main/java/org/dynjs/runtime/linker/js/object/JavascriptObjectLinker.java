@@ -106,10 +106,10 @@ public class JavascriptObjectLinker extends ContextualLinker {
 
     /*
      * @Override
-     * public StrategicLink linkConstruct(StrategyChain chain, Object receiver, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
+     * public StrategicLink linkConstruct(StrategyChain chain, Object primary, Object[] args, Binder binder, Binder guardBinder) throws NoSuchMethodException,
      * IllegalAccessException {
      * // TODO Auto-generated method stub
-     * return super.linkConstruct(chain, receiver, args, binder, guardBinder);
+     * return super.linkConstruct(chain, primary, args, binder, guardBinder);
      * }
      */
 

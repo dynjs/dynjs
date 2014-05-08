@@ -59,6 +59,7 @@ public class JSJavaImplementationConstructLink extends SmartLink implements Guar
         return builder
                 .insert( 0, this.implManager )
                 .spread( JSObject.class )
+                .convert( Object.class, Class.class, ExecutionContext.class, JSObject.class )
                 .invoke( lookup().findVirtual( JSJavaImplementationManager.class, "getImplementationWrapper", methodType( Object.class, Class.class, ExecutionContext.class, JSObject.class )))
                 .target();
     }

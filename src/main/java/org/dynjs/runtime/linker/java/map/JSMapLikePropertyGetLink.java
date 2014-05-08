@@ -1,9 +1,10 @@
-package org.dynjs.runtime.linker.java.instance;
+package org.dynjs.runtime.linker.java.map;
 
-import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.dynjs.runtime.linker.java.NullReplacingFilter;
+import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.java.instance.InstancePropertyGetLink;
+import org.projectodd.rephract.java.map.MapLikePropertyGetLink;
 import org.projectodd.rephract.java.reflect.ResolverManager;
 
 import java.lang.invoke.MethodHandle;
@@ -13,9 +14,9 @@ import java.lang.invoke.MethodType;
 /**
  * @author Bob McWhirter
  */
-public class JSJavaInstancePropertyGetLink extends InstancePropertyGetLink {
+public class JSMapLikePropertyGetLink extends MapLikePropertyGetLink {
 
-    public JSJavaInstancePropertyGetLink(LinkBuilder builder, ResolverManager resolverManager) throws Exception {
+    public JSMapLikePropertyGetLink(LinkBuilder builder, ResolverManager resolverManager) throws Exception {
         super( builder, resolverManager );
     }
 

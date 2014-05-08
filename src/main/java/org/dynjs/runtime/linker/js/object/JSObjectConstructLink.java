@@ -19,18 +19,19 @@ import static org.dynjs.runtime.linker.LinkerUtils.referenceStrictnessFilter;
  */
 public class JSObjectConstructLink extends SmartLink implements Guard {
 
-    public JSObjectConstructLink(LinkBuilder builder) {
+    public JSObjectConstructLink(LinkBuilder builder) throws Exception {
         super(builder);
+        this.builder = this.builder.guardWith( this );
     }
 
-    public boolean guard(Object receiver, Object context, Object self, Object[] args) {
+    public boolean guard(Object receiver, Object context, Object[] args) {
         return (receiver instanceof JSFunction);
     }
 
     @Override
     public MethodHandle guardMethodHandle(MethodType inputType) throws Exception {
         return lookup()
-                .findVirtual(JSObjectConstructLink.class, "guard", methodType(boolean.class, Object.class, Object.class, Object.class, Object[].class))
+                .findVirtual(JSObjectConstructLink.class, "guard", methodType(boolean.class, Object.class, Object.class, Object[].class))
                 .bindTo(this);
     }
 
@@ -43,7 +44,7 @@ public class JSObjectConstructLink extends SmartLink implements Guard {
                 .permute(1, 0, 2)
                 .convert(Object.class, ExecutionContext.class, JSFunction.class, Object[].class)
                 .insert(1, new Class[]{Object.class}, new Object[]{null})
-                .invoke(lookup().findVirtual(ExecutionContext.class, "construct", methodType(Object.class, ExecutionContext.class, Object.class, JSFunction.class, Object[].class)))
+                .invoke(lookup().findVirtual(ExecutionContext.class, "construct", methodType(Object.class, Object.class, JSFunction.class, Object[].class)))
                 .target();
     }
 

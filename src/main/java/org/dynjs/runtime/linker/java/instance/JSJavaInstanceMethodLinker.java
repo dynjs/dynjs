@@ -14,7 +14,18 @@ public class JSJavaInstanceMethodLinker extends JavaInstanceMethodLinker {
     }
 
     @Override
+    public Link link(Invocation invocation) throws Exception {
+        System.err.println( "LINK: " + invocation.type() );
+        return super.link( invocation );
+    }
+
+    @Override
     public Link linkGetMethod(Invocation invocation, String methodName) throws Exception {
+        return new JSJavaUnboundInstanceMethodGetLink( invocation.builder(), resolverManager );
+    }
+
+    @Override
+    public Link linkGetProperty(Invocation invocation, String methodName) throws Exception {
         return new JSJavaUnboundInstanceMethodGetLink( invocation.builder(), resolverManager );
     }
 

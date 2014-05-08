@@ -15,39 +15,20 @@ import static java.lang.invoke.MethodType.methodType;
 /**
  * @author Bob McWhirter
  */
-public abstract class AbstractShadowObjectLink extends SmartLink implements Guard {
+public abstract class AbstractShadowObjectLink extends SmartLink {
 
     protected final ShadowObjectManager shadowManager;
+    protected Object primary;
+    protected String propertyName;
 
     public AbstractShadowObjectLink(LinkBuilder builder, ShadowObjectManager shadowManager) throws Exception {
         super(builder);
         this.shadowManager = shadowManager;
-        this.builder = this.builder.guard(0).with(this);
-    }
-
-    public boolean guard(Object receiver) {
-        if (!(receiver instanceof Reference)) {
-            return false;
-        }
-
-        Object base = ((Reference) receiver).getBase();
-
-        if (base instanceof JSObject || base instanceof EnvironmentRecord || base == Types.UNDEFINED) {
-            return false;
-        }
-
-        return true;
     }
 
     public MethodHandle guard() throws Exception {
         return this.builder.getGuard();
     }
 
-    @Override
-    public MethodHandle guardMethodHandle(MethodType inputType) throws Exception {
-        return lookup()
-                .findVirtual(AbstractShadowObjectLink.class, "guard", methodType(boolean.class, Object.class))
-                .bindTo(this);
-    }
 
 }

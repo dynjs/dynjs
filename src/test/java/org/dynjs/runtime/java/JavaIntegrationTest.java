@@ -269,7 +269,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         Object result = eval(
                 "catcher = new org.dynjs.runtime.java.HandlerCatcher();",
                 "catcher.catchHandler( function() { } );"
-                );
+        );
 
         assertThat(result).isInstanceOf(GenericHandler.class);
     }
@@ -315,7 +315,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "var consumer = new org.dynjs.runtime.java.MapConsumer();",
                 "var obj = { foo: 'tacos', fish: 'haddock' };",
                 "consumer.consume( obj, 'fish');"
-                );
+        );
 
         assertThat(result).isEqualTo("haddock");
     }
@@ -326,19 +326,24 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "var map = new java.util.HashMap();",
                 "map.foo = 'tacos';",
                 "map"
-                );
+        );
 
         assertThat(map.get("foo")).isEqualTo("tacos");
 
-        assertThat( eval( "map.foo" ) ).isEqualTo( "tacos" );
+        assertThat(eval("map.foo")).isEqualTo("tacos");
 
     }
 
     @Test
-    public void testGenericMapFactory() {
-        eval("var thingy = org.dynjs.runtime.java.GenericMapFactory.create()");
-        eval("thingy.put(1, 'one')");
-        assertThat(eval("thingy.get(1)")).isEqualTo("one");
+    public void testGenericMapFactory() throws InterruptedException {
+        try {
+            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            eval("var thingy = org.dynjs.runtime.java.GenericMapFactory.create()");
+            eval("thingy.put(1, 'one')");
+            assertThat(eval("thingy.get(1)")).isEqualTo("one");
+        } finally {
+            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        }
     }
 
     @Test
@@ -358,22 +363,22 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testBoundJavaMethod() {
-        Object result = eval( "var foo = new org.dynjs.runtime.java.DefaultFoo();",
+        Object result = eval("var foo = new org.dynjs.runtime.java.DefaultFoo();",
                 "var js = {};",
                 "js.taco = foo.getContent.bind(foo);",
-                "js.taco()" );
+                "js.taco()");
 
-        assertThat( result ).isEqualTo( "default content" );
-        System.err.println( result );
+        assertThat(result).isEqualTo("default content");
+        System.err.println(result);
 
 
     }
 
     @Test
     public void testLongPrimitiveCoercion() {
-        Object result = eval( "new org.dynjs.runtime.java.Thing().longMethod(42)");
+        Object result = eval("new org.dynjs.runtime.java.Thing().longMethod(42)");
 
-        assertThat( result ).isInstanceOf(Long.class).isEqualTo(42L);
+        assertThat(result).isInstanceOf(Long.class).isEqualTo(42L);
     }
 
     @Test
@@ -381,7 +386,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         eval("var thing = new org.dynjs.runtime.java.Thing();");
         // Check the existence of a property - should return undefined
         Object result = eval("thing.propertyThatDoesNotExist");
-        assertThat( result ).isEqualTo( Types.UNDEFINED );
+        assertThat(result).isEqualTo(Types.UNDEFINED);
     }
 
     @Test
@@ -402,10 +407,10 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Ignore
     public void testSequentialInvocation() {
         Object intResult = eval(" new org.dynjs.runtime.java.Thing().intMethod(9)");
-        assertThat( intResult ).isInstanceOf(String.class).isEqualTo("9");
+        assertThat(intResult).isInstanceOf(String.class).isEqualTo("9");
 
-        Object longResult = eval( "new org.dynjs.runtime.java.Thing().longMethod(42)");
-        assertThat( longResult ).isInstanceOf(Long.class).isEqualTo(42L);
+        Object longResult = eval("new org.dynjs.runtime.java.Thing().longMethod(42)");
+        assertThat(longResult).isInstanceOf(Long.class).isEqualTo(42L);
     }
 
     @Test
@@ -464,7 +469,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
     @Test
     public void testByte() {
-        Object result = eval( "var b = new java.lang.Byte(120);", "b");
+        Object result = eval("var b = new java.lang.Byte(120);", "b");
         assertThat(result).isInstanceOf(Byte.class);
     }
 
@@ -621,8 +626,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     public void testPrimitivesInAbstractClassMethodSignature() {
         eval("var impl = { " +
                 "doItWithParameters: function(param, tf) { return param + (tf ? 'true' : 'false'); }" +
-              "};" +
-              "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+                "};" +
+                "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
 
         assertThat(eval("foobar.doItWithParameters('some string', true);")).isEqualTo("some stringtrue");
     }
@@ -630,7 +635,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
     @Test
     public void testNumbersInAbstractClassMethodSignature() {
         eval("var doInt = function(param) { return param + 1; };" +
-              "var impl = { " +
+                "var impl = { " +
                 "doItWithInt: doInt," +
                 "doItWithPrimitiveInt: doInt," +
                 "doItWithLong: doInt," +
@@ -641,8 +646,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
                 "doItWithPrimitiveFloat: function(param) { return param + 1.1; }," +
                 "doItWithDouble: function(param) { return param + 1.1; }," +
                 "doItWithPrimitiveDouble: function(param) { return param + 1.1; }," +
-              "};" +
-              "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+                "};" +
+                "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
 
         assertThat(eval("foobar.doItWithInt(5);")).isEqualTo(6);
         assertThat(eval("foobar.callWithInt(5);")).isEqualTo(6);
@@ -675,8 +680,8 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         eval("var impl = { " +
                 "doItWithBoolean: function(param) { return param; }," +
                 "doItWithPrimitiveBoolean: function(param) { return true; }" +
-              "};" +
-              "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
+                "};" +
+                "var foobar = new org.dynjs.runtime.java.Foobar(impl);");
 
         assertThat(eval("foobar.doItWithBoolean(true);")).isEqualTo(true);
         assertThat(eval("foobar.callWithBoolean(true);")).isEqualTo(true);

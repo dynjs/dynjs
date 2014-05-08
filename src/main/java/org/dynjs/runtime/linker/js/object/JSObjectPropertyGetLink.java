@@ -1,8 +1,9 @@
 package org.dynjs.runtime.linker.js.object;
 
-import org.dynjs.runtime.*;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.linker.js.ReferenceBaseFilter;
-import org.dynjs.runtime.linker.js.ReferenceStrictnessFilter;
 import org.projectodd.rephract.SmartLink;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.guards.Guard;
@@ -12,15 +13,15 @@ import java.lang.invoke.MethodType;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
-import static org.dynjs.runtime.linker.LinkerUtils.*;
 
 /**
  * @author Bob McWhirter
  */
 public class JSObjectPropertyGetLink extends SmartLink implements Guard {
 
-    public JSObjectPropertyGetLink(LinkBuilder builder) {
+    public JSObjectPropertyGetLink(LinkBuilder builder) throws Exception {
         super(builder);
+        this.builder = this.builder.guardWith( this );
     }
 
     public boolean guard(Object receiver, Object context, String propertyName) {
@@ -40,8 +41,9 @@ public class JSObjectPropertyGetLink extends SmartLink implements Guard {
 
     public MethodHandle target() throws Exception {
         return this.builder
-                .permute(0, 1, 2, 3 )
+                //.permute(0, 1, 2, 3 )
                 .filter(0, ReferenceBaseFilter.INSTANCE)
+                .convert( Object.class, JSObject.class, ExecutionContext.class, String.class )
                 .invoke(lookup().findVirtual(JSObject.class, "get", methodType(Object.class, ExecutionContext.class, String.class)))
                 .target();
 

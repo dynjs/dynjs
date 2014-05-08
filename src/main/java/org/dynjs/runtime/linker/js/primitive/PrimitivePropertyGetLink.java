@@ -23,8 +23,9 @@ import static org.dynjs.runtime.linker.LinkerUtils.referenceStrictnessFilter;
  */
 public class PrimitivePropertyGetLink extends SmartLink implements Guard {
 
-    public PrimitivePropertyGetLink(LinkBuilder builder) {
+    public PrimitivePropertyGetLink(LinkBuilder builder) throws Exception {
         super(builder);
+        this.builder = this.builder.guardWith( this );
     }
 
     public boolean guard(Object receiver, Object context, String propertyName) {
@@ -55,10 +56,10 @@ public class PrimitivePropertyGetLink extends SmartLink implements Guard {
         return builder
                 .convert( Object.class, Reference.class, ExecutionContext.class, String.class )
                 .permute( 1, 0, 1, 2 )
-                .fold( lookup().findStatic( PrimitivePropertyGetLink.class, "primitiveReferenceToObject", methodType( Object.class, ExecutionContext.class, Object.class ) ))
+                .fold( lookup().findStatic( PrimitivePropertyGetLink.class, "primitiveReferenceToObject", methodType( Object.class, ExecutionContext.class, Reference.class ) ))
                 .drop(1, 2)
                 .convert(Object.class, JSObject.class, ExecutionContext.class, String.class)
-                .invoke( lookup().findVirtual( JSObject.class, "get", methodType( Object.class, JSObject.class, ExecutionContext.class, String.class ) ))
+                .invoke( lookup().findVirtual( JSObject.class, "get", methodType( Object.class, ExecutionContext.class, String.class ) ))
                 .target();
     }
 

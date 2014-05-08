@@ -11,9 +11,9 @@ import java.lang.invoke.MethodType;
 /**
  * @author Bob McWhirter
  */
-public class DereferencingFilter implements Filter {
+public class ReferenceValueFilter implements Filter {
 
-    public static DereferencingFilter INSTANCE = new DereferencingFilter();
+    public static ReferenceValueFilter INSTANCE = new ReferenceValueFilter();
 
     public static Object filter(Object obj) {
         if ( obj instanceof Reference) {
@@ -21,7 +21,7 @@ public class DereferencingFilter implements Filter {
         }
 
         if ( obj instanceof DereferencedReference) {
-            return ((DereferencedReference) obj).getReference().getBase();
+            return ((DereferencedReference) obj).getValue();
         }
 
         return obj;
@@ -29,6 +29,6 @@ public class DereferencingFilter implements Filter {
 
     @Override
     public MethodHandle methodHandle(MethodType inputType) throws Exception {
-        return MethodHandles.lookup().findStatic(DereferencingFilter.class, "filter", MethodType.methodType(Object.class, Object.class));
+        return MethodHandles.lookup().findStatic(ReferenceValueFilter.class, "filter", MethodType.methodType(Object.class, Object.class));
     }
 }

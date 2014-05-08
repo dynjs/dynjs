@@ -1,8 +1,7 @@
 package org.dynjs.runtime.linker.java.instance;
 
-import org.dynjs.runtime.linker.java.DereferencingFilter;
+import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
-import org.projectodd.rephract.java.instance.InstancePropertySetLink;
 import org.projectodd.rephract.java.instance.UnboundInstanceMethodGetLink;
 import org.projectodd.rephract.java.reflect.ResolverManager;
 
@@ -19,12 +18,15 @@ public class JSJavaUnboundInstanceMethodGetLink extends UnboundInstanceMethodGet
 
     @Override
     public boolean guard(Object receiver, String methodName) {
-        return super.guard(DereferencingFilter.INSTANCE.filter(receiver), methodName );
+        System.err.println( " ---------> " + receiver );
+        boolean result = super.guard(ReferenceValueFilter.INSTANCE.filter(receiver), methodName );
+        System.err.println( "Java unbound " + receiver + " // " + methodName + " // " + result );
+        return result;
     }
 
     @Override
     public MethodHandle target() throws Exception {
-        this.builder = this.builder.filter( 0, DereferencingFilter.INSTANCE );
+        this.builder = this.builder.filter( 0, ReferenceValueFilter.INSTANCE );
         return super.target();
     }
 }
