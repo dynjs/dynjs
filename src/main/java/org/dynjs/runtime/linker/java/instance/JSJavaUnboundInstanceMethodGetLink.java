@@ -18,10 +18,7 @@ public class JSJavaUnboundInstanceMethodGetLink extends UnboundInstanceMethodGet
 
     @Override
     public boolean guard(Object receiver, String methodName) {
-        System.err.println( " ---------> " + receiver );
-        boolean result = super.guard(ReferenceValueFilter.INSTANCE.filter(receiver), methodName );
-        System.err.println( "Java unbound " + receiver + " // " + methodName + " // " + result );
-        return result;
+        return super.guard(ReferenceValueFilter.INSTANCE.filter(receiver), methodName );
     }
 
     @Override

@@ -36,7 +36,7 @@ public class ShadowObjectPropertySetLink extends AbstractShadowObjectLink implem
             if ( this.primary != primary ) {
                 return false;
             }
-            if ( this.propertyName != propertyName ) {
+            if ( ! this.propertyName.equals( propertyName ) ) {
                 return false;
             }
         }

@@ -21,8 +21,6 @@ public class JSJavaInstancePropertySetLink extends InstancePropertySetLink {
 
     @Override
     public boolean guard(Object receiver, String propertyName, Object value) {
-        System.err.println( "receiver: " +receiver );
-        System.err.println( "filtered: " + ReferenceValueFilter.INSTANCE.filter( receiver ) );
         return super.guard(ReferenceValueFilter.INSTANCE.filter(receiver), propertyName, value);
     }
 

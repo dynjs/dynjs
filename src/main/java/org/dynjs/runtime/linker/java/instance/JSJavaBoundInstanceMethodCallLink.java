@@ -22,9 +22,6 @@ public class JSJavaBoundInstanceMethodCallLink extends BoundInstanceMethodCallLi
 
     @Override
     public boolean guard(Object receiver, Object self, Object[] args) {
-        System.err.println( "receiver: " +receiver );
-        System.err.println( "self: " + self );
-        System.err.println( "args: " + Arrays.asList(args) );
         return super.guard(ReferenceValueFilter.INSTANCE.filter(receiver), self, args );
     }
 

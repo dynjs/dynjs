@@ -81,8 +81,6 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             thisValue = Types.UNDEFINED;
         }
 
-        System.err.println( "FUNCTION: " + function );
-
         if (ref instanceof Reference) {
             function = new DereferencedReference((Reference) ref, function);
         }
@@ -137,17 +135,19 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
             Reference ref = (Reference) obj;
             String name = ref.getReferencedName();
             try {
-                System.err.println( "=== GET " + obj + " -> " + name );
                 Object result = DynJSBootstrapper.getInvokeHandler().get(obj, context, name);
                 return result;
             } catch (ThrowException e) {
+                System.err.println( "1: ThrowException");
                 throw e;
             } catch (NoSuchMethodError e) {
+                System.err.println( "2: NoSuchMethodError");
                 if (ref.isPropertyReference() && !ref.isUnresolvableReference()) {
                     return Types.UNDEFINED;
                 }
                 throw new ThrowException(context, context.createReferenceError("unable to reference: " + name));
             } catch (Throwable e) {
+                System.err.println( "3: Throwable");
                 throw new ThrowException(context, e);
             }
         } else {
