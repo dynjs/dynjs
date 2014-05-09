@@ -1,13 +1,10 @@
 package org.dynjs.runtime.linker.java.array;
 
 import org.dynjs.runtime.linker.java.ReferenceValueFilter;
-import org.dynjs.runtime.linker.java.NullReplacingFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.java.array.ArrayPropertySetLink;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 
 /**
  * @author Bob McWhirter

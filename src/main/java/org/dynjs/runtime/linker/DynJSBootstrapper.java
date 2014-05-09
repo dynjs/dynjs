@@ -1,13 +1,7 @@
 package org.dynjs.runtime.linker;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.MethodType;
-
-import org.dynjs.runtime.linker.java.*;
+import me.qmx.jitescript.internal.org.objectweb.asm.Handle;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 import org.dynjs.runtime.linker.java.array.JSJavaArrayPropertyLinker;
 import org.dynjs.runtime.linker.java.clazz.JSJavaClassMethodLinker;
 import org.dynjs.runtime.linker.java.clazz.JSJavaClassPropertyLinker;
@@ -23,15 +17,19 @@ import org.dynjs.runtime.linker.js.object.JavascriptObjectLinker;
 import org.dynjs.runtime.linker.js.primitive.JavascriptPrimitiveLinker;
 import org.dynjs.runtime.linker.js.reference.FunctionDereferencedReferenceLinker;
 import org.dynjs.runtime.linker.js.shadow.ShadowObjectLinker;
-import me.qmx.jitescript.internal.org.objectweb.asm.Handle;
-import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 import org.dynjs.runtime.linker.js.undefined.JavascriptUndefinedLinker;
-import org.projectodd.rephract.RephractLinker;
 import org.projectodd.rephract.LinkLogger;
 import org.projectodd.rephract.NullLinkLogger;
-import org.projectodd.rephract.java.map.MapLikePropertyLinker;
+import org.projectodd.rephract.RephractLinker;
 import org.projectodd.rephract.java.reflect.CoercionMatrix;
 import org.projectodd.rephract.java.reflect.ResolverManager;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
+
+import static me.qmx.jitescript.util.CodegenUtils.p;
 
 public class DynJSBootstrapper {
 

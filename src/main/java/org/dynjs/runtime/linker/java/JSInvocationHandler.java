@@ -1,12 +1,12 @@
 package org.dynjs.runtime.linker.java;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 public class JSInvocationHandler implements InvocationHandler {
 

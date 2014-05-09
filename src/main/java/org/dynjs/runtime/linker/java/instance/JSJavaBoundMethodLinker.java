@@ -4,7 +4,6 @@ import org.projectodd.rephract.Invocation;
 import org.projectodd.rephract.Link;
 import org.projectodd.rephract.LinkLogger;
 import org.projectodd.rephract.java.instance.JavaBoundMethodLinker;
-import org.projectodd.rephract.java.instance.JavaInstanceMethodLinker;
 import org.projectodd.rephract.java.reflect.ResolverManager;
 
 public class JSJavaBoundMethodLinker extends JavaBoundMethodLinker {

@@ -3,7 +3,6 @@ package org.dynjs.runtime.linker.js.reference;
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.ObjectEnvironmentRecord;
 import org.dynjs.runtime.linker.java.DereferencedReferenceFilter;
 import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.SmartLink;

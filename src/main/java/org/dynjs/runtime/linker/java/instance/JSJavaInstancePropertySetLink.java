@@ -1,14 +1,11 @@
 package org.dynjs.runtime.linker.java.instance;
 
 import org.dynjs.runtime.linker.java.ReferenceValueFilter;
-import org.dynjs.runtime.linker.java.NullReplacingFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.java.instance.InstancePropertySetLink;
 import org.projectodd.rephract.java.reflect.ResolverManager;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 
 /**
  * @author Bob McWhirter

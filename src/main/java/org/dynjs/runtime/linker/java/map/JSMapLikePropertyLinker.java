@@ -1,7 +1,5 @@
 package org.dynjs.runtime.linker.java.map;
 
-import org.dynjs.runtime.linker.java.instance.JSJavaInstancePropertyGetLink;
-import org.dynjs.runtime.linker.java.instance.JSJavaInstancePropertySetLink;
 import org.projectodd.rephract.Invocation;
 import org.projectodd.rephract.Link;
 import org.projectodd.rephract.LinkLogger;

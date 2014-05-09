@@ -4,7 +4,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.builtins.types.regexp.prototype.Exec;
 import org.projectodd.rephract.SmartLink;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.guards.Guard;
@@ -14,9 +13,6 @@ import java.lang.invoke.MethodType;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
-import static org.dynjs.runtime.linker.LinkerUtils.primitiveReferenceBaseFolder;
-import static org.dynjs.runtime.linker.LinkerUtils.referenceBaseFilter;
-import static org.dynjs.runtime.linker.LinkerUtils.referenceStrictnessFilter;
 
 /**
  * @author Bob McWhirter

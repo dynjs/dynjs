@@ -1,7 +1,7 @@
 package org.dynjs.runtime.linker.java.instance;
 
-import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.dynjs.runtime.linker.java.NullReplacingFilter;
+import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.java.instance.UnboundInstanceMethodCallLink;
 

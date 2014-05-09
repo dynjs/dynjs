@@ -1,7 +1,5 @@
 package org.dynjs.runtime.linker.js.global;
 
-import org.dynjs.runtime.linker.js.environment.EnvironmentPropertyGetLink;
-import org.dynjs.runtime.linker.js.environment.EnvironmentPropertySetLink;
 import org.projectodd.rephract.ContextualLinker;
 import org.projectodd.rephract.Invocation;
 import org.projectodd.rephract.Link;

@@ -4,12 +4,10 @@ import org.dynjs.runtime.linker.java.NullReplacingFilter;
 import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.java.instance.BoundInstanceMethodCallLink;
-import org.projectodd.rephract.java.instance.UnboundInstanceMethodCallLink;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.Arrays;
 
 /**
  * @author Bob McWhirter

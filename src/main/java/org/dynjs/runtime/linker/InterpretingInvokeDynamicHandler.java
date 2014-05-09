@@ -1,10 +1,10 @@
 package org.dynjs.runtime.linker;
 
-import java.lang.invoke.CallSite;
-
 import org.dynjs.runtime.ExecutionContext;
 import org.projectodd.rephract.Linker;
 import org.projectodd.rephract.RephractLinker;
+
+import java.lang.invoke.CallSite;
 
 public class InterpretingInvokeDynamicHandler {
 

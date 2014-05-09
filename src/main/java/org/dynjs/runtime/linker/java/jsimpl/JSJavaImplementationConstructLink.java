@@ -1,9 +1,7 @@
 package org.dynjs.runtime.linker.java.jsimpl;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.linker.js.object.JSObjectConstructLink;
 import org.projectodd.rephract.SmartLink;
 import org.projectodd.rephract.builder.LinkBuilder;
 import org.projectodd.rephract.guards.Guard;

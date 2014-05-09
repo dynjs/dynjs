@@ -2,7 +2,6 @@ package org.dynjs.runtime.linker.js.environment;
 
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.linker.js.ReferenceBaseFilter;
 import org.dynjs.runtime.linker.js.ReferenceStrictnessFilter;

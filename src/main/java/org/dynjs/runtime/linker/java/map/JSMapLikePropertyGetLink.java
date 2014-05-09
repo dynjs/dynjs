@@ -3,7 +3,6 @@ package org.dynjs.runtime.linker.java.map;
 import org.dynjs.runtime.linker.java.NullReplacingFilter;
 import org.dynjs.runtime.linker.java.ReferenceValueFilter;
 import org.projectodd.rephract.builder.LinkBuilder;
-import org.projectodd.rephract.java.instance.InstancePropertyGetLink;
 import org.projectodd.rephract.java.map.MapLikePropertyGetLink;
 import org.projectodd.rephract.java.reflect.ResolverManager;
 

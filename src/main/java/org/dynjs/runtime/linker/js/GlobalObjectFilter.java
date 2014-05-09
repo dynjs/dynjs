@@ -1,8 +1,6 @@
 package org.dynjs.runtime.linker.js;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Reference;
 import org.projectodd.rephract.filters.Filter;
 import org.projectodd.rephract.filters.SimpleStatelessFilter;
 

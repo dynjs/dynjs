@@ -2,7 +2,6 @@ package org.dynjs.runtime.linker.js;
 
 import org.dynjs.runtime.Reference;
 import org.projectodd.rephract.filters.Filter;
-import org.projectodd.rephract.filters.SimpleStatelessFilter;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

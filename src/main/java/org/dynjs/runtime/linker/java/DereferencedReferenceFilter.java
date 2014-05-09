@@ -1,7 +1,6 @@
 package org.dynjs.runtime.linker.java;
 
 import org.dynjs.codegen.DereferencedReference;
-import org.dynjs.runtime.Reference;
 import org.projectodd.rephract.filters.Filter;
 
 import java.lang.invoke.MethodHandle;

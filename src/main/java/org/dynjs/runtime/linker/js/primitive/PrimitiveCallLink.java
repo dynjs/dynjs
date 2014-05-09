@@ -3,7 +3,6 @@ package org.dynjs.runtime.linker.js.primitive;
 import org.dynjs.codegen.DereferencedReference;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.projectodd.rephract.SmartLink;

@@ -5,7 +5,6 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.linker.js.GlobalObjectFilter;
-import org.dynjs.runtime.linker.js.ReferenceBaseFilter;
 import org.dynjs.runtime.linker.js.ReferenceStrictnessFilter;
 import org.projectodd.rephract.SmartLink;
 import org.projectodd.rephract.builder.LinkBuilder;
