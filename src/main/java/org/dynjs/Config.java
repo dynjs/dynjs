@@ -39,6 +39,7 @@ public class Config {
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
+    private Integer jitThreshold = Options.JIT_TRESHOLD.load();
     private final Classpath classpath;
 
     public Classpath getClasspath() {
@@ -79,6 +80,14 @@ public class Config {
 
     public CompileMode getCompileMode() {
         return this.compileMode;
+    }
+
+    public Integer getJitThreshold() {
+        return jitThreshold;
+    }
+
+    public void setJitThreshold(Integer jitThreshold) {
+        this.jitThreshold = jitThreshold;
     }
 
     public void setCommonJSCompatible(boolean enabled) {
