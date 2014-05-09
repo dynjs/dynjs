@@ -27,7 +27,6 @@ public class JavaPackage extends DynObject {
                 result = new JavaPackage(context.getGlobalObject(), fullPath(name));
             }
         }
-        System.err.println( this + " get : " + name + " == " + result );
         return result;
     }
     

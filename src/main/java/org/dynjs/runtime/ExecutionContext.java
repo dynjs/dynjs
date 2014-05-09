@@ -149,7 +149,6 @@ public class ExecutionContext {
 
     public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
-        System.err.println( "FILE: " + function.getFileName() );
         ExecutionContext fnContext = null;
         try {
             fnContext = createFunctionExecutionContext(functionReference, function, self, args);

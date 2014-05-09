@@ -25,6 +25,7 @@ import org.dynjs.runtime.linker.js.reference.FunctionDereferencedReferenceLinker
 import org.dynjs.runtime.linker.js.shadow.ShadowObjectLinker;
 import me.qmx.jitescript.internal.org.objectweb.asm.Handle;
 import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
+import org.dynjs.runtime.linker.js.undefined.JavascriptUndefinedLinker;
 import org.projectodd.rephract.RephractLinker;
 import org.projectodd.rephract.LinkLogger;
 import org.projectodd.rephract.NullLinkLogger;
@@ -58,6 +59,7 @@ public class DynJSBootstrapper {
 
             linker.addLinker(new FunctionDereferencedReferenceLinker(logger));
 
+            linker.addLinker(new JavascriptUndefinedLinker(logger));
             linker.addLinker(new JavascriptObjectLinker(logger));
             linker.addLinker(new JavascriptPrimitiveLinker(logger));
 

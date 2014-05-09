@@ -68,7 +68,7 @@ public class Token implements Position {
     }
     
     public String toString() {
-        return "[Token: type=" + this.type + "; text=" + this.text + "]";
+        return "[Token: type=" + this.type + "; text=" + this.text + "; file=" + this.fileName + "; line=" + this.lineNumber + "; col=" + this.columnNumber + "]";
     }
 
 }
