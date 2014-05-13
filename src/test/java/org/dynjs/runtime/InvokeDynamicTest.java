@@ -2,7 +2,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.runtime.java.JavaMockery;
 import org.junit.Test;
-import org.projectodd.rephract.mop.java.DynamicMethod;
+import org.projectodd.rephract.java.reflect.DynamicMethod;
 
 import static org.fest.assertions.Assertions.assertThat;
 

@@ -1,6 +1,9 @@
 package org.dynjs.runtime.linker;
 
-import static java.lang.invoke.MethodType.*;
+import com.headius.invokebinder.Binder;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.linker.java.jsimpl.JSJavaImplementationManager;
+import org.projectodd.rephract.java.reflect.CoercionMatrix;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -8,17 +11,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.ThreadContextManager;
-import org.dynjs.runtime.Types;
-import org.dynjs.runtime.linker.java.JSJavaImplementationManager;
-import org.projectodd.rephract.mop.java.CoercionMatrix;
-
-import com.headius.invokebinder.Binder;
+import static java.lang.invoke.MethodType.methodType;
 
 public class DynJSCoercionMatrix extends CoercionMatrix {
 

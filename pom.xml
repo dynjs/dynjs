@@ -30,7 +30,7 @@
         <version.junit>4.8.2</version.junit>
         <version.mockito-core>1.8.5</version.mockito-core>
         <version.options>1.0</version.options>
-        <version.rephract>1.1.1</version.rephract>
+        <version.rephract>2.0.0.beta1-SNAPSHOT</version.rephract>
         <test.pattern>**/*Spec.js</test.pattern>
         <skipGitVersion>false</skipGitVersion>
     </properties>

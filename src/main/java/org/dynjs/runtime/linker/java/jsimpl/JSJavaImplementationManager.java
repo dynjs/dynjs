@@ -1,30 +1,21 @@
-package org.dynjs.runtime.linker.java;
-
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+package org.dynjs.runtime.linker.java.jsimpl;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JDKVersion;
 import me.qmx.jitescript.JiteClass;
-
-import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.DynamicClassLoader;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.linker.js.ShadowObjectLinkStrategy;
 import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
+import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.linker.java.ObjectMethodGenerator;
+import org.dynjs.runtime.linker.js.shadow.ShadowObjectLinker;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class JSJavaImplementationManager {
 
@@ -34,9 +25,9 @@ public class JSJavaImplementationManager {
 
     private ObjectMethodGenerator objectMethodGenerator = new ObjectMethodGenerator();
 
-    private ShadowObjectLinkStrategy shadowLinker;
+    private ShadowObjectLinker shadowLinker;
 
-    public JSJavaImplementationManager(ShadowObjectLinkStrategy shadowLinker) {
+    public JSJavaImplementationManager(ShadowObjectLinker shadowLinker) {
         this.shadowLinker = shadowLinker;
     }
 

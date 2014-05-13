@@ -1,7 +1,5 @@
 package org.dynjs.runtime;
 
-import java.util.*;
-
 import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
@@ -10,8 +8,11 @@ import org.dynjs.ir.IRJSFunction;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
-import org.dynjs.runtime.builtins.types.BuiltinString;
-import org.dynjs.runtime.builtins.types.string.DynString;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ExecutionContext {
 

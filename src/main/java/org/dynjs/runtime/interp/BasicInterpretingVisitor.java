@@ -892,6 +892,9 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
+        if (rhs == Types.UNDEFINED) {
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is undefined."));
+        }
         if (rhs instanceof JSObject) {
             if (!(rhs instanceof JSFunction)) {
                 throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError(expr.getRhs() + " is not a function"));
