@@ -4,6 +4,7 @@ import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
+import org.dynjs.ir.IRJSFunction;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -42,6 +43,11 @@ public class ExecutionContext {
     private int lineNumber;
     private String fileName;
     private String debugContext = "<eval>";
+    private VariableValues vars;
+
+    // Just stash functions passed into this context with no processing.  IRScope will detect things like 'attributes' and
+    // generate those on a case-by-case basis.
+    private Object[] functionParameters;
 
     private Object functionReference;
 
@@ -54,6 +60,24 @@ public class ExecutionContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+    }
+
+    public void setFunctionParameters(Object[] args) {
+        this.functionParameters = args;
+    }
+
+    public Object[] getFunctionParameters() {
+        return functionParameters;
+    }
+
+    public VariableValues getVars() {
+        return vars;
+    }
+
+    public VariableValues allocVars(int size, VariableValues parent) {
+        vars = new VariableValues(size, parent);
+
+        return vars;
     }
 
     public Object getFunctionReference() {
@@ -125,8 +149,8 @@ public class ExecutionContext {
                 return program.execute(this);
             } catch (ThrowException e) {
                 throw e;
-            } catch (Throwable t) {
-                throw new ThrowException(this, t);
+          //  } catch (Throwable t) {
+            //    throw new ThrowException(this, t);
             }
         } finally {
             ThreadContextManager.popContext();
@@ -315,11 +339,14 @@ public class ExecutionContext {
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
         ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
-        context.performDeclarationBindingInstantiation(function, arguments);
+        if (!(function instanceof IRJSFunction)) {
+            context.performDeclarationBindingInstantiation(function, arguments);
+        }
         context.fileName = function.getFileName();
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
+        context.setFunctionParameters(arguments);
         return context;
     }
 

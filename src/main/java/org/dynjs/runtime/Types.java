@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jnr.ffi.Struct;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;

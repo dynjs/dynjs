@@ -19,6 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.aesh>0.38</version.aesh>
         <version.args4j>2.0.26</version.args4j>
+        <version.dirgra>0.1</version.dirgra>
         <version.fest-assert>1.4</version.fest-assert>
         <version.guava>14.0.1</version.guava>
         <version.invokebinder>1.2</version.invokebinder>
@@ -121,6 +122,12 @@
             <groupId>org.projectodd.rephract</groupId>
             <artifactId>rephract</artifactId>
             <version>${version.rephract}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>dirgra</artifactId>
+            <version>${version.dirgra}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -429,6 +436,25 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/fixtures</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>benchmark</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.mozilla</groupId>
+                                    <artifactId>rhino</artifactId>
+                                    <version>1.7R4</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/benchmark</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

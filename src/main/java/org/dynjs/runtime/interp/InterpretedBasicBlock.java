@@ -2,6 +2,7 @@ package org.dynjs.runtime.interp;
 
 import java.util.List;
 
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -24,9 +25,9 @@ public class InterpretedBasicBlock implements BasicBlock {
 
     @Override
     public Completion call(ExecutionContext context) {
-        InterpretingVisitor visitor = factory.createVisitor( context.getBlockManager() );
-        this.body.accept(context, visitor, this.strict);
-        return (Completion) visitor.pop();
+        CodeVisitor visitor = factory.createVisitor( context.getBlockManager() );
+
+        return (Completion) this.body.accept(context, visitor, this.strict);
     }
     
     public Statement getBody() {

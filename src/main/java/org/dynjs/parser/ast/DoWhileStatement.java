@@ -45,8 +45,8 @@ public class DoWhileStatement extends AbstractIteratingStatement {
         return this.block.getVariableDeclarations();
     }
 
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit(context, this, strict);
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit(context, this, strict);
     }
     
     public int getSizeMetric() {

@@ -19,7 +19,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class NullLiteralExpression extends BaseExpression {
+public class NullLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     public NullLiteralExpression(Position position) {
         super(position);
@@ -34,7 +34,7 @@ public class NullLiteralExpression extends BaseExpression {
     }
 
     @Override
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit( context, this, strict );
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit( context, this, strict );
     }
 }

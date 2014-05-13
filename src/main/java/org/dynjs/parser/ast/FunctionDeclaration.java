@@ -15,6 +15,7 @@
  */
 package org.dynjs.parser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -22,6 +23,7 @@ import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionDeclaration extends AbstractStatement {
+    public static final List<FunctionDeclaration> EMPTY_LIST = new ArrayList<>();
 
     private FunctionDescriptor descriptor;
 
@@ -81,7 +83,7 @@ public class FunctionDeclaration extends AbstractStatement {
     }
 
     @Override
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit(context, this, strict);
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit(context, this, strict);
     }
 }

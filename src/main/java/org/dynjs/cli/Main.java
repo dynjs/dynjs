@@ -77,6 +77,16 @@ public class Main {
                 return;
             }
 
+            if (!dynJsArguments.getEval().isEmpty()) {
+                executeSource(dynJsArguments.getEval());
+                return;
+            } else if (dynJsArguments.getFilename() != null) {
+                executeFile(new File(dynJsArguments.getFilename()));
+                return;
+            } else {
+                stream.println("please specify source to eval or file");
+            }
+
             if (!getArguments().getEval().isEmpty()) {
                 executeSource(getArguments().getEval());
                 return;
@@ -109,12 +119,12 @@ public class Main {
 
     private void executeSource(String eval) {
         initializeRuntime();
-        runtime.newRunner().withSource(eval).execute();
+        runtime.newRunner().withSource( eval).execute();
     }
 
     private void showAST(String source) throws IOException {
         initializeRuntime();
-        getOutputStream().println(runtime.newRunner().withSource(source).parseSourceCode().dump("  "));
+        stream.println(runtime.newRunner().withSource(source).parseSourceCode().dump("  "));
     }
 
     private void showProperties() {

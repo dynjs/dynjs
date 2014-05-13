@@ -1,14 +1,14 @@
 package org.dynjs;
 
-import java.io.PrintStream;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.dynjs.cli.Options;
 import org.dynjs.runtime.Classpath;
 import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.GlobalObjectFactory;
+
+import java.io.PrintStream;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Config {
 
@@ -16,6 +16,12 @@ public class Config {
         OFF,
         FORCE,
         JIT,
+        IR,
+        IRC;
+
+        public boolean isIR() {
+            return this.equals(IR) || this.equals(IRC);
+        }
     }
 
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
@@ -32,7 +38,7 @@ public class Config {
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
-    private CompileMode compileMode = CompileMode.OFF;//Options.CLI_COMPILE_MODE.load();
+    private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
     private final Classpath classpath;
 
     public Classpath getClasspath() {
@@ -154,7 +160,7 @@ public class Config {
     public void setArgv(Object[] arguments) {
         this.argv = arguments;
     }
-    
+
     public Object[] getArgv() {
         return this.argv;
     }

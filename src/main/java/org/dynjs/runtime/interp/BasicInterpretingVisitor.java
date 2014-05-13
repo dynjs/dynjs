@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AdditiveExpression;
 import org.dynjs.parser.ast.ArrayLiteralExpression;
@@ -54,6 +55,7 @@ import org.dynjs.parser.ast.NumberLiteralExpression;
 import org.dynjs.parser.ast.ObjectLiteralExpression;
 import org.dynjs.parser.ast.PostOpExpression;
 import org.dynjs.parser.ast.PreOpExpression;
+import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.ast.PropertyAssignment;
 import org.dynjs.parser.ast.PropertyGet;
 import org.dynjs.parser.ast.PropertySet;
@@ -94,103 +96,91 @@ import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 
-public class BasicInterpretingVisitor implements InterpretingVisitor {
+public class BasicInterpretingVisitor implements CodeVisitor {
 
-    private List<Object> stack = new ArrayList<>();
     private BlockManager blockManager;
 
     public BasicInterpretingVisitor(BlockManager blockManager) {
         this.blockManager = blockManager;
     }
 
-    public void push(Object value) {
-        if (value == null) {
-            new Exception().printStackTrace();
-        }
-        this.stack.add(value);
-    }
-
-    public Object pop() {
-        return this.stack.remove(this.stack.size() - 1);
-    }
-
     @Override
-    public void visit(ExecutionContext context, AdditiveExpression expr, boolean strict) {
+    public Object visit(Object context, AdditiveExpression expr, boolean strict) {
         if (expr.getOp().equals("+")) {
-            visitPlus(context, expr, strict);
+            return visitPlus(context, expr, strict);
         } else {
-            visitMinus(context, expr, strict);
+            return visitMinus(context, expr, strict);
         }
     }
 
-    public void visitPlus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = Types.toPrimitive(context, getValue(context, pop()));
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = Types.toPrimitive(context, getValue(context, pop()));
+    public Object visitPlus(Object context1, AdditiveExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = Types.toPrimitive(context,
+                getValue(context, expr.getLhs().accept(context, this, strict)));
+        Object rhs = Types.toPrimitive(context,
+                getValue(context, expr.getRhs().accept(context, this, strict)));
 
         if (lhs instanceof String || rhs instanceof String) {
-            push(Types.toString(context, lhs) + Types.toString(context, rhs));
-            return;
+            return(Types.toString(context, lhs) + Types.toString(context, rhs));
+            
         }
 
         Number lhsNum = Types.toNumber(context, lhs);
         Number rhsNum = Types.toNumber(context, rhs);
 
         if (Double.isNaN(lhsNum.doubleValue()) || Double.isNaN(rhsNum.doubleValue())) {
-            push(Double.NaN);
-            return;
+            return(Double.NaN);
+            
         }
 
         if (lhsNum instanceof Double || rhsNum instanceof Double) {
             if (lhsNum.doubleValue() == 0.0 && rhsNum.doubleValue() == 0.0) {
                 if (Double.compare(lhsNum.doubleValue(), 0.0) < 0 && Double.compare(rhsNum.doubleValue(), 0.0) < 0) {
-                    push(-0.0);
-                    return;
+                    return(-0.0);
+                    
                 } else {
-                    push(0.0);
-                    return;
+                    return(0.0);
+                    
                 }
             }
-            push(lhsNum.doubleValue() + rhsNum.doubleValue());
-            return;
+            return(lhsNum.doubleValue() + rhsNum.doubleValue());
+            
         }
 
-        push(lhsNum.longValue() + rhsNum.longValue());
+        return(lhsNum.longValue() + rhsNum.longValue());
     }
 
-    public void visitMinus(ExecutionContext context, AdditiveExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Number lhs = Types.toNumber(context, getValue(context, pop()));
-
-        expr.getRhs().accept(context, this, strict);
-        Number rhs = Types.toNumber(context, getValue(context, pop()));
+    public Object visitMinus(Object context1, AdditiveExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Number lhs = Types.toNumber(context, getValue(context,
+                expr.getLhs().accept(context, this, strict)));
+        Number rhs = Types.toNumber(context,
+                getValue(context, expr.getRhs().accept(context, this, strict)));
 
         if (Double.isNaN(lhs.doubleValue()) || Double.isNaN(rhs.doubleValue())) {
-            push(Double.NaN);
-            return;
+            return(Double.NaN);
+            
         }
 
         if (lhs instanceof Double || rhs instanceof Double) {
             if (lhs.doubleValue() == 0.0 && rhs.doubleValue() == 0.0) {
                 if (Double.compare(lhs.doubleValue(), 0.0) < 0 && Double.compare(rhs.doubleValue(), 0.0) < 0) {
-                    push(+0.0);
-                    return;
+                    return(+0.0);
+                    
                 }
 
             }
-            push(lhs.doubleValue() - rhs.doubleValue());
-            return;
+            return(lhs.doubleValue() - rhs.doubleValue());
+            
         }
 
-        push(lhs.longValue() - rhs.longValue());
+        return(lhs.longValue() - rhs.longValue());
     }
 
     @Override
-    public void visit(ExecutionContext context, BitwiseExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
+    public Object visit(Object context1, BitwiseExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
 
         Long lhsNum = null;
 
@@ -200,79 +190,80 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             lhsNum = Types.toInt32(context, lhs);
         }
 
-        expr.getRhs().accept(context, this, strict);
+        Object value = expr.getRhs().accept(context, this, strict);
 
         if (expr.getOp().equals("<<")) {
             // 11.7.1
-            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            Long rhsNum = Types.toUint32(context, getValue(context, value));
             int shiftCount = rhsNum.intValue() & 0x1F;
-            push((int) (lhsNum.longValue() << shiftCount));
+            return((int) (lhsNum.longValue() << shiftCount));
         } else if (expr.getOp().equals(">>")) {
             // 11.7.2
-            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            Long rhsNum = Types.toUint32(context, getValue(context, value));
             int shiftCount = rhsNum.intValue() & 0x1F;
-            push((int) (lhsNum.longValue() >> shiftCount));
+            return((int) (lhsNum.longValue() >> shiftCount));
         } else if (expr.getOp().equals(">>>")) {
             // 11.7.3
-            Long rhsNum = Types.toUint32(context, getValue(context, pop()));
+            Long rhsNum = Types.toUint32(context, getValue(context, value));
             int shiftCount = rhsNum.intValue() & 0x1F;
-            push(lhsNum.longValue() >>> shiftCount);
+            return(lhsNum.longValue() >>> shiftCount);
         } else if (expr.getOp().equals("&")) {
-            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
-            push(lhsNum.longValue() & rhsNum.longValue());
+            Long rhsNum = Types.toInt32(context, getValue(context, value));
+            return(lhsNum.longValue() & rhsNum.longValue());
         } else if (expr.getOp().equals("|")) {
-            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
-            push(lhsNum.longValue() | rhsNum.longValue());
+            Long rhsNum = Types.toInt32(context, getValue(context, value));
+            return(lhsNum.longValue() | rhsNum.longValue());
         } else if (expr.getOp().equals("^")) {
-            Long rhsNum = Types.toInt32(context, getValue(context, pop()));
-            push(lhsNum.longValue() ^ rhsNum.longValue());
+            Long rhsNum = Types.toInt32(context, getValue(context, value));
+            return(lhsNum.longValue() ^ rhsNum.longValue());
         }
+
+        return null; // not reached
     }
 
     @Override
-    public void visit(ExecutionContext context, ArrayLiteralExpression expr, boolean strict) {
+    public Object visit(Object context1, ArrayLiteralExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         DynArray array = BuiltinArray.newArray(context);
 
         int i = 0;
         for (Expression each : expr.getExprs()) {
             Object value = null;
             if (each != null) {
-                each.accept(context, this, strict);
-                value = getValue(context, pop());
+                value = getValue(context, each.accept(context, this, strict));
                 array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             }
             ++i;
         }
         array.put(context, "length", (long) i, true);
 
-        push(array);
+        return(array);
     }
 
     @Override
-    public void visit(ExecutionContext context, AssignmentExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = pop();
+    public Object visit(Object context1, AssignmentExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = expr.getLhs().accept(context, this, strict);
         if (!(lhs instanceof Reference)) {
             throw new ThrowException(context, context.createReferenceError(expr.getLhs() + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         lhsRef.putValue(context, rhs);
-        push(rhs);
+        return(rhs);
     }
 
     @Override
-    public void visit(ExecutionContext context, BitwiseInversionOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        push(~Types.toInt32(context, getValue(context, pop())));
+    public Object visit(Object context1, BitwiseInversionOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        return(~Types.toInt32(context, getValue(context, expr.getExpr().accept(context, this, strict))));
     }
 
     @Override
-    public void visit(ExecutionContext context, BlockStatement statement, boolean strict) {
+    public Object visit(Object context1, BlockStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         List<Statement> content = statement.getBlockContent();
 
         Object completionValue = Types.UNDEFINED;
@@ -283,66 +274,67 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 context.setLineNumber(position.getLine());
             }
 
-            each.accept(context, this, strict);
-            Completion completion = (Completion) pop();
+
+            Completion completion = (Completion) each.accept(context, this, strict);
             if (completion.type == Completion.Type.NORMAL) {
                 completionValue = completion.value;
                 continue;
             }
             if (completion.type == Completion.Type.CONTINUE) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
             if (completion.type == Completion.Type.RETURN) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
             if (completion.type == Completion.Type.BREAK) {
                 completion.value = completionValue;
                 if (completion.target != null && statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(completionValue));
+                    return(Completion.createNormal(completionValue));
                 } else {
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
         }
 
-        push(Completion.createNormal(completionValue));
+        return(Completion.createNormal(completionValue));
     }
 
     @Override
-    public void visit(ExecutionContext context, BooleanLiteralExpression expr, boolean strict) {
-        push(expr.getValue());
+    public Object visit(Object context1, BooleanLiteralExpression expr, boolean strict) {
+        return(expr.getValue());
     }
 
     @Override
-    public void visit(ExecutionContext context, BreakStatement statement, boolean strict) {
-        push(Completion.createBreak(statement.getTarget()));
+    public Object visit(Object context, BreakStatement statement, boolean strict) {
+        return(Completion.createBreak(statement.getTarget()));
     }
 
     @Override
-    public void visit(ExecutionContext context, CaseClause clause, boolean strict) {
+    public Object visit(Object context, CaseClause clause, boolean strict) {
         // not used, handled by switch-statement
+        return null;
     }
 
     @Override
-    public void visit(ExecutionContext context, DefaultCaseClause clause, boolean strict) {
+    public Object visit(Object context, DefaultCaseClause clause, boolean strict) {
         // not used, handled by switch-statement
+        return null;
     }
 
     @Override
-    public void visit(ExecutionContext context, CatchClause clause, boolean strict) {
+    public Object visit(Object context, CatchClause clause, boolean strict) {
         // not used, handled by try-statement
+        return null;
     }
 
     @Override
-    public void visit(ExecutionContext context, CompoundAssignmentExpression expr, boolean strict) {
-        expr.getRootExpr().accept(context, this, strict);
-        Object r = pop();
-
-        expr.getRootExpr().getLhs().accept(context, this, strict);
-        Object lref = pop();
+    public Object visit(Object context1, CompoundAssignmentExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object r = expr.getRootExpr().accept(context, this, strict);
+        Object lref = expr.getRootExpr().getLhs().accept(context, this, strict);
 
         if (lref instanceof Reference) {
             if (((Reference) lref).isStrictReference()) {
@@ -354,25 +346,26 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             }
 
             ((Reference) lref).putValue(context, r);
-            push(r);
-            return;
+            return(r);
+            
         }
 
         throw new ThrowException(context, context.createReferenceError("cannot assign to non-reference"));
     }
 
     @Override
-    public void visit(ExecutionContext context, ContinueStatement statement, boolean strict) {
-        push(Completion.createContinue(statement.getTarget()));
+    public Object visit(Object context, ContinueStatement statement, boolean strict) {
+        return(Completion.createContinue(statement.getTarget()));
     }
 
     @Override
-    public void visit(ExecutionContext context, DeleteOpExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object result = pop();
+    public Object visit(Object context1, DeleteOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+
+        Object result = expr.getExpr().accept(context, this, strict);
         if (!(result instanceof Reference)) {
-            push(true);
-            return;
+            return(true);
+            
         }
 
         Reference ref = (Reference) result;
@@ -380,14 +373,14 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (strict) {
                 throw new ThrowException(context, context.createSyntaxError("cannot delete unresolvable reference"));
             } else {
-                push(true);
-                return;
+                return(true);
+                
             }
         }
 
         if (ref.isPropertyReference()) {
-            push(Types.toObject(context, ref.getBase()).delete(context, ref.getReferencedName(), ref.isStrictReference()));
-            return;
+            return(Types.toObject(context, ref.getBase()).delete(context, ref.getReferencedName(), ref.isStrictReference()));
+            
         }
 
         if (ref.isStrictReference()) {
@@ -396,11 +389,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         EnvironmentRecord bindings = (EnvironmentRecord) ref.getBase();
 
-        push(bindings.deleteBinding(context, ref.getReferencedName()));
+        return(bindings.deleteBinding(context, ref.getReferencedName()));
     }
 
     @Override
-    public void visit(ExecutionContext context, DoWhileStatement statement, boolean strict) {
+    public Object visit(Object context1, DoWhileStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Expression testExpr = statement.getTest();
         Statement block = statement.getBlock();
 
@@ -415,88 +409,84 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 if (completion.target == null) {
                     // nothing
                 } else if (!statement.getLabels().contains(completion.target)) {
-                    push(completion);
-                    return;
+                    return(completion);
+                    
                 }
             } else if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null) {
                     break;
                 } else if (!statement.getLabels().contains(completion.target)) {
-                    push(completion);
-                    return;
+                    return(completion);
+                    
                 } else {
                     break;
                 }
             } else if (completion.type == Completion.Type.RETURN) {
-                push(Completion.createReturn(v));
-                return;
+                return(Completion.createReturn(v));
+                
             }
 
-            testExpr.accept(context, this, strict);
-            Boolean testResult = Types.toBoolean(getValue(context, pop()));
+
+            Boolean testResult = Types.toBoolean(getValue(context, testExpr.accept(context, this, strict)));
             if (!testResult) {
                 break;
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, EmptyStatement statement, boolean strict) {
-        push(Completion.createNormal());
+    public Object visit(Object context, EmptyStatement statement, boolean strict) {
+        return(Completion.createNormal());
     }
 
     @Override
-    public void visit(ExecutionContext context, EqualityOperatorExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+    public Object visit(Object context1, EqualityOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (expr.getOp().equals("==")) {
-            push(Types.compareEquality(context, lhs, rhs));
+            return(Types.compareEquality(context, lhs, rhs));
         } else {
-            push(!Types.compareEquality(context, lhs, rhs));
+            return(!Types.compareEquality(context, lhs, rhs));
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, CommaOperator expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        getValue(context, pop());
-        expr.getRhs().accept(context, this, strict);
-        push(getValue(context, pop()));
+    public Object visit(Object context1, CommaOperator expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        getValue(context, expr.getLhs().accept(context, this, strict));
+        return(getValue(context, expr.getRhs().accept(context, this, strict)));
         // leave RHS on the stack
     }
 
     @Override
-    public void visit(ExecutionContext context, ExpressionStatement statement, boolean strict) {
+    public Object visit(Object context1, ExpressionStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Expression expr = statement.getExpr();
         if (expr instanceof FunctionDeclaration) {
-            push(Completion.createNormal());
+            return(Completion.createNormal());
         } else {
-            expr.accept(context, this, strict);
-            push(Completion.createNormal(getValue(context, pop())));
+            return(Completion.createNormal(getValue(context, expr.accept(context, this, strict))));
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, FloatingNumberExpression expr, boolean strict) {
-        push(expr.getValue());
+    public Object visit(Object context1, FloatingNumberExpression expr, boolean strict) {
+        return(expr.getValue());
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprInStatement statement, boolean strict) {
-        statement.getRhs().accept(context, this, strict);
-
-        Object exprRef = pop();
+    public Object visit(Object context1, ForExprInStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
-            push(Completion.createNormal());
-            return;
+            return(Completion.createNormal());
+            
         }
 
         JSObject obj = Types.toObject(context, exprValue);
@@ -506,15 +496,15 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            statement.getExpr().accept(context, this, strict);
-            Object lhsRef = pop();
+
+            Object lhsRef = statement.getExpr().accept(context, this, strict);
 
             if (lhsRef instanceof Reference) {
                 ((Reference) lhsRef).putValue(context, each);
             }
 
-            statement.getBlock().accept(context, this, strict);
-            Completion completion = (Completion) pop();
+
+            Completion completion = (Completion) statement.getBlock().accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForIn", statement.getBlock());
 
             if (completion.value != null) {
@@ -523,32 +513,31 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(v));
+                    return(Completion.createNormal(v));
                 } else {
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprOfStatement statement, boolean strict) {
-        statement.getRhs().accept(context, this, strict);
-
-        Object exprRef = pop();
+    public Object visit(Object context1, ForExprOfStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
-            push(Completion.createNormal());
-            return;
+            return(Completion.createNormal());
+            
         }
 
         JSObject obj = Types.toObject(context, exprValue);
@@ -558,16 +547,15 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            statement.getExpr().accept(context, this, strict);
-            Object lhsRef = pop();
+            Object lhsRef = statement.getExpr().accept(context, this, strict);
 
             if (lhsRef instanceof Reference) {
                 Reference propertyRef = context.createPropertyReference(obj, each);
                 ((Reference) lhsRef).putValue(context, propertyRef.getValue(context));
             }
 
-            statement.getBlock().accept(context, this, strict);
-            Completion completion = (Completion) pop();
+
+            Completion completion = (Completion) statement.getBlock().accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForOf", statement.getBlock());
 
             if (completion.value != null) {
@@ -576,27 +564,27 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(v));
+                    return(Completion.createNormal(v));
                 } else {
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, ForExprStatement statement, boolean strict) {
+    public Object visit(Object context1, ForExprStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
-            pop();
         }
 
         Expression test = statement.getTest();
@@ -607,13 +595,13 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         while (true) {
             if (test != null) {
-                test.accept(context, this, strict);
-                if (!Types.toBoolean(getValue(context, pop()))) {
+
+                if (!Types.toBoolean(getValue(context, test.accept(context, this, strict)))) {
                     break;
                 }
             }
-            body.accept(context, this, strict);
-            Completion completion = (Completion) pop();
+
+            Completion completion = (Completion) body.accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
 
             if (completion.value != null && completion.value != Types.UNDEFINED) {
@@ -622,46 +610,42 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(v));
+                    return(Completion.createNormal(v));
                 } else {
                     completion.value = v;
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
             if (completion.type == Completion.Type.RETURN) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
             if (completion.type == Completion.Type.CONTINUE) {
                 if (completion.target != null && !statement.getLabels().contains(completion.target)) {
-                    push(completion);
-                    return;
+                    return(completion);
+                    
                 }
             }
 
             if (incr != null) {
-                incr.accept(context, this, strict);
-                getValue(context, pop());
+                getValue(context, incr.accept(context, this, strict));
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclInStatement statement, boolean strict) {
-        statement.getDeclaration().accept(context, this, strict);
-        String varName = (String) pop();
-
-        statement.getRhs().accept(context, this, strict);
-
-        Object exprRef = pop();
+    public Object visit(Object context1, ForVarDeclInStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        String varName = (String) statement.getDeclaration().accept(context, this, strict);
+        Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
-            push(Completion.createNormal());
-            return;
+            return(Completion.createNormal());
+            
         }
 
         JSObject obj = Types.toObject(context, exprValue);
@@ -675,8 +659,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             varRef.putValue(context, each);
 
-            statement.getBlock().accept(context, this, strict);
-            Completion completion = (Completion) pop();
+            Completion completion = (Completion) statement.getBlock().accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
 
             if (completion.value != null) {
@@ -685,36 +668,33 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(v));
+                    return(Completion.createNormal(v));
                 } else {
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
 
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclOfStatement statement, boolean strict) {
-        statement.getDeclaration().accept(context, this, strict);
-        String varName = (String) pop();
-
-        statement.getRhs().accept(context, this, strict);
-
-        Object exprRef = pop();
+    public Object visit(Object context1, ForVarDeclOfStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        String varName = (String) statement.getDeclaration().accept(context, this, strict);
+        Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
-            push(Completion.createNormal());
-            return;
+            return(Completion.createNormal());
+            
         }
 
         JSObject obj = Types.toObject(context, exprValue);
@@ -729,8 +709,7 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             varRef.putValue(context, propertyRef.getValue(context));
 
-            statement.getBlock().accept(context, this, strict);
-            Completion completion = (Completion) pop();
+            Completion completion = (Completion) statement.getBlock().accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsOf", statement.getBlock());
 
             if (completion.value != null) {
@@ -739,30 +718,29 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(v));
+                    return(Completion.createNormal(v));
                 } else {
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
 
     }
 
     @Override
-    public void visit(ExecutionContext context, ForVarDeclStatement statement, boolean strict) {
-
+    public Object visit(Object context1, ForVarDeclStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         List<VariableDeclaration> decls = statement.getDeclarationList();
         for (VariableDeclaration each : decls) {
             each.accept(context, this, strict);
-            pop();
         }
 
         Expression test = statement.getTest();
@@ -773,14 +751,12 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
         while (true) {
             if (test != null) {
-                test.accept(context, this, strict);
-                if (!Types.toBoolean(getValue(context, pop()))) {
+                if (!Types.toBoolean(getValue(context, test.accept(context, this, strict)))) {
                     break;
                 }
             }
 
-            body.accept(context, this, strict);
-            Completion completion = (Completion) pop();
+            Completion completion = (Completion) body.accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDecl", body);
 
             if (completion.value != null && completion.value != Types.UNDEFINED) {
@@ -789,47 +765,44 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || statement.getLabels().contains(completion.target)) {
-                    push(Completion.createNormal(v));
+                    return(Completion.createNormal(v));
                 } else {
                     completion.value = v;
-                    push(completion);
+                    return(completion);
                 }
-                return;
+                
             }
             if (completion.type == Completion.Type.RETURN) {
-                push(completion);
-                return;
+                return(completion);
+                
             }
             if (completion.type == Completion.Type.CONTINUE) {
                 if (completion.target != null && !statement.getLabels().contains(completion.target)) {
-                    push(completion);
-                    return;
+                    return(completion);
+                    
                 }
             }
 
             if (incr != null) {
-                incr.accept(context, this, strict);
-                getValue(context, pop());
+                getValue(context, incr.accept(context, this, strict));
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionCallExpression expr, boolean strict) {
-        expr.getMemberExpression().accept(context, this, strict);
-        Object ref = pop();
+    public Object visit(Object context1, FunctionCallExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object ref = expr.getMemberExpression().accept(context, this, strict);
         Object function = getValue(context, ref);
-
         List<Expression> argExprs = expr.getArgumentExpressions();
-
         Object[] args = new Object[argExprs.size()];
         int i = 0;
 
         for (Expression each : argExprs) {
-            each.accept(context, this, strict);
-            args[i] = getValue(context, pop());
+
+            args[i] = getValue(context, each.accept(context, this, strict));
             ++i;
         }
 
@@ -847,80 +820,75 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             }
         }
 
-        push(context.call(ref, (JSFunction) function, thisValue, args));
+        return(context.call(ref, (JSFunction) function, thisValue, args));
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionDeclaration statement, boolean strict) {
-        push(Completion.createNormal());
+    public Object visit(Object context, FunctionDeclaration statement, boolean strict) {
+        return(Completion.createNormal());
     }
 
     @Override
-    public void visit(ExecutionContext context, FunctionExpression expr, boolean strict) {
-        JSFunction compiledFn = context.getCompiler().compileFunction(context,
+    public Object visit(Object context, FunctionExpression expr, boolean strict) {
+        JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
                 expr.getDescriptor().getIdentifier(),
                 expr.getDescriptor().getFormalParameterNames(),
                 expr.getDescriptor().getBlock(),
                 expr.getDescriptor().isStrict() || strict);
-        push(compiledFn);
+        return(compiledFn);
     }
 
     @Override
-    public void visit(ExecutionContext context, IdentifierReferenceExpression expr, boolean strict) {
-        push(context.resolve(expr.getIdentifier()));
+    public Object visit(Object context, IdentifierReferenceExpression expr, boolean strict) {
+        return(((ExecutionContext) context).resolve(expr.getIdentifier()));
     }
 
     @Override
-    public void visit(ExecutionContext context, IfStatement statement, boolean strict) {
-        statement.getTest().accept(context, this, strict);
+    public Object visit(Object context1, IfStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Boolean result = Types.toBoolean(getValue(context,
+                statement.getTest().accept(context, this, strict)));
 
-        Boolean result = Types.toBoolean(getValue(context, pop()));
         if (result) {
-            push(invokeCompiledBlockStatement(context, "Then", statement.getThenBlock()));
+            return(invokeCompiledBlockStatement(context, "Then", statement.getThenBlock()));
         } else if (statement.getElseBlock() != null) {
-            push(invokeCompiledBlockStatement(context, "Else", statement.getElseBlock()));
+            return(invokeCompiledBlockStatement(context, "Else", statement.getElseBlock()));
         } else {
-            push(Completion.createNormal());
+            return(Completion.createNormal());
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, InOperatorExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+    public Object visit(Object context1, InOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (!(rhs instanceof JSObject)) {
             throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
         }
 
-        push(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
+        return(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
     }
 
     @Override
-    public void visit(ExecutionContext context, OfOperatorExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+    public Object visit(Object context1, OfOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (!(rhs instanceof JSObject)) {
             throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
         }
 
-        push(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
+        return(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
     }
 
     @Override
-    public void visit(ExecutionContext context, InstanceofExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+    public Object visit(Object context1, InstanceofExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (rhs == Types.UNDEFINED) {
             throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is undefined."));
@@ -929,210 +897,203 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             if (!(rhs instanceof JSFunction)) {
                 throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
             }
-            push(((JSFunction) rhs).hasInstance(context, lhs));
+            return(((JSFunction) rhs).hasInstance(context, lhs));
         } else if (rhs instanceof Class) {
             Class clazz = (Class) rhs;
-            push(lhs.getClass().getName().equals(clazz.getName()));
+            return(lhs.getClass().getName().equals(clazz.getName()));
         }
+
+        return null; // not reached
     }
 
     @Override
-    public void visit(ExecutionContext context, IntegerNumberExpression expr, boolean strict) {
-        push(expr.getValue());
+    public Object visit(Object context1, IntegerNumberExpression expr, boolean strict) {
+        return(expr.getValue());
     }
 
     @Override
-    public void visit(ExecutionContext context, LogicalExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
+    public Object visit(Object context1, LogicalExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
 
         if ((expr.getOp().equals("||") && Types.toBoolean(lhs)) || (expr.getOp().equals("&&") && !Types.toBoolean(lhs))) {
-            push(lhs);
+            return(lhs);
         } else {
-            expr.getRhs().accept(context, this, strict);
+            return expr.getRhs().accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, LogicalNotOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        push(!Types.toBoolean(getValue(context, pop())));
+    public Object visit(Object context1, LogicalNotOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        return(!Types.toBoolean(getValue(context, expr.getExpr().accept(context, this, strict))));
     }
 
     @Override
-    public void visit(ExecutionContext context, DotExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object baseRef = pop();
+    public Object visit(Object context1, DotExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object baseRef = expr.getLhs().accept(context, this, strict);
         Object baseValue = getValue(context, baseRef);
 
         String propertyName = expr.getIdentifier();
 
         Types.checkObjectCoercible(context, baseValue, propertyName);
 
-        push(context.createPropertyReference(baseValue, propertyName));
+        return(context.createPropertyReference(baseValue, propertyName));
     }
 
     @Override
-    public void visit(ExecutionContext context, BracketExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object baseRef = pop();
+    public Object visit(Object context1, BracketExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object baseRef = expr.getLhs().accept(context, this, strict);
         Object baseValue = getValue(context, baseRef);
-
-        expr.getRhs().accept(context, this, strict);
-        Object identifier = getValue(context, pop());
+        Object identifier = getValue(context, expr.getRhs().accept(context, this, strict));
 
         Types.checkObjectCoercible(context, baseValue);
 
         String propertyName = Types.toString(context, identifier);
 
-        push(context.createPropertyReference(baseValue, propertyName));
+        return(context.createPropertyReference(baseValue, propertyName));
     }
 
     @Override
-    public void visit(ExecutionContext context, MultiplicativeExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Number lval = Types.toNumber(context, getValue(context, pop()));
-
-        expr.getRhs().accept(context, this, strict);
-        Number rval = Types.toNumber(context, getValue(context, pop()));
+    public Object visit(Object context1, MultiplicativeExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Number lval = Types.toNumber(context, getValue(context, expr.getLhs().accept(context, this, strict)));
+        Number rval = Types.toNumber(context, getValue(context, expr.getRhs().accept(context, this, strict)));
 
         if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
-            push(Double.NaN);
-            return;
+            return(Double.NaN);
+            
         }
 
         if (lval instanceof Double || rval instanceof Double) {
             switch (expr.getOp()) {
-                case "*":
-                    push(lval.doubleValue() * rval.doubleValue());
-                    return;
-                case "/":
-                    // Divide-by-zero
-                    if (isZero(rval)) {
-                        if (isZero(lval)) {
-                            push(Double.NaN);
-                            return;
-                        } else if (isSameSign(lval, rval)) {
-                            push(Double.POSITIVE_INFINITY);
-                            return;
-                        } else {
-                            push(Double.NEGATIVE_INFINITY);
-                            return;
-                        }
-                    }
-
-                    // Zero-divided-by-something
-                    else if (isZero(lval)) {
-                        if (isSameSign(lval, rval)) {
-                            push(0L);
-                        } else {
-                            push(-0.0);
-                        }
-                        return;
-                    }
-
-                    // Regular math
-                    double primaryValue = lval.doubleValue() / rval.doubleValue();
-                    if (isRepresentableByLong(primaryValue)) {
-                        push((long) primaryValue);
+            case "*":
+                return(lval.doubleValue() * rval.doubleValue());
+                
+            case "/":
+                // Divide-by-zero
+                if (isZero(rval)) {
+                    if (isZero(lval)) {
+                        return(Double.NaN);
+                        
+                    } else if (isSameSign(lval, rval)) {
+                        return(Double.POSITIVE_INFINITY);
+                        
                     } else {
-                        push(primaryValue);
+                        return(Double.NEGATIVE_INFINITY);
                     }
-                    return;
-                case "%":
-                    if (rval.doubleValue() == 0.0) {
-                        push(Double.NaN);
-                        return;
+
+                // Zero-divided-by-something
+                } else if (isZero(lval)) {
+                    if (isSameSign(lval, rval)) {
+                        return(0L);
+                    } else {
+                        return(-0.0);
                     }
-                    push(BuiltinNumber.modulo(lval, rval));
-                    return;
+                }
+
+                // Regular math
+                double primaryValue = lval.doubleValue() / rval.doubleValue();
+                if (isRepresentableByLong(primaryValue)) {
+                    return((long) primaryValue);
+                } else {
+                    return(primaryValue);
+                }
+                
+            case "%":
+                if (rval.doubleValue() == 0.0) {
+                    return(Double.NaN);
+                    
+                }
+                return(BuiltinNumber.modulo(lval, rval));
+                
             }
         } else {
             switch (expr.getOp()) {
-                case "*":
-                    push(lval.longValue() * rval.longValue());
-                    return;
-                case "/":
-                    if (rval.longValue() == 0L) {
-                        if (lval.longValue() == 0L) {
-                            push(Double.NaN);
-                            return;
-                        } else if (isSameSign(lval, rval)) {
-                            push(Double.POSITIVE_INFINITY);
-                            return;
-                        } else {
-                            push(Double.NEGATIVE_INFINITY);
-                            return;
-                        }
-                    }
-
-                    if (lval.longValue() == 0) {
-                        if (Double.compare(rval.doubleValue(), 0.0) > 0) {
-                            push(0L);
-                            return;
-                        } else {
-                            push(-0.0);
-                            return;
-                        }
-                    }
-                    double primaryResult = lval.doubleValue() / rval.longValue();
-                    if (primaryResult == (long) primaryResult) {
-                        push((long) primaryResult);
+            case "*":
+                return(lval.longValue() * rval.longValue());
+                
+            case "/":
+                if (rval.longValue() == 0L) {
+                    if (lval.longValue() == 0L) {
+                        return(Double.NaN);
+                        
+                    } else if (isSameSign(lval, rval)) {
+                        return(Double.POSITIVE_INFINITY);
+                        
                     } else {
-                        push(primaryResult);
+                        return(Double.NEGATIVE_INFINITY);
                     }
-                    return;
-                case "%":
-                    if (rval.longValue() == 0L) {
-                        push(Double.NaN);
-                        return;
-                    }
+                }
 
-                    push(BuiltinNumber.modulo(lval, rval));
-                    return;
+                if (lval.longValue() == 0) {
+                    if (Double.compare(rval.doubleValue(), 0.0) > 0) {
+                        return(0L);
+                        
+                    } else {
+                        return(-0.0);
+                        
+                    }
+                }
+                double primaryResult = lval.doubleValue() / rval.longValue();
+                if (primaryResult == (long) primaryResult) {
+                    return((long) primaryResult);
+                } else {
+                    return(primaryResult);
+                }
+                
+            case "%":
+                if (rval.longValue() == 0L) {
+                    return(Double.NaN);
+                    
+                }
+                
+                return(BuiltinNumber.modulo(lval, rval));
             }
         }
+
+        return null; // not reached
     }
 
     @Override
-    public void visit(ExecutionContext context, NewOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object ref = pop();
+    public Object visit(Object context1, NewOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object ref = expr.getExpr().accept(context, this, strict);
         Object memberExpr = getValue(context, ref);
-
         Object[] args = new Object[expr.getArgumentExpressions().size()];
 
         int i = 0;
 
         for (Expression each : expr.getArgumentExpressions()) {
-            each.accept(context, this, strict);
-            args[i] = getValue(context, pop());
+            args[i] = getValue(context, each.accept(context, this, strict));
             ++i;
         }
 
         if (memberExpr instanceof JSFunction) {
-            push(context.construct(ref, (JSFunction) memberExpr, args));
-            return;
+            return(context.construct(ref, (JSFunction) memberExpr, args));
         }
 
         throw new ThrowException(context, context.createTypeError("can only construct using functions"));
     }
 
     @Override
-    public void visit(ExecutionContext context, NullLiteralExpression expr, boolean strict) {
-        push(Types.NULL);
+    public Object visit(Object context, NullLiteralExpression expr, boolean strict) {
+        return(Types.NULL);
     }
 
     @Override
-    public void visit(ExecutionContext context, ObjectLiteralExpression expr, boolean strict) {
+    public Object visit(Object context1, ObjectLiteralExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         DynObject obj = BuiltinObject.newObject(context);
 
         List<PropertyAssignment> assignments = expr.getPropertyAssignments();
 
         for (PropertyAssignment each : assignments) {
-            each.accept(context, this, strict);
+            Object ref = each.accept(context, this, strict);
             String debugName = each.getName();
-            Object ref = pop();
+
             if (ref instanceof Reference) {
                 debugName = ((Reference) ref).getReferencedName();
             }
@@ -1149,13 +1110,13 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             obj.defineOwnProperty(context, each.getName(), desc, false);
         }
 
-        push(obj);
+        return(obj);
     }
 
     @Override
-    public void visit(ExecutionContext context, PostOpExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object lhs = pop();
+    public Object visit(Object context1, PostOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = expr.getExpr().accept(context, this, strict);
 
         if (lhs instanceof Reference) {
             if (((Reference) lhs).isStrictReference()) {
@@ -1190,14 +1151,16 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             }
 
             ((Reference) lhs).putValue(context, newValue);
-            push(oldValue);
+            return(oldValue);
         }
+
+        return null; // not reached
     }
 
     @Override
-    public void visit(ExecutionContext context, PreOpExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object lhs = pop();
+    public Object visit(Object context1, PreOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = expr.getExpr().accept(context, this, strict);
 
         if (lhs instanceof Reference) {
             if (((Reference) lhs).isStrictReference()) {
@@ -1232,105 +1195,102 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             }
 
             ((Reference) lhs).putValue(context, newValue);
-            push(newValue);
+            return(newValue);
         }
+
+        return null; // not reached
     }
 
     @Override
-    public void visit(ExecutionContext context, PropertyGet propertyGet, boolean strict) {
-        JSFunction compiledFn = context.getCompiler().compileFunction(context,
+    public Object visit(Object context, PropertyGet propertyGet, boolean strict) {
+        JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
                 null,
                 new String[]{},
                 propertyGet.getBlock(),
                 strict);
-        push(compiledFn);
+        return(compiledFn);
     }
 
     @Override
-    public void visit(ExecutionContext context, PropertySet propertySet, boolean strict) {
-        JSFunction compiledFn = context.getCompiler().compileFunction(context,
+    public Object visit(Object context, PropertySet propertySet, boolean strict) {
+        JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
                 null,
                 new String[]{propertySet.getIdentifier()},
                 propertySet.getBlock(),
                 strict);
-        push(compiledFn);
+        return(compiledFn);
     }
 
     @Override
-    public void visit(ExecutionContext context, NamedValue namedValue, boolean strict) {
-        namedValue.getExpr().accept(context, this, strict);
+    public Object visit(Object context, NamedValue namedValue, boolean strict) {
+        return namedValue.getExpr().accept(context, this, strict);
     }
 
     @Override
-    public void visit(ExecutionContext context, RegexpLiteralExpression expr, boolean strict) {
-        push(BuiltinRegExp.newRegExp(context, expr.getPattern(), expr.getFlags()));
+    public Object visit(Object context, RegexpLiteralExpression expr, boolean strict) {
+        return(BuiltinRegExp.newRegExp((ExecutionContext) context, expr.getPattern(), expr.getFlags()));
     }
 
     @Override
-    public void visit(ExecutionContext context, RelationalExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lval = getValue(context, pop());
-
-        expr.getRhs().accept(context, this, strict);
-        Object rval = getValue(context, pop());
-
+    public Object visit(Object context1, RelationalExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lval = getValue(context, expr.getLhs().accept(context, this, strict));
+        Object rval = getValue(context, expr.getRhs().accept(context, this, strict));
         Object r = null;
 
         switch (expr.getOp()) {
-            case "<":
-                r = Types.compareRelational(context, lval, rval, true);
-                if (r == Types.UNDEFINED) {
-                    push(false);
-                } else {
-                    push(r);
-                }
-                return;
-            case ">":
-                r = Types.compareRelational(context, rval, lval, false);
-                if (r == Types.UNDEFINED) {
-                    push(false);
-                } else {
-                    push(r);
-                }
-                return;
-            case "<=":
-                r = Types.compareRelational(context, rval, lval, false);
-                if (r == Boolean.TRUE || r == Types.UNDEFINED) {
-                    push(false);
-                } else {
-                    push(true);
-                }
-                return;
-            case ">=":
-                r = Types.compareRelational(context, lval, rval, true);
-                if (r == Boolean.TRUE || r == Types.UNDEFINED) {
-                    push(false);
-                } else {
-                    push(true);
-                }
-                return;
+        case "<":
+            r = Types.compareRelational(context, lval, rval, true);
+            if (r == Types.UNDEFINED) {
+                return(false);
+            } else {
+                return(r);
+            }
+            
+        case ">":
+            r = Types.compareRelational(context, rval, lval, false);
+            if (r == Types.UNDEFINED) {
+                return(false);
+            } else {
+                return(r);
+            }
+            
+        case "<=":
+            r = Types.compareRelational(context, rval, lval, false);
+            if (r == Boolean.TRUE || r == Types.UNDEFINED) {
+                return(false);
+            } else {
+                return(true);
+            }
+            
+        case ">=":
+            r = Types.compareRelational(context, lval, rval, true);
+            if (r == Boolean.TRUE || r == Types.UNDEFINED) {
+                return(false);
+            } else {
+                return(true);
+            }
         }
 
+        return null; // not reached
     }
 
     @Override
-    public void visit(ExecutionContext context, ReturnStatement statement, boolean strict) {
+    public Object visit(Object context1, ReturnStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (statement.getExpr() != null) {
-            statement.getExpr().accept(context, this, strict);
-            Object value = pop();
-            push(Completion.createReturn(getValue(context, value)));
+            Object value = statement.getExpr().accept(context, this, strict);
+            return(Completion.createReturn(getValue(context, value)));
         } else {
-            push(Completion.createReturn(Types.UNDEFINED));
+            return(Completion.createReturn(Types.UNDEFINED));
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, StrictEqualityOperatorExpression expr, boolean strict) {
-        expr.getLhs().accept(context, this, strict);
-        Object lhs = getValue(context, pop());
-
-        expr.getRhs().accept(context, this, strict);
-        Object rhs = getValue(context, pop());
+    public Object visit(Object context1, StrictEqualityOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
+        Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         Object result = null;
         if (expr.getOp().equals("===")) {
@@ -1338,19 +1298,18 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         } else {
             result = !Types.compareStrictEquality(context, lhs, rhs);
         }
-        push(result);
+        return(result);
     }
 
     @Override
-    public void visit(ExecutionContext context, StringLiteralExpression expr, boolean strict) {
-        push(expr.getLiteral());
+    public Object visit(Object context, StringLiteralExpression expr, boolean strict) {
+        return(expr.getLiteral());
     }
 
     @Override
-    public void visit(ExecutionContext context, SwitchStatement statement, boolean strict) {
-        statement.getExpr().accept(context, this, strict);
-        Object value = getValue(context, pop());
-
+    public Object visit(Object context1, SwitchStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object value = getValue(context, statement.getExpr().accept(context, this, strict));
         Object v = null;
 
         int numClauses = statement.getCaseClauses().size();
@@ -1364,8 +1323,8 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 defaultIndex = i;
                 continue;
             }
-            each.getExpression().accept(context, this, strict);
-            Object caseTest = pop();
+
+            Object caseTest = each.getExpression().accept(context, this, strict);
             if (Types.compareStrictEquality(context, value, getValue(context, caseTest))) {
                 startIndex = i;
                 break;
@@ -1380,70 +1339,71 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
             for (int i = startIndex; i < numClauses; ++i) {
                 CaseClause each = statement.getCaseClauses().get(i);
                 if (each.getBlock() != null) {
-                    each.getBlock().accept(context, this, strict);
-                    Completion completion = (Completion) pop();
+                    Completion completion = (Completion) each.getBlock().accept(context, this, strict);
                     v = completion.value;
 
                     if (completion.type == Completion.Type.BREAK) {
                         break;
                     } else if (completion.type == Completion.Type.RETURN) {
-                        push(completion);
-                        return;
+                        return(completion);
+                        
                     }
                 }
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, TernaryExpression expr, boolean strict) {
-        expr.getTest().accept(context, this, strict);
-        if (Types.toBoolean(getValue(context, pop()))) {
-            expr.getThenExpr().accept(context, this, strict);
+    public Object visit(Object context1, TernaryExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        if (Types.toBoolean(getValue(context, expr.getTest().accept(context, this, strict)))) {
+            return expr.getThenExpr().accept(context, this, strict);
         } else {
-            expr.getElseExpr().accept(context, this, strict);
+            return expr.getElseExpr().accept(context, this, strict);
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, ThisExpression expr, boolean strict) {
-        push(context.getThisBinding());
+    public Object visit(Object context, ThisExpression expr, boolean strict) {
+        return(((ExecutionContext) context).getThisBinding());
     }
 
     @Override
-    public void visit(ExecutionContext context, ThrowStatement statement, boolean strict) {
-        statement.getExpr().accept(context, this, strict);
-        Object throwable = getValue(context, pop());
+    public Object visit(Object context1, ThrowStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object throwable = getValue(context, statement.getExpr().accept(context, this, strict));
+        // if ( throwable instanceof Throwable ) {
+        // ((Throwable) throwable).printStackTrace();
+        // }
         throw new ThrowException(context, throwable);
     }
 
     @Override
-    public void visit(ExecutionContext context, TryStatement statement, boolean strict) {
+    public Object visit(Object context, TryStatement statement, boolean strict) {
         Completion b = null;
         boolean finallyExecuted = false;
         try {
             b = invokeCompiledBlockStatement(context, "Try", statement.getTryBlock());
-            push(b);
         } catch (ThrowException e) {
             if (statement.getCatchClause() != null) {
                 // BasicBlock catchBlock = new InterpretedStatement(statement.getCatchClause().getBlock(), strict);
                 BasicBlock catchBlock = compiledBlockStatement(context, "Catch", statement.getCatchClause().getBlock());
                 try {
-                    b = context.executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
+                    b = ((ExecutionContext) context).executeCatch(catchBlock, statement.getCatchClause().getIdentifier(), e.getValue());
                 } catch (ThrowException e2) {
                     if (statement.getFinallyBlock() != null) {
                         Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
                         if (f.type == Completion.Type.NORMAL) {
                             if (b != null) {
-                                push(b);
+                                return(b);
                             } else {
                                 throw e2;
                             }
                         } else {
-                            push(f);
-                            return;
+                            return(f);
+                            
                         }
                     } else {
                         throw e2;
@@ -1456,17 +1416,17 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                 Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
                 if (f.type == Completion.Type.NORMAL) {
                     if (b != null) {
-                        push(b);
+                        return(b);
                     } else {
                         throw e;
                     }
                 } else {
-                    push(f);
-                    return;
+                    return(f);
+                    
                 }
             } else {
                 if (b != null) {
-                    push(b);
+                    return(b);
                 } else {
                     throw e;
                 }
@@ -1476,82 +1436,83 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
         if (!finallyExecuted && statement.getFinallyBlock() != null) {
             Completion f = invokeCompiledBlockStatement(context, "Finally", statement.getFinallyBlock());
             if (f.type == Completion.Type.NORMAL) {
-                push(b);
+                return(b);
             } else {
-                push(f);
+                return(f);
             }
         }
 
+        return b;
     }
 
     @Override
-    public void visit(ExecutionContext context, TypeOfOpExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        push(Types.typeof(context, pop()));
+    public Object visit(Object context1, TypeOfOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        return(Types.typeof(context, expr.getExpr().accept(context, this, strict)));
     }
 
     @Override
-    public void visit(ExecutionContext context, UnaryMinusExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object value = getValue(context, pop());
+    public Object visit(Object context1, UnaryMinusExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        Object value = getValue(context, expr.getExpr().accept(context, this, strict));
         Number oldValue = Types.toNumber(context, value);
         if (oldValue instanceof Double) {
             if (Double.isNaN(oldValue.doubleValue())) {
-                push(Double.NaN);
+                return(Double.NaN);
             } else {
-                push(-1 * oldValue.doubleValue());
+                return(-1 * oldValue.doubleValue());
             }
         } else if (oldValue.longValue() == 0L) {
-            push(-0.0);
+            return(-0.0);
         } else {
-            push(-1 * oldValue.longValue());
+            return(-1 * oldValue.longValue());
         }
     }
 
     @Override
-    public void visit(ExecutionContext context, UnaryPlusExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        push(Types.toNumber(context, getValue(context, pop())));
+    public Object visit(Object context1, UnaryPlusExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        return(Types.toNumber(context, getValue(context, expr.getExpr().accept(context, this, strict))));
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableDeclaration expr, boolean strict) {
+    public Object visit(Object context1, VariableDeclaration expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (expr.getExpr() != null) {
-            expr.getExpr().accept(context, this, strict);
-            Object value = getValue(context, pop());
+            Object value = getValue(context, expr.getExpr().accept(context, this, strict));
             Reference var = context.resolve(expr.getIdentifier());
             var.putValue(context, value);
         }
-        push(expr.getIdentifier());
+        return(expr.getIdentifier());
     }
 
     @Override
-    public void visit(ExecutionContext context, VariableStatement statement, boolean strict) {
+    public Object visit(Object context, VariableStatement statement, boolean strict) {
         for (VariableDeclaration each : statement.getVariableDeclarations()) {
             each.accept(context, this, strict);
-            pop();
         }
 
-        push(Completion.createNormal(Types.UNDEFINED));
+        return(Completion.createNormal(Types.UNDEFINED));
     }
 
     @Override
-    public void visit(ExecutionContext context, VoidOperatorExpression expr, boolean strict) {
-        expr.getExpr().accept(context, this, strict);
-        Object value = getValue(context, pop());
-        push(Types.UNDEFINED);
+    public Object visit(Object context1, VoidOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        getValue(context, expr.getExpr().accept(context, this, strict));
+        return(Types.UNDEFINED);
     }
 
     @Override
-    public void visit(ExecutionContext context, WhileStatement statement, boolean strict) {
+    public Object visit(Object context1, WhileStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Expression testExpr = statement.getTest();
         Statement block = statement.getBlock();
 
         Object v = null;
 
         while (true) {
-            testExpr.accept(context, this, strict);
-            Boolean testResult = Types.toBoolean(getValue(context, pop()));
+
+            Boolean testResult = Types.toBoolean(getValue(context, testExpr.accept(context, this, strict)));
             if (testResult) {
                 // block.accept(context, this, strict);
                 // Completion completion = (Completion) pop();
@@ -1563,8 +1524,8 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     if (completion.target == null) {
                         continue;
                     } else if (!statement.getLabels().contains(completion.target)) {
-                        push(completion);
-                        return;
+                        return(completion);
+                        
                     } else {
                         continue;
                     }
@@ -1573,45 +1534,45 @@ public class BasicInterpretingVisitor implements InterpretingVisitor {
                     if (completion.target == null) {
                         break;
                     } else if (!statement.getLabels().contains(completion.target)) {
-                        push(completion);
-                        return;
+                        return(completion);
+                        
                     } else {
                         break;
                     }
 
                 }
                 if (completion.type == Completion.Type.RETURN) {
-                    push(Completion.createReturn(v));
-                    return;
+                    return(Completion.createReturn(v));
+                    
                 }
             } else {
                 break;
             }
         }
 
-        push(Completion.createNormal(v));
+        return(Completion.createNormal(v));
     }
 
     @Override
-    public void visit(ExecutionContext context, WithStatement statement, boolean strict) {
-        statement.getExpr().accept(context, this, strict);
-        JSObject obj = Types.toObject(context, getValue(context, pop()));
+    public Object visit(Object context1, WithStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        JSObject obj = Types.toObject(context, getValue(context, statement.getExpr().accept(context, this, strict)));
         BasicBlock block = compiledBlockStatement(context, "With", statement.getBlock());
-        push(context.executeWith(obj, block));
+        return(context.executeWith(obj, block));
     }
 
-    protected BasicBlock compiledBlockStatement(ExecutionContext context, String grist, Statement statement) {
+    protected BasicBlock compiledBlockStatement(Object context, String grist, Statement statement) {
         Entry entry = this.blockManager.retrieve(statement.getStatementNumber());
         if (entry.getCompiled() == null) {
-            BasicBlock compiledBlock = context.getCompiler().compileBasicBlock(context, grist, statement, context.isStrict());
+            BasicBlock compiledBlock = ((ExecutionContext) context).getCompiler().compileBasicBlock((ExecutionContext) context, grist, statement, ((ExecutionContext) context).isStrict());
             entry.setCompiled(compiledBlock);
         }
-        return (BasicBlock) entry.getCompiled();
+        return entry.getCompiled();
     }
 
-    protected Completion invokeCompiledBlockStatement(ExecutionContext context, String grist, Statement statement) {
+    protected Completion invokeCompiledBlockStatement(Object context, String grist, Statement statement) {
         BasicBlock block = compiledBlockStatement(context, grist, statement);
-        return block.call(context);
+        return block.call((ExecutionContext) context);
     }
 
     protected Object getValue(ExecutionContext context, Object obj) {

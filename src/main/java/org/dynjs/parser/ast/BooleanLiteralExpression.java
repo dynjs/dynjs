@@ -19,7 +19,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
-public class BooleanLiteralExpression extends BaseExpression {
+public class BooleanLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     private final boolean value;
 
@@ -41,7 +41,12 @@ public class BooleanLiteralExpression extends BaseExpression {
     }
 
     @Override
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit(context, this, strict);
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit(context, this, strict);
+    }
+
+    @Override
+    public String dumpData() {
+        return "" + value;
     }
 }

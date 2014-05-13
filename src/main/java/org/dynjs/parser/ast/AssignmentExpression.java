@@ -28,8 +28,8 @@ public class AssignmentExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit(context, this, strict);
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit(context, this, strict);
     }
 
     public String toString() {

@@ -8,7 +8,7 @@ import org.dynjs.parser.js.Position;
 import org.dynjs.parser.js.SyntaxError;
 import org.dynjs.runtime.ExecutionContext;
 
-public class RegexpLiteralExpression extends BaseExpression {
+public class RegexpLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
     static class RegexpLiteralExpressionParser {
         // \u0085 is not a line terminator in JS but is in Java regexes
@@ -73,7 +73,7 @@ public class RegexpLiteralExpression extends BaseExpression {
     }
 
     @Override
-    public void accept(ExecutionContext context, CodeVisitor visitor, boolean strict) {
-        visitor.visit(context, this, strict);
+    public Object accept(Object context, CodeVisitor visitor, boolean strict) {
+        return visitor.visit(context, this, strict);
     }
 }
