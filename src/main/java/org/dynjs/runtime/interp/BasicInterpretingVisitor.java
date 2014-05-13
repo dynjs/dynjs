@@ -304,7 +304,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
     @Override
     public Object visit(Object context1, BooleanLiteralExpression expr, boolean strict) {
-        ExecutionContext context = (ExecutionContext) context1;
         return(expr.getValue());
     }
 
@@ -476,7 +475,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
     @Override
     public Object visit(Object context1, FloatingNumberExpression expr, boolean strict) {
-        ExecutionContext context = (ExecutionContext) context1;
         return(expr.getValue());
     }
 
@@ -502,7 +500,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             Object lhsRef = statement.getExpr().accept(context, this, strict);
 
             if (lhsRef instanceof Reference) {
-                ((Reference) lhsRef).putValue((ExecutionContext) context, each);
+                ((Reference) lhsRef).putValue(context, each);
             }
 
 
@@ -552,8 +550,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             Object lhsRef = statement.getExpr().accept(context, this, strict);
 
             if (lhsRef instanceof Reference) {
-                Reference propertyRef = ((ExecutionContext) context).createPropertyReference(obj, each);
-                ((Reference) lhsRef).putValue((ExecutionContext) context, propertyRef.getValue((ExecutionContext) context));
+                Reference propertyRef = context.createPropertyReference(obj, each);
+                ((Reference) lhsRef).putValue(context, propertyRef.getValue(context));
             }
 
 
@@ -657,9 +655,9 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            Reference varRef = ((ExecutionContext) context).resolve(varName);
+            Reference varRef = context.resolve(varName);
 
-            varRef.putValue((ExecutionContext) context, each);
+            varRef.putValue(context, each);
 
             Completion completion = (Completion) statement.getBlock().accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
@@ -706,10 +704,10 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            Reference varRef = ((ExecutionContext) context).resolve(varName);
-            Reference propertyRef = ((ExecutionContext) context).createPropertyReference(obj, each);
+            Reference varRef = context.resolve(varName);
+            Reference propertyRef = context.createPropertyReference(obj, each);
 
-            varRef.putValue((ExecutionContext) context, propertyRef.getValue((ExecutionContext) context));
+            varRef.putValue(context, propertyRef.getValue(context));
 
             Completion completion = (Completion) statement.getBlock().accept(context, this, strict);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsOf", statement.getBlock());
@@ -809,7 +807,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
 
         if (!(function instanceof JSFunction)) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError(expr.getMemberExpression() + " is not calllable"));
+            throw new ThrowException(context, context.createTypeError(expr.getMemberExpression() + " is not calllable"));
         }
 
         Object thisValue = null;
@@ -822,7 +820,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             }
         }
 
-        return(((ExecutionContext) context).call(ref, (JSFunction) function, thisValue, args));
+        return(context.call(ref, (JSFunction) function, thisValue, args));
     }
 
     @Override
@@ -867,10 +865,10 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (!(rhs instanceof JSObject)) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError(expr.getRhs() + " is not an object"));
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
         }
 
-        return(((JSObject) rhs).hasProperty((ExecutionContext) context, Types.toString(context, lhs)));
+        return(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
     }
 
     @Override
@@ -880,10 +878,10 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (!(rhs instanceof JSObject)) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError(expr.getRhs() + " is not an object"));
+            throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not an object"));
         }
 
-        return(((JSObject) rhs).hasProperty((ExecutionContext) context, Types.toString(context, lhs)));
+        return(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
     }
 
     @Override
@@ -897,9 +895,9 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
         if (rhs instanceof JSObject) {
             if (!(rhs instanceof JSFunction)) {
-                throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError(expr.getRhs() + " is not a function"));
+                throw new ThrowException(context, context.createTypeError(expr.getRhs() + " is not a function"));
             }
-            return(((JSFunction) rhs).hasInstance((ExecutionContext) context, lhs));
+            return(((JSFunction) rhs).hasInstance(context, lhs));
         } else if (rhs instanceof Class) {
             Class clazz = (Class) rhs;
             return(lhs.getClass().getName().equals(clazz.getName()));
@@ -910,7 +908,6 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
     @Override
     public Object visit(Object context1, IntegerNumberExpression expr, boolean strict) {
-        ExecutionContext context = (ExecutionContext) context1;
         return(expr.getValue());
     }
 
@@ -942,7 +939,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
         Types.checkObjectCoercible(context, baseValue, propertyName);
 
-        return(((ExecutionContext) context).createPropertyReference(baseValue, propertyName));
+        return(context.createPropertyReference(baseValue, propertyName));
     }
 
     @Override
@@ -956,7 +953,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
 
         String propertyName = Types.toString(context, identifier);
 
-        return(((ExecutionContext) context).createPropertyReference(baseValue, propertyName));
+        return(context.createPropertyReference(baseValue, propertyName));
     }
 
     @Override
@@ -1075,10 +1072,10 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
 
         if (memberExpr instanceof JSFunction) {
-            return(((ExecutionContext) context).construct(ref, (JSFunction) memberExpr, args));
+            return(context.construct(ref, (JSFunction) memberExpr, args));
         }
 
-        throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("can only construct using functions"));
+        throw new ThrowException(context, context.createTypeError("can only construct using functions"));
     }
 
     @Override
@@ -1089,7 +1086,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     @Override
     public Object visit(Object context1, ObjectLiteralExpression expr, boolean strict) {
         ExecutionContext context = (ExecutionContext) context1;
-        DynObject obj = BuiltinObject.newObject((ExecutionContext) context);
+        DynObject obj = BuiltinObject.newObject(context);
 
         List<PropertyAssignment> assignments = expr.getPropertyAssignments();
 
@@ -1101,7 +1098,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
                 debugName = ((Reference) ref).getReferencedName();
             }
             Object value = getValue(context, ref);
-            Object original = obj.getOwnProperty((ExecutionContext) context, each.getName());
+            Object original = obj.getOwnProperty(context, each.getName());
             PropertyDescriptor desc = null;
             if (each instanceof PropertyGet) {
                 desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
@@ -1110,7 +1107,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             } else {
                 desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
             }
-            obj.defineOwnProperty((ExecutionContext) context, each.getName(), desc, false);
+            obj.defineOwnProperty(context, each.getName(), desc, false);
         }
 
         return(obj);
@@ -1125,7 +1122,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             if (((Reference) lhs).isStrictReference()) {
                 if (((Reference) lhs).getBase() instanceof EnvironmentRecord) {
                     if (((Reference) lhs).getReferencedName().equals("arguments") || ((Reference) lhs).getReferencedName().equals("eval")) {
-                        throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
                     }
                 }
             }
@@ -1153,7 +1150,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
                 }
             }
 
-            ((Reference) lhs).putValue((ExecutionContext) context, newValue);
+            ((Reference) lhs).putValue(context, newValue);
             return(oldValue);
         }
 
@@ -1169,7 +1166,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             if (((Reference) lhs).isStrictReference()) {
                 if (((Reference) lhs).getBase() instanceof EnvironmentRecord) {
                     if (((Reference) lhs).getReferencedName().equals("arguments") || ((Reference) lhs).getReferencedName().equals("eval")) {
-                        throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
                     }
                 }
             }
@@ -1197,7 +1194,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
                 }
             }
 
-            ((Reference) lhs).putValue((ExecutionContext) context, newValue);
+            ((Reference) lhs).putValue(context, newValue);
             return(newValue);
         }
 
@@ -1380,7 +1377,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         // if ( throwable instanceof Throwable ) {
         // ((Throwable) throwable).printStackTrace();
         // }
-        throw new ThrowException((ExecutionContext) context, throwable);
+        throw new ThrowException(context, throwable);
     }
 
     @Override
@@ -1483,8 +1480,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         ExecutionContext context = (ExecutionContext) context1;
         if (expr.getExpr() != null) {
             Object value = getValue(context, expr.getExpr().accept(context, this, strict));
-            Reference var = ((ExecutionContext) context).resolve(expr.getIdentifier());
-            var.putValue((ExecutionContext) context, value);
+            Reference var = context.resolve(expr.getIdentifier());
+            var.putValue(context, value);
         }
         return(expr.getIdentifier());
     }
@@ -1561,7 +1558,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         ExecutionContext context = (ExecutionContext) context1;
         JSObject obj = Types.toObject(context, getValue(context, statement.getExpr().accept(context, this, strict)));
         BasicBlock block = compiledBlockStatement(context, "With", statement.getBlock());
-        return(((ExecutionContext) context).executeWith(obj, block));
+        return(context.executeWith(obj, block));
     }
 
     protected BasicBlock compiledBlockStatement(Object context, String grist, Statement statement) {
@@ -1570,7 +1567,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             BasicBlock compiledBlock = ((ExecutionContext) context).getCompiler().compileBasicBlock((ExecutionContext) context, grist, statement, ((ExecutionContext) context).isStrict());
             entry.setCompiled(compiledBlock);
         }
-        return (BasicBlock) entry.getCompiled();
+        return entry.getCompiled();
     }
 
     protected Completion invokeCompiledBlockStatement(Object context, String grist, Statement statement) {
