@@ -113,7 +113,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
     }
 
-    public Object visitPlus(Object context, AdditiveExpression expr, boolean strict) {
+    public Object visitPlus(Object context1, AdditiveExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = Types.toPrimitive(context,
                 getValue(context, expr.getLhs().accept(context, this, strict)));
         Object rhs = Types.toPrimitive(context,
@@ -149,7 +150,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         return(lhsNum.longValue() + rhsNum.longValue());
     }
 
-    public Object visitMinus(Object context, AdditiveExpression expr, boolean strict) {
+    public Object visitMinus(Object context1, AdditiveExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Number lhs = Types.toNumber(context, getValue(context,
                 expr.getLhs().accept(context, this, strict)));
         Number rhs = Types.toNumber(context,
@@ -176,8 +178,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, BitwiseExpression expr, boolean strict) {
-
+    public Object visit(Object context1, BitwiseExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
 
         Long lhsNum = null;
@@ -220,45 +222,48 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ArrayLiteralExpression expr, boolean strict) {
-        DynArray array = BuiltinArray.newArray((ExecutionContext) context);
+    public Object visit(Object context1, ArrayLiteralExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+        DynArray array = BuiltinArray.newArray(context);
 
         int i = 0;
         for (Expression each : expr.getExprs()) {
             Object value = null;
             if (each != null) {
                 value = getValue(context, each.accept(context, this, strict));
-                array.defineOwnProperty((ExecutionContext) context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
+                array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             }
             ++i;
         }
-        array.put((ExecutionContext) context, "length", (long) i, true);
+        array.put(context, "length", (long) i, true);
 
         return(array);
     }
 
     @Override
-    public Object visit(Object context, AssignmentExpression expr, boolean strict) {
-
+    public Object visit(Object context1, AssignmentExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = expr.getLhs().accept(context, this, strict);
         if (!(lhs instanceof Reference)) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(expr.getLhs() + " is not a reference"));
+            throw new ThrowException(context, context.createReferenceError(expr.getLhs() + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
-        lhsRef.putValue((ExecutionContext) context, rhs);
+        lhsRef.putValue(context, rhs);
         return(rhs);
     }
 
     @Override
-    public Object visit(Object context, BitwiseInversionOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, BitwiseInversionOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(~Types.toInt32(context, getValue(context, expr.getExpr().accept(context, this, strict))));
     }
 
     @Override
-    public Object visit(Object context, BlockStatement statement, boolean strict) {
+    public Object visit(Object context1, BlockStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         List<Statement> content = statement.getBlockContent();
 
         Object completionValue = Types.UNDEFINED;
@@ -266,7 +271,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         for (Statement each : content) {
             Position position = each.getPosition();
             if (position != null) {
-                ((ExecutionContext) context).setLineNumber(position.getLine());
+                context.setLineNumber(position.getLine());
             }
 
 
@@ -298,7 +303,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, BooleanLiteralExpression expr, boolean strict) {
+    public Object visit(Object context1, BooleanLiteralExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(expr.getValue());
     }
 
@@ -326,8 +332,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, CompoundAssignmentExpression expr, boolean strict) {
-
+    public Object visit(Object context1, CompoundAssignmentExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object r = expr.getRootExpr().accept(context, this, strict);
         Object lref = expr.getRootExpr().getLhs().accept(context, this, strict);
 
@@ -335,17 +341,17 @@ public class BasicInterpretingVisitor implements CodeVisitor {
             if (((Reference) lref).isStrictReference()) {
                 if (((Reference) lref).getBase() instanceof EnvironmentRecord) {
                     if (((Reference) lref).getReferencedName().equals("arguments") || ((Reference) lref).getReferencedName().equals("eval")) {
-                        throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createSyntaxError("invalid assignment: " + ((Reference) lref).getReferencedName()));
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lref).getReferencedName()));
                     }
                 }
             }
 
-            ((Reference) lref).putValue((ExecutionContext) context, r);
+            ((Reference) lref).putValue(context, r);
             return(r);
             
         }
 
-        throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError("cannot assign to non-reference"));
+        throw new ThrowException(context, context.createReferenceError("cannot assign to non-reference"));
     }
 
     @Override
@@ -354,7 +360,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, DeleteOpExpression expr, boolean strict) {
+    public Object visit(Object context1, DeleteOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
 
         Object result = expr.getExpr().accept(context, this, strict);
         if (!(result instanceof Reference)) {
@@ -365,7 +372,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         Reference ref = (Reference) result;
         if (ref.isUnresolvableReference()) {
             if (strict) {
-                throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createSyntaxError("cannot delete unresolvable reference"));
+                throw new ThrowException(context, context.createSyntaxError("cannot delete unresolvable reference"));
             } else {
                 return(true);
                 
@@ -373,21 +380,22 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         }
 
         if (ref.isPropertyReference()) {
-            return(Types.toObject(context, ref.getBase()).delete((ExecutionContext) context, ref.getReferencedName(), ref.isStrictReference()));
+            return(Types.toObject(context, ref.getBase()).delete(context, ref.getReferencedName(), ref.isStrictReference()));
             
         }
 
         if (ref.isStrictReference()) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createSyntaxError("cannot delete from environment record binding"));
+            throw new ThrowException(context, context.createSyntaxError("cannot delete from environment record binding"));
         }
 
         EnvironmentRecord bindings = (EnvironmentRecord) ref.getBase();
 
-        return(bindings.deleteBinding((ExecutionContext) context, ref.getReferencedName()));
+        return(bindings.deleteBinding(context, ref.getReferencedName()));
     }
 
     @Override
-    public Object visit(Object context, DoWhileStatement statement, boolean strict) {
+    public Object visit(Object context1, DoWhileStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Expression testExpr = statement.getTest();
         Statement block = statement.getBlock();
 
@@ -435,8 +443,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, EqualityOperatorExpression expr, boolean strict) {
-
+    public Object visit(Object context1, EqualityOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
@@ -448,15 +456,16 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, CommaOperator expr, boolean strict) {
-
+    public Object visit(Object context1, CommaOperator expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         getValue(context, expr.getLhs().accept(context, this, strict));
         return(getValue(context, expr.getRhs().accept(context, this, strict)));
         // leave RHS on the stack
     }
 
     @Override
-    public Object visit(Object context, ExpressionStatement statement, boolean strict) {
+    public Object visit(Object context1, ExpressionStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Expression expr = statement.getExpr();
         if (expr instanceof FunctionDeclaration) {
             return(Completion.createNormal());
@@ -466,12 +475,14 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, FloatingNumberExpression expr, boolean strict) {
+    public Object visit(Object context1, FloatingNumberExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(expr.getValue());
     }
 
     @Override
-    public Object visit(Object context, ForExprInStatement statement, boolean strict) {
+    public Object visit(Object context1, ForExprInStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
 
@@ -521,7 +532,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ForExprOfStatement statement, boolean strict) {
+    public Object visit(Object context1, ForExprOfStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
 
@@ -571,7 +583,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ForExprStatement statement, boolean strict) {
+    public Object visit(Object context1, ForExprStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (statement.getExpr() != null) {
             statement.getExpr().accept(context, this, strict);
         }
@@ -626,7 +639,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ForVarDeclInStatement statement, boolean strict) {
+    public Object visit(Object context1, ForVarDeclInStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         String varName = (String) statement.getDeclaration().accept(context, this, strict);
         Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
@@ -674,7 +688,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ForVarDeclOfStatement statement, boolean strict) {
+    public Object visit(Object context1, ForVarDeclOfStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         String varName = (String) statement.getDeclaration().accept(context, this, strict);
         Object exprRef = statement.getRhs().accept(context, this, strict);
         Object exprValue = getValue(context, exprRef);
@@ -723,8 +738,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ForVarDeclStatement statement, boolean strict) {
-
+    public Object visit(Object context1, ForVarDeclStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         List<VariableDeclaration> decls = statement.getDeclarationList();
         for (VariableDeclaration each : decls) {
             each.accept(context, this, strict);
@@ -779,7 +794,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
+    public Object visit(Object context1, FunctionCallExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object ref = expr.getMemberExpression().accept(context, this, strict);
         Object function = getValue(context, ref);
         List<Expression> argExprs = expr.getArgumentExpressions();
@@ -830,7 +846,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, IfStatement statement, boolean strict) {
+    public Object visit(Object context1, IfStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Boolean result = Types.toBoolean(getValue(context,
                 statement.getTest().accept(context, this, strict)));
 
@@ -844,7 +861,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, InOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, InOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
@@ -856,7 +874,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, OfOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, OfOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
@@ -868,7 +887,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, InstanceofExpression expr, boolean strict) {
+    public Object visit(Object context1, InstanceofExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
@@ -886,12 +906,14 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, IntegerNumberExpression expr, boolean strict) {
+    public Object visit(Object context1, IntegerNumberExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(expr.getValue());
     }
 
     @Override
-    public Object visit(Object context, LogicalExpression expr, boolean strict) {
+    public Object visit(Object context1, LogicalExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
 
         if ((expr.getOp().equals("||") && Types.toBoolean(lhs)) || (expr.getOp().equals("&&") && !Types.toBoolean(lhs))) {
@@ -902,13 +924,14 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, LogicalNotOperatorExpression expr, boolean strict) {
-
+    public Object visit(Object context1, LogicalNotOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(!Types.toBoolean(getValue(context, expr.getExpr().accept(context, this, strict))));
     }
 
     @Override
-    public Object visit(Object context, DotExpression expr, boolean strict) {
+    public Object visit(Object context1, DotExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object baseRef = expr.getLhs().accept(context, this, strict);
         Object baseValue = getValue(context, baseRef);
 
@@ -920,7 +943,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, BracketExpression expr, boolean strict) {
+    public Object visit(Object context1, BracketExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object baseRef = expr.getLhs().accept(context, this, strict);
         Object baseValue = getValue(context, baseRef);
         Object identifier = getValue(context, expr.getRhs().accept(context, this, strict));
@@ -933,7 +957,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, MultiplicativeExpression expr, boolean strict) {
+    public Object visit(Object context1, MultiplicativeExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Number lval = Types.toNumber(context, getValue(context, expr.getLhs().accept(context, this, strict)));
         Number rval = Types.toNumber(context, getValue(context, expr.getRhs().accept(context, this, strict)));
 
@@ -1033,7 +1058,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, NewOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object ref = expr.getExpr().accept(context, this, strict);
         Object memberExpr = getValue(context, ref);
         Object[] args = new Object[expr.getArgumentExpressions().size()];
@@ -1058,7 +1084,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ObjectLiteralExpression expr, boolean strict) {
+    public Object visit(Object context1, ObjectLiteralExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         DynObject obj = BuiltinObject.newObject((ExecutionContext) context);
 
         List<PropertyAssignment> assignments = expr.getPropertyAssignments();
@@ -1087,7 +1114,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, PostOpExpression expr, boolean strict) {
+    public Object visit(Object context1, PostOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = expr.getExpr().accept(context, this, strict);
 
         if (lhs instanceof Reference) {
@@ -1130,7 +1158,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, PreOpExpression expr, boolean strict) {
+    public Object visit(Object context1, PreOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = expr.getExpr().accept(context, this, strict);
 
         if (lhs instanceof Reference) {
@@ -1203,7 +1232,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, RelationalExpression expr, boolean strict) {
+    public Object visit(Object context1, RelationalExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lval = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rval = getValue(context, expr.getRhs().accept(context, this, strict));
         Object r = null;
@@ -1246,7 +1276,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ReturnStatement statement, boolean strict) {
+    public Object visit(Object context1, ReturnStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (statement.getExpr() != null) {
             Object value = statement.getExpr().accept(context, this, strict);
             return(Completion.createReturn(getValue(context, value)));
@@ -1256,7 +1287,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, StrictEqualityOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, StrictEqualityOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object lhs = getValue(context, expr.getLhs().accept(context, this, strict));
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
@@ -1275,7 +1307,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, SwitchStatement statement, boolean strict) {
+    public Object visit(Object context1, SwitchStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object value = getValue(context, statement.getExpr().accept(context, this, strict));
         Object v = null;
 
@@ -1323,7 +1356,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, TernaryExpression expr, boolean strict) {
+    public Object visit(Object context1, TernaryExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (Types.toBoolean(getValue(context, expr.getTest().accept(context, this, strict)))) {
             return expr.getThenExpr().accept(context, this, strict);
         } else {
@@ -1337,7 +1371,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, ThrowStatement statement, boolean strict) {
+    public Object visit(Object context1, ThrowStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object throwable = getValue(context, statement.getExpr().accept(context, this, strict));
         // if ( throwable instanceof Throwable ) {
         // ((Throwable) throwable).printStackTrace();
@@ -1411,12 +1446,14 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, TypeOfOpExpression expr, boolean strict) {
+    public Object visit(Object context1, TypeOfOpExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(Types.typeof(context, expr.getExpr().accept(context, this, strict)));
     }
 
     @Override
-    public Object visit(Object context, UnaryMinusExpression expr, boolean strict) {
+    public Object visit(Object context1, UnaryMinusExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object value = getValue(context, expr.getExpr().accept(context, this, strict));
         Number oldValue = Types.toNumber(context, value);
         if (oldValue instanceof Double) {
@@ -1433,12 +1470,14 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, UnaryPlusExpression expr, boolean strict) {
+    public Object visit(Object context1, UnaryPlusExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         return(Types.toNumber(context, getValue(context, expr.getExpr().accept(context, this, strict))));
     }
 
     @Override
-    public Object visit(Object context, VariableDeclaration expr, boolean strict) {
+    public Object visit(Object context1, VariableDeclaration expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         if (expr.getExpr() != null) {
             Object value = getValue(context, expr.getExpr().accept(context, this, strict));
             Reference var = ((ExecutionContext) context).resolve(expr.getIdentifier());
@@ -1457,13 +1496,15 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, VoidOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, VoidOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         getValue(context, expr.getExpr().accept(context, this, strict));
         return(Types.UNDEFINED);
     }
 
     @Override
-    public Object visit(Object context, WhileStatement statement, boolean strict) {
+    public Object visit(Object context1, WhileStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Expression testExpr = statement.getTest();
         Statement block = statement.getBlock();
 
@@ -1513,7 +1554,8 @@ public class BasicInterpretingVisitor implements CodeVisitor {
     }
 
     @Override
-    public Object visit(Object context, WithStatement statement, boolean strict) {
+    public Object visit(Object context1, WithStatement statement, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         JSObject obj = Types.toObject(context, getValue(context, statement.getExpr().accept(context, this, strict)));
         BasicBlock block = compiledBlockStatement(context, "With", statement.getBlock());
         return(((ExecutionContext) context).executeWith(obj, block));
@@ -1533,7 +1575,7 @@ public class BasicInterpretingVisitor implements CodeVisitor {
         return block.call((ExecutionContext) context);
     }
 
-    protected Object getValue(Object context, Object obj) {
+    protected Object getValue(ExecutionContext context, Object obj) {
         return Types.getValue(context, obj);
     }
 

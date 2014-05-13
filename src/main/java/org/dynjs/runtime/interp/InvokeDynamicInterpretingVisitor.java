@@ -18,26 +18,27 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public Object visit(Object context, AssignmentExpression expr, boolean strict) {
+    public Object visit(Object context1, AssignmentExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         
         Object lhs = expr.getLhs().accept(context, this, strict);
         if (!(lhs instanceof Reference)) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(expr.getLhs() + " is not a reference"));
+            throw new ThrowException(context, context.createReferenceError(expr.getLhs() + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
         Object rhs = getValue(context, expr.getRhs().accept(context, this, strict));
 
         if (lhsRef.isUnresolvableReference() && strict) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhsRef.getReferencedName() + " is not defined"));
+            throw new ThrowException(context, context.createReferenceError(lhsRef.getReferencedName() + " is not defined"));
         }
 
         try {
-            DynJSBootstrapper.getInvokeHandler().set(lhsRef, (ExecutionContext) context, lhsRef.getReferencedName(), rhs);
+            DynJSBootstrapper.getInvokeHandler().set(lhsRef, context, lhsRef.getReferencedName(), rhs);
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ThrowException((ExecutionContext) context, e);
+            throw new ThrowException(context, e);
         }
         return(rhs);
 
@@ -47,7 +48,9 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
     }
 
     @Override
-    public Object visit(Object context, FunctionCallExpression expr, boolean strict) {
+    public Object visit(Object context1, FunctionCallExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
+
         Object ref = expr.getMemberExpression().accept(context, this, strict);
         Object function = getValue(context, ref);
 
@@ -82,18 +85,19 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         try {
-            return(DynJSBootstrapper.getInvokeHandler().call(function, (ExecutionContext) context, thisValue, args));
+            return(DynJSBootstrapper.getInvokeHandler().call(function, context, thisValue, args));
         } catch (ThrowException e) {
             throw e;
         } catch (NoSuchMethodError e) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("not callable: " + function.toString()));
+            throw new ThrowException(context, context.createTypeError("not callable: " + function.toString()));
         } catch (Throwable e) {
-            throw new ThrowException((ExecutionContext) context, e);
+            throw new ThrowException(context, e);
         }
     }
 
     @Override
-    public Object visit(Object context, NewOperatorExpression expr, boolean strict) {
+    public Object visit(Object context1, NewOperatorExpression expr, boolean strict) {
+        ExecutionContext context = (ExecutionContext) context1;
         Object ref = expr.getExpr().accept(context, this, strict);
         Object memberExpr = getValue(context, ref);
         Object[] args = new Object[expr.getArgumentExpressions().size()];
@@ -112,16 +116,17 @@ public class InvokeDynamicInterpretingVisitor extends BasicInterpretingVisitor {
         }
 
         try {
-            return( DynJSBootstrapper.getInvokeHandler().construct(ctor, (ExecutionContext) context, args) );
+            return( DynJSBootstrapper.getInvokeHandler().construct(ctor, context, args) );
         } catch (NoSuchMethodError e) {
-            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("cannot construct with: " + ref));
+            throw new ThrowException(context, context.createTypeError("cannot construct with: " + ref));
         } catch (ThrowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ThrowException((ExecutionContext) context, e);
+            throw new ThrowException(context, e);
         }
     }
 
+    @Override
     protected Object getValue(ExecutionContext context, Object obj) {
         if (obj instanceof Reference) {
             Reference ref = (Reference) obj;
