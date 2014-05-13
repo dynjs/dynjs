@@ -77,15 +77,17 @@ public class Main {
                 return;
             }
 
-            if (!dynJsArguments.getEval().isEmpty()) {
-                executeSource(dynJsArguments.getEval());
+            /*
+            if (!getArguments().getEval().isEmpty()) {
+                executeSource(getArguments().getEval());
                 return;
-            } else if (dynJsArguments.getFilename() != null) {
-                executeFile(new File(dynJsArguments.getFilename()));
+            } else if (getArguments().getFilename() != null) {
+                executeFile(new File(getArguments().getFilename()));
                 return;
             } else {
                 stream.println("please specify source to eval or file");
             }
+            */
 
             if (!getArguments().getEval().isEmpty()) {
                 executeSource(getArguments().getEval());
