@@ -3,6 +3,7 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 
 public class PropertySet extends PropertyAccessor {
 
@@ -24,5 +25,15 @@ public class PropertySet extends PropertyAccessor {
     
     public int getSizeMetric() {
         return super.getSizeMetric() + 1;
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
+                null,
+                new String[]{getIdentifier()},
+                getBlock(),
+                context.isStrict());
+        return(compiledFn);
     }
 }

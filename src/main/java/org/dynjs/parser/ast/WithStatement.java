@@ -15,14 +15,18 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class WithStatement extends BaseStatement {
+
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     private final Expression expr;
     private final Statement block;
@@ -44,7 +48,14 @@ public class WithStatement extends BaseStatement {
     public int getSizeMetric() {
         return this.expr.getSizeMetric() + 3;
     }
-    
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        JSObject obj = Types.toObject(context, getValue(this.get, context, getExpr().interpret(context)));
+        BasicBlock block = compiledBlockStatement(context, "With", getBlock());
+        return(context.executeWith(obj, block));
+    }
+
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }

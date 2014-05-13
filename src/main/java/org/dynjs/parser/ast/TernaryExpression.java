@@ -18,12 +18,18 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class TernaryExpression extends AbstractExpression {
 
     private final Expression vbool;
     private final Expression vthen;
     private final Expression velse;
+
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public TernaryExpression(final Expression vbool, final Expression vthen, final Expression velse) {
         this.vbool = vbool;
@@ -49,6 +55,15 @@ public class TernaryExpression extends AbstractExpression {
     
     public int getSizeMetric() {
         return this.vbool.getSizeMetric() + this.vthen.getSizeMetric() + this.velse.getSizeMetric() + 5;
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        if (Types.toBoolean(getValue(this.get, context, getTest().interpret(context))) ) {
+            return getThenExpr().interpret(context);
+        } else {
+            return getElseExpr().interpret(context);
+        }
     }
 
     public String toString() {

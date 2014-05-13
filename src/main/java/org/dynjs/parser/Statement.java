@@ -20,6 +20,7 @@ import java.util.List;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public interface Statement {
@@ -41,4 +42,6 @@ public interface Statement {
     Object accept(Object context, CodeVisitor visitor, boolean strict);
     
     int getSizeMetric();
+
+    Completion interpret(ExecutionContext context);
 }

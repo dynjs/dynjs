@@ -15,19 +15,25 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class IfStatement extends BaseStatement {
 
     private final Expression testExpr;
     private final Statement thenBlock;
     private final Statement elseBlock;
+
+    private final CallSite testGet = DynJSBootstrapper.factory().createGet();
 
     public IfStatement(Position position, final Expression testExpr, final Statement thenBlock, final Statement elseBlock) {
         super( position );
@@ -92,4 +98,17 @@ public class IfStatement extends BaseStatement {
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
+
+    public Completion interpret(ExecutionContext context) {
+        Boolean result = Types.toBoolean(getValue(this.testGet, context, getTest().interpret(context)));
+
+        if (result) {
+            return(invokeCompiledBlockStatement(context, "Then", getThenBlock()));
+        } else if (getElseBlock() != null) {
+            return(invokeCompiledBlockStatement(context, "Else", getElseBlock()));
+        } else {
+            return(Completion.createNormal());
+        }
+    }
+
 }

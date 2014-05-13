@@ -18,11 +18,16 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
+import java.util.List;
 
 public class ForExprOfStatement extends AbstractForInStatement {
 
     private final Expression expr;
+    private CallSite exprGet = DynJSBootstrapper.factory().createGet();
 
     public ForExprOfStatement(Position position, final Expression expr, final Expression rhs, final Statement block) {
         super(position, rhs, block);
@@ -54,6 +59,56 @@ public class ForExprOfStatement extends AbstractForInStatement {
         }
         
         return size;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Object exprRef = getRhs().interpret(context);
+        Object exprValue = getValue(this.exprGet, context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            return(Completion.createNormal());
+
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+            Object lhsRef = getExpr().interpret(context);
+
+            if (lhsRef instanceof Reference) {
+                Reference propertyRef = context.createPropertyReference(obj, each);
+                ((Reference) lhsRef).putValue(context, propertyRef.getValue(context));
+            }
+
+
+            Completion completion = (Completion) getBlock().interpret(context);
+            //Completion completion = invokeCompiledBlockStatement(context, "ForOf", statement.getBlock());
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || getLabels().contains(completion.target)) {
+                    return(Completion.createNormal(v));
+                } else {
+                    return(completion);
+                }
+
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                return(completion);
+
+            }
+        }
+
+        return(Completion.createNormal(v));
     }
 
 }

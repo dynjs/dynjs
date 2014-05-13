@@ -3,9 +3,12 @@ package org.dynjs.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.BasicBlock;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public class TryStatement extends BaseStatement {
@@ -47,6 +50,72 @@ public class TryStatement extends BaseStatement {
 
     public int getSizeMetric() {
         return 7;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Completion b = null;
+        boolean finallyExecuted = false;
+        try {
+            b = invokeCompiledBlockStatement(context, "Try", getTryBlock());
+        } catch (ThrowException e) {
+            if (getCatchClause() != null) {
+                // BasicBlock catchBlock = new InterpretedStatement(statement.getCatchClause().getBlock(), strict);
+                BasicBlock catchBlock = compiledBlockStatement(context, "Catch", getCatchClause().getBlock());
+                try {
+                    b = ((ExecutionContext) context).executeCatch(catchBlock, getCatchClause().getIdentifier(), e.getValue());
+                } catch (ThrowException e2) {
+                    if (getFinallyBlock() != null) {
+                        Completion f = invokeCompiledBlockStatement(context, "Finally", getFinallyBlock());
+                        if (f.type == Completion.Type.NORMAL) {
+                            if (b != null) {
+                                return(b);
+                            } else {
+                                throw e2;
+                            }
+                        } else {
+                            return(f);
+
+                        }
+                    } else {
+                        throw e2;
+                    }
+                }
+            }
+
+            if (getFinallyBlock() != null) {
+                finallyExecuted = true;
+                Completion f = invokeCompiledBlockStatement(context, "Finally", getFinallyBlock());
+                if (f.type == Completion.Type.NORMAL) {
+                    if (b != null) {
+                        return(b);
+                    } else {
+                        throw e;
+                    }
+                } else {
+                    return(f);
+
+                }
+            } else {
+                if (b != null) {
+                    return(b);
+                } else {
+                    throw e;
+                }
+            }
+        }
+
+        if (!finallyExecuted && getFinallyBlock() != null) {
+            Completion f = invokeCompiledBlockStatement(context, "Finally", getFinallyBlock());
+            if (f.type == Completion.Type.NORMAL) {
+                return(b);
+            } else {
+                return(f);
+            }
+        }
+
+        return b;
+
     }
 
     public String toIndentedString(String indent) {

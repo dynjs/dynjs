@@ -15,16 +15,23 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class AssignmentExpression extends AbstractBinaryExpression {
 
+    private final CallSite get;
+
     public AssignmentExpression(final Expression lhs, final Expression rhs) {
         super(lhs, rhs, "=");
+        this.get = DynJSBootstrapper.factory().createGet();
     }
 
     @Override
@@ -43,5 +50,29 @@ public class AssignmentExpression extends AbstractBinaryExpression {
             return decls;
         }
         return super.getFunctionDeclarations();
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object lhs = getLhs().interpret(context);
+        if (!(lhs instanceof Reference)) {
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhs + " is not a reference"));
+        }
+
+        Reference lhsRef = (Reference) lhs;
+        Object rhs = getValue(this.get, context, getRhs().interpret(context));
+
+        if (lhsRef.isUnresolvableReference() && context.isStrict()) {
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhsRef.getReferencedName() + " is not defined"));
+        }
+
+        try {
+            DynJSBootstrapper.getInvokeHandler().set(lhsRef, (ExecutionContext) context, lhsRef.getReferencedName(), rhs);
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ThrowException((ExecutionContext) context, e);
+        }
+        return(rhs);
     }
 }

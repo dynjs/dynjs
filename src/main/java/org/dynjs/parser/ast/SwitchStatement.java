@@ -15,23 +15,33 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class SwitchStatement extends BaseStatement {
 
     private Expression expr;
+    private final CallSite valueGet = DynJSBootstrapper.factory().createGet();
     private List<CaseClause> caseClauses;
+    private List<CallSite> caseGets;
 
     public SwitchStatement(Position position, Expression expr, List<CaseClause> caseClauses) {
         super(position);
         this.expr = expr;
         this.caseClauses = caseClauses;
+        this.caseGets = new ArrayList<>();
+        for ( CaseClause each : this.caseClauses ) {
+            this.caseGets.add(DynJSBootstrapper.factory().createGet() );
+        }
     }
 
     public Expression getExpr() {
@@ -58,6 +68,56 @@ public class SwitchStatement extends BaseStatement {
         }
         
         return size + 11;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Object value = getValue(this.valueGet, context, getExpr().interpret(context));
+        Object v = null;
+
+        int numClauses = getCaseClauses().size();
+
+        int startIndex = -1;
+        int defaultIndex = -1;
+
+        for (int i = 0; i < numClauses; ++i) {
+            CaseClause each = this.caseClauses.get(i);
+            CallSite eachGet = this.caseGets.get(i);
+            if (each instanceof DefaultCaseClause) {
+                defaultIndex = i;
+                continue;
+            }
+
+            Object caseTest = each.getExpression().interpret(context);
+            if (Types.compareStrictEquality(context, value, getValue(eachGet, context, caseTest))) {
+                startIndex = i;
+                break;
+            }
+        }
+
+        if (startIndex < 0 && defaultIndex >= 0) {
+            startIndex = defaultIndex;
+        }
+
+        if (startIndex >= 0) {
+            for (int i = startIndex; i < numClauses; ++i) {
+                CaseClause each = getCaseClauses().get(i);
+                if (each.getBlock() != null) {
+                    Completion completion = (Completion) each.getBlock().interpret(context);
+                    v = completion.value;
+
+                    if (completion.type == Completion.Type.BREAK) {
+                        break;
+                    } else if (completion.type == Completion.Type.RETURN) {
+                        return(completion);
+
+                    }
+                }
+            }
+        }
+
+        return(Completion.createNormal(v));
+
     }
 
     public String toIndentedString(String indent) {

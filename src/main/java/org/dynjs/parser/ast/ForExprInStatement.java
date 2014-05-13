@@ -18,17 +18,22 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
+import java.util.List;
 
 public class ForExprInStatement extends AbstractForInStatement {
 
     private final Expression expr;
+    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public ForExprInStatement(Position position, final Expression expr, final Expression rhs, final Statement block) {
         super(position, rhs, block);
         this.expr = expr;
     }
-    
+
     public Expression getExpr() {
         return this.expr;
     }
@@ -40,20 +45,67 @@ public class ForExprInStatement extends AbstractForInStatement {
         buf.append(indent).append("}");
         return buf.toString();
     }
-    
-    @Override
+
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
     }
-    
+
     public int getSizeMetric() {
         int size = super.getSizeMetric();
-        
-        if ( this.expr != null ) {
+
+        if (this.expr != null) {
             size += this.expr.getSizeMetric();
         }
-        
+
         return size;
     }
 
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Object exprRef = getRhs().interpret(context);
+        Object exprValue = getValue(this.rhsGet, context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            return (Completion.createNormal());
+
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+
+            Object lhsRef = getExpr().interpret(context);
+
+            if (lhsRef instanceof Reference) {
+                ((Reference) lhsRef).putValue(context, each);
+            }
+
+
+            Completion completion = (Completion) getBlock().interpret(context);
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || getLabels().contains(completion.target)) {
+                    return (Completion.createNormal(v));
+                } else {
+                    return (completion);
+                }
+
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                return (completion);
+
+            }
+        }
+        return (Completion.createNormal(v));
+
+    }
 }

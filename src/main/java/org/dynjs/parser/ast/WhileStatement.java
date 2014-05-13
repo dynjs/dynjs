@@ -15,14 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class WhileStatement extends AbstractIteratingStatement {
+
+    private final CallSite testGet = DynJSBootstrapper.factory().createGet();
 
     private final Expression vbool;
     private final Statement vloop;
@@ -47,6 +53,56 @@ public class WhileStatement extends AbstractIteratingStatement {
     
     public int getSizeMetric() {
         return vbool.getSizeMetric() + 7;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Expression testExpr = getTest();
+        Statement block = getBlock();
+
+        Object v = null;
+
+        while (true) {
+
+            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context)));
+            if (testResult) {
+                // block.accept(context, this, strict);
+                // Completion completion = (Completion) pop();
+                Completion completion = invokeCompiledBlockStatement(context, "While", block);
+                if (completion.value != null) {
+                    v = completion.value;
+                }
+                if (completion.type == Completion.Type.CONTINUE) {
+                    if (completion.target == null) {
+                        continue;
+                    } else if (!getLabels().contains(completion.target)) {
+                        return(completion);
+
+                    } else {
+                        continue;
+                    }
+                }
+                if (completion.type == Completion.Type.BREAK) {
+                    if (completion.target == null) {
+                        break;
+                    } else if (!getLabels().contains(completion.target)) {
+                        return(completion);
+
+                    } else {
+                        break;
+                    }
+
+                }
+                if (completion.type == Completion.Type.RETURN) {
+                    return(Completion.createReturn(v));
+
+                }
+            } else {
+                break;
+            }
+        }
+
+        return(Completion.createNormal(v));
     }
 
     public String toIndentedString(String indent) {

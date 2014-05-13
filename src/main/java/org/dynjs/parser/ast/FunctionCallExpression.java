@@ -15,21 +15,38 @@
  */
 package org.dynjs.parser.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.dynjs.codegen.DereferencedReference;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FunctionCallExpression extends AbstractExpression {
 
     private final Expression memberExpr;
     private final List<Expression> argExprs;
 
+    private final CallSite functionGet = DynJSBootstrapper.factory().createGet();
+    private final List<CallSite> argGets;
+    private final CallSite functionCall;
+
     public FunctionCallExpression(Expression memberExpr, List<Expression> argExprs) {
         this.memberExpr = memberExpr;
         this.argExprs = argExprs;
+        this.argGets = new ArrayList<>();
+        for ( Expression each : argExprs ) {
+            this.argGets.add( DynJSBootstrapper.factory().createGet() );
+        }
+        this.functionCall = DynJSBootstrapper.factory().createCall();
     }
     
     public Position getPosition() {
@@ -53,7 +70,55 @@ public class FunctionCallExpression extends AbstractExpression {
         
         return size + 5;
     }
-    
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object ref = getMemberExpression().interpret(context);
+        Object function = getValue(this.functionGet, context, ref);
+
+        List<Expression> argExprs = getArgumentExpressions();
+
+        Object[] args = new Object[argExprs.size()];
+
+        int numArgs = argExprs.size();
+        for ( int i = 0 ; i < numArgs ; ++i ) {
+            Expression each = this.argExprs.get(i);
+            CallSite eachGet = this.argGets.get(i);
+            Object value = getValue(eachGet, context, each.interpret(context));
+            //System.err.println( "ARG: " + i + " -> " + each + " // " + value );
+            args[i] = value;
+        }
+
+        Object thisValue = null;
+
+        if (ref instanceof Reference) {
+            if (((Reference) ref).isPropertyReference()) {
+                thisValue = ((Reference) ref).getBase();
+            } else {
+                thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
+            }
+        }
+
+        if (thisValue == null) {
+            thisValue = Types.UNDEFINED;
+        }
+
+        if (ref instanceof Reference) {
+            function = new DereferencedReference((Reference) ref, function);
+        }
+
+        try {
+            //System.err.println( "CALL: "+ function + " // " + thisValue + " :: " + Arrays.asList( args ) );
+            return this.functionCall.getTarget().invoke( function, context, thisValue, args);
+        } catch (ThrowException e) {
+            throw e;
+        } catch (NoSuchMethodError e) {
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("not callable: " + function.toString()));
+        } catch (Throwable e) {
+            throw new ThrowException((ExecutionContext) context, e);
+        }
+    }
+
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(this.memberExpr).append("(");

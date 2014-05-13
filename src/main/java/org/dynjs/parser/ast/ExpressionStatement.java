@@ -15,16 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class ExpressionStatement extends AbstractStatement {
 
     private final Expression expr;
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public ExpressionStatement(final Expression expr) {
         this.expr = expr;
@@ -40,6 +44,16 @@ public class ExpressionStatement extends AbstractStatement {
 
     public int getSizeMetric() {
         return this.expr.getSizeMetric() + 1;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Expression expr = getExpr();
+        if (expr instanceof FunctionDeclaration) {
+            return(Completion.createNormal());
+        } else {
+            return(Completion.createNormal(getValue(this.get, context, expr.interpret(context))));
+        }
     }
 
     public String dump(String indent) {

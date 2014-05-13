@@ -15,20 +15,28 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.builtins.types.BuiltinObject;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class ObjectLiteralExpression extends BaseExpression {
 
     private final List<PropertyAssignment> propertyAssignments;
+    private final List<CallSite> assignmentGets;
 
     public ObjectLiteralExpression(Position position, final List<PropertyAssignment> propertyAssignments) {
         super(position);
         this.propertyAssignments = propertyAssignments;
+        this.assignmentGets = new ArrayList<>();
+        for ( PropertyAssignment each : propertyAssignments ) {
+            this.assignmentGets.add(DynJSBootstrapper.factory().createGet() );
+        }
     }
     
     public List<PropertyAssignment> getPropertyAssignments() {
@@ -43,6 +51,38 @@ public class ObjectLiteralExpression extends BaseExpression {
             }
         }
         return decls;
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        DynObject obj = BuiltinObject.newObject(context);
+
+        int numAssignments = this.propertyAssignments.size();
+
+        //for (PropertyAssignment each : assignments) {
+        for ( int i = 0 ; i < numAssignments ; ++i ) {
+            PropertyAssignment each = this.propertyAssignments.get(i);
+            CallSite eachGet = assignmentGets.get(i);
+            Object ref = each.interpret( context );
+            String debugName = each.getName();
+
+            if (ref instanceof Reference) {
+                debugName = ((Reference) ref).getReferencedName();
+            }
+            Object value = getValue(eachGet, context, ref);
+            Object original = obj.getOwnProperty(context, each.getName());
+            PropertyDescriptor desc = null;
+            if (each instanceof PropertyGet) {
+                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
+            } else if (each instanceof PropertySet) {
+                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, debugName, (JSFunction) value);
+            } else {
+                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
+            }
+            obj.defineOwnProperty(context, each.getName(), desc, false);
+        }
+
+        return(obj);
     }
 
     public String toString() {

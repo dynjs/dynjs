@@ -1,10 +1,16 @@
 package org.dynjs.parser.ast;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VariableDeclaration {
     public static final List<VariableDeclaration> EMPTY_LIST = new ArrayList<>();
@@ -12,6 +18,7 @@ public class VariableDeclaration {
     private Position position;
     private String identifier;
     private Expression expr;
+    private CallSite get = DynJSBootstrapper.factory().createGet();
 
     public VariableDeclaration(Position position, String identifier, Expression initializerExpr) {
         this.position = position;
@@ -46,6 +53,16 @@ public class VariableDeclaration {
         return visitor.visit(context, this, strict);
     }
 
+    public String interpret(ExecutionContext context) {
+        if (getExpr() != null) {
+            Object value = getValue(this.get, context, getExpr().interpret(context));
+            Reference var = context.resolve(getIdentifier());
+            var.putValue(context, value);
+        }
+        return(getIdentifier());
+
+    }
+
     public int getSizeMetric() {
         if (this.expr != null) {
             return this.expr.getSizeMetric() + 3;
@@ -63,5 +80,28 @@ public class VariableDeclaration {
         return buf.toString();
 
     }
+
+    protected Object getValue(CallSite callSite, ExecutionContext context, Object obj) {
+        if (obj instanceof Reference) {
+            Reference ref = (Reference) obj;
+            String name = ref.getReferencedName();
+            try {
+                Object result = callSite.getTarget().invoke( obj, context, name );
+                return result;
+            } catch (ThrowException e) {
+                throw e;
+            } catch (NoSuchMethodError e) {
+                if (ref.isPropertyReference() && !ref.isUnresolvableReference()) {
+                    return Types.UNDEFINED;
+                }
+                throw new ThrowException(context, context.createReferenceError("unable to reference: " + name));
+            } catch (Throwable e) {
+                throw new ThrowException(context, e);
+            }
+        } else {
+            return obj;
+        }
+    }
+
 
 }

@@ -15,10 +15,19 @@
  */
 package org.dynjs.parser.ast;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class PostOpExpression extends AbstractUnaryOperatorExpression {
+
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public PostOpExpression(final Expression expr, String op) {
         super(expr, op);
@@ -31,5 +40,48 @@ public class PostOpExpression extends AbstractUnaryOperatorExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object lhs = getExpr().interpret(context);
+
+        if (lhs instanceof Reference) {
+            if (((Reference) lhs).isStrictReference()) {
+                if (((Reference) lhs).getBase() instanceof EnvironmentRecord) {
+                    if (((Reference) lhs).getReferencedName().equals("arguments") || ((Reference) lhs).getReferencedName().equals("eval")) {
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lhs).getReferencedName()));
+                    }
+                }
+            }
+
+            Number newValue = null;
+            Number oldValue = Types.toNumber(context, getValue(this.get, context, lhs));
+
+            if (oldValue instanceof Double) {
+                switch (getOp()) {
+                    case "++":
+                        newValue = oldValue.doubleValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.doubleValue() - 1;
+                        break;
+                }
+            } else {
+                switch (getOp()) {
+                    case "++":
+                        newValue = oldValue.longValue() + 1;
+                        break;
+                    case "--":
+                        newValue = oldValue.longValue() - 1;
+                        break;
+                }
+            }
+
+            ((Reference) lhs).putValue(context, newValue);
+            return (oldValue);
+        }
+
+        return null;
     }
 }

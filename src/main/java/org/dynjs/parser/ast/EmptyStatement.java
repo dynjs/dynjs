@@ -17,6 +17,7 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public class EmptyStatement extends BaseStatement {
@@ -33,8 +34,12 @@ public class EmptyStatement extends BaseStatement {
         return 0;
     }
 
-    @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
     }
+
+    public Completion interpret(ExecutionContext context) {
+        return Completion.createNormal();
+    }
+
 }

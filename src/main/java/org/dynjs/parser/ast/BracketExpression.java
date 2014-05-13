@@ -17,6 +17,10 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 /**
  * Access a property with bracket notation
@@ -27,6 +31,9 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Bob McWhirter
  */
 public class BracketExpression extends AbstractBinaryExpression {
+
+    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public BracketExpression(Expression lhs, Expression rhs) {
         super( lhs, rhs, "[]" );
@@ -39,5 +46,18 @@ public class BracketExpression extends AbstractBinaryExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object baseRef = getLhs().interpret(context);
+        Object baseValue = getValue(this.lhsGet, context, baseRef);
+        Object identifier = getValue(this.rhsGet, context, getRhs().interpret(context));
+
+        Types.checkObjectCoercible(context, baseValue);
+
+        String propertyName = Types.toString(context, identifier);
+
+        return(context.createPropertyReference(baseValue, propertyName));
     }
 }

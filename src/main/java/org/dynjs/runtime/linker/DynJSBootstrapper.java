@@ -39,6 +39,7 @@ public class DynJSBootstrapper {
     private static RephractLinker linker;
 
     private static InterpretingInvokeDynamicHandler invokeHandler;
+    private static CallSiteFactory factory;
 
     static {
         try {
@@ -83,6 +84,7 @@ public class DynJSBootstrapper {
                             .toMethodDescriptorString());
 
             invokeHandler = new InterpretingInvokeDynamicHandler(linker);
+            factory = new CallSiteFactory( linker );
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -98,6 +100,10 @@ public class DynJSBootstrapper {
 
     public static InterpretingInvokeDynamicHandler getInvokeHandler() {
         return invokeHandler;
+    }
+
+    public static CallSiteFactory factory() {
+        return factory;
     }
 
 }

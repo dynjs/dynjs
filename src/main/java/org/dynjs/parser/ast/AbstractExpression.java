@@ -16,10 +16,16 @@
 
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.Collections;
 import java.util.List;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public abstract class AbstractExpression implements Expression {
 
@@ -35,10 +41,32 @@ public abstract class AbstractExpression implements Expression {
     public String dumpData() {
         return null;
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
         return Collections.emptyList();
     }
-    
+
+    protected Object getValue(CallSite callSite, ExecutionContext context, Object obj) {
+        if (obj instanceof Reference) {
+            Reference ref = (Reference) obj;
+            String name = ref.getReferencedName();
+            try {
+                Object result = callSite.getTarget().invoke( obj, context, name );
+                return result;
+            } catch (ThrowException e) {
+                throw e;
+            } catch (NoSuchMethodError e) {
+                if (ref.isPropertyReference() && !ref.isUnresolvableReference()) {
+                    return Types.UNDEFINED;
+                }
+                throw new ThrowException(context, context.createReferenceError("unable to reference: " + name));
+            } catch (Throwable e) {
+                throw new ThrowException(context, e);
+            }
+        } else {
+            return obj;
+        }
+    }
+
 
 }

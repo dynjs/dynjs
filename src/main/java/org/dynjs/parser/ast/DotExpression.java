@@ -18,6 +18,10 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 /**
  * Access a property with dot notation
@@ -28,6 +32,8 @@ import org.dynjs.runtime.ExecutionContext;
  * @author Bob McWhirter
  */
 public class DotExpression extends AbstractExpression {
+
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     private Expression lhs;
     private String identifier;
@@ -56,7 +62,19 @@ public class DotExpression extends AbstractExpression {
     public int getSizeMetric() {
         return this.lhs.getSizeMetric() + 1;
     }
-    
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object baseRef = getLhs().interpret(context);
+        Object baseValue = getValue(this.get, context, baseRef);
+
+        String propertyName = getIdentifier();
+
+        Types.checkObjectCoercible(context, baseValue, propertyName);
+
+        return(context.createPropertyReference(baseValue, propertyName));
+    }
+
     public String dump(String indent) {
         return super.dump(indent) + getLhs().dump(indent + "  ");
     }

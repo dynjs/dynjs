@@ -22,7 +22,9 @@ import java.util.List;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
 
 public class BlockStatement extends AbstractStatement {
 
@@ -130,6 +132,45 @@ public class BlockStatement extends AbstractStatement {
     
     public int getSizeMetric() {
         return 3;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        List<Statement> content = getBlockContent();
+
+        Object completionValue = Types.UNDEFINED;
+
+        for (Statement each : content) {
+            Position position = each.getPosition();
+            if (position != null) {
+                context.setLineNumber(position.getLine());
+            }
+
+
+            Completion completion = (Completion) each.interpret(context);
+            if (completion.type == Completion.Type.NORMAL) {
+                completionValue = completion.value;
+                continue;
+            }
+            if (completion.type == Completion.Type.CONTINUE) {
+                return(completion);
+
+            }
+            if (completion.type == Completion.Type.RETURN) {
+                return(completion);
+
+            }
+            if (completion.type == Completion.Type.BREAK) {
+                completion.value = completionValue;
+                if (completion.target != null && getLabels().contains(completion.target)) {
+                    return(Completion.createNormal(completionValue));
+                } else {
+                    return(completion);
+                }
+            }
+        }
+
+        return(Completion.createNormal(completionValue));
     }
 
     public String toIndentedString(String indent) {

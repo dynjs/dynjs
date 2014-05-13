@@ -18,9 +18,12 @@ package org.dynjs.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
 
 public class CompoundAssignmentExpression extends AbstractExpression {
 
@@ -37,7 +40,29 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     public List<FunctionDeclaration> getFunctionDeclarations() {
         return this.rootExpr.getFunctionDeclarations();
     }
-    
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object r = getRootExpr().interpret(context);
+        Object lref = getRootExpr().getLhs().interpret(context);
+
+        if (lref instanceof Reference) {
+            if (((Reference) lref).isStrictReference()) {
+                if (((Reference) lref).getBase() instanceof EnvironmentRecord) {
+                    if (((Reference) lref).getReferencedName().equals("arguments") || ((Reference) lref).getReferencedName().equals("eval")) {
+                        throw new ThrowException(context, context.createSyntaxError("invalid assignment: " + ((Reference) lref).getReferencedName()));
+                    }
+                }
+            }
+
+            ((Reference) lref).putValue(context, r);
+            return(r);
+
+        }
+
+        throw new ThrowException(context, context.createReferenceError("cannot assign to non-reference"));
+    }
+
     public AbstractBinaryExpression getRootExpr() {
         return this.rootExpr;
     }

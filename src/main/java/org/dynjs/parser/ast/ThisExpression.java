@@ -14,7 +14,7 @@ import org.dynjs.runtime.ExecutionContext;
  * 
  */
 public class ThisExpression extends BaseExpression implements IllegalFunctionMemberExpression {
-    
+
     public ThisExpression(Position position) {
         super(position);
     }
@@ -30,5 +30,9 @@ public class ThisExpression extends BaseExpression implements IllegalFunctionMem
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    public Object interpret(ExecutionContext context) {
+        return context.getThisBinding();
     }
 }

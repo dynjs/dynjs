@@ -40,7 +40,6 @@ public class BooleanLiteralExpression extends BaseExpression implements IllegalF
         return 1;
     }
 
-    @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
@@ -48,5 +47,9 @@ public class BooleanLiteralExpression extends BaseExpression implements IllegalF
     @Override
     public String dumpData() {
         return "" + value;
+    }
+
+    public Object interpret(ExecutionContext context) {
+        return(getValue());
     }
 }

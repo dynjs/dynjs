@@ -21,6 +21,7 @@ import java.util.List;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
 
 public class FunctionExpression extends AbstractExpression {
 
@@ -40,6 +41,16 @@ public class FunctionExpression extends AbstractExpression {
 
     public int getSizeMetric() {
         return this.descriptor.getSizeMetric() + 15;
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
+                getDescriptor().getIdentifier(),
+                getDescriptor().getFormalParameterNames(),
+                getDescriptor().getBlock(),
+                getDescriptor().isStrict() || context.isStrict());
+        return(compiledFn);
     }
 
     public String dump(String indent) {

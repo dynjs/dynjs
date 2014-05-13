@@ -59,4 +59,9 @@ public class IdentifierReferenceExpression extends BaseExpression {
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
     }
+
+    public Object interpret(ExecutionContext context) {
+        return context.resolve(getIdentifier());
+    }
+
 }

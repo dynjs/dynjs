@@ -17,6 +17,7 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public class ContinueStatement extends BaseStatement {
@@ -35,7 +36,12 @@ public class ContinueStatement extends BaseStatement {
     public int getSizeMetric() {
         return 1;
     }
-    
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        return(Completion.createContinue(getTarget()));
+    }
+
     public String toIndentedString(String indent) {
         return indent + "continue" + (this.target == null ? ";" : this.target + ";");
     }

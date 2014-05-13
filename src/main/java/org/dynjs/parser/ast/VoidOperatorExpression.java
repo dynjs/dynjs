@@ -18,8 +18,14 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class VoidOperatorExpression extends AbstractUnaryOperatorExpression {
+
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public VoidOperatorExpression(final Expression expr) {
         super(expr, "void" );
@@ -32,6 +38,12 @@ public class VoidOperatorExpression extends AbstractUnaryOperatorExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        getValue(this.get, context, getExpr().interpret(context));
+        return(Types.UNDEFINED);
     }
 
 }

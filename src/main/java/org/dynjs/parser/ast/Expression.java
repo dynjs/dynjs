@@ -16,4 +16,6 @@ public interface Expression {
     int getSizeMetric();
     
     List<FunctionDeclaration> getFunctionDeclarations();
+
+    Object interpret(ExecutionContext context);
 }

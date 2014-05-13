@@ -58,7 +58,12 @@ public class StringLiteralExpression extends BaseExpression implements IllegalFu
     public int getSizeMetric() {
         return 1;
     }
-    
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        return this.literal;
+    }
+
     public String dumpData() {
         return "\"" + this.literal + "\"";
     }

@@ -18,6 +18,7 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
 
 public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
 
@@ -32,6 +33,11 @@ public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        return Types.typeof(context, getExpr().interpret(context));
     }
 
 }

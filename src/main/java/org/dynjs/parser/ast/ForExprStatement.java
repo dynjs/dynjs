@@ -18,11 +18,18 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class ForExprStatement extends AbstractForStatement {
 
     private final Expression initialize;
+    private CallSite get = DynJSBootstrapper.factory().createGet();
+    private CallSite incrGet = DynJSBootstrapper.factory().createGet();
 
     public ForExprStatement(Position position, Expression initialize, Expression test, Expression increment, Statement block) {
         super(position, test, increment, block);
@@ -53,5 +60,60 @@ public class ForExprStatement extends AbstractForStatement {
             return this.initialize.getSizeMetric() + super.getSizeMetric();
         }
         return super.getSizeMetric();
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        if (getExpr() != null) {
+            getExpr().interpret(context);
+        }
+
+        Expression test = getTest();
+        Expression incr = getIncrement();
+        Statement body = getBlock();
+
+        Object v = null;
+
+        while (true) {
+            if (test != null) {
+
+                if (!Types.toBoolean(getValue(this.get, context, test.interpret(context)))) {
+                    break;
+                }
+            }
+
+            Completion completion = (Completion) body.interpret(context);
+            //Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
+
+            if (completion.value != null && completion.value != Types.UNDEFINED) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || getLabels().contains(completion.target)) {
+                    return(Completion.createNormal(v));
+                } else {
+                    completion.value = v;
+                    return(completion);
+                }
+
+            }
+            if (completion.type == Completion.Type.RETURN) {
+                return(completion);
+
+            }
+            if (completion.type == Completion.Type.CONTINUE) {
+                if (completion.target != null && !getLabels().contains(completion.target)) {
+                    return(completion);
+
+                }
+            }
+
+            if (incr != null) {
+                getValue(this.incrGet, context, incr.interpret(context));
+            }
+        }
+
+        return(Completion.createNormal(v));
     }
 }

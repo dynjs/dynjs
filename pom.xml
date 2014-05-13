@@ -30,7 +30,7 @@
         <version.junit>4.8.2</version.junit>
         <version.mockito-core>1.8.5</version.mockito-core>
         <version.options>1.0</version.options>
-        <version.rephract>2.0.0.beta1-SNAPSHOT</version.rephract>
+        <version.rephract>1.x.incremental.72</version.rephract>
         <test.pattern>**/*Spec.js</test.pattern>
         <skipGitVersion>false</skipGitVersion>
     </properties>
@@ -95,6 +95,21 @@
         <url>git@github.com:dynjs/dynjs.git</url>
         <tag>HEAD</tag>
     </scm>
+
+  <repositories>
+    <repository>
+      <id>projectodd-upstream</id>
+      <name>project:odd Upstream Builds</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/upstream</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
     <licenses>
         <license>

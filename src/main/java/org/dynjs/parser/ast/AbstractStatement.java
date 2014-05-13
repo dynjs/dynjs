@@ -18,6 +18,7 @@ package org.dynjs.parser.ast;
 
 import static me.qmx.jitescript.util.CodegenUtils.*;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import me.qmx.jitescript.CodeBlock;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
-import org.dynjs.runtime.Completion;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.Completion.Type;
 import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 
@@ -170,5 +172,42 @@ public abstract class AbstractStatement implements Statement {
 
     public String dumpData() {
         return null;
+    }
+
+    protected Object getValue(CallSite callSite, ExecutionContext context, Object obj) {
+        if (obj instanceof Reference) {
+            Reference ref = (Reference) obj;
+            String name = ref.getReferencedName();
+            try {
+                Object result = callSite.getTarget().invoke( obj, context, name );
+                return result;
+            } catch (ThrowException e) {
+                throw e;
+            } catch (NoSuchMethodError e) {
+                if (ref.isPropertyReference() && !ref.isUnresolvableReference()) {
+                    return Types.UNDEFINED;
+                }
+                throw new ThrowException(context, context.createReferenceError("unable to reference: " + name));
+            } catch (Throwable e) {
+                throw new ThrowException(context, e);
+            }
+        } else {
+            return obj;
+        }
+    }
+
+    protected Completion invokeCompiledBlockStatement(ExecutionContext context, String grist, Statement statement) {
+        BasicBlock block = compiledBlockStatement(context, grist, statement);
+        return block.call(context);
+    }
+
+
+    protected BasicBlock compiledBlockStatement(ExecutionContext context, String grist, Statement statement) {
+        BlockManager.Entry entry = context.getGlobalObject().getBlockManager().retrieve(statement.getStatementNumber());
+        if (entry.getCompiled() == null) {
+            BasicBlock compiledBlock = context.getCompiler().compileBasicBlock(context, grist, statement, context.isStrict());
+            entry.setCompiled(compiledBlock);
+        }
+        return (BasicBlock) entry.getCompiled();
     }
 }

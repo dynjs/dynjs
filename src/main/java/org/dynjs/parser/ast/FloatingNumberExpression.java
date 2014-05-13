@@ -18,6 +18,11 @@ public class FloatingNumberExpression extends NumberLiteralExpression {
         return visitor.visit( context, this, strict );
     }
 
+    @Override
+    public Object interpret(ExecutionContext context) {
+        return getValue();
+    }
+
     public double getValue() {
         return value;
     }

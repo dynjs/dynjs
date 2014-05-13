@@ -19,7 +19,9 @@ import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
 
 /**
  * 12.2 Variable Statement
@@ -79,4 +81,13 @@ public class VariableStatement extends BaseStatement {
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
     }
+
+    public Completion interpret(ExecutionContext context) {
+        for (VariableDeclaration each : getVariableDeclarations()) {
+            each.interpret(context);
+        }
+
+        return(Completion.createNormal(Types.UNDEFINED));
+    }
+
 }

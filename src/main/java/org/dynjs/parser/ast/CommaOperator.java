@@ -18,8 +18,14 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class CommaOperator extends AbstractBinaryExpression {
+
+    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public CommaOperator(Expression lhs, Expression rhs) {
         super( lhs, rhs , ",");
@@ -28,6 +34,12 @@ public class CommaOperator extends AbstractBinaryExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        getValue(this.lhsGet, context, getLhs().interpret(context));
+        return getValue(this.rhsGet, context, getRhs().interpret(context));
     }
 
 }

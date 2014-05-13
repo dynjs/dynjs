@@ -18,6 +18,7 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
 
 public class NullLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
@@ -36,5 +37,9 @@ public class NullLiteralExpression extends BaseExpression implements IllegalFunc
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    public Object interpret(ExecutionContext context) {
+        return Types.NULL;
     }
 }

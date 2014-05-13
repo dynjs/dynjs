@@ -17,11 +17,18 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class ReturnStatement extends BaseStatement {
 
     private final Expression expr;
+
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public ReturnStatement(final Position position, final Expression expr) {
         super(position);
@@ -39,7 +46,17 @@ public class ReturnStatement extends BaseStatement {
         
         return this.expr.getSizeMetric() + 1;
     }
-    
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        if (getExpr() != null) {
+            Object value = getExpr().interpret(context);
+            return(Completion.createReturn(getValue(this.get, context, value)));
+        } else {
+            return(Completion.createReturn(Types.UNDEFINED));
+        }
+    }
+
     public String toIndentedString(String indent) {
         return indent + "return" + (this.expr == null ? "" : " " + this.expr.toString());
     }

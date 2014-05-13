@@ -18,6 +18,11 @@ public class IntegerNumberExpression extends NumberLiteralExpression {
         return visitor.visit( context, this, strict );
     }
 
+    @Override
+    public Object interpret(ExecutionContext context) {
+        return getValue();
+    }
+
     public long getValue() {
         return value;
     }

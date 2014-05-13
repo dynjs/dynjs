@@ -15,17 +15,20 @@
  */
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.js.Position;
-import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.*;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class ForVarDeclInStatement extends AbstractForInStatement {
 
     private final VariableDeclaration decl;
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public ForVarDeclInStatement(Position position, VariableDeclaration decl, Expression rhs, Statement block) {
         super(position, rhs, block);
@@ -55,9 +58,54 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
         return super.getSizeMetric() + decl.getSizeMetric();
     }
 
-    @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
+    }
+
+    public Completion interpret(ExecutionContext context) {
+        String varName = (String) getDeclaration().interpret(context);
+        Object exprRef = getRhs().interpret(context);
+        Object exprValue = getValue(this.get, context, exprRef);
+
+        if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
+            return(Completion.createNormal());
+
+        }
+
+        JSObject obj = Types.toObject(context, exprValue);
+
+        Object v = null;
+
+        List<String> names = obj.getAllEnumerablePropertyNames().toList();
+
+        for (String each : names) {
+            Reference varRef = context.resolve(varName);
+
+            varRef.putValue(context, each);
+
+            Completion completion = (Completion) getBlock().interpret(context);
+            //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
+
+            if (completion.value != null) {
+                v = completion.value;
+            }
+
+            if (completion.type == Completion.Type.BREAK) {
+                if (completion.target == null || getLabels().contains(completion.target)) {
+                    return(Completion.createNormal(v));
+                } else {
+                    return(completion);
+                }
+
+            }
+
+            if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
+                return(completion);
+
+            }
+        }
+
+        return(Completion.createNormal(v));
     }
 
 }

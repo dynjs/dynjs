@@ -16,10 +16,19 @@
 
 package org.dynjs.parser.ast;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSObject;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class InOperatorExpression extends AbstractBinaryExpression {
+
+    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public InOperatorExpression(final Expression lhs, final Expression rhs) {
         super(lhs, rhs, "in");
@@ -28,6 +37,18 @@ public class InOperatorExpression extends AbstractBinaryExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object lhs = getValue(this.lhsGet, context, getLhs().interpret( context ) );
+        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context));
+
+        if (!(rhs instanceof JSObject)) {
+            throw new ThrowException(context, context.createTypeError(getRhs() + " is not an object"));
+        }
+
+        return(((JSObject) rhs).hasProperty(context, Types.toString(context, lhs)));
     }
 
 }

@@ -16,18 +16,54 @@
 
 package org.dynjs.parser.ast;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.Types;
 
 public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
 
     public DeleteOpExpression(final Expression expr) {
-        super(expr, "delete" );
+        super(expr, "delete");
     }
-    
-    @Override
+
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+
+        Object result = getExpr().interpret(context);
+        if (!(result instanceof Reference)) {
+            return (true);
+
+        }
+
+        Reference ref = (Reference) result;
+        if (ref.isUnresolvableReference()) {
+            if (context.isStrict()) {
+                throw new ThrowException(context, context.createSyntaxError("cannot delete unresolvable reference"));
+            } else {
+                return (true);
+
+            }
+        }
+
+        if (ref.isPropertyReference()) {
+            return (Types.toObject(context, ref.getBase()).delete(context, ref.getReferencedName(), ref.isStrictReference()));
+
+        }
+
+        if (ref.isStrictReference()) {
+            throw new ThrowException(context, context.createSyntaxError("cannot delete from environment record binding"));
+        }
+
+        EnvironmentRecord bindings = (EnvironmentRecord) ref.getBase();
+
+        return (bindings.deleteBinding(context, ref.getReferencedName()));
     }
 
     public String toString() {

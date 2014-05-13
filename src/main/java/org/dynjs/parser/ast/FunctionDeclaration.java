@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public class FunctionDeclaration extends AbstractStatement {
@@ -53,6 +54,11 @@ public class FunctionDeclaration extends AbstractStatement {
     
     public int getSizeMetric() {
         return this.descriptor.getSizeMetric();
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        return Completion.createNormal();
     }
 
     public String toString() {

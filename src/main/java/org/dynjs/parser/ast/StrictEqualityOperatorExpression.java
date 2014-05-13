@@ -17,8 +17,15 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.Types;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class StrictEqualityOperatorExpression extends AbstractBinaryExpression {
+
+    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public StrictEqualityOperatorExpression(final Expression lhs, final Expression rhs, String op) {
         super(lhs, rhs, op);
@@ -27,6 +34,20 @@ public class StrictEqualityOperatorExpression extends AbstractBinaryExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict );
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context));
+        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context));
+
+        Object result = null;
+        if (getOp().equals("===")) {
+            result = Types.compareStrictEquality(context, lhs, rhs);
+        } else {
+            result = !Types.compareStrictEquality(context, lhs, rhs);
+        }
+        return(result);
     }
 
 }

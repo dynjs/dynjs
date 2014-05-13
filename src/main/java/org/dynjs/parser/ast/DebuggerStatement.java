@@ -2,6 +2,7 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
 
 public class DebuggerStatement extends BaseStatement {
@@ -21,8 +22,10 @@ public class DebuggerStatement extends BaseStatement {
 
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
-        //visitor.visit( context, this, strict );
         return null;
     }
 
+    public Completion interpret(ExecutionContext context) {
+        return Completion.createNormal();
+    }
 }

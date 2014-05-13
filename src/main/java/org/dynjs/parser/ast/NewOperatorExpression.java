@@ -16,15 +16,25 @@
 
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dynjs.codegen.DereferencedReference;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.Reference;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
 
     private List<Expression> argExprs;
+
+    private final CallSite ctorGet = DynJSBootstrapper.factory().createGet();
+    private final List<CallSite> argGets;
+    private final CallSite ctorCall = DynJSBootstrapper.factory().createConstruct();
 
     public NewOperatorExpression(final Expression expr) {
         this( expr, new ArrayList<Expression>() );
@@ -33,6 +43,10 @@ public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
     public NewOperatorExpression(final Expression expr, final List<Expression> argExprs) {
         super(expr, "new" );
         this.argExprs = argExprs;
+        this.argGets = new ArrayList<>();
+        for ( Expression each : argExprs ) {
+            this.argGets.add( DynJSBootstrapper.factory().createGet() );
+        }
     }
     
     public List<Expression> getArgumentExpressions() {
@@ -50,5 +64,37 @@ public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
     @Override
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit( context, this, strict);
+    }
+
+    @Override
+    public Object interpret(ExecutionContext context) {
+        Object ref = getExpr().interpret( context );
+        Object memberExpr = getValue(this.ctorGet, context, ref);
+        Object[] args = new Object[getArgumentExpressions().size()];
+
+        int numArgs = getArgumentExpressions().size();
+
+        for ( int i = 0 ; i < numArgs ; ++i ) {
+            Expression eachArg = this.argExprs.get(i);
+            CallSite eachGet = this.argGets.get(i);
+            args[i] = getValue(eachGet, context, eachArg.interpret(context));
+        }
+
+        Object ctor = memberExpr;
+
+        if ( ref instanceof Reference && ctor instanceof JSFunction) {
+            ctor = new DereferencedReference((Reference) ref, ctor);
+        }
+
+        try {
+            //return( DynJSBootstrapper.getInvokeHandler().construct(ctor, (ExecutionContext) context, args) );
+            return this.ctorCall.getTarget().invoke( ctor, context, args );
+        } catch (NoSuchMethodError e) {
+            throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createTypeError("cannot construct with: " + ref));
+        } catch (ThrowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ThrowException((ExecutionContext) context, e);
+        }
     }
 }

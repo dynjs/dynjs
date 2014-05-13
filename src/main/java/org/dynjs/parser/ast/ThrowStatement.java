@@ -16,13 +16,19 @@
 
 package org.dynjs.parser.ast;
 
+import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
 
 public class ThrowStatement extends BaseStatement {
 
     private final Expression expr;
+    private final CallSite get = DynJSBootstrapper.factory().createGet();
 
     public ThrowStatement(Position position, Expression expr) {
         super(position);
@@ -35,6 +41,15 @@ public class ThrowStatement extends BaseStatement {
     
     public int getSizeMetric() {
         return this.expr.getSizeMetric() + 1;
+    }
+
+    @Override
+    public Completion interpret(ExecutionContext context) {
+        Object throwable = getValue(this.get, context, getExpr().interpret(context));
+        // if ( throwable instanceof Throwable ) {
+        // ((Throwable) throwable).printStackTrace();
+        // }
+        throw new ThrowException(context, throwable);
     }
 
     public String toIndentedString(String indent) {

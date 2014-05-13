@@ -7,6 +7,7 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.parser.js.SyntaxError;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 
 public class RegexpLiteralExpression extends BaseExpression implements IllegalFunctionMemberExpression {
 
@@ -76,4 +77,9 @@ public class RegexpLiteralExpression extends BaseExpression implements IllegalFu
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
+
+    public Object interpret(ExecutionContext context) {
+        return(BuiltinRegExp.newRegExp((ExecutionContext) context, getPattern(), getFlags()));
+    }
+
 }
