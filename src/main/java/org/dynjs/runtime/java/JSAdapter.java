@@ -115,9 +115,11 @@ public class JSAdapter extends BuiltinObject {
         public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
             if ((this.overrides != null) && (this.overrides.getProperty(context, name) != Types.UNDEFINED)) {
                 this.overrides.put(context, name, value, shouldThrow);
+                return;
             }
             if (getProperty(context, name) != Types.UNDEFINED) {
                 super.put(context, name, value, shouldThrow);
+                return;
             }
             if (this.adaptee != null) {
                 final Object setter = adaptee.get(context, "__set__");
