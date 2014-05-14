@@ -1,5 +1,6 @@
 /* jshint nonew: true, proto: true  */
 
+/*
 describe("defineGetter", function() {
   it("should be an enumerable property", function() {
     var a = {};
@@ -163,6 +164,7 @@ describe("the __proto__ property", function() {
     expect(obj.__proto__).toBe(proto);
   }
 });
+*/
 
 
 describe("JSAdapter", function() {
@@ -193,6 +195,52 @@ describe("JSAdapter", function() {
       return "foobar";
     };
     expect(x.bar()).toBe("foobar");
+  });
+
+  it("should allow for overrides", function() {
+    var x = new JSAdapter(
+      { tacos: 'big' },
+      {
+        __get__: function(name) { return name; }
+      }
+    )
+
+    expect(x.foo).toBe("foo");
+    expect(x.tacos).toBe("big");
+    x.tacos = 'small';
+    expect(x.tacos).toBe("small");
+  });
+
+  it("should allow for a prototype", function() {
+    var p = {
+      tacos: 'big',
+      burgers: function() {
+        return 'double';
+      }
+    }
+
+    var x = new JSAdapter(
+      p,
+      { cheese: 'swiss',
+        data: {}},
+      {
+        __get__: function(name) {
+          return this.data[name];
+        },
+        __set__: function(name, value) {
+          return this.data[name] = value;
+        }
+      }
+    );
+
+    expect(x.foo).toBe(undefined);
+    x.foo = 'bar';
+    expect(x.foo).toBe('bar');
+    expect(x.data.foo).toBe('bar');
+    expect(x.tacos).toBe("big");
+    expect(x.cheese).toBe("swiss");
+    expect(x.burgers()).toBe("double");
+
   });
 });
 

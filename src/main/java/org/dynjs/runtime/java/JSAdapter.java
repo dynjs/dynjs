@@ -20,15 +20,14 @@ import org.dynjs.runtime.builtins.types.BuiltinObject;
 
 /**
  * Provides Nashorn-like extensions in Javascript code. See: https://wiki.openjdk.java.net/display/Nashorn/Nashorn+extensions
- *
+ * <p></p>
  * Example:
- *
+ * <p></p>
  * var obj = new JSAdapter({
- *     var store = {};
- *     __get__: function(name) { return store[name]; }
- *     __put__: function(name, value) { store[name] = value; }
+ * var store = {};
+ * __get__: function(name) { return store[name]; }
+ * __put__: function(name, value) { store[name] = value; }
  * });
- *
  */
 public class JSAdapter extends BuiltinObject {
     public JSAdapter(GlobalObject globalObject) {
@@ -37,9 +36,22 @@ public class JSAdapter extends BuiltinObject {
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
-        Object arg = Types.UNDEFINED;
-        if (args.length > 0) { arg = args[0]; }
-        return new JSAdapterObject(context.getGlobalObject(), arg);
+        JSObject prototype = null;
+        JSObject overrides = null;
+        JSObject adaptee = null;
+
+        if (args.length == 1) {
+            adaptee = (JSObject) args[0];
+        } else if (args.length == 2) {
+            overrides = (JSObject) args[0];
+            adaptee = (JSObject) args[1];
+        } else if (args.length == 3) {
+            prototype = (JSObject) args[0];
+            overrides = (JSObject) args[1];
+            adaptee = (JSObject) args[2];
+        }
+
+        return new JSAdapterObject(context.getGlobalObject(), prototype, overrides, adaptee);
     }
 
     public static DynObject newObject(ExecutionContext context) {
@@ -58,30 +70,61 @@ public class JSAdapter extends BuiltinObject {
 
     private class JSAdapterObject extends DynObject {
 
-        private final JSObject proxy;
+        private final JSObject overrides;
+        private final JSObject adaptee;
 
-        public JSAdapterObject(GlobalObject globalObject, Object arg) {
+        public JSAdapterObject(GlobalObject globalObject, JSObject prototype, JSObject overrides, Object adaptee) {
             super(globalObject);
             setClassName("JSObject");
-            if ((arg instanceof JSObject)) proxy = (JSObject) arg;
-            else proxy = new DynObject(globalObject);
+            if (prototype != null) {
+                setPrototype(prototype);
+            }
+            if (overrides != null) {
+                this.overrides = overrides;
+            } else {
+                this.overrides = null;
+            }
+
+            if ((adaptee instanceof JSObject)) {
+                this.adaptee = (JSObject) adaptee;
+            } else {
+                this.adaptee = new DynObject(globalObject);
+            }
         }
 
         @Override
         public Object get(ExecutionContext context, String name) {
-            final Object getter = proxy.get(context, "__get__");
-            if (getter != Types.UNDEFINED) {
-                return context.call((JSFunction)getter, this, name);
+            if ((this.overrides != null) && (this.overrides.getProperty(context, name) != Types.UNDEFINED)) {
+                return this.overrides.get(context, name);
+            }
+
+            if (getProperty(context, name) != Types.UNDEFINED) {
+                return super.get(context, name);
+            }
+
+            if (this.adaptee != null) {
+                final Object getter = adaptee.get(context, "__get__");
+                if (getter != Types.UNDEFINED) {
+                    return context.call((JSFunction) getter, this, name);
+                }
             }
             return super.get(context, name);
         }
 
         @Override
         public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
-            final Object setter = proxy.get(context, "__set__");
-            if (setter != Types.UNDEFINED) {
-                context.call((JSFunction)setter, this, name, value);
-                return;
+            if ((this.overrides != null) && (this.overrides.getProperty(context, name) != Types.UNDEFINED)) {
+                this.overrides.put(context, name, value, shouldThrow);
+            }
+            if (getProperty(context, name) != Types.UNDEFINED) {
+                super.put(context, name, value, shouldThrow);
+            }
+            if (this.adaptee != null) {
+                final Object setter = adaptee.get(context, "__set__");
+                if (setter != Types.UNDEFINED) {
+                    context.call((JSFunction) setter, this, name, value);
+                    return;
+                }
             }
             super.put(context, name, value, shouldThrow);
         }
