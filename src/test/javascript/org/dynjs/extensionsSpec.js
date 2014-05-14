@@ -1,6 +1,5 @@
 /* jshint nonew: true, proto: true  */
 
-/*
 describe("defineGetter", function() {
   it("should be an enumerable property", function() {
     var a = {};
@@ -164,7 +163,6 @@ describe("the __proto__ property", function() {
     expect(obj.__proto__).toBe(proto);
   }
 });
-*/
 
 
 describe("JSAdapter", function() {
