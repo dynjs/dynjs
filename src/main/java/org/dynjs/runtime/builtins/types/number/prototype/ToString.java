@@ -27,7 +27,7 @@ public class ToString extends AbstractNativeFunction {
                 return Types.toString(context, Types.toNumber(context, self));
             } else {
                 Number num = Types.toNumber(context, self);
-                if ( num instanceof Long || num instanceof Integer || num instanceof Short ) {
+                if ( num instanceof Long || num instanceof Integer || num instanceof Short || num instanceof Byte ) {
                     return Long.toString( num.longValue(), (int) radix);
                 }
                 return num.toString();
