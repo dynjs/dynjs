@@ -26,7 +26,11 @@ public class ToString extends AbstractNativeFunction {
             if (radix == 10) {
                 return Types.toString(context, Types.toNumber(context, self));
             } else {
-                return Types.toNumber(context, self).toString();
+                Number num = Types.toNumber(context, self);
+                if ( num instanceof Long || num instanceof Integer || num instanceof Short ) {
+                    return Long.toString( num.longValue(), (int) radix);
+                }
+                return num.toString();
             }
         }
         throw new ThrowException(context, context.createTypeError("Number.prototype.toString() only allowed on Numbers"));

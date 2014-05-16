@@ -132,6 +132,18 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testNumberToStringWithNonTenRadix() {
+        Object result = eval( "Number(255).toString(16)" );
+        assertThat( result ).isEqualTo("ff");
+    }
+
+    @Test
+    public void testNumberToStringWithNoRadix() {
+        Object result = eval( "Number(255).toString()" );
+        assertThat( result ).isEqualTo( "255" );
+    }
+
+    @Test
     public void testNumberPrototypeToLocaleString() {
         // 15.7.3
         check("var result = Number.prototype.toLocaleString()", "0");
