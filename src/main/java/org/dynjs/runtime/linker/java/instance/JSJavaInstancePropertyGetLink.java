@@ -27,7 +27,6 @@ public class JSJavaInstancePropertyGetLink extends InstancePropertyGetLink {
     @Override
     public MethodHandle target() throws Exception {
         this.builder = this.builder.filter( 0, ReferenceValueFilter.INSTANCE );
-        this.builder.printType();
         MethodHandle target = super.target();
         return MethodHandles.filterReturnValue(target, NullReplacingFilter.INSTANCE.methodHandle(MethodType.methodType(Object.class, Object.class)));
     }
