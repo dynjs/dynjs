@@ -30,7 +30,7 @@
         <version.junit>4.8.2</version.junit>
         <version.mockito-core>1.8.5</version.mockito-core>
         <version.options>1.0</version.options>
-        <version.rephract>1.x.incremental.73</version.rephract>
+        <version.rephract>1.x.incremental.75</version.rephract>
         <test.pattern>**/*Spec.js</test.pattern>
         <skipGitVersion>false</skipGitVersion>
     </properties>
