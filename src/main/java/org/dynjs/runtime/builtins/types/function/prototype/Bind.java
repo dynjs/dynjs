@@ -6,6 +6,7 @@ import org.dynjs.runtime.BoundFunction;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.util.CallHelpers;
 
 public class Bind extends AbstractNativeFunction {
 
@@ -20,20 +21,9 @@ public class Bind extends AbstractNativeFunction {
             throw new ThrowException(context, context.createTypeError("Function.bind() only allowed on callable objects"));
         }
         
-
         JSFunction target = (JSFunction) self;
-        
         Object thisArg = args[0];
-        Object[] argValues;
-
-        if (args.length > 1) {
-            argValues = new Object[args.length - 1];
-            for (int i = 0; i < args.length - 1; ++i) {
-                argValues[i] = args[i + 1];
-            }
-        } else {
-            argValues = Call.EMPTY_ARRAY;
-        }
+        Object[] argValues = CallHelpers.allButFirstArgument(args);
 
         return new BoundFunction(context.getGlobalObject(), getScope(), target, thisArg, argValues);
     }
