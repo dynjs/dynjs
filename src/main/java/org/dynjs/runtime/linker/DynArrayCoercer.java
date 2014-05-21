@@ -5,6 +5,7 @@ import org.projectodd.rephract.java.reflect.ArrayCoercer;
 import org.projectodd.rephract.java.reflect.CoercionMatrix;
 
 public class DynArrayCoercer extends ArrayCoercer {
+
     @Override
     public Object[] coerceToObject(Object value) {
         DynArray dynArray = (DynArray) value;

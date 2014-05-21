@@ -370,6 +370,24 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
         assertThat(result).isEqualTo("default content");
         System.err.println(result);
+    }
+
+    @Test
+    public void testJavaMethodWithApply() {
+        Object result = eval(
+                "var foo = new org.dynjs.runtime.java.DefaultFoo();",
+                "var args = [ 'tacos', 42, 'cheese' ];",
+                "foo.doIt.apply( foo, args );"
+        );
+
+        assertThat( result ).isEqualTo( "Another way");
+
+        result = eval(
+                "args = [ 'tacos', 42];",
+                "foo.doIt.apply( foo, args );"
+        );
+
+        assertThat( result ).isEqualTo( "One way" );
 
 
     }
