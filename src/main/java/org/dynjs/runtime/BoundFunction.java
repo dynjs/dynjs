@@ -6,21 +6,18 @@ import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 
 public class BoundFunction extends AbstractFunction {
+    private static final String[] EMPTY_STRINGS = new String[0];
     
     private static String[] figureBoundParameters(JSFunction fn, Object[] boundArgs) {
         String[] formalParams = fn.getFormalParameters();
         int numRemainingArgs = formalParams.length - boundArgs.length;
         
         if ( numRemainingArgs <= 0 ) {
-            return new String[0];
+            return EMPTY_STRINGS;
         }
         
         String[] remainingParams = new String[numRemainingArgs];
-        
-        for ( int i = 0 ; i < numRemainingArgs ; ++i ) {
-            remainingParams[i] = formalParams[ i + boundArgs.length ];
-        }
-        
+        System.arraycopy(formalParams, boundArgs.length, remainingParams, 0, numRemainingArgs);
         return remainingParams;
     }
 
@@ -40,13 +37,10 @@ public class BoundFunction extends AbstractFunction {
 
         Arguments argsObj = (Arguments) context.resolve("arguments").getValue(context);
         int numExtraArgs = (int) argsObj.get(context, "length");
-        
         Object[] args = new Object[ this.boundArgs.length + numExtraArgs ];
-        
-        for ( int i = 0 ; i < this.boundArgs.length ; ++i ) {
-            args[i] = this.boundArgs[i];
-        }
-        
+
+        System.arraycopy(this.boundArgs, 0, args, 0, this.boundArgs.length);
+
         for ( int i = 0 ; i < numExtraArgs ; ++i ) {
             Object v = argsObj.get( context, "" + i );
             if ( v instanceof Reference ) {
