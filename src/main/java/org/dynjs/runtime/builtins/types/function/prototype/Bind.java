@@ -8,7 +8,6 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 
 public class Bind extends AbstractNativeFunction {
-    public static final Object[] EMPTY_ARRAY = new Object[0];
 
     public Bind(GlobalObject globalObject) {
         super(globalObject, "thisArg");
@@ -33,7 +32,7 @@ public class Bind extends AbstractNativeFunction {
                 argValues[i] = args[i + 1];
             }
         } else {
-            argValues = EMPTY_ARRAY;
+            argValues = Call.EMPTY_ARRAY;
         }
 
         return new BoundFunction(context.getGlobalObject(), getScope(), target, thisArg, argValues);

@@ -7,6 +7,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.JSFunction;
 
 public class Call extends AbstractNonConstructorFunction {
+    public static final Object[] EMPTY_ARRAY = new Object[0];
 
     public Call(GlobalObject globalObject) {
         super(globalObject, "thisArg");
@@ -20,14 +21,15 @@ public class Call extends AbstractNonConstructorFunction {
         }
 
         Object thisArg = args[0];
-        Object[] argList = null;
+        Object[] argList;
+
         if (args.length > 1) {
             argList = new Object[args.length - 1];
             for (int i = 0; i < argList.length; ++i) {
                 argList[i] = args[i + 1];
             }
         } else {
-            argList = new Object[0];
+            argList = EMPTY_ARRAY;
         }
 
         return context.call((JSFunction) self, thisArg, argList);
