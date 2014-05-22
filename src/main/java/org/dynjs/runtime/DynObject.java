@@ -40,7 +40,7 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     public DynObject(GlobalObject globalObject) {
         this();
-        setPrototype(globalObject.getPrototypeFor("Object"));
+        setPrototype(globalObject.getObjectPrototype());
     }
 
     // ------------------------------------------------------------------------

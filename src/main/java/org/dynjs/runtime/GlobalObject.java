@@ -14,6 +14,7 @@ public class GlobalObject extends DynObject {
     private DynJS runtime;
     private BlockManager blockManager;
     private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
+    private JSObject objectPrototype;
 
     public GlobalObject(DynJS runtime) {
         super();
@@ -27,6 +28,10 @@ public class GlobalObject extends DynObject {
         // ----------------------------------------
 
         registerBuiltinType("Object", new BuiltinObject(this));
+
+        this.objectPrototype = getPrototypeFor("Object");
+        setPrototype(this.objectPrototype);
+
         registerBuiltinType("Function", new BuiltinFunction(this));
         registerBuiltinType("Boolean", new BuiltinBoolean(this));
         registerBuiltinType("Number", new BuiltinNumber(this));
@@ -95,9 +100,10 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("io",       new JavaPackage(this, "io"));
 
         defineGlobalProperty("System",   System.class);
+    }
 
-        setPrototype(getPrototypeFor("Object"));
-
+    public JSObject getObjectPrototype() {
+        return this.objectPrototype;
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
