@@ -388,8 +388,18 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         );
 
         assertThat( result ).isEqualTo( "One way" );
+    }
 
+    @Test
+    public void testJavaMethodWithSAMAndApply() {
+        Object result = eval(
+                "var foo = new org.dynjs.runtime.java.GenericDispatcher();",
+                "var handler = foo.handle;",
+                "var args = [ function() { return 'natch!' }];",
+                "handler.apply( foo, args );"
+        );
 
+        assertThat( result ).isEqualTo( "natch!");
     }
 
     @Test
