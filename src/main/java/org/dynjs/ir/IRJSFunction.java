@@ -23,6 +23,10 @@ public class IRJSFunction extends DynObject implements JSFunction {
     // Lexically-captured values of this function
     private VariableValues capturedValues;
 
+    public JSFunction compile(ExecutionContext context) {
+        return new IRByteCodeCompiler(scope, getFileName(), isStrict()).compileFunction(context);
+    }
+
     private static class IRJSFunctionBox {
         public int callCount = 0;
         public JSFunction compiledFunction;
@@ -127,7 +131,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
             if (context.getConfig().isJitEnabled()) {
                 final JITCompiler compiler = context.getRuntime().getJitCompiler();
-                compiler.compile(this, new JITCompiler.CompilerCallback() {
+                compiler.compile(context, this, new JITCompiler.CompilerCallback() {
                     @Override
                     public void done(JSFunction compiledFunction) {
                         box.compiledFunction = compiledFunction;

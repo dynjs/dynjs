@@ -2,6 +2,12 @@ package org.dynjs.ir;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
+import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
+import org.dynjs.codegen.CodeGeneratingVisitor;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Copy;
@@ -16,16 +22,17 @@ import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
+import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Types;
-import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
-import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
-import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
-import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -38,13 +45,14 @@ import static me.qmx.jitescript.util.CodegenUtils.params;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IRByteCodeCompiler {
-    private final Scope scope;
+    private final FunctionScope scope;
     private final String fileName;
     private final boolean strict;
     private final List<BasicBlock> blockList;
     private final AtomicInteger methodCounter = new AtomicInteger();
+    private static final AtomicInteger compiledFunctionCounter = new AtomicInteger();
 
-    public IRByteCodeCompiler(Scope scope, String fileName, boolean strict) {
+    public IRByteCodeCompiler(FunctionScope scope, String fileName, boolean strict) {
         this.scope = scope;
         this.fileName = fileName;
         this.strict = strict;
@@ -280,11 +288,56 @@ public class IRByteCodeCompiler {
         return "m_" + builder.toString() + "_" + methodCounter.getAndIncrement();
     }
 
+    private String nextCompiledFunctionName() {
+        return "Function" + "_" + compiledFunctionCounter.getAndIncrement();
+    }
+
     public static Boolean lt(Object a, Object b) {
         return ((Integer) a).compareTo((Integer) b) == -1;
     }
 
     public static Object add(Object a, Object b) {
         return ((Integer) a) + ((Integer) b);
+    }
+
+    public JSFunction compileFunction(ExecutionContext context) {
+        System.out.println("kicking compilation");
+        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{});
+        jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
+                new CodeBlock()
+                        .aload(CodeGeneratingVisitor.Arities.THIS)
+                                // this
+                        .aload(1)
+                                // this globalobject
+                        .aload(2)
+                                // this globalobject lexicalenvironment
+                        .iload(3)
+                                // this globalobject lexicalenvironment strict
+                        .aload(4)
+                                // this globalobject lexicalenvironment strict formalparamenters[]
+                        .invokespecial(p(AbstractFunction.class), "<init>", sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class))
+                        .voidreturn()
+        );
+        final byte[] bytes = jiteClass.toBytes();
+        System.out.println("compiled" + bytes);
+        ClassReader reader = new ClassReader(bytes);
+        CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
+
+        final DynamicClassLoader loader = new DynamicClassLoader();
+        final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
+        try {
+            final Constructor<?> constructor = define.getDeclaredConstructor(GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class);
+            final JSFunction function = (JSFunction) constructor.newInstance(context.getGlobalObject(), context.getLexicalEnvironment(), strict, scope.getParameterNames());
+            return function;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

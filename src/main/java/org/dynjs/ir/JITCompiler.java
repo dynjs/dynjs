@@ -1,5 +1,6 @@
 package org.dynjs.ir;
 
+import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 
 import java.util.concurrent.Executor;
@@ -23,13 +24,17 @@ public class JITCompiler {
         public void done(JSFunction compiledFunction);
     }
 
-    public void compile(IRJSFunction function, final CompilerCallback callback) {
+    public void compile(final ExecutionContext context, final IRJSFunction function, final CompilerCallback callback) {
         compilationQueue.execute(new Runnable() {
             @Override
             public void run() {
                 // compile
-                callback.done(null);
+                callback.done(compileFunction(context, function));
             }
         });
+    }
+
+    private JSFunction compileFunction(ExecutionContext context, IRJSFunction function) {
+        return function.compile(context);
     }
 }
