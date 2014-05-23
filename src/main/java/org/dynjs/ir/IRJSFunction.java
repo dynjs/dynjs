@@ -21,6 +21,13 @@ public class IRJSFunction extends DynObject implements JSFunction {
     // Lexically-captured values of this function
     private VariableValues capturedValues;
 
+    private static class IRJSFunctionBox {
+        public int callCount = 0;
+        public JSFunction compiledFunction;
+    }
+
+    private IRJSFunctionBox box = new IRJSFunctionBox();
+
     public IRJSFunction(FunctionScope scope, VariableValues capturedValues, LexicalEnvironment lexicalEnvironment,
                         GlobalObject globalObject) {
         super(globalObject);
@@ -92,10 +99,38 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     @Override
     public Object call(ExecutionContext context) {
+        if (box.callCount >= 0) {
+            if (tryCompile(context)) {
+                return callJitted(context);
+            }
+        }
+
         // Allocate space for variables of this function and establish link to captured ones.
         context.allocVars(scope.getLocalVariableSize(), capturedValues);
 
         return Interpreter.execute(context, scope, instructions);
+    }
+
+    private Object callJitted(ExecutionContext context) {
+        return box.compiledFunction.call(context);
+    }
+
+    private boolean tryCompile(ExecutionContext context) {
+        if (box.compiledFunction != null) {
+            return true;
+        }
+
+        if (box.callCount++ >= context.getConfig().getJitThreshold()) {
+            box.callCount = -1; // disable, we get one shot
+            final JITCompiler compiler = context.getRuntime().getJitCompiler();
+            compiler.compile(this, new JITCompiler.CompilerCallback() {
+                @Override
+                public void done(JSFunction compiledFunction) {
+                    box.compiledFunction = compiledFunction;
+                }
+            });
+        }
+        return false;
     }
 
     @Override
