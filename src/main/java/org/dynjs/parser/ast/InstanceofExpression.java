@@ -56,7 +56,6 @@ public class InstanceofExpression extends AbstractBinaryExpression {
         } else if (rhs instanceof Class) {
             Class clazz = (Class) rhs;
             return clazz.isAssignableFrom(lhs.getClass());
-//            return(lhs.getClass().getName().equals(clazz.getName()));
         }
 
         return null; // not reached
