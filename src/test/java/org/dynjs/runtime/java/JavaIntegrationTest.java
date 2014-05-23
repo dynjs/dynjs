@@ -779,4 +779,13 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("obj.handleObjectByte('foo')")).isEqualTo((byte) 1);
         assertThat(eval("obj.handleObjectString('foo')")).isEqualTo("bar");
     }
+
+    @Test
+    public void testInstanceOfWithRHSJavaInstance() {
+        eval("var thing = new org.dynjs.runtime.java.DefaultFoo()");
+        assertThat(eval("thing instanceof org.dynjs.runtime.java.DefaultFoo")).isEqualTo(true);
+        assertThat(eval("thing instanceof org.dynjs.runtime.java.AbstractFoo")).isEqualTo(true);
+        assertThat(eval("thing instanceof org.dynjs.runtime.java.Foo")).isEqualTo(true);
+        assertThat(eval("thing instanceof org.dynjs.runtime.java.Foobar")).isEqualTo(false);
+    }
 }
