@@ -11,6 +11,7 @@ public class Options {
     public static final String PREFIX = "dynjs";
     public static final Option<Config.CompileMode> CLI_COMPILE_MODE = Option.enumeration(PREFIX, "compile.mode", Category.COMPILER, Config.CompileMode.OFF, "Set compile mode: OFF = no compilation (interpreted); JIT = at runtime; FORCE = before execution; IR = IR runtime");
     public static final Option<Integer> JIT_TRESHOLD = Option.integer(PREFIX, "jit.threshold", Category.JIT, 50, "Set JIT threshold");
+    public static final Option<Boolean> JIT = Option.bool(PREFIX, "jit.enabled", Category.JIT, false, "Enable JIT compilation");
     public static final Option<Boolean> INVOKEDYNAMIC = Option.bool(PREFIX, "invokedynamic.enabled", Category.INVOKEDYNAMIC, true, "Enable invokedynamic support");
     public static final Option<Boolean> COMPATIBILITY_RHINO = Option.bool(PREFIX, "compat.rhino.enabled", Category.COMPATIBILITY, true, "Enable Mozilla Rhino compatibility extensions");
     public static final Option<Boolean> COMPATIBILITY_COMMONJS = Option.bool(PREFIX, "compat.commonjs.enabled", Category.COMPATIBILITY, true, "Enable commonjs compatibility extensions");

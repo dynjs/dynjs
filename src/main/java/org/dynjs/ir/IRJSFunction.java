@@ -1,6 +1,8 @@
 package org.dynjs.ir;
 
 import java.util.List;
+
+import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -122,13 +124,16 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
         if (box.callCount++ >= context.getConfig().getJitThreshold()) {
             box.callCount = -1; // disable, we get one shot
-            final JITCompiler compiler = context.getRuntime().getJitCompiler();
-            compiler.compile(this, new JITCompiler.CompilerCallback() {
-                @Override
-                public void done(JSFunction compiledFunction) {
-                    box.compiledFunction = compiledFunction;
-                }
-            });
+
+            if (context.getConfig().isJitEnabled()) {
+                final JITCompiler compiler = context.getRuntime().getJitCompiler();
+                compiler.compile(this, new JITCompiler.CompilerCallback() {
+                    @Override
+                    public void done(JSFunction compiledFunction) {
+                        box.compiledFunction = compiledFunction;
+                    }
+                });
+            }
         }
         return false;
     }

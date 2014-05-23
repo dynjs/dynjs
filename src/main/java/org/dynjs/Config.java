@@ -16,12 +16,7 @@ public class Config {
         OFF,
         FORCE,
         JIT,
-        IR,
-        IRC;
-
-        public boolean isIR() {
-            return this.equals(IR) || this.equals(IRC);
-        }
+        IR;
     }
 
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
@@ -40,6 +35,8 @@ public class Config {
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
     private Integer jitThreshold = Options.JIT_TRESHOLD.load();
+    private boolean jitEnabled = Options.JIT.load();
+
     private final Classpath classpath;
 
     public Classpath getClasspath() {
@@ -84,6 +81,14 @@ public class Config {
 
     public Integer getJitThreshold() {
         return jitThreshold;
+    }
+
+    public boolean isJitEnabled() {
+        return jitEnabled;
+    }
+
+    public void setJitEnabled(boolean jitEnabled) {
+        this.jitEnabled = jitEnabled;
     }
 
     public void setJitThreshold(Integer jitThreshold) {

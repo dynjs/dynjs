@@ -38,7 +38,7 @@ public class JSCompiler {
             this.functionCompiler = new ByteCodeFunctionCompiler();
             this.programCompiler = new BytecodeProgramCompiler();
             break;
-        case JIT:
+        case JIT: // FIXME: this should go away when IR becomes default (config.isJitEnabled())
             this.basicBlockCompiler = new JITBasicBlockCompiler(config, interpFactory, factory);
             this.functionCompiler = new ByteCodeFunctionCompiler(); // FIXME: Add JIT
             this.programCompiler = new BytecodeProgramCompiler(); // FIXME: Add JIT
