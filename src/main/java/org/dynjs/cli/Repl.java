@@ -15,17 +15,21 @@
  */
 package org.dynjs.cli;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.DynJS;
+import org.jboss.aesh.console.AeshConsoleCallback;
 import org.jboss.aesh.console.Console;
-import org.jboss.aesh.console.ConsoleCallback;
-import org.jboss.aesh.console.ConsoleOutput;
+import org.jboss.aesh.console.ConsoleOperation;
 import org.jboss.aesh.console.Prompt;
-import org.jboss.aesh.console.reader.ConsoleInputSession;
 import org.jboss.aesh.console.settings.QuitHandler;
 import org.jboss.aesh.console.settings.Settings;
-
-import java.io.*;
+import org.jboss.aesh.console.settings.SettingsBuilder;
 
 public class Repl {
 
@@ -35,7 +39,7 @@ public class Repl {
             + System.lineSeparator();
     public static final String PROMPT = "dynjs> ";
     private final DynJS runtime;
-    private final OutputStream out;
+    private final PrintStream out;
     private final InputStream in;
     private final String welcome;
     private final String prompt;
@@ -54,8 +58,8 @@ public class Repl {
         this.prompt = prompt;
         this.welcome = welcome;
         this.runtime = runtime;
-        this.out = out;
-        this.in = new ConsoleInputSession(in).getExternalInputStream();
+        this.out = new PrintStream(out);
+        this.in = in;
         try {
             this.log = new PrintWriter(log);
         } catch (IOException e) {
@@ -64,56 +68,52 @@ public class Repl {
     }
 
     public void run() {
-        try {
-            Settings consoleSettings = Settings.getInstance();
-            consoleSettings.setStdOut(this.out);
-            consoleSettings.setInputStream(this.in);
-            consoleSettings.setHistoryPersistent(false);
-            consoleSettings.enableOperatorParser(false);
-            consoleSettings.setQuitHandler(new QuitHandler() {
+        final Settings consoleSettings = new SettingsBuilder()
+            .outputStream(this.out)
+            .inputStream(this.in)
+            .disableHistory(true)
+            .parseOperators(false)
+            .quitHandler(new QuitHandler() {
                 @Override
                 public void quit() {
                     if (log != null) {
                         log.close();
                     }
                 }
-            });
-            final Console console = Console.getInstance();
-            console.pushToStdOut(welcome);
-            console.setPrompt(new Prompt(prompt));
-            console.setConsoleCallback(new ConsoleCallback() {
-                @Override
-                public int readConsoleOutput(ConsoleOutput consoleOutput) throws IOException {
-                    String statement = consoleOutput.getBuffer();
-                    log.write(statement + "\n");
-                    if (statement.equalsIgnoreCase("exit")) {
-                        console.stop();
-                        return 0;
-                    } else {
-                        try {
-                            Object object = runtime.evaluate(statement);
-                            log.write(object.toString() + "\n");
-                            console.pushToStdOut(object.toString() + "\n");
-                        } catch (DynJSException e) {
-                            console.pushToStdErr(e.getLocalizedMessage() + "\n");
-                            logException(e);
-                        } catch (IncompatibleClassChangeError e) {
-                            console.pushToStdErr("ERROR> " + e.getLocalizedMessage() + "\n");
-                            console.pushToStdErr("Error parsing statement: " + statement + "\n");
-                            logException(e);
-                        } catch (Exception e) {
-                            e.printStackTrace(new PrintWriter(out));
-                            logException(e);
-                        }
-                    }
-                    return 0;
-                }
-            });
-            console.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }).create();
 
+        final Console console = new Console(consoleSettings);
+        console.getShell().out().println(welcome);
+        console.setPrompt(new Prompt(prompt));
+        console.setConsoleCallback(new AeshConsoleCallback() {
+            @Override
+            public int execute(ConsoleOperation output) {
+                String statement = output.getBuffer();
+                log.write(statement + "\n");
+                if (statement.equalsIgnoreCase("exit")) {
+                    console.stop();
+                    return 0;
+                } else {
+                    try {
+                        Object object = runtime.evaluate(statement);
+                        log.write(object.toString() + "\n");
+                        console.getShell().out().println(object.toString());
+                    } catch (DynJSException e) {
+                        console.getShell().out().println(e.getLocalizedMessage());
+                        logException(e);
+                    } catch (IncompatibleClassChangeError e) {
+                        console.getShell().err().println("ERROR> " + e.getLocalizedMessage());
+                        console.getShell().err().println("Error parsing statement: " + statement);
+                        logException(e);
+                    } catch (Exception e) {
+                        e.printStackTrace(new PrintWriter(out));
+                        logException(e);
+                    }
+                }
+                return 0;
+            }
+        });
+        console.start();
     }
 
     private void logException(Throwable e) {
