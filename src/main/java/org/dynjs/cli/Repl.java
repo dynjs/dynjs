@@ -71,7 +71,7 @@ public class Repl {
         final Settings consoleSettings = new SettingsBuilder()
             .outputStream(this.out)
             .inputStream(this.in)
-            .disableHistory(true)
+            .historySize(100)
             .parseOperators(false)
             .quitHandler(new QuitHandler() {
                 @Override
