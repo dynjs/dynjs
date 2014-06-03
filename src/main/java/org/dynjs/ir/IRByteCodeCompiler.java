@@ -317,7 +317,7 @@ public class IRByteCodeCompiler {
     }
 
     private int getLocalVarOffset() {
-        return 1;
+        return 2;
     }
 
     private void emitInteger(CodeBlock block, IntegerNumber operand) {
