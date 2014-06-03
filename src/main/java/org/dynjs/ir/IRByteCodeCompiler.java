@@ -359,6 +359,10 @@ public class IRByteCodeCompiler {
     }
 
     public JSFunction compileFunction(ExecutionContext context) {
+        final String methodName = nextSyntheticMethodName(scope);
+        final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, scope.getParameterNames().length));
+        scope.setSyntheticMethodName(methodName);
+        scope.setSyntheticSignature(syntheticSignature);
         System.out.println("kicking compilation");
         final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSCallable.class)});
         jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
@@ -407,11 +411,7 @@ public class IRByteCodeCompiler {
 
 
 
-        final String methodName = nextSyntheticMethodName(scope);
-        final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, scope.getParameterNames().length));
         jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, syntheticSignature, block);
-        scope.setSyntheticMethodName(methodName);
-        scope.setSyntheticSignature(syntheticSignature);
 
         jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), new CodeBlock().aconst_null().areturn());
         final byte[] bytes = jiteClass.toBytes();
