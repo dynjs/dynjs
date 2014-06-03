@@ -9,6 +9,7 @@ import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSCallable;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.LexicalEnvironment;
@@ -29,7 +30,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     private static class IRJSFunctionBox {
         public int callCount = 0;
-        public JSFunction compiledFunction;
+        public JSCallable compiledFunction;
     }
 
     private IRJSFunctionBox box = new IRJSFunctionBox();
