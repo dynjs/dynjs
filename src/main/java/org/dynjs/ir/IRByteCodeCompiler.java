@@ -154,18 +154,23 @@ public class IRByteCodeCompiler {
                 emitReceiveFunctionParameter(block, (ReceiveFunctionParameter) instruction, jumpMap);
                 break;
             case CALL:
-                emitCall(block, (Call) instruction, jumpMap);
+                emitCall(jiteClass, block, (Call) instruction, jumpMap);
                 break;
         }
     }
 
-    private void emitCall(CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
-        emitOperand(block, instruction.getSelf());
-        block.checkcast(p(JSCallable.class));
+    private void emitCall(JiteClass jiteClass, CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
+        emitOperand(block, instruction.getIdentifier());
+        block.checkcast(p(Operand.class));
+        block.aload(1);
+        block.aconst_null();
+        block.invokevirtual(p(Operand.class), "retrieve", sig(Object.class, ExecutionContext.class, Object[].class));
+        block.aload(1);
         for (Operand operand : instruction.getArgs()) {
             emitOperand(block, operand);
         }
-        block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
+        block.invokestatic(jiteClass.getClassName(), scope.getSyntheticMethodName(), scope.getSyntheticSignature());
+//        block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
     }
 
     private void emitSub(CodeBlock block, Sub instruction) {
@@ -373,7 +378,7 @@ public class IRByteCodeCompiler {
         );
 
         final int varOffset = 2;
-        final List<BasicBlock> blockList = scope.prepareForCompilation();
+        final List<BasicBlock> blockList = this.blockList;
         Object[] temps = new Object[scope.getTemporaryVariableSize()];
         Object[] vars = new Object[scope.getLocalVariableSize()];
         final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
@@ -400,7 +405,15 @@ public class IRByteCodeCompiler {
             block.aconst_null().areturn();
         }
 
-        jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), block);
+
+
+        final String methodName = nextSyntheticMethodName(scope);
+        final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, scope.getParameterNames().length));
+        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, syntheticSignature, block);
+        scope.setSyntheticMethodName(methodName);
+        scope.setSyntheticSignature(syntheticSignature);
+
+        jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), new CodeBlock().aconst_null().areturn());
         final byte[] bytes = jiteClass.toBytes();
         System.out.println("compiled" + bytes);
         ClassReader reader = new ClassReader(bytes);
