@@ -106,14 +106,14 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     @Override
     public Object call(ExecutionContext context) {
+        // Allocate space for variables of this function and establish link to captured ones.
+        context.allocVars(scope.getLocalVariableSize(), capturedValues);
+
         if (box.callCount >= 0) {
             if (tryCompile(context)) {
                 return callJitted(context);
             }
         }
-
-        // Allocate space for variables of this function and establish link to captured ones.
-        context.allocVars(scope.getLocalVariableSize(), capturedValues);
 
         return Interpreter.execute(context, scope, instructions);
     }
