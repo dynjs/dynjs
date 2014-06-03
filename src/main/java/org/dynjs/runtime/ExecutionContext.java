@@ -70,6 +70,10 @@ public class ExecutionContext {
         return functionParameters;
     }
 
+    public Object getFunctionParameter(int offset) {
+        return getFunctionParameters()[offset];
+    }
+
     public VariableValues getVars() {
         return vars;
     }
