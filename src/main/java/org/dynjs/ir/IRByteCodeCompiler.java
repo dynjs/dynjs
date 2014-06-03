@@ -34,6 +34,7 @@ import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Types;
+import org.dynjs.runtime.VariableValues;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
@@ -285,7 +286,12 @@ public class IRByteCodeCompiler {
     }
 
     private void emitLocalVar(CodeBlock block, LocalVariable operand) {
-        block.aload(getLocalVarOffset() + operand.getOffset());
+        block
+                .aload(1)
+                .invokevirtual(p(ExecutionContext.class), "getVars", sig(VariableValues.class))
+                .pushInt(operand.getOffset())
+                .pushInt(operand.getDepth())
+                .invokevirtual(p(VariableValues.class), "getVar", sig(Object.class, int.class, int.class));
     }
 
     private void emitTempVar(CodeBlock block, TemporaryVariable operand) {
@@ -323,12 +329,31 @@ public class IRByteCodeCompiler {
         switch (result.getType()) {
             case TEMP_VAR:
                 offset = getTempVarOffset() + ((TemporaryVariable) result).getOffset();
+                block.astore(offset);
                 break;
             case LOCAL_VAR:
-                offset = getLocalVarOffset() + ((LocalVariable) result).getOffset();
+                offset = ((LocalVariable) result).getOffset();
+                int depth = ((LocalVariable) result).getDepth();
+                block
+                        .aload(1)
+                                // ? EC
+                        .swap()
+                                // EC ?
+                        .invokevirtual(p(ExecutionContext.class), "getVars", sig(VariableValues.class))
+                                // EC ? VV
+                        .swap()
+                                // EC VV ?
+                        .pushInt(offset)
+                                // EC VV ? offset
+                        .swap()
+                                // EC VV offset ?
+                        .pushInt(depth)
+                                // EC VV offset ? depth
+                        .swap()
+                                // EC VV offset depth ?
+                        .invokevirtual(p(VariableValues.class), "setVar", sig(Object.class, int.class, int.class, Object.class));
                 break;
         }
-        block.astore(offset);
     }
 
 
