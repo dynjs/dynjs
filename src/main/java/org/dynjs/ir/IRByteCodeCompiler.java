@@ -7,13 +7,16 @@ import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
 import org.dynjs.codegen.CodeGeneratingVisitor;
-import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
+import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LT;
+import org.dynjs.ir.instructions.ReceiveFunctionParameter;
+import org.dynjs.ir.instructions.Return;
+import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.IntegerNumber;
@@ -26,6 +29,7 @@ import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSCallable;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
 import org.dynjs.runtime.LexicalEnvironment;
@@ -128,6 +132,9 @@ public class IRByteCodeCompiler {
             case ADD:
                 emitAdd(block, (Add) instruction);
                 break;
+            case SUB:
+                emitSub(block, (Sub) instruction);
+                break;
             case COPY:
                 emitCopy(block, (Copy) instruction);
                 break;
@@ -139,11 +146,50 @@ public class IRByteCodeCompiler {
                 break;
             case JUMP:
                 emitJump(block, (Jump) instruction, jumpMap);
+                break;
+            case RETURN:
+                emitReturn(block, (Return) instruction, jumpMap);
+                break;
+            case RECEIVE_FUNCTION_PARAM:
+                emitReceiveFunctionParameter(block, (ReceiveFunctionParameter) instruction, jumpMap);
+                break;
+            case CALL:
+                emitCall(block, (Call) instruction, jumpMap);
+                break;
         }
     }
 
+    private void emitCall(CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
+        emitOperand(block, instruction.getSelf());
+        block.checkcast(p(JSCallable.class));
+        for (Operand operand : instruction.getArgs()) {
+            emitOperand(block, operand);
+        }
+        block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
+    }
+
+    private void emitSub(CodeBlock block, Sub instruction) {
+        emitOperand(block, instruction.getLHS());
+        emitOperand(block, instruction.getRHS());
+        block.invokestatic(p(IRByteCodeCompiler.class), "sub", sig(Object.class, Object.class, Object.class));
+        storeResult(block, instruction.getResult());
+    }
+
+    private void emitReceiveFunctionParameter(CodeBlock block, ReceiveFunctionParameter instruction, HashMap<Label, LabelNode> jumpMap) {
+        block
+                .aload(1)
+                .pushInt(instruction.getIndex())
+                .invokevirtual(p(ExecutionContext.class), "getFunctionParameter", sig(Object.class, int.class));
+
+    }
+
+    private void emitReturn(CodeBlock block, Return instruction, HashMap<Label, LabelNode> jumpMap) {
+        emitOperand(block, instruction.getValue());
+        block.areturn();
+    }
+
     private void emitFunction(JiteClass jiteClass, HashMap<Label, LabelNode> jumpMap, CodeBlock block, DefineFunction instruction) {
-        final FunctionScope functionScope = ((DefineFunction) instruction).getScope();
+        final FunctionScope functionScope = instruction.getScope();
         final String[] parameterNames = functionScope.getParameterNames();
         final CodeBlock fnBlock = new CodeBlock();
         final List<BasicBlock> blocks = functionScope.prepareForCompilation();
@@ -156,7 +202,10 @@ public class IRByteCodeCompiler {
             fnBlock.aconst_null().areturn();
         }
         final String methodName = nextSyntheticMethodName(functionScope);
-        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, parameterNames.length)), fnBlock);
+        final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, parameterNames.length));
+        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, syntheticSignature, fnBlock);
+        functionScope.setSyntheticMethodName(methodName);
+        functionScope.setSyntheticSignature(syntheticSignature);
     }
 
     private void emitJump(CodeBlock block, Jump instruction, HashMap<Label, LabelNode> jumpMap) {
@@ -300,9 +349,13 @@ public class IRByteCodeCompiler {
         return ((Integer) a) + ((Integer) b);
     }
 
+    public static Object sub(Object a, Object b) {
+        return ((Integer) a) - ((Integer) b);
+    }
+
     public JSFunction compileFunction(ExecutionContext context) {
         System.out.println("kicking compilation");
-        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{});
+        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSCallable.class)});
         jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
                 new CodeBlock()
                         .aload(CodeGeneratingVisitor.Arities.THIS)
@@ -318,10 +371,40 @@ public class IRByteCodeCompiler {
                         .invokespecial(p(AbstractFunction.class), "<init>", sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class))
                         .voidreturn()
         );
+
+        final int varOffset = 2;
+        final List<BasicBlock> blockList = scope.prepareForCompilation();
+        Object[] temps = new Object[scope.getTemporaryVariableSize()];
+        Object[] vars = new Object[scope.getLocalVariableSize()];
+        final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
+
+        CodeBlock block = new CodeBlock();
+        // first pass for gathering labels
+        for (BasicBlock bb : blockList) {
+            final Label label = bb.getLabel();
+            System.out.println("label: " + label);
+            final LabelNode labelNode = new LabelNode();
+            jumpMap.put(label, labelNode);
+        }
+
+        // second pass for emitting
+        for (BasicBlock bb : blockList) {
+            block.label(jumpMap.get(bb.getLabel()));
+
+            for (Instruction instruction : bb.getInstructions()) {
+                emitInstruction(jiteClass, jumpMap, block, instruction);
+            }
+        }
+
+        if (!block.returns()) {
+            block.aconst_null().areturn();
+        }
+
+        jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), block);
         final byte[] bytes = jiteClass.toBytes();
         System.out.println("compiled" + bytes);
         ClassReader reader = new ClassReader(bytes);
-        CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
+        CheckClassAdapter.verify(reader, context.getClassLoader(), true, new PrintWriter(System.out));
 
         final DynamicClassLoader loader = new DynamicClassLoader();
         final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
