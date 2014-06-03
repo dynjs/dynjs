@@ -160,6 +160,9 @@ public class IRByteCodeCompiler {
             case CALL:
                 emitCall(jiteClass, block, (Call) instruction, jumpMap);
                 break;
+            default:
+                throw new DynJSException("LOOOL");
+
         }
     }
 
@@ -255,6 +258,9 @@ public class IRByteCodeCompiler {
             case UNDEFINED:
                 emitUndefined(block, (Undefined) operand);
                 break;
+            default:
+                System.out.println(operand);
+                throw new DynJSException("loooool");
         }
     }
 
