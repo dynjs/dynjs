@@ -7,6 +7,7 @@ import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
 import org.dynjs.codegen.CodeGeneratingVisitor;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
@@ -23,6 +24,7 @@ import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
+import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
 import org.dynjs.runtime.AbstractFunction;
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.params;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
@@ -252,7 +255,16 @@ public class IRByteCodeCompiler {
                 break;
             case BOOLEAN:
                 emitBoolean(block, (BooleanLiteral) operand);
+                break;
+            case UNDEFINED:
+                emitUndefined(block, (Undefined) operand);
+                break;
         }
+    }
+
+    private void emitUndefined(CodeBlock block, Undefined operand) {
+        block
+                .getstatic(p(Types.class), "UNDEFINED", ci(Types.Undefined.class));
     }
 
     public CodeBlock jsGetValue() {
