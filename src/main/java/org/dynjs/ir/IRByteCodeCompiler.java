@@ -170,11 +170,7 @@ public class IRByteCodeCompiler {
         block.aconst_null();
         block.invokevirtual(p(Operand.class), "retrieve", sig(Object.class, ExecutionContext.class, Object[].class));
         block.aload(1);
-        for (Operand operand : instruction.getArgs()) {
-            emitOperand(block, operand);
-        }
-        block.invokestatic(jiteClass.getClassName(), scope.getSyntheticMethodName(), scope.getSyntheticSignature());
-//        block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
+        block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
     }
 
     private void emitSub(CodeBlock block, Sub instruction) {
@@ -447,10 +443,7 @@ public class IRByteCodeCompiler {
         }
 
 
-
-        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, syntheticSignature, block);
-
-        jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), new CodeBlock().aconst_null().areturn());
+        jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), block);
         final byte[] bytes = jiteClass.toBytes();
         System.out.println("compiled" + bytes);
         ClassReader reader = new ClassReader(bytes);
