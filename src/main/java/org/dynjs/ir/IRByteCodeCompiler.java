@@ -386,15 +386,21 @@ public class IRByteCodeCompiler {
     }
 
     public static Boolean lt(Object a, Object b) {
-        return ((Integer) a).compareTo((Integer) b) == -1;
+        Long la = a instanceof Long ? (Long) a : new Long(((Integer) a).longValue());
+        Long lb = b instanceof Long ? (Long) b : new Long(((Integer) b).longValue());
+        return la.compareTo(lb) == -1;
     }
 
     public static Object add(Object a, Object b) {
-        return ((Integer) a) + ((Integer) b);
+        Long la = a instanceof Long ? (Long) a : new Long(((Integer) a).longValue());
+        Long lb = b instanceof Long ? (Long) b : new Long(((Integer) b).longValue());
+        return la + lb;
     }
 
     public static Object sub(Object a, Object b) {
-        return ((Integer) a) - ((Integer) b);
+        Long la = a instanceof Long ? (Long) a : new Long(((Integer) a).longValue());
+        Long lb = b instanceof Long ? (Long) b : new Long(((Integer) b).longValue());
+        return la - lb;
     }
 
     public JSFunction compileFunction(ExecutionContext context) {
