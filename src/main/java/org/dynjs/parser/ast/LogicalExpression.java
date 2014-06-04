@@ -9,8 +9,6 @@ import java.lang.invoke.CallSite;
 
 public class LogicalExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-
     public LogicalExpression(Expression lhs, Expression rhs, String op) {
         super(lhs, rhs, op);
     }

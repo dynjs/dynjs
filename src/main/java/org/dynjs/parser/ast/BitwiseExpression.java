@@ -9,8 +9,6 @@ import java.lang.invoke.CallSite;
 
 public class BitwiseExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public BitwiseExpression(Expression lhs, Expression rhs, String op) {
         super(lhs, rhs, op);

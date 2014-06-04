@@ -11,9 +11,6 @@ import java.lang.invoke.CallSite;
 
 public class AdditiveExpression extends AbstractBinaryExpression {
 
-    private CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public AdditiveExpression(final Expression lhs, final Expression rhs, final String op) {
         super(lhs, rhs, op);
     }

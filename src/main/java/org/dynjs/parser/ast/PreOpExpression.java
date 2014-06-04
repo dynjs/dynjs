@@ -27,10 +27,11 @@ import java.lang.invoke.CallSite;
 
 public class PreOpExpression extends AbstractUnaryOperatorExpression {
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public PreOpExpression(final Expression expr, String op) {
         super(expr, op);
+        this.get = DynJSBootstrapper.factory().createGet( expr.getPosition() );
     }
 
     public String toString() {

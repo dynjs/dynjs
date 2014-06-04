@@ -9,10 +9,11 @@ import java.lang.invoke.CallSite;
 
 public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public UnaryMinusExpression(Expression expr) {
         super(expr, "-");
+        this.get = DynJSBootstrapper.factory().createGet( expr.getPosition() );
     }
 
     public String toString() {

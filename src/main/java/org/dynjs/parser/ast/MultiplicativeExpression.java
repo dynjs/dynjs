@@ -10,9 +10,6 @@ import java.lang.invoke.CallSite;
 
 public class MultiplicativeExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public MultiplicativeExpression(Expression lhs, Expression rhs, String op) {
         super(lhs, rhs, op);
     }

@@ -35,18 +35,19 @@ public class FunctionCallExpression extends AbstractExpression {
     private final Expression memberExpr;
     private final List<Expression> argExprs;
 
-    private final CallSite functionGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite functionGet;
     private final List<CallSite> argGets;
     private final CallSite functionCall;
 
     public FunctionCallExpression(Expression memberExpr, List<Expression> argExprs) {
         this.memberExpr = memberExpr;
         this.argExprs = argExprs;
+        functionGet = DynJSBootstrapper.factory().createGet( memberExpr.getPosition() );
         this.argGets = new ArrayList<>();
         for ( Expression each : argExprs ) {
-            this.argGets.add( DynJSBootstrapper.factory().createGet() );
+            this.argGets.add( DynJSBootstrapper.factory().createGet( each.getPosition() ) );
         }
-        this.functionCall = DynJSBootstrapper.factory().createCall();
+        this.functionCall = DynJSBootstrapper.factory().createCall( memberExpr.getPosition() );
     }
     
     public Position getPosition() {

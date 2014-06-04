@@ -36,7 +36,7 @@ public class DynJSBootstrapper {
     public static Handle HANDLE;
     public static Object[] ARGS = new Object[0];
 
-    private static RephractLinker linker;
+    public static RephractLinker LINKER;
 
     private static InterpretingInvokeDynamicHandler invokeHandler;
     private static CallSiteFactory factory;
@@ -52,50 +52,50 @@ public class DynJSBootstrapper {
 
             // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
 
-            linker = new RephractLinker(logger);
+            LINKER = new RephractLinker(logger);
 
-            linker.addLinker(new JavascriptEnvironmentLinker(logger));
+            LINKER.addLinker(new JavascriptEnvironmentLinker(logger));
 
-            linker.addLinker(new FunctionDereferencedReferenceLinker(logger));
+            LINKER.addLinker(new FunctionDereferencedReferenceLinker(logger));
 
-            linker.addLinker(new JavascriptUndefinedLinker(logger));
-            linker.addLinker(new JavascriptObjectLinker(logger));
-            linker.addLinker(new JavascriptPrimitiveLinker(logger));
+            LINKER.addLinker(new JavascriptUndefinedLinker(logger));
+            LINKER.addLinker(new JavascriptObjectLinker(logger));
+            LINKER.addLinker(new JavascriptPrimitiveLinker(logger));
 
-            linker.addLinker(new GlobalLinker(logger));
+            LINKER.addLinker(new GlobalLinker(logger));
 
-            linker.addLinker(new JSJavaBoundMethodLinker(logger, manager));
-            linker.addLinker(new JSJavaImplementationLinker(implementationManager, logger));
+            LINKER.addLinker(new JSJavaBoundMethodLinker(logger, manager));
+            LINKER.addLinker(new JSJavaImplementationLinker(implementationManager, logger));
 
-            linker.addLinker(new JSJavaClassPropertyLinker(logger, manager));
-            linker.addLinker(new JSJavaClassMethodLinker(logger, manager));
+            LINKER.addLinker(new JSJavaClassPropertyLinker(logger, manager));
+            LINKER.addLinker(new JSJavaClassMethodLinker(logger, manager));
 
-            linker.addLinker(new JSJavaArrayPropertyLinker(logger, manager));
+            LINKER.addLinker(new JSJavaArrayPropertyLinker(logger, manager));
 
-            linker.addLinker(new JSJavaInstancePropertyLinker(logger, manager));
-            linker.addLinker(new JSJavaInstanceMethodLinker(logger, manager));
-            linker.addLinker(new JSMapLikePropertyLinker(logger, manager));
+            LINKER.addLinker(new JSJavaInstancePropertyLinker(logger, manager));
+            LINKER.addLinker(new JSJavaInstanceMethodLinker(logger, manager));
+            LINKER.addLinker(new JSMapLikePropertyLinker(logger, manager));
 
-            linker.addLinker(shadowLinker);
+            LINKER.addLinker(shadowLinker);
 
             HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
                     p(DynJSBootstrapper.class), "bootstrap",
                     MethodType.methodType(CallSite.class, Lookup.class, String.class, MethodType.class)
                             .toMethodDescriptorString());
 
-            invokeHandler = new InterpretingInvokeDynamicHandler(linker);
-            factory = new CallSiteFactory( linker );
+            invokeHandler = new InterpretingInvokeDynamicHandler(LINKER);
+            factory = new CallSiteFactory(LINKER);
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
     public static CallSite bootstrap(Lookup lookup, String name, MethodType type) throws Throwable {
-        return linker.bootstrap(lookup, name, type);
+        return LINKER.bootstrap(lookup, name, type);
     }
 
     public static MethodHandle getBootstrapMethodHandle() throws NoSuchMethodException, IllegalAccessException {
-        return linker.getBootstrapMethodHandle();
+        return LINKER.getBootstrapMethodHandle();
     }
 
     public static InterpretingInvokeDynamicHandler getInvokeHandler() {

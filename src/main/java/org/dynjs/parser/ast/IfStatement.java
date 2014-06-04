@@ -33,13 +33,15 @@ public class IfStatement extends BaseStatement {
     private final Statement thenBlock;
     private final Statement elseBlock;
 
-    private final CallSite testGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite testGet;
 
     public IfStatement(Position position, final Expression testExpr, final Statement thenBlock, final Statement elseBlock) {
         super( position );
         this.testExpr = testExpr;
         this.thenBlock = thenBlock;
         this.elseBlock = elseBlock;
+
+        this.testGet = DynJSBootstrapper.factory().createGet( testExpr.getPosition() );
     }
 
     public Expression getTest() {

@@ -31,12 +31,13 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     private final Expression test;
     private final Statement block;
 
-    private final CallSite testGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite testGet;
 
     public DoWhileStatement(Position position, final Statement block, final Expression test) {
         super(position);
         this.block = block;
         this.test = test;
+        this.testGet = DynJSBootstrapper.factory().createGet(test.getPosition());
     }
 
     public Expression getTest() {
@@ -54,7 +55,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
-    
+
     public int getSizeMetric() {
         return test.getSizeMetric() + 5;
     }
@@ -75,20 +76,20 @@ public class DoWhileStatement extends AbstractIteratingStatement {
                 if (completion.target == null) {
                     // nothing
                 } else if (!getLabels().contains(completion.target)) {
-                    return(completion);
+                    return (completion);
 
                 }
             } else if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null) {
                     break;
                 } else if (!getLabels().contains(completion.target)) {
-                    return(completion);
+                    return (completion);
 
                 } else {
                     break;
                 }
             } else if (completion.type == Completion.Type.RETURN) {
-                return(Completion.createReturn(v));
+                return (Completion.createReturn(v));
 
             }
 
@@ -99,7 +100,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
             }
         }
 
-        return(Completion.createNormal(v));
+        return (Completion.createNormal(v));
     }
 
     public String toIndentedString(String indent) {

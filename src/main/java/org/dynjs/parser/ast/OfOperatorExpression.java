@@ -27,9 +27,6 @@ import java.lang.invoke.CallSite;
 
 public class OfOperatorExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public OfOperatorExpression(final Expression lhs, final Expression rhs) {
         super(lhs, rhs, "of");
     }

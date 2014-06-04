@@ -30,17 +30,18 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 public class SwitchStatement extends BaseStatement {
 
     private Expression expr;
-    private final CallSite valueGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite valueGet;
     private List<CaseClause> caseClauses;
     private List<CallSite> caseGets;
 
     public SwitchStatement(Position position, Expression expr, List<CaseClause> caseClauses) {
         super(position);
         this.expr = expr;
+        this.valueGet = DynJSBootstrapper.factory().createGet(expr.getPosition());
         this.caseClauses = caseClauses;
         this.caseGets = new ArrayList<>();
-        for ( CaseClause each : this.caseClauses ) {
-            this.caseGets.add(DynJSBootstrapper.factory().createGet() );
+        for (CaseClause each : this.caseClauses) {
+            this.caseGets.add(DynJSBootstrapper.factory().createGet(each.getPosition()));
         }
     }
 
@@ -59,14 +60,14 @@ public class SwitchStatement extends BaseStatement {
         }
         return decls;
     }
-    
+
     public int getSizeMetric() {
         int size = this.expr.getSizeMetric();
-        
-        for ( CaseClause each : caseClauses ) {
+
+        for (CaseClause each : caseClauses) {
             size += each.getSizeMetric();
         }
-        
+
         return size + 11;
     }
 
@@ -109,14 +110,14 @@ public class SwitchStatement extends BaseStatement {
                     if (completion.type == Completion.Type.BREAK) {
                         break;
                     } else if (completion.type == Completion.Type.RETURN) {
-                        return(completion);
+                        return (completion);
 
                     }
                 }
             }
         }
 
-        return(Completion.createNormal(v));
+        return (Completion.createNormal(v));
 
     }
 

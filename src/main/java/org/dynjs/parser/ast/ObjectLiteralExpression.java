@@ -35,7 +35,7 @@ public class ObjectLiteralExpression extends BaseExpression {
         this.propertyAssignments = propertyAssignments;
         this.assignmentGets = new ArrayList<>();
         for ( PropertyAssignment each : propertyAssignments ) {
-            this.assignmentGets.add(DynJSBootstrapper.factory().createGet() );
+            this.assignmentGets.add(DynJSBootstrapper.factory().createGet( each.getPosition() ) );
         }
     }
     

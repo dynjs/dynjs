@@ -25,10 +25,11 @@ import java.lang.invoke.CallSite;
 
 public class VoidOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public VoidOperatorExpression(final Expression expr) {
         super(expr, "void" );
+        this.get = DynJSBootstrapper.factory().createGet( expr.getPosition() );
     }
     
     public String toString() {

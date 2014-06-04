@@ -32,9 +32,6 @@ import java.lang.invoke.CallSite;
  */
 public class BracketExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public BracketExpression(Expression lhs, Expression rhs) {
         super( lhs, rhs, "[]" );
     }

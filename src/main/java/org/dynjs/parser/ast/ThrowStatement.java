@@ -28,11 +28,12 @@ import java.lang.invoke.CallSite;
 public class ThrowStatement extends BaseStatement {
 
     private final Expression expr;
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public ThrowStatement(Position position, Expression expr) {
         super(position);
         this.expr = expr;
+        this.get = DynJSBootstrapper.factory().createGet( expr.getPosition() );
     }
     
     public Expression getExpr()  {

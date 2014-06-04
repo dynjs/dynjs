@@ -27,33 +27,37 @@ import java.lang.invoke.CallSite;
 public class ReturnStatement extends BaseStatement {
 
     private final Expression expr;
-
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public ReturnStatement(final Position position, final Expression expr) {
         super(position);
         this.expr = expr;
+        if (this.expr != null) {
+            this.get = DynJSBootstrapper.factory().createGet(expr.getPosition());
+        } else {
+            this.get = null;
+        }
     }
 
     public Expression getExpr() {
         return this.expr;
     }
-    
+
     public int getSizeMetric() {
-        if ( this.expr == null ) {
+        if (this.expr == null) {
             return 1;
         }
-        
+
         return this.expr.getSizeMetric() + 1;
     }
 
     @Override
     public Completion interpret(ExecutionContext context) {
-        if (getExpr() != null) {
-            Object value = getExpr().interpret(context);
-            return(Completion.createReturn(getValue(this.get, context, value)));
+        if (this.expr != null) {
+            Object value = this.expr.interpret(context);
+            return (Completion.createReturn(getValue(this.get, context, value)));
         } else {
-            return(Completion.createReturn(Types.UNDEFINED));
+            return (Completion.createReturn(Types.UNDEFINED));
         }
     }
 

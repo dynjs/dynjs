@@ -28,11 +28,12 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 public class ForVarDeclInStatement extends AbstractForInStatement {
 
     private final VariableDeclaration decl;
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public ForVarDeclInStatement(Position position, VariableDeclaration decl, Expression rhs, Statement block) {
         super(position, rhs, block);
         this.decl = decl;
+        this.get = DynJSBootstrapper.factory().createGet( rhs.getPosition() );
     }
 
     public VariableDeclaration getDeclaration() {

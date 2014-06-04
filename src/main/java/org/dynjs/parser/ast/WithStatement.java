@@ -26,7 +26,7 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class WithStatement extends BaseStatement {
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     private final Expression expr;
     private final Statement block;
@@ -35,6 +35,7 @@ public class WithStatement extends BaseStatement {
         super( position );
         this.expr = expr;
         this.block = block;
+        this.get = DynJSBootstrapper.factory().createGet( this.expr.getPosition() );
     }
     
     public Expression getExpr() {

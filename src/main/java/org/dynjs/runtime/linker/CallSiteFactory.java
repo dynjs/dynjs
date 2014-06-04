@@ -1,9 +1,14 @@
 package org.dynjs.runtime.linker;
 
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 import org.projectodd.rephract.RephractLinker;
 
 import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
+import static java.lang.invoke.MethodType.methodType;
 
 /**
  * @author Bob McWhirter
@@ -16,9 +21,12 @@ public class CallSiteFactory {
         this.linker = linker;
     }
 
-    public CallSite createGet() {
+    public CallSite createGet(Position pos) {
         try {
-            return linker.bootstrap("dyn:getProperty|getMethod", Object.class, Object.class, ExecutionContext.class, String.class);
+            return linker.bootstrap(
+                    MethodHandles.lookup(),
+                    "dyn:getProperty|getMethod", methodType(Object.class, Object.class, ExecutionContext.class, String.class),
+                    pos.getFileName(), pos.getLine(), pos.getColumn());
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
@@ -34,18 +42,24 @@ public class CallSiteFactory {
         return null;
     }
 
-    public CallSite createCall() {
+    public CallSite createCall(Position pos) {
         try {
-            return linker.bootstrap("dyn:call", Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class);
+            return linker.bootstrap(
+                    MethodHandles.lookup(),
+                    "dyn:call", methodType( Object.class, Object.class, ExecutionContext.class, Object.class, Object[].class ),
+                    pos.getFileName(), pos.getLine(), pos.getColumn() );
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
         return null;
     }
 
-    public CallSite createConstruct() {
+    public CallSite createConstruct(Position pos) {
         try {
-            return linker.bootstrap("dyn:construct", Object.class, Object.class, ExecutionContext.class, Object[].class);
+            return linker.bootstrap(
+                    MethodHandles.lookup(),
+                    "dyn:construct", methodType( Object.class, Object.class, ExecutionContext.class, Object[].class),
+                    pos.getFileName(), pos.getLine(), pos.getColumn() );
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

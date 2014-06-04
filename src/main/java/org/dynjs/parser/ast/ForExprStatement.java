@@ -28,12 +28,22 @@ import java.lang.invoke.CallSite;
 public class ForExprStatement extends AbstractForStatement {
 
     private final Expression initialize;
-    private CallSite get = DynJSBootstrapper.factory().createGet();
-    private CallSite incrGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite testGet;
+    private final CallSite incrGet;
 
     public ForExprStatement(Position position, Expression initialize, Expression test, Expression increment, Statement block) {
         super(position, test, increment, block);
         this.initialize = initialize;
+        if ( test != null ) {
+            this.testGet = DynJSBootstrapper.factory().createGet( test.getPosition() );
+        } else {
+            this.testGet = null;
+        }
+        if ( increment != null ) {
+            this.incrGet = DynJSBootstrapper.factory().createGet( increment.getPosition() );
+        } else {
+            this.incrGet = null;
+        }
     }
     
     public Expression getExpr() {
@@ -77,7 +87,7 @@ public class ForExprStatement extends AbstractForStatement {
         while (true) {
             if (test != null) {
 
-                if (!Types.toBoolean(getValue(this.get, context, test.interpret(context)))) {
+                if (!Types.toBoolean(getValue(this.testGet, context, test.interpret(context)))) {
                     break;
                 }
             }

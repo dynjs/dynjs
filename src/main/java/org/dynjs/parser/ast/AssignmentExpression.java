@@ -27,11 +27,8 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class AssignmentExpression extends AbstractBinaryExpression {
 
-    private final CallSite get;
-
     public AssignmentExpression(final Expression lhs, final Expression rhs) {
         super(lhs, rhs, "=");
-        this.get = DynJSBootstrapper.factory().createGet();
     }
 
     @Override
@@ -60,7 +57,7 @@ public class AssignmentExpression extends AbstractBinaryExpression {
         }
 
         Reference lhsRef = (Reference) lhs;
-        Object rhs = getValue(this.get, context, getRhs().interpret(context));
+        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context));
 
         if (lhsRef.isUnresolvableReference() && context.isStrict()) {
             throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhsRef.getReferencedName() + " is not defined"));

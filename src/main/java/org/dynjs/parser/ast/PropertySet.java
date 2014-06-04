@@ -2,6 +2,7 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 
@@ -9,8 +10,8 @@ public class PropertySet extends PropertyAccessor {
 
     private String identifier;
 
-    public PropertySet(String name, String identifier, Statement block) {
-        super(name, block);
+    public PropertySet(Position position, String name, String identifier, Statement block) {
+        super(position, name, block);
         this.identifier = identifier;
     }
     

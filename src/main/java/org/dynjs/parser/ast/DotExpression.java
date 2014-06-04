@@ -33,7 +33,7 @@ import java.lang.invoke.CallSite;
  */
 public class DotExpression extends AbstractExpression {
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     private Expression lhs;
     private String identifier;
@@ -41,6 +41,7 @@ public class DotExpression extends AbstractExpression {
     public DotExpression(Expression lhs, String identifier) {
         this.lhs = lhs;
         this.identifier = identifier;
+        this.get = DynJSBootstrapper.factory().createGet( lhs.getPosition() );
     }
     
     public Position getPosition() {

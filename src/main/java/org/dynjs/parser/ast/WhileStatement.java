@@ -28,7 +28,7 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public class WhileStatement extends AbstractIteratingStatement {
 
-    private final CallSite testGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite testGet;
 
     private final Expression vbool;
     private final Statement vloop;
@@ -37,6 +37,7 @@ public class WhileStatement extends AbstractIteratingStatement {
         super(position);
         this.vbool = vbool;
         this.vloop = vloop;
+        this.testGet = DynJSBootstrapper.factory().createGet( vbool.getPosition() );
     }
 
     public Expression getTest() {

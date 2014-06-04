@@ -341,11 +341,11 @@ public class Parser {
                 throw new SyntaxError("invalid parameter name: " + param.getText());
             }
             consume(RIGHT_PAREN);
-            consume(LEFT_BRACE);
+            Token position = consume(LEFT_BRACE);
             BlockStatement body = functionBody();
             consume(RIGHT_BRACE);
 
-            return new PropertySet(name, param.getText(), body);
+            return new PropertySet(position, name, param.getText(), body);
         } finally {
             popContext();
         }
@@ -366,11 +366,11 @@ public class Parser {
             String name = consume().getText();
             consume(LEFT_PAREN);
             consume(RIGHT_PAREN);
-            consume(LEFT_BRACE);
+            Token position = consume(LEFT_BRACE);
             BlockStatement body = functionBody();
             consume(RIGHT_BRACE);
 
-            return new PropertyGet(name, body);
+            return new PropertyGet(position, name, body);
         } finally {
             popContext();
         }
@@ -385,7 +385,7 @@ public class Parser {
         consume(COLON);
         Expression expr = assignmentExpression();
 
-        return new NamedValue(name, expr);
+        return new NamedValue(token, name, expr);
     }
 
     protected boolean isPropertyName(Token token) {

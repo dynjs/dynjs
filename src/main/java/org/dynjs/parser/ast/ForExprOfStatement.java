@@ -27,11 +27,12 @@ import java.util.List;
 public class ForExprOfStatement extends AbstractForInStatement {
 
     private final Expression expr;
-    private CallSite exprGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite exprGet;
 
     public ForExprOfStatement(Position position, final Expression expr, final Expression rhs, final Statement block) {
         super(position, rhs, block);
         this.expr = expr;
+        this.exprGet = DynJSBootstrapper.factory().createGet( expr.getPosition() );
     }
     
     public Expression getExpr() {

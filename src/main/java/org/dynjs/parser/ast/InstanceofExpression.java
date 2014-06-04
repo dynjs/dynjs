@@ -28,9 +28,6 @@ import java.lang.invoke.CallSite;
 
 public class InstanceofExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public InstanceofExpression(final Expression lhs, final Expression rhs) {
         super(lhs, rhs, "instanceof");
     }

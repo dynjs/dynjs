@@ -1,15 +1,23 @@
 package org.dynjs.runtime;
 
-import static org.fest.assertions.Assertions.*;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
+
+    @After
+    public void dumpStatistics() {
+        //DynJSBootstrapper.LINKER.dumpStatistics();
+    }
 
     @Test
     public void testBenComplainsAboutStuff1() {

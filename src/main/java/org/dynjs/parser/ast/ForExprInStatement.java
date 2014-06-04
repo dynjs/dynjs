@@ -27,11 +27,12 @@ import java.util.List;
 public class ForExprInStatement extends AbstractForInStatement {
 
     private final Expression expr;
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite rhsGet;
 
     public ForExprInStatement(Position position, final Expression expr, final Expression rhs, final Statement block) {
         super(position, rhs, block);
         this.expr = expr;
+        this.rhsGet = DynJSBootstrapper.factory().createGet(rhs.getPosition());
     }
 
     public Expression getExpr() {
@@ -47,7 +48,7 @@ public class ForExprInStatement extends AbstractForInStatement {
     }
 
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
-        return visitor.visit( context, this, strict );
+        return visitor.visit(context, this, strict);
     }
 
     public int getSizeMetric() {

@@ -1,9 +1,11 @@
 package org.dynjs.parser.ast;
 
+import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.parser.js.Position;
+import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 public abstract class AbstractBinaryExpression extends AbstractExpression {
 
@@ -11,10 +13,16 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
     private Expression rhs;
     private String op;
 
+    protected final CallSite lhsGet;
+    protected final CallSite rhsGet;
+
     AbstractBinaryExpression(final Expression lhs, final Expression rhs, String op) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.op = op;
+
+        this.lhsGet = DynJSBootstrapper.factory().createGet( lhs.getPosition() );
+        this.rhsGet = DynJSBootstrapper.factory().createGet( rhs.getPosition() );
     }
 
     public Position getPosition() {

@@ -15,18 +15,17 @@
  */
 package org.dynjs.parser.ast;
 
-import java.lang.invoke.CallSite;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
+
+import java.lang.invoke.CallSite;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArrayLiteralExpression extends BaseExpression {
 
@@ -37,9 +36,12 @@ public class ArrayLiteralExpression extends BaseExpression {
         super(position);
         this.exprs = exprs;
         this.exprGets = new ArrayList<>();
-        int numExprs = this.exprs.size();
-        for( int i = 0 ; i < numExprs ; ++i ) {
-            this.exprGets.add(DynJSBootstrapper.factory().createGet() );
+        for (Expression each : exprs) {
+            if (each != null) {
+                this.exprGets.add(DynJSBootstrapper.factory().createGet(each.getPosition()));
+            } else {
+                this.exprGets.add( null );
+            }
         }
         /*
         if (this.exprs.size() > 1 && (this.exprs.get(this.exprs.size() - 1) == null)) {
@@ -47,12 +49,12 @@ public class ArrayLiteralExpression extends BaseExpression {
         }
         */
     }
-    
+
     public List<FunctionDeclaration> getFunctionDeclarations() {
         List<FunctionDeclaration> decls = new ArrayList<>();
-        for ( Expression each : this.exprs ) {
-            if ( each != null ) {
-                decls.addAll( each.getFunctionDeclarations() );
+        for (Expression each : this.exprs) {
+            if (each != null) {
+                decls.addAll(each.getFunctionDeclarations());
             }
         }
         return decls;
@@ -64,8 +66,8 @@ public class ArrayLiteralExpression extends BaseExpression {
 
         int numElements = this.exprs.size();
         int len = 0;
-        for ( int i = 0 ; i < numElements; ++i ) {
-            Expression each = this.exprs.get( i );
+        for (int i = 0; i < numElements; ++i) {
+            Expression each = this.exprs.get(i);
             Object value = null;
             if (each != null) {
                 value = getValue(this.exprGets.get(i), context, each.interpret(context));
@@ -75,7 +77,7 @@ public class ArrayLiteralExpression extends BaseExpression {
         }
         array.put(context, "length", (long) len, true);
 
-        return(array);
+        return (array);
     }
 
     public List<Expression> getExprs() {
@@ -101,7 +103,7 @@ public class ArrayLiteralExpression extends BaseExpression {
     public String dump(String indent) {
         StringBuilder buf = new StringBuilder(super.dump(indent));
 
-        for (Expression expr: this.exprs) {
+        for (Expression expr : this.exprs) {
             buf.append(expr.dump(indent + "  "));
         }
 

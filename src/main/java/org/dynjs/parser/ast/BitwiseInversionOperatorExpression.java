@@ -24,14 +24,15 @@ import java.lang.invoke.CallSite;
 
 public class BitwiseInversionOperatorExpression extends AbstractUnaryOperatorExpression {
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public BitwiseInversionOperatorExpression(final Expression expr) {
         super(expr, "~");
+        this.get = DynJSBootstrapper.factory().createGet(expr.getPosition());
     }
-    
+
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
-        return visitor.visit( context, this, strict );
+        return visitor.visit(context, this, strict);
     }
 
     @Override

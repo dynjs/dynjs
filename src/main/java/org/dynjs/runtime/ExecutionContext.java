@@ -612,7 +612,7 @@ public class ExecutionContext {
     }
 
     public String toString() {
-        return "ExecutionContext: " + System.identityHashCode(this) + "; parent=" + this.parent;
+        return "ExecutionContext: " + System.identityHashCode(this);// + "; parent=" + this.parent;
     }
 
     public DynamicClassLoader getClassLoader() {

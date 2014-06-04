@@ -26,7 +26,9 @@ public class EnvironmentPropertyGetLink extends SmartLink implements Guard {
     }
 
     public boolean guard(Object receiver, Object context, String propertyName) {
-        return (receiver instanceof Reference) && (((Reference) receiver).getBase() instanceof EnvironmentRecord);
+        boolean result = (receiver instanceof Reference) && (((Reference) receiver).getBase() instanceof EnvironmentRecord);
+        //System.out.println( "-- TEST " + this + " >> " + result + " // " + receiver );
+        return result;
     }
 
     @Override
@@ -47,7 +49,7 @@ public class EnvironmentPropertyGetLink extends SmartLink implements Guard {
                 .filter(0, ReferenceBaseFilter.INSTANCE)
                 .filter(3, ReferenceStrictnessFilter.INSTANCE)
                 .convert(Object.class, EnvironmentRecord.class, ExecutionContext.class, String.class, boolean.class)
-                .invoke( lookup().findVirtual( EnvironmentRecord.class, "getBindingValue", methodType( Object.class, ExecutionContext.class, String.class, boolean.class)))
+                .invoke(lookup().findVirtual(EnvironmentRecord.class, "getBindingValue", methodType(Object.class, ExecutionContext.class, String.class, boolean.class)))
                 .target();
 
     }

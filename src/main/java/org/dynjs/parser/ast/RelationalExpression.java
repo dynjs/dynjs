@@ -9,9 +9,6 @@ import java.lang.invoke.CallSite;
 
 public class RelationalExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public RelationalExpression(Expression lhs, Expression rhs, String op) {
         super(lhs, rhs, op);
     }

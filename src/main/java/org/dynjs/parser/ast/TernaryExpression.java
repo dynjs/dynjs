@@ -29,12 +29,13 @@ public class TernaryExpression extends AbstractExpression {
     private final Expression vthen;
     private final Expression velse;
 
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public TernaryExpression(final Expression vbool, final Expression vthen, final Expression velse) {
         this.vbool = vbool;
         this.vthen = vthen;
         this.velse = velse;
+        this.get = DynJSBootstrapper.factory().createGet( this.vbool.getPosition() );
     }
     
     public Position getPosition() {

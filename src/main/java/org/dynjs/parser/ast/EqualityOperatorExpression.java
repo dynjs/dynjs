@@ -18,14 +18,8 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
-
-import java.lang.invoke.CallSite;
 
 public class EqualityOperatorExpression extends AbstractBinaryExpression {
-
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
 
     public EqualityOperatorExpression(final Expression lhs, final Expression rhs, String op) {
         super(lhs, rhs, op);

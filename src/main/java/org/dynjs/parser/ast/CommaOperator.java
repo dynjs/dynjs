@@ -24,9 +24,6 @@ import java.lang.invoke.CallSite;
 
 public class CommaOperator extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public CommaOperator(Expression lhs, Expression rhs) {
         super( lhs, rhs , ",");
     }

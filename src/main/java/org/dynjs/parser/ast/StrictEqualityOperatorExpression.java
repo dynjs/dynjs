@@ -24,9 +24,6 @@ import java.lang.invoke.CallSite;
 
 public class StrictEqualityOperatorExpression extends AbstractBinaryExpression {
 
-    private final CallSite lhsGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite rhsGet = DynJSBootstrapper.factory().createGet();
-
     public StrictEqualityOperatorExpression(final Expression lhs, final Expression rhs, String op) {
         super(lhs, rhs, op);
     }

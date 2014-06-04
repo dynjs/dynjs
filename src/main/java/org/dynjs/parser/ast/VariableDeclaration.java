@@ -18,12 +18,15 @@ public class VariableDeclaration {
     private Position position;
     private String identifier;
     private Expression expr;
-    private CallSite get = DynJSBootstrapper.factory().createGet();
+    private CallSite get;
 
     public VariableDeclaration(Position position, String identifier, Expression initializerExpr) {
         this.position = position;
         this.identifier = identifier;
         this.expr = initializerExpr;
+        if (this.expr != null) {
+            this.get = DynJSBootstrapper.factory().createGet(initializerExpr.getPosition());
+        }
     }
 
     public Position getPosition() {
@@ -54,12 +57,12 @@ public class VariableDeclaration {
     }
 
     public String interpret(ExecutionContext context) {
-        if (getExpr() != null) {
-            Object value = getValue(this.get, context, getExpr().interpret(context));
+        if (this.expr != null) {
+            Object value = getValue(this.get, context, this.expr.interpret(context));
             Reference var = context.resolve(getIdentifier());
             var.putValue(context, value);
         }
-        return(getIdentifier());
+        return (getIdentifier());
 
     }
 
@@ -86,7 +89,7 @@ public class VariableDeclaration {
             Reference ref = (Reference) obj;
             String name = ref.getReferencedName();
             try {
-                Object result = callSite.getTarget().invoke( obj, context, name );
+                Object result = callSite.getTarget().invoke(obj, context, name);
                 return result;
             } catch (ThrowException e) {
                 throw e;

@@ -2,13 +2,14 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 
 public class PropertyGet extends PropertyAccessor {
 
-    public PropertyGet(String name, Statement block) {
-        super(name, block);
+    public PropertyGet(Position position, String name, Statement block) {
+        super(position, name, block);
     }
 
     @Override

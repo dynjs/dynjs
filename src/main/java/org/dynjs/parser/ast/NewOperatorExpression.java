@@ -32,9 +32,9 @@ public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
 
     private List<Expression> argExprs;
 
-    private final CallSite ctorGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite ctorGet;
     private final List<CallSite> argGets;
-    private final CallSite ctorCall = DynJSBootstrapper.factory().createConstruct();
+    private final CallSite ctorCall;
 
     public NewOperatorExpression(final Expression expr) {
         this( expr, new ArrayList<Expression>() );
@@ -42,10 +42,12 @@ public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
     
     public NewOperatorExpression(final Expression expr, final List<Expression> argExprs) {
         super(expr, "new" );
+        this.ctorGet = DynJSBootstrapper.factory().createGet( expr.getPosition() );
+        this.ctorCall = DynJSBootstrapper.factory().createConstruct( expr.getPosition() );
         this.argExprs = argExprs;
         this.argGets = new ArrayList<>();
         for ( Expression each : argExprs ) {
-            this.argGets.add( DynJSBootstrapper.factory().createGet() );
+            this.argGets.add( DynJSBootstrapper.factory().createGet( each.getPosition()) );
         }
     }
     

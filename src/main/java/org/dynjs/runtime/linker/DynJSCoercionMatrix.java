@@ -10,12 +10,14 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.WeakHashMap;
 
 import static java.lang.invoke.MethodType.methodType;
 
 public class DynJSCoercionMatrix extends CoercionMatrix {
 
     private JSJavaImplementationManager manager;
+    private WeakHashMap<Class<?>, MethodHandle> samCache = new WeakHashMap<>();
 
     public DynJSCoercionMatrix(JSJavaImplementationManager manager) throws NoSuchMethodException, IllegalAccessException {
         this.manager = manager;
@@ -29,13 +31,13 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
 
         // Byte conversions
         // TODO: These belong in Rephract's CoercionMatrix
-        addCoercion( 0, Byte.class, byte.class, MethodHandles.identity(byte.class) );
-        addCoercion( 0, Byte.class, Byte.class, MethodHandles.identity(Byte.class) );
-        addCoercion( 1, Byte.class, Short.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
-        addCoercion( 1, Byte.class, Integer.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
-        addCoercion( 1, Byte.class, Long.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
-        addCoercion( 2, Byte.class, Double.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
-        addCoercion( 2, Byte.class, Float.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType( Byte.class, Number.class ) ) );
+        addCoercion(0, Byte.class, byte.class, MethodHandles.identity(byte.class));
+        addCoercion(0, Byte.class, Byte.class, MethodHandles.identity(Byte.class));
+        addCoercion(1, Byte.class, Short.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType(Byte.class, Number.class)));
+        addCoercion(1, Byte.class, Integer.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType(Byte.class, Number.class)));
+        addCoercion(1, Byte.class, Long.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType(Byte.class, Number.class)));
+        addCoercion(2, Byte.class, Double.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType(Byte.class, Number.class)));
+        addCoercion(2, Byte.class, Float.class, lookup.findStatic(DynJSCoercionMatrix.class, "numberToByte", methodType(Byte.class, Number.class)));
 
         DynArrayCoercer dynArrayCoercer = new DynArrayCoercer();
         addArrayCoercion(1, boolean[].class, DynArray.class, dynArrayCoercer);
@@ -74,32 +76,32 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
     @Override
     public int isCompatible(Class<?> target, Object actual) {
         int superCompat = super.isCompatible(target, actual);
-        if (superCompat >= 0 && superCompat < 3 ) {
+        if (superCompat >= 0 && superCompat < 3) {
             return superCompat;
         }
-        
+
         Class<?> actualClass = actual.getClass();
         if (actualClass == Types.UNDEFINED.getClass() || actualClass == Types.NULL.getClass()) {
             return 3;
         }
 
         if (JSFunction.class.isAssignableFrom(actualClass)) {
-            if ( isSingleAbstractMethod(target) != null) {
+            if (isSingleAbstractMethod(target) != null) {
                 return 3;
             }
         }
-        
+
         return -1;
     }
 
     @Override
     public MethodHandle getFilter(Class<?> target, Object actual) {
         int superCompat = super.isCompatible(target, actual);
-        
-        if (superCompat >= 0 && superCompat < 3 ) {
+
+        if (superCompat >= 0 && superCompat < 3) {
             return super.getFilter(target, actual);
         }
-        
+
         Class<?> actualClass = actual.getClass();
         if (actualClass == Types.UNDEFINED.getClass() || actualClass == Types.NULL.getClass()) {
             try {
@@ -113,7 +115,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
             try {
                 String methodName = isSingleAbstractMethod(target);
                 if (methodName != null) {
-                    return singleAbstractMethod(methodName, target, actualClass);
+                    return singleAbstractMethod(methodName, target);
                 }
             } catch (NoSuchMethodException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -144,16 +146,21 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         return methodName;
     }
 
-    protected MethodHandle singleAbstractMethod(String methodName, Class<?> target, Class<?> actual) throws NoSuchMethodException, IllegalAccessException {
-        Lookup lookup = MethodHandles.lookup();
-        MethodHandle method = lookup.findStatic(DynJSCoercionMatrix.class, "singleAbstractMethod", methodType(Object.class, JSJavaImplementationManager.class, Class.class, ExecutionContext.class, String.class, JSObject.class));
-        
-        return Binder.from(methodType(target, Object.class))
-                .insert(0, this.manager)
-                .insert(1, target)
-                .insert(2, ThreadContextManager.currentContext() )
-                .insert(3, methodName )
-                .invoke(method);
+    protected synchronized MethodHandle singleAbstractMethod(String methodName, Class<?> target) throws NoSuchMethodException, IllegalAccessException {
+        MethodHandle cached = this.samCache.get(target);
+        if (cached == null) {
+            Lookup lookup = MethodHandles.lookup();
+            MethodHandle method = lookup.findStatic(DynJSCoercionMatrix.class, "singleAbstractMethod", methodType(Object.class, JSJavaImplementationManager.class, Class.class, ExecutionContext.class, String.class, JSObject.class));
+
+            cached = Binder.from(methodType(target, Object.class))
+                    .insert(0, this.manager)
+                    .insert(1, target)
+                    .insert(2, ThreadContextManager.currentContext())
+                    .insert(3, methodName)
+                    .invoke(method);
+            this.samCache.put( target, cached );
+        }
+        return cached;
     }
 
     public static Object singleAbstractMethod(JSJavaImplementationManager manager, Class<?> targetClass, ExecutionContext context, String methodName, JSObject implementation)
@@ -162,13 +169,13 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         implObj.put(context, methodName, implementation, false);
         return manager.getImplementationWrapper(targetClass, context, implObj);
     }
-    
-    
+
+
     public static MethodHandle nullReplacingFilter(Class<?> target) throws NoSuchMethodException, IllegalAccessException {
-        return Binder.from( methodType(target, Object.class) )
+        return Binder.from(methodType(target, Object.class))
                 .drop(0)
-                .insert( 0, new Class[] { Object.class}, new Object[] { null } )
-                .invoke( MethodHandles.identity(target));
+                .insert(0, new Class[]{Object.class}, new Object[]{null})
+                .invoke(MethodHandles.identity(target));
     }
 
 }

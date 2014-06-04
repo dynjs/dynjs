@@ -30,12 +30,24 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 public class ForVarDeclStatement extends AbstractForStatement {
 
     private final List<VariableDeclaration> declList;
-    private final CallSite incrGet = DynJSBootstrapper.factory().createGet();
-    private final CallSite testGet = DynJSBootstrapper.factory().createGet();
+    private final CallSite testGet;
+    private final CallSite incrGet;
 
     public ForVarDeclStatement(Position position, List<VariableDeclaration> declList, Expression test, Expression increment, Statement block) {
         super(position, test, increment, block);
         this.declList = declList;
+
+        if (test != null) {
+            this.testGet = DynJSBootstrapper.factory().createGet(test.getPosition());
+        } else {
+            this.testGet = null;
+        }
+
+        if (increment != null) {
+            this.incrGet = DynJSBootstrapper.factory().createGet(increment.getPosition());
+        } else {
+            this.incrGet = null;
+        }
     }
 
     public List<VariableDeclaration> getDeclarationList() {
@@ -46,7 +58,7 @@ public class ForVarDeclStatement extends AbstractForStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         List<VariableDeclaration> decls = new ArrayList<>();
         decls.addAll(declList);
-        decls.addAll(super.getVariableDeclarations() );
+        decls.addAll(super.getVariableDeclarations());
         return decls;
     }
 
@@ -59,14 +71,14 @@ public class ForVarDeclStatement extends AbstractForStatement {
         buf.append(indent).append("}");
         return buf.toString();
     }
-    
+
     public int getSizeMetric() {
         int size = super.getSizeMetric();
-        
-        for ( VariableDeclaration each : this.declList ) {
+
+        for (VariableDeclaration each : this.declList) {
             size += each.getSizeMetric();
         }
-        
+
         return size;
     }
 
@@ -102,20 +114,20 @@ public class ForVarDeclStatement extends AbstractForStatement {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || getLabels().contains(completion.target)) {
-                    return(Completion.createNormal(v));
+                    return (Completion.createNormal(v));
                 } else {
                     completion.value = v;
-                    return(completion);
+                    return (completion);
                 }
 
             }
             if (completion.type == Completion.Type.RETURN) {
-                return(completion);
+                return (completion);
 
             }
             if (completion.type == Completion.Type.CONTINUE) {
                 if (completion.target != null && !getLabels().contains(completion.target)) {
-                    return(completion);
+                    return (completion);
 
                 }
             }
@@ -125,6 +137,6 @@ public class ForVarDeclStatement extends AbstractForStatement {
             }
         }
 
-        return(Completion.createNormal(v));
+        return (Completion.createNormal(v));
     }
 }

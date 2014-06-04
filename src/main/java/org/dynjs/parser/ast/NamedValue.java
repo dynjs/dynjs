@@ -1,14 +1,15 @@
 package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
+import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
 
 public class NamedValue extends PropertyAssignment {
 
     private Expression expr;
 
-    public NamedValue(String name, Expression expr) {
-        super(name);
+    public NamedValue(Position position, String name, Expression expr) {
+        super(position, name);
         this.expr = expr;
     }
 

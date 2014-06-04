@@ -28,10 +28,11 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 public class ExpressionStatement extends AbstractStatement {
 
     private final Expression expr;
-    private final CallSite get = DynJSBootstrapper.factory().createGet();
+    private final CallSite get;
 
     public ExpressionStatement(final Expression expr) {
         this.expr = expr;
+        this.get = DynJSBootstrapper.factory().createGet( expr.getPosition() );
     }
 
     public Position getPosition() {
