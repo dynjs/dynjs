@@ -34,7 +34,7 @@ public class Constructor extends Instruction implements ResultInstruction {
     }
 
     public String toString() {
-        StringBuilder buf = new StringBuilder("new " + identifier + "(");
+        StringBuilder buf = new StringBuilder("" + result + " = new " + identifier + "(");
 
         int count = args.length - 1;
         for (int i = 0; i < count; i++) {
