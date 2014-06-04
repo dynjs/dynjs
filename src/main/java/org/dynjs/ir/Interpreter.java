@@ -82,16 +82,7 @@ public class Interpreter {
                         args[i] = opers[i].retrieve(context, temps);
                     }
 
-                    Object thisValue = null;
-
-                    // FIXME: We can probably remove this check for IRJSFunctions since we will not be using references
-                    if (ref instanceof Reference) {
-                        if (((Reference) ref).isPropertyReference()) {
-                            thisValue = ((Reference) ref).getBase();
-                        } else {
-                            thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
-                        }
-                    }
+                    Object thisValue = getThis(ref);
 
                     value = context.call(ref, (JSFunction) function, thisValue, args);
                 }
@@ -210,6 +201,21 @@ public class Interpreter {
         System.out.println("RESULT is " + result);
 
         return result;
+    }
+
+    // FIXME: move to helper class
+    public static Object getThis(Object ref) {
+        Object thisValue = null;
+
+        // FIXME: We can probably remove this check for IRJSFunctions since we will not be using references
+        if (ref instanceof Reference) {
+            if (((Reference) ref).isPropertyReference()) {
+                thisValue = ((Reference) ref).getBase();
+            } else {
+                thisValue = ((EnvironmentRecord) ((Reference) ref).getBase()).implicitThisValue();
+            }
+        }
+        return thisValue;
     }
 
     // FIXME: This breaks for non-numeric uses if isSubtraction

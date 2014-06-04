@@ -168,10 +168,38 @@ public class IRByteCodeCompiler {
     }
 
     private void emitCall(JiteClass jiteClass, CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
-        emitOperand(block, instruction.getIdentifier());
-        block.checkcast(p(JSCallable.class));
         block.aload(1);
-        block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
+        emitOperand(block, instruction.getIdentifier());
+        // ref
+        block.dup();
+        // ref ref
+        block.dup();
+        // ref ref ref
+        block.aload(1);
+        // ref ref ref ec
+        block.swap();
+        // ref ref ec ref
+        block.invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
+        // ref ref function
+        block.checkcast(p(JSFunction.class));
+        // ref ref function
+        block.swap();
+        // ref function ref
+        block.invokestatic(p(Interpreter.class), "getThis", sig(Object.class, Object.class));
+        // ref function this
+
+        Operand[] args = instruction.getArgs();
+        block.bipush(args.length);
+        block.anewarray(p(Object.class));
+        for (int i = 0; i < args.length; i++) {
+            block.dup();
+            block.bipush(i);
+            Operand operand = args[i];
+            emitOperand(block, operand);
+            block.arraystore();
+        }
+        // ref function this args...
+        block.invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, Object.class, JSFunction.class, Object.class, Object[].class));
         storeResult(block, instruction.getResult());
     }
 
