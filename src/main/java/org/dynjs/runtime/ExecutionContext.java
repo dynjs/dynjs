@@ -344,7 +344,7 @@ public class ExecutionContext {
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
         ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
-        if (!(function instanceof IRJSFunction || function instanceof JITCompiler.CompiledFunction)) {
+        if (!(function instanceof IRJSFunction && !(function instanceof JITCompiler.CompiledFunction))) {
             context.performDeclarationBindingInstantiation(function, arguments);
         }
         context.fileName = function.getFileName();
