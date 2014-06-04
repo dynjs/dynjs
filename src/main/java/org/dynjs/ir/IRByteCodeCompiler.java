@@ -407,7 +407,7 @@ public class IRByteCodeCompiler {
         scope.setSyntheticMethodName(methodName);
         scope.setSyntheticSignature(syntheticSignature);
         System.out.println("kicking compilation");
-        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSCallable.class), p(JITCompiler.CompiledFunction.class)});
+        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSFunction.class), p(JITCompiler.CompiledFunction.class)});
         jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
                 new CodeBlock()
                         .aload(CodeGeneratingVisitor.Arities.THIS)
