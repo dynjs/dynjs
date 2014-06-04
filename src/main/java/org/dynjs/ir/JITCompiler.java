@@ -24,6 +24,10 @@ public class JITCompiler {
         public void done(JSFunction compiledFunction);
     }
 
+    public static interface CompiledFunction {
+
+    }
+
     public void compile(final ExecutionContext context, final IRJSFunction function, final CompilerCallback callback) {
         compilationQueue.execute(new Runnable() {
             @Override
