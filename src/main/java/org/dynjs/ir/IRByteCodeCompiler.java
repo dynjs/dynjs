@@ -189,6 +189,7 @@ public class IRByteCodeCompiler {
                 .aload(1)
                 .pushInt(instruction.getIndex())
                 .invokevirtual(p(ExecutionContext.class), "getFunctionParameter", sig(Object.class, int.class));
+        storeResult(block, instruction.getResult());
 
     }
 
@@ -348,11 +349,13 @@ public class IRByteCodeCompiler {
                 block
                         .aload(1)
                                 // ? EC
-                        .swap()
-                                // EC ?
+                        .dup()
+                                // ? EC EC
                         .invokevirtual(p(ExecutionContext.class), "getVars", sig(VariableValues.class))
-                                // EC ? VV
-                        .swap()
+                                // ? EC VV
+                        .dup2_x1()
+                                // EC VV ? EC VV
+                        .pop2()
                                 // EC VV ?
                         .pushInt(offset)
                                 // EC VV ? offset
