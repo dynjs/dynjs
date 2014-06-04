@@ -29,13 +29,18 @@ public class JITCompiler {
     }
 
     public void compile(final ExecutionContext context, final IRJSFunction function, final CompilerCallback callback) {
-        compilationQueue.execute(new Runnable() {
-            @Override
-            public void run() {
-                // compile
-                callback.done(compileFunction(context, function));
-            }
-        });
+        if (context.getConfig().isJitAsync()) {
+            compilationQueue.execute(new Runnable() {
+                @Override
+                public void run() {
+                    // compile
+                    callback.done(compileFunction(context, function));
+                }
+            });
+        } else {
+            final JSFunction jsFunction = compileFunction(context, function);
+            callback.done(jsFunction);
+        }
     }
 
     private JSFunction compileFunction(ExecutionContext context, IRJSFunction function) {

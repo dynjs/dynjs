@@ -36,6 +36,7 @@ public class Config {
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
     private Integer jitThreshold = Options.JIT_TRESHOLD.load();
     private boolean jitEnabled = Options.JIT.load();
+    private boolean jitAsync = Options.JIT_ASYNC.load();
 
     private final Classpath classpath;
 
@@ -85,6 +86,14 @@ public class Config {
 
     public boolean isJitEnabled() {
         return jitEnabled;
+    }
+
+    public boolean isJitAsync() {
+        return jitAsync;
+    }
+
+    public void setJitAsync(boolean jitAsync) {
+        this.jitAsync = jitAsync;
     }
 
     public void setJitEnabled(boolean jitEnabled) {
