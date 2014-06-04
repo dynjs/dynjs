@@ -174,6 +174,7 @@ public class IRByteCodeCompiler {
         block.invokevirtual(p(Operand.class), "retrieve", sig(Object.class, ExecutionContext.class, Object[].class));
         block.aload(1);
         block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
+        storeResult(block, instruction.getResult());
     }
 
     private void emitSub(CodeBlock block, Sub instruction) {
