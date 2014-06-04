@@ -365,7 +365,7 @@ public class IRByteCodeCompiler {
                                 // EC VV offset ? depth
                         .swap()
                                 // EC VV offset depth ?
-                        .invokevirtual(p(VariableValues.class), "setVar", sig(Object.class, int.class, int.class, Object.class));
+                        .invokevirtual(p(VariableValues.class), "setVar", sig(void.class, int.class, int.class, Object.class));
                 break;
         }
     }
