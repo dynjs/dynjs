@@ -172,8 +172,8 @@ public class Scope {
         final DirectedGraph<BasicBlock> graph = cfg.build(getInstructions());
 
         // FIXME: Add debug config for this
-        System.out.println(cfg.toStringInstrs());
-        System.out.println(graph.toString());
+//        System.out.println(cfg.toStringInstrs());
+//        System.out.println(graph.toString());
 
         // FIXME: We don't save this linearized set yet
         return prepareIPCs(CFGLinearizer.linearize(cfg), cfg);

@@ -49,7 +49,7 @@ public class IRJSProgram implements JSProgram {
         this.scope = scope;
         this.instructions = scope.prepareForInterpret();
 
-        System.out.println("PROGRAM:");
+//        System.out.println("PROGRAM:");
         int size = instructions.length;
         for (int i = 0; i < size; i++) {
             System.out.println("" + instructions[i]);

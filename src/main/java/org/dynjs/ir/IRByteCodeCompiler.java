@@ -31,9 +31,7 @@ import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSCallable;
 import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSProgram;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
@@ -42,7 +40,6 @@ import org.dynjs.runtime.VariableValues;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,7 +197,6 @@ public class IRByteCodeCompiler {
         block.invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
         emitOperand(block, instruction.getArg2());
         final Label label = instruction.getTarget();
-        System.out.println("looking for label: " + label);
         final LabelNode node = jumpMap.get(label);
         block.if_icmpeq(node);
     }
@@ -226,7 +222,6 @@ public class IRByteCodeCompiler {
                 emitUndefined(block, (Undefined) operand);
                 break;
             default:
-                System.out.println(operand);
                 throw new DynJSException("loooool");
         }
     }
@@ -373,7 +368,6 @@ public class IRByteCodeCompiler {
         final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, scope.getParameterNames().length));
         scope.setSyntheticMethodName(methodName);
         scope.setSyntheticSignature(syntheticSignature);
-        System.out.println("kicking compilation");
         final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSFunction.class), p(JITCompiler.CompiledFunction.class)});
         jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
                 new CodeBlock()
@@ -401,7 +395,6 @@ public class IRByteCodeCompiler {
         // first pass for gathering labels
         for (BasicBlock bb : blockList) {
             final Label label = bb.getLabel();
-            System.out.println("label: " + label);
             final LabelNode labelNode = new LabelNode();
             jumpMap.put(label, labelNode);
         }
@@ -422,10 +415,10 @@ public class IRByteCodeCompiler {
 
         jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), block);
         final byte[] bytes = jiteClass.toBytes();
-        System.out.println("compiled" + bytes);
-        ClassReader reader = new ClassReader(bytes);
-        CheckClassAdapter.verify(reader, context.getClassLoader(), true, new PrintWriter(System.out));
-
+        if (context.getConfig().isDebug()) {
+            ClassReader reader = new ClassReader(bytes);
+            CheckClassAdapter.verify(reader, context.getClassLoader(), true, new PrintWriter(System.out));
+        }
         final DynamicClassLoader loader = new DynamicClassLoader();
         final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
         try {
