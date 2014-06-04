@@ -68,67 +68,6 @@ public class IRByteCodeCompiler {
         this.blockList = scope.prepareForCompilation();
     }
 
-    public JSProgram compile() {
-        final int varOffset = 2;
-        final List<BasicBlock> blockList = scope.prepareForCompilation();
-        Object[] temps = new Object[scope.getTemporaryVariableSize()];
-        Object[] vars = new Object[scope.getLocalVariableSize()];
-        final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
-
-
-        System.out.println("VROGRAM:");
-
-        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + "MEH");
-        jiteClass.defineDefaultConstructor();
-        CodeBlock block = new CodeBlock();
-        // first pass for gathering labels
-        for (BasicBlock bb : blockList) {
-            final Label label = bb.getLabel();
-            System.out.println("label: " + label);
-            final LabelNode labelNode = new LabelNode();
-            jumpMap.put(label, labelNode);
-        }
-
-        // second pass for emitting
-        for (BasicBlock bb : blockList) {
-            block.label(jumpMap.get(bb.getLabel()));
-
-            for (Instruction instruction : bb.getInstructions()) {
-                System.out.println(instruction);
-                emitInstruction(jiteClass, jumpMap, block, instruction);
-            }
-        }
-        block.aconst_null();
-        block.areturn();
-
-        jiteClass.defineMethod("execute", Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class), block);
-        final byte[] bytes = jiteClass.toBytes();
-        ClassReader reader = new ClassReader(bytes);
-        CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
-
-        final DynamicClassLoader loader = new DynamicClassLoader();
-        final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
-
-
-        try {
-            final Method execute;
-            final Method[] declaredMethods = define.getDeclaredMethods();
-            for (Method declaredMethod : declaredMethods) {
-                System.out.println(declaredMethod);
-            }
-            execute = define.getDeclaredMethod("execute");
-            final Object invoke = execute.invoke(null);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     private void emitInstruction(JiteClass jiteClass, HashMap<Label, LabelNode> jumpMap, CodeBlock block, Instruction instruction) {
         switch (instruction.getOperation()) {
             case DEFINE_FUNCTION:
