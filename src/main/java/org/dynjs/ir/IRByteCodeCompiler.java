@@ -169,10 +169,7 @@ public class IRByteCodeCompiler {
 
     private void emitCall(JiteClass jiteClass, CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
         emitOperand(block, instruction.getIdentifier());
-        block.checkcast(p(Operand.class));
-        block.aload(1);
-        block.aconst_null();
-        block.invokevirtual(p(Operand.class), "retrieve", sig(Object.class, ExecutionContext.class, Object[].class));
+        block.checkcast(p(JSCallable.class));
         block.aload(1);
         block.invokeinterface(p(JSCallable.class), "call", sig(Object.class, ExecutionContext.class));
         storeResult(block, instruction.getResult());
