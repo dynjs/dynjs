@@ -1,8 +1,5 @@
 package org.dynjs.ir;
 
-import java.util.List;
-
-import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -15,6 +12,8 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.VariableValues;
+
+import java.util.List;
 
 public class IRJSFunction extends DynObject implements JSFunction {
     private final FunctionScope scope;
@@ -31,6 +30,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
     private static class IRJSFunctionBox {
         public int callCount = 0;
         public JSCallable compiledFunction;
+        public boolean compilationInProgress;
     }
 
     private IRJSFunctionBox box = new IRJSFunctionBox();
@@ -109,7 +109,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
         // Allocate space for variables of this function and establish link to captured ones.
         context.allocVars(scope.getLocalVariableSize(), capturedValues);
 
-        if (box.callCount >= 0) {
+        if (box.compilationInProgress || box.callCount >= 0) {
             if (tryCompile(context)) {
                 return callJitted(context);
             }
@@ -129,16 +129,20 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
         if (box.callCount++ >= context.getConfig().getJitThreshold()) {
             box.callCount = -1; // disable, we get one shot
+            if (!box.compilationInProgress) {
+                if (context.getConfig().isJitEnabled()) {
+                    final JITCompiler compiler = context.getRuntime().getJitCompiler();
+                    box.compilationInProgress = true;
+                    compiler.compile(context, this, new JITCompiler.CompilerCallback() {
+                        @Override
+                        public void done(JSFunction compiledFunction) {
+                            box.compiledFunction = compiledFunction;
+                        }
+                    });
+                }
 
-            if (context.getConfig().isJitEnabled()) {
-                final JITCompiler compiler = context.getRuntime().getJitCompiler();
-                compiler.compile(context, this, new JITCompiler.CompilerCallback() {
-                    @Override
-                    public void done(JSFunction compiledFunction) {
-                        box.compiledFunction = compiledFunction;
-                    }
-                });
             }
+
         }
         return false;
     }
