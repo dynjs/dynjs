@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 
@@ -18,7 +19,7 @@ public class TemporaryVariable extends OffsetVariable {
         try {
             return temps[getOffset()];
         } catch (Exception e) {
-            System.out.println("Error: Tempory Variable '%t_" + getOffset() + "' cannot be retrieed.");
+            System.out.println("Error: Temporary Variable '" + getName() + "' cannot be retrieved.");
             throw e;
         }
     }

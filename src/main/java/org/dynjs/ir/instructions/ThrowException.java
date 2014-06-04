@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 
 /**
@@ -9,5 +10,9 @@ import org.dynjs.ir.Operation;
 public class ThrowException extends Instruction {
     public ThrowException() {
         super(Operation.THROW_EXCEPTION);
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] {};
     }
 }

@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.IRJSFunction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.OperandType;
@@ -11,6 +12,9 @@ public class Fn extends Operand {
     public Fn(IRJSFunction function) {
         super(OperandType.FUNCTION);
         this.function = function;
+    }
+
+    public void addUsedVariables(List<Variable> l) {
     }
 
     @Override

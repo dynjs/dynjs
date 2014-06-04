@@ -191,8 +191,8 @@ public class ExecutionContext {
                 return value;
             } catch (ThrowException e) {
                 throw e;
-            } catch (Throwable e) {
-                throw new ThrowException(fnContext, e);
+            //} catch (Throwable e) {
+//                throw new ThrowException(fnContext, e);
             }
         } catch (ThrowException t) {
             if (t.getCause() != null) {

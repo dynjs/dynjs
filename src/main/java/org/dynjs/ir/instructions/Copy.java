@@ -1,5 +1,6 @@
 package org.dynjs.ir.instructions;
 
+import java.util.Map;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
@@ -13,6 +14,19 @@ public class Copy extends Instruction implements ResultInstruction {
         super(Operation.COPY);
         this.result = result;
         this.value = value;
+    }
+
+    @Override
+    public void updateResult(Variable newResult) {
+        this.result = newResult;
+    }
+
+    public void simplifyOperands(Map<Operand, Operand> renameMap, boolean force) {
+        value = value.getSimplifiedOperand(renameMap, force);
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { result, value };
     }
 
     public Variable getResult() {

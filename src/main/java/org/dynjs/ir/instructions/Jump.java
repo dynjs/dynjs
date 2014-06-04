@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Label;
 
@@ -17,6 +18,10 @@ public class Jump extends Instruction {
 
     public boolean transfersControl() {
         return true;
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { };
     }
 
     public Label getTarget() {

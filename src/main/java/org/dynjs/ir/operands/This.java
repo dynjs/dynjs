@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
@@ -12,6 +13,9 @@ public class This extends Operand {
 
     protected This() {
         super(OperandType.THIS);
+    }
+
+    public void addUsedVariables(List<Variable> l) {
     }
 
     public String toString() {

@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
@@ -16,6 +17,9 @@ public class Null extends Operand {
     @Override
     public Object retrieve(ExecutionContext context, Object[] temps) {
         return Types.NULL;
+    }
+
+    public void addUsedVariables(List<Variable> l) {
     }
 
     public String toString() {

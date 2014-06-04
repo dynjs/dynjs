@@ -15,7 +15,13 @@
  */
 package org.dynjs.ir;
 
-public class Instruction {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.dynjs.ir.instructions.ResultInstruction;
+import org.dynjs.ir.operands.Variable;
+
+public abstract class Instruction {
     private final Operation operation;
     // Mutable state to make it easier for jumping around
     private int ipc = -1;
@@ -31,6 +37,37 @@ public class Instruction {
     public void setIPC(int ipc) {
         this.ipc = ipc;
     }
+
+    /**
+     *  List of all variables used by this instruction.
+     */
+    public List<Variable> getUsedVariables() {
+        ArrayList<Variable> vars = new ArrayList<Variable>();
+
+        for (Operand o : getOperands()) {
+            o.addUsedVariables(vars);
+        }
+
+        return vars;
+    }
+
+    public void simplifyOperands(Map<Operand, Operand> renameMap, boolean force) {
+    }
+
+    public void renameVariables(Map<Operand, Operand> renameMap) {
+        simplifyOperands(renameMap, true);
+
+        if (this instanceof ResultInstruction) {
+            ResultInstruction resultInstruction = (ResultInstruction) this;
+
+            Variable oldVariable = resultInstruction.getResult();
+            Variable newVariable = (Variable) renameMap.get(oldVariable);
+
+            if (newVariable != null) resultInstruction.updateResult(newVariable);
+        }
+    }
+
+    public abstract Operand[] getOperands();
 
     /**
      * This instruction can set or hint or some useful information onto the scope it belongs

@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.LocalVariable;
+import org.dynjs.ir.operands.TemporaryLocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
@@ -138,6 +140,14 @@ public class Scope {
         return variable;
     }
 
+    public Variable createTemporaryVariableFor(LocalVariable local) {
+        Variable variable = new TemporaryLocalVariable(local.getName(), temporaryVariablesIndex);
+
+        temporaryVariablesIndex++;
+
+        return variable;
+    }
+
     public int getTemporaryVariableSize() {
         return temporaryVariablesIndex;
     }
@@ -176,13 +186,61 @@ public class Scope {
 //        System.out.println(graph.toString());
 
         // FIXME: We don't save this linearized set yet
-        return prepareIPCs(CFGLinearizer.linearize(cfg), cfg);
+        List<BasicBlock> linearizedCFG = CFGLinearizer.linearize(cfg);
+
+        // FIXME: This is not safe to do in all cases.  We need more knowledge to make it 100% safe
+        // FIXME: This is happening twice once for interp and once for compilation.  Do only once
+        renameLocalVariables(linearizedCFG);
+
+        return prepareIPCs(linearizedCFG, cfg);
+    }
+
+    private void setupLocalVarReplacement(LocalVariable v, Map<Operand, Operand> varRenameMap) {
+        if (varRenameMap.get(v) == null) varRenameMap.put(v, createTemporaryVariableFor(v));
     }
 
     public List<BasicBlock> prepareForCompilation() {
         final CFG cfg = new CFG(this);
         cfg.build(getInstructions());
-        return CFGLinearizer.linearize(cfg);
+
+        List<BasicBlock> linearizedCFG = CFGLinearizer.linearize(cfg);
+
+        renameLocalVariables(linearizedCFG);
+
+        return linearizedCFG;
+    }
+
+    private void renameLocalVariables(List<BasicBlock> linearizedCFG) {
+        Map<Operand, Operand> renameMap = new HashMap<Operand, Operand>();
+
+        //System.out.println("BEFORE:");
+        for (BasicBlock b: linearizedCFG) {
+            for (Instruction i: b.getInstructions()) {
+                //System.out.println("I: " + i);
+                if (i instanceof ResultInstruction) {
+                    Variable v = ((ResultInstruction) i).getResult();
+
+                    if (v instanceof LocalVariable) {
+                        setupLocalVarReplacement((LocalVariable) v, renameMap);
+                    }
+                }
+
+                for (Variable v : i.getUsedVariables()) {
+                    if (v instanceof LocalVariable) {
+                        setupLocalVarReplacement((LocalVariable) v, renameMap);
+                    }
+                }
+            }
+        }
+
+        //System.out.println("AFTER:");
+        // Rename all local var uses with their tmp-var stand-ins
+        for (BasicBlock b: linearizedCFG) {
+            for (Instruction i: b.getInstructions()) {
+                i.renameVariables(renameMap);
+                //System.out.println("I: " + i);
+            }
+        }
     }
 
     private static Label[] catLabels(Label[] labels, Label cat) {

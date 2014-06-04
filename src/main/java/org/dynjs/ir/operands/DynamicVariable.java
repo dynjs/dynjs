@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
 

@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.OperandType;
 import org.dynjs.runtime.ExecutionContext;
@@ -13,6 +14,9 @@ public class Undefined extends Operand {
 
     protected Undefined() {
         super(OperandType.UNDEFINED);
+    }
+
+    public void addUsedVariables(List<Variable> l) {
     }
 
     @Override

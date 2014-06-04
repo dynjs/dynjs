@@ -15,6 +15,7 @@
  */
 package org.dynjs.ir.instructions;
 
+import java.util.Map;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
@@ -30,6 +31,14 @@ public class Return extends Instruction {
     public Return(Operand value) {
         super(Operation.RETURN);
         this.value = value;
+    }
+
+    public void simplifyOperands(Map<Operand, Operand> renameMap, boolean force) {
+        value = value.getSimplifiedOperand(renameMap, force);
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { value };
     }
 
     public Operand getValue() {
