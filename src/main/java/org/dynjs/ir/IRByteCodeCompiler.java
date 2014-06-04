@@ -35,6 +35,7 @@ import org.dynjs.runtime.JSCallable;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
 import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.VariableValues;
 
@@ -288,7 +289,7 @@ public class IRByteCodeCompiler {
                         // context
                 .ldc(operand.getName())
                         // context name
-                .invokevirtual(p(ExecutionContext.class), "resolve", sig(Object.class, String.class))
+                .invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class))
                         // reference
                 .aload(1)
                         // reference context
