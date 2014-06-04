@@ -5,6 +5,7 @@ import org.dynjs.Config;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.IRJSFunction;
+import org.dynjs.ir.JITCompiler;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -343,7 +344,7 @@ public class ExecutionContext {
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
         ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
-        if (!(function instanceof IRJSFunction)) {
+        if (!(function instanceof IRJSFunction || function instanceof JITCompiler.CompiledFunction)) {
             context.performDeclarationBindingInstantiation(function, arguments);
         }
         context.fileName = function.getFileName();
