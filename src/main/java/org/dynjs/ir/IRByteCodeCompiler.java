@@ -15,6 +15,7 @@ import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LT;
 import org.dynjs.ir.instructions.ReceiveFunctionParameter;
+import org.dynjs.ir.instructions.ResultInstruction;
 import org.dynjs.ir.instructions.Return;
 import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
@@ -100,7 +101,10 @@ public class IRByteCodeCompiler {
                 break;
             default:
                 throw new DynJSException("LOOOL");
+        }
 
+        if (instruction instanceof ResultInstruction) {
+            storeResult(block, ((ResultInstruction) instruction).getResult());
         }
     }
 
@@ -137,14 +141,12 @@ public class IRByteCodeCompiler {
         }
         // ref function this args...
         block.invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, Object.class, JSFunction.class, Object.class, Object[].class));
-        storeResult(block, instruction.getResult());
     }
 
     private void emitSub(CodeBlock block, Sub instruction) {
         emitOperand(block, instruction.getLHS());
         emitOperand(block, instruction.getRHS());
         block.invokestatic(p(IRByteCodeCompiler.class), "sub", sig(Object.class, Object.class, Object.class));
-        storeResult(block, instruction.getResult());
     }
 
     private void emitReceiveFunctionParameter(CodeBlock block, ReceiveFunctionParameter instruction, HashMap<Label, LabelNode> jumpMap) {
@@ -152,8 +154,6 @@ public class IRByteCodeCompiler {
                 .aload(EXECUTION_CONTEXT)
                 .pushInt(instruction.getIndex())
                 .invokevirtual(p(ExecutionContext.class), "getFunctionParameter", sig(Object.class, int.class));
-        storeResult(block, instruction.getResult());
-
     }
 
     private void emitReturn(CodeBlock block, Return instruction, HashMap<Label, LabelNode> jumpMap) {
@@ -190,7 +190,6 @@ public class IRByteCodeCompiler {
         emitOperand(block, instruction.getArg1());
         emitOperand(block, instruction.getArg2());
         block.invokestatic(p(IRByteCodeCompiler.class), "lt", sig(Boolean.class, Object.class, Object.class));
-        storeResult(block, instruction.getResult());
     }
 
     private void emitBEQ(CodeBlock block, BEQ instruction, Map<Label, LabelNode> jumpMap) {
@@ -288,13 +287,10 @@ public class IRByteCodeCompiler {
         emitOperand(block, instruction.getLHS());
         emitOperand(block, instruction.getRHS());
         block.invokestatic(p(IRByteCodeCompiler.class), "add", sig(Object.class, Object.class, Object.class));
-        storeResult(block, instruction.getResult());
     }
 
     private void emitCopy(CodeBlock block, Copy instruction) {
         emitOperand(block, instruction.getValue());
-        final Variable result = instruction.getResult();
-        storeResult(block, result);
     }
 
     private void storeResult(CodeBlock block, Variable result) {
