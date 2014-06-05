@@ -6,7 +6,6 @@ import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
 import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
 import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
-import org.dynjs.codegen.CodeGeneratingVisitor;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
@@ -49,6 +48,8 @@ import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.params;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
+
+import static org.dynjs.codegen.CodeGeneratingVisitor.Arities.*;
 
 public class IRByteCodeCompiler {
     private final FunctionScope scope;
@@ -104,14 +105,14 @@ public class IRByteCodeCompiler {
     }
 
     private void emitCall(JiteClass jiteClass, CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
-        block.aload(1);
+        block.aload(EXECUTION_CONTEXT);
         emitOperand(block, instruction.getIdentifier());
         // ref
         block.dup();
         // ref ref
         block.dup();
         // ref ref ref
-        block.aload(1);
+        block.aload(EXECUTION_CONTEXT);
         // ref ref ref ec
         block.swap();
         // ref ref ec ref
@@ -148,7 +149,7 @@ public class IRByteCodeCompiler {
 
     private void emitReceiveFunctionParameter(CodeBlock block, ReceiveFunctionParameter instruction, HashMap<Label, LabelNode> jumpMap) {
         block
-                .aload(1)
+                .aload(EXECUTION_CONTEXT)
                 .pushInt(instruction.getIndex())
                 .invokevirtual(p(ExecutionContext.class), "getFunctionParameter", sig(Object.class, int.class));
         storeResult(block, instruction.getResult());
@@ -234,7 +235,7 @@ public class IRByteCodeCompiler {
     public CodeBlock jsGetValue() {
         CodeBlock codeBlock = new CodeBlock()
                 // IN: reference
-                .aload(1)
+                .aload(EXECUTION_CONTEXT)
                         // reference context
                 .swap()
                         // context reference
@@ -244,13 +245,13 @@ public class IRByteCodeCompiler {
 
     private void emitDynamicVar(CodeBlock block, DynamicVariable operand) {
         block
-                .aload(1)
+                .aload(EXECUTION_CONTEXT)
                         // context
                 .ldc(operand.getName())
                         // context name
                 .invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class))
                         // reference
-                .aload(1)
+                .aload(EXECUTION_CONTEXT)
                         // reference context
                 .swap()
                         // context reference
@@ -263,7 +264,7 @@ public class IRByteCodeCompiler {
 
     private void emitLocalVar(CodeBlock block, LocalVariable operand) {
         block
-                .aload(1)
+                .aload(EXECUTION_CONTEXT)
                 .invokevirtual(p(ExecutionContext.class), "getVars", sig(VariableValues.class))
                 .pushInt(operand.getOffset())
                 .pushInt(operand.getDepth())
@@ -307,7 +308,7 @@ public class IRByteCodeCompiler {
                 offset = ((LocalVariable) result).getOffset();
                 int depth = ((LocalVariable) result).getDepth();
                 block
-                        .aload(1)
+                        .aload(EXECUTION_CONTEXT)
                                 // ? EC
                         .dup()
                                 // ? EC EC
@@ -371,7 +372,7 @@ public class IRByteCodeCompiler {
         final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSFunction.class), p(JITCompiler.CompiledFunction.class)});
         jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
                 new CodeBlock()
-                        .aload(CodeGeneratingVisitor.Arities.THIS)
+                        .aload(THIS)
                                 // this
                         .aload(1)
                                 // this globalobject
@@ -385,10 +386,7 @@ public class IRByteCodeCompiler {
                         .voidreturn()
         );
 
-        final int varOffset = 2;
         final List<BasicBlock> blockList = this.blockList;
-        Object[] temps = new Object[scope.getTemporaryVariableSize()];
-        Object[] vars = new Object[scope.getLocalVariableSize()];
         final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
 
         CodeBlock block = new CodeBlock();
