@@ -2,114 +2,67 @@ package org.dynjs.ir;
 
 import me.qmx.jitescript.CodeBlock;
 import me.qmx.jitescript.JiteClass;
+import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
+import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
+import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
+import org.dynjs.codegen.CodeGeneratingVisitor;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
+import org.dynjs.ir.instructions.Call;
 import org.dynjs.ir.instructions.Copy;
 import org.dynjs.ir.instructions.DefineFunction;
 import org.dynjs.ir.instructions.Jump;
 import org.dynjs.ir.instructions.LT;
+import org.dynjs.ir.instructions.ReceiveFunctionParameter;
+import org.dynjs.ir.instructions.Return;
+import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.TemporaryVariable;
+import org.dynjs.ir.operands.Undefined;
 import org.dynjs.ir.operands.Variable;
 import org.dynjs.ir.representations.BasicBlock;
+import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSFunction;
+import org.dynjs.runtime.LexicalEnvironment;
+import org.dynjs.runtime.Reference;
 import org.dynjs.runtime.Types;
-import me.qmx.jitescript.internal.org.objectweb.asm.ClassReader;
-import me.qmx.jitescript.internal.org.objectweb.asm.Opcodes;
-import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
-import me.qmx.jitescript.internal.org.objectweb.asm.util.CheckClassAdapter;
+import org.dynjs.runtime.VariableValues;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static me.qmx.jitescript.util.CodegenUtils.ci;
 import static me.qmx.jitescript.util.CodegenUtils.p;
 import static me.qmx.jitescript.util.CodegenUtils.params;
 import static me.qmx.jitescript.util.CodegenUtils.sig;
 
 public class IRByteCodeCompiler {
-    private final Scope scope;
+    private final FunctionScope scope;
     private final String fileName;
     private final boolean strict;
     private final List<BasicBlock> blockList;
     private final AtomicInteger methodCounter = new AtomicInteger();
+    private static final AtomicInteger compiledFunctionCounter = new AtomicInteger();
 
-    public IRByteCodeCompiler(Scope scope, String fileName, boolean strict) {
+    public IRByteCodeCompiler(FunctionScope scope, String fileName, boolean strict) {
         this.scope = scope;
         this.fileName = fileName;
         this.strict = strict;
         this.blockList = scope.prepareForCompilation();
-    }
-
-    public JSProgram compile() {
-        final int varOffset = 2;
-        final List<BasicBlock> blockList = scope.prepareForCompilation();
-        Object[] temps = new Object[scope.getTemporaryVariableSize()];
-        Object[] vars = new Object[scope.getLocalVariableSize()];
-        final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
-
-
-        System.out.println("VROGRAM:");
-
-        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + "MEH");
-        jiteClass.defineDefaultConstructor();
-        CodeBlock block = new CodeBlock();
-        // first pass for gathering labels
-        for (BasicBlock bb : blockList) {
-            final Label label = bb.getLabel();
-            System.out.println("label: " + label);
-            final LabelNode labelNode = new LabelNode();
-            jumpMap.put(label, labelNode);
-        }
-
-        // second pass for emitting
-        for (BasicBlock bb : blockList) {
-            block.label(jumpMap.get(bb.getLabel()));
-
-            for (Instruction instruction : bb.getInstructions()) {
-                System.out.println(instruction);
-                emitInstruction(jiteClass, jumpMap, block, instruction);
-            }
-        }
-        block.aconst_null();
-        block.areturn();
-
-        jiteClass.defineMethod("execute", Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class), block);
-        final byte[] bytes = jiteClass.toBytes();
-        ClassReader reader = new ClassReader(bytes);
-        CheckClassAdapter.verify(reader, true, new PrintWriter(System.out));
-
-        final DynamicClassLoader loader = new DynamicClassLoader();
-        final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
-
-
-        try {
-            final Method execute;
-            final Method[] declaredMethods = define.getDeclaredMethods();
-            for (Method declaredMethod : declaredMethods) {
-                System.out.println(declaredMethod);
-            }
-            execute = define.getDeclaredMethod("execute");
-            final Object invoke = execute.invoke(null);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     private void emitInstruction(JiteClass jiteClass, HashMap<Label, LabelNode> jumpMap, CodeBlock block, Instruction instruction) {
@@ -119,6 +72,9 @@ public class IRByteCodeCompiler {
                 break;
             case ADD:
                 emitAdd(block, (Add) instruction);
+                break;
+            case SUB:
+                emitSub(block, (Sub) instruction);
                 break;
             case COPY:
                 emitCopy(block, (Copy) instruction);
@@ -131,11 +87,81 @@ public class IRByteCodeCompiler {
                 break;
             case JUMP:
                 emitJump(block, (Jump) instruction, jumpMap);
+                break;
+            case RETURN:
+                emitReturn(block, (Return) instruction, jumpMap);
+                break;
+            case RECEIVE_FUNCTION_PARAM:
+                emitReceiveFunctionParameter(block, (ReceiveFunctionParameter) instruction, jumpMap);
+                break;
+            case CALL:
+                emitCall(jiteClass, block, (Call) instruction, jumpMap);
+                break;
+            default:
+                throw new DynJSException("LOOOL");
+
         }
     }
 
+    private void emitCall(JiteClass jiteClass, CodeBlock block, Call instruction, HashMap<Label, LabelNode> jumpMap) {
+        block.aload(1);
+        emitOperand(block, instruction.getIdentifier());
+        // ref
+        block.dup();
+        // ref ref
+        block.dup();
+        // ref ref ref
+        block.aload(1);
+        // ref ref ref ec
+        block.swap();
+        // ref ref ec ref
+        block.invokestatic(p(Types.class), "getValue", sig(Object.class, ExecutionContext.class, Object.class));
+        // ref ref function
+        block.checkcast(p(JSFunction.class));
+        // ref ref function
+        block.swap();
+        // ref function ref
+        block.invokestatic(p(Interpreter.class), "getThis", sig(Object.class, Object.class));
+        // ref function this
+
+        Operand[] args = instruction.getArgs();
+        block.bipush(args.length);
+        block.anewarray(p(Object.class));
+        for (int i = 0; i < args.length; i++) {
+            block.dup();
+            block.bipush(i);
+            Operand operand = args[i];
+            emitOperand(block, operand);
+            block.arraystore();
+        }
+        // ref function this args...
+        block.invokevirtual(p(ExecutionContext.class), "call", sig(Object.class, Object.class, JSFunction.class, Object.class, Object[].class));
+        storeResult(block, instruction.getResult());
+    }
+
+    private void emitSub(CodeBlock block, Sub instruction) {
+        emitOperand(block, instruction.getLHS());
+        emitOperand(block, instruction.getRHS());
+        block.invokestatic(p(IRByteCodeCompiler.class), "sub", sig(Object.class, Object.class, Object.class));
+        storeResult(block, instruction.getResult());
+    }
+
+    private void emitReceiveFunctionParameter(CodeBlock block, ReceiveFunctionParameter instruction, HashMap<Label, LabelNode> jumpMap) {
+        block
+                .aload(1)
+                .pushInt(instruction.getIndex())
+                .invokevirtual(p(ExecutionContext.class), "getFunctionParameter", sig(Object.class, int.class));
+        storeResult(block, instruction.getResult());
+
+    }
+
+    private void emitReturn(CodeBlock block, Return instruction, HashMap<Label, LabelNode> jumpMap) {
+        emitOperand(block, instruction.getValue());
+        block.areturn();
+    }
+
     private void emitFunction(JiteClass jiteClass, HashMap<Label, LabelNode> jumpMap, CodeBlock block, DefineFunction instruction) {
-        final FunctionScope functionScope = ((DefineFunction) instruction).getScope();
+        final FunctionScope functionScope = instruction.getScope();
         final String[] parameterNames = functionScope.getParameterNames();
         final CodeBlock fnBlock = new CodeBlock();
         final List<BasicBlock> blocks = functionScope.prepareForCompilation();
@@ -148,7 +174,10 @@ public class IRByteCodeCompiler {
             fnBlock.aconst_null().areturn();
         }
         final String methodName = nextSyntheticMethodName(functionScope);
-        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, parameterNames.length)), fnBlock);
+        final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, parameterNames.length));
+        jiteClass.defineMethod(methodName, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, syntheticSignature, fnBlock);
+        functionScope.setSyntheticMethodName(methodName);
+        functionScope.setSyntheticSignature(syntheticSignature);
     }
 
     private void emitJump(CodeBlock block, Jump instruction, HashMap<Label, LabelNode> jumpMap) {
@@ -168,7 +197,6 @@ public class IRByteCodeCompiler {
         block.invokevirtual(p(Boolean.class), "booleanValue", sig(boolean.class));
         emitOperand(block, instruction.getArg2());
         final Label label = instruction.getTarget();
-        System.out.println("looking for label: " + label);
         final LabelNode node = jumpMap.get(label);
         block.if_icmpeq(node);
     }
@@ -189,7 +217,18 @@ public class IRByteCodeCompiler {
                 break;
             case BOOLEAN:
                 emitBoolean(block, (BooleanLiteral) operand);
+                break;
+            case UNDEFINED:
+                emitUndefined(block, (Undefined) operand);
+                break;
+            default:
+                throw new DynJSException("loooool");
         }
+    }
+
+    private void emitUndefined(CodeBlock block, Undefined operand) {
+        block
+                .getstatic(p(Types.class), "UNDEFINED", ci(Types.Undefined.class));
     }
 
     public CodeBlock jsGetValue() {
@@ -209,7 +248,7 @@ public class IRByteCodeCompiler {
                         // context
                 .ldc(operand.getName())
                         // context name
-                .invokevirtual(p(ExecutionContext.class), "resolve", sig(Object.class, String.class))
+                .invokevirtual(p(ExecutionContext.class), "resolve", sig(Reference.class, String.class))
                         // reference
                 .aload(1)
                         // reference context
@@ -223,7 +262,12 @@ public class IRByteCodeCompiler {
     }
 
     private void emitLocalVar(CodeBlock block, LocalVariable operand) {
-        block.aload(getLocalVarOffset() + operand.getOffset());
+        block
+                .aload(1)
+                .invokevirtual(p(ExecutionContext.class), "getVars", sig(VariableValues.class))
+                .pushInt(operand.getOffset())
+                .pushInt(operand.getDepth())
+                .invokevirtual(p(VariableValues.class), "getVar", sig(Object.class, int.class, int.class));
     }
 
     private void emitTempVar(CodeBlock block, TemporaryVariable operand) {
@@ -231,11 +275,7 @@ public class IRByteCodeCompiler {
     }
 
     private int getTempVarOffset() {
-        return getLocalVarOffset() + scope.getLocalVariableSize();
-    }
-
-    private int getLocalVarOffset() {
-        return 1;
+        return 2;
     }
 
     private void emitInteger(CodeBlock block, IntegerNumber operand) {
@@ -261,12 +301,33 @@ public class IRByteCodeCompiler {
         switch (result.getType()) {
             case TEMP_VAR:
                 offset = getTempVarOffset() + ((TemporaryVariable) result).getOffset();
+                block.astore(offset);
                 break;
             case LOCAL_VAR:
-                offset = getLocalVarOffset() + ((LocalVariable) result).getOffset();
+                offset = ((LocalVariable) result).getOffset();
+                int depth = ((LocalVariable) result).getDepth();
+                block
+                        .aload(1)
+                                // ? EC
+                        .dup()
+                                // ? EC EC
+                        .invokevirtual(p(ExecutionContext.class), "getVars", sig(VariableValues.class))
+                                // ? EC VV
+                        .dup2_x1()
+                                // EC VV ? EC VV
+                        .pop2()
+                                // EC VV ?
+                        .pushInt(offset)
+                                // EC VV ? offset
+                        .swap()
+                                // EC VV offset ?
+                        .pushInt(depth)
+                                // EC VV offset ? depth
+                        .swap()
+                                // EC VV offset depth ?
+                        .invokevirtual(p(VariableValues.class), "setVar", sig(void.class, int.class, int.class, Object.class));
                 break;
         }
-        block.astore(offset);
     }
 
 
@@ -280,11 +341,99 @@ public class IRByteCodeCompiler {
         return "m_" + builder.toString() + "_" + methodCounter.getAndIncrement();
     }
 
+    private String nextCompiledFunctionName() {
+        return "Function" + "_" + compiledFunctionCounter.getAndIncrement();
+    }
+
     public static Boolean lt(Object a, Object b) {
-        return ((Integer) a).compareTo((Integer) b) == -1;
+        Long la = a instanceof Long ? (Long) a : new Long(((Integer) a).longValue());
+        Long lb = b instanceof Long ? (Long) b : new Long(((Integer) b).longValue());
+        return la.compareTo(lb) == -1;
     }
 
     public static Object add(Object a, Object b) {
-        return ((Integer) a) + ((Integer) b);
+        Long la = a instanceof Long ? (Long) a : new Long(((Integer) a).longValue());
+        Long lb = b instanceof Long ? (Long) b : new Long(((Integer) b).longValue());
+        return la + lb;
+    }
+
+    public static Object sub(Object a, Object b) {
+        Long la = a instanceof Long ? (Long) a : new Long(((Integer) a).longValue());
+        Long lb = b instanceof Long ? (Long) b : new Long(((Integer) b).longValue());
+        return la - lb;
+    }
+
+    public JSFunction compileFunction(ExecutionContext context) {
+        final String methodName = nextSyntheticMethodName(scope);
+        final String syntheticSignature = sig(Object.class, params(Object.class, ExecutionContext.class, Object.class, scope.getParameterNames().length));
+        scope.setSyntheticMethodName(methodName);
+        scope.setSyntheticSignature(syntheticSignature);
+        final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSFunction.class), p(JITCompiler.CompiledFunction.class)});
+        jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
+                new CodeBlock()
+                        .aload(CodeGeneratingVisitor.Arities.THIS)
+                                // this
+                        .aload(1)
+                                // this globalobject
+                        .aload(2)
+                                // this globalobject lexicalenvironment
+                        .iload(3)
+                                // this globalobject lexicalenvironment strict
+                        .aload(4)
+                                // this globalobject lexicalenvironment strict formalparamenters[]
+                        .invokespecial(p(AbstractFunction.class), "<init>", sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class))
+                        .voidreturn()
+        );
+
+        final int varOffset = 2;
+        final List<BasicBlock> blockList = this.blockList;
+        Object[] temps = new Object[scope.getTemporaryVariableSize()];
+        Object[] vars = new Object[scope.getLocalVariableSize()];
+        final HashMap<Label, LabelNode> jumpMap = new HashMap<>();
+
+        CodeBlock block = new CodeBlock();
+        // first pass for gathering labels
+        for (BasicBlock bb : blockList) {
+            final Label label = bb.getLabel();
+            final LabelNode labelNode = new LabelNode();
+            jumpMap.put(label, labelNode);
+        }
+
+        // second pass for emitting
+        for (BasicBlock bb : blockList) {
+            block.label(jumpMap.get(bb.getLabel()));
+
+            for (Instruction instruction : bb.getInstructions()) {
+                emitInstruction(jiteClass, jumpMap, block, instruction);
+            }
+        }
+
+        if (!block.returns()) {
+            block.aconst_null().areturn();
+        }
+
+
+        jiteClass.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Object.class, ExecutionContext.class), block);
+        final byte[] bytes = jiteClass.toBytes();
+        if (context.getConfig().isDebug()) {
+            ClassReader reader = new ClassReader(bytes);
+            CheckClassAdapter.verify(reader, context.getClassLoader(), true, new PrintWriter(System.out));
+        }
+        final DynamicClassLoader loader = new DynamicClassLoader();
+        final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
+        try {
+            final Constructor<?> constructor = define.getDeclaredConstructor(GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class);
+            final JSFunction function = (JSFunction) constructor.newInstance(context.getGlobalObject(), context.getLexicalEnvironment(), strict, scope.getParameterNames());
+            return function;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -15,6 +15,9 @@
  */
 package org.dynjs.ir;
 
+import java.util.List;
+import java.util.Map;
+import org.dynjs.ir.operands.Variable;
 import org.dynjs.runtime.ExecutionContext;
 
 public abstract class Operand {
@@ -27,6 +30,12 @@ public abstract class Operand {
 
     public OperandType getType() {
         return type;
+    }
+
+    public abstract void addUsedVariables(List<Variable> l);
+
+    public Operand getSimplifiedOperand(Map<Operand, Operand> valueMap, boolean force) {
+        return this;
     }
 
     public Object retrieve(ExecutionContext context, Object[] temps) {

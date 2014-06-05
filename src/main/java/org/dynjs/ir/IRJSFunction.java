@@ -1,17 +1,19 @@
 package org.dynjs.ir;
 
-import java.util.List;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.JSCallable;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.VariableValues;
+
+import java.util.List;
 
 public class IRJSFunction extends DynObject implements JSFunction {
     private final FunctionScope scope;
@@ -20,6 +22,18 @@ public class IRJSFunction extends DynObject implements JSFunction {
     private String debugContext = "";
     // Lexically-captured values of this function
     private VariableValues capturedValues;
+
+    public JSFunction compile(ExecutionContext context) {
+        return new IRByteCodeCompiler(scope, getFileName(), isStrict()).compileFunction(context);
+    }
+
+    private static class IRJSFunctionBox {
+        public int callCount = 0;
+        public JSCallable compiledFunction;
+        public boolean compilationInProgress;
+    }
+
+    private IRJSFunctionBox box = new IRJSFunctionBox();
 
     public IRJSFunction(FunctionScope scope, VariableValues capturedValues, LexicalEnvironment lexicalEnvironment,
                         GlobalObject globalObject) {
@@ -95,7 +109,42 @@ public class IRJSFunction extends DynObject implements JSFunction {
         // Allocate space for variables of this function and establish link to captured ones.
         context.allocVars(scope.getLocalVariableSize(), capturedValues);
 
+        if (box.compilationInProgress || box.callCount >= 0) {
+            if (tryCompile(context)) {
+                return callJitted(context);
+            }
+        }
+
         return Interpreter.execute(context, scope, instructions);
+    }
+
+    private Object callJitted(ExecutionContext context) {
+        return box.compiledFunction.call(context);
+    }
+
+    private boolean tryCompile(ExecutionContext context) {
+        if (box.compiledFunction != null) {
+            return true;
+        }
+
+        if (box.callCount++ >= context.getConfig().getJitThreshold()) {
+            box.callCount = -1; // disable, we get one shot
+            if (!box.compilationInProgress) {
+                if (context.getConfig().isJitEnabled()) {
+                    final JITCompiler compiler = context.getRuntime().getJitCompiler();
+                    box.compilationInProgress = true;
+                    compiler.compile(context, this, new JITCompiler.CompilerCallback() {
+                        @Override
+                        public void done(JSFunction compiledFunction) {
+                            box.compiledFunction = compiledFunction;
+                        }
+                    });
+                }
+
+            }
+
+        }
+        return false;
     }
 
     @Override

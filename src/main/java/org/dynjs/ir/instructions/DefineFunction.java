@@ -2,6 +2,7 @@ package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.FunctionScope;
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
@@ -14,6 +15,15 @@ public class DefineFunction extends Instruction implements ResultInstruction {
 
         this.result = result;
         this.function = function;
+    }
+
+    @Override
+    public void updateResult(Variable newResult) {
+        this.result = newResult;
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { result };
     }
 
     public Variable getResult() {

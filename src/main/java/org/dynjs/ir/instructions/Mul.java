@@ -1,5 +1,6 @@
 package org.dynjs.ir.instructions;
 
+import java.util.Map;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
@@ -22,6 +23,15 @@ public class Mul extends Instruction {
         this.result = result;
         this.lhs = lhs;
         this.rhs = rhs;
+    }
+
+    public void simplifyOperands(Map<Operand, Operand> renameMap, boolean force) {
+        lhs = lhs.getSimplifiedOperand(renameMap, force);
+        rhs = rhs.getSimplifiedOperand(renameMap, force);
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { result, lhs, rhs };
     }
 
     public Variable getResult() {

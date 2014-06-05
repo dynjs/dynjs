@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 
 /**
@@ -15,6 +16,10 @@ public class Raise extends Instruction {
 
         this.type = type;
         this.message = message;
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] {};
     }
 
     public boolean transfersControl() {

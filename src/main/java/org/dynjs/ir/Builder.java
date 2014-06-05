@@ -125,15 +125,12 @@ import org.dynjs.runtime.Types;
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
-    public static JSProgram compile(ProgramTree program, Config.CompileMode mode) {
+    public static JSProgram compile(ProgramTree program) {
         Scope scope = new Scope(null, program.getPosition().getFileName(), program.isStrict());
         program.accept(scope, BUILDER, program.isStrict());
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
-        if (mode == Config.CompileMode.IRC) {
-            return new IRByteCodeCompiler(scope, program.getPosition().getFileName(), program.isStrict()).compile();
-        }
         return new IRJSProgram(scope);
     }
 

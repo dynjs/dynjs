@@ -7,4 +7,5 @@ import org.dynjs.ir.operands.Variable;
  */
 public interface ResultInstruction {
     public Variable getResult();
+    public void updateResult(Variable newResult);
 }

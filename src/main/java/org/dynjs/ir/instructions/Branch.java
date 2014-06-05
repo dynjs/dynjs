@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Label;
 

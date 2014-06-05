@@ -1,5 +1,6 @@
 package org.dynjs.ir.instructions;
 
+import java.util.Map;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
@@ -17,6 +18,19 @@ public class PropertyLookup extends Instruction implements ResultInstruction {
         this.result = result;
         this.base = base;
         this.identifier = identifier;
+    }
+
+    @Override
+    public void updateResult(Variable newResult) {
+        this.result = newResult;
+    }
+
+    public void simplifyOperands(Map<Operand, Operand> renameMap, boolean force) {
+        base = base.getSimplifiedOperand(renameMap, force);
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { result, base };
     }
 
     @Override

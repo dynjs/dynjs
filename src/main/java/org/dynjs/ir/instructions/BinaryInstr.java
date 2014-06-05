@@ -1,5 +1,6 @@
 package org.dynjs.ir.instructions;
 
+import java.util.Map;
 import org.dynjs.ir.Instruction;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
@@ -18,6 +19,20 @@ public abstract class BinaryInstr extends Instruction implements ResultInstructi
         this.result = result;
         this.lhs = lhs;
         this.rhs = rhs;
+    }
+
+    @Override
+    public void updateResult(Variable newResult) {
+        this.result = newResult;
+    }
+
+    public void simplifyOperands(Map<Operand, Operand> valueMap, boolean force) {
+        lhs = lhs.getSimplifiedOperand(valueMap, force);
+        rhs = rhs.getSimplifiedOperand(valueMap, force);
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { result, lhs, rhs };
     }
 
     public Variable getResult() {

@@ -1,6 +1,7 @@
 package org.dynjs.ir.instructions;
 
 import org.dynjs.ir.Instruction;
+import org.dynjs.ir.Operand;
 import org.dynjs.ir.Operation;
 import org.dynjs.ir.operands.Variable;
 
@@ -17,6 +18,15 @@ public class ReceiveFunctionParameter extends Instruction implements ResultInstr
         super(Operation.RECEIVE_FUNCTION_PARAM);
         this.result = result;
         this.offset = offset;
+    }
+
+    @Override
+    public void updateResult(Variable newResult) {
+        this.result = newResult;
+    }
+
+    public Operand[] getOperands() {
+        return new Operand[] { result };
     }
 
     public int getIndex() {

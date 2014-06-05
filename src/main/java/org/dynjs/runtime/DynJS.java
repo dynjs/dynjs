@@ -4,6 +4,7 @@ import jnr.posix.util.Platform;
 import org.dynjs.Config;
 import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.ir.JITCompiler;
 import org.dynjs.runtime.modules.ModuleProvider;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
@@ -16,6 +17,7 @@ public class DynJS {
 
     public static final String VERSION;
     public static final String VERSION_STRING;
+    private final JITCompiler jitCompiler;
     private Config config;
     private JSCompiler compiler;
     private ExecutionContext context;
@@ -28,6 +30,7 @@ public class DynJS {
     public DynJS(Config config) {
         this.config = config;
         this.compiler = new JSCompiler(config);
+        this.jitCompiler = new JITCompiler();
         this.globalObject = GlobalObject.newGlobalObject(this);
         this.context = ExecutionContext.createGlobalExecutionContext(this);
     }
@@ -42,6 +45,10 @@ public class DynJS {
 
     public JSCompiler getCompiler() {
         return this.compiler;
+    }
+
+    public JITCompiler getJitCompiler() {
+        return jitCompiler;
     }
 
     public ExecutionContext getExecutionContext() {

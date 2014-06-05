@@ -1,5 +1,6 @@
 package org.dynjs.ir.operands;
 
+import java.util.List;
 import org.dynjs.ir.Operand;
 import org.dynjs.ir.OperandType;
 
@@ -19,6 +20,9 @@ public class Label extends Operand {
     @Override
     public String toString() {
         return prefix + "_" + id;
+    }
+
+    public void addUsedVariables(List<Variable> l) {
     }
 
     public int getTargetIPC() {
