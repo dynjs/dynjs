@@ -34,7 +34,7 @@ public class JavascriptFunction extends AbstractFunction {
         defineOwnProperty(null, "name",
                 PropertyDescriptor.newDataPropertyDescriptor(identifier, true, true, false), false);
     }
-    
+
     @Override
     public String getFileName() {
         return this.code.getFileName();

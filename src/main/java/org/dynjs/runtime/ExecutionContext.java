@@ -9,6 +9,7 @@ import org.dynjs.ir.JITCompiler;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
+import org.dynjs.runtime.wrapper.JavascriptFunction;
 
 import java.util.ArrayList;
 import java.util.List;

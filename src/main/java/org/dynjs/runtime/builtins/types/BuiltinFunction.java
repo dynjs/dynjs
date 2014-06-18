@@ -18,12 +18,7 @@ import org.dynjs.parser.js.Parser;
 import org.dynjs.parser.js.ParserException;
 import org.dynjs.parser.js.TokenQueue;
 import org.dynjs.parser.js.TokenStream;
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.function.prototype.Apply;
 import org.dynjs.runtime.builtins.types.function.prototype.Bind;
 import org.dynjs.runtime.builtins.types.function.prototype.Call;
@@ -89,7 +84,7 @@ public class BuiltinFunction extends AbstractBuiltinType {
         }
 
         StringBuilder code = new StringBuilder();
-        code.append("function(" + formalParams.toString() + "){\n");
+        code.append("function(" + formalParams.toString() + "){");
         code.append(body);
         code.append("}");
 
@@ -117,14 +112,26 @@ public class BuiltinFunction extends AbstractBuiltinType {
     }
 
     public FunctionDescriptor parseFunction(ExecutionContext context, String code) throws IOException {
+        String filename = null;
+        ExecutionContext parent = context.getParent();
+        if (parent != null) {
+            Reference filenameReference = parent.resolve("__FILENAME__");
+            if (!filenameReference.isUnresolvableReference()) {
+                filename = filenameReference.getValue(parent).toString();
+            }
+        }
+
         Reader in = new StringReader(code);
         CharStream charStream = new CircularCharBuffer(in);
         Lexer lexer = new Lexer(charStream);
+        if (filename != null) {
+            lexer.setFileName(filename);
+        }
         TokenStream tokenStream = new TokenQueue(lexer);
         Parser parser = new Parser(context, new ASTFactory(), tokenStream);
         return parser.functionDescriptor();
     }
-    
+
     @Override
     public void setFileName() {
         this.filename = "org/dynjs/runtime/builtins/types/BuiltinFunction.java";
