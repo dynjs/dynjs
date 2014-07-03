@@ -23,6 +23,7 @@ import java.io.PrintStream;
 import com.headius.options.Option;
 import org.dynjs.Config;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.Runner;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.OptionHandlerFilter;
@@ -110,6 +111,10 @@ public class Main {
         }
     }
 
+    protected void executeRunner(Runner runner) {
+        runner.execute();
+    }
+
     private void showAST(File file) {
         try {
             initializeRuntime();
@@ -121,7 +126,7 @@ public class Main {
 
     private void executeSource(String eval) {
         initializeRuntime();
-        runtime.newRunner().withSource( eval).execute();
+        executeRunner(runtime.newRunner().withSource( eval));
     }
 
     private void showAST(String source) throws IOException {
@@ -141,7 +146,7 @@ public class Main {
     private void executeFile(File file) throws IOException {
         try {
             initializeRuntime();
-            runtime.newRunner().withSource( file ).execute();
+            executeRunner(runtime.newRunner().withSource( file ));
         } catch (FileNotFoundException e) {
             getOutputStream().println("File " + file.getName() + " not found");
         }
