@@ -109,6 +109,8 @@ public class SwitchStatement extends BaseStatement {
 
                     if (completion.type == Completion.Type.BREAK) {
                         break;
+                    } else if (completion.type == Completion.Type.CONTINUE) {
+                        return (completion);
                     } else if (completion.type == Completion.Type.RETURN) {
                         return (completion);
 
