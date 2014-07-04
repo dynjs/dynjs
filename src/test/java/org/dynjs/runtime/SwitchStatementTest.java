@@ -156,5 +156,24 @@ public class SwitchStatementTest extends AbstractDynJSTestSupport {
         
         assertThat( result ).isEqualTo( "forty-two" );
     }
-    
+
+    @Test
+    public void testIndividualCasesWithContinue() {
+        Object result = eval( "var y;",
+                "var x;",
+                "do{",
+                "  switch(1) {",
+                "    case 1:",
+                "      x='one';",
+                "      continue;",
+                "    default:",
+                "      x='default';",
+                "      break;",
+                "  }",
+                "} while(false);",
+                "x;");
+
+        assertThat( result ).isEqualTo( "one" );
+    }
+
 }
