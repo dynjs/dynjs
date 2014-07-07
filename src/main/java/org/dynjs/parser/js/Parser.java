@@ -988,8 +988,6 @@ public class Parser {
     }
 
     public FunctionExpression functionExpression() {
-        boolean isContainingValidForFunctionDecls = currentContext().isValidForFunctionDeclaration();
-
         try {
             pushContext(ContextType.FUNCTION);
             Token position = consume(FUNCTION);
@@ -1003,10 +1001,6 @@ public class Parser {
                 identifierName = identifier.getText();
             }
 
-            if (identifierName != null && this.parens == 0 && !isContainingValidForFunctionDecls) {
-                throw new ThrowException(executionContext, executionContext.createSyntaxError("cannot use function-declarations here"));
-
-            }
             List<Parameter> params = formalParameters();
 
             consume(LEFT_BRACE);
