@@ -25,7 +25,7 @@ public class Runner {
     private boolean forceStrict = false;
     private boolean directEval = true;
 
-    Runner(ExecutionContext context) {
+    public Runner(ExecutionContext context) {
         withContext(context);
     }
 
