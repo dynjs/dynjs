@@ -62,6 +62,8 @@ public class Main {
                 return;
             }
 
+            // for all of the remaining options, we need a runtime
+            runtime = initializeRuntime();
             if (getArguments().isConsole()) {
                 startRepl();
                 return;
@@ -117,7 +119,6 @@ public class Main {
 
     private void showAST(File file) {
         try {
-            initializeRuntime();
             getOutputStream().println(runtime.newRunner().withSource(file).parseSourceCode().dump("  "));
         } catch (FileNotFoundException e) {
             getOutputStream().println("File " + file.getName() + " not found");
@@ -125,12 +126,10 @@ public class Main {
     }
 
     private void executeSource(String eval) {
-        initializeRuntime();
         executeRunner(runtime.newRunner().withSource( eval));
     }
 
     private void showAST(String source) throws IOException {
-        initializeRuntime();
         stream.println(runtime.newRunner().withSource(source).parseSourceCode().dump("  "));
     }
 
@@ -145,7 +144,6 @@ public class Main {
 
     private void executeFile(File file) throws IOException {
         try {
-            initializeRuntime();
             executeRunner(runtime.newRunner().withSource( file ));
         } catch (FileNotFoundException e) {
             getOutputStream().println("File " + file.getName() + " not found");
@@ -158,7 +156,6 @@ public class Main {
     }
 
     protected void startRepl() {
-        initializeRuntime();
         Repl repl = new Repl(runtime, System.in, getOutputStream(), getWelcomeMessage(), getPrompt());
         repl.run();
     }
@@ -170,8 +167,7 @@ public class Main {
     protected DynJS initializeRuntime() {
         config = getArguments().getConfig();
         config.setOutputStream(getOutputStream());
-        runtime = new DynJS(config);
-        return runtime;
+        return new DynJS(config);
     }
 
     protected Arguments getArguments() {
