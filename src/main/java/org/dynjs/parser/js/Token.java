@@ -48,6 +48,9 @@ public class Token implements Position {
     }
     
     public String getText() {
+        if ( this.type.isUnprintable() ) {
+            return this.type.getDescription();
+        }
         return this.text;
     }
     

@@ -236,7 +236,7 @@ public class Parser {
             }
         }
 
-        throw new SyntaxError(laToken(), "unexpected token: " + laToken());
+        throw new SyntaxError(laToken(), "unexpected token: " + laToken().getText());
     }
 
     public Expression expression() {
@@ -1589,7 +1589,7 @@ public class Parser {
                 return forStatement();
             }
 
-            throw new SyntaxError("unexpected token: " + la());
+            throw new SyntaxError("unexpected token: " + laToken().getText());
         } finally {
             popContext();
         }
