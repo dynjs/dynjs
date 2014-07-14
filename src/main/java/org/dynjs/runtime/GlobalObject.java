@@ -21,7 +21,7 @@ public class GlobalObject extends DynObject {
         this.runtime = runtime;
         this.blockManager = new BlockManager();
 
-        defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this));
+        defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this), false);
 
         // ----------------------------------------
         // Built-in types
@@ -57,49 +57,49 @@ public class GlobalObject extends DynObject {
         // Built-in global functions
         // ----------------------------------------
 
-        defineReadOnlyGlobalProperty("undefined", Types.UNDEFINED);
+        defineReadOnlyGlobalProperty("undefined", Types.UNDEFINED, false);
 
-        defineGlobalProperty("parseFloat", new ParseFloat(this));
-        defineGlobalProperty("parseInt", new ParseInt(this));
-        defineGlobalProperty("eval", new Eval(this));
-        defineGlobalProperty("isNaN", new IsNaN(this));
-        defineGlobalProperty("isFinite", new IsFinite(this));
+        defineGlobalProperty("parseFloat", new ParseFloat(this), true);
+        defineGlobalProperty("parseInt", new ParseInt(this), true);
+        defineGlobalProperty("eval", new Eval(this), true);
+        defineGlobalProperty("isNaN", new IsNaN(this), true);
+        defineGlobalProperty("isFinite", new IsFinite(this), true);
 
-        defineGlobalProperty("encodeURI", new EncodeUri(this));
-        defineGlobalProperty("decodeURI", new DecodeUri(this));
-        defineGlobalProperty("encodeURIComponent", new EncodeUriComponent(this));
-        defineGlobalProperty("decodeURIComponent", new DecodeUriComponent(this));
+        defineGlobalProperty("encodeURI", new EncodeUri(this), true);
+        defineGlobalProperty("decodeURI", new DecodeUri(this), true);
+        defineGlobalProperty("encodeURIComponent", new EncodeUriComponent(this), true);
+        defineGlobalProperty("decodeURIComponent", new DecodeUriComponent(this), true);
 
         if (runtime.getConfig().isCommonJSCompatible()) {
-            defineGlobalProperty("require", new Require(this));
+            defineGlobalProperty("require", new Require(this), true);
         }
-        defineGlobalProperty("include", new Include(this));
-        defineGlobalProperty("load", new Include(this)); // hackety hack
-        defineGlobalProperty("escape", new Escape(this));
-        defineGlobalProperty("unescape", new Unescape(this));
-        defineGlobalProperty("print", new Print(this));
-        defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime));
+        defineGlobalProperty("include", new Include(this), true);
+        defineGlobalProperty("load", new Include(this), true); // hackety hack
+        defineGlobalProperty("escape", new Escape(this), true);
+        defineGlobalProperty("unescape", new Unescape(this), true);
+        defineGlobalProperty("print", new Print(this), true);
+        defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime), true);
 
         // ----------------------------------------
         // Built-in global objects
         // ----------------------------------------
 
         put(null, "JSON", new JSON(this), false);
-        defineGlobalProperty("Math", new Math(this));
-        defineGlobalProperty("Intl", new Intl(this));
+        defineGlobalProperty("Math", new Math(this), true);
+        defineGlobalProperty("Intl", new Intl(this), true);
 
         // ----------------------------------------
         // Java integration
         // ----------------------------------------
 
-        defineGlobalProperty("Packages", new JavaPackage(this, null));
-        defineGlobalProperty("java",     new JavaPackage(this, "java"));
-        defineGlobalProperty("javax",    new JavaPackage(this, "javax"));
-        defineGlobalProperty("org",      new JavaPackage(this, "org"));
-        defineGlobalProperty("com",      new JavaPackage(this, "com"));
-        defineGlobalProperty("io",       new JavaPackage(this, "io"));
+        defineGlobalProperty("Packages", new JavaPackage(this, null), true );
+        defineGlobalProperty("java",     new JavaPackage(this, "java"), true);
+        defineGlobalProperty("javax",    new JavaPackage(this, "javax"), true);
+        defineGlobalProperty("org",      new JavaPackage(this, "org"), true);
+        defineGlobalProperty("com",      new JavaPackage(this, "com"), true);
+        defineGlobalProperty("io",       new JavaPackage(this, "io"), true);
 
-        defineGlobalProperty("System",   System.class);
+        defineGlobalProperty("System",   System.class, true);
     }
 
     public JSObject getObjectPrototype() {
@@ -108,8 +108,9 @@ public class GlobalObject extends DynObject {
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
         defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(type, true, true, true), false);
+        defineOwnProperty(null, "__Builtin_" + name,
                 PropertyDescriptor.newDataPropertyDescriptor(type, true, true, false), false);
-        put(null, "__Builtin_" + name, type, false);
         this.builtinTypes.add(type);
     }
 
@@ -138,12 +139,17 @@ public class GlobalObject extends DynObject {
 
     public void defineGlobalProperty(final String name, final Object value) {
         defineOwnProperty(null, name,
-                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, false), false);
+                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, true), false);
     }
 
-    public void defineReadOnlyGlobalProperty(final String name, final Object value) {
+    public void defineGlobalProperty(final String name, final Object value, boolean enumerable) {
         defineOwnProperty(null, name,
-                PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
+                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, enumerable), false);
+    }
+
+    public void defineReadOnlyGlobalProperty(final String name, final Object value, boolean enumerable) {
+        defineOwnProperty(null, name,
+                PropertyDescriptor.newDataPropertyDescriptor(value, false, false, enumerable), false);
     }
 
     public JSObject getPrototypeFor(String type) {
