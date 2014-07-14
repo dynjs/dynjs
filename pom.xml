@@ -17,7 +17,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.aesh>0.54</version.aesh>
+        <version.aesh>0.56</version.aesh>
         <version.args4j>2.0.26</version.args4j>
         <version.dirgra>0.1</version.dirgra>
         <version.fest-assert>1.4</version.fest-assert>
