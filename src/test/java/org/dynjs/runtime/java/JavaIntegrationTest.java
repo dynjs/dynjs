@@ -18,6 +18,23 @@ import org.junit.Test;
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
     @Test
+    public void testJavaMapDeleteWithSquareBrackets() {
+        eval( "var m = new java.util.HashMap()");
+        eval("m.foo = 42");
+        assertThat( eval( "m['foo']" ) ).isEqualTo(42L);
+        eval("delete m['foo']");
+        assertThat( eval( "m['foo']" ) ).isEqualTo( Types.UNDEFINED );
+    }
+
+    @Test
+    public void testJavaMapDeleteWithDots() {
+        eval( "var m = new java.util.HashMap()");
+        eval( "m.foo = 42" );
+        assertThat( eval( "m.foo" ) ).isEqualTo(42L);
+        eval( "delete m.foo" );
+        assertThat( eval( "m.foo" ) ).isEqualTo( Types.UNDEFINED );
+    }
+      @Test
     public void testJavaStringEquality() {
         eval("var f1 = new java.io.File('/tmp/foo')");
         eval("var f2 = new java.io.File('/tmp/foo')");

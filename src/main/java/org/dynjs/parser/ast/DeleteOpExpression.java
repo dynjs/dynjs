@@ -18,10 +18,9 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
-import org.dynjs.runtime.EnvironmentRecord;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
+
+import java.util.Map;
 
 public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
 
@@ -53,6 +52,10 @@ public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
         }
 
         if (ref.isPropertyReference()) {
+            Object base = ref.getBase();
+            if ( ( ! ( base instanceof JSObject) ) && base instanceof Map) {
+                return  ( ((Map) base).remove( ref.getReferencedName() ) != null );
+            }
             return (Types.toObject(context, ref.getBase()).delete(context, ref.getReferencedName(), ref.isStrictReference()));
 
         }
