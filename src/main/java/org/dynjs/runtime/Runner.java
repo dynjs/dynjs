@@ -1,40 +1,33 @@
 package org.dynjs.runtime;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.dynjs.Config;
-import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.ir.Builder;
-import org.dynjs.parser.ast.ProgramTree;
-import org.dynjs.parser.js.JavascriptParser;
 import org.dynjs.parser.js.ParserException;
 import org.dynjs.parser.js.SyntaxError;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.Reader;
+
 public class Runner {
 
+    private final DynJS runtime;
+    private Compiler compiler;
     private ExecutionContext context;
-    private String fileName;
-    private Reader source;
-    private boolean shouldClose = false;
-    private boolean forceStrict = false;
-    private boolean directEval = true;
 
-    public Runner(ExecutionContext context) {
-        withContext(context);
+    private boolean directEval;
+
+    public Runner(DynJS runtime) {
+        this.compiler = new Compiler(runtime.getConfig());
+        this.runtime = runtime;
     }
 
     public Runner forceStrict() {
-        return forceStrict(true);
+        this.compiler.forceStrict();
+        return this;
     }
 
     public Runner forceStrict(boolean forceStrict) {
-        this.forceStrict = forceStrict;
+        this.compiler.forceStrict( forceStrict );
         return this;
     }
 
@@ -48,42 +41,44 @@ public class Runner {
     }
 
     public Runner withSource(String source) {
-        this.source = new StringReader(source);
-        this.shouldClose = true;
+        this.compiler.withSource( source );
         return this;
     }
 
     public Runner withSource(Reader source) {
-        this.source = source;
-        this.shouldClose = false;
+        this.compiler.withSource( source );
         return this;
     }
 
     public Runner withSource(File source) throws FileNotFoundException {
-        this.source = new FileReader(source);
-        this.shouldClose = true;
-        this.fileName = source.getName();
+        this.compiler.withSource( source );
         return this;
     }
 
     public Runner withContext(ExecutionContext context) {
         this.context = context;
+        this.compiler.withContext( context );
         return this;
     }
 
     public Runner withFileName(String fileName) {
-        this.fileName = fileName;
+        this.compiler.withFileName( fileName );
         return this;
+    }
+
+    protected ExecutionContext executionContext() {
+        if ( this.context == null ) {
+            return this.runtime.getDefaultExecutionContext();
+        }
+        return this.context;
     }
 
     public Object execute() {
         try {
-            ProgramTree tree = parseSourceCode();
-            JSProgram program = compile(tree);
-
-            Completion completion = this.context.execute(program);
+            JSProgram program = this.compiler.compile();
+            Completion completion = executionContext().execute(program);
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
-                throw new ThrowException(this.context, this.context.createSyntaxError("illegal break or continue"));
+                throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
             }
             Object v = completion.value;
             if (v instanceof Reference) {
@@ -91,48 +86,23 @@ public class Runner {
             }
             return v;
         } catch (SyntaxError e) {
-            throw new ThrowException(this.context, this.context.createSyntaxError(e.getMessage()));
+            throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
-            throw new ThrowException(this.context, e);
+            throw new ThrowException(executionContext(), e);
         }
     }
 
     public Object evaluate() {
         try {
-            ProgramTree tree = parseSourceCode();
-            JSProgram program = compile(tree);
-            return this.context.eval(program, this.directEval);
+            JSProgram program = this.compiler.compile();
+            return executionContext().eval(program, this.directEval);
         } catch (SyntaxError e) {
-            throw new ThrowException(this.context, this.context.createSyntaxError(e.getMessage()));
+            throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
-            throw new ThrowException(this.context, e);
+            throw new ThrowException(executionContext(), e);
         }
     }
 
-    public ProgramTree parseSourceCode() {
-        JavascriptParser parser = new JavascriptParser( this.context );
-        try {
-            return parser.parse(this.source, this.fileName, this.forceStrict );
-        } finally {
-            if (this.shouldClose) {
-                try {
-                    this.source.close();
-                } catch (IOException e) {
-                    throw new ParserException(e);
-                }
-            }
-        }
-    }
 
-    private JSProgram compile(ProgramTree tree) {
-        // FIXME: getCompiler will go away so just add special IR check for now.
-        final Config.CompileMode compileMode = context.getConfig().getCompileMode();
-        if (compileMode == Config.CompileMode.IR) {
-            return Builder.compile(tree);
-        }
-
-        JSCompiler compiler = this.context.getCompiler();
-        return compiler.compileProgram(this.context, tree, this.forceStrict);
-    }
 
 }

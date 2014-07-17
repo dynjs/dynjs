@@ -1,5 +1,6 @@
 package org.dynjs.compiler.interpreter;
 
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.ProgramCompiler;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.ExecutionContext;
@@ -15,7 +16,7 @@ public class InterpretingProgramCompiler implements ProgramCompiler {
         this.factory = factory;
     }
 
-    public JSProgram compile(final ExecutionContext context, final ProgramTree body, boolean strict) {
-        return new JavascriptProgram(new InterpretedBasicBlock(this.factory, body, strict));
+    public JSProgram compile(final CompilationContext context, final ProgramTree body, boolean strict) {
+        return new JavascriptProgram(context.getBlockManager(), new InterpretedBasicBlock(this.factory, body, strict));
     }
 }

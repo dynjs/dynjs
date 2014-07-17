@@ -4,16 +4,15 @@ import java.util.List;
 
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.runtime.BasicBlock;
-import org.dynjs.runtime.Completion;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.*;
 
 public class JavascriptProgram implements JSProgram {
-    
+
+    private BlockManager blockManager;
     private BasicBlock code;
 
-    public JavascriptProgram(BasicBlock code) {
+    public JavascriptProgram(BlockManager blockManager, BasicBlock code) {
+        this.blockManager = blockManager;
         this.code = code;
     }
 
@@ -35,6 +34,11 @@ public class JavascriptProgram implements JSProgram {
     @Override
     public Completion execute(ExecutionContext context) {
         return this.code.call(context);
+    }
+
+    @Override
+    public BlockManager getBlockManager() {
+        return this.blockManager;
     }
 
     @Override

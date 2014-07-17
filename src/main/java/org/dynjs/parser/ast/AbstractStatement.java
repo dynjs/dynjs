@@ -203,7 +203,7 @@ public abstract class AbstractStatement implements Statement {
 
 
     protected BasicBlock compiledBlockStatement(ExecutionContext context, String grist, Statement statement) {
-        BlockManager.Entry entry = context.getGlobalObject().getBlockManager().retrieve(statement.getStatementNumber());
+        BlockManager.Entry entry = context.getBlockManager().retrieve(statement.getStatementNumber());
         if (entry.getCompiled() == null) {
             BasicBlock compiledBlock = context.getCompiler().compileBasicBlock(context, grist, statement, context.isStrict());
             entry.setCompiled(compiledBlock);

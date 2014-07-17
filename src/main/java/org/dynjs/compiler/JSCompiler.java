@@ -46,15 +46,15 @@ public class JSCompiler {
         }
     }
 
-    public JSProgram compileProgram(ExecutionContext context, ProgramTree program, boolean forceStrict) {
+    public JSProgram compileProgram(CompilationContext context, ProgramTree program, boolean forceStrict) {
         return this.programCompiler.compile(context, program, forceStrict);
     }
 
-    public JSFunction compileFunction(ExecutionContext context, String identifier, String[] formalParameters, Statement body, boolean containedInStrictCode) {
+    public JSFunction compileFunction(CompilationContext context, String identifier, String[] formalParameters, Statement body, boolean containedInStrictCode) {
         return this.functionCompiler.compile(context, identifier, formalParameters, body, containedInStrictCode);
     }
 
-    public BasicBlock compileBasicBlock(ExecutionContext context, String grist, Statement body, boolean strict) {
+    public BasicBlock compileBasicBlock(CompilationContext context, String grist, Statement body, boolean strict) {
         return this.basicBlockCompiler.compile(context, grist, body, strict);
     }
 

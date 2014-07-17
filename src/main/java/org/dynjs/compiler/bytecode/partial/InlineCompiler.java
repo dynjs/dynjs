@@ -7,6 +7,7 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitor;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynamicClassLoader;
@@ -23,7 +24,7 @@ public class InlineCompiler extends AbstractPartialCompiler {
     }
     
     @Override
-    public void define(JiteClass cls, ExecutionContext context, boolean strict) {
+    public void define(JiteClass cls, CompilationContext context, boolean strict) {
         CodeGeneratingVisitor visitor = createVisitor( context.getBlockManager() );
         block.accept(context, visitor, strict);
         cls.defineMethod("call", Opcodes.ACC_PUBLIC, sig(Completion.class, ExecutionContext.class), visitor.areturn());

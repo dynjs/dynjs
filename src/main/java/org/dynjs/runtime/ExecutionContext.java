@@ -2,6 +2,7 @@ package org.dynjs.runtime;
 
 import org.dynjs.Clock;
 import org.dynjs.Config;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.IRJSFunction;
@@ -16,12 +17,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class ExecutionContext {
+public class ExecutionContext implements CompilationContext {
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
         return new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
+    }
+
+    public static ExecutionContext createDefaultGlobalExecutionContext(DynJS runtime) {
+        // 10.4.1.1
+        LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
+        ExecutionContext context = new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
+        context.blockManager = new BlockManager();
+        return context;
     }
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime, InitializationListener listener) {
@@ -54,6 +63,8 @@ public class ExecutionContext {
     private Object functionReference;
 
     private List<StackElement> throwStack;
+
+    private BlockManager blockManager;
 
     public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.runtime = runtime;
@@ -146,7 +157,9 @@ public class ExecutionContext {
     // ----------------------------------------------------------------------
 
     public Completion execute(JSProgram program) {
+        BlockManager originalBlockManager = this.blockManager;
         try {
+            this.blockManager = program.getBlockManager();
             ThreadContextManager.pushContext(this);
             setStrict(program.isStrict());
             this.fileName = program.getFileName();
@@ -155,22 +168,24 @@ public class ExecutionContext {
                 return program.execute(this);
             } catch (ThrowException e) {
                 throw e;
-          //  } catch (Throwable t) {
-            //    throw new ThrowException(this, t);
             }
         } finally {
             ThreadContextManager.popContext();
+            this.blockManager = originalBlockManager;
         }
     }
 
     public Object eval(JSProgram eval, boolean direct) {
+        BlockManager originalBlockManager = this.blockManager;
         try {
             ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
+            evalContext.blockManager = eval.getBlockManager();
             ThreadContextManager.pushContext(evalContext);
             Completion result = eval.execute(evalContext);
             return result.value;
         } finally {
             ThreadContextManager.popContext();
+            this.blockManager = originalBlockManager;
         }
     }
 
@@ -555,7 +570,15 @@ public class ExecutionContext {
     }
 
     public BlockManager getBlockManager() {
-        return getGlobalObject().getBlockManager();
+        if ( this.blockManager != null ) {
+            return this.blockManager;
+        }
+
+        if ( this.parent != null ) {
+            return this.parent.getBlockManager();
+        }
+
+        return null;
     }
 
     public DynJS getRuntime() {
@@ -567,7 +590,7 @@ public class ExecutionContext {
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {
-        return getGlobalObject().retrieveBlockEntry(statementNumber);
+        return getBlockManager().retrieve( statementNumber );
     }
 
     public JSObject createTypeError(String message) {

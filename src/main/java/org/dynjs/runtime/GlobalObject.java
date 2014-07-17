@@ -12,14 +12,12 @@ import java.util.List;
 public class GlobalObject extends DynObject {
 
     private DynJS runtime;
-    private BlockManager blockManager;
     private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
     private JSObject objectPrototype;
 
     public GlobalObject(DynJS runtime) {
         super();
         this.runtime = runtime;
-        this.blockManager = new BlockManager();
 
         defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this), false);
 
@@ -127,14 +125,6 @@ public class GlobalObject extends DynObject {
 
     public DynJS getRuntime() {
         return this.runtime;
-    }
-
-    public BlockManager getBlockManager() {
-        return this.blockManager;
-    }
-
-    public org.dynjs.runtime.BlockManager.Entry retrieveBlockEntry(int statementNumber) {
-        return this.blockManager.retrieve(statementNumber);
     }
 
     public void defineGlobalProperty(final String name, final Object value) {

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.AbstractBinaryExpression;
@@ -48,7 +49,7 @@ import org.dynjs.runtime.ExecutionContext;
 
 public class Parser {
 
-    private ExecutionContext executionContext;
+    private CompilationContext compilationContext;
     private ASTFactory factory;
     private TokenStream stream;
     private List<ParserContext> context = new ArrayList<ParserContext>();
@@ -57,8 +58,8 @@ public class Parser {
 
     private boolean forceStrict;
 
-    public Parser(ExecutionContext executionContext, ASTFactory factory, TokenStream stream) {
-        this.executionContext = executionContext;
+    public Parser(CompilationContext compilationContext, ASTFactory factory, TokenStream stream) {
+        this.compilationContext = compilationContext;
         this.factory = factory;
         this.stream = stream;
     }
@@ -613,7 +614,7 @@ public class Parser {
             if (expr instanceof IdentifierReferenceExpression) {
                 String id = ((IdentifierReferenceExpression) expr).getIdentifier();
                 if (id.equals("eval") || id.equals("arguments")) {
-                    throw new ThrowException(executionContext, executionContext.createSyntaxError(id
+                    throw new ThrowException(null, this.compilationContext.createSyntaxError(id
                             + " may not appear on the left-hand-side of a compound assignment expression in strict mode"));
                 }
             }
@@ -827,7 +828,7 @@ public class Parser {
             expr = unaryExpression();
             if ( currentContext().isStrict() ) {
                 if ( expr instanceof IdentifierReferenceExpression ) {
-                    throw new ThrowException( executionContext, executionContext.createSyntaxError( "cannot delete a direct reference in strict-mode"));
+                    throw new ThrowException( null, this.compilationContext.createSyntaxError( "cannot delete a direct reference in strict-mode"));
                 }
             }
             return factory.deleteOperator(expr);

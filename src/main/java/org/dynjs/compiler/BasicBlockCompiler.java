@@ -6,6 +6,6 @@ import org.dynjs.runtime.ExecutionContext;
 
 public interface BasicBlockCompiler {
 
-    public BasicBlock compile(ExecutionContext context, final String grist, final Statement body, boolean strict);
+    public BasicBlock compile(CompilationContext context, final String grist, final Statement body, boolean strict);
 
 }

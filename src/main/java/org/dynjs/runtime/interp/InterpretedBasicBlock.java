@@ -1,8 +1,5 @@
 package org.dynjs.runtime.interp;
 
-import java.util.List;
-
-import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
@@ -10,6 +7,8 @@ import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.ExecutionContext;
+
+import java.util.List;
 
 public class InterpretedBasicBlock implements BasicBlock {
 

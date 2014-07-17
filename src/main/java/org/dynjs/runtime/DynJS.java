@@ -20,8 +20,9 @@ public class DynJS {
     private final JITCompiler jitCompiler;
     private Config config;
     private JSCompiler compiler;
-    private ExecutionContext context;
     private GlobalObject globalObject;
+
+    private ExecutionContext defaultExecutionContext;
 
     public DynJS() {
         this(new Config());
@@ -32,7 +33,8 @@ public class DynJS {
         this.compiler = new JSCompiler(config);
         this.jitCompiler = new JITCompiler();
         this.globalObject = GlobalObject.newGlobalObject(this);
-        this.context = ExecutionContext.createGlobalExecutionContext(this);
+
+        this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext( this );
     }
 
     public GlobalObject getGlobalObject() {
@@ -51,26 +53,30 @@ public class DynJS {
         return jitCompiler;
     }
 
-    public ExecutionContext getExecutionContext() {
-        return this.context;
+    public Runner newRunner() {
+        return new Runner(this);
     }
 
-    public Runner newRunner() {
-        return new Runner(this.context);
+    public Compiler newCompiler() {
+        return new Compiler(this.config);
     }
 
     // ----------------------------------------------------------------------
 
     public Object execute(String source) {
-        return newRunner().withSource(source).execute();
+        return newRunner().withContext( this.defaultExecutionContext ).withSource(source).execute();
     }
 
     public Object evaluate(String source) {
-        return newRunner().withSource(source).evaluate();
+        return newRunner().withContext( this.defaultExecutionContext ).withSource(source).evaluate();
     }
 
     public Object evaluate(InputStream in) {
-        return newRunner().withSource( new InputStreamReader( in ) ).evaluate();
+        return newRunner().withContext( this.defaultExecutionContext ).withSource(new InputStreamReader(in)).evaluate();
+    }
+
+    public ExecutionContext getDefaultExecutionContext() {
+        return this.defaultExecutionContext;
     }
 
     public Object evaluate(String... sourceLines) {
@@ -81,7 +87,6 @@ public class DynJS {
         }
         return evaluate(buffer.toString());
     }
-
 
 
     static {

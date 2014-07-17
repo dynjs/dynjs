@@ -16,6 +16,7 @@
 package org.dynjs.ir;
 
 import org.dynjs.Config;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
@@ -125,13 +126,13 @@ import org.dynjs.runtime.Types;
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
-    public static JSProgram compile(ProgramTree program) {
+    public static JSProgram compile(CompilationContext compilationContext, ProgramTree program) {
         Scope scope = new Scope(null, program.getPosition().getFileName(), program.isStrict());
         program.accept(scope, BUILDER, program.isStrict());
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
-        return new IRJSProgram(scope);
+        return new IRJSProgram(compilationContext.getBlockManager(), scope);
     }
 
     @Override

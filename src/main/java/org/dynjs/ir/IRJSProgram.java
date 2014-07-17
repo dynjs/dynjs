@@ -15,37 +15,23 @@
  */
 package org.dynjs.ir;
 
-import java.util.List;
-import org.dynjs.exception.ThrowException;
-import org.dynjs.ir.instructions.Add;
-import org.dynjs.ir.instructions.BEQ;
-import org.dynjs.ir.instructions.Call;
-import org.dynjs.ir.instructions.Copy;
-import org.dynjs.ir.instructions.Jump;
-import org.dynjs.ir.instructions.LE;
-import org.dynjs.ir.instructions.LT;
-import org.dynjs.ir.instructions.ResultInstruction;
-import org.dynjs.ir.instructions.Return;
-import org.dynjs.ir.operands.LocalVariable;
-import org.dynjs.ir.operands.OffsetVariable;
-import org.dynjs.ir.operands.Variable;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
+import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.Completion;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSProgram;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
-import org.jruby.dirgra.DirectedGraph;
+
+import java.util.List;
 
 public class IRJSProgram implements JSProgram {
+
+    private final BlockManager blockManager;
     private Scope scope;
     private Instruction[] instructions;
 
-    public IRJSProgram(Scope scope) {
+    public IRJSProgram(BlockManager blockManager, Scope scope) {
+        this.blockManager = blockManager;
         this.scope = scope;
         this.instructions = scope.prepareForInterpret();
 
@@ -55,12 +41,18 @@ public class IRJSProgram implements JSProgram {
             System.out.println("" + instructions[i]);
         }
     }
+
     @Override
     public Completion execute(ExecutionContext context) {
         // Allocate space for variables of this function and establish link to captured ones.
         context.allocVars(scope.getLocalVariableSize(), null);
 
         return Completion.createNormal(Interpreter.execute(context, scope, instructions));
+    }
+
+    @Override
+    public BlockManager getBlockManager() {
+        return this.blockManager;
     }
 
     @Override

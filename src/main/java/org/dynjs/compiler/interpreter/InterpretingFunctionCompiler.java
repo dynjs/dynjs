@@ -1,5 +1,6 @@
 package org.dynjs.compiler.interpreter;
 
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.FunctionCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
@@ -22,7 +23,7 @@ public class InterpretingFunctionCompiler implements FunctionCompiler {
         this.factory = factory;
     }
 
-    public JSFunction compile(final ExecutionContext context, final String identifier, final String[] formalParameters, final Statement body, final boolean strict) {
+    public JSFunction compile(final CompilationContext context, final String identifier, final String[] formalParameters, final Statement body, final boolean strict) {
         int statementNumber = body.getStatementNumber();
         BlockManager.Entry entry = context.getBlockManager().retrieve(statementNumber);
         BasicBlock code = entry.getCompiled();

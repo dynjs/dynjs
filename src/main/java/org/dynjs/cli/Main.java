@@ -22,6 +22,8 @@ import java.io.PrintStream;
 
 import com.headius.options.Option;
 import org.dynjs.Config;
+import org.dynjs.compiler.CompilationContext;
+import org.dynjs.compiler.DefaultCompilationContext;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.Runner;
 import org.kohsuke.args4j.CmdLineException;
@@ -119,7 +121,7 @@ public class Main {
 
     private void showAST(File file) {
         try {
-            getOutputStream().println(runtime.newRunner().withSource(file).parseSourceCode().dump("  "));
+            getOutputStream().println(runtime.newCompiler().withSource(file).parse().dump("  "));
         } catch (FileNotFoundException e) {
             getOutputStream().println("File " + file.getName() + " not found");
         }
@@ -130,7 +132,7 @@ public class Main {
     }
 
     private void showAST(String source) throws IOException {
-        stream.println(runtime.newRunner().withSource(source).parseSourceCode().dump("  "));
+        stream.println(runtime.newCompiler().withSource(source).parse().dump("  "));
     }
 
     private void showProperties() {

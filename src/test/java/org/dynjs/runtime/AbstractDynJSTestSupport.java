@@ -46,27 +46,27 @@ public abstract class AbstractDynJSTestSupport {
 
     protected void check(String scriptlet, Boolean expected) {
         this.runtime.execute(scriptlet);
-        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("result");
         Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
 
     protected void check(String scriptlet, Object expected) {
         this.runtime.execute(scriptlet);
-        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("result");
         Object value = result.getValue(getContext());
         assertThat(value).isEqualTo(expected);
     }
 
     protected void assertNull(String scriptlet) {
         this.runtime.execute(scriptlet);
-        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("result");
         assertThat(result.getValue(getContext())).isEqualTo(Types.NULL);
     }
 
     protected void assertUndefined(String scriptlet) {
         this.runtime.execute(scriptlet);
-        Reference result = this.runtime.getExecutionContext().resolve("result");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("result");
         assertThat(result.getValue(getContext())).isEqualTo(Types.UNDEFINED);
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractDynJSTestSupport {
     }
 
     public ExecutionContext getContext() {
-        return this.runtime.getExecutionContext();
+        return this.runtime.getDefaultExecutionContext();
     }
 
     public Config getConfig() {
