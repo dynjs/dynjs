@@ -6,6 +6,7 @@ import java.io.PrintStream;
 
 import me.qmx.jitescript.CodeBlock;
 
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.CodeVisitor;
@@ -649,7 +650,7 @@ public abstract class CodeGeneratingVisitor extends CodeBlock implements CodeVis
 
         // compiler context identifer params statement bool
 
-        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, ExecutionContext.class, String.class, String[].class, Statement.class, boolean.class));
+        invokevirtual(p(JSCompiler.class), "compileFunction", sig(JSFunction.class, CompilationContext.class, String.class, String[].class, Statement.class, boolean.class));
         // fn
     }
 
