@@ -16,6 +16,8 @@ public class Runner {
 
     private boolean directEval;
 
+    private JSProgram source;
+
     public Runner(DynJS runtime) {
         this.compiler = new Compiler(runtime.getConfig());
         this.runtime = runtime;
@@ -37,6 +39,11 @@ public class Runner {
 
     public Runner directEval(boolean directEval) {
         this.directEval = directEval;
+        return this;
+    }
+
+    public Runner withSource(JSProgram source) {
+        this.source = source;
         return this;
     }
 
@@ -73,10 +80,17 @@ public class Runner {
         return this.context;
     }
 
+    protected JSProgram program() {
+        if ( this.source != null ) {
+            return this.source;
+        }
+
+        return this.compiler.compile();
+    }
+
     public Object execute() {
         try {
-            JSProgram program = this.compiler.compile();
-            Completion completion = executionContext().execute(program);
+            Completion completion = executionContext().execute(program());
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
             }
@@ -94,8 +108,7 @@ public class Runner {
 
     public Object evaluate() {
         try {
-            JSProgram program = this.compiler.compile();
-            return executionContext().eval(program, this.directEval);
+            return executionContext().eval(program(), this.directEval);
         } catch (SyntaxError e) {
             throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
