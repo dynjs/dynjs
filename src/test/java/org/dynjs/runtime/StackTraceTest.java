@@ -66,6 +66,21 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void simpleFunctionsAssignedToVariable() {
+        try {
+            eval("   var x = function() {",
+                    "  throw new Error('dang');",
+                    "};",
+                    "x();");
+        } catch (ThrowException e) {
+            JSObject o = (JSObject) e.getValue();
+            String stack = (String) o.get( getContext(), "stack" );
+            System.err.println( stack );
+            assertThat( stack.contains( "at x")).isTrue();
+        }
+    }
+
+    @Test
     public void testComplexStackWithMessage() {
         try {
             eval("",

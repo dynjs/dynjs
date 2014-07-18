@@ -367,6 +367,8 @@ public class ExecutionContext implements CompilationContext {
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
+        System.err.println( "context.debug: " + context.debugContext );
+        System.err.println( "context.fnRef: " + context.functionReference );
         context.setFunctionParameters(arguments);
         return context;
     }
@@ -633,7 +635,13 @@ public class ExecutionContext implements CompilationContext {
     }
 
     protected StackElement getStackElement() {
-        return new StackElement(this.fileName, this.lineNumber, this.debugContext);
+        String locationContext = this.debugContext;
+        if ( locationContext.equals( "<anonymous>" ) ) {
+            if ( this.functionReference != null && this.functionReference instanceof Reference ) {
+                locationContext = ((Reference) this.functionReference).getReferencedName();
+            }
+        }
+        return new StackElement(this.fileName, this.lineNumber, locationContext);
     }
 
     public JSObject getPrototypeFor(String type) {
