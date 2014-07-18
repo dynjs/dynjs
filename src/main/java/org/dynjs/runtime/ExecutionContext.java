@@ -367,8 +367,6 @@ public class ExecutionContext implements CompilationContext {
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
-        System.err.println( "context.debug: " + context.debugContext );
-        System.err.println( "context.fnRef: " + context.functionReference );
         context.setFunctionParameters(arguments);
         return context;
     }
