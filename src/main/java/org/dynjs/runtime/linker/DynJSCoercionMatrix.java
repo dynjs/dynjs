@@ -94,6 +94,24 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         return -1;
     }
 
+    public static boolean coerceToBoolean(Object value) {
+        return (boolean) DynJSBootstrapper.COERCION_MATRIX.coerceTo( value, boolean.class );
+    }
+
+    public Object coerceTo(Object value, Class<?> toType) {
+        MethodHandle filter = getFilter(toType, value);
+        if ( filter == null ) {
+            return null;
+        }
+
+        try {
+            return filter.invoke(value);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public MethodHandle getFilter(Class<?> target, Object actual) {
         int superCompat = super.isCompatible(target, actual);
