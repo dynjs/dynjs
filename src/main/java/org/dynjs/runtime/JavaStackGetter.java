@@ -66,16 +66,31 @@ public class JavaStackGetter extends AbstractNativeFunction {
     }
 
     void appendHeader(StringBuilder buf, ExecutionContext context, JSObject jsObject) {
-        if (jsObject.hasProperty(context, "name")) {
-            buf.append( Types.toString(context, jsObject.get(context, "name")) );
-        } else {
-            buf.append( "<unknown>" );
+
+        boolean stringified = false;
+
+        if ( jsObject.hasProperty( context, "toString" ) ) {
+            Object toString = jsObject.get(context, "toString");
+            if ( toString instanceof JSFunction ) {
+                buf.append( ((JSFunction) toString).call( context ) );
+                stringified = true;
+            }
         }
 
-        if (jsObject.hasProperty(context, "message")) {
-            String message = Types.toString(context, jsObject.get(context, "message"));
-            if ( message != null && ! message.equals("")) {
-                buf.append( ": " ).append( message );
+        if ( ! stringified ) {
+            if (jsObject.hasProperty(context, "name")) {
+                buf.append(Types.toString(context, jsObject.get(context, "name")));
+            } else {
+                buf.append("<unknown>");
+            }
+
+            if (jsObject.hasProperty(context, "message")) {
+                Object message = Types.toString(context, jsObject.get(context, "message"));
+                if ((message != null) && !message.equals("") && (message != Types.UNDEFINED)) {
+                    buf.append(": ").append(message);
+                } else {
+
+                }
             }
         }
 
