@@ -186,55 +186,55 @@ public class Parser {
         Token token = null;
 
         switch (t) {
-        case THIS:
-            return factory.thisExpression(consume());
-        case IDENTIFIER:
-            token = consume(IDENTIFIER);
-            if (!isValidIdentifier(token)) {
-                throw new SyntaxError(token, "invalid identifier: " + token.getText());
-            }
-            return factory.identifier(token, token.getText());
-        case STRING_LITERAL:
-            token = consume(STRING_LITERAL);
-            if (currentContext().isStrict() && token.isEscapedOctalString()) {
-                throw new SyntaxError(token, "octal escapes not allowed in strict mode");
-            }
-            return factory.stringLiteral(token, token.getText(), token.isEscapedString(), token.isContinuedLine());
-        case DECIMAL_LITERAL:
-            token = consume(DECIMAL_LITERAL);
-            return factory.decimalLiteral(token, token.getText());
-        case HEX_LITERAL:
-            token = consume(HEX_LITERAL);
-            return factory.hexLiteral(token, token.getText());
-        case OCTAL_LITERAL:
-            token = consume(OCTAL_LITERAL);
-            if (currentContext().isStrict()) {
-                throw new SyntaxError(token, "octal literals not allowed in strict mode");
-            }
-            return factory.octalLiteral(token, token.getText());
-        case REGEXP_LITERAL:
-            token = consume(REGEXP_LITERAL);
-            return factory.regexpLiteral(token, token.getText());
-        case TRUE:
-            return factory.trueLiteral(consume());
-        case FALSE:
-            return factory.falseLiteral(consume());
-        case NULL:
-            return factory.nullLiteral(consume());
-        case LEFT_BRACE:
-            return objectLiteral();
-        case LEFT_BRACKET:
-            return arrayLiteral();
-        case LEFT_PAREN:
-            consume(LEFT_PAREN);
-            try {
-                ++this.parens;
-                Expression expr = expression();
-                consume(RIGHT_PAREN);
-                return expr;
-            } finally {
-                --this.parens;
-            }
+            case THIS:
+                return factory.thisExpression(consume());
+            case IDENTIFIER:
+                token = consume(IDENTIFIER);
+                if (!isValidIdentifier(token)) {
+                    throw new SyntaxError(token, "invalid identifier: " + token.getText());
+                }
+                return factory.identifier(token, token.getText());
+            case STRING_LITERAL:
+                token = consume(STRING_LITERAL);
+                if (currentContext().isStrict() && token.isEscapedOctalString()) {
+                    throw new SyntaxError(token, "octal escapes not allowed in strict mode");
+                }
+                return factory.stringLiteral(token, token.getText(), token.isEscapedString(), token.isContinuedLine());
+            case DECIMAL_LITERAL:
+                token = consume(DECIMAL_LITERAL);
+                return factory.decimalLiteral(token, token.getText());
+            case HEX_LITERAL:
+                token = consume(HEX_LITERAL);
+                return factory.hexLiteral(token, token.getText());
+            case OCTAL_LITERAL:
+                token = consume(OCTAL_LITERAL);
+                if (currentContext().isStrict()) {
+                    throw new SyntaxError(token, "octal literals not allowed in strict mode");
+                }
+                return factory.octalLiteral(token, token.getText());
+            case REGEXP_LITERAL:
+                token = consume(REGEXP_LITERAL);
+                return factory.regexpLiteral(token, token.getText());
+            case TRUE:
+                return factory.trueLiteral(consume());
+            case FALSE:
+                return factory.falseLiteral(consume());
+            case NULL:
+                return factory.nullLiteral(consume());
+            case LEFT_BRACE:
+                return objectLiteral();
+            case LEFT_BRACKET:
+                return arrayLiteral();
+            case LEFT_PAREN:
+                consume(LEFT_PAREN);
+                try {
+                    ++this.parens;
+                    Expression expr = expression();
+                    consume(RIGHT_PAREN);
+                    return expr;
+                } finally {
+                    --this.parens;
+                }
         }
 
         throw new SyntaxError(laToken(), "unexpected token: " + laToken().getText());
@@ -277,38 +277,38 @@ public class Parser {
             Token token = laToken();
 
             switch (token.getText()) {
-            case "get":
-                if (la(2) != COLON) {
-                    assignment = propertyGet();
+                case "get":
+                    if (la(2) != COLON) {
+                        assignment = propertyGet();
+                        propAssignments.add(assignment);
+                        if (values.contains(assignment.getName()) || getters.contains(assignment.getName())) {
+                            throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
+                        }
+                        getters.add(assignment.getName());
+                        break;
+                    }
+                case "set":
+                    if (la(2) != COLON) {
+                        assignment = propertySet();
+                        propAssignments.add(assignment);
+                        if (values.contains(assignment.getName()) || setters.contains(assignment.getName())) {
+                            throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
+                        }
+                        setters.add(assignment.getName());
+                        break;
+                    }
+                default:
+                    assignment = namedValue();
                     propAssignments.add(assignment);
-                    if (values.contains(assignment.getName()) || getters.contains(assignment.getName())) {
+                    if (getters.contains(assignment.getName()) || setters.contains(assignment.getName())) {
                         throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
                     }
-                    getters.add(assignment.getName());
-                    break;
-                }
-            case "set":
-                if (la(2) != COLON) {
-                    assignment = propertySet();
-                    propAssignments.add(assignment);
-                    if (values.contains(assignment.getName()) || setters.contains(assignment.getName())) {
-                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
+                    if (currentContext().isStrict()) {
+                        if (values.contains(assignment.getName())) {
+                            throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
+                        }
                     }
-                    setters.add(assignment.getName());
-                    break;
-                }
-            default:
-                assignment = namedValue();
-                propAssignments.add(assignment);
-                if (getters.contains(assignment.getName()) || setters.contains(assignment.getName())) {
-                    throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
-                }
-                if (currentContext().isStrict()) {
-                    if (values.contains(assignment.getName())) {
-                        throw new SyntaxError(token, "duplicate property not allowed: " + assignment.getName());
-                    }
-                }
-                values.add(assignment.getName());
+                    values.add(assignment.getName());
             }
 
             if (la() != COMMA) {
@@ -391,13 +391,13 @@ public class Parser {
 
     protected boolean isPropertyName(Token token) {
         switch (token.getType()) {
-        case IDENTIFIER:
-        case DECIMAL_LITERAL:
-        case HEX_LITERAL:
-        case STRING_LITERAL:
-            return true;
-        default:
-            return isReservedWord(token);
+            case IDENTIFIER:
+            case DECIMAL_LITERAL:
+            case HEX_LITERAL:
+            case STRING_LITERAL:
+                return true;
+            default:
+                return isReservedWord(token);
         }
     }
 
@@ -421,37 +421,37 @@ public class Parser {
 
     protected boolean isKeyword(TokenType type) {
         switch (type) {
-        case BREAK:
-        case DO:
-        case INSTANCEOF:
-        case TYPEOF:
-        case CASE:
-        case ELSE:
-        case NEW:
-        case VAR:
-        case CATCH:
-        case FINALLY:
-        case RETURN:
-        case VOID:
-        case CONTINUE:
-        case FOR:
-        case SWITCH:
-        case WHILE:
-        case DEBUGGER:
-        case FUNCTION:
-        case THIS:
-        case WITH:
-        case DEFAULT:
-        case IF:
-        case THROW:
-        case DELETE:
-        case IN:
-        case OF:
-        case TRY:
-        case NULL:
-        case TRUE:
-        case FALSE:
-            return true;
+            case BREAK:
+            case DO:
+            case INSTANCEOF:
+            case TYPEOF:
+            case CASE:
+            case ELSE:
+            case NEW:
+            case VAR:
+            case CATCH:
+            case FINALLY:
+            case RETURN:
+            case VOID:
+            case CONTINUE:
+            case FOR:
+            case SWITCH:
+            case WHILE:
+            case DEBUGGER:
+            case FUNCTION:
+            case THIS:
+            case WITH:
+            case DEFAULT:
+            case IF:
+            case THROW:
+            case DELETE:
+            case IN:
+            case OF:
+            case TRY:
+            case NULL:
+            case TRUE:
+            case FALSE:
+                return true;
         }
 
         return false;
@@ -459,30 +459,30 @@ public class Parser {
 
     protected boolean isFutureReservedWord(String name) {
         switch (name) {
-        case "class":
-        case "enum":
-        case "extends":
-        case "super":
-        case "const":
-        case "export":
-        case "import":
-            return true;
+            case "class":
+            case "enum":
+            case "extends":
+            case "super":
+            case "const":
+            case "export":
+            case "import":
+                return true;
         }
         return false;
     }
 
     protected boolean isStrictFutureReservedWord(String name) {
         switch (name) {
-        case "implements":
-        case "let":
-        case "private":
-        case "public":
-        case "yield":
-        case "interface":
-        case "package":
-        case "protected":
-        case "static":
-            return true;
+            case "implements":
+            case "let":
+            case "private":
+            case "public":
+            case "yield":
+            case "interface":
+            case "package":
+            case "protected":
+            case "static":
+                return true;
         }
         return false;
 
@@ -530,68 +530,68 @@ public class Parser {
         Expression expr = conditionalExpression(noIn);
 
         switch (la()) {
-        case EQUALS:
-            consume(EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.assignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case MULTIPLY_EQUALS:
-            consume(MULTIPLY_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.multiplicationAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case DIVIDE_EQUALS:
-            consume(DIVIDE_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.divisionAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case MODULO_EQUALS:
-            consume(MODULO_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.moduloAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case PLUS_EQUALS:
-            consume(PLUS_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.additionAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case MINUS_EQUALS:
-            consume(MINUS_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.subtractionAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case LEFT_SHIFT_EQUALS:
-            consume(LEFT_SHIFT_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.leftShiftAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case RIGHT_SHIFT_EQUALS:
-            consume(RIGHT_SHIFT_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.rightShiftAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case UNSIGNED_RIGHT_SHIFT_EQUALS:
-            consume(UNSIGNED_RIGHT_SHIFT_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.unsignedRightShiftAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case BITWISE_AND_EQUALS:
-            consume(BITWISE_AND_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.bitwiseAndAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case BITWISE_OR_EQUALS:
-            consume(BITWISE_OR_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.bitwiseOrAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        case BITWISE_XOR_EQUALS:
-            consume(BITWISE_XOR_EQUALS);
-            checkAssignmentLHS(expr);
-            expr = factory.bitwiseXorAssignmentOperator(expr, assignmentExpression(noIn));
-            break;
-        default:
-            return expr;
+            case EQUALS:
+                consume(EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.assignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case MULTIPLY_EQUALS:
+                consume(MULTIPLY_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.multiplicationAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case DIVIDE_EQUALS:
+                consume(DIVIDE_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.divisionAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case MODULO_EQUALS:
+                consume(MODULO_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.moduloAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case PLUS_EQUALS:
+                consume(PLUS_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.additionAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case MINUS_EQUALS:
+                consume(MINUS_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.subtractionAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case LEFT_SHIFT_EQUALS:
+                consume(LEFT_SHIFT_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.leftShiftAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case RIGHT_SHIFT_EQUALS:
+                consume(RIGHT_SHIFT_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.rightShiftAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case UNSIGNED_RIGHT_SHIFT_EQUALS:
+                consume(UNSIGNED_RIGHT_SHIFT_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.unsignedRightShiftAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case BITWISE_AND_EQUALS:
+                consume(BITWISE_AND_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.bitwiseAndAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case BITWISE_OR_EQUALS:
+                consume(BITWISE_OR_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.bitwiseOrAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            case BITWISE_XOR_EQUALS:
+                consume(BITWISE_XOR_EQUALS);
+                checkAssignmentLHS(expr);
+                expr = factory.bitwiseXorAssignmentOperator(expr, assignmentExpression(noIn));
+                break;
+            default:
+                return expr;
         }
 
         if (currentContext().isStrict()) {
@@ -696,22 +696,22 @@ public class Parser {
 
         while (la() == EQUALITY || la() == NOT_EQUALITY || la() == STRICT_EQUALITY || la() == STRICT_NOT_EQUALITY) {
             switch (la()) {
-            case EQUALITY:
-                consume();
-                expr = factory.equalityOperator(expr, relationalExpression(noIn));
-                break;
-            case NOT_EQUALITY:
-                consume();
-                expr = factory.notEqualityOperator(expr, relationalExpression(noIn));
-                break;
-            case STRICT_EQUALITY:
-                consume();
-                expr = factory.strictEqualityOperator(expr, relationalExpression(noIn));
-                break;
-            case STRICT_NOT_EQUALITY:
-                consume();
-                expr = factory.strictNotEqualityOperator(expr, relationalExpression(noIn));
-                break;
+                case EQUALITY:
+                    consume();
+                    expr = factory.equalityOperator(expr, relationalExpression(noIn));
+                    break;
+                case NOT_EQUALITY:
+                    consume();
+                    expr = factory.notEqualityOperator(expr, relationalExpression(noIn));
+                    break;
+                case STRICT_EQUALITY:
+                    consume();
+                    expr = factory.strictEqualityOperator(expr, relationalExpression(noIn));
+                    break;
+                case STRICT_NOT_EQUALITY:
+                    consume();
+                    expr = factory.strictNotEqualityOperator(expr, relationalExpression(noIn));
+                    break;
             }
         }
 
@@ -721,34 +721,34 @@ public class Parser {
     public Expression relationalExpression(boolean noIn) {
         Expression expr = shiftExpression();
 
-        while (la() == LESS_THAN || la() == LESS_THAN_EQUAL || la() == GREATER_THAN || la() == GREATER_THAN_EQUAL || la() == INSTANCEOF || (!noIn && (la() == IN || la() ==OF))) {
+        while (la() == LESS_THAN || la() == LESS_THAN_EQUAL || la() == GREATER_THAN || la() == GREATER_THAN_EQUAL || la() == INSTANCEOF || (!noIn && (la() == IN || la() == OF))) {
             switch (la()) {
-            case LESS_THAN:
-                consume();
-                expr = factory.lessThanOperator(expr, shiftExpression());
-                break;
-            case LESS_THAN_EQUAL:
-                consume();
-                expr = factory.lessThanEqualOperator(expr, shiftExpression());
-                break;
-            case GREATER_THAN:
-                consume();
-                expr = factory.greaterThanOperator(expr, shiftExpression());
-                break;
-            case GREATER_THAN_EQUAL:
-                consume();
-                expr = factory.greaterThanEqualOperator(expr, shiftExpression());
-                break;
-            case INSTANCEOF:
-                consume();
-                expr = factory.instanceofOperator(expr, shiftExpression());
-                break;
-            case IN:
-                if (!noIn) {
+                case LESS_THAN:
                     consume();
-                    expr = factory.inOperator(expr, shiftExpression());
+                    expr = factory.lessThanOperator(expr, shiftExpression());
                     break;
-                }
+                case LESS_THAN_EQUAL:
+                    consume();
+                    expr = factory.lessThanEqualOperator(expr, shiftExpression());
+                    break;
+                case GREATER_THAN:
+                    consume();
+                    expr = factory.greaterThanOperator(expr, shiftExpression());
+                    break;
+                case GREATER_THAN_EQUAL:
+                    consume();
+                    expr = factory.greaterThanEqualOperator(expr, shiftExpression());
+                    break;
+                case INSTANCEOF:
+                    consume();
+                    expr = factory.instanceofOperator(expr, shiftExpression());
+                    break;
+                case IN:
+                    if (!noIn) {
+                        consume();
+                        expr = factory.inOperator(expr, shiftExpression());
+                        break;
+                    }
             }
         }
 
@@ -760,18 +760,18 @@ public class Parser {
 
         while (la() == LEFT_SHIFT || la() == RIGHT_SHIFT || la() == UNSIGNED_RIGHT_SHIFT) {
             switch (la()) {
-            case LEFT_SHIFT:
-                consume();
-                expr = factory.leftShiftOperator(expr, additiveExpression());
-                break;
-            case RIGHT_SHIFT:
-                consume();
-                expr = factory.rightShiftOperator(expr, additiveExpression());
-                break;
-            case UNSIGNED_RIGHT_SHIFT:
-                consume();
-                expr = factory.unsignedRightShiftOperator(expr, additiveExpression());
-                break;
+                case LEFT_SHIFT:
+                    consume();
+                    expr = factory.leftShiftOperator(expr, additiveExpression());
+                    break;
+                case RIGHT_SHIFT:
+                    consume();
+                    expr = factory.rightShiftOperator(expr, additiveExpression());
+                    break;
+                case UNSIGNED_RIGHT_SHIFT:
+                    consume();
+                    expr = factory.unsignedRightShiftOperator(expr, additiveExpression());
+                    break;
             }
         }
 
@@ -783,14 +783,14 @@ public class Parser {
 
         while (la() == PLUS || la() == MINUS) {
             switch (la()) {
-            case PLUS:
-                consume();
-                expr = factory.additionOperator(expr, multiplicativeExpression());
-                break;
-            case MINUS:
-                consume();
-                expr = factory.subtractionOperator(expr, multiplicativeExpression());
-                break;
+                case PLUS:
+                    consume();
+                    expr = factory.additionOperator(expr, multiplicativeExpression());
+                    break;
+                case MINUS:
+                    consume();
+                    expr = factory.subtractionOperator(expr, multiplicativeExpression());
+                    break;
             }
         }
 
@@ -802,18 +802,18 @@ public class Parser {
 
         while (la() == MULTIPLY || la() == DIVIDE || la() == MODULO) {
             switch (la()) {
-            case MULTIPLY:
-                consume();
-                expr = factory.multiplicationOperator(expr, unaryExpression());
-                break;
-            case DIVIDE:
-                consume();
-                expr = factory.divisionOperator(expr, unaryExpression());
-                break;
-            case MODULO:
-                consume();
-                expr = factory.moduloOperator(expr, unaryExpression());
-                break;
+                case MULTIPLY:
+                    consume();
+                    expr = factory.multiplicationOperator(expr, unaryExpression());
+                    break;
+                case DIVIDE:
+                    consume();
+                    expr = factory.divisionOperator(expr, unaryExpression());
+                    break;
+                case MODULO:
+                    consume();
+                    expr = factory.moduloOperator(expr, unaryExpression());
+                    break;
             }
         }
 
@@ -823,60 +823,60 @@ public class Parser {
     public Expression unaryExpression() {
         Expression expr = null;
         switch (la()) {
-        case DELETE:
-            consume();
-            expr = unaryExpression();
-            if ( currentContext().isStrict() ) {
-                if ( expr instanceof IdentifierReferenceExpression ) {
-                    throw new ThrowException( null, this.compilationContext.createSyntaxError( "cannot delete a direct reference in strict-mode"));
+            case DELETE:
+                consume();
+                expr = unaryExpression();
+                if (currentContext().isStrict()) {
+                    if (expr instanceof IdentifierReferenceExpression) {
+                        throw new ThrowException(null, this.compilationContext.createSyntaxError("cannot delete a direct reference in strict-mode"));
+                    }
                 }
-            }
-            return factory.deleteOperator(expr);
-        case VOID:
-            consume();
-            return factory.voidOperator(unaryExpression());
-        case TYPEOF:
-            consume();
-            return factory.typeofOperator(unaryExpression());
-        case PLUS_PLUS:
-            consume();
-            expr = unaryExpression();
-            checkAssignmentLHS(expr);
-            return factory.preIncrementOperator( expr );
-        case MINUS_MINUS:
-            consume();
-            expr = unaryExpression();
-            checkAssignmentLHS(expr);
-            return factory.preDecrementOperator( expr );
-        case PLUS:
-            consume();
-            return factory.unaryPlusOperator(unaryExpression());
-        case MINUS:
-            consume();
-            return factory.unaryMinusOperator(unaryExpression());
-        case INVERSION:
-            consume();
-            return factory.bitwiseInversionOperator(unaryExpression());
-        case NOT:
-            consume();
-            return factory.unaryNotOperator(unaryExpression());
-        default:
-            return postfixExpression();
+                return factory.deleteOperator(expr);
+            case VOID:
+                consume();
+                return factory.voidOperator(unaryExpression());
+            case TYPEOF:
+                consume();
+                return factory.typeofOperator(unaryExpression());
+            case PLUS_PLUS:
+                consume();
+                expr = unaryExpression();
+                checkAssignmentLHS(expr);
+                return factory.preIncrementOperator(expr);
+            case MINUS_MINUS:
+                consume();
+                expr = unaryExpression();
+                checkAssignmentLHS(expr);
+                return factory.preDecrementOperator(expr);
+            case PLUS:
+                consume();
+                return factory.unaryPlusOperator(unaryExpression());
+            case MINUS:
+                consume();
+                return factory.unaryMinusOperator(unaryExpression());
+            case INVERSION:
+                consume();
+                return factory.bitwiseInversionOperator(unaryExpression());
+            case NOT:
+                consume();
+                return factory.unaryNotOperator(unaryExpression());
+            default:
+                return postfixExpression();
         }
     }
 
     public Expression postfixExpression() {
         Expression expr = leftHandSideExpression();
-        
+
         switch (la(false)) {
-        case PLUS_PLUS:
-            checkAssignmentLHS(expr);
-            consume(false);
-            return factory.postIncrementOperator(expr);
-        case MINUS_MINUS:
-            checkAssignmentLHS(expr);
-            consume(false);
-            return factory.postDecrementOperator(expr);
+            case PLUS_PLUS:
+                checkAssignmentLHS(expr);
+                consume(false);
+                return factory.postIncrementOperator(expr);
+            case MINUS_MINUS:
+                checkAssignmentLHS(expr);
+                consume(false);
+                return factory.postDecrementOperator(expr);
         }
 
         return expr;
@@ -898,24 +898,25 @@ public class Parser {
             expr = primaryExpression();
         }
 
-        loop: while (true) {
+        loop:
+        while (true) {
             switch (la()) {
-            case DOT:
-                consume(DOT);
-                Token token = laToken();
-                if (!isPropertyName(token)) {
-                    throw new SyntaxError(token, "expected property name");
-                }
-                String identifier = consume().getText();
-                expr = factory.dotOperator(expr, identifier);
-                break;
-            case LEFT_BRACKET:
-                consume(LEFT_BRACKET);
-                expr = factory.bracketOperator(expr, expression());
-                consume(RIGHT_BRACKET);
-                break;
-            default:
-                break loop;
+                case DOT:
+                    consume(DOT);
+                    Token token = laToken();
+                    if (!isPropertyName(token)) {
+                        throw new SyntaxError(token, "expected property name");
+                    }
+                    String identifier = consume().getText();
+                    expr = factory.dotOperator(expr, identifier);
+                    break;
+                case LEFT_BRACKET:
+                    consume(LEFT_BRACKET);
+                    expr = factory.bracketOperator(expr, expression());
+                    consume(RIGHT_BRACKET);
+                    break;
+                default:
+                    break loop;
             }
         }
 
@@ -925,24 +926,25 @@ public class Parser {
     public Expression callExpression() {
         Expression expr = memberExpression();
 
-        loop: while (true) {
+        loop:
+        while (true) {
             switch (la()) {
-            case DOT:
-                consume(DOT);
-                String identifier = consume().getText();
-                expr = factory.dotOperator(expr, identifier);
-                break;
-            case LEFT_BRACKET:
-                consume(LEFT_BRACKET);
-                expr = factory.bracketOperator(expr, expression());
-                consume(RIGHT_BRACKET);
-                break;
-            case LEFT_PAREN:
-                List<Expression> args = arguments();
-                expr = factory.functionCall(expr, args);
-                break;
-            default:
-                break loop;
+                case DOT:
+                    consume(DOT);
+                    String identifier = consume().getText();
+                    expr = factory.dotOperator(expr, identifier);
+                    break;
+                case LEFT_BRACKET:
+                    consume(LEFT_BRACKET);
+                    expr = factory.bracketOperator(expr, expression());
+                    consume(RIGHT_BRACKET);
+                    break;
+                case LEFT_PAREN:
+                    List<Expression> args = arguments();
+                    expr = factory.functionCall(expr, args);
+                    break;
+                default:
+                    break loop;
             }
         }
 
@@ -964,24 +966,25 @@ public class Parser {
             }
         }
 
-        loop: while (true) {
+        loop:
+        while (true) {
             switch (la()) {
-            case DOT:
-                consume(DOT);
-                String identifier = consume(IDENTIFIER).getText();
-                expr = factory.dotOperator(expr, identifier);
-                break;
-            case LEFT_BRACKET:
-                consume(LEFT_BRACKET);
-                expr = factory.bracketOperator(expr, expression());
-                consume(RIGHT_BRACKET);
-                break;
-            case LEFT_PAREN:
-                List<Expression> args = arguments();
-                expr = factory.functionCall(expr, args);
-                break;
-            default:
-                break loop;
+                case DOT:
+                    consume(DOT);
+                    String identifier = consume(IDENTIFIER).getText();
+                    expr = factory.dotOperator(expr, identifier);
+                    break;
+                case LEFT_BRACKET:
+                    consume(LEFT_BRACKET);
+                    expr = factory.bracketOperator(expr, expression());
+                    consume(RIGHT_BRACKET);
+                    break;
+                case LEFT_PAREN:
+                    List<Expression> args = arguments();
+                    expr = factory.functionCall(expr, args);
+                    break;
+                default:
+                    break loop;
             }
         }
 
@@ -1162,40 +1165,40 @@ public class Parser {
 
     public Statement statement() {
         switch (la()) {
-        case LEFT_BRACE:
-            return block();
-        case VAR:
-            return variableStatement();
-        case SEMICOLON:
-            return emptyStatement();
-        case IF:
-            return ifStatement();
-        case DO:
-        case FOR:
-        case WHILE:
-            return iterationStatement();
-        case CONTINUE:
-            return continueStatement();
-        case BREAK:
-            return breakStatement();
-        case RETURN:
-            return returnStatement();
-        case WITH:
-            return withStatement();
-        case SWITCH:
-            return switchStatement();
-        case THROW:
-            return throwStatement();
-        case TRY:
-            return tryStatement();
-        case DEBUGGER:
-            return debuggerStatement();
-        case FUNCTION:
-            if (currentContext().isStrict()) {
-                throw new SyntaxError("function declaration in statement not allowed in strict-mode code");
-            } else {
-                return functionDeclaration();
-            }
+            case LEFT_BRACE:
+                return block();
+            case VAR:
+                return variableStatement();
+            case SEMICOLON:
+                return emptyStatement();
+            case IF:
+                return ifStatement();
+            case DO:
+            case FOR:
+            case WHILE:
+                return iterationStatement();
+            case CONTINUE:
+                return continueStatement();
+            case BREAK:
+                return breakStatement();
+            case RETURN:
+                return returnStatement();
+            case WITH:
+                return withStatement();
+            case SWITCH:
+                return switchStatement();
+            case THROW:
+                return throwStatement();
+            case TRY:
+                return tryStatement();
+            case DEBUGGER:
+                return debuggerStatement();
+            case FUNCTION:
+                if (currentContext().isStrict()) {
+                    throw new SyntaxError("function declaration in statement not allowed in strict-mode code");
+                } else {
+                    return functionDeclaration();
+                }
         }
 
         if (la(2) == COLON) {
@@ -1215,14 +1218,14 @@ public class Parser {
         } else {
             Token next = consume(false);
             switch (next.getType()) {
-            case CRNL:
-            case CR:
-            case NL:
-            case PARAGRAPH_SEPARATOR:
-            case LINE_SEPARATOR:
-                break;
-            default:
-                throw new SyntaxError(next, "semicolon expected but saw: " + next);
+                case CRNL:
+                case CR:
+                case NL:
+                case PARAGRAPH_SEPARATOR:
+                case LINE_SEPARATOR:
+                    break;
+                default:
+                    throw new SyntaxError(next, "semicolon expected but saw: " + next);
             }
         }
     }
@@ -1329,19 +1332,19 @@ public class Parser {
         String target = null;
 
         switch (la(false)) {
-        case CR:
-        case NL:
-        case CRNL:
-        case PARAGRAPH_SEPARATOR:
-        case LINE_SEPARATOR:
-        case SEMICOLON:
-        case RIGHT_BRACE:
-            break;
-        case IDENTIFIER:
-            target = consume(IDENTIFIER).getText();
-            break;
-        default:
-            throw new SyntaxError(laToken(false), "unexpected token: " + laToken(false).getText());
+            case CR:
+            case NL:
+            case CRNL:
+            case PARAGRAPH_SEPARATOR:
+            case LINE_SEPARATOR:
+            case SEMICOLON:
+            case RIGHT_BRACE:
+                break;
+            case IDENTIFIER:
+                target = consume(IDENTIFIER).getText();
+                break;
+            default:
+                throw new SyntaxError(laToken(false), "unexpected token: " + laToken(false).getText());
         }
 
         if (!isValidContinue(target)) {
@@ -1360,19 +1363,19 @@ public class Parser {
         String target = null;
 
         switch (la(false)) {
-        case CR:
-        case NL:
-        case CRNL:
-        case PARAGRAPH_SEPARATOR:
-        case LINE_SEPARATOR:
-        case SEMICOLON:
-        case RIGHT_BRACE:
-            break;
-        case IDENTIFIER:
-            target = consume(IDENTIFIER).getText();
-            break;
-        default:
-            throw new SyntaxError(laToken(false), "unexpected token: " + laToken(false).getText());
+            case CR:
+            case NL:
+            case CRNL:
+            case PARAGRAPH_SEPARATOR:
+            case LINE_SEPARATOR:
+            case SEMICOLON:
+            case RIGHT_BRACE:
+                break;
+            case IDENTIFIER:
+                target = consume(IDENTIFIER).getText();
+                break;
+            default:
+                throw new SyntaxError(laToken(false), "unexpected token: " + laToken(false).getText());
         }
 
         if (!isValidBreak(target)) {
@@ -1395,16 +1398,17 @@ public class Parser {
         Expression expr = null;
 
         switch (la(false)) {
-        case CR:
-        case NL:
-        case CRNL:
-        case PARAGRAPH_SEPARATOR:
-        case LINE_SEPARATOR:
-        case SEMICOLON:
-        case RIGHT_BRACE:
-            return factory.returnStatement(position);
-        default:
-            expr = expression();
+            case CR:
+            case NL:
+            case CRNL:
+            case PARAGRAPH_SEPARATOR:
+            case LINE_SEPARATOR:
+            case SEMICOLON:
+                consume( SEMICOLON );
+            case RIGHT_BRACE:
+                return factory.returnStatement(position);
+            default:
+                expr = expression();
         }
 
         ReturnStatement statement = factory.returnStatement(position, expr);
@@ -1416,13 +1420,13 @@ public class Parser {
         Token position = consume(THROW);
 
         switch (la(false)) {
-        case NL:
-        case CR:
-        case CRNL:
-        case LINE_SEPARATOR:
-        case PARAGRAPH_SEPARATOR:
-        case SEMICOLON:
-            throw new SyntaxError("unexpected line terminator after 'throw'");
+            case NL:
+            case CR:
+            case CRNL:
+            case LINE_SEPARATOR:
+            case PARAGRAPH_SEPARATOR:
+            case SEMICOLON:
+                throw new SyntaxError("unexpected line terminator after 'throw'");
         }
 
         ThrowStatement statement = factory.throwStatement(position, expression());
@@ -1486,13 +1490,14 @@ public class Parser {
 
         List<Statement> statements = new ArrayList<>();
 
-        loop: while (true) {
+        loop:
+        while (true) {
             TokenType t = la();
             switch (t) {
-            case RIGHT_BRACE:
-            case CASE:
-            case DEFAULT:
-                break loop;
+                case RIGHT_BRACE:
+                case CASE:
+                case DEFAULT:
+                    break loop;
             }
             statements.add(statement());
         }
@@ -1506,13 +1511,14 @@ public class Parser {
 
         List<Statement> statements = new ArrayList<>();
 
-        loop: while (true) {
+        loop:
+        while (true) {
             TokenType t = la();
             switch (t) {
-            case RIGHT_BRACE:
-            case CASE:
-            case DEFAULT:
-                break loop;
+                case RIGHT_BRACE:
+                case CASE:
+                case DEFAULT:
+                    break loop;
             }
             statements.add(statement());
         }
@@ -1582,12 +1588,12 @@ public class Parser {
             pushContext(ContextType.ITERATION);
 
             switch (la()) {
-            case DO:
-                return doWhileStatement();
-            case WHILE:
-                return whileStatement();
-            case FOR:
-                return forStatement();
+                case DO:
+                    return doWhileStatement();
+                case WHILE:
+                    return whileStatement();
+                case FOR:
+                    return forStatement();
             }
 
             throw new SyntaxError("unexpected token: " + laToken().getText());
