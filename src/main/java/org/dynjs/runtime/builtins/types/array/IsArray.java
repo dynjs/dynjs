@@ -1,9 +1,6 @@
 package org.dynjs.runtime.builtins.types.array;
 
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.*;
 
 public class IsArray extends AbstractNativeFunction {
 
@@ -14,7 +11,15 @@ public class IsArray extends AbstractNativeFunction {
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         // 15.4.3.2
-        return (args[0] instanceof DynArray);
+        if (args[0] instanceof DynArray) {
+            return true;
+        }
+
+        if ( args[0] instanceof JSObject && ((JSObject)args[0]).hasExternalIndexedData() ) {
+            return true;
+        }
+
+        return false;
     }
     
     @Override

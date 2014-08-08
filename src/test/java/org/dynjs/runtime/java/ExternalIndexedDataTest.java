@@ -90,6 +90,9 @@ public class ExternalIndexedDataTest extends AbstractDynJSTestSupport {
         assertThat( eval( "o[1]" ) ).isEqualTo( "tacos" );
         assertThat( eval( "o[2]" ) ).isEqualTo( "bees" );
 
+        eval( "o.tacos = 42;" );
+
+        assertThat( eval( "o.tacos" ) ).isEqualTo( 42L );
 
     }
 
