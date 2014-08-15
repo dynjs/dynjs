@@ -190,10 +190,16 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
 
 
     public static MethodHandle nullReplacingFilter(Class<?> target) throws NoSuchMethodException, IllegalAccessException {
+        Lookup lookup = MethodHandles.lookup();
+        MethodHandle returnNull = lookup.findStatic(DynJSCoercionMatrix.class, "returnNull", methodType(Object.class, Object.class));
         return Binder.from(methodType(target, Object.class))
-                .drop(0)
-                .insert(0, new Class[]{Object.class}, new Object[]{null})
-                .invoke(MethodHandles.identity(target));
+                //.drop(0)
+                //.insert(0, new Class[]{Object.class}, new Object[]{null})
+                .invoke(returnNull);
+    }
+
+    public static Object returnNull(Object arg) {
+        return null;
     }
 
 }
