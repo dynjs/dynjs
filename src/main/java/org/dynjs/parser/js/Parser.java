@@ -1398,13 +1398,13 @@ public class Parser {
         Expression expr = null;
 
         switch (la(false)) {
+            case SEMICOLON:
+                consume( SEMICOLON );
             case CR:
             case NL:
             case CRNL:
             case PARAGRAPH_SEPARATOR:
             case LINE_SEPARATOR:
-            case SEMICOLON:
-                consume( SEMICOLON );
             case RIGHT_BRACE:
                 return factory.returnStatement(position);
             default:
