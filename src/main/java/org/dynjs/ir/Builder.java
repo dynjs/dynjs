@@ -15,7 +15,6 @@
  */
 package org.dynjs.ir;
 
-import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
@@ -37,7 +36,6 @@ import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
-import org.dynjs.ir.operands.Fn;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.Null;
@@ -121,7 +119,6 @@ import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
 
 import java.util.List;
-import org.dynjs.runtime.Types;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
