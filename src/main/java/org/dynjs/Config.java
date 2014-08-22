@@ -37,6 +37,7 @@ public class Config {
     private Integer jitThreshold = Options.JIT_TRESHOLD.load();
     private boolean jitEnabled = Options.JIT.load();
     private boolean jitAsync = Options.JIT_ASYNC.load();
+    private boolean v8Compatible = Options.COMPATIBILITY_V8.load();
 
     private final Classpath classpath;
 
@@ -110,6 +111,14 @@ public class Config {
 
     public boolean isCommonJSCompatible() {
         return this.commonJSCompatible;
+    }
+
+    public boolean isV8Compatible() {
+        return v8Compatible;
+    }
+
+    public void setV8Compatible(boolean v8Compatible) {
+        this.v8Compatible = v8Compatible;
     }
 
     public DynamicClassLoader getClassLoader() {

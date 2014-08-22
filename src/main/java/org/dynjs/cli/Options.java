@@ -16,6 +16,8 @@ public class Options {
     public static final Option<Boolean> INVOKEDYNAMIC = Option.bool(PREFIX, "invokedynamic.enabled", Category.INVOKEDYNAMIC, true, "Enable invokedynamic support");
     public static final Option<Boolean> COMPATIBILITY_RHINO = Option.bool(PREFIX, "compat.rhino.enabled", Category.COMPATIBILITY, true, "Enable Mozilla Rhino compatibility extensions");
     public static final Option<Boolean> COMPATIBILITY_COMMONJS = Option.bool(PREFIX, "compat.commonjs.enabled", Category.COMPATIBILITY, true, "Enable commonjs compatibility extensions");
+    public static final Option<Boolean> COMPATIBILITY_V8 = Option.bool(PREFIX, "compat.v8.enabled", Category.COMPATIBILITY, true, "Enable v8 compatibility extensions");
+
 
     public static enum Category {
         COMPILER("compiler"),
@@ -39,5 +41,5 @@ public class Options {
         }
     }
 
-    public static final Collection<Option> PROPERTIES = Collections.unmodifiableCollection(Arrays.<Option>asList(CLI_COMPILE_MODE, JIT_TRESHOLD, JIT, JIT_ASYNC, INVOKEDYNAMIC, COMPATIBILITY_RHINO, COMPATIBILITY_COMMONJS));
+    public static final Collection<Option> PROPERTIES = Collections.unmodifiableCollection(Arrays.<Option>asList(CLI_COMPILE_MODE, JIT_TRESHOLD, JIT, JIT_ASYNC, INVOKEDYNAMIC, COMPATIBILITY_RHINO, COMPATIBILITY_COMMONJS, COMPATIBILITY_V8));
 }
