@@ -112,4 +112,10 @@ public class JSONTest extends AbstractDynJSTestSupport {
         assertThat(result).doesNotContain("\n");
     }
 
+    @Test
+    public void testStringifyDate() {
+        String result = (String) eval("JSON.stringify(new Date(Date.UTC(1980, 2, 11)))");
+        assertThat(result).isEqualTo("\"1980-03-11T00:00:00.000Z\"");
+    }
+
 }
