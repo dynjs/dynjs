@@ -25,7 +25,7 @@ public class ToJSON extends AbstractDateFunction {
             }
         }
 
-        Object toISO = get(context, "toISOString");
+        Object toISO = o.get(context, "toISOString");
         if (!(toISO instanceof JSFunction)) {
             throw new ThrowException(context, context.createTypeError("toISOString must be a function"));
         }

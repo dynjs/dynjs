@@ -51,7 +51,7 @@ public class UTC extends AbstractDateFunction {
         }
 
         Number finalDate = makeDate(context, makeDay(context, yr, m, dt), makeTime(context, h, min, s, milli));
-        Number clipped = timeClip(context, utc(context, finalDate));
+        Number clipped = timeClip(context, finalDate);
 
         return clipped;
     }
