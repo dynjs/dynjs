@@ -35,6 +35,9 @@ public class DynJS {
         this.globalObject = GlobalObject.newGlobalObject(this);
 
         this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext( this );
+
+        // Load pure-JS kernel
+        this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
     }
 
     public GlobalObject getGlobalObject() {
