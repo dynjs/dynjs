@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.StackElement;
+import org.dynjs.runtime.builtins.types.error.StackElement;
 
 @Module(name = "dyn_console")
 public class ConsoleModule {

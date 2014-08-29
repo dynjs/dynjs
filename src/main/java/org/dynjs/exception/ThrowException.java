@@ -1,6 +1,7 @@
 package org.dynjs.exception;
 
 import org.dynjs.runtime.*;
+import org.dynjs.runtime.builtins.types.error.StackElement;
 
 import java.util.ArrayList;
 
@@ -42,14 +43,14 @@ public class ThrowException extends DynJSException {
             StackElement e = stack.get(i);
             String cn = "<global>";
             String fn = null;
-            int dotLoc = e.debugContext.indexOf(".");
+            int dotLoc = e.getDebugContext().indexOf(".");
             if (dotLoc > 0) {
-                cn = e.debugContext.substring(0, dotLoc);
-                fn = e.debugContext.substring(dotLoc + 1);
+                cn = e.getDebugContext().substring(0, dotLoc);
+                fn = e.getDebugContext().substring(dotLoc + 1);
             } else {
-                fn = e.debugContext;
+                fn = e.getDebugContext();
             }
-            elements[i] = new StackTraceElement(cn, fn, e.fileName, e.lineNumber);
+            elements[i] = new StackTraceElement(cn, fn, e.getFileName(), e.getLineNumber());
         }
         for (int i = 0; i < javaElements.length; ++i) {
             elements[i + stackSize] = javaElements[i];

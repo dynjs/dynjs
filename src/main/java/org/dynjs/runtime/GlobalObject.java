@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import org.dynjs.runtime.builtins.*;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.*;
+import org.dynjs.runtime.builtins.types.error.V8StackGetter;
 import org.dynjs.runtime.java.JSAdapter;
 import org.dynjs.runtime.java.JavaPackage;
 
@@ -47,6 +48,10 @@ public class GlobalObject extends DynObject {
 
         if (runtime.getConfig().isRhinoCompatible()) {
             registerBuiltinType("JSAdapter", new JSAdapter(this));
+        }
+
+        if(runtime.getConfig().isV8Compatible()) {
+            defineNonEnumerableProperty(this, "__v8StackGetter", new V8StackGetter(this));
         }
 
         initializeBuiltinTypes();

@@ -10,7 +10,7 @@ import org.dynjs.ir.JITCompiler;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
-import org.dynjs.runtime.wrapper.JavascriptFunction;
+import org.dynjs.runtime.builtins.types.error.StackElement;
 
 import java.util.ArrayList;
 import java.util.List;
