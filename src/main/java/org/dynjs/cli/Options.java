@@ -10,6 +10,7 @@ import java.util.Collections;
 public class Options {
     public static final String PREFIX = "dynjs";
     public static final Option<Config.CompileMode> CLI_COMPILE_MODE = Option.enumeration(PREFIX, "compile.mode", Category.COMPILER, Config.CompileMode.OFF, "Set compile mode: OFF = no compilation (interpreted); JIT = at runtime; FORCE = before execution; IR = IR runtime");
+    public static final Option<Config.KernelMode> CLI_KERNEL_MODE = Option.enumeration(PREFIX, "kernel.mode", Category.KERNEL, Config.KernelMode.INTERNAL, "Set kernel mode: INTERNAL = use bundled JS kernel; EXTERNAL = loads JS kernel files straight from the source tree");
     public static final Option<Integer> JIT_TRESHOLD = Option.integer(PREFIX, "jit.threshold", Category.JIT, 50, "Set JIT threshold");
     public static final Option<Boolean> JIT = Option.bool(PREFIX, "jit.enabled", Category.JIT, false, "Enable JIT compilation");
     public static final Option<Boolean> JIT_ASYNC = Option.bool(PREFIX, "jit.async", Category.JIT, false, "Make JIT run in background");
@@ -21,6 +22,7 @@ public class Options {
 
     public static enum Category {
         COMPILER("compiler"),
+        KERNEL("kernel"),
         COMPATIBILITY("compatibility"),
         INVOKEDYNAMIC("invokedynamic"),
         JIT("jit");
@@ -41,5 +43,5 @@ public class Options {
         }
     }
 
-    public static final Collection<Option> PROPERTIES = Collections.unmodifiableCollection(Arrays.<Option>asList(CLI_COMPILE_MODE, JIT_TRESHOLD, JIT, JIT_ASYNC, INVOKEDYNAMIC, COMPATIBILITY_RHINO, COMPATIBILITY_COMMONJS, COMPATIBILITY_V8));
+    public static final Collection<Option> PROPERTIES = Collections.unmodifiableCollection(Arrays.<Option>asList(CLI_COMPILE_MODE, CLI_KERNEL_MODE, JIT_TRESHOLD, JIT, JIT_ASYNC, INVOKEDYNAMIC, COMPATIBILITY_RHINO, COMPATIBILITY_COMMONJS, COMPATIBILITY_V8));
 }

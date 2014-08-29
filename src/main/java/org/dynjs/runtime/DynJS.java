@@ -4,10 +4,14 @@ import jnr.posix.util.Platform;
 import org.dynjs.Config;
 import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
 import org.dynjs.runtime.modules.ModuleProvider;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,9 +39,24 @@ public class DynJS {
         this.globalObject = GlobalObject.newGlobalObject(this);
 
         this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext( this );
+        loadKernel();
+    }
 
-        // Load pure-JS kernel
-        this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+    private void loadKernel() {
+        switch (this.config.getKernelMode()) {
+            case INTERNAL:
+                // Load pure-JS kernel
+                this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+                break;
+            case EXTERNAL:
+                try {
+                    FileInputStream stream = new FileInputStream("src/main/resources/dynjs/kernel.js");
+                    this.evaluate(stream);
+                } catch (FileNotFoundException e) {
+                    throw new DynJSException(e);
+                }
+                break;
+        }
     }
 
     public GlobalObject getGlobalObject() {

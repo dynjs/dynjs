@@ -19,6 +19,11 @@ public class Config {
         IR;
     }
 
+    public static enum KernelMode {
+        INTERNAL,
+        EXTERNAL;
+    }
+
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
 
     private boolean debug = false;
@@ -34,6 +39,7 @@ public class Config {
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
+    private KernelMode kernelMode = Options.CLI_KERNEL_MODE.load();
     private Integer jitThreshold = Options.JIT_TRESHOLD.load();
     private boolean jitEnabled = Options.JIT.load();
     private boolean jitAsync = Options.JIT_ASYNC.load();
@@ -79,6 +85,14 @@ public class Config {
 
     public CompileMode getCompileMode() {
         return this.compileMode;
+    }
+
+    public KernelMode getKernelMode() {
+        return kernelMode;
+    }
+
+    public void setKernelMode(KernelMode kernelMode) {
+        this.kernelMode = kernelMode;
     }
 
     public Integer getJitThreshold() {
