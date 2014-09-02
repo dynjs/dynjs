@@ -5,15 +5,6 @@ public class StackElement {
         this.fileName = fileName;
         this.lineNumber = lineNumber;
         this.debugContext = debugContext;
-        context = "<global>";
-        System.err.println("DEBUG CONTEXT IS " + this.debugContext);
-        int dotLoc = this.debugContext.indexOf(".");
-        if (dotLoc > 0) {
-            context = this.debugContext.substring(0, dotLoc);
-            function = this.debugContext.substring(dotLoc + 1);
-        } else {
-            function = this.debugContext;
-        }
     }
 
     public String getFileName() {
@@ -26,14 +17,6 @@ public class StackElement {
 
     public String getDebugContext() {
         return debugContext;
-    }
-
-    public String getContext() {
-        return context;
-    }
-
-    public String getFunctionName() {
-        return function;
     }
 
     /*
@@ -53,6 +36,14 @@ public class StackElement {
     isConstructor: is this a constructor call?
      */
     public StackTraceElement toStackTraceElement() {
+        String context = "<global>";
+        int dotLoc = this.debugContext.indexOf(".");
+        if (dotLoc > 0) {
+            context = this.debugContext.substring(0, dotLoc);
+            function = this.debugContext.substring(dotLoc + 1);
+        } else {
+            function = this.debugContext;
+        }
         return new StackTraceElement(context, function, this.fileName, this.lineNumber);
     }
 
@@ -63,7 +54,6 @@ public class StackElement {
     private String fileName;
     private int lineNumber;
     private String debugContext;
-    private String context;
     private String function;
 
 }

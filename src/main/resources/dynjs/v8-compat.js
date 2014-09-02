@@ -20,31 +20,16 @@
   Error.prepareStackTrace = function(){};
 
   function __captureStackTrace(err, func) {
-    var __javaStack = __v8StackGetter(), __stack = [], __stackStr;
+    var __v8Stack = __v8StackGetter(err), __stack = [], __stackStr;
 
-    // ignore the first 3 elements of the stack, since those will be the 
-    // Java builtin function, the __captureStackTrace function, and the
-    // Error ctor
-    for (var i = 3; i < __javaStack.size(); i++) {
-      var elem = __javaStack.get(i);
-      __stack.push(elem);
-    }
-    
     Object.defineProperty(err, 'stack', {
       enumerable: true,
       configurable: true,
       get: function() {
         if (!__stackStr) {
-          print(">>>>> ERR NAME " + err.name);
-          __stackStr = err.name ? err.name : '<unknown>';
-
-          if (err.message) __stackStr = [_stackStr, err.message].join(': ');
-          __stackStr += "\n";
-
-          __stackStr = __stack.reduce(function(memo, elem) { 
-            return [memo, "  at ", elem, "\n"].join('');
-          }, __stackStr);
+          __stackStr = __v8Stack.toString();
         }
+        System.err.println("__stackStr " + __stackStr);
         return __stackStr;
       },
       set: function(val) {

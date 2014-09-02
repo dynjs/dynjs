@@ -43,6 +43,7 @@ public class ThrowException extends DynJSException {
             StackElement e = stack.get(i);
             String cn = "<global>";
             String fn = null;
+            System.err.println("Debug context is " + e.getDebugContext());
             int dotLoc = e.getDebugContext().indexOf(".");
             if (dotLoc > 0) {
                 cn = e.getDebugContext().substring(0, dotLoc);
@@ -50,6 +51,7 @@ public class ThrowException extends DynJSException {
             } else {
                 fn = e.getDebugContext();
             }
+            System.err.println("Adding stack trace element for " + cn + " " + fn);
             elements[i] = new StackTraceElement(cn, fn, e.getFileName(), e.getLineNumber());
         }
         for (int i = 0; i < javaElements.length; ++i) {
