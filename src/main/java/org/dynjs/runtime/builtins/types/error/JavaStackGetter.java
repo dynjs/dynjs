@@ -1,9 +1,7 @@
-package org.dynjs.runtime;
+package org.dynjs.runtime.builtins.types.error;
 
 import org.dynjs.exception.ThrowException;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.dynjs.runtime.*;
 
 public class JavaStackGetter extends AbstractNativeFunction {
 
@@ -103,7 +101,7 @@ public class JavaStackGetter extends AbstractNativeFunction {
             if (each.getClassName().startsWith("org.dynjs") || each.getClassName().startsWith( "java.lang.invoke" )) {
                 break;
             }
-            buf.append("  at " + each.toString()).append("\n");
+            buf.append("  at ").append(each).append("\n");
         }
     }
 

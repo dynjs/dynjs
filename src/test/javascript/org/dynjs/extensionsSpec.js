@@ -256,11 +256,6 @@ describe("The v8 custom Error API", function() {
     expect(typeof Error.prepareStackTrace).toBe('function');
   });
 
-  // tests an internal impl detail
-  it("should have an Error.__v8StackGetter function", function() {
-    expect(typeof Error.v8StackGetter).toBe('function');
-  });
-
   describe("Error.captureStackTrace", function() {
     it("should take an Error and an optional Function parameter", function() {
       expect(Error.captureStackTrace.length).toBe(2);

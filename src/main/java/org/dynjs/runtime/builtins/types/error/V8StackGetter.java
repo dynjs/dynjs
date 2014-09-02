@@ -35,6 +35,7 @@ public class V8StackGetter extends AbstractNativeFunction {
         private String stackString;
 
         V8Stack(List<StackElement> stack, ExecutionContext context, JSObject error) {
+            // Ignore the first three elements of the stack since those are internal
             this.stack = stack.subList(3, stack.size());
             this.context = context;
             this.error = error;
@@ -54,7 +55,10 @@ public class V8StackGetter extends AbstractNativeFunction {
                 }
                 String message = null;
                 if (jsObject.hasProperty(context, "message")) {
-                    message = Types.toString(context, jsObject.get(context, "message"));
+                    final Object value = jsObject.get(context, "message");
+                    if (value != Types.UNDEFINED) {
+                        message = Types.toString(context, value);
+                    }
                 }
 
                 StringBuilder buf = new StringBuilder();
@@ -71,7 +75,6 @@ public class V8StackGetter extends AbstractNativeFunction {
                     buf.append("  at ").append(each).append("\n");
                 }
                 stackString = buf.toString();
-
             }
             return stackString;
         }

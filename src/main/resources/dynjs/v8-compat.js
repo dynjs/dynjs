@@ -20,7 +20,7 @@
   Error.prepareStackTrace = function(){};
 
   function __captureStackTrace(err, func) {
-    var __v8Stack = __v8StackGetter(err), __stack = [], __stackStr;
+    var __v8Stack = __v8StackGetter(err), __stackStr;
 
     Object.defineProperty(err, 'stack', {
       enumerable: true,
@@ -29,7 +29,6 @@
         if (!__stackStr) {
           __stackStr = __v8Stack.toString();
         }
-        System.err.println("__stackStr " + __stackStr);
         return __stackStr;
       },
       set: function(val) {

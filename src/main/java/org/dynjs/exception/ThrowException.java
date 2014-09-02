@@ -1,6 +1,7 @@
 package org.dynjs.exception;
 
 import org.dynjs.runtime.*;
+import org.dynjs.runtime.builtins.types.error.JavaStackGetter;
 import org.dynjs.runtime.builtins.types.error.StackElement;
 
 import java.util.ArrayList;
@@ -25,9 +26,12 @@ public class ThrowException extends DynJSException {
         this.context = context;
         setUpStackElements(context);
         if (value instanceof JSObject) {
-            PropertyDescriptor stackDesc = new PropertyDescriptor();
-            stackDesc.setGetter(new JavaStackGetter(context.getGlobalObject(), this));
-            ((JSObject) value).defineOwnProperty(context, "stack", stackDesc, false);
+            JSObject object = (JSObject) value;
+            if (!object.hasProperty(context, "stack")) {
+                PropertyDescriptor stackDesc = new PropertyDescriptor();
+                stackDesc.setGetter(new JavaStackGetter(context.getGlobalObject(), this));
+                ((JSObject) value).defineOwnProperty(context, "stack", stackDesc, false);
+            }
         }
     }
 
@@ -43,7 +47,6 @@ public class ThrowException extends DynJSException {
             StackElement e = stack.get(i);
             String cn = "<global>";
             String fn = null;
-            System.err.println("Debug context is " + e.getDebugContext());
             int dotLoc = e.getDebugContext().indexOf(".");
             if (dotLoc > 0) {
                 cn = e.getDebugContext().substring(0, dotLoc);
@@ -51,7 +54,6 @@ public class ThrowException extends DynJSException {
             } else {
                 fn = e.getDebugContext();
             }
-            System.err.println("Adding stack trace element for " + cn + " " + fn);
             elements[i] = new StackTraceElement(cn, fn, e.getFileName(), e.getLineNumber());
         }
         for (int i = 0; i < javaElements.length; ++i) {
