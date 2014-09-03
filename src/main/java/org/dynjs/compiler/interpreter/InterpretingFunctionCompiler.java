@@ -36,7 +36,7 @@ public class InterpretingFunctionCompiler implements FunctionCompiler {
 
         if ( identifier != null ) {
             LexicalEnvironment funcEnv = LexicalEnvironment.newDeclarativeEnvironment( context.getLexicalEnvironment() );
-            ((DeclarativeEnvironmentRecord)funcEnv.getRecord()).createImmutableBinding(identifier);
+            ((DeclarativeEnvironmentRecord)funcEnv.getRecord()).createMutableBinding(identifier, true);
             lexEnv = funcEnv;
         } else {
             lexEnv = context.getLexicalEnvironment();
@@ -44,7 +44,7 @@ public class InterpretingFunctionCompiler implements FunctionCompiler {
 
         JavascriptFunction function = new JavascriptFunction(context.getGlobalObject(), identifier, code, lexEnv, strict, formalParameters);
         if ( identifier != null ) {
-            ((DeclarativeEnvironmentRecord)lexEnv.getRecord()).initializeImmutableBinding(identifier, function);
+            ((DeclarativeEnvironmentRecord)lexEnv.getRecord()).setMutableBinding(identifier, function, strict);
         }
         function.setDebugContext( "<anonymous>" );
         return function;
