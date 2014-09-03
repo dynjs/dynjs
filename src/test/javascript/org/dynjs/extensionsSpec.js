@@ -184,7 +184,7 @@ describe("JSAdapter", function() {
   });
 
   it("should behave like a regular JS object", function() {
-    var x = new JSAdapter({})
+    var x = new JSAdapter({});
     expect(x.__proto__).toNotBe(null);
     expect(x.__proto__).toBe(Object.prototype);
     x.foo = "foo";
@@ -201,7 +201,7 @@ describe("JSAdapter", function() {
       {
         __get__: function(name) { return name; }
       }
-    )
+    );
 
     expect(x.foo).toBe("foo");
     expect(x.tacos).toBe("big");
@@ -215,7 +215,7 @@ describe("JSAdapter", function() {
       burgers: function() {
         return 'double';
       }
-    }
+    };
 
     var x = new JSAdapter(
       p,
@@ -226,7 +226,7 @@ describe("JSAdapter", function() {
           return this.data[name];
         },
         __set__: function(name, value) {
-          return this.data[name] = value;
+          this.data[name] = value;
         }
       }
     );
@@ -289,7 +289,7 @@ describe("The v8 custom Error API", function() {
       function foo() {
         function bar() {
           function foobar() {
-            Error.captureStackTrace(e, bar);
+            Error.captureStackTrace(e);
           }
           foobar();
         }
@@ -307,7 +307,7 @@ describe("The v8 custom Error API", function() {
       function foo() {
         function bar() {
           function foobar() {
-            Error.captureStackTrace(e, bar);
+            Error.captureStackTrace(e);
           }
           foobar();
         }
@@ -328,14 +328,52 @@ describe("The v8 custom Error API", function() {
     });
 
     it("should be customizable", function() {
-      var e = {};
+      var e = {}, __prepareStackTrace = Error.prepareStackTrace;
       Error.prepareStackTrace = function(e,s) {
         return 'pumpkins';
       };
       Error.captureStackTrace(e);
       expect(e.stack).toBe('pumpkins');
+      Error.prepareStackTrace = __prepareStackTrace;
+    });
+  });
+
+  describe("CallSite objects in a structured stack trace", function() {
+    // make err.stack return the structuredStackTrace instead
+    // of converting it to a string.
+    var __prepareStackTrace = Error.prepareStackTrace;
+    beforeEach(function() {
+      Error.prepareStackTrace = function(e,s) { 
+        return s; 
+      };
+    });
+    afterEach(function() {
+      Error.prepareStackTrace = __prepareStackTrace;
     });
 
+    function errorGenerator(str) {
+      return new Error(str);
+    }
+
+    it("should have a getFunctionName property", function() {
+      var e = errorGenerator();
+      expect(e.stack[0].getFunctionName()).toBe('errorGenerator');
+    });
+
+    it("should have a getFunction property", function() {
+      var e = errorGenerator();
+      expect(e.stack[0].getFunction()).toBe(errorGenerator);
+    });
+
+    it("should have a getThis property", function() {
+      var e = errorGenerator();
+      expect(typeof e.stack[0].getThis()).toBe('object');
+    });
+
+    it("should have a getLineNumber property", function() {
+      var e = errorGenerator();
+      expect(e.stack[0].getLineNumber()).toBe(355);
+    });
   });
 
 });
