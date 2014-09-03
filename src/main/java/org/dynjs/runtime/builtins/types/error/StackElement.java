@@ -1,10 +1,19 @@
 package org.dynjs.runtime.builtins.types.error;
 
 public class StackElement {
+
     public StackElement(String fileName, int lineNumber, String debugContext) {
         this.fileName = fileName;
         this.lineNumber = lineNumber;
         this.debugContext = debugContext;
+        this.context = "<global>";
+        int dotLoc = this.debugContext.indexOf(".");
+        if (dotLoc > 0) {
+            this.context = this.debugContext.substring(0, dotLoc);
+            this.function = this.debugContext.substring(dotLoc + 1);
+        } else {
+            this.function = this.debugContext;
+        }
     }
 
     public String getFileName() {
@@ -19,6 +28,9 @@ public class StackElement {
         return debugContext;
     }
 
+    public String getFunction() {
+        return function;
+    }
     /*
     We should ultimately support all of these properties on a StackElement
     getThis: returns the value of this
@@ -36,14 +48,6 @@ public class StackElement {
     isConstructor: is this a constructor call?
      */
     public StackTraceElement toStackTraceElement() {
-        String context = "<global>";
-        int dotLoc = this.debugContext.indexOf(".");
-        if (dotLoc > 0) {
-            context = this.debugContext.substring(0, dotLoc);
-            function = this.debugContext.substring(dotLoc + 1);
-        } else {
-            function = this.debugContext;
-        }
         return new StackTraceElement(context, function, this.fileName, this.lineNumber);
     }
 
@@ -55,5 +59,6 @@ public class StackElement {
     private int lineNumber;
     private String debugContext;
     private String function;
+    private String context;
 
 }

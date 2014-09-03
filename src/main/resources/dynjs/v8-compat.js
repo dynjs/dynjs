@@ -17,20 +17,22 @@
 
   Error.captureStackTrace = __captureStackTrace;
 
-  Error.prepareStackTrace = function(){};
+  Error.prepareStackTrace = function(err, structuredStackTrace) {
+    return structuredStackTrace.toString();
+  };
 
   function __captureStackTrace(err, func) {
-    var __v8Stack = __v8StackGetter(err), __stackStr;
+    var __v8Stack = __v8StackGetter(err, Error.stackTraceLimit, func), __stackStr;
 
     Object.defineProperty(err, 'stack', {
       enumerable: true,
       configurable: true,
       get: function() {
         if (!__stackStr) {
-          __stackStr = __v8Stack.toString();
+          __stackStr = Error.prepareStackTrace(err, __v8Stack);
         }
         return __stackStr;
-      },
+      }.bind(this),
       set: function(val) {
         __stackStr = val;
       }

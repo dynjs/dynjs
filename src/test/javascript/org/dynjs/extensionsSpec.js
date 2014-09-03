@@ -256,11 +256,11 @@ describe("The v8 custom Error API", function() {
       expect(typeof Error.captureStackTrace).toBe('function');
     });
 
-    it("should accept an Error and an optional Function parameter", function() {
+    it("should accept two parameters", function() {
       expect(Error.captureStackTrace.length).toBe(2);
     });
 
-    it("should add a writable 'stack' property to the given error object", function() {
+    it("should add a writable 'stack' property to the given object", function() {
       var err = {};
       Error.captureStackTrace(err);
       expect(err.stack).not.toBeFalsy();
@@ -268,8 +268,74 @@ describe("The v8 custom Error API", function() {
       expect(err.stack).toBe('foobar');
     });
 
-    describe("structuredStackTrace", function() {
+    it("should cap the stack at constructorOpt if provided", function() {
+      var e = {};
+      var expected = "<unknown>\n  at foo";
+      function foo() {
+        function bar() {
+          function foobar() {
+            Error.captureStackTrace(e, bar);
+          }
+          foobar();
+        }
+        bar();
+      }
+      foo();
+      expect(e.stack).toMatch(expected);
     });
+
+    it("should respect Error.stackTraceLimit", function() {
+      var e = {};
+      function foo() {
+        function bar() {
+          function foobar() {
+            Error.captureStackTrace(e, bar);
+          }
+          foobar();
+        }
+        bar();
+      }
+      foo();
+      // This is 12 because the first line is the error message
+      // and there's an additional \n at the end of the stack
+      expect(e.stack.split("\n").length).toBe(12);
+    });
+
+    it("should allow Error.stackTraceLimit to be customized", function() {
+      var e = {};
+      Error.stackTraceLimit = 3;
+      function foo() {
+        function bar() {
+          function foobar() {
+            Error.captureStackTrace(e, bar);
+          }
+          foobar();
+        }
+        bar();
+      }
+      foo();
+      // This is 5 because the first line is the error message
+      // and there's an additional \n at the end of the stack
+      expect(e.stack.split("\n").length).toBe(5);
+      Error.stackTraceLimit = 10;
+    });
+  });
+
+  describe("Error.prepareStackTrace", function() {
+    it("should be a function that takes two parameters", function() {
+      expect(typeof Error.prepareStackTrace).toBe('function');
+      expect(Error.prepareStackTrace.length).toBe(2);
+    });
+
+    it("should be customizable", function() {
+      var e = {};
+      Error.prepareStackTrace = function(e,s) {
+        return 'pumpkins';
+      };
+      Error.captureStackTrace(e);
+      expect(e.stack).toBe('pumpkins');
+    });
+
   });
 
 });
