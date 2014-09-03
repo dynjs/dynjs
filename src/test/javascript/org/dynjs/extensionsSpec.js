@@ -243,13 +243,8 @@ describe("JSAdapter", function() {
 });
 
 describe("The v8 custom Error API", function() {
-  load('dynjs/v8-compat.js');
   it("should have an Error.stackTraceLimit property defaulting to 10", function() {
     expect(Error.stackTraceLimit).toBe(10);
-  });
-
-  it("should have an Error.captureStackTrace function", function() {
-    expect(typeof Error.captureStackTrace).toBe('function');
   });
 
   it("should have an Error.prepareStackTrace function", function() {
@@ -257,7 +252,11 @@ describe("The v8 custom Error API", function() {
   });
 
   describe("Error.captureStackTrace", function() {
-    it("should take an Error and an optional Function parameter", function() {
+    it("should be a function", function() {
+      expect(typeof Error.captureStackTrace).toBe('function');
+    });
+
+    it("should accept an Error and an optional Function parameter", function() {
       expect(Error.captureStackTrace.length).toBe(2);
     });
 
@@ -267,6 +266,9 @@ describe("The v8 custom Error API", function() {
       expect(err.stack).not.toBeFalsy();
       err.stack = 'foobar';
       expect(err.stack).toBe('foobar');
+    });
+
+    describe("structuredStackTrace", function() {
     });
   });
 
