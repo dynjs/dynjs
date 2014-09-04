@@ -374,6 +374,22 @@ describe("The v8 custom Error API", function() {
       var e = errorGenerator();
       expect(e.stack[0].getLineNumber()).toBe(355);
     });
+
+    it("should have a getTypeName property", function() {
+      function Thing() {
+      }
+    
+      Thing.prototype.createError = function() {
+        return new Error("Created by a Thing's createError function property");
+      };
+
+      var thing = new Thing();
+      var error = thing.createError();
+
+      print("STACK " + __prepareStackTrace(error, error.stack));
+      print("TYPE NAME " + error.stack[0].getTypeName());
+
+    });
   });
 
 });

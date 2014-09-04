@@ -1,5 +1,7 @@
 package org.dynjs.runtime.builtins.types.error;
 
+import org.dynjs.runtime.JSObject;
+
 public class StackElement {
 
     public StackElement(String fileName, int lineNumber, String debugContext, Object functionReference, Object thisBinding) {
@@ -43,9 +45,15 @@ public class StackElement {
         return thisBinding;
     }
 
+    public String getTypeName() {
+        if (thisBinding instanceof JSObject) {
+            System.err.println("CTOR: " + ((JSObject)thisBinding).getOwnProperty(null, "constructor"));
+        }
+        return null;
+    }
+
     /*
     We should ultimately support all of these additional properties on a StackElement
-    getThis: returns the value of this
     getTypeName: returns the type of this as a string. This is the name of the function stored in the constructor field of this, if available, otherwise the object's [[Class]] internal property.
     getMethodName: returns the name of the property of this or one of its prototypes that holds the current function
     getColumnNumber: if this function was defined in a script returns the current column number
