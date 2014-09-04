@@ -242,7 +242,7 @@ describe("JSAdapter", function() {
   });
 });
 
-describe("The v8 custom Error API", function() {
+describe("V8 Error API", function() {
   it("should have an Error.stackTraceLimit property defaulting to 10", function() {
     expect(Error.stackTraceLimit).toBe(10);
   });
