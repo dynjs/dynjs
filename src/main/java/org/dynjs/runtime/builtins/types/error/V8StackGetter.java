@@ -40,9 +40,8 @@ public class V8StackGetter extends AbstractNativeFunction {
             // Now chop off the top of the stack if there's a top function provided
             int top = 2;
             if (this.func instanceof JSFunction) {
-                final Object nameProperty = ((JSFunction) this.func).getProperty(null, "name");
-                if (nameProperty != Types.UNDEFINED) {
-                    String topFunction = (String) ((PropertyDescriptor) nameProperty).getValue();
+                final Object topFunction = ((JSFunction) this.func).get(null, "name");
+                if (topFunction != Types.UNDEFINED) {
                     top = 1;
                     for (StackElement element : stack) {
                         if (topFunction.equals(element.getFunctionName())) break;
