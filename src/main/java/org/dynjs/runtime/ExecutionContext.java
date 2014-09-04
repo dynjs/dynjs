@@ -639,8 +639,7 @@ public class ExecutionContext implements CompilationContext {
                 locationContext = ((Reference) this.functionReference).getReferencedName();
             }
         }
-        return new StackElement(this.fileName, this.lineNumber, locationContext,
-                this.getFunctionReference(), this.getThisBinding());
+        return new StackElement(locationContext, this);
     }
 
     public JSObject getPrototypeFor(String type) {

@@ -385,11 +385,24 @@ describe("The v8 custom Error API", function() {
 
       var thing = new Thing();
       var error = thing.createError();
+      expect(error.stack[0].getTypeName()).toBe('Thing');
 
-      print("STACK " + __prepareStackTrace(error, error.stack));
-      print("TYPE NAME " + error.stack[0].getTypeName());
-
+      error = (function f(){return new Error('created by a func');})();
+      expect(error.stack[0].getTypeName()).toBe('Function');
     });
-  });
 
+    it("should have a getMethodName property", function() {
+      function Thing() {
+      }
+    
+      Thing.prototype.createError = function() {
+        return new Error("Created by a Thing's createError function property");
+      };
+
+      var thing = new Thing();
+      var error = thing.createError();
+      expect(error.stack[0].getMethodName()).toBe('createError');
+    });
+
+  });
 });
