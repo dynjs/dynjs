@@ -92,17 +92,24 @@ public class StackElement {
         return false;
     }
 
-    public boolean isEval() {
-        return false;
-    }
-
-    // TODO: Add support for all of the following method stubs
-    public StackElement getEvalOrigin() {
-        return null;
-    }
-
     public boolean isConstructor() {
+        if (this.getFunction() != null) {
+            JSFunction func = (JSFunction) ((Reference)getFunction()).getValue(null);
+            return func.isConstructor();
+        }
         return false;
+    }
+
+    public boolean isEval() {
+        return this.context.inEval();
+    }
+
+    public StackElement getEvalOrigin() {
+        if (isEval()) {
+            // not 100% sure if this is kosher
+            return this;
+        }
+        return null;
     }
 
     private final String debugContext;

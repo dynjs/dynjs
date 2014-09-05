@@ -50,6 +50,8 @@ public class ExecutionContext implements CompilationContext {
     private LexicalEnvironment variableEnvironment;
     private Object thisBinding;
     private boolean strict;
+    private boolean inEval;
+
 
     private int lineNumber;
     private int columnNumber;
@@ -120,6 +122,10 @@ public class ExecutionContext implements CompilationContext {
 
     public boolean isStrict() {
         return this.strict;
+    }
+
+    public boolean inEval() {
+        return this.inEval;
     }
 
     public Clock getClock() {
@@ -634,7 +640,7 @@ public class ExecutionContext implements CompilationContext {
         }
     }
 
-    protected StackElement getStackElement() {
+    public StackElement getStackElement() {
         String locationContext = this.debugContext;
         if ( locationContext.equals( "<anonymous>" ) ) {
             if ( this.functionReference != null && this.functionReference instanceof Reference ) {
@@ -662,5 +668,9 @@ public class ExecutionContext implements CompilationContext {
 
     public int getColumnNumber() {
         return this.columnNumber;
+    }
+
+    public void inEval(boolean b) {
+        this.inEval = b;
     }
 }

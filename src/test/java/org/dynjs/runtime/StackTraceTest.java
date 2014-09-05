@@ -75,7 +75,6 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
         } catch (ThrowException e) {
             JSObject o = (JSObject) e.getValue();
             String stack = (String) o.get( getContext(), "stack" );
-            System.err.println( stack );
             assertThat( stack.contains( "at x")).isTrue();
         }
     }
@@ -152,6 +151,73 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
         assertThat(stackElement).isNotNull();
         assertThat(stackElement.isTopLevel()).isFalse();
     }
+
+    @Test
+    public void testStackElementIsConstructor() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "var ErrorMaker = function() { throw new Error('broken china'); };" +
+                "try {" +
+                "  new ErrorMaker();" +
+                "} catch(e) {" +
+                "  var val = e.stack[0];" +
+                "}" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat(stackElement.isConstructor()).isTrue();
+    }
+
+    @Test
+    public void testStackElementIsNotConstructor() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "var e = new Error('broken china');" +
+                "var val = e.stack[0];" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat(stackElement.isConstructor()).isFalse();
+    }
+
+    @Test
+    public void testStackElementIsEval() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "try {" +
+                "  eval('throw new Error()');" +
+                "} catch(e) {" +
+                "  var val = e.stack[1];" +
+                "}" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat((stackElement).isEval()).isTrue();
+    }
+
+    @Test
+    public void testStackElementEvalOrigin() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "try {" +
+                "  function thrower() {" +
+                "    eval('throw new Error()');" +
+                "  }" +
+                "  thrower();" +
+                "} catch(e) {" +
+                "  print(__prepareStackTrace(e,e.stack));" +
+                "  var val = e.stack[1];" +
+                "}" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat((stackElement).isEval()).isTrue();
+        StackElement origin = stackElement.getEvalOrigin();
+        assertThat(origin).isNotNull();
+        assertThat(origin.getFunctionName()).isEqualTo("thrower");
+    }
+
+
 
     @Test
     // FIXME
