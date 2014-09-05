@@ -128,6 +128,32 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testStackElementIsTopLevel() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "var e = new Error('broken china');" +
+                "var val = e.stack[0];" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat(stackElement.isTopLevel()).isTrue();
+    }
+
+    @Test
+    public void testStackElementIsNotTopLevel() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "var ErrorMaker = function() {};" +
+                "ErrorMaker.prototype.makeIt = function() { return new Error('broken china'); };" +
+                "var e = new ErrorMaker().makeIt();" +
+                "var val = e.stack[0];" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat(stackElement.isTopLevel()).isFalse();
+    }
+
+    @Test
     // FIXME
     public void testComplexStackAndPretendWeHaveFilename() {
         /*

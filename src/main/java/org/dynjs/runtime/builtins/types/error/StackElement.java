@@ -85,17 +85,20 @@ public class StackElement {
         return false;
     }
 
-    // TODO: Add support for all of the following method stubs
-    public StackElement getEvalOrigin() {
-        return null;
-    }
-
     public boolean isTopLevel() {
+        if (this.getThis() != null) {
+            return this.getThis() instanceof GlobalObject;
+        }
         return false;
     }
 
     public boolean isEval() {
         return false;
+    }
+
+    // TODO: Add support for all of the following method stubs
+    public StackElement getEvalOrigin() {
+        return null;
     }
 
     public boolean isConstructor() {
