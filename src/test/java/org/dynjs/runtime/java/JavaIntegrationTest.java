@@ -1,19 +1,19 @@
 package org.dynjs.runtime.java;
 
-import static org.fest.assertions.Assertions.*;
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.concurrent.Executor;
-
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.concurrent.Executor;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
@@ -805,4 +805,5 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("thing instanceof org.dynjs.runtime.java.Foo")).isEqualTo(true);
         assertThat(eval("thing instanceof org.dynjs.runtime.java.Foobar")).isEqualTo(false);
     }
+
 }

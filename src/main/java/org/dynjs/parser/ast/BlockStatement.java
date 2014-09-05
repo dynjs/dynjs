@@ -144,6 +144,7 @@ public class BlockStatement extends AbstractStatement {
             Position position = each.getPosition();
             if (position != null) {
                 context.setLineNumber(position.getLine());
+                context.setColumnNumber(position.getColumn());
             }
 
 

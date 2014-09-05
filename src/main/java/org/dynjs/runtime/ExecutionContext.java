@@ -52,6 +52,7 @@ public class ExecutionContext implements CompilationContext {
     private boolean strict;
 
     private int lineNumber;
+    private int columnNumber;
     private String fileName;
     private String debugContext = "<eval>";
     private VariableValues vars;
@@ -621,6 +622,7 @@ public class ExecutionContext implements CompilationContext {
         } else {
             err = (JSObject) construct((Object) null, func, message);
         }
+        err.put(this, "__native", true, false);
         return err;
 
     }
@@ -652,5 +654,13 @@ public class ExecutionContext implements CompilationContext {
 
     public DynamicClassLoader getClassLoader() {
         return getRuntime().getConfig().getClassLoader();
+    }
+
+    public void setColumnNumber(int column) {
+        this.columnNumber = column;
+    }
+
+    public int getColumnNumber() {
+        return this.columnNumber;
     }
 }

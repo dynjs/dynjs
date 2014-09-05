@@ -58,7 +58,7 @@ public class Include extends AbstractNativeFunction {
                 return ret;
             }
         } catch (IOException e) {
-            throw new ThrowException(context, e);
+            throw new ThrowException(context, context.createError("Error", e.getMessage()));
         }
 
         return Types.UNDEFINED;

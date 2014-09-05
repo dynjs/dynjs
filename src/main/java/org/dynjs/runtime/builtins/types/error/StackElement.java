@@ -1,9 +1,6 @@
 package org.dynjs.runtime.builtins.types.error;
 
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 
 public class StackElement {
 
@@ -27,10 +24,8 @@ public class StackElement {
     }
 
     public String toString() {
-        return this.debugContext + " (" + context.getFileName() + ":" + lineNumber + ")";
+        return this.debugContext + " (" + context.getFileName() + ":" + lineNumber + ":" + getColumnNumber() + ")";
     }
-
-
 
     public String getFileName() {
         return context.getFileName();
@@ -79,11 +74,18 @@ public class StackElement {
         return null;
     }
 
-    // TODO: Add support for all of the following method stubs
     public int getColumnNumber() {
-        return 0;
+        return this.context.getColumnNumber();
     }
 
+    public boolean isNative() {
+        if (getFunction() != null) {
+            return ((Reference)getFunction()).getValue(null) instanceof AbstractNativeFunction;
+        }
+        return false;
+    }
+
+    // TODO: Add support for all of the following method stubs
     public StackElement getEvalOrigin() {
         return null;
     }
@@ -93,10 +95,6 @@ public class StackElement {
     }
 
     public boolean isEval() {
-        return false;
-    }
-
-    public boolean isNative() {
         return false;
     }
 

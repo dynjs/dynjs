@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.exception.ThrowException;
+import org.dynjs.runtime.builtins.types.error.StackElement;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -12,7 +13,7 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
 
         String stack = (String) e.get(getContext(), "stack");
         assertThat(stack).contains("Error\n");
-        assertThat(stack).contains("at foo (<eval>:1)\n");
+        assertThat(stack).contains("at foo (<eval>:1:17)\n");
     }
 
     @Test
@@ -21,7 +22,7 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
 
         String stack = (String) e.get(getContext(), "stack");
         assertThat(stack).contains("TypeError\n");
-        assertThat(stack).contains("at foo (<eval>:1)\n");
+        assertThat(stack).contains("at foo (<eval>:1:17)\n");
     }
 
     @Test
@@ -30,7 +31,7 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
 
         String stack = (String) e.get(getContext(), "stack");
         assertThat(stack).contains("Error\n");
-        assertThat(stack).contains("at foo (<eval>:1)\n");
+        assertThat(stack).contains("at foo (<eval>:1:55)\n");
     }
 
     @Test
@@ -49,7 +50,6 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
                     "try {",
                     "  (function(){y.two();})();",
                     "} catch(e) {",
-                    "  print(e.stack);",
                     "  throw e;",
                     "}");
             throw new AssertionError("Should have thrown");
@@ -57,11 +57,11 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             JSObject o = (JSObject) e.getValue();
             String stack = (String) o.get(getContext(), "stack");
             assertThat(stack.contains("TypeError\n")).isTrue();
-            assertThat(stack.contains("at foo (<eval>:5)")).isTrue();
-            assertThat(stack.contains("at bar (<eval>:8)")).isTrue();
-            assertThat(stack.contains("at Object.one (<eval>:2)")).isTrue();
-            assertThat(stack.contains("at <anonymous> (<eval>:12)")).isTrue();
-            assertThat(stack.contains("at <eval> (<eval>:12)")).isTrue();
+            assertThat(stack.contains("at foo (<eval>:5:2)")).isTrue();
+            assertThat(stack.contains("at bar (<eval>:8:3)")).isTrue();
+            assertThat(stack.contains("at Object.one (<eval>:2:29)")).isTrue();
+            assertThat(stack.contains("at <anonymous> (<eval>:12:15)")).isTrue();
+            assertThat(stack.contains("at <eval> (<eval>:12:3)")).isTrue();
         }
     }
 
@@ -104,11 +104,27 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
             JSObject o = (JSObject) e.getValue();
             String stack = (String) o.get(getContext(), "stack");
             assertThat(stack.contains("TypeError: dangit")).isTrue();
-            assertThat(stack.contains("at foo (<eval>:5)")).isTrue();
-            assertThat(stack.contains("at bar (<eval>:8)")).isTrue();
-            assertThat(stack.contains("at Object.one (<eval>:2)")).isTrue();
-            assertThat(stack.contains("at <eval> (<eval>:12)")).isTrue();
+            assertThat(stack.contains("at foo (<eval>:5:2)")).isTrue();
+            assertThat(stack.contains("at bar (<eval>:8:3)")).isTrue();
+            assertThat(stack.contains("at Object.one (<eval>:2:29)")).isTrue();
+            assertThat(stack.contains("at <eval> (<eval>:12:3)")).isTrue();
         }
+    }
+
+    @Test
+    public void testNativeStackTrace() {
+        StackElement stackElement = (StackElement) eval("__prepareStackTrace = Error.prepareStackTrace;" +
+                "Error.prepareStackTrace = function(e,s) { return s; };" +
+                "var val = null;" +
+                "try {" +
+                "  require('notexist.js');" +
+                "} catch(e) {" +
+                "  val = e.stack[1];" +
+                "}" +
+                "Error.prepareStackTrace = __prepareStackTrace;" +
+                "val;");
+        assertThat(stackElement).isNotNull();
+        assertThat(stackElement.isNative()).isTrue();
     }
 
     @Test

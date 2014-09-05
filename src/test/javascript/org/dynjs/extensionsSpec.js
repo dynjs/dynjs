@@ -404,5 +404,22 @@ describe("V8 Error API", function() {
       expect(error.stack[0].getMethodName()).toBe('createError');
     });
 
+    it("should have a getColumnNumber property", function() {
+      var error = errorGenerator();
+      expect(error.stack[0].getColumnNumber()).toBe(7);
+    });
+
+    it("should have an isNative property", function() {
+      var error = errorGenerator();
+      expect(error.stack[0].isNative()).toBe(false);
+
+      try {
+        require('not-exist.js');
+      } catch(e) {
+        expect(e.stack[0].isNative()).toBe(false);
+        expect(e.stack[1].isNative()).toBe(true);
+      }
+    });
+
   });
 });

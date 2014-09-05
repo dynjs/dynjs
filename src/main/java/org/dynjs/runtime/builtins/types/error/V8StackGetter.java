@@ -15,7 +15,7 @@ public class V8StackGetter extends AbstractNativeFunction {
     public Object call(ExecutionContext context, Object self, Object... args) {
         final List<StackElement> stack = new ArrayList<>();
         context.collectStackElements(stack);
-        return new V8Stack(stack, args[0], args[1]);
+        return new V8Stack(args[0], stack, args[1], args[2]);
     }
 
     @Override
@@ -29,19 +29,25 @@ public class V8StackGetter extends AbstractNativeFunction {
     }
 
     public class V8Stack {
+        private final Object func;
+        private final Object err;
         private final List<StackElement> stack;
         private Number limit = 10;
-        private Object func;
 
-        V8Stack(List<StackElement> stack, Object limit, Object func) {
+        V8Stack(Object err, List<StackElement> stack, Object limit, Object func) {
             this.func = func;
             if (limit instanceof Number) this.limit = (Number) limit;
+            this.stack = stack;
+            this.err = err;
+        }
 
+        public Object[] getStackArray() {
             // Now chop off the top of the stack if there's a top function provided
             int top = 2;
             if (this.func instanceof JSFunction) {
+                final JSObject errObject = (JSObject) err;
                 final Object topFunction = ((JSFunction) this.func).get(null, "name");
-                if (topFunction != Types.UNDEFINED) {
+                if (topFunction != Types.UNDEFINED && ((JSObject)err).get(null, "__native") == Types.UNDEFINED) {
                     top = 1;
                     for (StackElement element : stack) {
                         if (topFunction.equals(element.getFunctionName())) break;
@@ -49,11 +55,9 @@ public class V8StackGetter extends AbstractNativeFunction {
                     }
                 }
             }
-            this.stack = stack.subList(top, Math.min(stack.size(), this.limit.intValue() + top));
-        }
-
-        public Object[] getStackArray() {
-            return stack.toArray();
+            final int bottom = Math.min(stack.size(), this.limit.intValue() + top);
+            top = Math.min(top, bottom);
+            return stack.subList(top, bottom).toArray();
         }
     }
 

@@ -22,14 +22,16 @@
     if (err.message) str += ': ' + err.message;
     str += "\n";
 
-    for(var i = 0; i < structuredStackTrace.length; i++) {
-      str += "  at " + structuredStackTrace[i].toString() + "\n";
+    if (structuredStackTrace) {
+      for(var i = 0; i < structuredStackTrace.length; i++) {
+        str += "  at " + structuredStackTrace[i].toString() + "\n";
+      }
     }
     return str;
   };
 
   function __captureStackTrace(err, func) {
-    var __v8Stack = __v8StackGetter(Error.stackTraceLimit, func), __stackStr;
+    var __v8Stack = __v8StackGetter(err, Error.stackTraceLimit, func), __stackStr;
 
     Object.defineProperty(err, 'stack', {
       enumerable: true,
