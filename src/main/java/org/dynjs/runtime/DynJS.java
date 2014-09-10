@@ -43,19 +43,22 @@ public class DynJS {
     }
 
     private void loadKernel() {
-        switch (this.config.getKernelMode()) {
-            case INTERNAL:
-                // Load pure-JS kernel
-                this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
-                break;
-            case EXTERNAL:
-                try {
-                    FileInputStream stream = new FileInputStream("src/main/resources/dynjs/kernel.js");
-                    this.evaluate(stream);
-                } catch (FileNotFoundException e) {
-                    throw new DynJSException(e);
-                }
-                break;
+        // FIXME only works for non-IR atm
+        if (!Config.CompileMode.IR.equals(this.config.getCompileMode())) {
+            switch (this.config.getKernelMode()) {
+                case INTERNAL:
+                    // Load pure-JS kernel
+                    this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+                    break;
+                case EXTERNAL:
+                    try {
+                        FileInputStream stream = new FileInputStream("src/main/resources/dynjs/kernel.js");
+                        this.evaluate(stream);
+                    } catch (FileNotFoundException e) {
+                        throw new DynJSException(e);
+                    }
+                    break;
+            }
         }
     }
 
