@@ -774,7 +774,9 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, VoidOperatorExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        // 11.4.2 (GetValue must be called even if we never use the value)
+        expr.getExpr().accept(context, this, strict);
+        return Undefined.UNDEFINED;
     }
 
     @Override
