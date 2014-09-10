@@ -38,7 +38,13 @@
       configurable: true,
       get: function() {
         if (!__stackStr) {
-          __stackStr = Error.prepareStackTrace(err, __v8Stack.getStackArray());
+          var jstack = __v8Stack.getStackArray(), stack = [];
+          for(var i=0; i<jstack.length; i++) {
+            // TODO: Convert the stack objects into JS CallSite objects
+            stack.push(jstack[i]);
+          }
+
+          __stackStr = Error.prepareStackTrace(err, stack);
         }
         return __stackStr;
       }.bind(this),
