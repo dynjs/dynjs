@@ -70,8 +70,12 @@ public class DynRegExp extends DynObject {
 
         int flagsInt = 0;
 
+        // joni calls the "m" flag Option.SINGLELINE, confusingly enough
+        // joni's Option.MULTILINE is actually Perl's "s" regex flag which
+        // has no equivalent in javascript
         if (get(context, "multiline") == Boolean.TRUE) {
-            flagsInt = flagsInt | Option.MULTILINE;
+            // negate Option.SINGLELINE
+            flagsInt = flagsInt & ~Option.SINGLELINE;
         } else {
             flagsInt = flagsInt | Option.SINGLELINE;
         }
