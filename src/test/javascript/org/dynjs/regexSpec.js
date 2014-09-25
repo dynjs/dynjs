@@ -66,3 +66,27 @@ describe("regular expressions", function() {
   });
 
 });
+
+describe("String.prototype.match", function() {
+  it("should work with multi line input", function() {
+    var line = "FOO=bar\nFOOBAR=barfoo";
+    var regex = new RegExp(/([\w+]+)\s*\=\s*(.*)/gmi);
+    var lines = regex.exec(line);
+
+    expect(lines).toBeTruthy();
+    expect(lines.length).toBe(3);
+  });
+});
+
+describe("Nested regex", function() {
+
+  it("should work", function() {
+
+    var regex = new RegExp("^((?:(?:[0-9a-f]+::?)+)?)");
+    var match = "FE80:0000:0000:0000:0202:B3FF:FE1E:8329";
+    var result = match.match(regex);
+    expect(result.length).toBe(2);
+    expect(result[0]).toBe('');
+    expect(result[1]).toBe('');
+  });
+});
