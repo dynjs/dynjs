@@ -25,6 +25,7 @@ public class Substr extends AbstractNativeFunction {
             start = Math.max(chars+start, 0);
         }
         length = Math.min(Math.max(length, 0), chars-start);
+        if (length <= 0) return "";
         return s.substring(start, start+length);
     }
 
