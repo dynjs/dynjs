@@ -2,7 +2,7 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
@@ -10,8 +10,8 @@ import org.dynjs.runtime.builtins.types.date.AbstractDateFunction;
 
 public class ToJSON extends AbstractDateFunction {
 
-    public ToJSON(GlobalObject globalObject) {
-        super(globalObject, "key");
+    public ToJSON(GlobalContext globalContext) {
+        super(globalContext, "key");
     }
 
     @Override

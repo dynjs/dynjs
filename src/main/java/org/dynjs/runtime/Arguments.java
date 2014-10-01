@@ -6,10 +6,10 @@ public class Arguments extends DynObject {
 
     private JSObject map;
 
-    public Arguments(GlobalObject globalObject) {
-        super(globalObject);
+    public Arguments(GlobalContext globalContext) {
+        super(globalContext);
         setClassName("Arguments");
-        this.map = new DynObject(globalObject);
+        this.map = new DynObject(globalContext);
     }
 
     public void setParameterMap(JSObject map) {

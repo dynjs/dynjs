@@ -22,8 +22,8 @@ import org.dynjs.runtime.*;
 
 public class Eval extends AbstractNonConstructorFunction {
 
-    public Eval(GlobalObject globalObject) {
-        super(globalObject, "code");
+    public Eval(GlobalContext globalContext) {
+        super(globalContext, "code");
     }
 
     @Override

@@ -8,8 +8,8 @@ import java.util.Set;
 
 public class Pp extends AbstractNativeFunction {
 
-    public Pp(GlobalObject globalObject) {
-        super(globalObject);
+    public Pp(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

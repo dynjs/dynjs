@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -12,8 +12,8 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class Map extends AbstractNativeFunction {
 
-    public Map(GlobalObject globalObject) {
-        super(globalObject, "callbackFn");
+    public Map(GlobalContext globalContext) {
+        super(globalContext, "callbackFn");
     }
 
     @Override

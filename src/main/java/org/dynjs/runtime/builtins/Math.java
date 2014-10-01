@@ -1,7 +1,7 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.builtins.math.Abs;
 import org.dynjs.runtime.builtins.math.Acos;
 import org.dynjs.runtime.builtins.math.Asin;
@@ -23,40 +23,40 @@ import org.dynjs.runtime.builtins.math.Tan;
 
 public class Math extends DynObject {
 
-    public Math(final GlobalObject globalObject) {
-        super(globalObject);
+    public Math(final GlobalContext globalContext) {
+        super(globalContext);
 
         // Math properties 15.8.1
-        defineReadOnlyProperty(globalObject, "E", java.lang.Math.E); // 15.8.1.1
-        defineReadOnlyProperty(globalObject, "LN10", java.lang.Math.log(10)); // 15.8.1.2
-        defineReadOnlyProperty(globalObject, "LN2", java.lang.Math.log(2)); // 15.8.1.3
-        defineReadOnlyProperty(globalObject, "LOG2E", java.lang.Math.log(java.lang.Math.E) / java.lang.Math.log(2)); // 15.8.1.4
-        defineReadOnlyProperty(globalObject, "LOG10E", java.lang.Math.log10(java.lang.Math.E)); // 15.8.1.5
-        defineReadOnlyProperty(globalObject, "PI", java.lang.Math.PI); // 15.8.1.6
-        defineReadOnlyProperty(globalObject, "SQRT1_2", java.lang.Math.sqrt(0.5f)); // 15.8.1.7
-        defineReadOnlyProperty(globalObject, "SQRT2", java.lang.Math.sqrt(2.0f)); // 15.8.1.8
+        defineReadOnlyProperty(globalContext, "E", java.lang.Math.E); // 15.8.1.1
+        defineReadOnlyProperty(globalContext, "LN10", java.lang.Math.log(10)); // 15.8.1.2
+        defineReadOnlyProperty(globalContext, "LN2", java.lang.Math.log(2)); // 15.8.1.3
+        defineReadOnlyProperty(globalContext, "LOG2E", java.lang.Math.log(java.lang.Math.E) / java.lang.Math.log(2)); // 15.8.1.4
+        defineReadOnlyProperty(globalContext, "LOG10E", java.lang.Math.log10(java.lang.Math.E)); // 15.8.1.5
+        defineReadOnlyProperty(globalContext, "PI", java.lang.Math.PI); // 15.8.1.6
+        defineReadOnlyProperty(globalContext, "SQRT1_2", java.lang.Math.sqrt(0.5f)); // 15.8.1.7
+        defineReadOnlyProperty(globalContext, "SQRT2", java.lang.Math.sqrt(2.0f)); // 15.8.1.8
         
-        defineReadOnlyProperty(globalObject, "NaN", Double.NaN );
+        defineReadOnlyProperty(globalContext, "NaN", Double.NaN );
 
         // Math functions 15.8.2
-        defineNonEnumerableProperty(globalObject, "abs",    new Abs(globalObject));    // 15.8.2.1
-        defineNonEnumerableProperty(globalObject, "acos",   new Acos(globalObject));   // 15.8.2.2
-        defineNonEnumerableProperty(globalObject, "asin",   new Asin(globalObject));   // 15.8.2.3
-        defineNonEnumerableProperty(globalObject, "atan",   new Atan(globalObject));   // 15.8.2.4
-        defineNonEnumerableProperty(globalObject, "atan2",  new Atan2(globalObject));  // 15.8.2.5
-        defineNonEnumerableProperty(globalObject, "ceil",   new Ceil(globalObject));   // 15.8.2.6
-        defineNonEnumerableProperty(globalObject, "cos",    new Cos(globalObject));    // 15.8.2.7
-        defineNonEnumerableProperty(globalObject, "exp",    new Exp(globalObject));    // 15.8.2.8
-        defineNonEnumerableProperty(globalObject, "floor",  new Floor(globalObject));  // 15.8.2.9
-        defineNonEnumerableProperty(globalObject, "log",    new Log(globalObject));    // 15.8.2.10
-        defineNonEnumerableProperty(globalObject, "max",    new Max(globalObject));    // 15.8.2.11
-        defineNonEnumerableProperty(globalObject, "min",    new Min(globalObject));    // 15.8.2.12
-        defineNonEnumerableProperty(globalObject, "pow",    new Pow(globalObject));    // 15.8.2.13
-        defineNonEnumerableProperty(globalObject, "random", new Random(globalObject)); // 15.8.2.14
-        defineNonEnumerableProperty(globalObject, "round",  new Round(globalObject));  // 15.8.2.15
-        defineNonEnumerableProperty(globalObject, "sin",    new Sin(globalObject));    // 15.8.2.16
-        defineNonEnumerableProperty(globalObject, "sqrt",   new Sqrt(globalObject));   // 15.8.2.17
-        defineNonEnumerableProperty(globalObject, "tan",    new Tan(globalObject));    // 15.8.2.18
+        defineNonEnumerableProperty(globalContext, "abs",    new Abs(globalContext));    // 15.8.2.1
+        defineNonEnumerableProperty(globalContext, "acos",   new Acos(globalContext));   // 15.8.2.2
+        defineNonEnumerableProperty(globalContext, "asin",   new Asin(globalContext));   // 15.8.2.3
+        defineNonEnumerableProperty(globalContext, "atan",   new Atan(globalContext));   // 15.8.2.4
+        defineNonEnumerableProperty(globalContext, "atan2",  new Atan2(globalContext));  // 15.8.2.5
+        defineNonEnumerableProperty(globalContext, "ceil",   new Ceil(globalContext));   // 15.8.2.6
+        defineNonEnumerableProperty(globalContext, "cos",    new Cos(globalContext));    // 15.8.2.7
+        defineNonEnumerableProperty(globalContext, "exp",    new Exp(globalContext));    // 15.8.2.8
+        defineNonEnumerableProperty(globalContext, "floor",  new Floor(globalContext));  // 15.8.2.9
+        defineNonEnumerableProperty(globalContext, "log",    new Log(globalContext));    // 15.8.2.10
+        defineNonEnumerableProperty(globalContext, "max",    new Max(globalContext));    // 15.8.2.11
+        defineNonEnumerableProperty(globalContext, "min",    new Min(globalContext));    // 15.8.2.12
+        defineNonEnumerableProperty(globalContext, "pow",    new Pow(globalContext));    // 15.8.2.13
+        defineNonEnumerableProperty(globalContext, "random", new Random(globalContext)); // 15.8.2.14
+        defineNonEnumerableProperty(globalContext, "round",  new Round(globalContext));  // 15.8.2.15
+        defineNonEnumerableProperty(globalContext, "sin",    new Sin(globalContext));    // 15.8.2.16
+        defineNonEnumerableProperty(globalContext, "sqrt",   new Sqrt(globalContext));   // 15.8.2.17
+        defineNonEnumerableProperty(globalContext, "tan",    new Tan(globalContext));    // 15.8.2.18
         
         setClassName( "Math" );
     }

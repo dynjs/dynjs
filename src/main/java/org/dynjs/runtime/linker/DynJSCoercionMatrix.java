@@ -183,7 +183,7 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
 
     public static Object singleAbstractMethod(JSJavaImplementationManager manager, Class<?> targetClass, ExecutionContext context, String methodName, JSObject implementation)
             throws Exception {
-        JSObject implObj = new DynObject(context.getGlobalObject());
+        JSObject implObj = new DynObject(context.getGlobalContext());
         implObj.put(context, methodName, implementation, false);
         return manager.getImplementationWrapper(targetClass, context, implObj);
     }

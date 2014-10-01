@@ -30,8 +30,8 @@ import org.dynjs.runtime.builtins.types.BuiltinObject;
  * });
  */
 public class JSAdapter extends BuiltinObject {
-    public JSAdapter(GlobalObject globalObject) {
-        super(globalObject);
+    public JSAdapter(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override
@@ -51,11 +51,11 @@ public class JSAdapter extends BuiltinObject {
             adaptee = (JSObject) args[2];
         }
 
-        return new JSAdapterObject(context.getGlobalObject(), prototype, overrides, adaptee);
+        return new JSAdapterObject(context.getGlobalContext(), prototype, overrides, adaptee);
     }
 
     public static DynObject newObject(ExecutionContext context) {
-        return (DynObject) context.construct((Object) null, (JSFunction) context.getGlobalObject().get(context, "__JS_Adapter"));
+        return (DynObject) context.construct((Object) null, (JSFunction) context.getGlobalContext().getObject().get(context, "__JS_Adapter"));
     }
 
     @Override
@@ -73,8 +73,8 @@ public class JSAdapter extends BuiltinObject {
         private final JSObject overrides;
         private final JSObject adaptee;
 
-        public JSAdapterObject(GlobalObject globalObject, JSObject prototype, JSObject overrides, Object adaptee) {
-            super(globalObject);
+        public JSAdapterObject(GlobalContext globalContext, JSObject prototype, JSObject overrides, Object adaptee) {
+            super(globalContext);
             setClassName("JSObject");
             if (prototype != null) {
                 setPrototype(prototype);
@@ -88,7 +88,7 @@ public class JSAdapter extends BuiltinObject {
             if ((adaptee instanceof JSObject)) {
                 this.adaptee = (JSObject) adaptee;
             } else {
-                this.adaptee = new DynObject(globalObject);
+                this.adaptee = new DynObject(globalContext);
             }
         }
 

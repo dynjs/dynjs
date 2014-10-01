@@ -23,8 +23,8 @@ import org.dynjs.runtime.*;
 
 public class Include extends AbstractNativeFunction {
 
-    public Include(GlobalObject globalObject) {
-        super(globalObject, "name");
+    public Include(GlobalContext globalContext) {
+        super(globalContext, "name");
     }
 
     @Override

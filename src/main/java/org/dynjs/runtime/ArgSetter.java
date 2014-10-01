@@ -4,8 +4,8 @@ public class ArgSetter extends AbstractNativeFunction {
 
     private String name;
 
-    public ArgSetter(GlobalObject globalObject, LexicalEnvironment env, String name) {
-        super(globalObject, env, false, "value");
+    public ArgSetter(GlobalContext globalContext, LexicalEnvironment env, String name) {
+        super(globalContext, env, false, "value");
         this.name = name;
     }
 

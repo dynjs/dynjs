@@ -53,7 +53,7 @@ public class DefaultCompilationContext implements CompilationContext {
     }
 
     @Override
-    public GlobalObject getGlobalObject() {
+    public GlobalContext getGlobalContext() {
         return null;
     }
 }

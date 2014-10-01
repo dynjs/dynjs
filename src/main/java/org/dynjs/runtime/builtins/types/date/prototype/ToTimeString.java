@@ -3,11 +3,11 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 import java.util.Calendar;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class ToTimeString extends DateTimeFormatter {
-    public ToTimeString(GlobalObject globalObject) {
-        super(globalObject);
+    public ToTimeString(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

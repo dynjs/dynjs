@@ -63,7 +63,12 @@ public class FilesystemModuleProvider extends ModuleProvider {
      */
     protected File findFile(List<String> loadPaths, String moduleName) {
         String fileName = normalizeName(moduleName);
-        File file = null;
+        File file = new File( moduleName );
+        if ( file.isAbsolute() ) {
+            if ( file.exists() ) {
+                return file;
+            }
+        }
         for (String loadPath : loadPaths) {
             // require('foo');
             file = new File(loadPath, fileName);

@@ -3,15 +3,15 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
 public class Every extends AbstractNativeFunction {
 
-    public Every(GlobalObject globalObject) {
-        super(globalObject, "callbackFn");
+    public Every(GlobalContext globalContext) {
+        super(globalContext, "callbackFn");
     }
 
     @Override

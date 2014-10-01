@@ -6,15 +6,15 @@ import java.util.List;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 public class DefineProperties extends AbstractNativeFunction {
 
-    public DefineProperties(GlobalObject globalObject) {
-        super(globalObject, "o", "properties");
+    public DefineProperties(GlobalContext globalContext) {
+        super(globalContext, "o", "properties");
     }
 
     @Override

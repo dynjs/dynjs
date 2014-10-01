@@ -1,16 +1,8 @@
 package org.dynjs.runtime.builtins.types;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Arrays;
-
 import org.dynjs.exception.ThrowException;
-import org.dynjs.parser.js.CharStream;
-import org.dynjs.parser.js.CircularCharBuffer;
-import org.dynjs.parser.js.Lexer;
-import org.dynjs.parser.js.Token;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
@@ -20,22 +12,22 @@ import org.dynjs.runtime.builtins.types.regexp.prototype.ToString;
 
 public class BuiltinRegExp extends AbstractBuiltinType {
 
-    public BuiltinRegExp(final GlobalObject globalObject) {
-        super(globalObject, "pattern", "flags");
+    public BuiltinRegExp(final GlobalContext globalContext) {
+        super(globalContext, "pattern", "flags");
 
-        DynRegExp proto = new DynRegExp(globalObject, "", "");
+        DynRegExp proto = new DynRegExp(globalContext, "", "");
         setPrototypeProperty(proto);
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+    public void initialize(GlobalContext globalContext, JSObject proto) {
+        proto.setPrototype(globalContext.getPrototypeFor("Object"));
         defineNonEnumerableProperty(proto, "constructor", this);
         // compile is deprecated but test262 expects it to exist anyway
         defineNonEnumerableProperty(proto, "compile", this);
-        defineNonEnumerableProperty(proto, "exec", new Exec(globalObject));
-        defineNonEnumerableProperty(proto, "test", new Test(globalObject));
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        defineNonEnumerableProperty(proto, "exec", new Exec(globalContext));
+        defineNonEnumerableProperty(proto, "test", new Test(globalContext));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext));
     }
 
     @Override
@@ -75,11 +67,11 @@ public class BuiltinRegExp extends AbstractBuiltinType {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynRegExp(context.getGlobalObject());
+        return new DynRegExp(context.getGlobalContext());
     }
 
     public static DynRegExp newRegExp(ExecutionContext context, Object pattern, String flags) {
-        BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalObject().get(context, "__Builtin_RegExp");
+        BuiltinRegExp ctor = (BuiltinRegExp) context.getGlobalContext().getObject().get(context, "__Builtin_RegExp");
         return (DynRegExp) context.construct((Object)null, ctor, pattern, flags);
     }
     

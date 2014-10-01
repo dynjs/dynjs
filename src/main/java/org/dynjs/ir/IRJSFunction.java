@@ -5,7 +5,7 @@ import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSCallable;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
@@ -36,8 +36,8 @@ public class IRJSFunction extends DynObject implements JSFunction {
     private IRJSFunctionBox box = new IRJSFunctionBox();
 
     public IRJSFunction(FunctionScope scope, VariableValues capturedValues, LexicalEnvironment lexicalEnvironment,
-                        GlobalObject globalObject) {
-        super(globalObject);
+                        GlobalContext globalContext) {
+        super(globalContext);
         this.scope = scope;
         this.instructions = scope.prepareForInterpret(); // FIXME This is a big up front cost...make lazy
         this.lexicalEnvironment = lexicalEnvironment;
@@ -71,7 +71,7 @@ public class IRJSFunction extends DynObject implements JSFunction {
     }
 
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynObject(context.getGlobalObject());
+        return new DynObject(context.getGlobalContext());
     }
 
     // FIXME: Stolen from AbstractionFunction (could be refactored out unless we can somehow have whatever calls this

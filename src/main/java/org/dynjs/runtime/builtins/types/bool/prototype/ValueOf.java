@@ -3,12 +3,12 @@ package org.dynjs.runtime.builtins.types.bool.prototype;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 
 public class ValueOf extends AbstractNativeFunction {
-    public ValueOf(GlobalObject globalObject) {
-        super(globalObject);
+    public ValueOf(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

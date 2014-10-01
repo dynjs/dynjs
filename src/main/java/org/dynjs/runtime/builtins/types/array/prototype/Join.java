@@ -2,14 +2,14 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
 public class Join extends AbstractNonConstructorFunction {
 
-    public Join(GlobalObject globalObject) {
-        super(globalObject, "separator");
+    public Join(GlobalContext globalContext) {
+        super(globalContext, "separator");
     }
 
     @Override

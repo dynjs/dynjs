@@ -316,7 +316,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
      * // ref
      * aload(Arities.EXECUTION_CONTEXT);
      * // ref context
-     * invokevirtual(p(ExecutionContext.class), "getGlobalObject", sig(GlobalObject.class));
+     * invokevirtual(p(ExecutionContext.class), "getGlobalContext", sig(GlobalObject.class));
      * // ref obj
      * go_to(doPut);
      * 

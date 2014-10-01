@@ -4,14 +4,14 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.BoundFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.util.CallHelpers;
 
 public class Bind extends AbstractNativeFunction {
 
-    public Bind(GlobalObject globalObject) {
-        super(globalObject, "thisArg");
+    public Bind(GlobalContext globalContext) {
+        super(globalContext, "thisArg");
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Bind extends AbstractNativeFunction {
         Object thisArg = args[0];
         Object[] argValues = CallHelpers.allButFirstArgument(args);
 
-        return new BoundFunction(context.getGlobalObject(), getScope(), target, thisArg, argValues);
+        return new BoundFunction(context.getGlobalContext(), getScope(), target, thisArg, argValues);
     }
 
 }

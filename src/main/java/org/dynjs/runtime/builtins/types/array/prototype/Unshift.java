@@ -3,14 +3,14 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
 public class Unshift extends AbstractNonConstructorFunction {
 
-    public Unshift(GlobalObject globalObject) {
-        super(globalObject, "item1");
+    public Unshift(GlobalContext globalContext) {
+        super(globalContext, "item1");
     }
 
     @Override

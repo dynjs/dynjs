@@ -22,13 +22,13 @@ public class ExecutionContext implements CompilationContext {
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        return new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
+        return new ExecutionContext(runtime, null, env, env, runtime.getGlobalContext().getObject(), false);
     }
 
     public static ExecutionContext createDefaultGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
         LexicalEnvironment env = LexicalEnvironment.newGlobalEnvironment(runtime);
-        ExecutionContext context = new ExecutionContext(runtime, null, env, env, runtime.getGlobalObject(), false);
+        ExecutionContext context = new ExecutionContext(runtime, null, env, env, runtime.getGlobalContext().getObject(), false);
         context.blockManager = new BlockManager();
         return context;
     }
@@ -285,7 +285,6 @@ public class ExecutionContext implements CompilationContext {
             obj = (JSObject) result;
         }
 
-        ((JSObject) obj).defineNonEnumerableProperty(this.getGlobalObject(), "__ctor__", ctorName.toString());
         // Otherwise return obj
         return obj;
     }
@@ -325,9 +324,9 @@ public class ExecutionContext implements CompilationContext {
         LexicalEnvironment evalVarEnv = null;
 
         if (!direct) {
-            evalThisBinding = getGlobalObject();
-            evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject());
-            evalVarEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalObject());
+            evalThisBinding = getGlobalContext();
+            evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalContext().getObject());
+            evalVarEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalContext().getObject());
         } else {
             evalThisBinding = this.thisBinding;
             evalLexEnv = this.getLexicalEnvironment();
@@ -354,7 +353,7 @@ public class ExecutionContext implements CompilationContext {
             thisBinding = thisArg;
         } else {
             if (thisArg == null || thisArg == Types.NULL || thisArg == Types.UNDEFINED) {
-                thisBinding = getGlobalObject();
+                thisBinding = getGlobalContext().getObject();
             } else if (!(thisArg instanceof JSObject)) {
                 // thisBinding = Types.toObject(this, thisArg);
                 thisBinding = Types.toThisObject(this, thisArg);
@@ -471,13 +470,13 @@ public class ExecutionContext implements CompilationContext {
     private Arguments createArgumentsObject(final JSFunction function, final Object[] arguments) {
         // 10.6
 
-        Arguments obj = new Arguments(getGlobalObject());
+        Arguments obj = new Arguments(getGlobalContext());
         obj.defineOwnProperty(this, "length",
                 PropertyDescriptor.newDataPropertyDescriptor(arguments.length, true, true, false), false);
 
         String[] names = function.getFormalParameters();
 
-        JSObject map = new DynObject(getGlobalObject());
+        JSObject map = new DynObject(getGlobalContext());
         List<String> mappedNames = new ArrayList<>();
 
         final LexicalEnvironment env = getVariableEnvironment();
@@ -496,8 +495,8 @@ public class ExecutionContext implements CompilationContext {
                             mappedNames.add(name);
 
                             PropertyDescriptor desc = new PropertyDescriptor();
-                            desc.setSetter(new ArgSetter(getGlobalObject(), env, name));
-                            desc.setGetter(new ArgGetter(getGlobalObject(), env, name));
+                            desc.setSetter(new ArgSetter(getGlobalContext(), env, name));
+                            desc.setGetter(new ArgGetter(getGlobalContext(), env, name));
                             desc.setConfigurable(true);
                             map.defineOwnProperty(this, "" + i, desc, false);
                         }
@@ -511,7 +510,7 @@ public class ExecutionContext implements CompilationContext {
         }
 
         if (function.isStrict()) {
-            final JSFunction thrower = (JSFunction) getGlobalObject().get(this, "__throwTypeError");
+            final JSFunction thrower = getGlobalContext().getThrowTypeError();
 
             obj.defineOwnProperty(this, "caller",
                     PropertyDescriptor.newAccessorPropertyDescriptor(thrower, thrower), false);
@@ -568,8 +567,8 @@ public class ExecutionContext implements CompilationContext {
         return this.runtime.getConfig();
     }
 
-    public GlobalObject getGlobalObject() {
-        return this.runtime.getGlobalObject();
+    public GlobalContext getGlobalContext() {
+        return this.runtime.getGlobalContext();
     }
 
     public JSCompiler getCompiler() {
@@ -621,7 +620,7 @@ public class ExecutionContext implements CompilationContext {
     }
 
     public JSObject createError(String type, String message) {
-        JSFunction func = (JSFunction) getGlobalObject().get(this, type);
+        JSFunction func = getGlobalContext().getType(type);
         JSObject err = null;
         if (message == null) {
             err = (JSObject) construct((Object) null, func);
@@ -651,7 +650,7 @@ public class ExecutionContext implements CompilationContext {
     }
 
     public JSObject getPrototypeFor(String type) {
-        return getGlobalObject().getPrototypeFor(type);
+        return getGlobalContext().getPrototypeFor(type);
     }
 
     public String toString() {

@@ -4,7 +4,7 @@ import static org.dynjs.runtime.builtins.types.date.AbstractDateFunction.*;
 
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
@@ -59,78 +59,78 @@ import org.dynjs.runtime.builtins.types.date.prototype.ValueOf;
 
 public class BuiltinDate extends AbstractBuiltinType {
 
-    public BuiltinDate(final GlobalObject globalObject) {
-        super(globalObject, "year", "month", "date", "hours", "minutes", "seconds", "ms");
-        final DynDate proto = new DynDate(globalObject);
+    public BuiltinDate(final GlobalContext globalContext) {
+        super(globalContext, "year", "month", "date", "hours", "minutes", "seconds", "ms");
+        final DynDate proto = new DynDate(globalContext);
         setPrototypeProperty(proto);
     }
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynDate(context.getGlobalObject());
+        return new DynDate(context.getGlobalContext());
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+    public void initialize(GlobalContext globalContext, JSObject proto) {
+        proto.setPrototype(globalContext.getPrototypeFor("Object"));
 
-        defineNonEnumerableProperty(this, "now", new Now(globalObject) );
-        defineNonEnumerableProperty(this, "parse", new Parse(globalObject));
-        defineNonEnumerableProperty(this, "UTC", new UTC(globalObject) );
+        defineNonEnumerableProperty(this, "now", new Now(globalContext) );
+        defineNonEnumerableProperty(this, "parse", new Parse(globalContext));
+        defineNonEnumerableProperty(this, "UTC", new UTC(globalContext) );
         defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalObject));
-        defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleDateString", new ToLocaleDateString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleTimeString", new ToLocaleTimeString(globalObject));
-        defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalObject));
-        defineNonEnumerableProperty(proto, "toUTCString", new ToUTCString(globalObject));
-        defineNonEnumerableProperty(proto, "toGMTString", new ToUTCString(globalObject));
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "getFullYear", new GetFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "getMonth", new GetMonth(globalObject));
-        defineNonEnumerableProperty(proto, "getDay", new GetDay(globalObject));
-        defineNonEnumerableProperty(proto, "getHours", new GetHours(globalObject));
-        defineNonEnumerableProperty(proto, "getMinutes", new GetMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "getSeconds", new GetSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCFullYear", new GetUTCFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCMonth", new GetUTCMonth(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCDay", new GetUTCDay(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCHours", new GetUTCHours(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCMinutes", new GetUTCMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCSeconds", new GetUTCSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "getTimezoneOffset", new GetTimezoneOffset(globalObject));
-        defineNonEnumerableProperty(proto, "getMilliseconds", new GetMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "setMilliseconds", new SetMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCMilliseconds", new GetUTCMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCMilliseconds", new SetUTCMilliseconds(globalObject));
-        defineNonEnumerableProperty(proto, "setTime", new SetTime(globalObject));
-        defineNonEnumerableProperty(proto, "setSeconds", new SetSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCSeconds", new SetUTCSeconds(globalObject));
-        defineNonEnumerableProperty(proto, "setMinutes", new SetMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCMinutes", new SetUTCMinutes(globalObject));
-        defineNonEnumerableProperty(proto, "setHours", new SetHours(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCHours", new SetUTCHours(globalObject));
-        defineNonEnumerableProperty(proto, "setDate", new SetDate(globalObject));
-        defineNonEnumerableProperty(proto, "getDate", new GetDate(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCDate", new SetUTCDate(globalObject));
-        defineNonEnumerableProperty(proto, "getUTCDate", new GetUTCDate(globalObject));
-        defineNonEnumerableProperty(proto, "setMonth", new SetMonth(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCMonth", new SetUTCMonth(globalObject));
-        defineNonEnumerableProperty(proto, "setFullYear", new SetFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "setUTCFullYear", new SetUTCFullYear(globalObject));
-        defineNonEnumerableProperty(proto, "toJSON", new ToJSON(globalObject));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext));
+        defineNonEnumerableProperty(proto, "toDateString", new ToDateString(globalContext));
+        defineNonEnumerableProperty(proto, "toTimeString", new ToTimeString(globalContext));
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalContext));
+        defineNonEnumerableProperty(proto, "toLocaleDateString", new ToLocaleDateString(globalContext));
+        defineNonEnumerableProperty(proto, "toLocaleTimeString", new ToLocaleTimeString(globalContext));
+        defineNonEnumerableProperty(proto, "toISOString", new ToISOString(globalContext));
+        defineNonEnumerableProperty(proto, "toUTCString", new ToUTCString(globalContext));
+        defineNonEnumerableProperty(proto, "toGMTString", new ToUTCString(globalContext));
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalContext));
+        defineNonEnumerableProperty(proto, "getTime", new ValueOf(globalContext));
+        defineNonEnumerableProperty(proto, "getFullYear", new GetFullYear(globalContext));
+        defineNonEnumerableProperty(proto, "getMonth", new GetMonth(globalContext));
+        defineNonEnumerableProperty(proto, "getDay", new GetDay(globalContext));
+        defineNonEnumerableProperty(proto, "getHours", new GetHours(globalContext));
+        defineNonEnumerableProperty(proto, "getMinutes", new GetMinutes(globalContext));
+        defineNonEnumerableProperty(proto, "getSeconds", new GetSeconds(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCFullYear", new GetUTCFullYear(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCMonth", new GetUTCMonth(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCDay", new GetUTCDay(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCHours", new GetUTCHours(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCMinutes", new GetUTCMinutes(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCSeconds", new GetUTCSeconds(globalContext));
+        defineNonEnumerableProperty(proto, "getTimezoneOffset", new GetTimezoneOffset(globalContext));
+        defineNonEnumerableProperty(proto, "getMilliseconds", new GetMilliseconds(globalContext));
+        defineNonEnumerableProperty(proto, "setMilliseconds", new SetMilliseconds(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCMilliseconds", new GetUTCMilliseconds(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCMilliseconds", new SetUTCMilliseconds(globalContext));
+        defineNonEnumerableProperty(proto, "setTime", new SetTime(globalContext));
+        defineNonEnumerableProperty(proto, "setSeconds", new SetSeconds(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCSeconds", new SetUTCSeconds(globalContext));
+        defineNonEnumerableProperty(proto, "setMinutes", new SetMinutes(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCMinutes", new SetUTCMinutes(globalContext));
+        defineNonEnumerableProperty(proto, "setHours", new SetHours(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCHours", new SetUTCHours(globalContext));
+        defineNonEnumerableProperty(proto, "setDate", new SetDate(globalContext));
+        defineNonEnumerableProperty(proto, "getDate", new GetDate(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCDate", new SetUTCDate(globalContext));
+        defineNonEnumerableProperty(proto, "getUTCDate", new GetUTCDate(globalContext));
+        defineNonEnumerableProperty(proto, "setMonth", new SetMonth(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCMonth", new SetUTCMonth(globalContext));
+        defineNonEnumerableProperty(proto, "setFullYear", new SetFullYear(globalContext));
+        defineNonEnumerableProperty(proto, "setUTCFullYear", new SetUTCFullYear(globalContext));
+        defineNonEnumerableProperty(proto, "toJSON", new ToJSON(globalContext));
 
-        defineNonEnumerableProperty(proto, "getYear", new GetYear(globalObject));
-        defineNonEnumerableProperty(proto, "setYear", new SetYear(globalObject));
+        defineNonEnumerableProperty(proto, "getYear", new GetYear(globalContext));
+        defineNonEnumerableProperty(proto, "setYear", new SetYear(globalContext));
     }
 
     @Override
     public Object call(ExecutionContext context, Object self, Object... args) {
         if (self == Types.UNDEFINED || self == Types.NULL) {
-            DynDate now = new DynDate(context.getGlobalObject());
+            DynDate now = new DynDate(context.getGlobalContext());
             JSFunction toString = (JSFunction) now.get(context, "toString");
             return context.call(toString, now);
         }

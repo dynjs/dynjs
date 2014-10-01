@@ -29,7 +29,7 @@ public class ThrowException extends DynJSException {
             JSObject object = (JSObject) value;
             if (!object.hasProperty(context, "stack")) {
                 PropertyDescriptor stackDesc = new PropertyDescriptor();
-                stackDesc.setGetter(new JavaStackGetter(context.getGlobalObject(), this));
+                stackDesc.setGetter(new JavaStackGetter(context.getGlobalContext(), this));
                 ((JSObject) value).defineOwnProperty(context, "stack", stackDesc, false);
             }
         }

@@ -2,14 +2,14 @@ package org.dynjs.runtime.builtins.types.object.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
 public class HasOwnProperty extends AbstractNativeFunction {
 
-    public HasOwnProperty(GlobalObject globalObject) {
-        super(globalObject, "v");
+    public HasOwnProperty(GlobalContext globalContext) {
+        super(globalContext, "v");
     }
 
     @Override

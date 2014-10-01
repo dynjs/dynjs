@@ -2,9 +2,7 @@ package org.dynjs;
 
 import org.dynjs.cli.Options;
 import org.dynjs.runtime.Classpath;
-import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
-import org.dynjs.runtime.GlobalObjectFactory;
 
 import java.io.PrintStream;
 import java.util.Locale;
@@ -34,7 +32,6 @@ public class Config {
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
-    private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
@@ -193,14 +190,6 @@ public class Config {
 
     public boolean isDebug() {
         return this.debug;
-    }
-
-    public GlobalObjectFactory getGlobalObjectFactory() {
-        return globalObjectFactory;
-    }
-
-    public void setGlobalObjectFactory(GlobalObjectFactory globalObjectFactory) {
-        this.globalObjectFactory = globalObjectFactory;
     }
 
     public void setArgv(Object[] arguments) {

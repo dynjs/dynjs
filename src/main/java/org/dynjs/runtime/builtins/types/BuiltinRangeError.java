@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class BuiltinRangeError extends AbstractBuiltinNativeError {
 
-    public BuiltinRangeError(GlobalObject globalObject) {
-        super(globalObject, "RangeError");
+    public BuiltinRangeError(GlobalContext globalContext) {
+        super(globalContext, "RangeError");
     }
     
     @Override

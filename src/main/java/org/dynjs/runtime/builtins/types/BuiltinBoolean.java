@@ -1,7 +1,7 @@
 package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
@@ -11,20 +11,20 @@ import org.dynjs.runtime.builtins.types.bool.prototype.ValueOf;
 
 public class BuiltinBoolean extends AbstractBuiltinType {
 
-    public BuiltinBoolean(final GlobalObject globalObject) {
-        super(globalObject, "value");
+    public BuiltinBoolean(final GlobalContext globalContext) {
+        super(globalContext, "value");
 
         // 15.6.4 Set the prototype
-        final PrimitiveDynObject proto = new DynBoolean(globalObject, Boolean.FALSE);
+        final PrimitiveDynObject proto = new DynBoolean(globalContext, Boolean.FALSE);
         setPrototypeProperty( proto );
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+    public void initialize(GlobalContext globalContext, JSObject proto) {
+        proto.setPrototype(globalContext.getPrototypeFor("Object"));
         defineNonEnumerableProperty(proto, "constructor", this );
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject) );
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject) );
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext) );
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalContext) );
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BuiltinBoolean extends AbstractBuiltinType {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynBoolean(context.getGlobalObject());
+        return new DynBoolean(context.getGlobalContext());
     }
     
     @Override

@@ -7,13 +7,13 @@ import java.util.Locale;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class ToExponential extends AbstractNativeFunction {
 
-    public ToExponential(GlobalObject globalObject) {
-        super(globalObject, "fractionDigits");
+    public ToExponential(GlobalContext globalContext) {
+        super(globalContext, "fractionDigits");
     }
 
     @Override

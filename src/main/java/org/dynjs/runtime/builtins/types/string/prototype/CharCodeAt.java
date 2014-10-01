@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class CharCodeAt extends AbstractNonConstructorFunction {
 
-    public CharCodeAt(GlobalObject globalObject) {
-        super(globalObject, "pos");
+    public CharCodeAt(GlobalContext globalContext) {
+        super(globalContext, "pos");
     }
 
     @Override

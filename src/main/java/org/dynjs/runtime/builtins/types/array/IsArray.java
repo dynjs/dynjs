@@ -4,8 +4,8 @@ import org.dynjs.runtime.*;
 
 public class IsArray extends AbstractNativeFunction {
 
-    public IsArray(GlobalObject globalObject) {
-        super(globalObject, true, "arg");
+    public IsArray(GlobalContext globalContext) {
+        super(globalContext, true, "arg");
     }
 
     @Override

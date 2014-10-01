@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class IsFinite extends AbstractNonConstructorFunction {
 
-    public IsFinite(GlobalObject globalObject) {
-        super(globalObject, "text");
+    public IsFinite(GlobalContext globalContext) {
+        super(globalContext, "text");
     }
 
     @Override

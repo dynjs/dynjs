@@ -4,12 +4,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class ToUTCString extends DateTimeFormatter {
 
-    public ToUTCString(GlobalObject globalObject) {
-        super(globalObject);
+    public ToUTCString(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

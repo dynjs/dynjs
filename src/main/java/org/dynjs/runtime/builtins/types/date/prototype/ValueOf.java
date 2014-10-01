@@ -2,12 +2,12 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class ValueOf extends AbstractNativeFunction {
-    public ValueOf(GlobalObject globalObject, String... formalParameters) {
-        super(globalObject, formalParameters);
+    public ValueOf(GlobalContext globalContext, String... formalParameters) {
+        super(globalContext, formalParameters);
     }
 
     @Override

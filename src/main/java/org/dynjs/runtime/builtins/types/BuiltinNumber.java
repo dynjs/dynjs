@@ -2,7 +2,7 @@ package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -16,33 +16,33 @@ import org.dynjs.runtime.builtins.types.number.prototype.ValueOf;
 
 public class BuiltinNumber extends AbstractBuiltinType {
 
-    public BuiltinNumber(final GlobalObject globalObject) {
-        super(globalObject, "value");
+    public BuiltinNumber(final GlobalContext globalContext) {
+        super(globalContext, "value");
 
         // 15.7.4 Set the prototype
-        final PrimitiveDynObject proto = new DynNumber(globalObject, 0L);
+        final PrimitiveDynObject proto = new DynNumber(globalContext, 0L);
         setPrototypeProperty(proto);
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+    public void initialize(GlobalContext globalContext, JSObject proto) {
+        proto.setPrototype(globalContext.getPrototypeFor("Object"));
 
         defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalObject));
-        defineNonEnumerableProperty(proto, "toFixed", new ToFixed(globalObject));
-        defineNonEnumerableProperty(proto, "toExponential", new ToExponential(globalObject));
-        defineNonEnumerableProperty(proto, "toPrecision", new ToPrecision(globalObject));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext));
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToString(globalContext));
+        defineNonEnumerableProperty(proto, "valueOf", new ValueOf(globalContext));
+        defineNonEnumerableProperty(proto, "toFixed", new ToFixed(globalContext));
+        defineNonEnumerableProperty(proto, "toExponential", new ToExponential(globalContext));
+        defineNonEnumerableProperty(proto, "toPrecision", new ToPrecision(globalContext));
 
-        defineReadOnlyProperty(this, globalObject, "NaN", Double.NaN);
-        defineReadOnlyProperty(this, globalObject, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);
-        defineReadOnlyProperty(this, globalObject, "NEGATIVE_INFINITY", Double.NEGATIVE_INFINITY);
-        defineReadOnlyProperty(this, globalObject, "MIN_VALUE", Double.MIN_VALUE);
-        defineReadOnlyProperty(this, globalObject, "MAX_VALUE", Double.MAX_VALUE);
-        defineReadOnlyProperty(globalObject, globalObject, "NaN", Double.NaN);
-        defineReadOnlyProperty(globalObject, globalObject, "Infinity", Double.POSITIVE_INFINITY);
+        defineReadOnlyProperty(this, globalContext, "NaN", Double.NaN);
+        defineReadOnlyProperty(this, globalContext, "POSITIVE_INFINITY", Double.POSITIVE_INFINITY);
+        defineReadOnlyProperty(this, globalContext, "NEGATIVE_INFINITY", Double.NEGATIVE_INFINITY);
+        defineReadOnlyProperty(this, globalContext, "MIN_VALUE", Double.MIN_VALUE);
+        defineReadOnlyProperty(this, globalContext, "MAX_VALUE", Double.MAX_VALUE);
+        defineReadOnlyProperty(globalContext.getObject(), globalContext, "NaN", Double.NaN);
+        defineReadOnlyProperty(globalContext.getObject(), globalContext, "Infinity", Double.POSITIVE_INFINITY);
     }
 
     @Override
@@ -71,15 +71,15 @@ public class BuiltinNumber extends AbstractBuiltinType {
     @Override
     public JSObject createNewObject(ExecutionContext context) {
         // 15.7.2.1
-        return new DynNumber(context.getGlobalObject());
+        return new DynNumber(context.getGlobalContext());
     }
 
-    protected static void defineReadOnlyProperty(final JSObject on, final GlobalObject globalObject, String name, final Number value) {
+    protected static void defineReadOnlyProperty(final JSObject on, final GlobalContext globalContext, String name, final Number value) {
         on.defineOwnProperty(null, name,
                 PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
     }
 
-    protected static void defineReadOnlyFunction(final JSObject on, final GlobalObject globalObject, String name, final Object value) {
+    protected static void defineReadOnlyFunction(final JSObject on, final GlobalContext globalContext, String name, final Object value) {
         on.defineOwnProperty(null, name,
                 PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
     }

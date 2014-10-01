@@ -18,5 +18,5 @@ public interface CompilationContext {
 
     // only used by function compilation
     LexicalEnvironment getLexicalEnvironment();
-    GlobalObject getGlobalObject();
+    GlobalContext getGlobalContext();
 }

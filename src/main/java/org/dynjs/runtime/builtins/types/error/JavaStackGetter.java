@@ -7,8 +7,8 @@ public class JavaStackGetter extends AbstractNativeFunction {
 
     private final ThrowException e;
 
-    public JavaStackGetter(GlobalObject globalObject, ThrowException e) {
-        super(globalObject);
+    public JavaStackGetter(GlobalContext globalContext, ThrowException e) {
+        super(globalContext);
         this.e = e;
     }
 

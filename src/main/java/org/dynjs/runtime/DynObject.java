@@ -39,9 +39,9 @@ public class DynObject implements JSObject, Map<String, Object> {
         setExtensible(true);
     }
 
-    public DynObject(GlobalObject globalObject) {
+    public DynObject(GlobalContext globalContext) {
         this();
-        setPrototype(globalObject.getObjectPrototype());
+        setPrototype(globalContext.getObjectPrototype());
     }
 
     // ------------------------------------------------------------------------
@@ -490,13 +490,13 @@ public class DynObject implements JSObject, Map<String, Object> {
     }
 
     @Override
-    public void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
+    public void defineNonEnumerableProperty(final GlobalContext globalContext, String name, final Object value) {
         this.defineOwnProperty(null, name,
                 PropertyDescriptor.newDataPropertyDescriptor(value, true, true, false), false);
     }
 
     @Override
-    public void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value) {
+    public void defineReadOnlyProperty(final GlobalContext globalContext, String name, final Object value) {
         this.defineOwnProperty(null, name,
                 PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
     }

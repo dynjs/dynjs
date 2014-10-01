@@ -83,7 +83,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     }
 
     public boolean isGlobal() {
-        return (this.object instanceof GlobalObject);
+        return (this.object instanceof GlobalContext);
     }
 
 }

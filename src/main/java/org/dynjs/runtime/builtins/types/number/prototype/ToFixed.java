@@ -5,13 +5,13 @@ import java.math.BigDecimal;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class ToFixed extends AbstractNativeFunction {
 
-    public ToFixed(GlobalObject globalObject) {
-        super(globalObject, "fractionDigits");
+    public ToFixed(GlobalContext globalContext) {
+        super(globalContext, "fractionDigits");
     }
 
     @Override

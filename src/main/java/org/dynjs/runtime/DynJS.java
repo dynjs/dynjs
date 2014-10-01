@@ -6,10 +6,8 @@ import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
-import org.dynjs.runtime.modules.ModuleProvider;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,7 +22,7 @@ public class DynJS {
     private final JITCompiler jitCompiler;
     private Config config;
     private JSCompiler compiler;
-    private GlobalObject globalObject;
+    private GlobalContext globalContext;
 
     private ExecutionContext defaultExecutionContext;
 
@@ -33,14 +31,18 @@ public class DynJS {
     }
 
     public DynJS(Config config) {
+        this( config, new DynObject() );
+    }
+
+    public DynJS(Config config, JSObject globalObject) {
         this.config = config;
         this.compiler = new JSCompiler(config);
         this.jitCompiler = new JITCompiler();
-        this.globalObject = GlobalObject.newGlobalObject(this);
-
+        this.globalContext = GlobalContext.newGlobalContext(this, globalObject);
         this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext( this );
         loadKernel();
     }
+
 
     private void loadKernel() {
         // FIXME only works for non-IR atm
@@ -62,8 +64,8 @@ public class DynJS {
         }
     }
 
-    public GlobalObject getGlobalObject() {
-        return this.globalObject;
+    public GlobalContext getGlobalContext() {
+        return this.globalContext;
     }
 
     public Config getConfig() {

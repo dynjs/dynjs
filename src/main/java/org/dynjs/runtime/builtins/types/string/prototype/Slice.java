@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Slice extends AbstractNonConstructorFunction {
 
-    public Slice(GlobalObject globalObject) {
-        super(globalObject, "start", "end");
+    public Slice(GlobalContext globalContext) {
+        super(globalContext, "start", "end");
     }
 
     @Override

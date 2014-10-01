@@ -13,8 +13,8 @@ import org.dynjs.runtime.builtins.types.BuiltinObject;
 
 public class Parse extends AbstractNativeFunction {
 
-    public Parse(GlobalObject globalObject) {
-        super(globalObject, true, "text", "reviver");
+    public Parse(GlobalContext globalContext) {
+        super(globalContext, true, "text", "reviver");
     }
 
     @Override

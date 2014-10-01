@@ -10,20 +10,20 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
 
     protected String filename;
 
-    public AbstractNativeFunction(GlobalObject globalObject, String... formalParameters) {
-        super(globalObject, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), true, formalParameters);
+    public AbstractNativeFunction(GlobalContext globalContext, String... formalParameters) {
+        super(globalContext, LexicalEnvironment.newObjectEnvironment(globalContext.getObject(), false, null), true, formalParameters);
         setupDebugContext();
         setFileName();
     }
 
-    public AbstractNativeFunction(GlobalObject globalObject, boolean strict, String... formalParameters) {
-        super(globalObject, LexicalEnvironment.newObjectEnvironment(globalObject, false, null), strict, formalParameters);
+    public AbstractNativeFunction(GlobalContext globalContext, boolean strict, String... formalParameters) {
+        super(globalContext, LexicalEnvironment.newObjectEnvironment(globalContext.getObject(), false, null), strict, formalParameters);
         setupDebugContext();
         setFileName();
     }
 
-    public AbstractNativeFunction(final GlobalObject globalObject, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super(globalObject, scope, strict, formalParameters);
+    public AbstractNativeFunction(final GlobalContext globalContext, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+        super(globalContext, scope, strict, formalParameters);
         setupDebugContext();
         setFileName();
     }
@@ -72,15 +72,15 @@ public abstract class AbstractNativeFunction extends AbstractFunction {
     public String getFileName() {
         return this.filename;
     }
-    
+
     public void setFileName() {
         this.filename = getClass().getName().replace(".", "/") + ".java";
     }
-    
+
     public void setupDebugContext() {
         this.debugContext = "<native function: " + getClass().getSimpleName() + ">";
     }
-    
+
     public String toString() {
         StringBuilder buffer = new StringBuilder();
 

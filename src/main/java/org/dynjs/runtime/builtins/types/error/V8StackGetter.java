@@ -7,7 +7,7 @@ import java.util.List;
 
 public class V8StackGetter extends AbstractNativeFunction {
 
-    public V8StackGetter(GlobalObject global) {
+    public V8StackGetter(GlobalContext global) {
         super(global);
     }
 

@@ -6,7 +6,6 @@ import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.BlockManager;
 import org.dynjs.runtime.DeclarativeEnvironmentRecord;
-import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.wrapper.JavascriptFunction;
@@ -32,7 +31,7 @@ public class ByteCodeFunctionCompiler implements FunctionCompiler {
             lexEnv = context.getLexicalEnvironment();
         }
 
-        JavascriptFunction function = new JavascriptFunction(context.getGlobalObject(), identifier, code, lexEnv, strict, formalParameters);
+        JavascriptFunction function = new JavascriptFunction(context.getGlobalContext(), identifier, code, lexEnv, strict, formalParameters);
         if ( identifier != null ) {
             ((DeclarativeEnvironmentRecord)lexEnv.getRecord()).setMutableBinding(identifier, function, strict);
         }

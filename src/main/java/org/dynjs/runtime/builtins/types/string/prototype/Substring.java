@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Substring extends AbstractNonConstructorFunction {
 
-    public Substring(GlobalObject globalObject) {
-        super(globalObject, "start", "end");
+    public Substring(GlobalContext globalContext) {
+        super(globalContext, "start", "end");
     }
 
     @Override

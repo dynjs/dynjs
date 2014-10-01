@@ -9,12 +9,12 @@ import java.util.List;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class JavaFunction extends AbstractNativeFunction {
 
-    public JavaFunction(GlobalObject globalObject, Object object, Method method) throws IllegalAccessException {
-        super(globalObject);
+    public JavaFunction(GlobalContext globalContext, Object object, Method method) throws IllegalAccessException {
+        super(globalContext);
         this.object = object;
         this.method = method;
         this.handle = MethodHandles.lookup().unreflect(method).bindTo(this.object);

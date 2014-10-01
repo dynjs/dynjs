@@ -603,32 +603,29 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>Jasmine Integration Tests</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <mainClass>org.jasmine.cli.Main</mainClass>
-                                    <classpathScope>test</classpathScope>
-                                    <arguments>
-                                        <argument>--pattern</argument>
-                                        <argument>${test.pattern}</argument>
-                                        <argument>--format</argument>
-                                        <argument>DOC</argument>
-                                        <argument>--compile-mode</argument>
-                                        <argument>OFF</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+                  <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.2.1</version>
+                    <executions>
+                      <execution>
+                        <id>Jasmine Integration Tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                          <goal>java</goal>
+                        </goals>
+                        <configuration>
+                          <mainClass>org.dynjs.TestRunner</mainClass>
+                          <classpathScope>test</classpathScope>
+                          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                          <daemonThreadJoinTimeout>1000</daemonThreadJoinTimeout>
+                          <systemPropertyVariables>
+                            <dynjs.compile.mode>OFF</dynjs.compile.mode>
+                          </systemPropertyVariables>
+                        </configuration>
+                      </execution>
+                    </executions>
+                  </plugin>
                 </plugins>
             </build>
         </profile>

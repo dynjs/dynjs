@@ -10,8 +10,8 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     protected String debugContext;
 
-    public AbstractFunction(final GlobalObject globalObject, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
-        super(globalObject);
+    public AbstractFunction(final GlobalContext globalContext, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
+        super(globalContext);
         this.formalParameters = formalParameters;
         this.scope = scope;
         this.strict = strict;
@@ -21,7 +21,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
                 PropertyDescriptor.newDataPropertyDescriptor((long) formalParameters.length, false, false, false), false);
 
         if (strict) {
-            final Object thrower = globalObject.get(null, "__throwTypeError");
+            final Object thrower = globalContext.getThrowTypeError();
             if (thrower != null) {
                 defineOwnProperty(null, "caller",
                         PropertyDescriptor.newAccessorPropertyDescriptor(thrower, thrower), false);
@@ -30,7 +30,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
             }
         }
 
-        setPrototype(globalObject.getPrototypeFor("Function"));
+        setPrototype(globalContext.getPrototypeFor("Function"));
     }
 
     public LexicalEnvironment getScope() {
@@ -101,7 +101,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynObject(context.getGlobalObject());
+        return new DynObject(context.getGlobalContext());
     }
 
     public void setDebugContext(String debugContext) {

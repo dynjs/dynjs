@@ -87,7 +87,7 @@ public class StackElement {
 
     public boolean isTopLevel() {
         if (this.getThis() != null) {
-            return this.getThis() instanceof GlobalObject;
+            return this.getThis() instanceof GlobalContext;
         }
         return false;
     }

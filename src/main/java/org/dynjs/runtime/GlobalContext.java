@@ -10,15 +10,37 @@ import org.dynjs.runtime.java.JavaPackage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalObject extends DynObject {
+public class GlobalContext {
 
-    private DynJS runtime;
+
+    public static GlobalContext newGlobalContext(DynJS runtime) {
+        return new GlobalContext( runtime );
+    }
+
+    public static GlobalContext newGlobalContext(DynJS runtime, JSObject object) {
+        return new GlobalContext( runtime, object );
+    }
+
+    // ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
+
+    private final DynJS runtime;
     private List<AbstractBuiltinType> builtinTypes = new ArrayList<>();
     private JSObject objectPrototype;
+    private final JSObject object;
 
-    public GlobalObject(DynJS runtime) {
-        super();
+    public GlobalContext(DynJS runtime) {
+        this( runtime, new DynObject() );
+    }
+
+    public GlobalContext(DynJS runtime, JSObject object) {
+        this.object = object;
         this.runtime = runtime;
+
+        initialize();
+    }
+
+    private void initialize() {
 
         defineReadOnlyGlobalProperty("__throwTypeError", new ThrowTypeError(this), false);
 
@@ -29,7 +51,7 @@ public class GlobalObject extends DynObject {
         registerBuiltinType("Object", new BuiltinObject(this));
 
         this.objectPrototype = getPrototypeFor("Object");
-        setPrototype(this.objectPrototype);
+        this.object.setPrototype(this.objectPrototype);
 
         registerBuiltinType("Function", new BuiltinFunction(this));
         registerBuiltinType("Boolean", new BuiltinBoolean(this));
@@ -46,11 +68,11 @@ public class GlobalObject extends DynObject {
         registerBuiltinType("URIError", new BuiltinURIError(this));
         registerBuiltinType("EvalError", new BuiltinEvalError(this));
 
-        if (runtime.getConfig().isRhinoCompatible()) {
+        if (this.runtime.getConfig().isRhinoCompatible()) {
             registerBuiltinType("JSAdapter", new JSAdapter(this));
         }
 
-        if(runtime.getConfig().isV8Compatible()) {
+        if(this.runtime.getConfig().isV8Compatible()) {
             defineNonEnumerableProperty(this, "__v8StackGetter", new V8StackGetter(this));
         }
 
@@ -73,7 +95,7 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("encodeURIComponent", new EncodeUriComponent(this), true);
         defineGlobalProperty("decodeURIComponent", new DecodeUriComponent(this), true);
 
-        if (runtime.getConfig().isCommonJSCompatible()) {
+        if (this.runtime.getConfig().isCommonJSCompatible()) {
             defineGlobalProperty("require", new Require(this), true);
         }
         defineGlobalProperty("include", new Include(this), true);
@@ -87,7 +109,7 @@ public class GlobalObject extends DynObject {
         // Built-in global objects
         // ----------------------------------------
 
-        put(null, "JSON", new JSON(this), false);
+        this.object.put(null, "JSON", new JSON(this), false);
         defineGlobalProperty("Math", new Math(this), true);
         defineGlobalProperty("Intl", new Intl(this), true);
 
@@ -103,18 +125,29 @@ public class GlobalObject extends DynObject {
         defineGlobalProperty("io",       new JavaPackage(this, "io"), true);
 
         defineGlobalProperty("System",   System.class, true);
-    }
 
-    public JSObject getObjectPrototype() {
-        return this.objectPrototype;
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {
-        defineOwnProperty(null, name,
-                PropertyDescriptor.newDataPropertyDescriptor(type, true, true, true), false);
-        defineOwnProperty(null, "__Builtin_" + name,
-                PropertyDescriptor.newDataPropertyDescriptor(type, true, true, false), false);
+        this.object.defineOwnProperty(null, name, PropertyDescriptor.newDataPropertyDescriptor(type, true, true, true), false);
+        this.object.defineOwnProperty(null, "__Builtin_" + name, PropertyDescriptor.newDataPropertyDescriptor(type, true, true, false), false);
         this.builtinTypes.add(type);
+    }
+
+    private void defineGlobalProperty(final String name, final Object value) {
+        this.object.defineOwnProperty(null, name, PropertyDescriptor.newDataPropertyDescriptor(value, true, true, true), false);
+    }
+
+    private void defineGlobalProperty(final String name, final Object value, boolean enumerable) {
+        this.object.defineOwnProperty(null, name, PropertyDescriptor.newDataPropertyDescriptor(value, true, true, enumerable), false);
+    }
+
+    private void defineReadOnlyGlobalProperty(final String name, final Object value, boolean enumerable) {
+        this.object.defineOwnProperty(null, name, PropertyDescriptor.newDataPropertyDescriptor(value, false, false, enumerable), false);
+    }
+
+    public void defineNonEnumerableProperty(final GlobalContext globalContext, String name, final Object value) {
+        this.object.defineOwnProperty(null, name, PropertyDescriptor.newDataPropertyDescriptor(value, true, true, false), false);
     }
 
     private void initializeBuiltinTypes() {
@@ -124,31 +157,23 @@ public class GlobalObject extends DynObject {
         }
     }
 
-    public static GlobalObject newGlobalObject(DynJS runtime) {
-        return runtime.getConfig().getGlobalObjectFactory().newGlobalObject(runtime);
+    // ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
+
+    public JSObject getObject() {
+        return this.object;
+    }
+
+    public JSObject getObjectPrototype() {
+        return this.objectPrototype;
     }
 
     public DynJS getRuntime() {
         return this.runtime;
     }
 
-    public void defineGlobalProperty(final String name, final Object value) {
-        defineOwnProperty(null, name,
-                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, true), false);
-    }
-
-    public void defineGlobalProperty(final String name, final Object value, boolean enumerable) {
-        defineOwnProperty(null, name,
-                PropertyDescriptor.newDataPropertyDescriptor(value, true, true, enumerable), false);
-    }
-
-    public void defineReadOnlyGlobalProperty(final String name, final Object value, boolean enumerable) {
-        defineOwnProperty(null, name,
-                PropertyDescriptor.newDataPropertyDescriptor(value, false, false, enumerable), false);
-    }
-
     public JSObject getPrototypeFor(String type) {
-        Object typeObj = get(null, type);
+        Object typeObj = this.object.get(null, type);
         if (typeObj == Types.UNDEFINED) {
             return null;
         }
@@ -157,6 +182,14 @@ public class GlobalObject extends DynObject {
             return null;
         }
         return (JSObject) prototype;
+    }
+
+    public JSFunction getThrowTypeError() {
+        return (JSFunction) this.object.get( null, "__throwTypeError" );
+    }
+
+    public JSFunction getType(String name) {
+        return (JSFunction) this.object.get( null, name );
     }
 
 }

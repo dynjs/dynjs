@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.date;
 
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class UTC extends AbstractDateFunction {
 
-    public UTC(GlobalObject globalObject) {
-        super(globalObject, "year", "month", "date", "hours", "minutes", "seconds", "ms" );
+    public UTC(GlobalContext globalContext) {
+        super(globalContext, "year", "month", "date", "hours", "minutes", "seconds", "ms" );
     }
 
     @Override
