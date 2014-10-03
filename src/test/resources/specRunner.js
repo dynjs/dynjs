@@ -7,7 +7,7 @@ module.exports = {
     load("jasmine-1.3.1/jasmine.js");
     load('./terminalReporter.js');
     //color = !process.env.JASMINE_NOCOLOR;
-    color = false;
+    color = true;
 
     // load the specs
     var jasmineEnv = jasmine.getEnv(),

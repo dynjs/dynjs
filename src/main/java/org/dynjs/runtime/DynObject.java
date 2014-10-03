@@ -15,12 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.dynjs.exception.ThrowException;
 
@@ -37,6 +32,16 @@ public class DynObject implements JSObject, Map<String, Object> {
     public DynObject() {
         setClassName("Object");
         setExtensible(true);
+    }
+
+    // Copy constructor
+    public DynObject(DynObject parent) {
+        this.className = parent.className;
+        this.prototype = parent.prototype;
+        this.properties.putAll( parent.properties );
+        this.extensible = parent.extensible;
+        this.externalIndexedData = parent.externalIndexedData;
+
     }
 
     public DynObject(GlobalContext globalContext) {
