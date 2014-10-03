@@ -34,7 +34,6 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
 
     @Override
     public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
-
         // 10.2.1.1.3
         if (!hasBinding(context, name)) {
             throw new AssertionError("10.2.1.1.3: No binding exists for " + name);

@@ -44,13 +44,15 @@ public class DynJSBootstrapper {
 
     public static DynJSCoercionMatrix COERCION_MATRIX;
 
+    public static JSJavaImplementationManager JAVA_IMPLEMENTATION_MANAGER;
+
     static {
         try {
             LinkLogger logger = new NullLinkLogger();
 
             ShadowObjectLinker shadowLinker = new ShadowObjectLinker(logger);
-            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager(shadowLinker);
-            COERCION_MATRIX = new DynJSCoercionMatrix(implementationManager);
+            JAVA_IMPLEMENTATION_MANAGER = new JSJavaImplementationManager(shadowLinker);
+            COERCION_MATRIX = new DynJSCoercionMatrix(JAVA_IMPLEMENTATION_MANAGER);
             ResolverManager manager = new ResolverManager(COERCION_MATRIX);
 
             // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
@@ -68,7 +70,7 @@ public class DynJSBootstrapper {
             LINKER.addLinker(cacheable(new GlobalLinker(logger)));
 
             LINKER.addLinker(new JSJavaBoundMethodLinker(logger, manager));
-            LINKER.addLinker(new JSJavaImplementationLinker(implementationManager, logger));
+            LINKER.addLinker(new JSJavaImplementationLinker(JAVA_IMPLEMENTATION_MANAGER, logger));
 
             LINKER.addLinker(new JSJavaClassPropertyLinker(logger, manager));
             LINKER.addLinker(new JSJavaClassMethodLinker(logger, manager));

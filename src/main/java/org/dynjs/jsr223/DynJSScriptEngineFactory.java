@@ -37,10 +37,6 @@ public class DynJSScriptEngineFactory implements ScriptEngineFactory {
         this.globalBindings = new SimpleBindings();
     }
 
-    void setGlobalBindings(Bindings bindings) {
-        this.globalBindings = bindings;
-    }
-
     Bindings getGlobalBindings() {
         return this.globalBindings;
     }
