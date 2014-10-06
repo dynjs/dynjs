@@ -13,14 +13,12 @@ import javax.script.ScriptEngine;
  */
 public class RuntimeHelper {
 
-    private static final String GLOBAL_OBJECT = "org.dynjs.global-object";
-
     public static ScriptEngineGlobalObject getGlobalObject(ScriptContext context) {
-        ScriptEngineGlobalObject global = (ScriptEngineGlobalObject) context.getAttribute(GLOBAL_OBJECT);
+        ScriptEngineGlobalObject global = (ScriptEngineGlobalObject) context.getAttribute(DynJSScriptEngine.GLOBAL_OBJECT);
 
         if( global == null ) {
             global = new ScriptEngineGlobalObject(context);
-            context.setAttribute( GLOBAL_OBJECT, global, ScriptContext.ENGINE_SCOPE );
+            context.setAttribute( DynJSScriptEngine.GLOBAL_OBJECT, global, ScriptContext.ENGINE_SCOPE );
         }
 
         return global;

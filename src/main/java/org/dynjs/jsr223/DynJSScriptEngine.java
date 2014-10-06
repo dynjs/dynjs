@@ -15,6 +15,8 @@ import java.io.Reader;
  */
 public class DynJSScriptEngine extends AbstractScriptEngine implements Compilable, Invocable {
 
+    public static final String GLOBAL_OBJECT = "org.dynjs.global-object";
+
     private final DynJSScriptEngineFactory factory;
 
     DynJSScriptEngine(DynJSScriptEngineFactory factory) {
