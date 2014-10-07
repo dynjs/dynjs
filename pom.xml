@@ -405,6 +405,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
                             <mainClass>org.dynjs.cli.Main</mainClass>
                         </manifest>
                     </archive>
