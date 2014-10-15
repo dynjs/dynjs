@@ -71,15 +71,19 @@ public class ObjectLiteralExpression extends BaseExpression {
             }
             Object value = getValue(eachGet, context, ref);
             Object original = obj.getOwnProperty(context, each.getName());
-            PropertyDescriptor desc = null;
-            if (each instanceof PropertyGet) {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
-            } else if (each instanceof PropertySet) {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, debugName, (JSFunction) value);
+            if (each.getName().equals("__proto__")) {
+                obj.put(context, each.getName(), value, false);
             } else {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
+                PropertyDescriptor desc = null;
+                if (each instanceof PropertyGet) {
+                    desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
+                } else if (each instanceof PropertySet) {
+                    desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, debugName, (JSFunction) value);
+                } else {
+                    desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
+                }
+                obj.defineOwnProperty(context, each.getName(), desc, false);
             }
-            obj.defineOwnProperty(context, each.getName(), desc, false);
         }
 
         return(obj);

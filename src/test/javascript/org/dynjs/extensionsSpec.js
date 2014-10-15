@@ -143,6 +143,12 @@ describe("the __proto__ property", function() {
     expect(x.hasOwnProperty('__proto__')).toBe(true);
   });
 
+  it("should update prototype for object literals with __proto__", function() {
+    var proto = { foo: 'bar' };
+    var a = { __proto__: proto };
+    expect(Object.getPrototypeOf(a)).toBe(proto);
+  });
+
   xit("should allow Object.prototype.__proto__ to be set", function() {
     // TODO: This test should pass, and replicating it in the REPL
     // shows that it works as expected. However, the Jasmine test
