@@ -19,6 +19,14 @@ module.exports = {
     for(var i = 0; i < specs.length; i++) {
       require(specs[i]);
     }
+
+    jasmineEnv.currentRunner().finishCallback = function() {
+      this.env.reporter.reportRunnerResults(this);
+      if (this.env.currentRunner().results().failedCount > 0) {
+        throw "specs failed";
+      }
+    };
+
     jasmineEnv.execute();
   }
 };

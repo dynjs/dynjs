@@ -2,8 +2,13 @@ package org.dynjs;
 
 import org.dynjs.runtime.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +38,9 @@ public class TestRunner {
     }
 
     private final ScheduledExecutorService executor;
+    private final List<Future> futures = new ArrayList<>();
     private final AtomicInteger counter = new AtomicInteger(0);
+    private final CountDownLatch finishLatch = new CountDownLatch(1);
     private final DynJS dynjs;
 
     public TestRunner() {
@@ -60,19 +67,34 @@ public class TestRunner {
     public void decrement() {
         int val = counter.decrementAndGet();
         if ( val == 0 ) {
-            this.executor.shutdown();
+            finishLatch.countDown();
         }
     }
 
-    public void run() {
+    public void run() throws InterruptedException {
         counter.incrementAndGet();
-        executor.submit( new Runnable() {
+        futures.add(executor.submit(new Runnable() {
             @Override
             public void run() {
-                dynjs.newRunner().withSource( SCRIPT ).execute();
-                decrement();
+                try {
+                    dynjs.newRunner().withSource(SCRIPT).execute();
+                } finally {
+                    decrement();
+                }
             }
-        });
+        }));
+        finishLatch.await();
+        // Look for any exceptions from futures
+        try {
+            for (Future future : futures) {
+                future.get();
+            }
+        } catch (ExecutionException e) {
+            throw new RuntimeException("one or more jasmine specs failed");
+        } finally {
+            executor.shutdown();
+            futures.clear();
+        }
     }
 
     private void setupConsole() {
@@ -106,7 +128,7 @@ public class TestRunner {
             final JSFunction fn = (JSFunction) args[0];
             long timeout = Types.toInteger( context, args[1] );
             increment();
-            executor.schedule( new Runnable() {
+            futures.add(executor.schedule( new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -115,7 +137,7 @@ public class TestRunner {
                         decrement();
                     }
                 }
-            }, timeout, TimeUnit.MILLISECONDS );
+            }, timeout, TimeUnit.MILLISECONDS ));
             return Types.UNDEFINED;
         }
     }
