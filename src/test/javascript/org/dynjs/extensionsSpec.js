@@ -378,7 +378,7 @@ describe("V8 Error API", function() {
 
     it("should have a getLineNumber property", function() {
       var e = errorGenerator();
-      expect(e.stack[0].getLineNumber()).toBe(355);
+      expect(e.stack[0].getLineNumber()).toBe(361);
     });
 
     it("should have a getTypeName property", function() {
