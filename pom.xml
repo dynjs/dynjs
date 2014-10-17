@@ -27,7 +27,7 @@
         <version.jackson-core-asl>1.9.9</version.jackson-core-asl>
         <version.jitescript>0.4.0</version.jitescript>
         <version.jnr-posix>3.0.1</version.jnr-posix>
-        <version.joni>2.1.4-SNAPSHOT</version.joni>
+        <version.joni>2.1.4</version.joni>
         <version.junit>4.8.2</version.junit>
         <version.mockito-core>1.8.5</version.mockito-core>
         <version.options>1.0</version.options>
