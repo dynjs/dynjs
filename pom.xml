@@ -6,7 +6,7 @@
 
     <groupId>org.dynjs</groupId>
     <artifactId>dynjs</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2-SNAPSHOT</version>
     <url>http://dynjs.org</url>
     <name>dynjs</name>
 
@@ -94,7 +94,7 @@
         <connection>scm:git:git@github.com:dynjs/dynjs.git</connection>
         <developerConnection>scm:git:git@github.com:dynjs/dynjs.git</developerConnection>
         <url>git@github.com:dynjs/dynjs.git</url>
-        <tag>v0.3.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
   <repositories>
