@@ -48,7 +48,12 @@ public abstract class AbstractForStatement extends AbstractIteratingStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }
-    
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.block.getFunctionDeclarations();
+    }
+
     public int getSizeMetric()  {
         int size = 0;
         if ( this.test != null ) {

@@ -51,7 +51,12 @@ public class WhileStatement extends AbstractIteratingStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.vloop.getVariableDeclarations();
     }
-    
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.vloop.getFunctionDeclarations();
+    }
+
     public int getSizeMetric() {
         return vbool.getSizeMetric() + 7;
     }

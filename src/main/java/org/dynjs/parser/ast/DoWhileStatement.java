@@ -52,6 +52,11 @@ public class DoWhileStatement extends AbstractIteratingStatement {
         return this.block.getVariableDeclarations();
     }
 
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.block.getFunctionDeclarations();
+    }
+
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }

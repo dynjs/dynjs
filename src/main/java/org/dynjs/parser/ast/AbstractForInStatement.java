@@ -42,7 +42,12 @@ public abstract class AbstractForInStatement extends AbstractIteratingStatement 
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.block.getVariableDeclarations();
     }
-    
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.block.getFunctionDeclarations();
+    }
+
     public int getSizeMetric() {
         if ( this.rhs != null ) {
             return this.rhs.getSizeMetric() + 7;
