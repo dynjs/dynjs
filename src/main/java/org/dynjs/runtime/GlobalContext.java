@@ -103,7 +103,7 @@ public class GlobalContext {
         defineGlobalProperty("escape", new Escape(this), true);
         defineGlobalProperty("unescape", new Unescape(this), true);
         defineGlobalProperty("print", new Print(this), true);
-        defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime), true);
+        defineReadOnlyGlobalProperty("dynjs", new DynJSBuiltin(this.runtime), false);
 
         // ----------------------------------------
         // Built-in global objects
