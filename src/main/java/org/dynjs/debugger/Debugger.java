@@ -1,5 +1,7 @@
 package org.dynjs.debugger;
 
+import org.dynjs.parser.Statement;
+import org.dynjs.parser.ast.Expression;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.Runner;
 
@@ -8,19 +10,25 @@ import org.dynjs.runtime.Runner;
  */
 public class Debugger extends Runner {
 
-    private boolean waitConnect;
+    private boolean await;
 
     public Debugger(DynJS runtime) {
         super(runtime);
     }
 
-    public Debugger waitConnect() {
-        return waitConnect(true);
+    public Debugger await() {
+        return await(true);
     }
 
-    public Debugger waitConnect(boolean waitConnect) {
-        this.waitConnect = waitConnect;
+    public Debugger await(boolean await) {
+        this.await = await;
         return this;
+    }
+
+    public void debug(Statement statement) {
+    }
+
+    public void debug(Expression expr) {
     }
 
 

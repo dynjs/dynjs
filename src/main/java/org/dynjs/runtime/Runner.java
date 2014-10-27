@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.js.ParserException;
 import org.dynjs.parser.js.SyntaxError;
@@ -7,6 +8,7 @@ import org.dynjs.parser.js.SyntaxError;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
+import java.util.concurrent.Executor;
 
 public class Runner {
 
@@ -17,6 +19,15 @@ public class Runner {
     private boolean directEval;
 
     private JSProgram source;
+
+    private Executor executor;
+    private Object result;
+    private State state = State.COMPLETE;
+
+    private enum State {
+        RUNNING,
+        COMPLETE;
+    }
 
     public Runner(DynJS runtime) {
         this.compiler = new Compiler(runtime.getConfig());
@@ -44,6 +55,11 @@ public class Runner {
 
     public Runner withSource(JSProgram source) {
         this.source = source;
+        return this;
+    }
+
+    public Runner withExecutor(Executor executor) {
+        this.executor = executor;
         return this;
     }
 
@@ -88,7 +104,45 @@ public class Runner {
         return this.compiler.compile();
     }
 
+    public Object result() {
+        return this.result;
+    }
+
+    public boolean isRunning() {
+        return this.state == State.RUNNING;
+    }
+
+    public boolean isComplete() {
+        return this.state == State.COMPLETE;
+    }
+
     public Object execute() {
+        if ( this.state != State.COMPLETE ) {
+            throw new DynJSException( "Running is currently in-use" );
+        }
+
+        if ( this.executor == null ) {
+            this.result = doExecute();
+            return this.result;
+        }
+
+        this.state = State.RUNNING;
+
+        this.executor.execute( new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Runner.this.result = doExecute();
+                } finally {
+                    Runner.this.state = State.COMPLETE;
+                }
+            }
+        });
+
+        return null;
+    }
+
+    private Object doExecute() {
         try {
             Completion completion = executionContext().execute(program());
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
@@ -107,6 +161,31 @@ public class Runner {
     }
 
     public Object evaluate() {
+        if ( this.state != State.COMPLETE ) {
+            throw new DynJSException( "Running is currently in-use" );
+        }
+
+        if ( this.executor == null ) {
+            this.result = doEvaluate();
+            return this.result;
+        }
+
+        this.state = State.RUNNING;
+        this.executor.execute( new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Runner.this.result = doEvaluate();
+                } finally {
+                    Runner.this.state = State.COMPLETE;
+                }
+            }
+        });
+
+        return null;
+    }
+
+    private Object doEvaluate() {
         try {
             return executionContext().eval(program(), this.directEval);
         } catch (SyntaxError e) {
