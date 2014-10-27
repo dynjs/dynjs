@@ -3,9 +3,6 @@ package org.dynjs.parser.ast;
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
-
-import java.lang.invoke.CallSite;
 
 public class LogicalExpression extends AbstractBinaryExpression {
 
@@ -19,13 +16,13 @@ public class LogicalExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context, debug));
 
         if ((getOp().equals("||") && Types.toBoolean(lhs)) || (getOp().equals("&&") && !Types.toBoolean(lhs))) {
             return(lhs);
         } else {
-            return getRhs().interpret(context);
+            return getRhs().interpret(context, debug);
         }
     }
 

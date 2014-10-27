@@ -45,8 +45,8 @@ public class ThrowStatement extends BaseStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
-        Object throwable = getValue(this.get, context, getExpr().interpret(context));
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        Object throwable = getValue(this.get, context, getExpr().interpret(context, debug));
         // if ( throwable instanceof Throwable ) {
         // ((Throwable) throwable).printStackTrace();
         // }

@@ -135,7 +135,7 @@ public class BlockStatement extends AbstractStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         List<Statement> content = getBlockContent();
 
         Object completionValue = Types.UNDEFINED;
@@ -148,7 +148,7 @@ public class BlockStatement extends AbstractStatement {
             }
 
 
-            Completion completion = (Completion) each.interpret(context);
+            Completion completion = (Completion) each.interpret(context, debug);
             if (completion.type == Completion.Type.NORMAL) {
                 completionValue = completion.value;
                 continue;

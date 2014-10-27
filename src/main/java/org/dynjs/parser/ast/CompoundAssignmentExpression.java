@@ -42,9 +42,9 @@ public class CompoundAssignmentExpression extends AbstractExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object r = getRootExpr().interpret(context);
-        Object lref = getRootExpr().getLhs().interpret(context);
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object r = getRootExpr().interpret(context, debug);
+        Object lref = getRootExpr().getLhs().interpret(context, debug);
 
         if (lref instanceof Reference) {
             if (((Reference) lref).isStrictReference()) {

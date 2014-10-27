@@ -49,7 +49,7 @@ public class BooleanLiteralExpression extends BaseExpression implements IllegalF
         return "" + value;
     }
 
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return(getValue());
     }
 }

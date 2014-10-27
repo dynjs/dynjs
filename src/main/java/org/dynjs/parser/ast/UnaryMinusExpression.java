@@ -26,8 +26,8 @@ public class UnaryMinusExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object value = getValue(this.get, context, getExpr().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object value = getValue(this.get, context, getExpr().interpret(context, debug));
         Number oldValue = Types.toNumber(context, value);
         if (oldValue instanceof Double) {
             if (Double.isNaN(oldValue.doubleValue())) {

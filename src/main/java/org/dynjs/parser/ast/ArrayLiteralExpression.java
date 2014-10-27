@@ -61,7 +61,7 @@ public class ArrayLiteralExpression extends BaseExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         DynArray array = BuiltinArray.newArray(context);
 
         int numElements = this.exprs.size();
@@ -70,7 +70,7 @@ public class ArrayLiteralExpression extends BaseExpression {
             Expression each = this.exprs.get(i);
             Object value = null;
             if (each != null) {
-                value = getValue(this.exprGets.get(i), context, each.interpret(context));
+                value = getValue(this.exprGets.get(i), context, each.interpret(context, debug));
                 array.defineOwnProperty(context, "" + i, PropertyDescriptor.newPropertyDescriptorForObjectInitializer(value), false);
             }
             ++len;

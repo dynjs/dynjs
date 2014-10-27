@@ -27,7 +27,6 @@ import org.dynjs.runtime.linker.DynJSBootstrapper;
 
 import java.lang.invoke.CallSite;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FunctionCallExpression extends AbstractExpression {
@@ -73,8 +72,8 @@ public class FunctionCallExpression extends AbstractExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object ref = getMemberExpression().interpret(context);
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object ref = getMemberExpression().interpret(context, debug);
         Object function = getValue(this.functionGet, context, ref);
 
         List<Expression> argExprs = getArgumentExpressions();
@@ -85,7 +84,7 @@ public class FunctionCallExpression extends AbstractExpression {
         for ( int i = 0 ; i < numArgs ; ++i ) {
             Expression each = this.argExprs.get(i);
             CallSite eachGet = this.argGets.get(i);
-            Object value = getValue(eachGet, context, each.interpret(context));
+            Object value = getValue(eachGet, context, each.interpret(context, debug));
             //System.err.println( "ARG: " + i + " -> " + each + " // " + value );
             args[i] = value;
         }

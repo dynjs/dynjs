@@ -22,9 +22,6 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
-
-import java.lang.invoke.CallSite;
 
 public class InstanceofExpression extends AbstractBinaryExpression {
 
@@ -38,9 +35,9 @@ public class InstanceofExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context));
-        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context, debug));
+        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context, debug));
 
         if (rhs == Types.UNDEFINED) {
             throw new ThrowException(context, context.createTypeError(getRhs() + " is undefined."));

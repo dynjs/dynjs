@@ -19,7 +19,7 @@ public class FloatingNumberExpression extends NumberLiteralExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return getValue();
     }
 

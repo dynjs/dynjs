@@ -20,11 +20,11 @@ public class AdditiveExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
 
         if ( this.getOp().equals( "+" ) ) {
-            Object lhs = Types.toPrimitive(context, getValue(this.lhsGet, context, getLhs().interpret(context)));
-            Object rhs = Types.toPrimitive(context, getValue(this.rhsGet, context, getRhs().interpret(context)));
+            Object lhs = Types.toPrimitive(context, getValue(this.lhsGet, context, getLhs().interpret(context, debug)));
+            Object rhs = Types.toPrimitive(context, getValue(this.rhsGet, context, getRhs().interpret(context, debug)));
 
             if (lhs instanceof String || rhs instanceof String) {
                 return(Types.toString(context, lhs) + Types.toString(context, rhs));
@@ -56,8 +56,8 @@ public class AdditiveExpression extends AbstractBinaryExpression {
             return(lhsNum.longValue() + rhsNum.longValue());
 
         } else {
-            Number lhs = Types.toNumber(context, getValue(this.lhsGet, context, getLhs().interpret(context)));
-            Number rhs = Types.toNumber(context, getValue(this.rhsGet, context, getRhs().interpret(context)));
+            Number lhs = Types.toNumber(context, getValue(this.lhsGet, context, getLhs().interpret(context, debug)));
+            Number rhs = Types.toNumber(context, getValue(this.rhsGet, context, getRhs().interpret(context, debug)));
 
             if (Double.isNaN(lhs.doubleValue()) || Double.isNaN(rhs.doubleValue())) {
                 return(Double.NaN);

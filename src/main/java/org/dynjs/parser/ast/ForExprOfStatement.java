@@ -63,8 +63,8 @@ public class ForExprOfStatement extends AbstractForInStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
-        Object exprRef = getRhs().interpret(context);
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        Object exprRef = getRhs().interpret(context, debug);
         Object exprValue = getValue(this.exprGet, context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
@@ -79,7 +79,7 @@ public class ForExprOfStatement extends AbstractForInStatement {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            Object lhsRef = getExpr().interpret(context);
+            Object lhsRef = getExpr().interpret(context, debug);
 
             if (lhsRef instanceof Reference) {
                 Reference propertyRef = context.createPropertyReference(obj, each);
@@ -87,7 +87,7 @@ public class ForExprOfStatement extends AbstractForInStatement {
             }
 
 
-            Completion completion = (Completion) getBlock().interpret(context);
+            Completion completion = (Completion) getBlock().interpret(context, debug);
             //Completion completion = invokeCompiledBlockStatement(context, "ForOf", statement.getBlock());
 
             if (completion.value != null) {

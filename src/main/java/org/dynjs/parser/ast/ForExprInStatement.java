@@ -62,8 +62,8 @@ public class ForExprInStatement extends AbstractForInStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
-        Object exprRef = getRhs().interpret(context);
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        Object exprRef = getRhs().interpret(context, debug);
         Object exprValue = getValue(this.rhsGet, context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
@@ -79,14 +79,14 @@ public class ForExprInStatement extends AbstractForInStatement {
 
         for (String each : names) {
 
-            Object lhsRef = getExpr().interpret(context);
+            Object lhsRef = getExpr().interpret(context, debug);
 
             if (lhsRef instanceof Reference) {
                 ((Reference) lhsRef).putValue(context, each);
             }
 
 
-            Completion completion = (Completion) getBlock().interpret(context);
+            Completion completion = (Completion) getBlock().interpret(context, debug);
 
             if (completion.value != null) {
                 v = completion.value;

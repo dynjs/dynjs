@@ -4,6 +4,7 @@ import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.debugger.Debugger;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.IRJSFunction;
 import org.dynjs.ir.JITCompiler;
@@ -68,6 +69,7 @@ public class ExecutionContext implements CompilationContext {
     private List<StackElement> throwStack;
 
     private BlockManager blockManager;
+    private Debugger debugger;
 
     public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.runtime = runtime;
@@ -128,6 +130,10 @@ public class ExecutionContext implements CompilationContext {
         return this.inEval;
     }
 
+    public boolean isDebug() {
+        return this.debugger != null;
+    }
+
     public Clock getClock() {
         return this.runtime.getConfig().getClock();
     }
@@ -164,8 +170,16 @@ public class ExecutionContext implements CompilationContext {
     // ----------------------------------------------------------------------
 
     public Completion execute(JSProgram program) {
+        return execute( program, null );
+    }
+
+    public Completion execute(JSProgram program, Debugger debugger) {
         BlockManager originalBlockManager = this.blockManager;
+        Debugger originalDebugger = this.debugger;
         try {
+            if ( debugger != null ) {
+                this.debugger = debugger;
+            }
             this.blockManager = program.getBlockManager();
             ThreadContextManager.pushContext(this);
             setStrict(program.isStrict());
@@ -179,12 +193,20 @@ public class ExecutionContext implements CompilationContext {
         } finally {
             ThreadContextManager.popContext();
             this.blockManager = originalBlockManager;
+            this.debugger = originalDebugger;
         }
     }
 
     public Object eval(JSProgram eval, boolean direct) {
+        return eval( eval, direct, null );
+    }
+    public Object eval(JSProgram eval, boolean direct, Debugger debugger) {
         BlockManager originalBlockManager = this.blockManager;
+        Debugger originalDebugger = this.debugger;
         try {
+            if ( debugger != null ) {
+                this.debugger = debugger;
+            }
             ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
             evalContext.blockManager = eval.getBlockManager();
             ThreadContextManager.pushContext(evalContext);
@@ -193,6 +215,7 @@ public class ExecutionContext implements CompilationContext {
         } finally {
             ThreadContextManager.popContext();
             this.blockManager = originalBlockManager;
+            this.debugger = originalDebugger;
         }
     }
 

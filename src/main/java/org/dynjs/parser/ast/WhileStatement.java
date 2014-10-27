@@ -62,7 +62,7 @@ public class WhileStatement extends AbstractIteratingStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         Expression testExpr = getTest();
         Statement block = getBlock();
 
@@ -70,7 +70,7 @@ public class WhileStatement extends AbstractIteratingStatement {
 
         while (true) {
 
-            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context)));
+            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context, debug)));
             if (testResult) {
                 // block.accept(context, this, strict);
                 // Completion completion = (Completion) pop();

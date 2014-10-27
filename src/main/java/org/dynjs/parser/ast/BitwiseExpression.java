@@ -20,8 +20,8 @@ public class BitwiseExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object lhs = getValue(this.lhsGet, context, getLhs().interpret(context, debug));
 
         Long lhsNum = null;
 
@@ -31,7 +31,7 @@ public class BitwiseExpression extends AbstractBinaryExpression {
             lhsNum = Types.toInt32(context, lhs);
         }
 
-        Object value = getRhs().interpret(context);
+        Object value = getRhs().interpret(context, debug);
 
         if (getOp().equals("<<")) {
             // 11.7.1
