@@ -79,6 +79,10 @@ public class ForExprInStatement extends AbstractForInStatement {
 
         for (String each : names) {
 
+            if ( debug ) {
+                context.debug( this );
+            }
+
             Object lhsRef = getExpr().interpret(context, debug);
 
             if (lhsRef instanceof Reference) {

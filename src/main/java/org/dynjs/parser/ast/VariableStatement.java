@@ -83,6 +83,9 @@ public class VariableStatement extends BaseStatement {
     }
 
     public Completion interpret(ExecutionContext context, boolean debug) {
+        if ( debug ) {
+            context.debug( this );
+        }
         for (VariableDeclaration each : getVariableDeclarations()) {
             each.interpret(context, debug);
         }

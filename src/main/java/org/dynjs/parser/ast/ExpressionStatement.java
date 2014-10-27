@@ -48,6 +48,9 @@ public class ExpressionStatement extends AbstractStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
+        if ( debug ) {
+            context.debug( this );
+        }
         Expression expr = getExpr();
         if (expr instanceof FunctionDeclaration) {
             return(Completion.createNormal());

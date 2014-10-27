@@ -4,7 +4,7 @@ import jnr.posix.util.Platform;
 import org.dynjs.Config;
 import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.DebugRunner;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
 import org.dynjs.runtime.util.SafePropertyAccessor;
@@ -89,8 +89,8 @@ public class DynJS {
         return new Compiler(this.config);
     }
 
-    public Debugger newDebugger() {
-        return new Debugger(this);
+    public DebugRunner newDebugger() {
+        return new DebugRunner(this);
     }
 
     // ----------------------------------------------------------------------

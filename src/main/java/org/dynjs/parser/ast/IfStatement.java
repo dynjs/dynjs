@@ -102,6 +102,9 @@ public class IfStatement extends BaseStatement {
     }
 
     public Completion interpret(ExecutionContext context, boolean debug) {
+        if ( debug ) {
+            context.debug( this );
+        }
         Boolean result = Types.toBoolean(getValue(this.testGet, context, getTest().interpret(context, debug)));
 
         if (result) {

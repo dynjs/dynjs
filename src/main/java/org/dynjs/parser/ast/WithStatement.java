@@ -52,6 +52,9 @@ public class WithStatement extends BaseStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
+        if ( debug ) {
+            context.debug( this );
+        }
         JSObject obj = Types.toObject(context, getValue(this.get, context, getExpr().interpret(context, debug)));
         BasicBlock block = compiledBlockStatement(context, "With", getBlock());
         return(context.executeWith(obj, block));

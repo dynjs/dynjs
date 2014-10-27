@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.dynjs.debugger.Debugger;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.js.ParserException;
@@ -10,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.concurrent.Executor;
 
-public class Runner {
+public class Runner<T extends Runner<T>> {
 
     private final DynJS runtime;
     private Compiler compiler;
@@ -34,59 +35,59 @@ public class Runner {
         this.runtime = runtime;
     }
 
-    public Runner forceStrict() {
+    public T forceStrict() {
         this.compiler.forceStrict();
-        return this;
+        return (T) this;
     }
 
-    public Runner forceStrict(boolean forceStrict) {
+    public T forceStrict(boolean forceStrict) {
         this.compiler.forceStrict( forceStrict );
-        return this;
+        return (T) this;
     }
 
-    public Runner directEval() {
-        return directEval(true);
+    public T directEval() {
+        return (T) directEval(true);
     }
 
-    public Runner directEval(boolean directEval) {
+    public T directEval(boolean directEval) {
         this.directEval = directEval;
-        return this;
+        return (T) this;
     }
 
-    public Runner withSource(JSProgram source) {
+    public T withSource(JSProgram source) {
         this.source = source;
-        return this;
+        return (T) this;
     }
 
-    public Runner withExecutor(Executor executor) {
+    public T withExecutor(Executor executor) {
         this.executor = executor;
-        return this;
+        return (T) this;
     }
 
-    public Runner withSource(String source) {
+    public T withSource(String source) {
         this.compiler.withSource( source );
-        return this;
+        return (T) this;
     }
 
-    public Runner withSource(Reader source) {
+    public T withSource(Reader source) {
         this.compiler.withSource( source );
-        return this;
+        return (T) this;
     }
 
-    public Runner withSource(File source) throws FileNotFoundException {
+    public T withSource(File source) throws FileNotFoundException {
         this.compiler.withSource( source );
-        return this;
+        return (T) this;
     }
 
-    public Runner withContext(ExecutionContext context) {
+    public T withContext(ExecutionContext context) {
         this.context = context;
         this.compiler.withContext( context );
-        return this;
+        return (T) this;
     }
 
-    public Runner withFileName(String fileName) {
+    public T withFileName(String fileName) {
         this.compiler.withFileName( fileName );
-        return this;
+        return (T) this;
     }
 
     protected ExecutionContext executionContext() {
@@ -112,14 +113,30 @@ public class Runner {
         return this.state == State.RUNNING;
     }
 
-    public boolean isComplete() {
+    public synchronized boolean isComplete() {
         return this.state == State.COMPLETE;
     }
 
-    public Object execute() {
+    public synchronized void join() throws InterruptedException {
+        while ( this.state != State.COMPLETE ) {
+            wait();
+        }
+    }
+
+    protected Debugger getDebugger() {
+        return null;
+    }
+
+    protected void setup() {
+        // no-op;
+    }
+
+    public synchronized Object execute() {
         if ( this.state != State.COMPLETE ) {
             throw new DynJSException( "Running is currently in-use" );
         }
+
+        setup();
 
         if ( this.executor == null ) {
             this.result = doExecute();
@@ -134,7 +151,10 @@ public class Runner {
                 try {
                     Runner.this.result = doExecute();
                 } finally {
-                    Runner.this.state = State.COMPLETE;
+                    synchronized ( Runner.this ) {
+                        Runner.this.state = State.COMPLETE;
+                        Runner.this.notifyAll();
+                    }
                 }
             }
         });
@@ -144,7 +164,7 @@ public class Runner {
 
     private Object doExecute() {
         try {
-            Completion completion = executionContext().execute(program());
+            Completion completion = executionContext().execute(program(), getDebugger());
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
             }
@@ -160,10 +180,12 @@ public class Runner {
         }
     }
 
-    public Object evaluate() {
+    public synchronized Object evaluate() {
         if ( this.state != State.COMPLETE ) {
             throw new DynJSException( "Running is currently in-use" );
         }
+
+        setup();
 
         if ( this.executor == null ) {
             this.result = doEvaluate();
@@ -177,7 +199,10 @@ public class Runner {
                 try {
                     Runner.this.result = doEvaluate();
                 } finally {
-                    Runner.this.state = State.COMPLETE;
+                    synchronized ( Runner.this ) {
+                        Runner.this.state = State.COMPLETE;
+                        Runner.this.notifyAll();
+                    }
                 }
             }
         });

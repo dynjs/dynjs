@@ -4,10 +4,13 @@ import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.debugger.DebugConnector;
+import org.dynjs.debugger.DebugRunner;
 import org.dynjs.debugger.Debugger;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.IRJSFunction;
 import org.dynjs.ir.JITCompiler;
+import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
 import org.dynjs.runtime.BlockManager.Entry;
@@ -69,7 +72,7 @@ public class ExecutionContext implements CompilationContext {
     private List<StackElement> throwStack;
 
     private BlockManager blockManager;
-    private Debugger debugger;
+    private DebugConnector debugger;
 
     public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.runtime = runtime;
@@ -134,6 +137,16 @@ public class ExecutionContext implements CompilationContext {
         return this.debugger != null;
     }
 
+    public void debug(Statement statement) {
+        if ( this.debugger != null ) {
+            try {
+                this.debugger.debug( this, statement );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Clock getClock() {
         return this.runtime.getConfig().getClock();
     }
@@ -173,9 +186,9 @@ public class ExecutionContext implements CompilationContext {
         return execute( program, null );
     }
 
-    public Completion execute(JSProgram program, Debugger debugger) {
+    public Completion execute(JSProgram program, DebugConnector debugger) {
         BlockManager originalBlockManager = this.blockManager;
-        Debugger originalDebugger = this.debugger;
+        DebugConnector originalDebugger = this.debugger;
         try {
             if ( debugger != null ) {
                 this.debugger = debugger;
@@ -202,10 +215,10 @@ public class ExecutionContext implements CompilationContext {
     }
     public Object eval(JSProgram eval, boolean direct, Debugger debugger) {
         BlockManager originalBlockManager = this.blockManager;
-        Debugger originalDebugger = this.debugger;
+        DebugConnector originalDebugger = this.debugger;
         try {
             if ( debugger != null ) {
-                this.debugger = debugger;
+                this.debugger = debugger ;
             }
             ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
             evalContext.blockManager = eval.getBlockManager();

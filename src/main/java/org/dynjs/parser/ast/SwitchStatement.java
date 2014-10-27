@@ -72,6 +72,11 @@ public class SwitchStatement extends BaseStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
+        if ( debug ) {
+            // TODO debug on case clauses
+            context.debug( this );
+        }
+
         Object value = getValue(this.valueGet, context, getExpr().interpret(context, debug));
         Object v = null;
 
