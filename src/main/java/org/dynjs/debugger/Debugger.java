@@ -1,10 +1,19 @@
 package org.dynjs.debugger;
 
+import org.dynjs.debugger.agent.handlers.ContinueHandler;
+import org.dynjs.debugger.commands.AbstractCommand;
+import org.dynjs.debugger.commands.ContinueCommand;
 import org.dynjs.debugger.events.BreakEvent;
+import org.dynjs.debugger.events.ScriptInfo;
+import org.dynjs.debugger.requests.ContinueRequest;
 import org.dynjs.debugger.requests.ContinueResponse;
+import org.dynjs.debugger.requests.Request;
+import org.dynjs.debugger.requests.Response;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -23,11 +32,22 @@ public class Debugger implements DebugConnector {
     private DebugListener listener;
     private StepAction mode;
 
+    private Map<String, AbstractCommand> commands = new HashMap<>();
+
     public Debugger() {
         this.mode = StepAction.RUN;
+        register("continue", new ContinueCommand(this));
     }
 
-    void setWaitConnect(boolean waitConnect) {
+    void register(String name, AbstractCommand command) {
+        this.commands.put(name, command);
+    }
+
+    public AbstractCommand getCommand(String command) {
+        return this.commands.get(command);
+    }
+
+    public void setWaitConnect(boolean waitConnect) {
         this.mode = StepAction.NEXT;
     }
 
@@ -35,27 +55,39 @@ public class Debugger implements DebugConnector {
         return this.listener;
     }
 
-    public void setListener(DebugListener listener) {
+    public synchronized void setListener(DebugListener listener) {
+        System.err.println( this + " // " + listener );
         this.listener = listener;
+        this.notifyAll();
     }
 
     @Override
     public void debug(ExecutionContext context, Statement statement) throws InterruptedException {
-        if ( shouldBreak( statement ) ) {
-            doBreak();
+        if (shouldBreak(statement)) {
+            doBreak(context);
         }
     }
 
-    public void CONTINUE(StepAction action) {
-        synchronized ( this.lock ) {
-            this.lock.set( false );
-            this.lock.notifyAll();
+    public <REQUEST extends Request<RESPONSE>, RESPONSE extends Response> RESPONSE handle(REQUEST request) {
+        AbstractCommand<REQUEST, RESPONSE> command = getCommand(request.getCommand());
+        if (command != null) {
+            return command.handle(request);
         }
+        return null;
     }
 
-    private void doBreak() throws InterruptedException {
-        System.err.println("blocking");
-        this.listener.on(new BreakEvent(this));
+    private void doBreak(ExecutionContext context) throws InterruptedException {
+
+        synchronized (this) {
+            while (this.listener == null) {
+                System.err.println( "awaiting connect" );
+                this.wait();
+            }
+        }
+        System.err.println("blocking, send break");
+
+        ScriptInfo script = new ScriptInfo( context.getFileName() );
+        this.listener.on(new BreakEvent(this, context.getLineNumber(), context.getColumnNumber(), script));
         synchronized (this.lock) {
             while (this.lock.get()) {
                 this.lock.wait();

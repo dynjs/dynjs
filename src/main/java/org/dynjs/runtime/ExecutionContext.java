@@ -5,7 +5,6 @@ import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.debugger.DebugConnector;
-import org.dynjs.debugger.DebugRunner;
 import org.dynjs.debugger.Debugger;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.IRJSFunction;

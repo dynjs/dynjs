@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.concurrent.Executor;
 
-public class Runner<T extends Runner<T>> {
+public class Runner {
 
     private final DynJS runtime;
     private Compiler compiler;
@@ -24,6 +24,7 @@ public class Runner<T extends Runner<T>> {
     private Executor executor;
     private Object result;
     private State state = State.COMPLETE;
+    private Debugger debugger;
 
     private enum State {
         RUNNING,
@@ -35,59 +36,66 @@ public class Runner<T extends Runner<T>> {
         this.runtime = runtime;
     }
 
-    public T forceStrict() {
+    public Runner forceStrict() {
         this.compiler.forceStrict();
-        return (T) this;
+        return this;
     }
 
-    public T forceStrict(boolean forceStrict) {
+    public Runner forceStrict(boolean forceStrict) {
         this.compiler.forceStrict( forceStrict );
-        return (T) this;
+        return this;
     }
 
-    public T directEval() {
-        return (T) directEval(true);
+    public Runner directEval() {
+        return directEval(true);
     }
 
-    public T directEval(boolean directEval) {
+    public Runner directEval(boolean directEval) {
         this.directEval = directEval;
-        return (T) this;
+        return this;
     }
 
-    public T withSource(JSProgram source) {
+    public Runner withSource(JSProgram source) {
         this.source = source;
-        return (T) this;
+        return this;
     }
 
-    public T withExecutor(Executor executor) {
+    public Runner withExecutor(Executor executor) {
         this.executor = executor;
-        return (T) this;
+        return this;
     }
 
-    public T withSource(String source) {
+    public Runner withSource(String source) {
         this.compiler.withSource( source );
-        return (T) this;
+        return this;
     }
 
-    public T withSource(Reader source) {
+    public Runner withSource(Reader source) {
         this.compiler.withSource( source );
-        return (T) this;
+        return this;
     }
 
-    public T withSource(File source) throws FileNotFoundException {
+    public Runner withSource(File source) throws FileNotFoundException {
         this.compiler.withSource( source );
-        return (T) this;
+        return this;
     }
 
-    public T withContext(ExecutionContext context) {
+    public Runner withContext(ExecutionContext context) {
         this.context = context;
         this.compiler.withContext( context );
-        return (T) this;
+        return this;
     }
 
-    public T withFileName(String fileName) {
+    public Runner withFileName(String fileName) {
         this.compiler.withFileName( fileName );
-        return (T) this;
+        return this;
+    }
+
+    public Runner debug(boolean debug) {
+        if ( debug ) {
+            this.debugger = new Debugger();
+        }
+        return this;
     }
 
     protected ExecutionContext executionContext() {
@@ -123,8 +131,8 @@ public class Runner<T extends Runner<T>> {
         }
     }
 
-    protected Debugger getDebugger() {
-        return null;
+    public Debugger getDebugger() {
+        return this.debugger;
     }
 
     protected void setup() {
@@ -164,7 +172,7 @@ public class Runner<T extends Runner<T>> {
 
     private Object doExecute() {
         try {
-            Completion completion = executionContext().execute(program(), getDebugger());
+            Completion completion = executionContext().execute(program(), this.debugger );
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
             }

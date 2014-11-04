@@ -1,6 +1,6 @@
 package org.dynjs.debugger.events;
 
-import org.dynjs.debugger.DebugRunner;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dynjs.debugger.Debugger;
 
 /**
@@ -17,11 +17,13 @@ public class AbstractEvent implements Event {
     }
 
     @Override
+    @JsonIgnore
     public Debugger getDebugger() {
         return this.debugger;
     }
 
     @Override
+    @JsonIgnore
     public String getEvent() {
         return this.event;
     }

@@ -4,16 +4,11 @@ import jnr.posix.util.Platform;
 import org.dynjs.Config;
 import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.debugger.DebugRunner;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 public class DynJS {
@@ -81,16 +76,16 @@ public class DynJS {
         return jitCompiler;
     }
 
+    public Runner newRunner(boolean debug) {
+        return new Runner(this).debug( debug );
+    }
+
     public Runner newRunner() {
         return new Runner(this);
     }
 
     public Compiler newCompiler() {
         return new Compiler(this.config);
-    }
-
-    public DebugRunner newDebugger() {
-        return new DebugRunner(this);
     }
 
     // ----------------------------------------------------------------------

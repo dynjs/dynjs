@@ -24,7 +24,7 @@
         <version.fest-assert>1.4</version.fest-assert>
         <version.guava>14.0.1</version.guava>
         <version.invokebinder>1.2</version.invokebinder>
-        <version.jackson-core-asl>1.9.9</version.jackson-core-asl>
+        <version.jackson>2.2.2</version.jackson>
         <version.jitescript>0.4.0</version.jitescript>
         <version.jnr-posix>3.0.1</version.jnr-posix>
         <version.joni>2.1.4</version.joni>
@@ -174,9 +174,15 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${version.jackson-core-asl}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${version.jackson}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${version.jackson}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -213,9 +219,9 @@
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>3.6.1.Final</version>
-            <scope>test</scope>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.20.Final</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.github.akiellor.jasmine</groupId>

@@ -5,19 +5,24 @@ package org.dynjs.debugger.requests;
  */
 public abstract class AbstractResponse implements Response {
 
-    private final String command;
+    private final Request request;
     private final boolean success;
     private final boolean running;
 
-    public AbstractResponse(String command, boolean success, boolean running) {
-        this.command = command;
+    public AbstractResponse(Request request, boolean success, boolean running) {
+        this.request = request;
         this.success = success;
         this.running = running;
     }
 
     @Override
+    public Request getRequest() {
+        return this.request;
+    }
+
+    @Override
     public String getCommand() {
-        return this.command;
+        return this.request.getCommand();
     }
 
     @Override
