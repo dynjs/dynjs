@@ -67,7 +67,7 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(new ByteBufInputStream((ByteBuf) jsonBuf));
             String type = node.get("type").asText();
-            if ("command".equals(type)) {
+            if ("request".equals(type)) {
                 String commandStr = node.get("command").asText();
                 AbstractCommand command = this.debugger.getCommand(commandStr);
                 if (command != null) {

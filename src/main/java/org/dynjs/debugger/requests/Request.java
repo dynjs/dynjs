@@ -8,4 +8,5 @@ import org.dynjs.debugger.Message;
 public interface Request<T extends Response> extends Message {
 
     String getCommand();
+    int getSeq();
 }

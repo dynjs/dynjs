@@ -1,25 +1,24 @@
 package org.dynjs.debugger;
 
-import org.dynjs.debugger.agent.handlers.ContinueHandler;
+import io.netty.channel.ChannelHandler;
 import org.dynjs.debugger.commands.AbstractCommand;
-import org.dynjs.debugger.commands.ContinueCommand;
+import org.dynjs.debugger.commands.Source;
 import org.dynjs.debugger.events.BreakEvent;
 import org.dynjs.debugger.events.ScriptInfo;
-import org.dynjs.debugger.requests.ContinueRequest;
-import org.dynjs.debugger.requests.ContinueResponse;
 import org.dynjs.debugger.requests.Request;
 import org.dynjs.debugger.requests.Response;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Bob McWhirter
  */
 public class Debugger implements DebugConnector {
+
+    private String fileName;
 
     public enum StepAction {
         RUN,
@@ -33,10 +32,12 @@ public class Debugger implements DebugConnector {
     private StepAction mode;
 
     private Map<String, AbstractCommand> commands = new HashMap<>();
+    private List<ChannelHandler> handlers = new ArrayList<>();
 
     public Debugger() {
         this.mode = StepAction.RUN;
-        register("continue", new ContinueCommand(this));
+        register("source", new Source(this));
+        //register("continue", new ContinueCommand(this));
     }
 
     void register(String name, AbstractCommand command) {
@@ -45,6 +46,10 @@ public class Debugger implements DebugConnector {
 
     public AbstractCommand getCommand(String command) {
         return this.commands.get(command);
+    }
+
+    public Collection<AbstractCommand> getCommands() {
+        return this.commands.values();
     }
 
     public void setWaitConnect(boolean waitConnect) {
@@ -56,16 +61,20 @@ public class Debugger implements DebugConnector {
     }
 
     public synchronized void setListener(DebugListener listener) {
-        System.err.println( this + " // " + listener );
         this.listener = listener;
         this.notifyAll();
     }
 
     @Override
     public void debug(ExecutionContext context, Statement statement) throws InterruptedException {
+        this.fileName = statement.getPosition().getFileName();
         if (shouldBreak(statement)) {
-            doBreak(context);
+            doBreak(context, statement);
         }
+    }
+
+    public String getFileName() {
+        return this.fileName;
     }
 
     public <REQUEST extends Request<RESPONSE>, RESPONSE extends Response> RESPONSE handle(REQUEST request) {
@@ -76,25 +85,21 @@ public class Debugger implements DebugConnector {
         return null;
     }
 
-    private void doBreak(ExecutionContext context) throws InterruptedException {
+    private void doBreak(ExecutionContext context, Statement statement) throws InterruptedException {
 
         synchronized (this) {
             while (this.listener == null) {
-                System.err.println( "awaiting connect" );
                 this.wait();
             }
         }
-        System.err.println("blocking, send break");
-
-        ScriptInfo script = new ScriptInfo( context.getFileName() );
-        this.listener.on(new BreakEvent(this, context.getLineNumber(), context.getColumnNumber(), script));
+        ScriptInfo script = new ScriptInfo( statement.getPosition().getFileName() );
+        this.listener.on(new BreakEvent(this, statement.getPosition().getLine()-1, statement.getPosition().getColumn(), script));
         synchronized (this.lock) {
             while (this.lock.get()) {
                 this.lock.wait();
             }
             this.lock.set(false);
         }
-        System.err.println("running");
     }
 
     private boolean shouldBreak(Statement statement) {
@@ -102,11 +107,9 @@ public class Debugger implements DebugConnector {
             synchronized (this.lock) {
                 this.lock.set(true);
             }
-            System.err.println("should break");
             return true;
         }
 
-        System.err.println("should not break");
         return false;
     }
 

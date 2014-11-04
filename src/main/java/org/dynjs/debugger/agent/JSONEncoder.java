@@ -14,6 +14,7 @@ import org.dynjs.debugger.events.Event;
 import org.dynjs.debugger.events.EventWrapper;
 import org.dynjs.debugger.requests.Request;
 import org.dynjs.debugger.requests.Response;
+import org.dynjs.debugger.requests.ResponseWrapper;
 
 import java.nio.charset.Charset;
 
@@ -54,7 +55,7 @@ public class JSONEncoder extends ChannelDuplexHandler {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if ( msg instanceof Response || msg instanceof EventWrapper) {
+        if ( msg instanceof ResponseWrapper || msg instanceof EventWrapper) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 String json = mapper.writeValueAsString(msg);

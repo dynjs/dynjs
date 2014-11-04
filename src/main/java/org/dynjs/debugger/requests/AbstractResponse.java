@@ -1,22 +1,26 @@
 package org.dynjs.debugger.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author Bob McWhirter
  */
-public abstract class AbstractResponse implements Response {
+public abstract class AbstractResponse<T extends Request> implements Response {
 
-    private final Request request;
+    private final T request;
     private final boolean success;
     private final boolean running;
 
-    public AbstractResponse(Request request, boolean success, boolean running) {
+    public AbstractResponse(T request, boolean success, boolean running) {
         this.request = request;
         this.success = success;
         this.running = running;
     }
 
     @Override
-    public Request getRequest() {
+    @JsonIgnore
+    public T getRequest() {
         return this.request;
     }
 
