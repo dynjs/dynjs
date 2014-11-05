@@ -5,7 +5,7 @@ import org.dynjs.parser.Statement;
 /**
  * @author Bob McWhirter
  */
-public class BreakPoint {
+public class LineBreakPoint {
 
     private final long number;
 
@@ -13,7 +13,7 @@ public class BreakPoint {
     private long line = -1;
     private long column = -1;
 
-    public BreakPoint(long number, String fileName, long line, long column) {
+    public LineBreakPoint(long number, String fileName, long line, long column) {
         this.number = number;
         this.fileName = fileName;
         this.line = line;

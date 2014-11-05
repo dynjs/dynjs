@@ -38,7 +38,7 @@ public class Debugger implements DebugConnector {
     private List<ChannelHandler> handlers = new ArrayList<>();
 
     private AtomicLong breakPointCounter = new AtomicLong();
-    private List<BreakPoint> breakPoints = new ArrayList<>();
+    private List<LineBreakPoint> breakPoints = new ArrayList<>();
 
     public Debugger() {
         this.mode = StepAction.RUN;
@@ -88,7 +88,7 @@ public class Debugger implements DebugConnector {
 
     @Override
     public long setBreakPoint(String fileName, long line, long column) {
-        BreakPoint breakPoint = new BreakPoint(this.breakPointCounter.incrementAndGet(), fileName, line, column);
+        LineBreakPoint breakPoint = new LineBreakPoint(this.breakPointCounter.incrementAndGet(), fileName, line, column);
         this.breakPoints.add(breakPoint);
         return breakPoint.getNumber();
     }
@@ -125,7 +125,7 @@ public class Debugger implements DebugConnector {
 
     private boolean shouldBreak(Statement statement) {
         if (this.mode == Debugger.StepAction.RUN) {
-            for (BreakPoint each : this.breakPoints) {
+            for (LineBreakPoint each : this.breakPoints) {
                 if (each.shouldBreak(statement)) {
                     synchronized (this.lock) {
                         this.lock.set(true);
