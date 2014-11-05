@@ -17,6 +17,6 @@ public class InterpretingProgramCompiler implements ProgramCompiler {
     }
 
     public JSProgram compile(final CompilationContext context, final ProgramTree body, boolean strict) {
-        return new JavascriptProgram(context.getBlockManager(), new InterpretedBasicBlock(this.factory, body, strict));
+        return new JavascriptProgram( body.getSource(), context.getBlockManager(), new InterpretedBasicBlock(this.factory, body, strict));
     }
 }

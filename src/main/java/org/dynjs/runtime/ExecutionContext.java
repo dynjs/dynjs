@@ -6,6 +6,7 @@ import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.debugger.DebugConnector;
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.js.DebuggerAPI;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.ir.IRJSFunction;
 import org.dynjs.ir.JITCompiler;
@@ -21,6 +22,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class ExecutionContext implements CompilationContext {
+
 
     public static ExecutionContext createGlobalExecutionContext(DynJS runtime) {
         // 10.4.1.1
@@ -47,6 +49,7 @@ public class ExecutionContext implements CompilationContext {
         return createGlobalExecutionContext(runtime);
     }
 
+    private JSProgram program;
     private DynJS runtime;
     private ExecutionContext parent;
     private LexicalEnvironment lexicalEnvironment;
@@ -133,13 +136,14 @@ public class ExecutionContext implements CompilationContext {
     }
 
     public boolean isDebug() {
-        return this.debugger != null;
+        return getDebugger() != null;
     }
 
     public void debug(Statement statement) {
-        if ( this.debugger != null ) {
+        DebugConnector d = getDebugger();
+        if (d != null) {
             try {
-                this.debugger.debug( this, statement );
+                d.debug(this, statement);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -181,17 +185,52 @@ public class ExecutionContext implements CompilationContext {
 
     // ----------------------------------------------------------------------
 
+    private void setupDebugger(DebugConnector debugger) {
+        if (debugger == null) {
+            return;
+        }
+
+        this.debugger = debugger;
+        JSObject globalObject = getGlobalContext().getObject();
+        String debuggerName = getRuntime().getConfig().getExposeDebugAs();
+        Object currentDebugger = globalObject.get(this, debuggerName);
+        if (!(currentDebugger instanceof DebuggerAPI)) {
+            DebuggerAPI api = new DebuggerAPI(getGlobalContext(), debugger);
+            globalObject.put(this, debuggerName, api, false);
+        }
+    }
+
+    public DebugConnector getDebugger() {
+        if (this.debugger != null) {
+            return this.debugger;
+        }
+        if (this.parent != null) {
+            return this.parent.getDebugger();
+        }
+        return null;
+    }
+
+    public JSProgram getProgram() {
+        if ( this.program != null ) {
+            return this.program;
+        }
+
+        if (this.parent != null ) {
+            return this.parent.getProgram();
+        }
+
+        return null;
+    }
+
     public Completion execute(JSProgram program) {
-        return execute( program, null );
+        return execute(program, null);
     }
 
     public Completion execute(JSProgram program, DebugConnector debugger) {
+        this.program = program;
         BlockManager originalBlockManager = this.blockManager;
-        DebugConnector originalDebugger = this.debugger;
         try {
-            if ( debugger != null ) {
-                this.debugger = debugger;
-            }
+            setupDebugger(debugger);
             this.blockManager = program.getBlockManager();
             ThreadContextManager.pushContext(this);
             setStrict(program.isStrict());
@@ -205,20 +244,17 @@ public class ExecutionContext implements CompilationContext {
         } finally {
             ThreadContextManager.popContext();
             this.blockManager = originalBlockManager;
-            this.debugger = originalDebugger;
         }
     }
 
     public Object eval(JSProgram eval, boolean direct) {
-        return eval( eval, direct, null );
+        return eval(eval, direct, null);
     }
+
     public Object eval(JSProgram eval, boolean direct, Debugger debugger) {
         BlockManager originalBlockManager = this.blockManager;
-        DebugConnector originalDebugger = this.debugger;
         try {
-            if ( debugger != null ) {
-                this.debugger = debugger ;
-            }
+            setupDebugger(debugger);
             ExecutionContext evalContext = createEvalExecutionContext(eval, direct);
             evalContext.blockManager = eval.getBlockManager();
             ThreadContextManager.pushContext(evalContext);
@@ -227,7 +263,6 @@ public class ExecutionContext implements CompilationContext {
         } finally {
             ThreadContextManager.popContext();
             this.blockManager = originalBlockManager;
-            this.debugger = originalDebugger;
         }
     }
 
@@ -249,18 +284,18 @@ public class ExecutionContext implements CompilationContext {
                 return value;
             } catch (ThrowException e) {
                 throw e;
-            //} catch (Throwable e) {
+                //} catch (Throwable e) {
 //                throw new ThrowException(fnContext, e);
             }
         } catch (ThrowException t) {
             if (t.getCause() != null) {
                 recordThrow(t.getCause(), fnContext);
-            } else if ( t.getValue() instanceof Throwable ){
+            } else if (t.getValue() instanceof Throwable) {
                 recordThrow((Throwable) t.getValue(), fnContext);
             }
             throw t;
         } catch (Throwable t) {
-            recordThrow( t, fnContext );
+            recordThrow(t, fnContext);
             throw t;
         } finally {
             ThreadContextManager.popContext();
@@ -414,21 +449,21 @@ public class ExecutionContext implements CompilationContext {
 
     public Completion executeCatch(BasicBlock block, String identifier, Object thrown) {
         // 12.14
-        if (thrown instanceof Throwable && this.throwStack != null && ! this.throwStack.isEmpty()) {
-            StackTraceElement[] originalStack = ((Throwable)thrown).getStackTrace();
+        if (thrown instanceof Throwable && this.throwStack != null && !this.throwStack.isEmpty()) {
+            StackTraceElement[] originalStack = ((Throwable) thrown).getStackTrace();
             List<StackTraceElement> newStack = new ArrayList<>();
-            for ( int i = 0 ; i < originalStack.length ; ++i ) {
+            for (int i = 0; i < originalStack.length; ++i) {
                 String cn = originalStack[i].getClassName();
-                if (cn.startsWith("org.dynjs") || cn.startsWith( "java.lang.invoke" )) {
+                if (cn.startsWith("org.dynjs") || cn.startsWith("java.lang.invoke")) {
                     break;
                 }
-                newStack.add( originalStack[i] );
+                newStack.add(originalStack[i]);
             }
             int throwLen = this.throwStack.size();
-            for ( int i = throwLen - 1 ; i >= 0 ; --i ) {
-                newStack.add( throwStack.get(i).toStackTraceElement() );
+            for (int i = throwLen - 1; i >= 0; --i) {
+                newStack.add(throwStack.get(i).toStackTraceElement());
             }
-            ((Throwable)thrown).setStackTrace(newStack.toArray( new StackTraceElement[0]));
+            ((Throwable) thrown).setStackTrace(newStack.toArray(new StackTraceElement[0]));
         }
         LexicalEnvironment oldEnv = this.lexicalEnvironment;
         LexicalEnvironment catchEnv = LexicalEnvironment.newDeclarativeEnvironment(oldEnv);
@@ -611,11 +646,11 @@ public class ExecutionContext implements CompilationContext {
     }
 
     public BlockManager getBlockManager() {
-        if ( this.blockManager != null ) {
+        if (this.blockManager != null) {
             return this.blockManager;
         }
 
-        if ( this.parent != null ) {
+        if (this.parent != null) {
             return this.parent.getBlockManager();
         }
 
@@ -631,7 +666,7 @@ public class ExecutionContext implements CompilationContext {
     }
 
     public Entry retrieveBlockEntry(int statementNumber) {
-        return getBlockManager().retrieve( statementNumber );
+        return getBlockManager().retrieve(statementNumber);
     }
 
     public JSObject createTypeError(String message) {
@@ -676,8 +711,8 @@ public class ExecutionContext implements CompilationContext {
 
     public StackElement getStackElement() {
         String locationContext = this.debugContext;
-        if ( locationContext.equals( "<anonymous>" ) ) {
-            if ( this.functionReference != null && this.functionReference instanceof Reference ) {
+        if (locationContext.equals("<anonymous>")) {
+            if (this.functionReference != null && this.functionReference instanceof Reference) {
                 locationContext = ((Reference) this.functionReference).getReferencedName();
             }
         }

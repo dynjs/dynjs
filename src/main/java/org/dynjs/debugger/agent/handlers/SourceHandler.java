@@ -3,6 +3,7 @@ package org.dynjs.debugger.agent.handlers;
 import io.netty.channel.ChannelHandlerContext;
 import org.dynjs.debugger.requests.SourceRequest;
 import org.dynjs.debugger.requests.SourceResponse;
+import org.dynjs.runtime.JSProgram;
 
 import java.io.*;
 
@@ -16,24 +17,25 @@ public class SourceHandler extends DebuggerChannelHandler<SourceRequest> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, SourceRequest request) throws Exception {
-        InputStream in = tryClasspath();
+        JSProgram program = this.debugger.getCurrentContext().getProgram();
 
-        if (in == null) {
-            in = tryFilesystem();
-        }
-
-        if (in == null) {
-            SourceResponse response = new SourceResponse(request, "", false, false);
+        if ( program == null || program.getSource() == null ) {
+            SourceResponse response = new SourceResponse(request, "", -1, -1, false, false);
             ctx.writeAndFlush(response);
             return;
         }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        Reader in = program.getSource().openReader();
+        BufferedReader reader = new BufferedReader(in);
 
         int fromLine = request.getFromLine();
         int toLine = request.getToLine();
 
         StringBuilder builder = new StringBuilder();
+
+        int actualFromLine = -1;
+        int actualToLine = -1;
 
         try {
             int curLine = 0;
@@ -43,32 +45,20 @@ public class SourceHandler extends DebuggerChannelHandler<SourceRequest> {
                     break;
                 }
                 if (curLine >= fromLine) {
+                    if (actualFromLine < 0) {
+                        actualFromLine = curLine;
+                    }
                     builder.append(line).append("\n");
                 }
+                actualToLine = curLine;
                 ++curLine;
             }
 
-            SourceResponse response = new SourceResponse(request, builder.toString(), true, false);
+            SourceResponse response = new SourceResponse(request, builder.toString(), actualFromLine, actualToLine, true, false);
             ctx.writeAndFlush(response);
         } finally {
             reader.close();
         }
-    }
-
-    private InputStream tryClasspath() {
-        String fileName = this.debugger.getFileName();
-
-        return this.debugger.getClass().getClassLoader().getResourceAsStream(fileName);
-    }
-
-    private InputStream tryFilesystem() throws FileNotFoundException {
-        File file = new File(this.debugger.getFileName());
-
-        if (file.exists()) {
-            return new FileInputStream(file);
-        }
-
-        return null;
     }
 
 }

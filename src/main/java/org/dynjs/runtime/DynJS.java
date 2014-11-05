@@ -6,6 +6,8 @@ import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
+import org.dynjs.runtime.source.ClassLoaderSourceProvider;
+import org.dynjs.runtime.source.FileSourceProvider;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
 import java.io.*;
@@ -27,7 +29,7 @@ public class DynJS {
     }
 
     public DynJS(Config config) {
-        this( config, new DynObject() );
+        this(config, new DynObject());
     }
 
     public DynJS(Config config, JSObject globalObject) {
@@ -35,7 +37,7 @@ public class DynJS {
         this.compiler = new JSCompiler(config);
         this.jitCompiler = new JITCompiler();
         this.globalContext = GlobalContext.newGlobalContext(this, globalObject);
-        this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext( this );
+        this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext(this);
         loadKernel();
     }
 
@@ -46,15 +48,11 @@ public class DynJS {
             switch (this.config.getKernelMode()) {
                 case INTERNAL:
                     // Load pure-JS kernel
-                    this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+                    //this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+                    this.evaluate(new ClassLoaderSourceProvider(getClass().getClassLoader(), "dynjs/kernel.js"));
                     break;
                 case EXTERNAL:
-                    try {
-                        FileInputStream stream = new FileInputStream("src/main/resources/dynjs/kernel.js");
-                        this.evaluate(stream);
-                    } catch (FileNotFoundException e) {
-                        throw new DynJSException(e);
-                    }
+                    this.evaluate(new FileSourceProvider(new File("src/main/resources/dynjs/kernel.js")));
                     break;
             }
         }
@@ -77,7 +75,7 @@ public class DynJS {
     }
 
     public Runner newRunner(boolean debug) {
-        return new Runner(this).debug( debug );
+        return new Runner(this).debug(debug);
     }
 
     public Runner newRunner() {
@@ -91,15 +89,15 @@ public class DynJS {
     // ----------------------------------------------------------------------
 
     public Object execute(String source) {
-        return newRunner().withContext( this.defaultExecutionContext ).withSource(source).execute();
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).execute();
     }
 
     public Object evaluate(String source) {
-        return newRunner().withContext( this.defaultExecutionContext ).withSource(source).evaluate();
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).evaluate();
     }
 
-    public Object evaluate(InputStream in) {
-        return newRunner().withContext( this.defaultExecutionContext ).withSource(new InputStreamReader(in)).evaluate();
+    public Object evaluate(SourceProvider source) {
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).evaluate();
     }
 
     public ExecutionContext getDefaultExecutionContext() {

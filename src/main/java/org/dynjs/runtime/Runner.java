@@ -8,6 +8,7 @@ import org.dynjs.parser.js.SyntaxError;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.concurrent.Executor;
 
@@ -42,7 +43,7 @@ public class Runner {
     }
 
     public Runner forceStrict(boolean forceStrict) {
-        this.compiler.forceStrict( forceStrict );
+        this.compiler.forceStrict(forceStrict);
         return this;
     }
 
@@ -66,47 +67,59 @@ public class Runner {
     }
 
     public Runner withSource(String source) {
-        this.compiler.withSource( source );
+        this.compiler.withSource(source);
         return this;
     }
 
+    /*
     public Runner withSource(Reader source) {
         this.compiler.withSource( source );
         return this;
     }
+    */
+
+    public Runner withSource(SourceProvider source) {
+        this.compiler.withSource(source);
+        return this;
+    }
 
     public Runner withSource(File source) throws FileNotFoundException {
-        this.compiler.withSource( source );
+        this.compiler.withSource(source);
         return this;
     }
 
     public Runner withContext(ExecutionContext context) {
         this.context = context;
-        this.compiler.withContext( context );
+        this.compiler.withContext(context);
         return this;
     }
 
     public Runner withFileName(String fileName) {
-        this.compiler.withFileName( fileName );
+        this.compiler.withFileName(fileName);
         return this;
     }
 
     public Runner debug(boolean debug) {
-        if ( debug ) {
+        if (debug) {
             this.debugger = new Debugger();
         }
         return this;
     }
 
+    public Runner withDebugger(Debugger debugger) {
+        this.debugger = debugger;
+        return this;
+    }
+
     protected ExecutionContext executionContext() {
-        if ( this.context == null ) {
+        if (this.context == null) {
             return this.runtime.getDefaultExecutionContext();
         }
         return this.context;
     }
 
-    protected JSProgram program() {
-        if ( this.source != null ) {
+    protected JSProgram program() throws IOException {
+        if (this.source != null) {
             return this.source;
         }
 
@@ -126,7 +139,7 @@ public class Runner {
     }
 
     public synchronized void join() throws InterruptedException {
-        while ( this.state != State.COMPLETE ) {
+        while (this.state != State.COMPLETE) {
             wait();
         }
     }
@@ -140,26 +153,26 @@ public class Runner {
     }
 
     public synchronized Object execute() {
-        if ( this.state != State.COMPLETE ) {
-            throw new DynJSException( "Running is currently in-use" );
+        if (this.state != State.COMPLETE) {
+            throw new DynJSException("Running is currently in-use");
         }
 
         setup();
 
-        if ( this.executor == null ) {
+        if (this.executor == null) {
             this.result = doExecute();
             return this.result;
         }
 
         this.state = State.RUNNING;
 
-        this.executor.execute( new Runnable() {
+        this.executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Runner.this.result = doExecute();
                 } finally {
-                    synchronized ( Runner.this ) {
+                    synchronized (Runner.this) {
                         Runner.this.state = State.COMPLETE;
                         Runner.this.notifyAll();
                     }
@@ -172,7 +185,7 @@ public class Runner {
 
     private Object doExecute() {
         try {
-            Completion completion = executionContext().execute(program(), this.debugger );
+            Completion completion = executionContext().execute(program(), this.debugger);
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
             }
@@ -185,29 +198,31 @@ public class Runner {
             throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
             throw new ThrowException(executionContext(), e);
+        } catch (IOException e) {
+            throw new ThrowException(executionContext(), e);
         }
     }
 
     public synchronized Object evaluate() {
-        if ( this.state != State.COMPLETE ) {
-            throw new DynJSException( "Running is currently in-use" );
+        if (this.state != State.COMPLETE) {
+            throw new DynJSException("Running is currently in-use");
         }
 
         setup();
 
-        if ( this.executor == null ) {
+        if (this.executor == null) {
             this.result = doEvaluate();
             return this.result;
         }
 
         this.state = State.RUNNING;
-        this.executor.execute( new Runnable() {
+        this.executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Runner.this.result = doEvaluate();
                 } finally {
-                    synchronized ( Runner.this ) {
+                    synchronized (Runner.this) {
                         Runner.this.state = State.COMPLETE;
                         Runner.this.notifyAll();
                     }
@@ -225,9 +240,10 @@ public class Runner {
             throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
             throw new ThrowException(executionContext(), e);
+        } catch (IOException e) {
+            throw new ThrowException(executionContext(), e);
         }
     }
-
 
 
 }

@@ -1,5 +1,6 @@
 package org.dynjs.runtime;
 
+import org.dynjs.debugger.js.DebuggerAPI;
 import org.dynjs.runtime.builtins.*;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.*;
@@ -125,7 +126,6 @@ public class GlobalContext {
         defineGlobalProperty("io",       new JavaPackage(this, "io"), true);
 
         defineGlobalProperty("System",   System.class, true);
-
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {

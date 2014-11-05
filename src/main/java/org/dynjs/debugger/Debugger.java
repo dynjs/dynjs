@@ -12,13 +12,13 @@ import org.dynjs.runtime.ExecutionContext;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Bob McWhirter
  */
 public class Debugger implements DebugConnector {
 
-    private String fileName;
 
     public enum StepAction {
         RUN,
@@ -27,12 +27,18 @@ public class Debugger implements DebugConnector {
         OUT
     }
 
+    private String fileName;
+    private ExecutionContext currentContext;
+
     private final AtomicBoolean lock = new AtomicBoolean();
     private DebugListener listener;
     private StepAction mode;
 
     private Map<String, AbstractCommand> commands = new HashMap<>();
     private List<ChannelHandler> handlers = new ArrayList<>();
+
+    private AtomicLong breakPointCounter = new AtomicLong();
+    private List<BreakPoint> breakPoints = new ArrayList<>();
 
     public Debugger() {
         this.mode = StepAction.RUN;
@@ -65,12 +71,26 @@ public class Debugger implements DebugConnector {
         this.notifyAll();
     }
 
+    public ExecutionContext getCurrentContext() {
+        return this.currentContext;
+    }
+
     @Override
     public void debug(ExecutionContext context, Statement statement) throws InterruptedException {
-        this.fileName = statement.getPosition().getFileName();
+        this.currentContext = context;
+        if (statement.getPosition() != null) {
+            this.fileName = statement.getPosition().getFileName();
+        }
         if (shouldBreak(statement)) {
             doBreak(context, statement);
         }
+    }
+
+    @Override
+    public long setBreakPoint(String fileName, long line, long column) {
+        BreakPoint breakPoint = new BreakPoint(this.breakPointCounter.incrementAndGet(), fileName, line, column);
+        this.breakPoints.add(breakPoint);
+        return breakPoint.getNumber();
     }
 
     public String getFileName() {
@@ -92,8 +112,9 @@ public class Debugger implements DebugConnector {
                 this.wait();
             }
         }
-        ScriptInfo script = new ScriptInfo( statement.getPosition().getFileName() );
-        this.listener.on(new BreakEvent(this, statement.getPosition().getLine()-1, statement.getPosition().getColumn(), script));
+        ScriptInfo script = new ScriptInfo(statement.getPosition().getFileName());
+        System.err.println( "BREAK ON " + ( statement.getPosition().getLine() -1 ) );
+        this.listener.on(new BreakEvent(this, statement.getPosition().getLine() - 1, statement.getPosition().getColumn(), script));
         synchronized (this.lock) {
             while (this.lock.get()) {
                 this.lock.wait();
@@ -103,11 +124,15 @@ public class Debugger implements DebugConnector {
     }
 
     private boolean shouldBreak(Statement statement) {
-        if (this.mode != Debugger.StepAction.RUN) {
-            synchronized (this.lock) {
-                this.lock.set(true);
+        if (this.mode == Debugger.StepAction.RUN) {
+            for (BreakPoint each : this.breakPoints) {
+                if (each.shouldBreak(statement)) {
+                    synchronized (this.lock) {
+                        this.lock.set(true);
+                    }
+                    return true;
+                }
             }
-            return true;
         }
 
         return false;

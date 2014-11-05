@@ -6,10 +6,14 @@ package org.dynjs.debugger.requests;
 public class SourceResponse extends AbstractResponse<SourceRequest> {
 
     private final String source;
+    private final int fromLine;
+    private final int toLine;
 
-    public SourceResponse(SourceRequest request, String source, boolean success, boolean running) {
+    public SourceResponse(SourceRequest request, String source, int fromLine, int toLine, boolean success, boolean running) {
         super(request, success, running);
         this.source = source;
+        this.fromLine = fromLine;
+        this.toLine = toLine;
     }
 
     public String getSource() {
@@ -17,10 +21,10 @@ public class SourceResponse extends AbstractResponse<SourceRequest> {
     }
 
     public int getFromLine() {
-        return getRequest().getFromLine();
+        return this.fromLine;
     }
 
     public int getToLine() {
-        return getRequest().getToLine();
+        return this.toLine;
     }
 }

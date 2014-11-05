@@ -16,6 +16,11 @@ public class NullProgram implements JSProgram {
     }
 
     @Override
+    public SourceProvider getSource() {
+        return null;
+    }
+
+    @Override
     public Completion execute(ExecutionContext context) {
         return Completion.createNormal();
     }

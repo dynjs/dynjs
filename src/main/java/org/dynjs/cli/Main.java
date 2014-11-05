@@ -24,6 +24,7 @@ import com.headius.options.Option;
 import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.DefaultCompilationContext;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.Runner;
 import org.kohsuke.args4j.CmdLineException;
@@ -98,7 +99,11 @@ public class Main {
                 executeSource(getArguments().getEval());
                 return;
             } else if (getArguments().getFilename() != null) {
-                executeFile(new File(getArguments().getFilename()));
+                try {
+                    executeFile(new File(getArguments().getFilename()));
+                } catch (IOException e) {
+                    getOutputStream().println("File " + getArguments().getFilename() + " not found");
+                }
                 return;
             } else {
                 getOutputStream().println("please specify source to eval or file");
@@ -119,7 +124,7 @@ public class Main {
         runner.execute();
     }
 
-    private void showAST(File file) {
+    private void showAST(File file) throws IOException {
         try {
             getOutputStream().println(runtime.newCompiler().withSource(file).parse().dump("  "));
         } catch (FileNotFoundException e) {
@@ -146,9 +151,11 @@ public class Main {
 
     private void executeFile(File file) throws IOException {
         try {
-            executeRunner(runtime.newRunner().withSource( file ));
-        } catch (FileNotFoundException e) {
-            getOutputStream().println("File " + file.getName() + " not found");
+            executeRunner(runtime.newRunner().withSource(file));
+        } catch (ThrowException e) {
+            if ( e.getCause() instanceof IOException ) {
+                throw (IOException) e.getCause();
+            }
         }
     }
 

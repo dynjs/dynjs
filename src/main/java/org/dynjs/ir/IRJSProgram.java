@@ -17,20 +17,19 @@ package org.dynjs.ir;
 
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.Completion;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSProgram;
+import org.dynjs.runtime.*;
 
 import java.util.List;
 
 public class IRJSProgram implements JSProgram {
 
+    private final SourceProvider source;
     private final BlockManager blockManager;
     private Scope scope;
     private Instruction[] instructions;
 
-    public IRJSProgram(BlockManager blockManager, Scope scope) {
+    public IRJSProgram(SourceProvider source, BlockManager blockManager, Scope scope) {
+        this.source = source;
         this.blockManager = blockManager;
         this.scope = scope;
         this.instructions = scope.prepareForInterpret();
@@ -40,6 +39,11 @@ public class IRJSProgram implements JSProgram {
         for (int i = 0; i < size; i++) {
             System.out.println("" + instructions[i]);
         }
+    }
+
+    @Override
+    public SourceProvider getSource() {
+        return this.source;
     }
 
     @Override

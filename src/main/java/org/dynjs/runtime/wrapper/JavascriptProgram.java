@@ -8,12 +8,18 @@ import org.dynjs.runtime.*;
 
 public class JavascriptProgram implements JSProgram {
 
+    private SourceProvider source;
     private BlockManager blockManager;
     private BasicBlock code;
 
-    public JavascriptProgram(BlockManager blockManager, BasicBlock code) {
+    public JavascriptProgram(SourceProvider source, BlockManager blockManager, BasicBlock code) {
+        this.source = source;
         this.blockManager = blockManager;
         this.code = code;
+    }
+
+    public SourceProvider getSource() {
+        return this.source;
     }
 
     @Override
