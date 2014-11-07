@@ -1,12 +1,11 @@
 package org.dynjs.debugger.requests;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.dynjs.debugger.HandleSerializer;
+import org.dynjs.debugger.agent.HandleSerializer;
 
 /**
  * @author Bob McWhirter
  */
-@JsonSerialize(using=HandleSerializer.class)
 public class EvaluateResponse extends AbstractResponse<EvaluateRequest> {
 
     private final Object result;
