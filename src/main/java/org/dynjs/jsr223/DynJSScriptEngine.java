@@ -1,9 +1,7 @@
 package org.dynjs.jsr223;
 
-import org.dynjs.Config;
-import org.dynjs.runtime.*;
 import org.dynjs.runtime.Compiler;
-import org.dynjs.runtime.builtins.DynJSBuiltin;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.dynjs.runtime.linker.java.jsimpl.JSJavaImplementationManager;
 import org.dynjs.runtime.source.ReaderSourceProvider;

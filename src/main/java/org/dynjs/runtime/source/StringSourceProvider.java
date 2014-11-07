@@ -18,4 +18,9 @@ public class StringSourceProvider implements SourceProvider {
     public Reader openReader() throws IOException {
         return new StringReader( this.source );
     }
+
+    public String toString() {
+        return "[StringSourceProvider: " + source.substring(0, 200) + "...]";
+
+    }
 }

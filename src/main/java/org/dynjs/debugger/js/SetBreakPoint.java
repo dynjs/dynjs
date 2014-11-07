@@ -1,6 +1,5 @@
 package org.dynjs.debugger.js;
 
-import org.dynjs.debugger.DebugConnector;
 import org.dynjs.debugger.Debugger;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
@@ -8,16 +7,14 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 
-import java.util.Arrays;
-
 /**
  * @author Bob McWhirter
  */
 public class SetBreakPoint extends AbstractNonConstructorFunction {
 
-    private final DebugConnector debugger;
+    private final Debugger debugger;
 
-    public SetBreakPoint(GlobalContext context, DebugConnector debugger) {
+    public SetBreakPoint(GlobalContext context, Debugger debugger) {
         super(context);
         this.debugger = debugger;
     }

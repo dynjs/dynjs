@@ -46,9 +46,6 @@ public class ThrowStatement extends BaseStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug( this );
-        }
         Object throwable = getValue(this.get, context, getExpr().interpret(context, debug));
         throw new ThrowException(context, throwable);
     }

@@ -39,9 +39,6 @@ public class EmptyStatement extends BaseStatement {
     }
 
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug(this);
-        }
         return Completion.createNormal();
     }
 

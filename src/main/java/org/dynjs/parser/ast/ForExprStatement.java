@@ -85,9 +85,6 @@ public class ForExprStatement extends AbstractForStatement {
         Object v = null;
 
         while (true) {
-            if ( debug ) {
-                context.debug( this );
-            }
             if (test != null) {
 
                 if (!Types.toBoolean(getValue(this.testGet, context, test.interpret(context, debug)))) {

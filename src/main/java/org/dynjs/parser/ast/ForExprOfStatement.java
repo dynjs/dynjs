@@ -79,9 +79,6 @@ public class ForExprOfStatement extends AbstractForInStatement {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            if ( debug ) {
-                context.debug( this );
-            }
             Object lhsRef = getExpr().interpret(context, debug);
 
             if (lhsRef instanceof Reference) {

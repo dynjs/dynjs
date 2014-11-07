@@ -39,9 +39,6 @@ public class ContinueStatement extends BaseStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug(this);
-        }
         return(Completion.createContinue(getTarget()));
     }
 

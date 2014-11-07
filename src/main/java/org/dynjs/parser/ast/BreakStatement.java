@@ -31,9 +31,6 @@ public class BreakStatement extends BaseStatement {
     }
 
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug(this);
-        }
         return Completion.createBreak(getTarget());
     }
 }

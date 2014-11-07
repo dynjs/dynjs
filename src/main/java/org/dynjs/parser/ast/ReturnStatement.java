@@ -53,9 +53,6 @@ public class ReturnStatement extends BaseStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug( this );
-        }
         if (this.expr != null) {
             Object value = this.expr.interpret(context, debug);
             return (Completion.createReturn(getValue(this.get, context, value)));

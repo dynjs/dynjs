@@ -28,8 +28,9 @@ public class LineBreakPoint {
         return this.fileName;
     }
 
-    public boolean shouldBreak(Statement statement) {
-        if ( statement.getPosition() == null ) {
+    public boolean shouldBreak(Statement statement, Statement previousStatement) {
+
+        if (statement.getPosition() == null) {
             return false;
         }
 
@@ -38,8 +39,14 @@ public class LineBreakPoint {
         }
 
         if (this.line >= 0) {
-            if (statement.getPosition().getLine() -1 == this.line ) {
-                return true;
+            if (this.line <= statement.getPosition().getLine()) {
+                if (previousStatement == null) {
+                    return true;
+                }
+
+                return (this.line > (previousStatement.getPosition().getLine() - 1));
+            } else {
+                return false;
             }
         }
 

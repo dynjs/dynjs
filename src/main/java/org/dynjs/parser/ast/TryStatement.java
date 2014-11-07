@@ -54,10 +54,6 @@ public class TryStatement extends BaseStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug( this );
-        }
-
         Completion b = null;
         boolean finallyExecuted = false;
         try {

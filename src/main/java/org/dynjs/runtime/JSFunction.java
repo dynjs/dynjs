@@ -15,6 +15,8 @@ public interface JSFunction extends JSObject, JSCallable, JSCode {
 
     String getDebugContext();
 
+    void setSource(SourceProvider source);
+
     boolean isConstructor();
 
 }

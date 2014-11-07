@@ -3,6 +3,7 @@ package org.dynjs.debugger.agent;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelDuplexHandler;
@@ -10,6 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.dynjs.debugger.Debugger;
 import org.dynjs.debugger.commands.AbstractCommand;
+import org.dynjs.debugger.events.ConnectEvent;
 import org.dynjs.debugger.events.Event;
 import org.dynjs.debugger.events.EventWrapper;
 import org.dynjs.debugger.requests.Request;
@@ -31,45 +33,30 @@ public class JSONEncoder extends ChannelDuplexHandler {
         this.debugger = debugger;
     }
 
-    /*
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ByteBuf) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(new ByteBufInputStream((ByteBuf) msg));
-            String type = node.get("type").asText();
-            if ("command".equals(type)) {
-                String commandStr = node.get("command").asText();
-                AbstractCommand command = this.debugger.getCommand(commandStr);
-                if (command != null) {
-                    ObjectReader reader = mapper.reader().withValueToUpdate( command.newRequest() );
-                    Request request = reader.readValue(node);
-                    super.channelRead( ctx, request );
-                    return;
-                }
-            }
-        }
-        super.channelRead(ctx, msg);
-    }
-    */
-
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if ( msg instanceof ResponseWrapper || msg instanceof EventWrapper) {
+        if ( msg instanceof ResponseWrapper || msg instanceof EventWrapper ) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
                 String json = mapper.writeValueAsString(msg);
                 json += "\r\n";
-                byte[] jsonBytes = json.getBytes( UTF8 );
+                byte[] jsonBytes = json.getBytes(UTF8);
 
                 String headers = "Content-Length: " + jsonBytes.length + "\r\n\r\n";
                 ByteBuf buffer = ctx.alloc().buffer();
-                buffer.writeBytes(headers.getBytes( UTF8 ));
+                buffer.writeBytes(headers.getBytes(UTF8));
                 buffer.writeBytes(jsonBytes);
                 super.write(ctx, buffer, promise);
-            } catch ( Throwable t) {
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
+        } else if ( msg instanceof ConnectEvent ) {
+            System.err.println( "SENDING CONNECT" );
+            String headers = "Type: connect\r\nContent-Length: 0\r\n\r\n";
+            ByteBuf buffer = ctx.alloc().buffer();
+            buffer.writeBytes(headers.getBytes(UTF8));
+            super.write( ctx, buffer, promise );
         } else {
             super.write( ctx, msg, promise );
         }

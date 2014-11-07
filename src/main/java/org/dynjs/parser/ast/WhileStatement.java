@@ -69,10 +69,6 @@ public class WhileStatement extends AbstractIteratingStatement {
         Object v = null;
 
         while (true) {
-            if ( debug ) {
-                context.debug( this );
-            }
-
             Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context, debug)));
             if (testResult) {
                 // block.accept(context, this, strict);

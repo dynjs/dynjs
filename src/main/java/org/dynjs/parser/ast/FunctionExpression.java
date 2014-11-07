@@ -47,6 +47,7 @@ public class FunctionExpression extends AbstractExpression {
                 getDescriptor().getFormalParameterNames(),
                 getDescriptor().getBlock(),
                 getDescriptor().isStrict() || context.isStrict());
+        compiledFn.setSource( context.getSource() );
         return(compiledFn);
     }
 

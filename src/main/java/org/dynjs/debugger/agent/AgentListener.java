@@ -18,6 +18,6 @@ public class AgentListener implements DebugListener {
 
     @Override
     public void on(Event event) {
-        this.channel.writeAndFlush(new EventWrapper(event));
+        this.channel.writeAndFlush(event);
     }
 }

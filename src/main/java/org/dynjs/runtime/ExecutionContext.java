@@ -4,7 +4,6 @@ import org.dynjs.Clock;
 import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.JSCompiler;
-import org.dynjs.debugger.DebugConnector;
 import org.dynjs.debugger.Debugger;
 import org.dynjs.debugger.js.DebuggerAPI;
 import org.dynjs.exception.ThrowException;
@@ -49,7 +48,8 @@ public class ExecutionContext implements CompilationContext {
         return createGlobalExecutionContext(runtime);
     }
 
-    private JSProgram program;
+    private SourceProvider source;
+
     private DynJS runtime;
     private ExecutionContext parent;
     private LexicalEnvironment lexicalEnvironment;
@@ -74,7 +74,7 @@ public class ExecutionContext implements CompilationContext {
     private List<StackElement> throwStack;
 
     private BlockManager blockManager;
-    private DebugConnector debugger;
+    private Debugger debugger;
 
     public ExecutionContext(DynJS runtime, ExecutionContext parent, LexicalEnvironment lexicalEnvironment, LexicalEnvironment variableEnvironment, Object thisBinding, boolean strict) {
         this.runtime = runtime;
@@ -139,11 +139,11 @@ public class ExecutionContext implements CompilationContext {
         return getDebugger() != null;
     }
 
-    public void debug(Statement statement) {
-        DebugConnector d = getDebugger();
+    public void debug(Statement statement, Statement previousStatement) {
+        Debugger d = getDebugger();
         if (d != null) {
             try {
-                d.debug(this, statement);
+                d.debug(this, statement, previousStatement);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -185,7 +185,7 @@ public class ExecutionContext implements CompilationContext {
 
     // ----------------------------------------------------------------------
 
-    private void setupDebugger(DebugConnector debugger) {
+    private void setupDebugger(Debugger debugger) {
         if (debugger == null) {
             return;
         }
@@ -200,7 +200,7 @@ public class ExecutionContext implements CompilationContext {
         }
     }
 
-    public DebugConnector getDebugger() {
+    public Debugger getDebugger() {
         if (this.debugger != null) {
             return this.debugger;
         }
@@ -210,15 +210,14 @@ public class ExecutionContext implements CompilationContext {
         return null;
     }
 
-    public JSProgram getProgram() {
-        if ( this.program != null ) {
-            return this.program;
+    public SourceProvider getSource() {
+        if ( this.source != null ) {
+            return this.source;
         }
 
-        if (this.parent != null ) {
-            return this.parent.getProgram();
+        if ( this.parent != null ) {
+            return this.parent.getSource();
         }
-
         return null;
     }
 
@@ -226,15 +225,16 @@ public class ExecutionContext implements CompilationContext {
         return execute(program, null);
     }
 
-    public Completion execute(JSProgram program, DebugConnector debugger) {
-        this.program = program;
+    public Completion execute(JSProgram program, Debugger debugger) {
+        this.source = program.getSource();
+        this.fileName = program.getFileName();
+        //System.err.println( this.fileName + " >> " + this.source );
         BlockManager originalBlockManager = this.blockManager;
         try {
             setupDebugger(debugger);
             this.blockManager = program.getBlockManager();
             ThreadContextManager.pushContext(this);
             setStrict(program.isStrict());
-            this.fileName = program.getFileName();
             performDeclarationBindingInstantiation(program);
             try {
                 return program.execute(this);
@@ -387,6 +387,7 @@ public class ExecutionContext implements CompilationContext {
 
     public ExecutionContext createEvalExecutionContext(JSProgram eval, boolean direct) {
         // 10.4.2 (with caller)
+        //System.err.println( "CREATE EVAL EXEC CONTEXT" );
         ExecutionContext context = null;
 
         Object evalThisBinding = null;
@@ -410,9 +411,11 @@ public class ExecutionContext implements CompilationContext {
         }
 
         context = new ExecutionContext(this.runtime, this, evalLexEnv, evalVarEnv, evalThisBinding, eval.isStrict());
+        context.source = eval.getSource();
+        context.fileName = eval.getFileName();
+        //System.err.println( context.fileName + " >> " + context.source );
         context.performFunctionDeclarationBindings(eval, true);
         context.performVariableDeclarationBindings(eval, true);
-        context.fileName = eval.getFileName();
         return context;
     }
 
@@ -436,13 +439,16 @@ public class ExecutionContext implements CompilationContext {
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
         ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
+        context.source = function.getSource();
+        context.fileName = function.getFileName();
         if (!(function instanceof IRJSFunction && !(function instanceof JITCompiler.CompiledFunction))) {
             context.performDeclarationBindingInstantiation(function, arguments);
         }
-        context.fileName = function.getFileName();
         // System.err.println( "debug null: " + ( function.getDebugContext() == null ? function : "not null") );
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
+        context.source = function.getSource();
+        //System.err.println( "fnContext: " + context.debugContext + " // " + context.source );
         context.setFunctionParameters(arguments);
         return context;
     }
@@ -615,6 +621,8 @@ public class ExecutionContext implements CompilationContext {
                 }
             }
             JSFunction function = getCompiler().compileFunction(this, identifier, each.getFormalParameters(), each.getBlock(), each.isStrict());
+            //System.err.println( identifier + " >> " + function.getFileName() + " >> " + getSource() );
+            function.setSource(code.getSource());
             function.setDebugContext(identifier);
             env.setMutableBinding(this, identifier, function, code.isStrict());
         }

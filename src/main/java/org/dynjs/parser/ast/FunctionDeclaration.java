@@ -58,9 +58,6 @@ public class FunctionDeclaration extends AbstractStatement {
 
     @Override
     public Completion interpret(ExecutionContext context, boolean debug) {
-        if ( debug ) {
-            context.debug( this );
-        }
         return Completion.createNormal();
     }
 

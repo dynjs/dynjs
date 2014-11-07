@@ -5,16 +5,7 @@ import java.util.List;
 import org.dynjs.parser.Statement;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.runtime.AbstractFunction;
-import org.dynjs.runtime.BasicBlock;
-import org.dynjs.runtime.BasicBlockDelegate;
-import org.dynjs.runtime.Completion;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalContext;
-import org.dynjs.runtime.LexicalEnvironment;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.interp.InterpretedBasicBlock;
 
 public class JavascriptFunction extends AbstractFunction {

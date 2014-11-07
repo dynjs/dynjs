@@ -73,9 +73,6 @@ public class DoWhileStatement extends AbstractIteratingStatement {
         Object v = null;
 
         while (true) {
-            if ( debug ) {
-                context.debug(this);
-            }
             Completion completion = invokeCompiledBlockStatement(context, "DoWhile", block);
             if (completion.value != null) {
                 v = completion.value;

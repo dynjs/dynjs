@@ -80,10 +80,6 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
         List<String> names = obj.getAllEnumerablePropertyNames().toList();
 
         for (String each : names) {
-            if ( debug ) {
-                context.debug( this );
-            }
-
             Reference varRef = context.resolve(varName);
 
             varRef.putValue(context, each);

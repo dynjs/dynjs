@@ -4,6 +4,7 @@ import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.DefaultCompilationContext;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.debugger.Debugger;
 import org.dynjs.ir.Builder;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.js.JavascriptParser;
