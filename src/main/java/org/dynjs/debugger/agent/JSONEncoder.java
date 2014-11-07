@@ -52,7 +52,6 @@ public class JSONEncoder extends ChannelDuplexHandler {
                 t.printStackTrace();
             }
         } else if ( msg instanceof ConnectEvent ) {
-            System.err.println( "SENDING CONNECT" );
             String headers = "Type: connect\r\nContent-Length: 0\r\n\r\n";
             ByteBuf buffer = ctx.alloc().buffer();
             buffer.writeBytes(headers.getBytes(UTF8));

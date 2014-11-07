@@ -29,7 +29,7 @@ public class DebuggerAgent {
                 ch.pipeline().addLast("json.decoder", new JSONDecoder(debugger));
                 ch.pipeline().addLast( "wrapper", new WrappingHandler() );
 
-                //ch.pipeline().addLast("connect", new ConnectHandler());
+                ch.pipeline().addLast("connect", new ConnectHandler());
 
                 for ( AbstractCommand each : debugger.getCommands() ) {
                     ch.pipeline().addLast( each.newChannelHandler( debugger ) );
@@ -43,7 +43,7 @@ public class DebuggerAgent {
         this.channelFuture.addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
-                System.err.println("Debugger listening on port " + port);
+                System.err.println("debugger listening on port " + port);
             }
         });
     }
