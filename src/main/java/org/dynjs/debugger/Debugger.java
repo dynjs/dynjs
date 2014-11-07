@@ -1,10 +1,7 @@
 package org.dynjs.debugger;
 
 import io.netty.channel.ChannelHandler;
-import org.dynjs.debugger.commands.AbstractCommand;
-import org.dynjs.debugger.commands.Continue;
-import org.dynjs.debugger.commands.Scripts;
-import org.dynjs.debugger.commands.Source;
+import org.dynjs.debugger.commands.*;
 import org.dynjs.debugger.events.BreakEvent;
 import org.dynjs.debugger.events.ScriptInfo;
 import org.dynjs.debugger.requests.Request;
@@ -52,6 +49,7 @@ public class Debugger {
         register("scripts", new Scripts(this));
         register("source", new Source(this));
         register("continue", new Continue(this));
+        register("evaluate", new Evaluate(this));
     }
 
     void register(String name, AbstractCommand command) {
