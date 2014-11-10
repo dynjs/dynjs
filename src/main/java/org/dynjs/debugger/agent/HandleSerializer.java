@@ -4,102 +4,119 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.dynjs.debugger.requests.EvaluateResponse;
-import org.dynjs.runtime.DynObject;
+import org.dynjs.debugger.Debugger;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Bob McWhirter
  */
-public class HandleSerializer extends StdSerializer<EvaluateResponse> {
+public class HandleSerializer extends JsonSerializer<Object> {
 
-    private Map<Integer,Object> refs = new HashMap<>();
-    private Map<Object,Integer> objects = new HashMap<>();
+    private Debugger debugger;
 
-    private int refCounter = 0;
-
-    HandleSerializer() {
-        super(EvaluateResponse.class);
+    HandleSerializer(Debugger debugger) {
+        super();
+        this.debugger = debugger;
     }
 
     @Override
-    public void serialize(EvaluateResponse value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
-
-        Object result = value.getResult();
-
+    public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         jgen.writeStartObject();
-        provider.defaultSerializeField("command", value.getCommand(), jgen);
-        provider.defaultSerializeField("running", value.isRunning(), jgen);
-        provider.defaultSerializeField("success", value.isSuccess(), jgen);
-
-        int ref = getRef( result );
-        jgen.writeNumberField( "ref", ref );
-
-        if (result == Types.UNDEFINED) {
-            jgen.writeStringField("type", "undefined");
-        } else if (result == Types.NULL) {
-            jgen.writeStringField("type", "null");
-        } else if (result instanceof Boolean) {
-            jgen.writeStringField("type", "boolean");
-            jgen.writeBooleanField( "value", (Boolean) result);
-        } else if (result instanceof Double) {
-            jgen.writeStringField("type", "number");
-            jgen.writeNumberField( "value", (Double) result);
-        } else if (result instanceof Long) {
-            jgen.writeStringField("type", "number");
-            jgen.writeNumberField("value", (Long) result);
-        } else if (result instanceof String) {
-            jgen.writeStringField("type", "string");
-            jgen.writeStringField( "value", (String) result);
-        } else if ( result instanceof JSObject) {
-            jgen.writeStringField("type", "object");
-            serialize((JSObject)result, jgen, provider );
-
-        }
-
+        serializeBody(value, jgen, provider);
         jgen.writeEndObject();
     }
 
-    private void serialize(JSObject result, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        jgen.writeFieldName( "properties" );
+    public void serializeAsMapEntry(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        int ref = this.debugger.getReferenceManager().getReference(value);
+        jgen.writeFieldName( "" + ref );
+        serialize( value, jgen, provider );
+    }
+
+    public void serializeBody(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        int ref = this.debugger.getReferenceManager().getReference(value);
+        jgen.writeNumberField("handle", ref);
+
+        if (value == Types.UNDEFINED) {
+            jgen.writeStringField("type", "undefined");
+        } else if (value == Types.NULL) {
+            jgen.writeStringField("type", "null");
+        } else if (value instanceof Boolean) {
+            jgen.writeStringField("type", "boolean");
+            jgen.writeBooleanField("value", (Boolean) value);
+        } else if (value instanceof Double) {
+            jgen.writeStringField("type", "number");
+            jgen.writeNumberField("value", (Double) value);
+        } else if (value instanceof Long) {
+            jgen.writeStringField("type", "number");
+            jgen.writeNumberField("value", (Long) value);
+        } else if (value instanceof String) {
+            jgen.writeStringField("type", "string");
+            jgen.writeStringField("value", (String) value);
+        } else if (value instanceof JSObject) {
+            jgen.writeStringField("type", "object");
+            serializeJSObject((JSObject) value, jgen, provider);
+        }
+    }
+
+    private void serializeJSObject(JSObject result, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        jgen.writeFieldName("properties");
 
         jgen.writeStartArray();
 
         NameEnumerator enumerator = result.getAllEnumerablePropertyNames();
 
-        while ( enumerator.hasNext() ) {
+        while (enumerator.hasNext()) {
             String name = enumerator.next();
-            Object value = result.get( null, name );
-            jgen.writeStartObject();
-            jgen.writeStringField("name", name);
-            jgen.writeNumberField("ref", getRef(value));
-            jgen.writeEndObject();
+            Object propResult = result.getProperty(null, name);
+
+            if (propResult == Types.UNDEFINED) {
+                jgen.writeStartObject();
+                jgen.writeStringField("name", name);
+                jgen.writeNumberField("ref", this.debugger.getReferenceManager().getReference(Types.UNDEFINED));
+                jgen.writeEndObject();
+            } else {
+                PropertyDescriptor prop = (PropertyDescriptor) propResult;
+
+                if (prop.hasValue()) {
+
+                    Object value = prop.getValue();
+                    jgen.writeStartObject();
+                    jgen.writeStringField("name", name);
+                    jgen.writeNumberField("ref", this.debugger.getReferenceManager().getReference(prop.getValue()));
+
+                    if (value == Types.UNDEFINED) {
+                        jgen.writeStringField("type", "undefined");
+                    } else if (value == Types.NULL) {
+                        jgen.writeStringField("type", "null");
+                    } else if (value instanceof Boolean) {
+                        jgen.writeStringField("type", "boolean");
+                        jgen.writeBooleanField("value", (Boolean) value);
+                    } else if (value instanceof Double) {
+                        jgen.writeStringField("type", "number");
+                        jgen.writeNumberField("value", (Double) value);
+                    } else if (value instanceof Long) {
+                        jgen.writeStringField("type", "number");
+                        jgen.writeNumberField("value", (Long) value);
+                    } else if (value instanceof String) {
+                        jgen.writeStringField("type", "string");
+                        jgen.writeStringField("value", (String) value);
+                    }
+                    jgen.writeEndObject();
+
+                } else {
+                    // WHAT?
+                }
+            }
         }
 
         jgen.writeEndArray();
 
     }
 
-    private int getRef(Object object) {
-        Integer ref = this.objects.get( object );
-        if ( ref != null ) {
-            return ref;
-        }
-
-        ref = ++this.refCounter;
-
-        this.objects.put( object, ref );
-        this.refs.put( ref, object );
-
-        return ref;
-
-    }
 
 }

@@ -25,8 +25,12 @@ public class JSONEncoder extends ChannelDuplexHandler {
 
     public JSONEncoder(Debugger debugger) {
         this.debugger = debugger;
+
+        HandleSerializer handleSerializer = new HandleSerializer( this.debugger );
+
         this.module = new SimpleModule();
-        this.module.addSerializer( new HandleSerializer() );
+        this.module.addSerializer( new EvaluateResponseSerializer( handleSerializer ) );
+        this.module.addSerializer( new LookupResponseSerializer( handleSerializer ) );
     }
 
     @Override

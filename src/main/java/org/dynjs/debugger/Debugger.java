@@ -44,12 +44,15 @@ public class Debugger {
     private AtomicLong breakPointCounter = new AtomicLong();
     private List<LineBreakPoint> breakPoints = new ArrayList<>();
 
+    private ReferenceManager referenceManager = new ReferenceManager();
+
     public Debugger() {
         this.mode = StepAction.RUN;
         register("scripts", new Scripts(this));
         register("source", new Source(this));
         register("continue", new Continue(this));
         register("evaluate", new Evaluate(this));
+        register("lookup", new Lookup(this));
     }
 
     void register(String name, AbstractCommand command) {
@@ -66,6 +69,10 @@ public class Debugger {
 
     public void setWaitConnect(boolean waitConnect) {
         this.mode = StepAction.NEXT;
+    }
+
+    public ReferenceManager getReferenceManager() {
+        return this.referenceManager;
     }
 
     public DebugListener getListener() {
@@ -164,6 +171,7 @@ public class Debugger {
                 this.lock.wait();
             }
             this.lock.set(false);
+            this.referenceManager.reset();
         }
     }
 
