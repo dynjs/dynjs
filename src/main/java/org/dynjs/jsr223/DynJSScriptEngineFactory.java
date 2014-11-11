@@ -104,7 +104,7 @@ public class DynJSScriptEngineFactory implements ScriptEngineFactory {
             if ( i > 0 ) {
                 builder.append( "," );
             }
-            builder.append( args[0] );
+            builder.append( args[i] );
         }
         builder.append( ")" );
 
