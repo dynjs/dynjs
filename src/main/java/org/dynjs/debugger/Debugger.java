@@ -42,7 +42,7 @@ public class Debugger {
     private List<ChannelHandler> handlers = new ArrayList<>();
 
     private AtomicLong breakPointCounter = new AtomicLong();
-    private List<LineBreakPoint> breakPoints = new ArrayList<>();
+    private List<BreakPoint> breakPoints = new ArrayList<>();
 
     private ReferenceManager referenceManager = new ReferenceManager();
 
@@ -53,6 +53,7 @@ public class Debugger {
         register("continue", new Continue(this));
         register("evaluate", new Evaluate(this));
         register("lookup", new Lookup(this));
+        register("setbreakpoint", new SetBreakpoint(this));
     }
 
     void register(String name, AbstractCommand command) {
@@ -109,6 +110,12 @@ public class Debugger {
     public long setBreakPoint(String fileName, long line, long column) {
         LineBreakPoint breakPoint = new LineBreakPoint(this.breakPointCounter.incrementAndGet(), fileName, line, column);
         this.breakPoints.add(breakPoint);
+        return breakPoint.getNumber();
+    }
+
+    public long setRegexpBreakPoint(String regexp, long line) {
+        RegexpBreakPoint breakPoint = new RegexpBreakPoint(this.breakPointCounter.incrementAndGet(), regexp, line);
+        this.breakPoints.add( breakPoint );
         return breakPoint.getNumber();
     }
 
@@ -201,7 +208,7 @@ public class Debugger {
     }
 
     private boolean checkBreakpoints(Statement statement, Statement previousStatement) {
-        for (LineBreakPoint each : this.breakPoints) {
+        for (BreakPoint each : this.breakPoints) {
             if (each.shouldBreak(statement, previousStatement)) {
                 return true;
             }

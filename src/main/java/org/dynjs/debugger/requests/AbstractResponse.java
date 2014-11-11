@@ -25,16 +25,19 @@ public abstract class AbstractResponse<T extends Request> implements Response {
     }
 
     @Override
+    @JsonIgnore
     public String getCommand() {
         return this.request.getCommand();
     }
 
     @Override
+    @JsonIgnore
     public boolean isSuccess() {
         return this.success;
     }
 
     @Override
+    @JsonIgnore
     public boolean isRunning() {
         return this.running;
     }

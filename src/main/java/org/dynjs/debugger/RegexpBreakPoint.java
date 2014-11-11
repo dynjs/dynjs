@@ -2,39 +2,35 @@ package org.dynjs.debugger;
 
 import org.dynjs.parser.Statement;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Bob McWhirter
  */
-public class LineBreakPoint implements BreakPoint {
+public class RegexpBreakPoint implements BreakPoint {
 
     private final long number;
+    private final Pattern regexp;
+    private final long line;
 
-    private final String fileName;
-    private long line = -1;
-    private long column = -1;
-
-    public LineBreakPoint(long number, String fileName, long line, long column) {
+    public RegexpBreakPoint(long number, String regexp, long line) {
         this.number = number;
-        this.fileName = fileName;
+        this.regexp = Pattern.compile( regexp );
         this.line = line;
-        this.column = column;
     }
 
+    @Override
     public long getNumber() {
         return this.number;
     }
 
-    public String getFileName() {
-        return this.fileName;
-    }
-
+    @Override
     public boolean shouldBreak(Statement statement, Statement previousStatement) {
-
         if (statement.getPosition() == null) {
             return false;
         }
 
-        if (!this.fileName.equals(statement.getPosition().getFileName())) {
+        if ( ! this.regexp.matcher( statement.getPosition().getFileName() ).matches() ) {
             return false;
         }
 
@@ -52,9 +48,4 @@ public class LineBreakPoint implements BreakPoint {
 
         return false;
     }
-
-    public String toString() {
-        return "[BreakPoint: fileName=" + this.fileName + "; line=" + this.line + "]";
-    }
-
 }

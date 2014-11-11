@@ -22,6 +22,14 @@ public class ResponseWrapper {
         return this.body;
     }
 
+    public boolean isRunning() {
+        return this.body.isRunning();
+    }
+
+    public boolean isSuccess() {
+        return this.body.isSuccess();
+    }
+
     @JsonProperty("request_seq")
     public int getRequestSeq() {
         return this.body.getRequest().getSeq();

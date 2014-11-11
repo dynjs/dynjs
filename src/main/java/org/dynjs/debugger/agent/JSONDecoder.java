@@ -1,5 +1,6 @@
 package org.dynjs.debugger.agent;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -55,6 +56,10 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
             }
         }
 
+        if ( this.length < 0 ) {
+            System.err.println( "LEN LESS THAN 0" );
+        }
+
         if (state() == State.BODY) {
             if (in.readableBytes() < this.length) {
                 return;
@@ -65,6 +70,7 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
             this.length = -1;
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true );
             JsonNode node = mapper.readTree(new ByteBufInputStream((ByteBuf) jsonBuf));
             String type = node.get("type").asText();
             if ("request".equals(type)) {
