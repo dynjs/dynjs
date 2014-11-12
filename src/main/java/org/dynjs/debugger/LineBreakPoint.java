@@ -1,5 +1,6 @@
 package org.dynjs.debugger;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.dynjs.parser.Statement;
 
 /**
@@ -13,6 +14,7 @@ public class LineBreakPoint implements BreakPoint {
     private long line = -1;
     private long column = -1;
 
+    private long hitCount = 0;
     public LineBreakPoint(long number, String fileName, long line, long column) {
         this.number = number;
         this.fileName = fileName;
@@ -24,8 +26,15 @@ public class LineBreakPoint implements BreakPoint {
         return this.number;
     }
 
+    @JsonProperty("script")
     public String getFileName() {
         return this.fileName;
+    }
+
+
+    @JsonProperty("hit_count")
+    public long getHitCount() {
+        return this.hitCount;
     }
 
     public boolean shouldBreak(Statement statement, Statement previousStatement) {
@@ -38,19 +47,25 @@ public class LineBreakPoint implements BreakPoint {
             return false;
         }
 
+        boolean result = false;
+
         if (this.line >= 0) {
             if (this.line <= statement.getPosition().getLine()) {
                 if (previousStatement == null) {
-                    return true;
+                    result =  true;
+                } else {
+                    result = (this.line > (previousStatement.getPosition().getLine() - 1));
                 }
-
-                return (this.line > (previousStatement.getPosition().getLine() - 1));
             } else {
-                return false;
+                result = false;
             }
         }
 
-        return false;
+        if ( result ) {
+            ++this.hitCount;
+        }
+
+        return result;
     }
 
     public String toString() {

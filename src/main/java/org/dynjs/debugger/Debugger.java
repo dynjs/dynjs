@@ -54,6 +54,8 @@ public class Debugger {
         register("evaluate", new Evaluate(this));
         register("lookup", new Lookup(this));
         register("setbreakpoint", new SetBreakpoint(this));
+        register("listbreakpoints", new ListBreakpoints(this));
+        register("clearbreakpoint", new ClearBreakpoint(this));
     }
 
     void register(String name, AbstractCommand command) {
@@ -117,6 +119,20 @@ public class Debugger {
         RegexpBreakPoint breakPoint = new RegexpBreakPoint(this.breakPointCounter.incrementAndGet(), regexp, line);
         this.breakPoints.add( breakPoint );
         return breakPoint.getNumber();
+    }
+
+    public boolean removeBreakpoint(long number) {
+        Iterator<BreakPoint> iter = this.breakPoints.iterator();
+
+        while ( iter.hasNext() ) {
+            BreakPoint each = iter.next();
+            if ( each.getNumber() == number ) {
+                iter.remove();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void setMode(StepAction action) {
@@ -215,6 +231,10 @@ public class Debugger {
         }
 
         return false;
+    }
+
+    public List<BreakPoint> getBreakPoints() {
+        return this.breakPoints;
     }
 
     private boolean isCurrentlyInBasisContext() {

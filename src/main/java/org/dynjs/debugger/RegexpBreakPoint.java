@@ -1,5 +1,6 @@
 package org.dynjs.debugger;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.dynjs.parser.Statement;
 
 import java.util.regex.Pattern;
@@ -13,15 +14,31 @@ public class RegexpBreakPoint implements BreakPoint {
     private final Pattern regexp;
     private final long line;
 
+    private long hitCount = 0;
+
     public RegexpBreakPoint(long number, String regexp, long line) {
         this.number = number;
-        this.regexp = Pattern.compile( regexp );
+        this.regexp = Pattern.compile(regexp);
         this.line = line;
+    }
+
+    @JsonProperty("script")
+    public String getRegexp() {
+        return this.regexp.toString();
+    }
+
+    public long getLine() {
+        return this.line;
     }
 
     @Override
     public long getNumber() {
         return this.number;
+    }
+
+    @JsonProperty("hit_count")
+    public long getHitCount() {
+        return this.hitCount;
     }
 
     @Override
@@ -30,22 +47,28 @@ public class RegexpBreakPoint implements BreakPoint {
             return false;
         }
 
-        if ( ! this.regexp.matcher( statement.getPosition().getFileName() ).matches() ) {
+        if (!this.regexp.matcher(statement.getPosition().getFileName()).matches()) {
             return false;
         }
+
+        boolean result = false;
 
         if (this.line >= 0) {
             if (this.line <= statement.getPosition().getLine()) {
                 if (previousStatement == null) {
-                    return true;
+                    result = true;
+                } else {
+                    result = (this.line > (previousStatement.getPosition().getLine() - 1));
                 }
-
-                return (this.line > (previousStatement.getPosition().getLine() - 1));
             } else {
-                return false;
+                result = false;
             }
         }
 
-        return false;
+        if (result) {
+            ++this.hitCount;
+        }
+
+        return result;
     }
 }
