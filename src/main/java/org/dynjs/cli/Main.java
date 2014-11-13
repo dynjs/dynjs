@@ -22,7 +22,11 @@ import java.io.PrintStream;
 
 import com.headius.options.Option;
 import org.dynjs.Config;
+import org.dynjs.compiler.CompilationContext;
+import org.dynjs.compiler.DefaultCompilationContext;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynJS;
+import org.dynjs.runtime.Runner;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.OptionHandlerFilter;
@@ -61,6 +65,8 @@ public class Main {
                 return;
             }
 
+            // for all of the remaining options, we need a runtime
+            runtime = initializeRuntime();
             if (getArguments().isConsole()) {
                 startRepl();
                 return;
@@ -93,7 +99,11 @@ public class Main {
                 executeSource(getArguments().getEval());
                 return;
             } else if (getArguments().getFilename() != null) {
-                executeFile(new File(getArguments().getFilename()));
+                try {
+                    executeFile(new File(getArguments().getFilename()));
+                } catch (IOException e) {
+                    getOutputStream().println("File " + getArguments().getFilename() + " not found");
+                }
                 return;
             } else {
                 getOutputStream().println("please specify source to eval or file");
@@ -110,23 +120,24 @@ public class Main {
         }
     }
 
-    private void showAST(File file) {
+    protected void executeRunner(Runner runner) {
+        runner.execute();
+    }
+
+    private void showAST(File file) throws IOException {
         try {
-            initializeRuntime();
-            getOutputStream().println(runtime.newRunner().withSource(file).parseSourceCode().dump("  "));
+            getOutputStream().println(runtime.newCompiler().withSource(file).parse().dump("  "));
         } catch (FileNotFoundException e) {
             getOutputStream().println("File " + file.getName() + " not found");
         }
     }
 
     private void executeSource(String eval) {
-        initializeRuntime();
-        runtime.newRunner().withSource( eval).execute();
+        executeRunner(runtime.newRunner().withSource( eval));
     }
 
     private void showAST(String source) throws IOException {
-        initializeRuntime();
-        stream.println(runtime.newRunner().withSource(source).parseSourceCode().dump("  "));
+        stream.println(runtime.newCompiler().withSource(source).parse().dump("  "));
     }
 
     private void showProperties() {
@@ -140,10 +151,11 @@ public class Main {
 
     private void executeFile(File file) throws IOException {
         try {
-            initializeRuntime();
-            runtime.newRunner().withSource( file ).execute();
-        } catch (FileNotFoundException e) {
-            getOutputStream().println("File " + file.getName() + " not found");
+            executeRunner(runtime.newRunner().withSource(file));
+        } catch (ThrowException e) {
+            if ( e.getCause() instanceof IOException ) {
+                throw (IOException) e.getCause();
+            }
         }
     }
 
@@ -153,7 +165,6 @@ public class Main {
     }
 
     protected void startRepl() {
-        initializeRuntime();
         Repl repl = new Repl(runtime, System.in, getOutputStream(), getWelcomeMessage(), getPrompt());
         repl.run();
     }
@@ -165,8 +176,7 @@ public class Main {
     protected DynJS initializeRuntime() {
         config = getArguments().getConfig();
         config.setOutputStream(getOutputStream());
-        runtime = new DynJS(config);
-        return runtime;
+        return new DynJS(config);
     }
 
     protected Arguments getArguments() {

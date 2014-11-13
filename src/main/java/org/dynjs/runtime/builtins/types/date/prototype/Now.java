@@ -2,12 +2,12 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class Now extends AbstractNativeFunction {
 
-    public Now(GlobalObject globalObject, String... formalParameters) {
-        super(globalObject, formalParameters);
+    public Now(GlobalContext globalContext, String... formalParameters) {
+        super(globalContext, formalParameters);
     }
 
     @Override

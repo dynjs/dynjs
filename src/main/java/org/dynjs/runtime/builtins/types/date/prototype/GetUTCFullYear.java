@@ -2,14 +2,14 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.builtins.types.date.AbstractDateFunction;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class GetUTCFullYear extends AbstractDateFunction {
 
-    public GetUTCFullYear(GlobalObject globalObject) {
-        super(globalObject);
+    public GetUTCFullYear(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

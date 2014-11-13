@@ -6,19 +6,20 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.ExecutionContext;
 
 public class JavascriptParser {
 
-    private ExecutionContext context;
+    private CompilationContext context;
     private ASTFactory factory;
 
-    public JavascriptParser(ExecutionContext context) {
+    public JavascriptParser(CompilationContext context) {
         this(context, new ASTFactory());
     }
 
-    public JavascriptParser(ExecutionContext context, ASTFactory factory) {
+    public JavascriptParser(CompilationContext context, ASTFactory factory) {
         this.context = context;
         this.factory = factory;
     }

@@ -9,6 +9,7 @@ import me.qmx.jitescript.JiteClass;
 
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.BasicBlock;
 import org.dynjs.runtime.Completion;
@@ -74,7 +75,7 @@ public class MultipleClassCompiler extends AbstractPartialCompiler {
     }
 
     @Override
-    public void define(JiteClass cls, ExecutionContext context, boolean strict) {
+    public void define(JiteClass cls, CompilationContext context, boolean strict) {
         int numChunks = this.plans.size();
 
         for (int i = 0; i < numChunks; ++i) {

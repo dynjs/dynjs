@@ -26,10 +26,10 @@ import org.dynjs.runtime.builtins.types.function.prototype.ToString;
 
 public class BuiltinFunction extends AbstractBuiltinType {
 
-    public BuiltinFunction(final GlobalObject globalObject) {
-        super(globalObject, "args");
+    public BuiltinFunction(final GlobalContext globalContext) {
+        super(globalContext, "args");
 
-        final JSFunction proto = new AbstractNativeFunction(globalObject, false) {
+        final JSFunction proto = new AbstractNativeFunction(globalContext, false) {
             @Override
             public Object call(ExecutionContext context, Object self, Object... args) {
                 return Types.UNDEFINED;
@@ -40,13 +40,13 @@ public class BuiltinFunction extends AbstractBuiltinType {
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+    public void initialize(GlobalContext globalContext, JSObject proto) {
+        proto.setPrototype(globalContext.getPrototypeFor("Object"));
         defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "apply", new Apply(globalObject));
-        defineNonEnumerableProperty(proto, "call", new Call(globalObject));
-        defineNonEnumerableProperty(proto, "bind", new Bind(globalObject));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext));
+        defineNonEnumerableProperty(proto, "apply", new Apply(globalContext));
+        defineNonEnumerableProperty(proto, "call", new Call(globalContext));
+        defineNonEnumerableProperty(proto, "bind", new Bind(globalContext));
         //defineNonEnumerableProperty(proto, "__proto__", proto);
     }
 

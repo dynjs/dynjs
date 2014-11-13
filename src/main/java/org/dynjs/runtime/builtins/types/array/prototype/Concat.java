@@ -6,15 +6,15 @@ import java.util.List;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 public class Concat extends AbstractNonConstructorFunction {
 
-    public Concat(GlobalObject globalObject) {
-        super(globalObject, "item1");
+    public Concat(GlobalContext globalContext) {
+        super(globalContext, "item1");
     }
 
     @Override
@@ -22,7 +22,7 @@ public class Concat extends AbstractNonConstructorFunction {
         // 15.4.4.4
         JSObject o = Types.toObject(context, self);
 
-        DynArray array = new DynArray(context.getGlobalObject());
+        DynArray array = new DynArray(context.getGlobalContext());
 
         List<Object> items = new ArrayList<>();
         items.add(o);

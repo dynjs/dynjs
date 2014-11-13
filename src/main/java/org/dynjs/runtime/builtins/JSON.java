@@ -16,17 +16,17 @@
 package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.builtins.types.json.Parse;
 import org.dynjs.runtime.builtins.types.json.Stringify;
 
 public class JSON extends DynObject {
 
-    public JSON(GlobalObject globalObject) {
-        super(globalObject);
+    public JSON(GlobalContext globalContext) {
+        super(globalContext);
         setClassName("JSON");
-        defineNonEnumerableProperty(globalObject, "parse", new Parse(globalObject));
-        defineNonEnumerableProperty(globalObject, "stringify", new Stringify(globalObject));
+        defineNonEnumerableProperty(globalContext, "parse", new Parse(globalContext));
+        defineNonEnumerableProperty(globalContext, "stringify", new Stringify(globalContext));
     }
 
 }

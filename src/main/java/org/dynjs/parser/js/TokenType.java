@@ -32,7 +32,7 @@ public enum TokenType {
     
     PRINT("print"),
 
-    EOF("end-of-file"),
+    EOF("end-of-file", true, false ),
     IDENTIFIER("identifier"),
 
     LEFT_BRACE("{"),
@@ -109,12 +109,12 @@ public enum TokenType {
     USP("Unicode space", true),
     */
 
-    LINE_SEPARATOR("line-separator", true),
-    PARAGRAPH_SEPARATOR("paragraph-separator", true),
+    LINE_SEPARATOR("line-separator", true, true),
+    PARAGRAPH_SEPARATOR("paragraph-separator", true, true),
     
-    CR( "\\r", true ),
-    NL( "\\n", true ),
-    CRNL( "\\r\\n", true ),
+    CR( "\\r", true, true ),
+    NL( "\\n", true, true ),
+    CRNL( "\\r\\n", true, true ),
 
     //SINGLE_LINE_COMMENT("single-line comment", true),
     //MULTI_LINE_COMMENT("multi-line comment", true),
@@ -132,15 +132,17 @@ public enum TokenType {
     ;
 
     private String description;
+    private final boolean unprintable;
     private boolean skipable;
 
-    TokenType(String description, boolean skipable) {
+    TokenType(String description, boolean unprintable, boolean skipable) {
         this.description = description;
+        this.unprintable = unprintable;
         this.skipable = skipable;
     }
 
-    TokenType(String description) {
-        this(description, false);
+    TokenType(String description ) {
+        this(description, false, false);
     }
 
     public boolean isSkippable() {
@@ -149,6 +151,10 @@ public enum TokenType {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public boolean isUnprintable() {
+        return this.unprintable;
     }
 
     public String toString() {

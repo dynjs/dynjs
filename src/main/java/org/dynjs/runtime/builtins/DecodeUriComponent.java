@@ -18,13 +18,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class DecodeUriComponent extends AbstractNonConstructorFunction {
 
-    public DecodeUriComponent(GlobalObject globalObject) {
-        super(globalObject, "uriComonent");
+    public DecodeUriComponent(GlobalContext globalContext) {
+        super(globalContext, "uriComonent");
     }
 
     @Override

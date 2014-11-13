@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class BuiltinEvalError extends AbstractBuiltinNativeError {
 
-    public BuiltinEvalError(GlobalObject globalObject) {
-        super(globalObject, "EvalError");
+    public BuiltinEvalError(GlobalContext globalContext) {
+        super(globalContext, "EvalError");
     }
     
     @Override

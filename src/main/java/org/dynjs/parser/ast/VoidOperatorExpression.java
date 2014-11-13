@@ -42,8 +42,8 @@ public class VoidOperatorExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        getValue(this.get, context, getExpr().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        getValue(this.get, context, getExpr().interpret(context, debug));
         return(Types.UNDEFINED);
     }
 

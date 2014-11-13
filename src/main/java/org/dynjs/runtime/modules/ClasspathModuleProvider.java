@@ -1,6 +1,7 @@
 package org.dynjs.runtime.modules;
 
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.source.ClassLoaderSourceProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,9 +21,10 @@ public class ClasspathModuleProvider extends ModuleProvider {
             if (is == null) {
                 return false;
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             context.getRuntime().newRunner()
-                    .withFileName(moduleId).withContext(context).withSource(reader).execute();
+                    .withFileName(moduleId)
+                    .withContext(context)
+                    .withSource(new ClassLoaderSourceProvider( classLoader, moduleId )).execute();
             try {
                 is.close();
             } catch (IOException ignore) {

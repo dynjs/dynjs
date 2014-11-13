@@ -1,26 +1,22 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 
 public abstract class AbstractBuiltinType extends AbstractNativeFunction {
 
-    public AbstractBuiltinType(GlobalObject globalObject, String... formalParameters) {
-        super(globalObject, true, formalParameters);
+    public AbstractBuiltinType(GlobalContext globalContext, String... formalParameters) {
+        super(globalContext, true, formalParameters);
     }
 
-    public void initialize(GlobalObject globalObject) {
+    public void initialize(GlobalContext globalContext) {
         Object proto = get(null, "prototype");
         if (proto == Types.UNDEFINED) {
             proto = null;
         }
-        initialize(globalObject, (JSObject) proto);
+        initialize(globalContext, (JSObject) proto);
     }
 
-    public abstract void initialize(GlobalObject globalObject, JSObject prototype);
+    public abstract void initialize(GlobalContext globalContext, JSObject prototype);
 
     protected void setPrototypeProperty(final JSObject prototype) {
         defineOwnProperty(null, "prototype",

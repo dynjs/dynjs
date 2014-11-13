@@ -19,7 +19,6 @@ import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.LocalVariable;
 import org.dynjs.ir.operands.OffsetVariable;
 import org.dynjs.ir.operands.Variable;
-import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.runtime.EnvironmentRecord;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -135,7 +134,7 @@ public class Interpreter {
                     // FIXME: configurableBindings is false here but I think a define_function in an eval they should be true
                     FunctionScope functionScope = ((DefineFunction) instr).getScope();
                     value = new IRJSFunction(functionScope, context.getVars(),
-                            context.getLexicalEnvironment(), context.getGlobalObject());
+                            context.getLexicalEnvironment(), context.getGlobalContext());
 
                     if (functionScope.getName() != null) {
                         EnvironmentRecord env = context.getVariableEnvironment().getRecord();

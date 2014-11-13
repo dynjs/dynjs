@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.dynjs.exception.InvalidModuleException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -64,7 +64,7 @@ public class JavaClassModuleProvider extends ModuleProvider {
                 exportName = method.getName();
             }
 
-            final JSFunction function = buildFunction(context.getGlobalObject(), javaModule, method);
+            final JSFunction function = buildFunction(context.getGlobalContext(), javaModule, method);
             PropertyDescriptor desc = new PropertyDescriptor();
             desc.setValue(function);
             function.setDebugContext(moduleName + "." + exportName);
@@ -73,8 +73,8 @@ public class JavaClassModuleProvider extends ModuleProvider {
         return exports;
     }
 
-    private JSFunction buildFunction(GlobalObject globalObject, Object module, Method method) throws IllegalAccessException {
-        return new JavaFunction(globalObject, module, method);
+    private JSFunction buildFunction(GlobalContext globalContext, Object module, Method method) throws IllegalAccessException {
+        return new JavaFunction(globalContext, module, method);
     }
 
     private Map<String, Object> modules = new HashMap<>();

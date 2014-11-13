@@ -38,8 +38,14 @@ public interface JSObject {
 
     void setExtensible(boolean extensible);
 
-    public abstract void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value);
+    void defineReadOnlyProperty(final GlobalContext globalContext, String name, final Object value);
 
-    public abstract void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value);
+    void defineNonEnumerableProperty(final GlobalContext globalContext, String name, final Object value);
+
+    void setExternalIndexedData(ExternalIndexedData data);
+    ExternalIndexedData getExternalIndexedData();
+    boolean hasExternalIndexedData();
+
+
 
 }

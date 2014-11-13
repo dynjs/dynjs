@@ -90,7 +90,7 @@ public class Reference {
             if (isStrictReference()) {
                 throw new ThrowException(context, context.createReferenceError(referencedName + " is not defined"));
             } else {
-                context.getGlobalObject().put(context, this.referencedName, value, false);
+                context.getGlobalContext().getObject().put(context, this.referencedName, value, false);
             }
         } else if (isPropertyReference()) {
             if (!hasPrimitiveBase()) {

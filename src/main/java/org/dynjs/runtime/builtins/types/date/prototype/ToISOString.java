@@ -5,13 +5,13 @@ import java.util.TimeZone;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class ToISOString extends DateTimeFormatter {
 
-    public ToISOString(GlobalObject globalObject) {
-        super(globalObject);
+    public ToISOString(GlobalContext globalContext) {
+        super(globalContext);
     }
     
     @Override

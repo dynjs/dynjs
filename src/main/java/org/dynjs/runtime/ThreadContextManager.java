@@ -1,5 +1,7 @@
 package org.dynjs.runtime;
 
+import org.dynjs.debugger.Debugger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,12 @@ public class ThreadContextManager {
             threadContext.set(currentList);
         }
         currentList.add(context);
+
+        Debugger d = context.getDebugger();
+        if (d != null ) {
+            d.enterContext( context );
+        }
+
     }
 
     public static void popContext() {
@@ -38,6 +46,11 @@ public class ThreadContextManager {
                 ExecutionContext nextHead = currentList.get(currentList.size() - 1);
                 nextHead.addThrowStack(head.getThrowStack());
             }
+        }
+
+        Debugger d = head.getDebugger();
+        if (d != null ) {
+            d.exitContext(head);
         }
 
         //if ( currentList.isEmpty() ) {

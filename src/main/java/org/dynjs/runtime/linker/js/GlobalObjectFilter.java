@@ -12,6 +12,6 @@ public class GlobalObjectFilter extends SimpleStatelessFilter {
     public static Filter INSTANCE = new GlobalObjectFilter();
 
     public static Object filter(Object context) {
-        return ((ExecutionContext) context).getGlobalObject();
+        return ((ExecutionContext) context).getGlobalContext().getObject();
     }
 }

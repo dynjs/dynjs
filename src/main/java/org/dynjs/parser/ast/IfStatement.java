@@ -101,8 +101,8 @@ public class IfStatement extends BaseStatement {
         return visitor.visit(context, this, strict);
     }
 
-    public Completion interpret(ExecutionContext context) {
-        Boolean result = Types.toBoolean(getValue(this.testGet, context, getTest().interpret(context)));
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        Boolean result = Types.toBoolean(getValue(this.testGet, context, getTest().interpret(context, debug)));
 
         if (result) {
             return(invokeCompiledBlockStatement(context, "Then", getThenBlock()));

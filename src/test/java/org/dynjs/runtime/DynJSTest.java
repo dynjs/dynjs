@@ -457,7 +457,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("desc.value == global.escape")).isEqualTo(true);
         assertThat(eval("desc.writable")).isEqualTo(true);
         assertThat(eval("desc.configurable")).isEqualTo(true);
-        assertThat(eval("desc.enumerable")).isEqualTo(false);
+        assertThat(eval("desc.enumerable")).isEqualTo(true);
     }
     
     @Test
@@ -474,7 +474,7 @@ public class DynJSTest extends AbstractDynJSTestSupport {
         assertThat(eval("desc.value == global.unescape")).isEqualTo(true);
         assertThat(eval("desc.writable")).isEqualTo(true);
         assertThat(eval("desc.configurable")).isEqualTo(true);
-        assertThat(eval("desc.enumerable")).isEqualTo(false);
+        assertThat(eval("desc.enumerable")).isEqualTo(true);
     }
     
 }

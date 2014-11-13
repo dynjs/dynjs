@@ -57,7 +57,9 @@ public class ShadowObjectPropertySetLink extends AbstractShadowObjectLink implem
     public MethodHandle target() throws Exception {
 
         return builder
+                //.convert(void.class, Reference.class, Object.class, String.class, Object.class)
                 .permute(0, 1, 2, 3, 0)
+                //.convert(void.class, Reference.class, Object.class, String.class, Object.class, Reference.class)
                 .filter(0, ReferenceBaseFilter.INSTANCE)
                 .filter(0, new ShadowFilter(this.shadowManager, true))
                 .filter(4, ReferenceStrictnessFilter.INSTANCE)

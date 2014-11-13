@@ -80,4 +80,20 @@ public class FunctionDeclarationTest extends AbstractDynJSTestSupport {
         assertThat(eval("handlers['myhandler']()")).isEqualTo("foobar");
         assertThat(eval("handlers['myhandler'] == null")).isEqualTo(true);
     }
+
+    @Test
+    public void testFunctionDeclarationMutability() {
+        String program = new StringBuilder()
+                .append("'use strict';")
+                .append("function f() {")
+                .append("  f = function(amount) {")
+                .append("    return amount*2;")
+                .append("  };")
+                .append("  return f.apply(this, arguments);")
+                .append("};")
+                .append("f(11);")
+                .toString();
+        Object result = eval(program);
+        assertThat(result).isEqualTo(22L);
+    }
 }

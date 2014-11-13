@@ -2,15 +2,15 @@ package org.dynjs.runtime.builtins.types.object.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 public class PropertyIsEnumerable extends AbstractNativeFunction {
 
-    public PropertyIsEnumerable(GlobalObject globalObject) {
-        super(globalObject, "v");
+    public PropertyIsEnumerable(GlobalContext globalContext) {
+        super(globalContext, "v");
     }
 
     @Override

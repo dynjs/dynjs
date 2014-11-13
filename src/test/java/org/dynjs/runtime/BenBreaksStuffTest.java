@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.dynjs.runtime.linker.DynJSBootstrapper;
+import org.dynjs.runtime.source.InputStreamSourceProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Ignore;
@@ -44,7 +45,7 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
     @Test
     public void testBenComplainsAboutCoffeeScript() throws IOException {
         InputStream coffee = getClass().getResourceAsStream("coffee-script.js");
-        getRuntime().newRunner().withSource(new InputStreamReader(coffee))
+        getRuntime().newRunner().withSource(new InputStreamSourceProvider(coffee))
                 .withFileName("coffee-script.js")
                 .execute();
         Object value = getRuntime().evaluate("CoffeeScript.eval('((x) -> x * x)(8)')");
@@ -55,7 +56,7 @@ public class BenBreaksStuffTest extends AbstractDynJSTestSupport {
     @Ignore
     public void testBenComplainsAboutLongerCoffeeScript() throws IOException {
         InputStream coffee = getClass().getResourceAsStream("coffee-script.js");
-        getRuntime().newRunner().withSource(new InputStreamReader(coffee))
+        getRuntime().newRunner().withSource(new InputStreamSourceProvider(coffee))
                 .withFileName("coffee-script.js")
                 .execute();
         getRuntime().evaluate("var content = '# Place all the behaviors and hooks related to the matching controller here.\\n' + ",

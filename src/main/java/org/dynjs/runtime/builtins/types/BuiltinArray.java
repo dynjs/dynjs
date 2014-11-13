@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.types;
 import org.dynjs.runtime.Arguments;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -33,44 +33,44 @@ import org.dynjs.runtime.builtins.types.array.prototype.Unshift;
 
 public class BuiltinArray extends AbstractBuiltinType {
 
-    public BuiltinArray(final GlobalObject globalObject) {
-        super(globalObject, "item1");
+    public BuiltinArray(final GlobalContext globalContext) {
+        super(globalContext, "item1");
 
-        final DynArray proto = new DynArray(globalObject);
+        final DynArray proto = new DynArray(globalContext);
         setPrototypeProperty(proto);
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
-        proto.setPrototype(globalObject.getPrototypeFor("Object"));
+    public void initialize(GlobalContext globalContext, JSObject proto) {
+        proto.setPrototype(globalContext.getPrototypeFor("Object"));
 
         // Array.prototype.foo()
         defineNonEnumerableProperty(proto, "constructor", this);
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
-        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalObject));
-        defineNonEnumerableProperty(proto, "concat", new Concat(globalObject));
-        defineNonEnumerableProperty(proto, "join", new Join(globalObject));
-        defineNonEnumerableProperty(proto, "pop", new Pop(globalObject));
-        defineNonEnumerableProperty(proto, "push", new Push(globalObject));
-        defineNonEnumerableProperty(proto, "reverse", new Reverse(globalObject));
-        defineNonEnumerableProperty(proto, "shift", new Shift(globalObject));
-        defineNonEnumerableProperty(proto, "slice", new Slice(globalObject));
-        defineNonEnumerableProperty(proto, "sort", new Sort(globalObject));
-        defineNonEnumerableProperty(proto, "splice", new Splice(globalObject));
-        defineNonEnumerableProperty(proto, "unshift", new Unshift(globalObject));
-        defineNonEnumerableProperty(proto, "indexOf", new IndexOf(globalObject));
-        defineNonEnumerableProperty(proto, "lastIndexOf", new LastIndexOf(globalObject));
-        defineNonEnumerableProperty(proto, "every", new Every(globalObject));
-        defineNonEnumerableProperty(proto, "some", new Some(globalObject));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext));
+        defineNonEnumerableProperty(proto, "toLocaleString", new ToLocaleString(globalContext));
+        defineNonEnumerableProperty(proto, "concat", new Concat(globalContext));
+        defineNonEnumerableProperty(proto, "join", new Join(globalContext));
+        defineNonEnumerableProperty(proto, "pop", new Pop(globalContext));
+        defineNonEnumerableProperty(proto, "push", new Push(globalContext));
+        defineNonEnumerableProperty(proto, "reverse", new Reverse(globalContext));
+        defineNonEnumerableProperty(proto, "shift", new Shift(globalContext));
+        defineNonEnumerableProperty(proto, "slice", new Slice(globalContext));
+        defineNonEnumerableProperty(proto, "sort", new Sort(globalContext));
+        defineNonEnumerableProperty(proto, "splice", new Splice(globalContext));
+        defineNonEnumerableProperty(proto, "unshift", new Unshift(globalContext));
+        defineNonEnumerableProperty(proto, "indexOf", new IndexOf(globalContext));
+        defineNonEnumerableProperty(proto, "lastIndexOf", new LastIndexOf(globalContext));
+        defineNonEnumerableProperty(proto, "every", new Every(globalContext));
+        defineNonEnumerableProperty(proto, "some", new Some(globalContext));
 
-        defineNonEnumerableProperty(proto, "forEach", new ForEach(globalObject));
-        defineNonEnumerableProperty(proto, "map", new Map(globalObject));
-        defineNonEnumerableProperty(proto, "filter", new Filter(globalObject));
-        defineNonEnumerableProperty(proto, "reduce", new Reduce(globalObject));
-        defineNonEnumerableProperty(proto, "reduceRight", new ReduceRight(globalObject));
+        defineNonEnumerableProperty(proto, "forEach", new ForEach(globalContext));
+        defineNonEnumerableProperty(proto, "map", new Map(globalContext));
+        defineNonEnumerableProperty(proto, "filter", new Filter(globalContext));
+        defineNonEnumerableProperty(proto, "reduce", new Reduce(globalContext));
+        defineNonEnumerableProperty(proto, "reduceRight", new ReduceRight(globalContext));
 
         // Array.foo()
-        defineNonEnumerableProperty(this, "isArray", new IsArray(globalObject));
+        defineNonEnumerableProperty(this, "isArray", new IsArray(globalContext));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BuiltinArray extends AbstractBuiltinType {
         DynArray arraySelf = null;
 
         if (self == Types.UNDEFINED || self == Types.NULL ) {
-            arraySelf = new DynArray(context.getGlobalObject());
+            arraySelf = new DynArray(context.getGlobalContext());
         } else {
             arraySelf = (DynArray) self;
         }
@@ -107,18 +107,18 @@ public class BuiltinArray extends AbstractBuiltinType {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        return new DynArray(context.getGlobalObject());
+        return new DynArray(context.getGlobalContext());
     }
 
     // ----------------------------------------------------------------------
 
     public static DynArray newArray(ExecutionContext context) {
-        JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
+        JSFunction ctor = (JSFunction) context.getGlobalContext().getObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct((Object) null, ctor);
     }
 
     public static DynArray newArray(ExecutionContext context, long len) {
-        JSFunction ctor = (JSFunction) context.getGlobalObject().get(context, "__Builtin_Array");
+        JSFunction ctor = (JSFunction) context.getGlobalContext().getObject().get(context, "__Builtin_Array");
         return (DynArray) context.construct((Object) null, ctor, len);
     }
 

@@ -43,7 +43,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             // reference context name val
             append(jsGetValue());
             // reference context name val
-            invokedynamic("dyn:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+            invokedynamic("dyn:setProperty", sig(void.class, Object.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
                     DynJSBootstrapper.ARGS);
             // <empty>
             ldc(expr.getIdentifier());
@@ -90,7 +90,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
         // value ref context name value context
         pop();
         // value ref context name value
-        invokedynamic("dyn:setProperty", sig(void.class, Reference.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
+        invokedynamic("dyn:setProperty", sig(void.class, Object.class, ExecutionContext.class, String.class, Object.class), DynJSBootstrapper.HANDLE,
                 DynJSBootstrapper.ARGS);
         // value
         go_to(end);
@@ -316,7 +316,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
      * // ref
      * aload(Arities.EXECUTION_CONTEXT);
      * // ref context
-     * invokevirtual(p(ExecutionContext.class), "getGlobalObject", sig(GlobalObject.class));
+     * invokevirtual(p(ExecutionContext.class), "getGlobalContext", sig(GlobalObject.class));
      * // ref obj
      * go_to(doPut);
      * 
@@ -422,7 +422,7 @@ public class InvokeDynamicBytecodeGeneratingVisitor extends BasicBytecodeGenerat
             // ref name context
             .swap()
             // ref context name
-            .invokedynamic("dyn:getProperty|getMethod", sig(Object.class, Reference.class, ExecutionContext.class, String.class), DynJSBootstrapper.HANDLE,
+            .invokedynamic("dyn:getProperty|getMethod", sig(Object.class, Object.class, ExecutionContext.class, String.class), DynJSBootstrapper.HANDLE,
                           DynJSBootstrapper.ARGS);
             // value
         if (throwIfNot != null) {

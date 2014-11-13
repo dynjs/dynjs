@@ -25,7 +25,7 @@ public class DebuggerStatement extends BaseStatement {
         return null;
     }
 
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         return Completion.createNormal();
     }
 }

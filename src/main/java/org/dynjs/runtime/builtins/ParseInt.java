@@ -19,13 +19,13 @@ import java.math.BigInteger;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class ParseInt extends AbstractNonConstructorFunction {
     
-    public ParseInt(GlobalObject globalObject) {
-        super(globalObject, "text", "radix");
+    public ParseInt(GlobalContext globalContext) {
+        super(globalContext, "text", "radix");
     }
 
     @Override

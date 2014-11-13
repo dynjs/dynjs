@@ -42,8 +42,9 @@ public class JSUndefinedPropertySetLink extends SmartLink implements Guard {
 
     public MethodHandle target() throws Exception {
         return this.builder
-                //.convert(void.class, Reference.class, ExecutionContext.class, String.class, Object.class)
+                //.convert(void.class, Reference.class, Object.class, String.class, Object.class )
                 .permute(1, 1, 2, 3, 0)
+                //.convert(void.class, ExecutionContext.class, ExecutionContext.class, String.class, Object.class, Reference.class )
                 .filter(0, GlobalObjectFilter.INSTANCE)
                 .filter(4, ReferenceStrictnessFilter.INSTANCE)
                 .convert(void.class, JSObject.class, ExecutionContext.class, String.class, Object.class, boolean.class)

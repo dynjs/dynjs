@@ -19,13 +19,13 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 
 public class ThrowTypeError extends AbstractNativeFunction {
 
-    public ThrowTypeError(GlobalObject globalObject) {
-        super(globalObject);
+    public ThrowTypeError(GlobalContext globalContext) {
+        super(globalContext, false);
         setExtensible(false);
     }
 

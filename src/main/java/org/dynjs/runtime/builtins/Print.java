@@ -17,13 +17,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Print extends AbstractNonConstructorFunction {
 
-    public Print(GlobalObject globalObject) {
-        super(globalObject, "code");
+    public Print(GlobalContext globalContext) {
+        super(globalContext, "code");
     }
 
     @Override

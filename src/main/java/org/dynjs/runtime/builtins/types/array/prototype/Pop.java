@@ -2,14 +2,14 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 
 public class Pop extends AbstractNonConstructorFunction {
 
-    public Pop(GlobalObject globalObject) {
-        super(globalObject);
+    public Pop(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

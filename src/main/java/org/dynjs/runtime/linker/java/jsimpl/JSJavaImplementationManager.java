@@ -48,7 +48,7 @@ public class JSJavaImplementationManager {
     }
 
     protected JSObject createShadow(ExecutionContext context, Class<?> implClass, JSObject implementation) {
-        DynObject shadow = new DynObject(context.getGlobalObject());
+        DynObject shadow = new DynObject(context.getGlobalContext());
         Method[] methods = implClass.getDeclaredMethods();
         
         boolean shadowed = false;

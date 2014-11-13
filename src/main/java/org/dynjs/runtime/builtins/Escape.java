@@ -18,15 +18,15 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Escape extends AbstractNativeFunction {
 
     private static final String ACCEPT = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*_+-./";
     
-    public Escape(GlobalObject globalObject) {
-        super(globalObject, "string");
+    public Escape(GlobalContext globalContext) {
+        super(globalContext, "string");
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public abstract class AbstractDateFunction extends AbstractNativeFunction {
@@ -13,8 +13,8 @@ public abstract class AbstractDateFunction extends AbstractNativeFunction {
     protected static int MS_PER_MINUTE = 60 * 1000;
     protected static int MS_PER_HOUR = MS_PER_MINUTE * 60;
 
-    public AbstractDateFunction(GlobalObject globalObject, String... formalParams) {
-        super(globalObject, formalParams);
+    public AbstractDateFunction(GlobalContext globalContext, String... formalParams) {
+        super(globalContext, formalParams);
     }
 
     protected static long day(long t) {

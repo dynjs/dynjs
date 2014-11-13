@@ -1,18 +1,18 @@
 package org.dynjs.runtime.builtins.intl;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.builtins.types.AbstractBuiltinType;
 
 public class NumberFormat extends AbstractBuiltinType {
 
-    public NumberFormat(GlobalObject globalObject) {
-        super(globalObject);
+    public NumberFormat(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject prototype) {
+    public void initialize(GlobalContext globalContext, JSObject prototype) {
 
     }
 

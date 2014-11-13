@@ -56,9 +56,9 @@ public class VariableDeclaration {
         return visitor.visit(context, this, strict);
     }
 
-    public String interpret(ExecutionContext context) {
+    public String interpret(ExecutionContext context, boolean debug) {
         if (this.expr != null) {
-            Object value = getValue(this.get, context, this.expr.interpret(context));
+            Object value = getValue(this.get, context, this.expr.interpret(context, debug));
             Reference var = context.resolve(getIdentifier());
             var.putValue(context, value);
         }

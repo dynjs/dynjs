@@ -1,21 +1,21 @@
 package org.dynjs.runtime.builtins.types.string;
 
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 public class DynString extends PrimitiveDynObject {
 
-    public DynString(GlobalObject globalObject) {
-        this(globalObject, null);
+    public DynString(GlobalContext globalContext) {
+        this(globalContext, null);
     }
 
-    public DynString(GlobalObject globalObject, String value) {
-        super(globalObject, value);
+    public DynString(GlobalContext globalContext, String value) {
+        super(globalContext, value);
         setClassName("String");
-        setPrototype(globalObject.getPrototypeFor("String"));
+        setPrototype(globalContext.getPrototypeFor("String"));
     }
 
     @Override

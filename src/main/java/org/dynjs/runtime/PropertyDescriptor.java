@@ -295,7 +295,7 @@ public class PropertyDescriptor {
 
         final PropertyDescriptor desc = (PropertyDescriptor) d;
 
-        JSObject obj = new DynObject(context.getGlobalObject());
+        JSObject obj = new DynObject(context.getGlobalContext());
 
         if (desc.isDataDescriptor()) {
             obj.defineOwnProperty(context, "value",

@@ -18,18 +18,12 @@ package org.dynjs.runtime.builtins;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.js.LexerException;
 import org.dynjs.parser.js.ParserException;
-import org.dynjs.runtime.AbstractNonConstructorFunction;
-import org.dynjs.runtime.EnvironmentRecord;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Runner;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 
 public class Eval extends AbstractNonConstructorFunction {
 
-    public Eval(GlobalObject globalObject) {
-        super(globalObject, "code");
+    public Eval(GlobalContext globalContext) {
+        super(globalContext, "code");
     }
 
     @Override
@@ -47,8 +41,10 @@ public class Eval extends AbstractNonConstructorFunction {
         if (code instanceof String) {
             try {
                 Runner runner = context.getRuntime().newRunner();
-                Object result = runner.withContext(context.getParent())
-                        .forceStrict(context.getParent().isStrict() && direct)
+                final ExecutionContext parent = context.getParent();
+                parent.inEval(true);
+                Object result = runner.withContext(parent)
+                        .forceStrict(parent.isStrict() && direct)
                         .directEval(direct)
                         .withSource((String) code)
                         .evaluate();

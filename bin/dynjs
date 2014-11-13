@@ -167,12 +167,6 @@ if $cygwin; then
     CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
 fi
 
-echo exec "$JAVACMD" \
-  $DYNJS_OPTS \
-  -classpath "${DYNJS_HOME}"/dynjs.jar \
-  "-Ddynjs.home=${DYNJS_HOME}"  \
-  org.dynjs.cli.Main "$@"
-
 exec "$JAVACMD" \
   $DYNJS_OPTS \
   -classpath "${DYNJS_HOME}"/dynjs.jar \

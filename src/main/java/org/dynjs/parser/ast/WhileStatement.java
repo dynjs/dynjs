@@ -51,21 +51,25 @@ public class WhileStatement extends AbstractIteratingStatement {
     public List<VariableDeclaration> getVariableDeclarations() {
         return this.vloop.getVariableDeclarations();
     }
-    
+
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.vloop.getFunctionDeclarations();
+    }
+
     public int getSizeMetric() {
         return vbool.getSizeMetric() + 7;
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         Expression testExpr = getTest();
         Statement block = getBlock();
 
         Object v = null;
 
         while (true) {
-
-            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context)));
+            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context, debug)));
             if (testResult) {
                 // block.accept(context, this, strict);
                 // Completion completion = (Completion) pop();

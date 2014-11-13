@@ -15,12 +15,7 @@
  */
 package org.dynjs.runtime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.dynjs.exception.ThrowException;
 
@@ -31,6 +26,7 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     private final Map<String, PropertyDescriptor> properties = new LinkedHashMap<>();
     private boolean extensible = true;
+    private ExternalIndexedData externalIndexedData;
 
     // Used by globalObject constructor and for ShadowObjectLinker
     public DynObject() {
@@ -38,9 +34,19 @@ public class DynObject implements JSObject, Map<String, Object> {
         setExtensible(true);
     }
 
-    public DynObject(GlobalObject globalObject) {
+    // Copy constructor
+    public DynObject(DynObject parent) {
+        this.className = parent.className;
+        this.prototype = parent.prototype;
+        this.properties.putAll( parent.properties );
+        this.extensible = parent.extensible;
+        this.externalIndexedData = parent.externalIndexedData;
+
+    }
+
+    public DynObject(GlobalContext globalContext) {
         this();
-        setPrototype(globalObject.getObjectPrototype());
+        setPrototype(globalContext.getObjectPrototype());
     }
 
     // ------------------------------------------------------------------------
@@ -76,6 +82,16 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public Object get(ExecutionContext context, String name) {
+        if ( this.externalIndexedData != null ) {
+            Long num = Types.toUint32(context, name);
+            if ( name.equals( num.toString() ) ) {
+                Object value = this.externalIndexedData.get(num);
+                if ( value == null ) {
+                    return Types.UNDEFINED;
+                }
+                return value;
+            }
+        }
         // 8.12.3
         Object d = getProperty(context, name, false);
         if (d == Types.UNDEFINED) {
@@ -153,6 +169,19 @@ public class DynObject implements JSObject, Map<String, Object> {
 
     @Override
     public void put(ExecutionContext context, final String name, final Object value, final boolean shouldThrow) {
+
+        if ( this.externalIndexedData != null ) {
+            Long num = Types.toUint32(context, name);
+            if ( name.equals( num.toString() ) ) {
+                Object externValue = value;
+                if ( value == Types.UNDEFINED || value == Types.NULL ) {
+                    externValue = null;
+                }
+                this.externalIndexedData.put( num, externValue );
+                return;
+            }
+        }
+
         // 8.12.5
         // System.err.println("PUT " + name + " > " + value);
         if (!canPut(context, name)) {
@@ -466,15 +495,30 @@ public class DynObject implements JSObject, Map<String, Object> {
     }
 
     @Override
-    public void defineNonEnumerableProperty(final GlobalObject globalObject, String name, final Object value) {
+    public void defineNonEnumerableProperty(final GlobalContext globalContext, String name, final Object value) {
         this.defineOwnProperty(null, name,
                 PropertyDescriptor.newDataPropertyDescriptor(value, true, true, false), false);
     }
 
     @Override
-    public void defineReadOnlyProperty(final GlobalObject globalObject, String name, final Object value) {
+    public void defineReadOnlyProperty(final GlobalContext globalContext, String name, final Object value) {
         this.defineOwnProperty(null, name,
                 PropertyDescriptor.newDataPropertyDescriptor(value, false, false, false), false);
+    }
+
+    @Override
+    public void setExternalIndexedData(ExternalIndexedData data) {
+        this.externalIndexedData = data;
+    }
+
+    @Override
+    public ExternalIndexedData getExternalIndexedData() {
+        return externalIndexedData;
+    }
+
+    @Override
+    public boolean hasExternalIndexedData() {
+        return ( this.externalIndexedData != null );
     }
 
     // java.util.Map

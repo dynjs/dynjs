@@ -54,7 +54,7 @@ public class ObjectLiteralExpression extends BaseExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         DynObject obj = BuiltinObject.newObject(context);
 
         int numAssignments = this.propertyAssignments.size();
@@ -63,7 +63,7 @@ public class ObjectLiteralExpression extends BaseExpression {
         for ( int i = 0 ; i < numAssignments ; ++i ) {
             PropertyAssignment each = this.propertyAssignments.get(i);
             CallSite eachGet = assignmentGets.get(i);
-            Object ref = each.interpret( context );
+            Object ref = each.interpret( context, debug );
             String debugName = each.getName();
 
             if (ref instanceof Reference) {
@@ -71,15 +71,19 @@ public class ObjectLiteralExpression extends BaseExpression {
             }
             Object value = getValue(eachGet, context, ref);
             Object original = obj.getOwnProperty(context, each.getName());
-            PropertyDescriptor desc = null;
-            if (each instanceof PropertyGet) {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
-            } else if (each instanceof PropertySet) {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, debugName, (JSFunction) value);
+            if (each.getName().equals("__proto__")) {
+                obj.put(context, each.getName(), value, false);
             } else {
-                desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
+                PropertyDescriptor desc = null;
+                if (each instanceof PropertyGet) {
+                    desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerGet(original, debugName, (JSFunction) value);
+                } else if (each instanceof PropertySet) {
+                    desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializerSet(original, debugName, (JSFunction) value);
+                } else {
+                    desc = PropertyDescriptor.newPropertyDescriptorForObjectInitializer(debugName, value);
+                }
+                obj.defineOwnProperty(context, each.getName(), desc, false);
             }
-            obj.defineOwnProperty(context, each.getName(), desc, false);
         }
 
         return(obj);

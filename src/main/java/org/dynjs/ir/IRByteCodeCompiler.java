@@ -30,7 +30,7 @@ import org.dynjs.ir.representations.BasicBlock;
 import org.dynjs.runtime.AbstractFunction;
 import org.dynjs.runtime.DynamicClassLoader;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Reference;
@@ -366,7 +366,7 @@ public class IRByteCodeCompiler {
         scope.setSyntheticMethodName(methodName);
         scope.setSyntheticSignature(syntheticSignature);
         final JiteClass jiteClass = new JiteClass("org/dynjs/gen/" + nextCompiledFunctionName(), p(AbstractFunction.class), new String[]{p(JSFunction.class), p(JITCompiler.CompiledFunction.class)});
-        jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class),
+        jiteClass.defineMethod("<init>", Opcodes.ACC_PUBLIC, sig(void.class, GlobalContext.class, LexicalEnvironment.class, boolean.class, String[].class),
                 new CodeBlock()
                         .aload(THIS)
                                 // this
@@ -378,7 +378,7 @@ public class IRByteCodeCompiler {
                                 // this globalobject lexicalenvironment strict
                         .aload(4)
                                 // this globalobject lexicalenvironment strict formalparamenters[]
-                        .invokespecial(p(AbstractFunction.class), "<init>", sig(void.class, GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class))
+                        .invokespecial(p(AbstractFunction.class), "<init>", sig(void.class, GlobalContext.class, LexicalEnvironment.class, boolean.class, String[].class))
                         .voidreturn()
         );
 
@@ -416,8 +416,8 @@ public class IRByteCodeCompiler {
         final DynamicClassLoader loader = new DynamicClassLoader();
         final Class<?> define = loader.define(jiteClass.getClassName().replace("/", "."), bytes);
         try {
-            final Constructor<?> constructor = define.getDeclaredConstructor(GlobalObject.class, LexicalEnvironment.class, boolean.class, String[].class);
-            final JSFunction function = (JSFunction) constructor.newInstance(context.getGlobalObject(), context.getLexicalEnvironment(), strict, scope.getParameterNames());
+            final Constructor<?> constructor = define.getDeclaredConstructor(GlobalContext.class, LexicalEnvironment.class, boolean.class, String[].class);
+            final JSFunction function = (JSFunction) constructor.newInstance(context.getGlobalContext(), context.getLexicalEnvironment(), strict, scope.getParameterNames());
             return function;
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

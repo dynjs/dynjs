@@ -53,7 +53,7 @@ public class TryStatement extends BaseStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         Completion b = null;
         boolean finallyExecuted = false;
         try {

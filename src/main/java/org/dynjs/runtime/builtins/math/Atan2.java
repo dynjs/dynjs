@@ -2,15 +2,15 @@ package org.dynjs.runtime.builtins.math;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Atan2 extends AbstractNativeFunction {
 
-    public Atan2(GlobalObject globalObject) {
+    public Atan2(GlobalContext globalContext) {
         // Don't fix this. By convention, atan2 has the y variable first
-        super(globalObject, "y", "x");
+        super(globalContext, "y", "x");
     }
 
     @Override

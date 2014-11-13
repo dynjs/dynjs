@@ -135,19 +135,30 @@ public class BlockStatement extends AbstractStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         List<Statement> content = getBlockContent();
 
         Object completionValue = Types.UNDEFINED;
+
+        Statement previousStatement = null;
 
         for (Statement each : content) {
             Position position = each.getPosition();
             if (position != null) {
                 context.setLineNumber(position.getLine());
+                context.setColumnNumber(position.getColumn());
             }
 
+            if ( ! ( each instanceof FunctionDeclaration ) ) {
+                context.debug( each, previousStatement );
+            }
 
-            Completion completion = (Completion) each.interpret(context);
+            Completion completion = (Completion) each.interpret(context, debug);
+
+            if ( ! ( each instanceof FunctionDeclaration ) ) {
+                previousStatement = each;
+            }
+
             if (completion.type == Completion.Type.NORMAL) {
                 completionValue = completion.value;
                 continue;

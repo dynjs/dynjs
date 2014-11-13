@@ -59,11 +59,11 @@ public class TernaryExpression extends AbstractExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        if (Types.toBoolean(getValue(this.get, context, getTest().interpret(context))) ) {
-            return getThenExpr().interpret(context);
+    public Object interpret(ExecutionContext context, boolean debug) {
+        if (Types.toBoolean(getValue(this.get, context, getTest().interpret(context, debug))) ) {
+            return getThenExpr().interpret(context, debug);
         } else {
-            return getElseExpr().interpret(context);
+            return getElseExpr().interpret(context, debug);
         }
     }
 

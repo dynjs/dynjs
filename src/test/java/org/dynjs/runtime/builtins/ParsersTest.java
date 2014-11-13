@@ -7,6 +7,25 @@ import org.junit.Test;
 public class ParsersTest extends AbstractDynJSTestSupport {
 
     @Test
+    public void testNoArgReturnInsideIf() {
+        eval( "var f = function(){\n",
+                "if ( true ) {\n",
+                "return\n",
+                "}\n",
+                "}\n" );
+    }
+
+    @Test
+    public void testNoArgReturnInsideIfWithElseNoBraces() {
+        eval( "var f = function(){\n",
+                "if ( true ) \n",
+                "  return\n",
+                "else\n",
+                "  return\n",
+                "}\n" );
+    }
+
+    @Test
     public void parsesFloats() {
         check("var result = parseFloat('33.2');", 33.2);
     }

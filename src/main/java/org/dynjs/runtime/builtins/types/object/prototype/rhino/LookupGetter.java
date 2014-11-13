@@ -8,8 +8,8 @@ import org.dynjs.runtime.*;
  */
 public class LookupGetter extends AbstractNativeFunction {
 
-    public LookupGetter(GlobalObject globalObject) {
-        super(globalObject, "name");
+    public LookupGetter(GlobalContext globalContext) {
+        super(globalContext, "name");
     }
 
     @Override

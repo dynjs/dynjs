@@ -8,13 +8,13 @@ import java.util.TimeZone;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Parse extends AbstractNativeFunction {
 
-    public Parse(GlobalObject globalObject) {
-        super(globalObject, "string");
+    public Parse(GlobalContext globalContext) {
+        super(globalContext, "string");
     }
 
     @Override

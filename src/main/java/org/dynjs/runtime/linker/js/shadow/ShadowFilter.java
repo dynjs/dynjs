@@ -22,9 +22,9 @@ public class ShadowFilter implements Filter {
     }
 
     public JSObject filter(Object primary) {
-        System.err.println( "shadow: " + primary );
+//        System.err.println( "shadow: " + primary );
         JSObject shadow = this.shadowManager.getShadowObject( primary, this.create );
-        System.err.println( "  with: " + shadow );
+//        System.err.println( "  with: " + shadow );
         return shadow;
     }
 

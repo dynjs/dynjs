@@ -4,12 +4,12 @@ public class PrimitiveDynObject extends DynObject {
 
     private Object value;
 
-    protected PrimitiveDynObject(GlobalObject globalObject) {
-        super(globalObject);
+    protected PrimitiveDynObject(GlobalContext globalContext) {
+        super(globalContext);
     }
 
-    protected PrimitiveDynObject(GlobalObject globalObject, Object value) {
-        super(globalObject);
+    protected PrimitiveDynObject(GlobalContext globalContext, Object value) {
+        super(globalContext);
         if (value != null) {
             setPrimitiveValue(value);
         }

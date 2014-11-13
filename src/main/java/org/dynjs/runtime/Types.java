@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jnr.ffi.Struct;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.builtins.types.bool.DynBoolean;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
@@ -67,15 +66,15 @@ public class Types {
             return (JSObject) o;
         }
         if (o instanceof String) {
-            return new DynString(context.getGlobalObject(), (String) o);
+            return new DynString(context.getGlobalContext(), (String) o);
         }
         if (o instanceof Number) {
-            return new DynNumber(context.getGlobalObject(), (Number) o);
+            return new DynNumber(context.getGlobalContext(), (Number) o);
         }
         if (o instanceof Boolean) {
-            return new DynBoolean(context.getGlobalObject(), (Boolean) o);
+            return new DynBoolean(context.getGlobalContext(), (Boolean) o);
         }
-        return new PrimitiveDynObject(context.getGlobalObject(), o);
+        return new PrimitiveDynObject(context.getGlobalContext(), o);
     }
 
     public static Object toThisObject(ExecutionContext context, Object o) {
@@ -89,15 +88,15 @@ public class Types {
             return o;
         }
         if (o instanceof String) {
-            return new DynString(context.getGlobalObject(), (String) o);
+            return new DynString(context.getGlobalContext(), (String) o);
         }
         if (o instanceof Number) {
-            return new DynNumber(context.getGlobalObject(), (Number) o);
+            return new DynNumber(context.getGlobalContext(), (Number) o);
         }
         if (o instanceof Boolean) {
-            return new DynBoolean(context.getGlobalObject(), (Boolean) o);
+            return new DynBoolean(context.getGlobalContext(), (Boolean) o);
         }
-        // return new PrimitiveDynObject(context.getGlobalObject(), o);
+        // return new PrimitiveDynObject(context.getGlobalContext(), o);
         return o;
     }
 

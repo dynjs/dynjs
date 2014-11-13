@@ -5,8 +5,8 @@ import org.dynjs.runtime.*;
 
 public class Identity extends AbstractNativeFunction {
 
-    public Identity(GlobalObject globalObject) {
-        super(globalObject);
+    public Identity(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

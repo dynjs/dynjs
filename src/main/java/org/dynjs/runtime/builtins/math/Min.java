@@ -2,15 +2,15 @@ package org.dynjs.runtime.builtins.math;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.Math;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Min extends AbstractNativeFunction {
 
-    public Min(GlobalObject globalObject) {
-        super(globalObject, "value1", "value2");
+    public Min(GlobalContext globalContext) {
+        super(globalContext, "value1", "value2");
     }
 
     @Override

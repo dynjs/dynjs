@@ -18,13 +18,13 @@ package org.dynjs.runtime.builtins;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class DecodeUri extends AbstractNonConstructorFunction {
 
-    public DecodeUri(GlobalObject globalObject) {
-        super(globalObject, "uri");
+    public DecodeUri(GlobalContext globalContext) {
+        super(globalContext, "uri");
     }
 
     @Override

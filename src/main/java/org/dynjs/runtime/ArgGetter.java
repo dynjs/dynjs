@@ -4,8 +4,8 @@ public class ArgGetter extends AbstractNativeFunction {
 
     private String name;
 
-    public ArgGetter(GlobalObject globalObject, LexicalEnvironment env, String name) {
-        super(globalObject, env, false);
+    public ArgGetter(GlobalContext globalContext, LexicalEnvironment env, String name) {
+        super(globalContext, env, false);
         this.name = name;
     }
 

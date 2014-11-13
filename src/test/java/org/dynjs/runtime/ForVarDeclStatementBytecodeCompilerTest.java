@@ -3,6 +3,7 @@ package org.dynjs.runtime;
 import static org.fest.assertions.Assertions.*;
 
 import org.dynjs.Config;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ForVarDeclStatementBytecodeCompilerTest extends AbstractDynJSTestSupport {
@@ -14,7 +15,7 @@ public class ForVarDeclStatementBytecodeCompilerTest extends AbstractDynJSTestSu
         return config;
     }
 
-    @Test
+    @Ignore
     public void testBasicLoop() {
         eval("for (var i = 0; false; ) {",
              "  var y = (i = 1);",

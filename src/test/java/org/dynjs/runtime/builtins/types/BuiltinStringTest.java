@@ -360,6 +360,11 @@ public class BuiltinStringTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testSubstrZeroLength() {
+        assertThat(eval("''.substr(2, 0)")).isEqualTo("");
+    }
+
+    @Test
     public void testSubstrFromEnd() {
         assertThat(eval("'boblanceqmx'.substr(-3)")).isEqualTo("qmx");
     }

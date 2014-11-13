@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class BuiltinSyntaxError extends AbstractBuiltinNativeError {
 
-    public BuiltinSyntaxError(GlobalObject globalObject) {
-        super(globalObject, "SyntaxError");
+    public BuiltinSyntaxError(GlobalContext globalContext) {
+        super(globalContext, "SyntaxError");
     }
     
     @Override
