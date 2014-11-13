@@ -395,7 +395,7 @@ public class ExecutionContext implements CompilationContext {
         LexicalEnvironment evalVarEnv = null;
 
         if (!direct) {
-            evalThisBinding = getGlobalContext();
+            evalThisBinding = getGlobalContext().getObject();
             evalLexEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalContext().getObject());
             evalVarEnv = LexicalEnvironment.newGlobalEnvironment(getGlobalContext().getObject());
         } else {

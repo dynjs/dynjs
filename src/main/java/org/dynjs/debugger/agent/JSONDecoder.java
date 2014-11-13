@@ -53,25 +53,14 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
                 String lenStr = headerLine.substring(CONTENT_LENGTH.length()).trim();
                 this.length = Integer.parseInt(lenStr);
                 state(State.BODY);
+                return;
             }
-        }
-
-        if ( this.length < 0 ) {
-            System.err.println( "LEN LESS THAN 0" );
         }
 
         if (state() == State.BODY) {
-            if (in.readableBytes() < this.length) {
-                return;
-            }
-
-            ByteBuf jsonBuf = in.slice(in.readerIndex(), this.length);
-            in.readerIndex(in.readerIndex() + this.length);
-            this.length = -1;
-
             ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true );
-            JsonNode node = mapper.readTree(new ByteBufInputStream((ByteBuf) jsonBuf));
+            mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
+            JsonNode node = mapper.readTree(new ByteBufInputStream(in, this.length));
             String type = node.get("type").asText();
             if ("request".equals(type)) {
                 String commandStr = node.get("command").asText();
@@ -82,8 +71,8 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
                     out.add(request);
                 }
             }
-            state( State.HEADER );
+            state(State.HEADER);
+            this.length = -1;
         }
     }
-
 }

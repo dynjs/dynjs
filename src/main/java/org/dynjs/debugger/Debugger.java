@@ -30,7 +30,6 @@ public class Debugger {
     }
 
     private String fileName;
-    private ExecutionContext currentContext;
     private ExecutionContext basisContext;
     private List<ExecutionContext> contextStack = new LinkedList<>();
 
@@ -88,7 +87,7 @@ public class Debugger {
     }
 
     public ExecutionContext getCurrentContext() {
-        return this.currentContext;
+        return this.contextStack.get(0);
     }
 
     public void enterContext(ExecutionContext context) {
@@ -100,7 +99,6 @@ public class Debugger {
     }
 
     public void debug(ExecutionContext context, Statement statement, Statement previousStatement) throws InterruptedException {
-        this.currentContext = context;
         if (statement.getPosition() != null) {
             this.fileName = statement.getPosition().getFileName();
         }
@@ -183,7 +181,7 @@ public class Debugger {
             }
         }
 
-        this.basisContext = this.currentContext;
+        this.basisContext = getCurrentContext();
 
         setBreak();
 
@@ -238,7 +236,7 @@ public class Debugger {
     }
 
     private boolean isCurrentlyInBasisContext() {
-        return this.basisContext == this.currentContext;
+        return this.basisContext == getCurrentContext();
     }
 
     private boolean hasExitedBasisContext() {

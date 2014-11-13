@@ -86,9 +86,13 @@ public class StackElement {
     }
 
     public boolean isTopLevel() {
-        if (this.getThis() != null) {
-            return this.getThis() instanceof GlobalContext;
+        Object thisObj = this.getThis();
+
+        if (thisObj instanceof JSObject ) {
+            Object dynjs = ((JSObject) thisObj).get(null, "dynjs");
+            return dynjs != Types.UNDEFINED;
         }
+
         return false;
     }
 

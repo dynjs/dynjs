@@ -6,6 +6,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.dynjs.debugger.Debugger;
 import org.dynjs.debugger.agent.handlers.ConnectHandler;
 import org.dynjs.debugger.agent.handlers.DebugHandler;
+import org.dynjs.debugger.agent.handlers.ErrorHandler;
 import org.dynjs.debugger.agent.handlers.WrappingHandler;
 import org.dynjs.debugger.commands.AbstractCommand;
 
@@ -24,7 +25,7 @@ public class DebuggerAgent {
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ch.config().setAutoRead(true);
-                ch.pipeline().addLast("debug", new DebugHandler("debugger"));
+                //ch.pipeline().addLast("debug", new DebugHandler("debugger"));
                 ch.pipeline().addLast("json.encoder", new JSONEncoder(debugger));
                 ch.pipeline().addLast("json.decoder", new JSONDecoder(debugger));
                 ch.pipeline().addLast( "wrapper", new WrappingHandler() );
@@ -34,6 +35,8 @@ public class DebuggerAgent {
                 for ( AbstractCommand each : debugger.getCommands() ) {
                     ch.pipeline().addLast( each.newChannelHandler( debugger ) );
                 }
+
+                ch.pipeline().addLast("error", new ErrorHandler() );
 
 
                 debugger.setListener( new AgentListener( ch ) );

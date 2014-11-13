@@ -22,9 +22,10 @@ public class Evaluate extends AbstractCommand<EvaluateRequest, EvaluateResponse>
         ExecutionContext context = debugger.getCurrentContext();
         Runner runner = context.getRuntime().newRunner();
         try {
-            Object result = runner.withContext(context).withSource(request.getArguments().getExpression()).evaluate();
+            Object result = runner.withContext(context).withSource(request.getArguments().getExpression()).directEval().evaluate();
             return new EvaluateResponse(request, result, true, false);
         } catch (ThrowException e) {
+            e.printStackTrace();
             return new EvaluateResponse(request, Types.UNDEFINED, false, false);
         }
     }
