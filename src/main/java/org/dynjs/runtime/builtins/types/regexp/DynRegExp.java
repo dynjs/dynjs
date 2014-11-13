@@ -144,8 +144,15 @@ public class DynRegExp extends DynObject {
         }
     }
 
-    public Region match(String str, int from) {
-        byte[] strBytes = str.getBytes();
+    public Region match(ExecutionContext context, String str, int from) {
+        byte[] strBytes;
+        try {
+            strBytes = str.getBytes("UTF-8");
+        } catch (Exception e) {
+            // Should not happen, really
+            throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
+        }
+
         Matcher matcher = this.pattern.matcher(strBytes, 0, strBytes.length);
         if (matcher.search(from, strBytes.length, 0) >= 0) {
             return matcher.getEagerRegion();

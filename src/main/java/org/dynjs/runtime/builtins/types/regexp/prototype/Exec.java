@@ -45,7 +45,7 @@ public class Exec extends AbstractNonConstructorFunction {
                 regexp.put(context, "lastIndex", 0L, true);
                 return Types.NULL;
             }
-            r = regexp.match(str, (int) i);
+            r = regexp.match(context, str, (int) i);
             if (r != null) {
                 matchSucceeded = true;
             } else {

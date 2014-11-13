@@ -28,7 +28,7 @@ public class Search extends AbstractNonConstructorFunction {
             rx = BuiltinRegExp.newRegExp(context, args[0] == Types.UNDEFINED ? Types.UNDEFINED : Types.toString(context, args[0]), null);
         }
 
-        Region result = ((DynRegExp) rx).match(s, 0);
+        Region result = ((DynRegExp) rx).match(context, s, 0);
         if (result == null) {
             return -1L;
         }
