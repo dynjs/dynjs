@@ -8,10 +8,14 @@ import org.dynjs.debugger.events.EventWrapper;
 import org.dynjs.debugger.requests.Response;
 import org.dynjs.debugger.requests.ResponseWrapper;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author Bob McWhirter
  */
 public class WrappingHandler extends ChannelOutboundHandlerAdapter {
+
+    public static AtomicInteger seqCounter = new AtomicInteger();
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {

@@ -7,10 +7,7 @@ import org.dynjs.debugger.events.ScriptInfo;
 import org.dynjs.debugger.requests.Request;
 import org.dynjs.debugger.requests.Response;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.FunctionDeclaration;
-import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.SourceProvider;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,7 +23,8 @@ public class Debugger {
         RUN,
         NEXT,
         IN,
-        OUT
+        OUT,
+        SUSPEND,
     }
 
     private String fileName;
@@ -45,10 +43,15 @@ public class Debugger {
 
     private ReferenceManager referenceManager = new ReferenceManager();
 
+    private boolean paused = false;
+    private Statement currentStatement = null;
+
     public Debugger() {
         this.mode = StepAction.RUN;
+        register("version", new Version(this));
         register("scripts", new Scripts(this));
         register("source", new Source(this));
+        register("suspend", new Suspend(this));
         register("continue", new Continue(this));
         register("evaluate", new Evaluate(this));
         register("lookup", new Lookup(this));
@@ -98,12 +101,24 @@ public class Debugger {
         this.contextStack.remove(0);
     }
 
+    public boolean isRunning() {
+        return ! this.paused;
+    }
+
     public void debug(ExecutionContext context, Statement statement, Statement previousStatement) throws InterruptedException {
+        this.currentStatement = statement;
         if (statement.getPosition() != null) {
             this.fileName = statement.getPosition().getFileName();
         }
         if (shouldBreak(statement, previousStatement)) {
-            doBreak(context, statement);
+            this.paused = true;
+            System.err.println( "PAUSED = TRUE" );
+            try {
+                doBreak(context, statement);
+            } finally {
+                System.err.println( "PAUSED = FALSE" );
+                this.paused = false;
+            }
         }
     }
 
@@ -161,6 +176,14 @@ public class Debugger {
         setMode(StepAction.NEXT);
     }
 
+    public void suspend() {
+        this.mode = StepAction.SUSPEND;
+        if ( this.paused ) {
+            ScriptInfo script = new ScriptInfo(this.currentStatement.getPosition().getFileName());
+            this.listener.on(new BreakEvent(this, this.currentStatement.getPosition().getLine() - 1, this.currentStatement.getPosition().getColumn(), script));
+        }
+    }
+
     public String getFileName() {
         return this.fileName;
     }
@@ -174,6 +197,8 @@ public class Debugger {
     }
 
     private void doBreak(ExecutionContext context, Statement statement) throws InterruptedException {
+
+        this.paused = true;
 
         synchronized (this) {
             while (this.listener == null) {
@@ -193,12 +218,16 @@ public class Debugger {
             }
             this.lock.set(false);
             this.referenceManager.reset();
+            this.paused = false;
         }
     }
 
     private boolean shouldBreak(Statement statement, Statement previousStatement) {
         boolean result = false;
         switch (this.mode) {
+            case SUSPEND:
+                result = true;
+                break;
             case RUN:
                 result = checkBreakpoints(statement, previousStatement);
                 break;

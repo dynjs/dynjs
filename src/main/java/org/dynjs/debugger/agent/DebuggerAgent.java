@@ -25,7 +25,7 @@ public class DebuggerAgent {
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ch.config().setAutoRead(true);
-                //ch.pipeline().addLast("debug", new DebugHandler("debugger"));
+                ch.pipeline().addLast("debug", new DebugHandler("debugger"));
                 ch.pipeline().addLast("json.encoder", new JSONEncoder(debugger));
                 ch.pipeline().addLast("json.decoder", new JSONDecoder(debugger));
                 ch.pipeline().addLast( "wrapper", new WrappingHandler() );

@@ -1,7 +1,10 @@
 package org.dynjs.debugger.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.dynjs.debugger.agent.handlers.WrappingHandler;
 import org.dynjs.debugger.events.Event;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Bob McWhirter
@@ -9,9 +12,15 @@ import org.dynjs.debugger.events.Event;
 public class ResponseWrapper {
 
     private final Response body;
+    private final int seq;
 
     public ResponseWrapper(Response body) {
         this.body = body;
+        this.seq = WrappingHandler.seqCounter.incrementAndGet();
+    }
+
+    public String getType() {
+        return "response";
     }
 
     public String getCommand() {
@@ -28,6 +37,10 @@ public class ResponseWrapper {
 
     public boolean isSuccess() {
         return this.body.isSuccess();
+    }
+
+    public int getSeq() {
+        return this.seq;
     }
 
     @JsonProperty("request_seq")

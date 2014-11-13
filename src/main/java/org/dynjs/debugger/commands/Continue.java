@@ -28,6 +28,6 @@ public class Continue extends AbstractCommand<ContinueRequest, ContinueResponse>
                 this.debugger.stepOut();
             }
         }
-        return new ContinueResponse(request, true, true);
+        return new ContinueResponse(request, true, this.debugger.isRunning());
     }
 }

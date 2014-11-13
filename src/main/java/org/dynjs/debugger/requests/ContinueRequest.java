@@ -1,5 +1,6 @@
 package org.dynjs.debugger.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ContinueRequest  extends AbstractRequest<ContinueResponse> {
 
+    @JsonIgnoreProperties("maxStringLength")
     public static class Arguments {
 
         private String action;

@@ -18,9 +18,9 @@ public class ClearBreakpoint extends AbstractCommand<ClearBreakpointRequest, Cle
     @Override
     public ClearBreakpointResponse handle(ClearBreakpointRequest request) {
         if ( this.debugger.removeBreakpoint( request.getArguments().getBreakpoint() ) ) {
-            return new ClearBreakpointResponse( request, true, false );
+            return new ClearBreakpointResponse( request, true, this.debugger.isRunning() );
         } else {
-            return new ClearBreakpointResponse( request, false, false );
+            return new ClearBreakpointResponse( request, false, this.debugger.isRunning() );
         }
     }
 }
