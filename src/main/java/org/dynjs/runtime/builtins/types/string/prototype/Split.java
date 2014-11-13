@@ -104,7 +104,7 @@ public class Split extends AbstractNonConstructorFunction {
     
     private Region splitMatch(ExecutionContext context, String s, int q, Object r) {
         if ( r instanceof DynRegExp ) {
-            return ((DynRegExp)r).match(s, q);
+            return ((DynRegExp)r).match(context, s, q);
         }
         
         String rStr = (String) r;

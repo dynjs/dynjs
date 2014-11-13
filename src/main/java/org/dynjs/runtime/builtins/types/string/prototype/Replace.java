@@ -54,7 +54,7 @@ public class Replace extends AbstractNonConstructorFunction {
         Region region;
         Match lastMatch = null;
         int startIndex = 0;
-        while ((region = regexp.match(searchString, startIndex)) != null) {
+        while ((region = regexp.match(context, searchString, startIndex)) != null) {
             Match match = Match.fromRegion(searchString, region);
             lastMatch = match;
 
