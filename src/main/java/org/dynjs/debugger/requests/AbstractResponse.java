@@ -3,6 +3,9 @@ package org.dynjs.debugger.requests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Bob McWhirter
  */
@@ -40,6 +43,12 @@ public abstract class AbstractResponse<T extends Request> implements Response {
     @JsonIgnore
     public boolean isRunning() {
         return this.running;
+    }
+
+    @Override
+    @JsonIgnore
+    public List<Object> getRefs() {
+        return Collections.emptyList();
     }
 }
 

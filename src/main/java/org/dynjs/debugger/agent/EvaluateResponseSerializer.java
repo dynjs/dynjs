@@ -26,13 +26,7 @@ public class EvaluateResponseSerializer extends StdSerializer<EvaluateResponse> 
         Object result = value.getResult();
 
         jgen.writeStartObject();
-        //provider.defaultSerializeField("command", value.getCommand(), jgen);
-        //provider.defaultSerializeField("running", value.isRunning(), jgen);
-        //provider.defaultSerializeField("success", value.isSuccess(), jgen);
-        //provider.defaultSerializeField("request_seq", value.getRequest().getSeq(), jgen );
-
         this.handleSerializer.serializeBody(result, jgen, provider);
-
         jgen.writeEndObject();
     }
 

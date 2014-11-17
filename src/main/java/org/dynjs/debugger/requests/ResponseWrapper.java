@@ -2,9 +2,8 @@ package org.dynjs.debugger.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.dynjs.debugger.agent.handlers.WrappingHandler;
-import org.dynjs.debugger.events.Event;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -41,6 +40,10 @@ public class ResponseWrapper {
 
     public int getSeq() {
         return this.seq;
+    }
+
+    public List<Object> getRefs() {
+        return this.body.getRefs();
     }
 
     @JsonProperty("request_seq")

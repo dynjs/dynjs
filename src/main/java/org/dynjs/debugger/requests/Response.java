@@ -1,6 +1,9 @@
 package org.dynjs.debugger.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dynjs.debugger.Message;
+
+import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -11,4 +14,7 @@ public interface Response extends Message {
     String getCommand();
     boolean isSuccess();
     boolean isRunning();
+
+    @JsonIgnore
+    List<Object> getRefs();
 }
