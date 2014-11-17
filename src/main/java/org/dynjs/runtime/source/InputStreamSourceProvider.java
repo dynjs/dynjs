@@ -10,9 +10,12 @@ import java.io.Reader;
  */
 public class InputStreamSourceProvider extends ReaderSourceProvider {
 
-
     public InputStreamSourceProvider(InputStream source) throws IOException {
-        super( new InputStreamReader( source ) );
+        this( source, "<script>" );
+    }
+
+    public InputStreamSourceProvider(InputStream source, String name) throws IOException {
+        super( new InputStreamReader( source ), name );
     }
 
 }

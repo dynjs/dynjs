@@ -9,9 +9,12 @@ import java.io.*;
  */
 public class ReaderSourceProvider extends StringSourceProvider {
 
-
     public ReaderSourceProvider(Reader source) throws IOException {
-        super( readFully( source ) );
+        this(source, "<script>");
+    }
+
+    public ReaderSourceProvider(Reader source, String name) throws IOException {
+        super( readFully( source ), name );
     }
 
     private static String readFully(Reader source) throws IOException {

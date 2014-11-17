@@ -15,6 +15,10 @@ public class FileSourceProvider implements SourceProvider {
         this.file = file;
     }
 
+    public String getName() {
+        return file.getAbsolutePath();
+    }
+
     public Reader openReader() throws IOException {
         return new FileReader( this.file );
     }

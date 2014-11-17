@@ -17,6 +17,11 @@ public class ClassLoaderSourceProvider implements SourceProvider {
         this.path = path;
     }
 
+    @Override
+    public String getName() {
+        return this.path;
+    }
+
     public Reader openReader() throws IOException {
         InputStream in = this.classLoader.getResourceAsStream(this.path);
         if ( in == null ) {

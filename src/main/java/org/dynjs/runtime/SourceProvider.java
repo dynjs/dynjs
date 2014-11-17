@@ -8,5 +8,7 @@ import java.io.Reader;
  */
 public interface SourceProvider {
 
+    String getName();
+
     Reader openReader() throws IOException;
 }
