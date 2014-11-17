@@ -3,6 +3,7 @@ package org.dynjs.debugger.requests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public abstract class AbstractResponse<T extends Request> implements Response {
 
     @Override
     @JsonIgnore
-    public List<Object> getRefs() {
+    public Collection<? extends Object> getRefs() {
         return Collections.emptyList();
     }
 }

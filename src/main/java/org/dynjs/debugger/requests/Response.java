@@ -3,6 +3,7 @@ package org.dynjs.debugger.requests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dynjs.debugger.Message;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,5 +17,5 @@ public interface Response extends Message {
     boolean isRunning();
 
     @JsonIgnore
-    List<Object> getRefs();
+    Collection<? extends Object> getRefs();
 }

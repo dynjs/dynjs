@@ -83,7 +83,7 @@ public class Runner {
         return this;
     }
 
-    public Runner withSource(File source) throws FileNotFoundException {
+    public Runner withSource(File source) throws IOException {
         this.compiler.withSource(source);
         return this;
     }

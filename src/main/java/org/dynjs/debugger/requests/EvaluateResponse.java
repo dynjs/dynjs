@@ -6,6 +6,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class EvaluateResponse extends AbstractResponse<EvaluateRequest> {
     }
 
     @Override
-    public List<Object> getRefs() {
+    public Collection<Object> getRefs() {
         List<Object> refs = new ArrayList<>();
 
         getRefs( this.result, refs );

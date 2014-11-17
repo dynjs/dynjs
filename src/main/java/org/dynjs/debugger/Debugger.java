@@ -8,6 +8,7 @@ import org.dynjs.debugger.requests.Request;
 import org.dynjs.debugger.requests.Response;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.SourceProvider;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -42,6 +43,8 @@ public class Debugger {
     private List<BreakPoint> breakPoints = new ArrayList<>();
 
     private ReferenceManager referenceManager = new ReferenceManager();
+
+    private Set<SourceProvider> sources = new HashSet<>();
 
     private boolean paused = false;
     private Statement currentStatement = null;
@@ -95,10 +98,15 @@ public class Debugger {
 
     public void enterContext(ExecutionContext context) {
         this.contextStack.add(0, context);
+        this.sources.add(context.getSource());
     }
 
     public void exitContext(ExecutionContext context) {
         this.contextStack.remove(0);
+    }
+
+    public Set<SourceProvider> getSources() {
+        return this.sources;
     }
 
     public boolean isRunning() {

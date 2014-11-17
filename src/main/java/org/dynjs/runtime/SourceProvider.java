@@ -10,5 +10,13 @@ public interface SourceProvider {
 
     String getName();
 
+    long getSourceLength();
+
+    long getLineCount();
+
+    int getId();
+
     Reader openReader() throws IOException;
+
+    String getSource() throws IOException;
 }

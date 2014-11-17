@@ -1,4 +1,4 @@
-package org.dynjs.debugger.agent;
+package org.dynjs.debugger.agent.serializers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,7 +15,7 @@ public class EvaluateResponseSerializer extends StdSerializer<EvaluateResponse> 
 
     private final HandleSerializer handleSerializer;
 
-    EvaluateResponseSerializer(HandleSerializer handleSerializer) {
+    public EvaluateResponseSerializer(HandleSerializer handleSerializer) {
         super(EvaluateResponse.class);
         this.handleSerializer = handleSerializer;
     }

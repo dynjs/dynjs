@@ -9,8 +9,11 @@ import java.io.*;
  */
 public class StringSourceProvider implements SourceProvider {
 
+    private static int COUNTER = 0;
+
     private final String source;
     private final String name;
+    private final int id;
 
     public StringSourceProvider(String source) {
         this( source, "<script>" );
@@ -19,11 +22,30 @@ public class StringSourceProvider implements SourceProvider {
     public StringSourceProvider(String source, String name) {
         this.source = source;
         this.name = name;
+        this.id = ++COUNTER;
     }
 
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String getSource() {
+        return this.source;
+    }
+
+    public long getLineCount() {
+        return 99;
+    }
+
+    public long getSourceLength() {
+        return 99;
     }
 
     public Reader openReader() throws IOException {

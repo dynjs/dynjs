@@ -7,19 +7,10 @@ import java.io.*;
 /**
  * @author Bob McWhirter
  */
-public class FileSourceProvider implements SourceProvider {
+public class FileSourceProvider extends InputStreamSourceProvider {
 
-    private final File file;
-
-    public FileSourceProvider(File file) {
-        this.file = file;
+    public FileSourceProvider(File file) throws IOException {
+        super( new FileInputStream( file ), file.getAbsolutePath() );
     }
 
-    public String getName() {
-        return file.getAbsolutePath();
-    }
-
-    public Reader openReader() throws IOException {
-        return new FileReader( this.file );
-    }
 }

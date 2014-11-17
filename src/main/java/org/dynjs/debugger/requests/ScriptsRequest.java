@@ -12,6 +12,7 @@ public class ScriptsRequest extends AbstractRequest<ScriptsResponse> {
 
         private boolean includeSource;
         private int types;
+        private int[] ids;
 
         public void setIncludeSource(boolean includeSource) {
             this.includeSource = includeSource;
@@ -27,6 +28,14 @@ public class ScriptsRequest extends AbstractRequest<ScriptsResponse> {
 
         public int getTypes() {
             return this.types;
+        }
+
+        public void setIds(int[] ids) {
+            this.ids = ids;
+        }
+
+        public int[] getIds() {
+            return this.ids;
         }
 
     }

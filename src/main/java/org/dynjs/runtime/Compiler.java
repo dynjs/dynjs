@@ -59,7 +59,7 @@ public class Compiler {
         return this;
     }
 
-    public Compiler withSource(File source) throws FileNotFoundException {
+    public Compiler withSource(File source) throws IOException {
         this.sourceProvider = new FileSourceProvider(source);
         this.fileName = source.getName();
         return this;

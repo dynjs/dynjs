@@ -3,6 +3,7 @@ package org.dynjs.debugger.requests;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.dynjs.debugger.agent.handlers.WrappingHandler;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class ResponseWrapper {
         return this.seq;
     }
 
-    public List<Object> getRefs() {
+    public Collection<? extends Object> getRefs() {
         return this.body.getRefs();
     }
 

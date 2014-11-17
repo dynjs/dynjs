@@ -1,10 +1,9 @@
-package org.dynjs.debugger.agent;
+package org.dynjs.debugger.agent.serializers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.dynjs.debugger.requests.EvaluateResponse;
 import org.dynjs.debugger.requests.LookupResponse;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class LookupResponseSerializer extends StdSerializer<LookupResponse> {
 
     private final HandleSerializer handleSerializer;
 
-    LookupResponseSerializer(HandleSerializer handleSerializer) {
+    public LookupResponseSerializer(HandleSerializer handleSerializer) {
         super(LookupResponse.class);
         this.handleSerializer = handleSerializer;
     }

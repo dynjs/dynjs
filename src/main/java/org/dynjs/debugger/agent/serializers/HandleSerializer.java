@@ -1,14 +1,11 @@
-package org.dynjs.debugger.agent;
+package org.dynjs.debugger.agent.serializers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.dynjs.debugger.Debugger;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.NameEnumerator;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 
 import java.io.IOException;
 
@@ -19,7 +16,7 @@ public class HandleSerializer extends JsonSerializer<Object> {
 
     private Debugger debugger;
 
-    HandleSerializer(Debugger debugger) {
+    public HandleSerializer(Debugger debugger) {
         super();
         this.debugger = debugger;
     }
@@ -33,8 +30,8 @@ public class HandleSerializer extends JsonSerializer<Object> {
 
     public void serializeAsMapEntry(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         int ref = this.debugger.getReferenceManager().getReference(value);
-        jgen.writeFieldName( "" + ref );
-        serialize( value, jgen, provider );
+        jgen.writeFieldName("" + ref);
+        serialize(value, jgen, provider);
     }
 
     public void serializeBody(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
@@ -60,7 +57,22 @@ public class HandleSerializer extends JsonSerializer<Object> {
         } else if (value instanceof JSObject) {
             jgen.writeStringField("type", "object");
             serializeJSObject((JSObject) value, jgen, provider);
+        } else if (value instanceof SourceProvider) {
+            serializeScript((SourceProvider) value, false, jgen, provider);
         }
+    }
+
+    public void serializeScript(SourceProvider value, boolean includeSource, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        jgen.writeStringField("type", "script");
+        jgen.writeStringField("name", value.getName());
+        jgen.writeNumberField("id", value.getId());
+        if (includeSource) {
+            jgen.writeStringField("source", value.getSource());
+        }
+        jgen.writeNumberField("sourceLength", value.getSourceLength());
+        jgen.writeNumberField("lineCount", value.getLineCount());
+        jgen.writeNumberField("scriptType", 2);
+        jgen.writeNumberField("compilationType", 0);
     }
 
     private void serializeJSObject(JSObject result, JsonGenerator jgen, SerializerProvider provider) throws IOException {

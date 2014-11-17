@@ -7,6 +7,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.agent.serializers.*;
 import org.dynjs.debugger.events.ConnectEvent;
 import org.dynjs.debugger.events.EventWrapper;
 import org.dynjs.debugger.requests.ResponseWrapper;
@@ -32,6 +33,7 @@ public class JSONEncoder extends ChannelDuplexHandler {
         this.module.addSerializer( new ResponseWrapperSerializer( handleSerializer ) );
         this.module.addSerializer( new EvaluateResponseSerializer( handleSerializer ) );
         this.module.addSerializer( new LookupResponseSerializer( handleSerializer ) );
+        this.module.addSerializer( new ScriptsResponseSerializer( handleSerializer ) );
     }
 
     @Override

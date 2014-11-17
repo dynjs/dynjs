@@ -1,13 +1,13 @@
-package org.dynjs.debugger.agent;
+package org.dynjs.debugger.agent.serializers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.dynjs.debugger.requests.EvaluateResponse;
 import org.dynjs.debugger.requests.ResponseWrapper;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ public class ResponseWrapperSerializer extends StdSerializer<ResponseWrapper> {
 
     private final HandleSerializer handleSerializer;
 
-    ResponseWrapperSerializer(HandleSerializer handleSerializer) {
+    public ResponseWrapperSerializer(HandleSerializer handleSerializer) {
         super(ResponseWrapper.class);
         this.handleSerializer = handleSerializer;
     }
@@ -39,7 +39,7 @@ public class ResponseWrapperSerializer extends StdSerializer<ResponseWrapper> {
         jgen.writeFieldName( "refs" );
 
         jgen.writeStartArray();
-        List<Object> refs = value.getRefs();
+        Collection<? extends Object> refs = value.getRefs();
         for ( Object each : refs ) {
             this.handleSerializer.serialize(each, jgen, provider );
         }
