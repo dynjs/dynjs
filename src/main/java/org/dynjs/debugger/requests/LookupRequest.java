@@ -11,6 +11,7 @@ public class LookupRequest extends AbstractRequest<LookupResponse> {
     public static class Arguments {
 
         private List<Integer> handles;
+        private boolean includeSource;
 
         public Arguments() {
 
@@ -22,6 +23,14 @@ public class LookupRequest extends AbstractRequest<LookupResponse> {
 
         public void setHandles(List<Integer> handles) {
             this.handles = handles;
+        }
+
+        public void setIncludeSource(boolean includeSource) {
+            this.includeSource = includeSource;
+        }
+
+        public boolean isIncludeSource() {
+            return this.includeSource;
         }
 
     }

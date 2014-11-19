@@ -4,6 +4,10 @@ import io.netty.channel.ChannelHandler;
 import org.dynjs.debugger.commands.*;
 import org.dynjs.debugger.events.BreakEvent;
 import org.dynjs.debugger.events.ScriptInfo;
+import org.dynjs.debugger.model.Breakpoint;
+import org.dynjs.debugger.model.ScriptBreakpoint;
+import org.dynjs.debugger.model.RegexpBreakpoint;
+import org.dynjs.debugger.model.Frame;
 import org.dynjs.debugger.requests.Request;
 import org.dynjs.debugger.requests.Response;
 import org.dynjs.parser.Statement;
@@ -28,6 +32,8 @@ public class Debugger {
         SUSPEND,
     }
 
+    private ExecutionContext globalContext;
+
     private String fileName;
     private ExecutionContext basisContext;
     private List<ExecutionContext> contextStack = new LinkedList<>();
@@ -40,7 +46,7 @@ public class Debugger {
     private List<ChannelHandler> handlers = new ArrayList<>();
 
     private AtomicLong breakPointCounter = new AtomicLong();
-    private List<BreakPoint> breakPoints = new ArrayList<>();
+    private List<Breakpoint> breakPoints = new ArrayList<>();
 
     private ReferenceManager referenceManager = new ReferenceManager();
 
@@ -61,6 +67,15 @@ public class Debugger {
         register("setbreakpoint", new SetBreakpoint(this));
         register("listbreakpoints", new ListBreakpoints(this));
         register("clearbreakpoint", new ClearBreakpoint(this));
+        register("backtrace", new Backtrace(this));
+    }
+
+    public void setGlobalContext(ExecutionContext globalContext) {
+        this.globalContext = globalContext;
+    }
+
+    public ExecutionContext getGlobalContext() {
+        return this.globalContext;
     }
 
     void register(String name, AbstractCommand command) {
@@ -92,7 +107,28 @@ public class Debugger {
         this.notifyAll();
     }
 
+    public List<Frame> getFrames(int fromFrame, int toFrame) {
+
+        int frameIndex = 0;
+        List<Frame> frames = new ArrayList<>();
+
+        for ( ExecutionContext each : contextStack ) {
+            if ( frameIndex >= fromFrame && frameIndex <= toFrame ) {
+                frames.add( new Frame( frameIndex, each ) );
+            }
+            ++frameIndex;
+            if ( frameIndex > toFrame ) {
+                break;
+            }
+        }
+
+        return frames;
+    }
+
     public ExecutionContext getCurrentContext() {
+        if ( this.contextStack.isEmpty() ) {
+            return null;
+        }
         return this.contextStack.get(0);
     }
 
@@ -114,6 +150,12 @@ public class Debugger {
     }
 
     public void debug(ExecutionContext context, Statement statement, Statement previousStatement) throws InterruptedException {
+        if ( this.paused ) {
+            // only got here because of an `evaluate` ?
+            // so do not debug...
+            return;
+        }
+
         this.currentStatement = statement;
         if (statement.getPosition() != null) {
             this.fileName = statement.getPosition().getFileName();
@@ -130,23 +172,15 @@ public class Debugger {
         }
     }
 
-    public long setBreakPoint(String fileName, long line, long column) {
-        LineBreakPoint breakPoint = new LineBreakPoint(this.breakPointCounter.incrementAndGet(), fileName, line, column);
-        this.breakPoints.add(breakPoint);
-        return breakPoint.getNumber();
-    }
-
-    public long setRegexpBreakPoint(String regexp, long line) {
-        RegexpBreakPoint breakPoint = new RegexpBreakPoint(this.breakPointCounter.incrementAndGet(), regexp, line);
-        this.breakPoints.add( breakPoint );
-        return breakPoint.getNumber();
+    public void setBreakpoint(Breakpoint breakpoint) {
+        this.breakPoints.add( breakpoint );
     }
 
     public boolean removeBreakpoint(long number) {
-        Iterator<BreakPoint> iter = this.breakPoints.iterator();
+        Iterator<Breakpoint> iter = this.breakPoints.iterator();
 
         while ( iter.hasNext() ) {
-            BreakPoint each = iter.next();
+            Breakpoint each = iter.next();
             if ( each.getNumber() == number ) {
                 iter.remove();
                 return true;
@@ -259,7 +293,7 @@ public class Debugger {
     }
 
     private boolean checkBreakpoints(Statement statement, Statement previousStatement) {
-        for (BreakPoint each : this.breakPoints) {
+        for (Breakpoint each : this.breakPoints) {
             if (each.shouldBreak(statement, previousStatement)) {
                 return true;
             }
@@ -268,7 +302,7 @@ public class Debugger {
         return false;
     }
 
-    public List<BreakPoint> getBreakPoints() {
+    public List<Breakpoint> getBreakPoints() {
         return this.breakPoints;
     }
 

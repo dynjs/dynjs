@@ -1,6 +1,9 @@
 package org.dynjs.debugger.commands;
 
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.model.Breakpoint;
+import org.dynjs.debugger.model.RegexpBreakpoint;
+import org.dynjs.debugger.model.ScriptBreakpoint;
 import org.dynjs.debugger.requests.SetBreakpointRequest;
 import org.dynjs.debugger.requests.SetBreakpointResponse;
 
@@ -18,13 +21,20 @@ public class SetBreakpoint extends AbstractCommand<SetBreakpointRequest, SetBrea
 
         String type = request.getArguments().getType();
 
-        if ( type.equals( "scriptRegExp" ) ) {
-            long num = this.debugger.setRegexpBreakPoint( request.getArguments().getTarget(), request.getArguments().getLine() );
-            return new SetBreakpointResponse( request, num, true, false );
-        } else if ( type.equals( "function" ) ) {
+        String target = request.getArguments().getTarget();
+        int line = request.getArguments().getLine();
+        int column = request.getArguments().getColumn();
 
+        Breakpoint breakpoint = null;
+        if ( type.equals( "scriptRegExp" ) ) {
+            breakpoint = new RegexpBreakpoint( target, line, column );
+        } else if ( type.equals( "script" ) ) {
+            breakpoint = new ScriptBreakpoint( target, line, column );
+        } else if ( type.equals( "function" ) ) {
+            return new SetBreakpointResponse( request, -1, false, false );
         }
 
-        return new SetBreakpointResponse( request, -1, false, false );
+        this.debugger.setBreakpoint( breakpoint );
+        return new SetBreakpointResponse( request, breakpoint.getNumber(), true, this.debugger.isRunning() );
     }
 }

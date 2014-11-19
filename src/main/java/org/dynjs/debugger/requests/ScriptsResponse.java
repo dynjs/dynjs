@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dynjs.runtime.SourceProvider;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,12 +13,12 @@ import java.util.Set;
  */
 public class ScriptsResponse extends AbstractResponse<ScriptsRequest> {
 
-    private final Set<SourceProvider> scripts;
+    private final Set<SourceProvider> scripts = new HashSet<>();
     private final boolean includeSource;
 
     public ScriptsResponse(ScriptsRequest request, Set<SourceProvider> scripts, boolean includeSource, boolean success, boolean running) {
         super(request, success, running);
-        this.scripts = scripts;
+        this.scripts.addAll( scripts );
         this.includeSource = includeSource;
     }
 

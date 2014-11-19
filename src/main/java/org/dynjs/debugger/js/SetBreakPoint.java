@@ -1,6 +1,7 @@
 package org.dynjs.debugger.js;
 
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.model.ScriptBreakpoint;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
@@ -42,6 +43,8 @@ public class SetBreakPoint extends AbstractNonConstructorFunction {
             column = (long) args[1];
         }
 
-        return this.debugger.setBreakPoint(fileName, line, column);
+        ScriptBreakpoint breakpoint = new ScriptBreakpoint( fileName, (int) line, (int) column );
+        this.debugger.setBreakpoint( breakpoint );
+        return breakpoint.getNumber();
     }
 }

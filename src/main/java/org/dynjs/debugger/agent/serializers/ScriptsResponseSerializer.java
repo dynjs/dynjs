@@ -8,6 +8,7 @@ import org.dynjs.debugger.requests.ScriptsResponse;
 import org.dynjs.runtime.SourceProvider;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * @author Bob McWhirter
@@ -26,8 +27,11 @@ public class ScriptsResponseSerializer extends StdSerializer<ScriptsResponse> {
 
         jgen.writeStartArray();
 
-        for ( SourceProvider each : value.getScripts() )  {
-            this.handleSerializer.serializeScript( each, value.isIncludeSource(), jgen, provider );
+        Collection<SourceProvider> scripts = value.getScripts();
+        for ( SourceProvider each : scripts ) {
+            jgen.writeStartObject();
+            this.handleSerializer.serializeScript(each, value.isIncludeSource(), jgen, provider);
+            jgen.writeEndObject();
         }
 
         jgen.writeEndArray();

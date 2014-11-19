@@ -28,6 +28,33 @@ public class HandleSerializer extends JsonSerializer<Object> {
         jgen.writeEndObject();
     }
 
+    public void serializeRef(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        jgen.writeStartObject();
+        int ref = this.debugger.getReferenceManager().getReference( value );
+        jgen.writeNumberField( "ref", ref );
+        if (value == Types.UNDEFINED) {
+            jgen.writeStringField("type", "undefined");
+        } else if (value == Types.NULL) {
+            jgen.writeStringField("type", "null");
+        } else if (value instanceof Boolean) {
+            jgen.writeStringField("type", "boolean");
+            jgen.writeBooleanField("value", (Boolean) value);
+        } else if (value instanceof Double) {
+            jgen.writeStringField("type", "number");
+            jgen.writeNumberField("value", (Double) value);
+        } else if (value instanceof Long) {
+            jgen.writeStringField("type", "number");
+            jgen.writeNumberField("value", (Long) value);
+        } else if (value instanceof String) {
+            jgen.writeStringField("type", "string");
+            jgen.writeStringField("value", (String) value);
+        } else if (value instanceof JSObject) {
+            jgen.writeStringField("type", "object");
+        }
+        jgen.writeEndObject();
+
+    }
+
     public void serializeAsMapEntry(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         int ref = this.debugger.getReferenceManager().getReference(value);
         jgen.writeFieldName("" + ref);

@@ -185,6 +185,10 @@ public class Runner {
 
     private Object doExecute() {
         try {
+            if ( this.debugger != null ) {
+                this.debugger.setGlobalContext( executionContext() );
+            }
+
             Completion completion = executionContext().execute(program(), this.debugger);
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
                 throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
@@ -234,6 +238,10 @@ public class Runner {
     }
 
     private Object doEvaluate() {
+        if ( this.debugger != null ) {
+            this.debugger.setGlobalContext( executionContext() );
+        }
+
         try {
             return executionContext().eval(program(), this.directEval);
         } catch (SyntaxError e) {

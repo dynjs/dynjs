@@ -1,6 +1,6 @@
 package org.dynjs.debugger.requests;
 
-import org.dynjs.debugger.BreakPoint;
+import org.dynjs.debugger.model.Breakpoint;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import java.util.List;
  */
 public class ListBreakpointsResponse extends AbstractResponse<ListBreakpointsRequest> {
 
-    private final List<BreakPoint> breakPoints;
+    private final List<Breakpoint> breakPoints;
 
-    public ListBreakpointsResponse(ListBreakpointsRequest request, List<BreakPoint> breakPoints, boolean success, boolean running) {
+    public ListBreakpointsResponse(ListBreakpointsRequest request, List<Breakpoint> breakPoints, boolean success, boolean running) {
         super(request, success, running);
         this.breakPoints = breakPoints;
     }
 
-    public List<BreakPoint> getBreakpoints() {
+    public List<Breakpoint> getBreakpoints() {
         return this.breakPoints;
     }
 }

@@ -28,6 +28,7 @@ public class DebuggerAgent {
                 ch.pipeline().addLast("debug", new DebugHandler("debugger"));
                 ch.pipeline().addLast("json.encoder", new JSONEncoder(debugger));
                 ch.pipeline().addLast("json.decoder", new JSONDecoder(debugger));
+                ch.pipeline().addLast("decoded", new DebugHandler("decoded"));
                 ch.pipeline().addLast( "wrapper", new WrappingHandler() );
 
                 ch.pipeline().addLast("connect", new ConnectHandler());

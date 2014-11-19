@@ -1,4 +1,4 @@
-package org.dynjs.debugger;
+package org.dynjs.debugger.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.dynjs.parser.Statement;
@@ -8,37 +8,18 @@ import java.util.regex.Pattern;
 /**
  * @author Bob McWhirter
  */
-public class RegexpBreakPoint implements BreakPoint {
+public class RegexpBreakpoint extends Breakpoint {
 
-    private final long number;
     private final Pattern regexp;
-    private final long line;
 
-    private long hitCount = 0;
-
-    public RegexpBreakPoint(long number, String regexp, long line) {
-        this.number = number;
+    public RegexpBreakpoint(String regexp, int line, int column) {
+        super( regexp, line, column );
         this.regexp = Pattern.compile(regexp);
-        this.line = line;
     }
 
     @JsonProperty("script")
     public String getRegexp() {
-        return this.regexp.toString();
-    }
-
-    public long getLine() {
-        return this.line;
-    }
-
-    @Override
-    public long getNumber() {
-        return this.number;
-    }
-
-    @JsonProperty("hit_count")
-    public long getHitCount() {
-        return this.hitCount;
+        return this.target;
     }
 
     @Override
@@ -63,10 +44,6 @@ public class RegexpBreakPoint implements BreakPoint {
             } else {
                 result = false;
             }
-        }
-
-        if (result) {
-            ++this.hitCount;
         }
 
         return result;

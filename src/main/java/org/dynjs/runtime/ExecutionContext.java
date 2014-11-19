@@ -70,6 +70,7 @@ public class ExecutionContext implements CompilationContext {
     private Object[] functionParameters;
 
     private Object functionReference;
+    private JSFunction function;
 
     private List<StackElement> throwStack;
 
@@ -419,6 +420,10 @@ public class ExecutionContext implements CompilationContext {
         return context;
     }
 
+    public JSFunction getFunction() {
+        return this.function;
+    }
+
     public ExecutionContext createFunctionExecutionContext(Object functionReference, JSFunction function, Object thisArg, Object... arguments) {
         // 10.4.3
         Object thisBinding = null;
@@ -448,6 +453,7 @@ public class ExecutionContext implements CompilationContext {
         context.debugContext = function.getDebugContext();
         context.functionReference = functionReference;
         context.source = function.getSource();
+        context.function = function;
         //System.err.println( "fnContext: " + context.debugContext + " // " + context.source );
         context.setFunctionParameters(arguments);
         return context;
