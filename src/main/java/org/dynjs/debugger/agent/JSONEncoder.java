@@ -54,7 +54,6 @@ public class JSONEncoder extends ChannelDuplexHandler {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        System.err.println("----------------------------> " + msg);
         if (msg instanceof ConnectEvent) {
             String headers = "Type: connect\r\nContent-Length: 0\r\n\r\n";
             ByteBuf buffer = ctx.alloc().buffer();

@@ -162,11 +162,9 @@ public class Debugger {
         }
         if (shouldBreak(statement, previousStatement)) {
             this.paused = true;
-            System.err.println( "PAUSED = TRUE" );
             try {
                 doBreak(context, statement);
             } finally {
-                System.err.println( "PAUSED = FALSE" );
                 this.paused = false;
             }
         }
