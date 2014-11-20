@@ -1,6 +1,7 @@
 package org.dynjs.debugger.requests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,6 +18,5 @@ public class LookupResponse extends AbstractResponse<LookupRequest> {
     public List<Object> getList() {
         return this.objects;
     }
-
 }
 

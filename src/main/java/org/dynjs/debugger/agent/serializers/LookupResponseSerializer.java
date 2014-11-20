@@ -3,32 +3,31 @@ package org.dynjs.debugger.agent.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.dynjs.debugger.requests.EvaluateResponse;
 import org.dynjs.debugger.requests.LookupResponse;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Bob McWhirter
  */
-public class LookupResponseSerializer extends StdSerializer<LookupResponse> {
+public class LookupResponseSerializer extends DefaultResponseSerializer<LookupResponse> {
 
-    private final HandleSerializer handleSerializer;
-
-    public LookupResponseSerializer(HandleSerializer handleSerializer) {
-        super(LookupResponse.class);
-        this.handleSerializer = handleSerializer;
+    public LookupResponseSerializer(HandleSerializer handleSerializer, AtomicInteger seqCounter) {
+        super(LookupResponse.class, handleSerializer, seqCounter);
     }
 
     @Override
-    public void serialize(LookupResponse value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+    public void serializeBody(LookupResponse value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        jgen.writeFieldName( "body" );
+        List<Object> objects = value.getList();
 
         jgen.writeStartObject();
-
-        for ( Object each : value.getList() ) {
+        for ( Object each : objects ) {
             this.handleSerializer.serializeAsMapEntry( each, jgen, provider );
         }
-
         jgen.writeEndObject();
     }
 

@@ -37,12 +37,12 @@ public class JSONEncoder extends ChannelDuplexHandler {
 
         AtomicInteger seqCounter = new AtomicInteger(0);
 
-        module.addSerializer(new DefaultResponseSerializer(handleSerializer, seqCounter));
         module.addSerializer(new EventSerializer(seqCounter));
 
+        module.addSerializer(new DefaultResponseSerializer(handleSerializer, seqCounter));
         module.addSerializer(new EvaluateResponseSerializer(handleSerializer, seqCounter));
-
-        module.addSerializer(new LookupResponseSerializer(handleSerializer));
+        module.addSerializer(new LookupResponseSerializer(handleSerializer, seqCounter));
+        
         module.addSerializer(new FrameSerializer(handleSerializer));
 
         module.addSerializer(new ScriptSerializer());
