@@ -14,11 +14,10 @@ describe("Java Collections objects", function() {
 });
 
 describe("Javascript Arrays", function() {
-  xit("should be 'subclassable'", function() {
+  it("should be 'subclassable'", function() {
     function BetterArray() {
-        Array.call(this);
+        Array.apply(this, arguments);
     }
-    BetterArray.super_ = Array;
     BetterArray.prototype = Object.create(Array.prototype, {
               constructor: {
                 value: BetterArray,
@@ -26,7 +25,11 @@ describe("Javascript Arrays", function() {
                 writable: true,
                 configurable: true
               }});
-    var x = new BetterArray(1, 2, 3, 4);
-    expect(x[0]).toBe(1);
+   var x = new BetterArray(1, 2, 3, 4);
+   expect(x.length).toBe(4);
+   expect(x[0]).toBe(1);
+   expect(x[1]).toBe(2);
+   expect(x[2]).toBe(3);
+   expect(x[3]).toBe(4);
   });
 });

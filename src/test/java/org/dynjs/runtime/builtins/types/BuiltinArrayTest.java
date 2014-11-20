@@ -572,4 +572,20 @@ public class BuiltinArrayTest extends AbstractDynJSTestSupport {
         assertThat(eval("foo(['p','i','g'])")).isEqualTo(true);
     }
 
+    @Test
+    public void testArraySubclass() {
+        eval("function BetterArray() { Array.apply(this, arguments); }");
+        eval("BetterArray.prototype = Object.create(Array.prototype, {" +
+                "constructor: {" +
+                "  value: BetterArray," +
+                "  enumerable: false," +
+                "  writable: true," +
+                "  configurable: true }" +
+                "});");
+        eval("var x = new BetterArray(1,2,3,4,5);");
+        assertThat(eval("x.length")).isEqualTo(5L);
+        assertThat(eval("x[0]")).isEqualTo(1L);
+        assertThat(eval("x[3]")).isEqualTo(4L);
+    }
+
 }

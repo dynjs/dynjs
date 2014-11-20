@@ -1,13 +1,6 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.Arguments;
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalContext;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Types;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.array.IsArray;
 import org.dynjs.runtime.builtins.types.array.prototype.Concat;
 import org.dynjs.runtime.builtins.types.array.prototype.Every;
@@ -76,12 +69,12 @@ public class BuiltinArray extends AbstractBuiltinType {
     @Override
     public Object call(ExecutionContext context, Object self, final Object... args) {
 
-        DynArray arraySelf = null;
+        DynObject arraySelf = null;
 
         if (self == Types.UNDEFINED || self == Types.NULL ) {
             arraySelf = new DynArray(context.getGlobalContext());
         } else {
-            arraySelf = (DynArray) self;
+            arraySelf = (DynObject) self;
         }
         if (args.length == 1 && args[0] instanceof Number) {
             arraySelf.defineOwnProperty(context, "length",
