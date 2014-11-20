@@ -5,35 +5,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 /**
  * @author Bob McWhirter
  */
+@JsonIgnoreProperties("maxStringLength")
 public class ClearBreakpointRequest extends AbstractRequest<ClearBreakpointResponse> {
 
-    @JsonIgnoreProperties("maxStringLength")
-    public static class Arguments {
-        private long breakpoint;
-
-        public void setBreakpoint(long breakpoint) {
-            this.breakpoint = breakpoint;
-        }
-
-        public long getBreakpoint() {
-            return this.breakpoint;
-        }
-
-    }
-
-    private Arguments arguments;
+    private long breakpoint;
 
     public ClearBreakpointRequest() {
         super("clearbreakpoint");
     }
 
-    public void setArguments(Arguments arguments) {
-        this.arguments = arguments;
+
+    public void setBreakpoint(long breakpoint) {
+        this.breakpoint = breakpoint;
     }
 
-    public Arguments getArguments() {
-        return this.arguments;
+    public long getBreakpoint() {
+        return this.breakpoint;
     }
+
 
 }
 

@@ -48,7 +48,7 @@ public class SetBreakpointResponse extends AbstractResponse<SetBreakpointRequest
     }
 
     public String getType() {
-        return getRequest().getArguments().getType();
+        return getRequest().getType();
     }
 
     @JsonProperty("actual_locations")

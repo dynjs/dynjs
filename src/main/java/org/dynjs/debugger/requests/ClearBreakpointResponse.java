@@ -10,6 +10,6 @@ public class ClearBreakpointResponse extends AbstractResponse<ClearBreakpointReq
     }
 
     public long getBreakpoint() {
-        return getRequest().getArguments().getBreakpoint();
+        return getRequest().getBreakpoint();
     }
 }

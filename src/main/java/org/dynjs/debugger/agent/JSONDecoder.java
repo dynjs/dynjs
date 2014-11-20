@@ -1,19 +1,23 @@
 package org.dynjs.debugger.agent;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.agent.serializers.*;
 import org.dynjs.debugger.commands.AbstractCommand;
+import org.dynjs.debugger.requests.NoArgumentsRequest;
 import org.dynjs.debugger.requests.Request;
+import org.dynjs.debugger.requests.ScriptsRequest;
+import org.dynjs.debugger.requests.SourceRequest;
 
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Bob McWhirter
@@ -24,6 +28,7 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
     private static Charset UTF8 = Charset.forName("UTF8");
 
     private final Debugger debugger;
+    private final ObjectMapper mapper;
     private int length;
 
     public enum State {
@@ -34,6 +39,15 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
     public JSONDecoder(Debugger debugger) {
         super(State.HEADER);
         this.debugger = debugger;
+
+        SimpleModule module = new SimpleModule();
+
+        module.addDeserializer(SourceRequest.class, new SourceRequestDeserializer());
+
+        this.mapper = new ObjectMapper();
+        this.mapper.registerModule(module);
+        this.mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
+        this.mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
     @Override
@@ -58,16 +72,20 @@ public class JSONDecoder extends ReplayingDecoder<JSONDecoder.State> {
         }
 
         if (state() == State.BODY) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
             JsonNode node = mapper.readTree(new ByteBufInputStream(in, this.length));
             String type = node.get("type").asText();
             if ("request".equals(type)) {
                 String commandStr = node.get("command").asText();
                 AbstractCommand command = this.debugger.getCommand(commandStr);
                 if (command != null) {
-                    ObjectReader reader = mapper.reader().withValueToUpdate(command.newRequest());
-                    Request request = reader.readValue(node);
+                    Request request = command.newRequest();
+                    request.setSeq( node.get( "seq" ).asInt() );
+                    ObjectReader reader = mapper.reader().withValueToUpdate(request);
+                    if ( node.has("arguments" ) ) {
+                        reader.readValue(node.get("arguments"));
+                    } else if ( request instanceof NoArgumentsRequest ) {
+                        reader.readValue(node);
+                    }
                     out.add(request);
                 }
             }

@@ -18,7 +18,7 @@ public class Backtrace extends AbstractCommand<BacktraceRequest, BacktraceRespon
 
     @Override
     public BacktraceResponse handle(BacktraceRequest request) {
-        List<Frame> frames = this.debugger.getFrames( request.getArguments().getFromFrame(), request.getArguments().getToFrame() );
+        List<Frame> frames = this.debugger.getFrames( request.getFromFrame(), request.getToFrame() );
         return new BacktraceResponse(request, frames, true, this.debugger.isRunning() );
     }
 }

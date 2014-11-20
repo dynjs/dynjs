@@ -1,30 +1,33 @@
 package org.dynjs.debugger.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.dynjs.runtime.SourceProvider;
+import org.dynjs.debugger.model.Script;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * @author Bob McWhirter
  */
-public class ScriptsResponse extends AbstractResponse<ScriptsRequest> {
+public class ScriptsResponse extends AbstractResponse<ScriptsRequest> implements ListResponse {
 
-    private final Set<SourceProvider> scripts = new HashSet<>();
+    private final Set<Script> scripts = new HashSet<>();
     private final boolean includeSource;
 
-    public ScriptsResponse(ScriptsRequest request, Set<SourceProvider> scripts, boolean includeSource, boolean success, boolean running) {
+    public ScriptsResponse(ScriptsRequest request, Set<Script> scripts, boolean includeSource, boolean success, boolean running) {
         super(request, success, running);
         this.scripts.addAll( scripts );
         this.includeSource = includeSource;
     }
 
-    @JsonIgnore
-    public Collection<SourceProvider> getScripts() {
+    public Collection<Script> getScripts() {
         return this.scripts;
+    }
+
+    @Override
+    public Collection<?> getValues() {
+        return getScripts();
     }
 
     @JsonIgnore

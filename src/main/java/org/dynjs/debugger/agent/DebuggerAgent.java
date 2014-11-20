@@ -7,7 +7,6 @@ import org.dynjs.debugger.Debugger;
 import org.dynjs.debugger.agent.handlers.ConnectHandler;
 import org.dynjs.debugger.agent.handlers.DebugHandler;
 import org.dynjs.debugger.agent.handlers.ErrorHandler;
-import org.dynjs.debugger.agent.handlers.WrappingHandler;
 import org.dynjs.debugger.commands.AbstractCommand;
 
 /**
@@ -29,7 +28,6 @@ public class DebuggerAgent {
                 ch.pipeline().addLast("json.encoder", new JSONEncoder(debugger));
                 ch.pipeline().addLast("json.decoder", new JSONDecoder(debugger));
                 ch.pipeline().addLast("decoded", new DebugHandler("decoded"));
-                ch.pipeline().addLast( "wrapper", new WrappingHandler() );
 
                 ch.pipeline().addLast("connect", new ConnectHandler());
 
@@ -38,7 +36,6 @@ public class DebuggerAgent {
                 }
 
                 ch.pipeline().addLast("error", new ErrorHandler() );
-
 
                 debugger.setListener( new AgentListener( ch ) );
             }

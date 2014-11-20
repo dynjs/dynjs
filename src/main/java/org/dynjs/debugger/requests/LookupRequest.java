@@ -1,53 +1,40 @@
 package org.dynjs.debugger.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Bob McWhirter
  */
+@JsonIgnoreProperties("maxStringLength")
 public class LookupRequest extends AbstractRequest<LookupResponse> {
 
-    public static class Arguments {
-
-        private List<Integer> handles;
-        private boolean includeSource;
-
-        public Arguments() {
-
-        }
-
-        public List<Integer> getHandles() {
-            return this.handles;
-        }
-
-        public void setHandles(List<Integer> handles) {
-            this.handles = handles;
-        }
-
-        public void setIncludeSource(boolean includeSource) {
-            this.includeSource = includeSource;
-        }
-
-        public boolean isIncludeSource() {
-            return this.includeSource;
-        }
-
-    }
-
-    private Arguments arguments;
+    private List<Integer> handles;
+    private boolean includeSource;
 
     public LookupRequest() {
         super("lookup");
     }
 
-    public Arguments getArguments() {
-        return this.arguments;
+    public List<Integer> getHandles() {
+        return this.handles;
     }
-    
-    public void setArguments(Arguments arguments) {
-        this.arguments = arguments;
+
+    public void setHandles(List<Integer> handles) {
+        this.handles = handles;
     }
+
+    public void setIncludeSource(boolean includeSource) {
+        this.includeSource = includeSource;
+    }
+
+    public boolean isIncludeSource() {
+        return this.includeSource;
+    }
+
 
 }
 

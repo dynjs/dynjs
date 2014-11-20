@@ -3,31 +3,25 @@ package org.dynjs.debugger.agent.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.dynjs.debugger.requests.EvaluateResponse;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Bob McWhirter
  */
-public class EvaluateResponseSerializer extends StdSerializer<EvaluateResponse> {
+public class EvaluateResponseSerializer extends DefaultResponseSerializer<EvaluateResponse> {
 
-    private final HandleSerializer handleSerializer;
-
-    public EvaluateResponseSerializer(HandleSerializer handleSerializer) {
-        super(EvaluateResponse.class);
-        this.handleSerializer = handleSerializer;
+    public EvaluateResponseSerializer(HandleSerializer handleSerializer, AtomicInteger seqCounter) {
+        super(EvaluateResponse.class, handleSerializer, seqCounter);
     }
 
     @Override
-    public void serialize(EvaluateResponse value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
-
+    public void serializeBody(EvaluateResponse value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         Object result = value.getResult();
-
-        jgen.writeStartObject();
-        this.handleSerializer.serializeBody(result, jgen, provider);
-        jgen.writeEndObject();
+        jgen.writeFieldName( "body" );
+        this.handleSerializer.serialize(result, jgen, provider);
     }
 
 

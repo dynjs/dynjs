@@ -3,7 +3,6 @@ package org.dynjs.debugger.agent;
 import io.netty.channel.Channel;
 import org.dynjs.debugger.DebugListener;
 import org.dynjs.debugger.events.Event;
-import org.dynjs.debugger.events.EventWrapper;
 
 /**
  * @author Bob McWhirter

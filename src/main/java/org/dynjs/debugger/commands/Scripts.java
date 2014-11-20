@@ -1,6 +1,7 @@
 package org.dynjs.debugger.commands;
 
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.model.Script;
 import org.dynjs.debugger.requests.ScriptsRequest;
 import org.dynjs.debugger.requests.ScriptsResponse;
 import org.dynjs.runtime.SourceProvider;
@@ -19,21 +20,23 @@ public class Scripts extends AbstractCommand<ScriptsRequest, ScriptsResponse> {
 
     @Override
     public ScriptsResponse handle(ScriptsRequest request) {
-        Set<SourceProvider> allScripts = this.debugger.getSources();
-        Set<SourceProvider> selectedScripts = null;
+        Set<SourceProvider> allSources = this.debugger.getSources();
+        Set<Script> selectedScripts = new HashSet<>();
 
-        if (request.getArguments().getIds() == null) {
-            selectedScripts = allScripts;
+        if (request.getIds() == null) {
+            for (SourceProvider each : allSources) {
+                selectedScripts.add(new Script(each, request.isIncludeSource()));
+            }
         } else {
             selectedScripts = new HashSet<>();
 
-            int[] ids = request.getArguments().getIds();
+            int[] ids = request.getIds();
 
-            for (SourceProvider each : allScripts) {
+            for (SourceProvider each : allSources) {
                 LOOKUP:
                 for (int i = 0; i < ids.length; ++i) {
                     if (each.getId() == ids[i]) {
-                        selectedScripts.add(each);
+                        selectedScripts.add(new Script(each, request.isIncludeSource()));
                         break LOOKUP;
                     }
                 }
@@ -41,6 +44,6 @@ public class Scripts extends AbstractCommand<ScriptsRequest, ScriptsResponse> {
 
         }
 
-        return new ScriptsResponse(request, selectedScripts, request.getArguments().isIncludeSource(), true, true);
+        return new ScriptsResponse(request, selectedScripts, request.isIncludeSource(), true, true);
     }
 }

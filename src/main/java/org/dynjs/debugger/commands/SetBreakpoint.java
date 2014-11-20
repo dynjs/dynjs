@@ -19,11 +19,11 @@ public class SetBreakpoint extends AbstractCommand<SetBreakpointRequest, SetBrea
     @Override
     public SetBreakpointResponse handle(SetBreakpointRequest request) {
 
-        String type = request.getArguments().getType();
+        String type = request.getType();
 
-        String target = request.getArguments().getTarget();
-        int line = request.getArguments().getLine();
-        int column = request.getArguments().getColumn();
+        String target = request.getTarget();
+        int line = request.getLine();
+        int column = request.getColumn();
 
         Breakpoint breakpoint = null;
         if ( type.equals( "scriptRegExp" ) ) {

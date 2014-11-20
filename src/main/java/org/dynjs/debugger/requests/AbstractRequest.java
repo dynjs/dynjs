@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Bob McWhirter
  */
 
-@JsonIgnoreProperties( "type" )
+@JsonIgnoreProperties( { "type", "command" } )
 public class AbstractRequest<T extends Response> implements Request<T> {
 
     private final String command;

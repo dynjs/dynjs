@@ -27,7 +27,7 @@ public class Lookup extends AbstractCommand<LookupRequest, LookupResponse> {
 
         ReferenceManager refManager = this.debugger.getReferenceManager();
 
-        for ( Integer handle : request.getArguments().getHandles() ) {
+        for ( Integer handle : request.getHandles() ) {
             Object value = refManager.getObject( handle );
 
             if ( value != null ) {

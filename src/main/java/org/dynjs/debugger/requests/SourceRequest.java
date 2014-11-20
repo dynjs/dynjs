@@ -1,12 +1,12 @@
 package org.dynjs.debugger.requests;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Bob McWhirter
  */
-public class SourceRequest extends AbstractRequest<SourceResponse> {
+@JsonIgnoreProperties("maxStringLength")
+public class SourceRequest extends AbstractRequest<SourceResponse> implements NoArgumentsRequest {
 
     private int fromLine;
     private int toLine;

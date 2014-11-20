@@ -21,7 +21,7 @@ public class Evaluate extends AbstractCommand<EvaluateRequest, EvaluateResponse>
     public EvaluateResponse handle(EvaluateRequest request) {
         ExecutionContext context = null;
 
-        if (request.getArguments().isGlobal()) {
+        if (request.isGlobal()) {
             context = this.debugger.getGlobalContext();
         } else {
             context = this.debugger.getCurrentContext();
@@ -31,7 +31,7 @@ public class Evaluate extends AbstractCommand<EvaluateRequest, EvaluateResponse>
 
 
         try {
-            Object result = runner.withContext(context).withSource(request.getArguments().getExpression()).directEval().evaluate();
+            Object result = runner.withContext(context).withSource(request.getExpression()).directEval().evaluate();
             return new EvaluateResponse(request, result, true, this.debugger.isRunning());
         } catch (ThrowException e) {
             e.printStackTrace();
