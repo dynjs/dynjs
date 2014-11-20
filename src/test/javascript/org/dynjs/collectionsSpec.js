@@ -12,3 +12,21 @@ describe("Java Collections objects", function() {
   });
 
 });
+
+describe("Javascript Arrays", function() {
+  xit("should be 'subclassable'", function() {
+    function BetterArray() {
+        Array.call(this);
+    }
+    BetterArray.super_ = Array;
+    BetterArray.prototype = Object.create(Array.prototype, {
+              constructor: {
+                value: BetterArray,
+                enumerable: false,
+                writable: true,
+                configurable: true
+              }});
+    var x = new BetterArray(1, 2, 3, 4);
+    expect(x[0]).toBe(1);
+  });
+});
