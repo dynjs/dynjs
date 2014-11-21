@@ -2,6 +2,7 @@ package org.dynjs.debugger.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.dynjs.runtime.ExecutionContext;
+import org.dynjs.runtime.JSCode;
 import org.dynjs.runtime.SourceProvider;
 
 import java.util.Collections;
@@ -33,6 +34,10 @@ public class Frame {
         return this.context.getSource();
     }
 
+    public boolean isConstructor() {
+        return this.context.isConstructor();
+    }
+
     public int getLine() {
         return this.context.getLineNumber();
     }
@@ -45,8 +50,8 @@ public class Frame {
         return Collections.emptyList();
     }
 
-    public Func getFunc() {
-        return new Func( this.context );
+    public JSCode getFunc() {
+        return this.context.getFunction();
     }
 
     public Object getReceiver() {

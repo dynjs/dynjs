@@ -9,6 +9,7 @@ import java.io.Reader;
 public interface SourceProvider {
 
     String getName();
+    void setName(String name);
 
     long getSourceLength();
 

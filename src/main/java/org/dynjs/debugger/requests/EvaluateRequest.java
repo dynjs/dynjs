@@ -11,6 +11,7 @@ public class EvaluateRequest extends AbstractRequest<EvaluateResponse> {
 
     private String expr;
     private boolean global;
+    private int frame;
 
     public EvaluateRequest() {
         super("evaluate");
@@ -30,6 +31,14 @@ public class EvaluateRequest extends AbstractRequest<EvaluateResponse> {
 
     public boolean isGlobal() {
         return this.global;
+    }
+
+    public void setFrame(int frame) {
+        this.frame = frame;
+    }
+
+    public int getFrame() {
+        return this.frame;
     }
 
 

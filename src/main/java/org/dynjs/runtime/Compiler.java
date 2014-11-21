@@ -61,7 +61,6 @@ public class Compiler {
 
     public Compiler withSource(File source) throws IOException {
         this.sourceProvider = new FileSourceProvider(source);
-        this.fileName = source.getName();
         return this;
     }
 
@@ -79,6 +78,11 @@ public class Compiler {
         JavascriptParser parser = new JavascriptParser(compilationContext());
         Reader source = null;
         try {
+            if ( this.fileName != null ) {
+                this.sourceProvider.setName( this.fileName );
+            } else {
+                this.fileName = this.sourceProvider.getName();
+            }
             source = this.sourceProvider.openReader();
             ProgramTree tree = parser.parse(source, this.fileName, this.forceStrict);
             tree.setSource( this.sourceProvider );

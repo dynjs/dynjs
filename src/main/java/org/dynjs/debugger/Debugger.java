@@ -132,12 +132,16 @@ public class Debugger {
         return this.contextStack.get(0);
     }
 
-    public void enterContext(ExecutionContext context) {
+    public ExecutionContext getContext(int frame) {
+        return this.contextStack.get( frame );
+    }
+
+    public synchronized void enterContext(ExecutionContext context) {
         this.contextStack.add(0, context);
         this.sources.add(context.getSource());
     }
 
-    public void exitContext(ExecutionContext context) {
+    public synchronized void exitContext(ExecutionContext context) {
         this.contextStack.remove(0);
     }
 

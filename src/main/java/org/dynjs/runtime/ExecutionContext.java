@@ -71,6 +71,7 @@ public class ExecutionContext implements CompilationContext {
 
     private Object functionReference;
     private JSFunction function;
+    private boolean isConstructor;
 
     private List<StackElement> throwStack;
 
@@ -96,6 +97,14 @@ public class ExecutionContext implements CompilationContext {
 
     public Object getFunctionParameter(int offset) {
         return getFunctionParameters()[offset];
+    }
+
+    public JSFunction getFunction() {
+        return this.function;
+    }
+
+    public boolean isConstructor() {
+        return this.isConstructor;
     }
 
     public VariableValues getVars() {
@@ -272,10 +281,14 @@ public class ExecutionContext implements CompilationContext {
     }
 
     public Object call(Object functionReference, JSFunction function, Object self, Object... args) {
+        return call( false, functionReference, function, self, args );
+    }
+
+    public Object call(boolean isConstructor, Object functionReference, JSFunction function, Object self, Object... args) {
         // 13.2.1
         ExecutionContext fnContext = null;
         try {
-            fnContext = createFunctionExecutionContext(functionReference, function, self, args);
+            fnContext = createFunctionExecutionContext(isConstructor, functionReference, function, self, args);
             ThreadContextManager.pushContext(fnContext);
             try {
                 Object value = function.call(fnContext);
@@ -349,7 +362,7 @@ public class ExecutionContext implements CompilationContext {
         }
 
         // 8. Call the function with obj as self
-        Object result = call(reference, function, obj, args);
+        Object result = call(true, reference, function, obj, args);
         // 9. If result is a JSObject return it
 
         if (result instanceof JSObject) {
@@ -420,11 +433,8 @@ public class ExecutionContext implements CompilationContext {
         return context;
     }
 
-    public JSFunction getFunction() {
-        return this.function;
-    }
 
-    public ExecutionContext createFunctionExecutionContext(Object functionReference, JSFunction function, Object thisArg, Object... arguments) {
+    public ExecutionContext createFunctionExecutionContext(boolean isConstructor, Object functionReference, JSFunction function, Object thisArg, Object... arguments) {
         // 10.4.3
         Object thisBinding = null;
         if (function.isStrict()) {
@@ -444,6 +454,7 @@ public class ExecutionContext implements CompilationContext {
         LexicalEnvironment localEnv = LexicalEnvironment.newDeclarativeEnvironment(scope);
 
         ExecutionContext context = new ExecutionContext(this.runtime, this, localEnv, localEnv, thisBinding, function.isStrict());
+        context.isConstructor = isConstructor;
         context.source = function.getSource();
         context.fileName = function.getFileName();
         if (!(function instanceof IRJSFunction && !(function instanceof JITCompiler.CompiledFunction))) {

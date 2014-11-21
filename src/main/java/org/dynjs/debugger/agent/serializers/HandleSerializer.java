@@ -48,8 +48,23 @@ public class HandleSerializer extends JsonSerializer<Object> {
         } else if (value instanceof String) {
             jgen.writeStringField("type", "string");
             jgen.writeStringField("value", (String) value);
+        } else if ( value instanceof JSFunction ) {
+            jgen.writeStringField("type", "function");
+            Object name = ((JSFunction) value).get( null, "name" );
+            if ( name != Types.UNDEFINED ) {
+                jgen.writeStringField( "name", name.toString() );
+            } else {
+                jgen.writeStringField( "name", "" );
+            }
+            jgen.writeStringField( "inferredName", "" );
+            SourceProvider source = ((JSFunction) value).getSource();
+            if ( source != null ) {
+                jgen.writeNumberField( "scriptId", source.getId() );
+            }
         } else if (value instanceof JSObject) {
             jgen.writeStringField("type", "object");
+        } else if ( value instanceof SourceProvider ) {
+            jgen.writeStringField("type", "script");
         }
         jgen.writeEndObject();
 

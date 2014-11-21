@@ -1,6 +1,7 @@
 package org.dynjs.debugger.requests;
 
 import org.dynjs.debugger.model.Frame;
+import org.dynjs.runtime.JSCode;
 import org.dynjs.runtime.Types;
 
 import java.util.ArrayList;
@@ -23,15 +24,15 @@ public class BacktraceResponse extends AbstractResponse<BacktraceRequest> {
         return this.frames;
     }
 
-    public int fromFrame() {
+    public int getFromFrame() {
         return this.frames.get( 0 ).getIndex();
     }
 
-    public int toFrame() {
+    public int getToFrame() {
         return this.frames.get( this.frames.size() - 1 ).getIndex();
     }
 
-    public int totalFrames() {
+    public int getTotalFrames() {
         return this.frames.size();
     }
 
@@ -43,6 +44,13 @@ public class BacktraceResponse extends AbstractResponse<BacktraceRequest> {
             Object receiver = each.getReceiver();
             if ( receiver != null && receiver != Types.UNDEFINED ) {
                 refs.add( receiver );
+            }
+
+            JSCode func = each.getFunc();
+            if ( func != null ) {
+                if ( func.getSource() != null ) {
+                    refs.add( func.getSource() );
+                }
             }
         }
 

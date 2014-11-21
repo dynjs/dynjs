@@ -10,6 +10,7 @@ public class BacktraceRequest extends AbstractRequest<BacktraceResponse> {
 
     private int fromFrame = -1;
     private int toFrame = -1;
+    private boolean bottom = false;
     private boolean inlineRefs;
 
     public BacktraceRequest() {
@@ -30,6 +31,14 @@ public class BacktraceRequest extends AbstractRequest<BacktraceResponse> {
 
     public int getToFrame() {
         return this.toFrame;
+    }
+
+    public void setBottom(boolean bottom) {
+        this.bottom = bottom;
+    }
+
+    public boolean getBottom() {
+        return this.bottom;
     }
 
     public void setInlineRefs(boolean inlineRefs) {

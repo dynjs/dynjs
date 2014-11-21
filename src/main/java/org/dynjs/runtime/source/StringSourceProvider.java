@@ -12,11 +12,11 @@ public class StringSourceProvider implements SourceProvider {
     private static int COUNTER = 0;
 
     private final String source;
-    private final String name;
+    private String name;
     private final int id;
 
     public StringSourceProvider(String source) {
-        this( source, "<script>" );
+        this( source, "<eval>" );
     }
 
     public StringSourceProvider(String source, String name) {
@@ -28,6 +28,11 @@ public class StringSourceProvider implements SourceProvider {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

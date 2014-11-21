@@ -24,7 +24,7 @@ public class Evaluate extends AbstractCommand<EvaluateRequest, EvaluateResponse>
         if (request.isGlobal()) {
             context = this.debugger.getGlobalContext();
         } else {
-            context = this.debugger.getCurrentContext();
+            context = this.debugger.getContext( request.getFrame() );
         }
 
         Runner runner = context.getRuntime().newRunner();

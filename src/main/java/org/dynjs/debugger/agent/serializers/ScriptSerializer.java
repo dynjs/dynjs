@@ -27,8 +27,7 @@ public class ScriptSerializer extends StdSerializer<Script> {
         jgen.writeStringField("name", value.getName());
         jgen.writeNumberField("id", value.getId());
         if (value.isIncludeSource()) {
-            //jgen.writeStringField("source", value.getSource());
-            jgen.writeStringField("source", "");
+            jgen.writeStringField("source", value.getSource());
         }
         jgen.writeNumberField("lineOffset", 0);
         jgen.writeNumberField("columnOffset", 0);
