@@ -244,18 +244,22 @@ public class Debugger {
 
         this.paused = true;
 
+        /*
         synchronized (this) {
             while (this.listener == null) {
                 this.wait();
             }
         }
+        */
 
         this.basisContext = getCurrentContext();
 
         setBreak();
 
         ScriptInfo script = new ScriptInfo(statement.getPosition().getFileName());
-        this.listener.on(new BreakEvent(this, statement.getPosition().getLine() - 1, statement.getPosition().getColumn(), script));
+        if ( this.listener != null ) {
+            this.listener.on(new BreakEvent(this, statement.getPosition().getLine() - 1, statement.getPosition().getColumn(), script));
+        }
         synchronized (this.lock) {
             while (this.lock.get()) {
                 this.lock.wait();

@@ -26,7 +26,7 @@ public class FrameSerializer extends StdSerializer<Frame> {
         jgen.writeStartObject();
 
         jgen.writeNumberField("index", value.getIndex());
-        jgen.writeNumberField("line", value.getLine());
+        jgen.writeNumberField("line", value.getLine() - 1);
         jgen.writeNumberField("column", value.getColumn());
         jgen.writeBooleanField("constructCall", value.isConstructor());
 

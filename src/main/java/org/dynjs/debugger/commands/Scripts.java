@@ -44,6 +44,6 @@ public class Scripts extends AbstractCommand<ScriptsRequest, ScriptsResponse> {
 
         }
 
-        return new ScriptsResponse(request, selectedScripts, request.isIncludeSource(), true, true);
+        return new ScriptsResponse(request, selectedScripts, request.isIncludeSource(), true, this.debugger.isRunning());
     }
 }
