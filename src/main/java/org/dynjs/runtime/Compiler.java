@@ -86,6 +86,7 @@ public class Compiler {
             source = this.sourceProvider.openReader();
             ProgramTree tree = parser.parse(source, this.fileName, this.forceStrict);
             tree.setSource( this.sourceProvider );
+            this.fileName = null;
             return tree;
         } finally {
             if (source != null) {

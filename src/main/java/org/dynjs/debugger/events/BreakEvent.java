@@ -1,6 +1,7 @@
 package org.dynjs.debugger.events;
 
 import org.dynjs.debugger.Debugger;
+import org.dynjs.debugger.model.Script;
 
 /**
  * @author Bob McWhirter
@@ -9,9 +10,9 @@ public class BreakEvent extends AbstractEvent {
 
     private final int sourceLine;
     private final int sourceColumn;
-    private final ScriptInfo script;
+    private final Script script;
 
-    public BreakEvent(Debugger debugger, int sourceLine, int sourceColumn, ScriptInfo script) {
+    public BreakEvent(Debugger debugger, int sourceLine, int sourceColumn, Script script) {
         super(debugger, "break");
         this.sourceLine = sourceLine;
         this.sourceColumn = sourceColumn;
@@ -26,7 +27,7 @@ public class BreakEvent extends AbstractEvent {
         return this.sourceColumn;
     }
 
-    public ScriptInfo getScript() {
+    public Script getScript() {
         return this.script;
     }
 

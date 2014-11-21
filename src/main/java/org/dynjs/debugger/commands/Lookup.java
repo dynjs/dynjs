@@ -4,13 +4,6 @@ import org.dynjs.debugger.Debugger;
 import org.dynjs.debugger.ReferenceManager;
 import org.dynjs.debugger.requests.LookupRequest;
 import org.dynjs.debugger.requests.LookupResponse;
-import org.dynjs.debugger.requests.SourceRequest;
-import org.dynjs.debugger.requests.SourceResponse;
-import org.dynjs.runtime.SourceProvider;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
 
 /**
  * @author Bob McWhirter

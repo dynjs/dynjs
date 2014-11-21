@@ -3,11 +3,9 @@ package org.dynjs.debugger;
 import io.netty.channel.ChannelHandler;
 import org.dynjs.debugger.commands.*;
 import org.dynjs.debugger.events.BreakEvent;
-import org.dynjs.debugger.events.ScriptInfo;
 import org.dynjs.debugger.model.Breakpoint;
-import org.dynjs.debugger.model.ScriptBreakpoint;
-import org.dynjs.debugger.model.RegexpBreakpoint;
 import org.dynjs.debugger.model.Frame;
+import org.dynjs.debugger.model.Script;
 import org.dynjs.debugger.requests.Request;
 import org.dynjs.debugger.requests.Response;
 import org.dynjs.parser.Statement;
@@ -112,12 +110,12 @@ public class Debugger {
         int frameIndex = 0;
         List<Frame> frames = new ArrayList<>();
 
-        for ( ExecutionContext each : contextStack ) {
-            if ( frameIndex >= fromFrame && frameIndex <= toFrame ) {
-                frames.add( new Frame( frameIndex, each ) );
+        for (ExecutionContext each : contextStack) {
+            if (frameIndex >= fromFrame && frameIndex <= toFrame) {
+                frames.add(new Frame(frameIndex, each));
             }
             ++frameIndex;
-            if ( frameIndex > toFrame ) {
+            if (frameIndex > toFrame) {
                 break;
             }
         }
@@ -126,14 +124,14 @@ public class Debugger {
     }
 
     public ExecutionContext getCurrentContext() {
-        if ( this.contextStack.isEmpty() ) {
+        if (this.contextStack.isEmpty()) {
             return null;
         }
         return this.contextStack.get(0);
     }
 
     public ExecutionContext getContext(int frame) {
-        return this.contextStack.get( frame );
+        return this.contextStack.get(frame);
     }
 
     public synchronized void enterContext(ExecutionContext context) {
@@ -150,11 +148,11 @@ public class Debugger {
     }
 
     public boolean isRunning() {
-        return ! this.paused;
+        return !this.paused;
     }
 
     public void debug(ExecutionContext context, Statement statement, Statement previousStatement) throws InterruptedException {
-        if ( this.paused ) {
+        if (this.paused) {
             // only got here because of an `evaluate` ?
             // so do not debug...
             return;
@@ -175,15 +173,15 @@ public class Debugger {
     }
 
     public void setBreakpoint(Breakpoint breakpoint) {
-        this.breakPoints.add( breakpoint );
+        this.breakPoints.add(breakpoint);
     }
 
     public boolean removeBreakpoint(long number) {
         Iterator<Breakpoint> iter = this.breakPoints.iterator();
 
-        while ( iter.hasNext() ) {
+        while (iter.hasNext()) {
             Breakpoint each = iter.next();
-            if ( each.getNumber() == number ) {
+            if (each.getNumber() == number) {
                 iter.remove();
                 return true;
             }
@@ -222,9 +220,8 @@ public class Debugger {
 
     public void suspend() {
         this.mode = StepAction.SUSPEND;
-        if ( this.paused ) {
-            ScriptInfo script = new ScriptInfo(this.currentStatement.getPosition().getFileName());
-            this.listener.on(new BreakEvent(this, this.currentStatement.getPosition().getLine() - 1, this.currentStatement.getPosition().getColumn(), script));
+        if (this.paused) {
+            this.listener.on(new BreakEvent(this, this.currentStatement.getPosition().getLine() - 1, this.currentStatement.getPosition().getColumn(), new Script(getCurrentContext().getSource(), false)));
         }
     }
 
@@ -256,9 +253,8 @@ public class Debugger {
 
         setBreak();
 
-        ScriptInfo script = new ScriptInfo(statement.getPosition().getFileName());
-        if ( this.listener != null ) {
-            this.listener.on(new BreakEvent(this, statement.getPosition().getLine() - 1, statement.getPosition().getColumn(), script));
+        if (this.listener != null) {
+            this.listener.on(new BreakEvent(this, statement.getPosition().getLine() - 1, statement.getPosition().getColumn(), new Script(getCurrentContext().getSource(), false)));
         }
         synchronized (this.lock) {
             while (this.lock.get()) {
@@ -280,10 +276,10 @@ public class Debugger {
                 result = checkBreakpoints(statement, previousStatement);
                 break;
             case NEXT:
-                result = ( isCurrentlyInBasisContext() || hasExitedBasisContext() );
+                result = (isCurrentlyInBasisContext() || hasExitedBasisContext());
                 break;
             case IN:
-                result = ! hasExitedBasisContext();
+                result = !hasExitedBasisContext();
                 break;
             case OUT:
                 result = hasExitedBasisContext();
@@ -318,8 +314,8 @@ public class Debugger {
 
     private boolean hasExitedBasisContext() {
 
-        for ( ExecutionContext cur : this.contextStack ) {
-            if ( cur == this.basisContext ) {
+        for (ExecutionContext cur : this.contextStack) {
+            if (cur == this.basisContext) {
                 return false;
             }
         }
