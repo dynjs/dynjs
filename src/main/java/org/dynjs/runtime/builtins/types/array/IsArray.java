@@ -15,9 +15,10 @@ public class IsArray extends AbstractNativeFunction {
             return true;
         }
 
-        if ( args[0] instanceof JSObject && ((JSObject)args[0]).hasExternalIndexedData() ) {
-            return true;
-        }
+        // TODO: Nodyn buffers should not be considered an array according to Array.isArray
+//        if ( args[0] instanceof JSObject && ((JSObject)args[0]).hasExternalIndexedData() ) {
+//            return true;
+//        }
 
         return false;
     }
