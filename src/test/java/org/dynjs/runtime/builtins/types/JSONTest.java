@@ -64,6 +64,14 @@ public class JSONTest extends AbstractDynJSTestSupport {
     }
 
     @Test
+    public void testParseLongValue() {
+        JSObject result = (JSObject) eval("JSON.parse('{\"foo\": 1234567890123, \"bar\": \"cheese\"}')");
+
+        assertThat(result.get(getContext(), "foo")).isEqualTo(1234567890123L);
+        assertThat(result.get(getContext(), "bar")).isEqualTo("cheese");
+    }
+
+    @Test
     public void testStringifyArray() {
         String result = (String) eval("JSON.stringify( [1, 'foo', 3] )");
         assertThat(result).isEqualTo("[1,\"foo\",3]");
