@@ -10,7 +10,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
-import org.joni.Region;
+import org.dynjs.runtime.builtins.types.regexp.DynRegExpMatch;
 
 public class Exec extends AbstractNonConstructorFunction {
 
@@ -38,7 +38,7 @@ public class Exec extends AbstractNonConstructorFunction {
         boolean matchSucceeded = false;
         int strLen = str.length();
 
-        Region r = null;
+        DynRegExpMatch[] r = null;
 
         while (!matchSucceeded) {
             if (i < 0 || i > strLen) {
@@ -53,19 +53,17 @@ public class Exec extends AbstractNonConstructorFunction {
             }
         }
         if (regexp.get(context, "global") == Boolean.TRUE) {
-            regexp.put(context, "lastIndex", (long) r.end[0], true);
+            regexp.put(context, "lastIndex", (long) r[0].end, true);
         }
 
         JSObject a = BuiltinArray.newArray(context);
-        a.put(context, "index", (long) r.beg[0], true);
+        a.put(context, "index", (long) r[0].begin, true);
         a.put(context, "input", str, true);
-        a.put(context, "length", (long) r.beg.length, true);
-        byte[] matchedBytes = Arrays.copyOfRange(str.getBytes(), r.beg[0], r.end[0]);
-        a.put(context, "0", new String(matchedBytes), true);
-        for (int j = 1; j < r.beg.length; ++j) {
-            if (r.beg[j] >= 0 && r.end[j] >= 0) {
-                matchedBytes = Arrays.copyOfRange(str.getBytes(), r.beg[j], r.end[j]);
-                a.put(context, "" + j, new String(matchedBytes), true);
+        a.put(context, "length", (long) r.length, true);
+        a.put(context, "0", r[0].matched, true);
+        for (int j = 1; j < r.length; ++j) {
+            if (r[j].begin >= 0 && r[j].end >= 0) {
+                a.put(context, "" + j, r[j].matched, true);
             }
         }
 

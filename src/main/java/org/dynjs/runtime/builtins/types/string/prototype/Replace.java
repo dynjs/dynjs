@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.dynjs.runtime.builtins.types.regexp.DynRegExpMatch;
 import org.joni.Region;
 
 public class Replace extends AbstractNonConstructorFunction {
@@ -51,11 +52,11 @@ public class Replace extends AbstractNonConstructorFunction {
     private Object replaceWithRegex(ExecutionContext context, String searchString, DynRegExp regexp, JSFunction function) {
         final StringBuilder result = new StringBuilder();
 
-        Region region;
+        DynRegExpMatch[] m;
         Match lastMatch = null;
         int startIndex = 0;
-        while ((region = regexp.match(context, searchString, startIndex)) != null) {
-            Match match = Match.fromRegion(searchString, region);
+        while ((m = regexp.match(context, searchString, startIndex)) != null) {
+            Match match = Match.fromDynRegExpMatches(searchString, m);
             lastMatch = match;
 
             String replacement = match.buildReplacementString(
@@ -110,10 +111,10 @@ public class Replace extends AbstractNonConstructorFunction {
             return new Match(searchString, Arrays.asList(new Capture(searchString, index, index + length)));
         }
 
-        public static Match fromRegion(String searchString, Region region){
+        public static Match fromDynRegExpMatches(String searchString, DynRegExpMatch[] matches){
             List<Capture> captures = new ArrayList<>();
-            for(int i = 0; i < region.numRegs; i++){
-                captures.add(new Capture(searchString, region.beg[i], region.end[i]));
+            for(int i = 0; i < matches.length; i++){
+                captures.add(new Capture(searchString, matches[i].begin, matches[i].end));
             }
 
             return new Match(searchString, captures);
