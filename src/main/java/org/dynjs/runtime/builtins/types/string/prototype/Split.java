@@ -8,7 +8,7 @@ import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
-import org.joni.Region;
+import org.dynjs.runtime.builtins.types.regexp.DynRegExpMatch;
 
 public class Split extends AbstractNonConstructorFunction {
 
@@ -51,7 +51,7 @@ public class Split extends AbstractNonConstructorFunction {
         }
 
         if (sLen == 0) {
-            Region z = splitMatch(context, s, 0, r);
+            DynRegExpMatch[] z = splitMatch(context, s, 0, r);
             if (z != null) {
                 return a;
             }
@@ -63,15 +63,15 @@ public class Split extends AbstractNonConstructorFunction {
         int q = p;
 
         while (q != sLen) {
-            final Region z = splitMatch(context, s, q, r);
+            final DynRegExpMatch[] z = splitMatch(context, s, q, r);
             if (z == null) {
                 ++q;
             } else {
-                int e = z.end[0];
+                int e = z[0].end;
                 if (e == p) {
                     ++q;
                 } else {
-                    final String t = s.substring(p,Math.max(q, z.beg[0]));
+                    final String t = s.substring(p,Math.max(q, z[0].begin));
                     a.defineOwnProperty(context, "" + lengthA,
                             PropertyDescriptor.newDataPropertyDescriptor(t, true, true, true), false);
                     ++lengthA;
@@ -79,12 +79,12 @@ public class Split extends AbstractNonConstructorFunction {
                         return a;
                     }
                     p = e;
-                    int numCaps = z.beg.length - 1;
+                    int numCaps = z.length - 1;
                     for ( int i = 0 ; i < numCaps ; ++i ) {
                         final int capNum = i+1;
                         //substrDesc.set(Names.VALUE, z.group(capNum));
                         a.defineOwnProperty(context, "" + lengthA,
-                                PropertyDescriptor.newDataPropertyDescriptor(s.substring(z.beg[capNum], z.end[capNum]),
+                                PropertyDescriptor.newDataPropertyDescriptor(s.substring(z[capNum].begin, z[capNum].end),
                                         true, true, true), false);
                         ++lengthA;
                         if ( lengthA == lim ) {
@@ -102,7 +102,7 @@ public class Split extends AbstractNonConstructorFunction {
         return a;
     }
     
-    private Region splitMatch(ExecutionContext context, String s, int q, Object r) {
+    private DynRegExpMatch[] splitMatch(ExecutionContext context, String s, int q, Object r) {
         if ( r instanceof DynRegExp ) {
             return ((DynRegExp)r).match(context, s, q);
         }
@@ -121,7 +121,7 @@ public class Split extends AbstractNonConstructorFunction {
             }
         }
         
-        return new Region(0, q+rLen);
+        return new DynRegExpMatch[] { new DynRegExpMatch(0, q+rLen, rStr) };
     }
 
 }

@@ -1,7 +1,5 @@
 package org.dynjs.runtime.builtins.types.regexp;
 
-import static org.joni.constants.MetaChar.*;
-
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -18,7 +16,6 @@ import org.jcodings.specific.UTF8Encoding;
 import org.joni.Matcher;
 import org.joni.Option;
 import org.joni.Regex;
-import org.joni.Region;
 import org.joni.Syntax;
 import org.joni.WarnCallback;
 import org.joni.exception.JOniException;
@@ -83,7 +80,7 @@ public class DynRegExp extends DynObject {
             // We can't use pattern.getBytes("UTF-8") here because any
             // malformed input will get mapped to the ? character which
             // screws up the regexp
-            Charset charset= Charset.forName("UTF-8");
+            Charset charset= UTF8Encoding.INSTANCE.getCharset();
             CharsetEncoder encoder = charset.newEncoder();
             encoder.onMalformedInput(CodingErrorAction.REPLACE);
             encoder.replaceWith(new byte[] { (byte) 1 });
@@ -144,10 +141,10 @@ public class DynRegExp extends DynObject {
         }
     }
 
-    public Region match(ExecutionContext context, String str, int from) {
+    public DynRegExpMatch[] match(ExecutionContext context, String str, int from) {
         byte[] strBytes;
         try {
-            strBytes = str.getBytes("UTF-8");
+            strBytes = str.getBytes(UTF8Encoding.INSTANCE.getCharset());
         } catch (Exception e) {
             // Should not happen, really
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
@@ -155,7 +152,7 @@ public class DynRegExp extends DynObject {
 
         Matcher matcher = this.pattern.matcher(strBytes, 0, strBytes.length);
         if (matcher.search(from, strBytes.length, 0) >= 0) {
-            return matcher.getEagerRegion();
+            return DynRegExpMatch.fromRegion(strBytes, UTF8Encoding.INSTANCE, matcher.getEagerRegion());
         }
         return null;
     }
