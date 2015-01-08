@@ -13,8 +13,8 @@ import org.joni.Region;
 
 public class Replace extends AbstractNonConstructorFunction {
 
-    public Replace(GlobalObject globalObject) {
-        super(globalObject, "searchValue", "replaceValue");
+    public Replace(GlobalContext globalContext) {
+        super(globalContext, "searchValue", "replaceValue");
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Replace extends AbstractNonConstructorFunction {
         if (args[1] instanceof JSFunction) {
             replacement = (JSFunction) args[1];
         } else {
-            replacement = new IdentityFunction(context.getGlobalObject(), args[1]);
+            replacement = new IdentityFunction(context.getGlobalContext(), args[1]);
         }
 
         if (args[0] instanceof DynRegExp) {
@@ -87,8 +87,8 @@ public class Replace extends AbstractNonConstructorFunction {
     private static class IdentityFunction extends AbstractNativeFunction {
         private final Object value;
 
-        public IdentityFunction(GlobalObject globalObject, Object value) {
-            super(globalObject);
+        public IdentityFunction(GlobalContext globalContext, Object value) {
+            super(globalContext);
             this.value = value;
         }
 

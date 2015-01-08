@@ -86,10 +86,10 @@ public class ForVarDeclStatement extends AbstractForStatement {
         return visitor.visit(context, this, strict);
     }
 
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         List<VariableDeclaration> decls = getDeclarationList();
         for (VariableDeclaration each : decls) {
-            each.interpret(context);
+            each.interpret(context, debug);
         }
 
         Expression test = getTest();
@@ -100,12 +100,12 @@ public class ForVarDeclStatement extends AbstractForStatement {
 
         while (true) {
             if (test != null) {
-                if (!Types.toBoolean(getValue(this.testGet, context, test.interpret(context)))) {
+                if (!Types.toBoolean(getValue(this.testGet, context, test.interpret(context, debug)))) {
                     break;
                 }
             }
 
-            Completion completion = (Completion) body.interpret(context);
+            Completion completion = (Completion) body.interpret(context, debug);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDecl", body);
 
             if (completion.value != null && completion.value != Types.UNDEFINED) {
@@ -133,7 +133,7 @@ public class ForVarDeclStatement extends AbstractForStatement {
             }
 
             if (incr != null) {
-                getValue(this.incrGet, context, incr.interpret(context));
+                getValue(this.incrGet, context, incr.interpret(context, debug));
             }
         }
 

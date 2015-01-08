@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.compiler.BasicBlockCompiler;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.bytecode.BytecodeBasicBlockCompiler;
 import org.dynjs.parser.Statement;
 import org.dynjs.runtime.BasicBlock;
@@ -38,7 +39,7 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
     }
 
     @Override
-    public BasicBlock compile(ExecutionContext context, String grist, Statement body, boolean strict) {
+    public BasicBlock compile(CompilationContext context, String grist, Statement body, boolean strict) {
         int statementNumber = body.getStatementNumber();
         Entry entry = context.getBlockManager().retrieve(statementNumber);
         BasicBlock code = entry.getCompiled();
@@ -51,20 +52,20 @@ public class JITBasicBlockCompiler implements BasicBlockCompiler {
         return code;
     }
 
-    private BasicBlock jitCompile(ExecutionContext context, String grist, Statement body, boolean strict) {
+    private BasicBlock jitCompile(CompilationContext context, String grist, Statement body, boolean strict) {
         return this.jitCompiler.compile(context, grist, body, strict);
     }
 
-    public void requestJitCompilation(ExecutionContext context, CompilableBasicBlock block) {
+    public void requestJitCompilation(CompilationContext context, CompilableBasicBlock block) {
         this.compilationQueue.execute(new CompileRequest(context, block));
     }
 
     private class CompileRequest implements Runnable {
 
-        private ExecutionContext context;
+        private CompilationContext context;
         private CompilableBasicBlock block;
 
-        public CompileRequest(ExecutionContext context, CompilableBasicBlock block) {
+        public CompileRequest(CompilationContext context, CompilableBasicBlock block) {
             this.context = context;
             this.block = block;
         }

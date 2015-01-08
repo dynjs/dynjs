@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Substr extends AbstractNativeFunction {
     
-    public Substr(GlobalObject globalObject) {
-        super(globalObject, "start", "length");
+    public Substr(GlobalContext globalContext) {
+        super(globalContext, "start", "length");
     }
 
     @Override
@@ -25,6 +25,7 @@ public class Substr extends AbstractNativeFunction {
             start = Math.max(chars+start, 0);
         }
         length = Math.min(Math.max(length, 0), chars-start);
+        if (length <= 0) return "";
         return s.substring(start, start+length);
     }
 

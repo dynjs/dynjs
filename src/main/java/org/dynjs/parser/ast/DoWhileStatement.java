@@ -52,6 +52,11 @@ public class DoWhileStatement extends AbstractIteratingStatement {
         return this.block.getVariableDeclarations();
     }
 
+    @Override
+    public List<FunctionDeclaration> getFunctionDeclarations() {
+        return this.block.getFunctionDeclarations();
+    }
+
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
@@ -61,7 +66,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         Expression testExpr = getTest();
         Statement block = getBlock();
 
@@ -94,7 +99,7 @@ public class DoWhileStatement extends AbstractIteratingStatement {
             }
 
 
-            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context)));
+            Boolean testResult = Types.toBoolean(getValue(this.testGet, context, testExpr.interpret(context, debug)));
             if (!testResult) {
                 break;
             }

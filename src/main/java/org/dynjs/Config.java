@@ -2,15 +2,14 @@ package org.dynjs;
 
 import org.dynjs.cli.Options;
 import org.dynjs.runtime.Classpath;
-import org.dynjs.runtime.DefaultObjectFactory;
 import org.dynjs.runtime.DynamicClassLoader;
-import org.dynjs.runtime.GlobalObjectFactory;
 
 import java.io.PrintStream;
 import java.util.Locale;
 import java.util.TimeZone;
 
 public class Config {
+
 
     public static enum CompileMode {
         OFF,
@@ -19,9 +18,16 @@ public class Config {
         IR;
     }
 
+    public static enum KernelMode {
+        INTERNAL,
+        EXTERNAL;
+    }
+
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
 
     private boolean debug = false;
+    private String exposeDebugAs;
+
     private final DynamicClassLoader classLoader;
     private Clock clock = SystemClock.INSTANCE;
     private TimeZone timeZone = TimeZone.getDefault();
@@ -29,14 +35,15 @@ public class Config {
     private PrintStream outputStream = System.out;
     private PrintStream errorStream = System.err;
     private String basePackage = DEFAULT_BASE_PACKAGE;
-    private GlobalObjectFactory globalObjectFactory = new DefaultObjectFactory();
     private boolean invokeDynamicEnabled = Options.INVOKEDYNAMIC.load();
     private boolean commonJSCompatible = Options.COMPATIBILITY_COMMONJS.load();
     private boolean rhinoCompatible = Options.COMPATIBILITY_RHINO.load();
     private CompileMode compileMode = Options.CLI_COMPILE_MODE.load();
+    private KernelMode kernelMode = Options.CLI_KERNEL_MODE.load();
     private Integer jitThreshold = Options.JIT_TRESHOLD.load();
     private boolean jitEnabled = Options.JIT.load();
     private boolean jitAsync = Options.JIT_ASYNC.load();
+    private boolean v8Compatible = Options.COMPATIBILITY_V8.load();
 
     private final Classpath classpath;
 
@@ -80,6 +87,14 @@ public class Config {
         return this.compileMode;
     }
 
+    public KernelMode getKernelMode() {
+        return kernelMode;
+    }
+
+    public void setKernelMode(KernelMode kernelMode) {
+        this.kernelMode = kernelMode;
+    }
+
     public Integer getJitThreshold() {
         return jitThreshold;
     }
@@ -110,6 +125,14 @@ public class Config {
 
     public boolean isCommonJSCompatible() {
         return this.commonJSCompatible;
+    }
+
+    public boolean isV8Compatible() {
+        return v8Compatible;
+    }
+
+    public void setV8Compatible(boolean v8Compatible) {
+        this.v8Compatible = v8Compatible;
     }
 
     public DynamicClassLoader getClassLoader() {
@@ -172,12 +195,12 @@ public class Config {
         return this.debug;
     }
 
-    public GlobalObjectFactory getGlobalObjectFactory() {
-        return globalObjectFactory;
+    public void setExposeDebugAs(String name) {
+        this.exposeDebugAs = name;
     }
 
-    public void setGlobalObjectFactory(GlobalObjectFactory globalObjectFactory) {
-        this.globalObjectFactory = globalObjectFactory;
+    public String getExposeDebugAs() {
+        return this.exposeDebugAs;
     }
 
     public void setArgv(Object[] arguments) {

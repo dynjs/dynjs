@@ -5,8 +5,8 @@ import org.dynjs.runtime.*;
 
 public class Proto extends AbstractNativeFunction {
 
-    public Proto(GlobalObject globalObject) {
-        super(globalObject);
+    public Proto(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class Trim extends AbstractNativeFunction {
 
-    public Trim(GlobalObject globalObject) {
-        super(globalObject);
+    public Trim(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

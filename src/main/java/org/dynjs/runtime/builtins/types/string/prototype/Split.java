@@ -2,7 +2,7 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
@@ -12,8 +12,8 @@ import org.dynjs.runtime.builtins.types.regexp.DynRegExpMatch;
 
 public class Split extends AbstractNonConstructorFunction {
 
-    public Split(GlobalObject globalObject) {
-        super(globalObject, "separator", "limit");
+    public Split(GlobalContext globalContext) {
+        super(globalContext, "separator", "limit");
     }
 
     @Override

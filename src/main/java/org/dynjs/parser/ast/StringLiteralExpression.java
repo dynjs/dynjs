@@ -60,7 +60,7 @@ public class StringLiteralExpression extends BaseExpression implements IllegalFu
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return this.literal;
     }
 

@@ -19,12 +19,12 @@ import org.dynjs.exception.ThrowException;
 
 public class DynArray extends DynObject {
 
-    public DynArray(GlobalObject globalObject) {
-        super(globalObject);
+    public DynArray(GlobalContext globalContext) {
+        super(globalContext);
         setClassName("Array");
         super.defineOwnProperty(null, "length",
                 PropertyDescriptor.newDataPropertyDescriptor(0L, true, true, true), false);
-        setPrototype(globalObject.getPrototypeFor("Array"));
+        setPrototype(globalContext.getPrototypeFor("Array"));
     }
 
     @Override

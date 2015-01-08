@@ -10,6 +10,7 @@ import me.qmx.jitescript.JiteClass;
 import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitor;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.parser.ast.BlockStatement;
 import org.dynjs.runtime.Completion;
 import org.dynjs.runtime.DynamicClassLoader;
@@ -31,7 +32,7 @@ public class SingleClassCompiler extends AbstractPartialCompiler {
     }
 
     @Override
-    public void define(JiteClass cls, ExecutionContext context, boolean strict) {
+    public void define(JiteClass cls, CompilationContext context, boolean strict) {
         int i = 0;
         for (BlockStatement each : chunks) {
             CodeGeneratingVisitor visitor = createVisitor( context.getBlockManager() );

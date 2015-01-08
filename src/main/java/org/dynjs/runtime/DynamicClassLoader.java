@@ -27,7 +27,7 @@ public class DynamicClassLoader extends URLClassLoader {
     }
 
     public DynamicClassLoader() {
-        super(new URL[0]);
+        super(new URL[0], DynamicClassLoader.class.getClassLoader());
     }
 
     public Class<?> define(String className, byte[] bytecode) {

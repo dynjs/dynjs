@@ -52,9 +52,9 @@ public class ReturnStatement extends BaseStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         if (this.expr != null) {
-            Object value = this.expr.interpret(context);
+            Object value = this.expr.interpret(context, debug);
             return (Completion.createReturn(getValue(this.get, context, value)));
         } else {
             return (Completion.createReturn(Types.UNDEFINED));

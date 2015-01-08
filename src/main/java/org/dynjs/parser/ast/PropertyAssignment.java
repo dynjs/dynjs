@@ -26,6 +26,6 @@ public abstract class PropertyAssignment {
 
     public abstract int getSizeMetric();
 
-    public abstract Object interpret(ExecutionContext context);
+    public abstract Object interpret(ExecutionContext context, boolean debug);
 
 }

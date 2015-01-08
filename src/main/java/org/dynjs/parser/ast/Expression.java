@@ -17,5 +17,5 @@ public interface Expression {
     
     List<FunctionDeclaration> getFunctionDeclarations();
 
-    Object interpret(ExecutionContext context);
+    Object interpret(ExecutionContext context, boolean debug);
 }

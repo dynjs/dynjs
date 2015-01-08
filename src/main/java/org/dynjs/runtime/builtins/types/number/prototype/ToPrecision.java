@@ -6,13 +6,13 @@ import java.math.MathContext;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class ToPrecision extends AbstractNativeFunction {
 
-    public ToPrecision(GlobalObject globalObject) {
-        super(globalObject, "precision");
+    public ToPrecision(GlobalContext globalContext) {
+        super(globalContext, "precision");
     }
 
     @Override

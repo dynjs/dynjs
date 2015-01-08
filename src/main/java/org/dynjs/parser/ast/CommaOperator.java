@@ -18,9 +18,6 @@ package org.dynjs.parser.ast;
 
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
-
-import java.lang.invoke.CallSite;
 
 public class CommaOperator extends AbstractBinaryExpression {
 
@@ -34,9 +31,9 @@ public class CommaOperator extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        getValue(this.lhsGet, context, getLhs().interpret(context));
-        return getValue(this.rhsGet, context, getRhs().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        getValue(this.lhsGet, context, getLhs().interpret(context, debug));
+        return getValue(this.rhsGet, context, getRhs().interpret(context, debug));
     }
 
 }

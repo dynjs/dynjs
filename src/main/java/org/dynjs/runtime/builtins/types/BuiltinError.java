@@ -2,30 +2,30 @@ package org.dynjs.runtime.builtins.types;
 
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.StackGetter;
+import org.dynjs.runtime.builtins.types.error.StackGetter;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.error.ToString;
 
 public class BuiltinError extends AbstractBuiltinType {
 
-    public BuiltinError(final GlobalObject globalObject) {
-        super(globalObject, "message");
+    public BuiltinError(final GlobalContext globalContext) {
+        super(globalContext, "message");
 
-        final JSObject proto = new DynObject(globalObject);
+        final JSObject proto = new DynObject(globalContext);
         proto.setClassName("Error");
         setPrototypeProperty(proto);
 
     }
 
     @Override
-    public void initialize(GlobalObject globalObject, JSObject proto) {
+    public void initialize(GlobalContext globalContext, JSObject proto) {
         defineNonEnumerableProperty(proto, "constructor", this);
         defineNonEnumerableProperty(proto, "name", "Error");
         defineNonEnumerableProperty(proto, "message", "");
-        defineNonEnumerableProperty(proto, "toString", new ToString(globalObject));
+        defineNonEnumerableProperty(proto, "toString", new ToString(globalContext));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class BuiltinError extends AbstractBuiltinType {
 
     @Override
     public JSObject createNewObject(ExecutionContext context) {
-        DynObject o = new DynObject(context.getGlobalObject());
+        DynObject o = new DynObject(context.getGlobalContext());
         o.setClassName("Error");
         return o;
     }
@@ -67,5 +67,4 @@ public class BuiltinError extends AbstractBuiltinType {
     public void setupDebugContext() {
         this.debugContext = "<native function: Error>";
     }
-
 }

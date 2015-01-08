@@ -143,6 +143,12 @@ describe("the __proto__ property", function() {
     expect(x.hasOwnProperty('__proto__')).toBe(true);
   });
 
+  it("should update prototype for object literals with __proto__", function() {
+    var proto = { foo: 'bar' };
+    var a = { __proto__: proto };
+    expect(Object.getPrototypeOf(a)).toBe(proto);
+  });
+
   xit("should allow Object.prototype.__proto__ to be set", function() {
     // TODO: This test should pass, and replicating it in the REPL
     // shows that it works as expected. However, the Jasmine test
@@ -184,7 +190,7 @@ describe("JSAdapter", function() {
   });
 
   it("should behave like a regular JS object", function() {
-    var x = new JSAdapter({})
+    var x = new JSAdapter({});
     expect(x.__proto__).toNotBe(null);
     expect(x.__proto__).toBe(Object.prototype);
     x.foo = "foo";
@@ -201,7 +207,7 @@ describe("JSAdapter", function() {
       {
         __get__: function(name) { return name; }
       }
-    )
+    );
 
     expect(x.foo).toBe("foo");
     expect(x.tacos).toBe("big");
@@ -215,7 +221,7 @@ describe("JSAdapter", function() {
       burgers: function() {
         return 'double';
       }
-    }
+    };
 
     var x = new JSAdapter(
       p,
@@ -226,7 +232,7 @@ describe("JSAdapter", function() {
           return this.data[name];
         },
         __set__: function(name, value) {
-          return this.data[name] = value;
+          this.data[name] = value;
         }
       }
     );
@@ -242,4 +248,184 @@ describe("JSAdapter", function() {
   });
 });
 
+describe("V8 Error API", function() {
+  it("should have an Error.stackTraceLimit property defaulting to 10", function() {
+    expect(Error.stackTraceLimit).toBe(10);
+  });
 
+  it("should have an Error.prepareStackTrace function", function() {
+    expect(typeof Error.prepareStackTrace).toBe('function');
+  });
+
+  describe("Error.captureStackTrace", function() {
+    it("should be a function", function() {
+      expect(typeof Error.captureStackTrace).toBe('function');
+    });
+
+    it("should accept two parameters", function() {
+      expect(Error.captureStackTrace.length).toBe(2);
+    });
+
+    it("should add a writable 'stack' property to the given object", function() {
+      var err = {};
+      Error.captureStackTrace(err);
+      expect(err.stack).not.toBeFalsy();
+      err.stack = 'foobar';
+      expect(err.stack).toBe('foobar');
+    });
+
+    it("should cap the stack at constructorOpt if provided", function() {
+      var e = {};
+      var expected = "<unknown>\n  at foo";
+      function foo() {
+        function bar() {
+          function foobar() {
+            Error.captureStackTrace(e, bar);
+          }
+          foobar();
+        }
+        bar();
+      }
+      foo();
+      expect(e.stack).toMatch(expected);
+    });
+
+    it("should respect Error.stackTraceLimit", function() {
+      var e = {};
+      function foo() {
+        function bar() {
+          function foobar() {
+            Error.captureStackTrace(e);
+          }
+          foobar();
+        }
+        bar();
+      }
+      foo();
+      // This is 12 because the first line is the error message
+      // and there's an additional \n at the end of the stack
+      expect(e.stack.split("\n").length).toBe(12);
+    });
+
+    it("should allow Error.stackTraceLimit to be customized", function() {
+      var e = {};
+      Error.stackTraceLimit = 3;
+      function foo() {
+        function bar() {
+          function foobar() {
+            Error.captureStackTrace(e);
+          }
+          foobar();
+        }
+        bar();
+      }
+      foo();
+      // This is 5 because the first line is the error message
+      // and there's an additional \n at the end of the stack
+      expect(e.stack.split("\n").length).toBe(5);
+      Error.stackTraceLimit = 10;
+    });
+  });
+
+  describe("Error.prepareStackTrace", function() {
+    it("should be a function that takes two parameters", function() {
+      expect(typeof Error.prepareStackTrace).toBe('function');
+      expect(Error.prepareStackTrace.length).toBe(2);
+    });
+
+    it("should be customizable", function() {
+      var e = {}, __prepareStackTrace = Error.prepareStackTrace;
+      Error.prepareStackTrace = function(e,s) {
+        return 'pumpkins';
+      };
+      Error.captureStackTrace(e);
+      expect(e.stack).toBe('pumpkins');
+      Error.prepareStackTrace = __prepareStackTrace;
+    });
+  });
+
+  describe("CallSite objects in a structured stack trace", function() {
+    // make err.stack return the structuredStackTrace instead
+    // of converting it to a string.
+    var __prepareStackTrace = Error.prepareStackTrace;
+    beforeEach(function() {
+      Error.prepareStackTrace = function(e,s) { 
+        return s; 
+      };
+    });
+    afterEach(function() {
+      Error.prepareStackTrace = __prepareStackTrace;
+    });
+
+    function errorGenerator(str) {
+      return new Error(str);
+    }
+
+    it("should have a getFunctionName property", function() {
+      var e = errorGenerator();
+      expect(e.stack[0].getFunctionName()).toBe('errorGenerator');
+    });
+
+    it("should have a getFunction property", function() {
+      var e = errorGenerator();
+      expect(e.stack[0].getFunction()).toBe(errorGenerator);
+    });
+
+    it("should have a getThis property", function() {
+      var e = errorGenerator();
+      expect(typeof e.stack[0].getThis()).toBe('object');
+    });
+
+    it("should have a getLineNumber property", function() {
+      var e = errorGenerator();
+      expect(e.stack[0].getLineNumber()).toBe(361);
+    });
+
+    it("should have a getTypeName property", function() {
+      function Thing() {
+      }
+    
+      Thing.prototype.createError = function() {
+        return new Error("Created by a Thing's createError function property");
+      };
+
+      var thing = new Thing();
+      var error = thing.createError();
+      expect(error.stack[0].getTypeName()).toBe('Thing');
+
+      error = (function f(){return new Error('created by a func');})();
+      expect(error.stack[0].getTypeName()).toBe('Function');
+    });
+
+    it("should have a getMethodName property", function() {
+      function Thing() {
+      }
+    
+      Thing.prototype.createError = function() {
+        return new Error("Created by a Thing's createError function property");
+      };
+
+      var thing = new Thing();
+      var error = thing.createError();
+      expect(error.stack[0].getMethodName()).toBe('createError');
+    });
+
+    it("should have a getColumnNumber property", function() {
+      var error = errorGenerator();
+      expect(error.stack[0].getColumnNumber()).toBe(7);
+    });
+
+    it("should have an isNative property", function() {
+      var error = errorGenerator();
+      expect(error.stack[0].isNative()).toBe(false);
+
+      try {
+        require('not-exist.js');
+      } catch(e) {
+        expect(e.stack[0].isNative()).toBe(false);
+        expect(e.stack[1].isNative()).toBe(true);
+      }
+    });
+
+  });
+});

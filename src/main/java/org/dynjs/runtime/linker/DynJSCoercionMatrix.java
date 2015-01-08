@@ -94,6 +94,24 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
         return -1;
     }
 
+    public static boolean coerceToBoolean(Object value) {
+        return (boolean) DynJSBootstrapper.COERCION_MATRIX.coerceTo( value, boolean.class );
+    }
+
+    public Object coerceTo(Object value, Class<?> toType) {
+        MethodHandle filter = getFilter(toType, value);
+        if ( filter == null ) {
+            return null;
+        }
+
+        try {
+            return filter.invoke(value);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public MethodHandle getFilter(Class<?> target, Object actual) {
         int superCompat = super.isCompatible(target, actual);
@@ -165,17 +183,23 @@ public class DynJSCoercionMatrix extends CoercionMatrix {
 
     public static Object singleAbstractMethod(JSJavaImplementationManager manager, Class<?> targetClass, ExecutionContext context, String methodName, JSObject implementation)
             throws Exception {
-        JSObject implObj = new DynObject(context.getGlobalObject());
+        JSObject implObj = new DynObject(context.getGlobalContext());
         implObj.put(context, methodName, implementation, false);
         return manager.getImplementationWrapper(targetClass, context, implObj);
     }
 
 
     public static MethodHandle nullReplacingFilter(Class<?> target) throws NoSuchMethodException, IllegalAccessException {
+        Lookup lookup = MethodHandles.lookup();
+        MethodHandle returnNull = lookup.findStatic(DynJSCoercionMatrix.class, "returnNull", methodType(Object.class, Object.class));
         return Binder.from(methodType(target, Object.class))
-                .drop(0)
-                .insert(0, new Class[]{Object.class}, new Object[]{null})
-                .invoke(MethodHandles.identity(target));
+                //.drop(0)
+                //.insert(0, new Class[]{Object.class}, new Object[]{null})
+                .invoke(returnNull);
+    }
+
+    public static Object returnNull(Object arg) {
+        return null;
     }
 
 }

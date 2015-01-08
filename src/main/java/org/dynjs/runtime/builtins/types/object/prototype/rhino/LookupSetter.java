@@ -7,8 +7,8 @@ import org.dynjs.runtime.*;
  * Implements Object.prototype.__lookupSetter__
  */
 public class LookupSetter extends AbstractNativeFunction {
-    public LookupSetter(GlobalObject globalObject) {
-        super(globalObject, "name");
+    public LookupSetter(GlobalContext globalContext) {
+        super(globalContext, "name");
     }
 
     @Override

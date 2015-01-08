@@ -13,3 +13,20 @@ describe("function scope", function() {
   });
 });
 
+describe("named function expressions", function() {
+  it("should not define identifier in parent scope", function() {
+    var f = function ident(x) {
+      return x;
+    };
+
+    expect(function() { ident }).toThrow("unable to reference: ident");
+  });
+
+  it("should define identifier inside function scope", function() {
+    var f = function ident() {
+      return ident;
+    };
+
+    expect(f()).toBe(f);
+  });
+});

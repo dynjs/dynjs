@@ -69,8 +69,8 @@ public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object ref = getExpr().interpret( context );
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object ref = getExpr().interpret( context, debug);
         Object memberExpr = getValue(this.ctorGet, context, ref);
         Object[] args = new Object[getArgumentExpressions().size()];
 
@@ -79,7 +79,7 @@ public class NewOperatorExpression extends AbstractUnaryOperatorExpression {
         for ( int i = 0 ; i < numArgs ; ++i ) {
             Expression eachArg = this.argExprs.get(i);
             CallSite eachGet = this.argGets.get(i);
-            args[i] = getValue(eachGet, context, eachArg.interpret(context));
+            args[i] = getValue(eachGet, context, eachArg.interpret(context, debug));
         }
 
         Object ctor = memberExpr;

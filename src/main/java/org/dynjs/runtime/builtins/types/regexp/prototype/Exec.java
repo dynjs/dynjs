@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
@@ -14,8 +14,8 @@ import org.dynjs.runtime.builtins.types.regexp.DynRegExpMatch;
 
 public class Exec extends AbstractNonConstructorFunction {
 
-    public Exec(GlobalObject globalObject) {
-        super(globalObject, "string");
+    public Exec(GlobalContext globalContext) {
+        super(globalContext, "string");
     }
 
     @Override

@@ -25,8 +25,8 @@ public class BoundFunction extends AbstractFunction {
     private Object boundThis;
     private Object[] boundArgs;
 
-    public BoundFunction(GlobalObject globalObject, LexicalEnvironment scope, final JSFunction target, final Object boundThis, final Object[] boundArgs) {
-        super(globalObject, scope, true, figureBoundParameters(target, boundArgs));
+    public BoundFunction(GlobalContext globalContext, LexicalEnvironment scope, final JSFunction target, final Object boundThis, final Object[] boundArgs) {
+        super(globalContext, scope, true, figureBoundParameters(target, boundArgs));
         this.target = target;
         this.boundThis = boundThis;
         this.boundArgs = boundArgs;

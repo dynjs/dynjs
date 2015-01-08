@@ -4,13 +4,13 @@ import jnr.posix.util.Platform;
 import org.dynjs.Config;
 import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
-import org.dynjs.runtime.modules.ModuleProvider;
+import org.dynjs.runtime.source.ClassLoaderSourceProvider;
+import org.dynjs.runtime.source.FileSourceProvider;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 public class DynJS {
@@ -20,23 +20,50 @@ public class DynJS {
     private final JITCompiler jitCompiler;
     private Config config;
     private JSCompiler compiler;
-    private ExecutionContext context;
-    private GlobalObject globalObject;
+    private GlobalContext globalContext;
+
+    private ExecutionContext defaultExecutionContext;
 
     public DynJS() {
         this(new Config());
     }
 
     public DynJS(Config config) {
+        this(config, new DynObject());
+    }
+
+    public DynJS(Config config, JSObject globalObject) {
         this.config = config;
         this.compiler = new JSCompiler(config);
         this.jitCompiler = new JITCompiler();
-        this.globalObject = GlobalObject.newGlobalObject(this);
-        this.context = ExecutionContext.createGlobalExecutionContext(this);
+        this.globalContext = GlobalContext.newGlobalContext(this, globalObject);
+        this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext(this);
+        loadKernel();
     }
 
-    public GlobalObject getGlobalObject() {
-        return this.globalObject;
+
+    private void loadKernel() {
+        // FIXME only works for non-IR atm
+        if (!Config.CompileMode.IR.equals(this.config.getCompileMode())) {
+            try {
+                switch (this.config.getKernelMode()) {
+                    case INTERNAL:
+                        // Load pure-JS kernel
+                        //this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+                        this.evaluate(new ClassLoaderSourceProvider(getClass().getClassLoader(), "dynjs/kernel.js"));
+                        break;
+                    case EXTERNAL:
+                        this.evaluate(new FileSourceProvider(new File("src/main/resources/dynjs/kernel.js")));
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public GlobalContext getGlobalContext() {
+        return this.globalContext;
     }
 
     public Config getConfig() {
@@ -51,26 +78,34 @@ public class DynJS {
         return jitCompiler;
     }
 
-    public ExecutionContext getExecutionContext() {
-        return this.context;
+    public Runner newRunner(boolean debug) {
+        return new Runner(this).debug(debug);
     }
 
     public Runner newRunner() {
-        return new Runner(this.context);
+        return new Runner(this);
+    }
+
+    public Compiler newCompiler() {
+        return new Compiler(this.config);
     }
 
     // ----------------------------------------------------------------------
 
     public Object execute(String source) {
-        return newRunner().withSource(source).execute();
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).execute();
     }
 
     public Object evaluate(String source) {
-        return newRunner().withSource(source).evaluate();
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).evaluate();
     }
 
-    public Object evaluate(InputStream in) {
-        return newRunner().withSource( new InputStreamReader( in ) ).evaluate();
+    public Object evaluate(SourceProvider source) {
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).evaluate();
+    }
+
+    public ExecutionContext getDefaultExecutionContext() {
+        return this.defaultExecutionContext;
     }
 
     public Object evaluate(String... sourceLines) {
@@ -81,7 +116,6 @@ public class DynJS {
         }
         return evaluate(buffer.toString());
     }
-
 
 
     static {

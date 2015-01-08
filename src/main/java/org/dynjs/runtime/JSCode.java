@@ -11,4 +11,6 @@ public interface JSCode {
     List<FunctionDeclaration> getFunctionDeclarations();
 
     List<VariableDeclaration> getVariableDeclarations();
+
+    SourceProvider getSource();
 }

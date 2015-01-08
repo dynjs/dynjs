@@ -7,7 +7,7 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynArray;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PrimitiveDynObject;
@@ -16,8 +16,8 @@ import org.dynjs.runtime.builtins.types.BuiltinObject;
 
 public class Stringify extends AbstractNativeFunction {
 
-    public Stringify(GlobalObject globalObject) {
-        super(globalObject, true, "value", "replacer", "space");
+    public Stringify(GlobalContext globalContext) {
+        super(globalContext, true, "value", "replacer", "space");
     }
 
     @Override

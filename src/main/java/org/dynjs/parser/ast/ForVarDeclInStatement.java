@@ -63,9 +63,9 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
         return visitor.visit(context, this, strict);
     }
 
-    public Completion interpret(ExecutionContext context) {
-        String varName = (String) getDeclaration().interpret(context);
-        Object exprRef = getRhs().interpret(context);
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        String varName = (String) getDeclaration().interpret(context, debug);
+        Object exprRef = getRhs().interpret(context, debug);
         Object exprValue = getValue(this.get, context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
@@ -84,7 +84,7 @@ public class ForVarDeclInStatement extends AbstractForInStatement {
 
             varRef.putValue(context, each);
 
-            Completion completion = (Completion) getBlock().interpret(context);
+            Completion completion = (Completion) getBlock().interpret(context, debug);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsIn", statement.getBlock());
 
             if (completion.value != null) {

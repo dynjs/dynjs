@@ -2,14 +2,14 @@ package org.dynjs.runtime.builtins.math;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.number.DynNumber;
 
 public class Exp extends AbstractNativeFunction {
 
-    public Exp(GlobalObject globalObject) {
-        super(globalObject, "x");
+    public Exp(GlobalContext globalContext) {
+        super(globalContext, "x");
     }
 
     @Override

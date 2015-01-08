@@ -30,7 +30,7 @@ public class NamedValue extends PropertyAssignment {
         return visitor.visit( context, this, strict );
     }
 
-    public Object interpret(ExecutionContext context) {
-        return getExpr().interpret(context);
+    public Object interpret(ExecutionContext context, boolean debug) {
+        return getExpr().interpret(context, debug);
     }
 }

@@ -2,15 +2,15 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.AbstractDateFunction;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class SetYear extends AbstractDateFunction {
 
-    public SetYear(GlobalObject globalObject) {
-        super(globalObject, "year", "month", "date");
+    public SetYear(GlobalContext globalContext) {
+        super(globalContext, "year", "month", "date");
     }
 
     @Override

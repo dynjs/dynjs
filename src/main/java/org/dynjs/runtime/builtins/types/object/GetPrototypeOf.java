@@ -3,13 +3,13 @@ package org.dynjs.runtime.builtins.types.object;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 
 public class GetPrototypeOf extends AbstractNativeFunction {
 
-    public GetPrototypeOf(GlobalObject globalObject) {
-        super(globalObject, "o");
+    public GetPrototypeOf(GlobalContext globalContext) {
+        super(globalContext, "o");
     }
 
     @Override

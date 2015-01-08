@@ -34,22 +34,22 @@ public class MainTest {
 
     @Test
     public void callMainWithNoArguments() throws IOException {
-        new Main(stream, new String[] {}).run();
+        new Main(stream, new String[]{}).run();
     }
 
     @Test
     public void callMainWithInvalidFile() throws IOException {
-        new Main(stream, new String[] { "meh.js" }).run();
+        new Main(stream, new String[]{"meh.js"}).run();
     }
 
     @Test
     public void callMainWithValidFile() throws IOException {
         URL url = this.getClass().getResource("valid.js");
-        new Main(stream, new String[] { url.getPath() }).run();
+        new Main(stream, new String[]{url.getPath()}).run();
     }
 
     @Test
     public void callMainWithInvalidArguments() throws IOException {
-        new Main(stream, new String[] { "--invalid" }).run();
+        new Main(stream, new String[]{"--invalid"}).run();
     }
 }

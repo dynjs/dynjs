@@ -8,8 +8,8 @@ import org.dynjs.runtime.*;
  */
 public class DefineGetter extends AbstractNativeFunction {
 
-    public DefineGetter(GlobalObject globalObject) {
-        super(globalObject, "name", "function");
+    public DefineGetter(GlobalContext globalContext) {
+        super(globalContext, "name", "function");
     }
 
     @Override

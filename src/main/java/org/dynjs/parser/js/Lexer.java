@@ -119,7 +119,7 @@ public class Lexer {
 
     protected void incrementLine() {
         ++this.lineNumber;
-        this.columnNumber = 0;
+        this.columnNumber = 1;
     }
 
     private boolean isRegexpEnabled() {

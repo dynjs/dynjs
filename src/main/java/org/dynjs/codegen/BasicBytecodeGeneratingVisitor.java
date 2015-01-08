@@ -1,105 +1,24 @@
 package org.dynjs.codegen;
 
-import static me.qmx.jitescript.util.CodegenUtils.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import me.qmx.jitescript.CodeBlock;
-
+import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
 import org.dynjs.compiler.bytecode.Chunker;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.Statement;
-import org.dynjs.parser.ast.AbstractForStatement;
-import org.dynjs.parser.ast.AdditiveExpression;
-import org.dynjs.parser.ast.ArrayLiteralExpression;
-import org.dynjs.parser.ast.AssignmentExpression;
-import org.dynjs.parser.ast.BitwiseExpression;
-import org.dynjs.parser.ast.BitwiseInversionOperatorExpression;
-import org.dynjs.parser.ast.BlockStatement;
-import org.dynjs.parser.ast.BooleanLiteralExpression;
-import org.dynjs.parser.ast.BracketExpression;
-import org.dynjs.parser.ast.BreakStatement;
-import org.dynjs.parser.ast.CaseClause;
-import org.dynjs.parser.ast.CatchClause;
-import org.dynjs.parser.ast.CommaOperator;
-import org.dynjs.parser.ast.CompoundAssignmentExpression;
-import org.dynjs.parser.ast.ContinueStatement;
-import org.dynjs.parser.ast.DefaultCaseClause;
-import org.dynjs.parser.ast.DeleteOpExpression;
-import org.dynjs.parser.ast.DoWhileStatement;
-import org.dynjs.parser.ast.DotExpression;
-import org.dynjs.parser.ast.EmptyStatement;
-import org.dynjs.parser.ast.EqualityOperatorExpression;
-import org.dynjs.parser.ast.Expression;
-import org.dynjs.parser.ast.ExpressionStatement;
-import org.dynjs.parser.ast.FloatingNumberExpression;
-import org.dynjs.parser.ast.ForExprInStatement;
-import org.dynjs.parser.ast.ForExprOfStatement;
-import org.dynjs.parser.ast.ForExprStatement;
-import org.dynjs.parser.ast.ForVarDeclInStatement;
-import org.dynjs.parser.ast.ForVarDeclOfStatement;
-import org.dynjs.parser.ast.ForVarDeclStatement;
-import org.dynjs.parser.ast.FunctionCallExpression;
-import org.dynjs.parser.ast.FunctionDeclaration;
-import org.dynjs.parser.ast.FunctionExpression;
-import org.dynjs.parser.ast.IdentifierReferenceExpression;
-import org.dynjs.parser.ast.IfStatement;
-import org.dynjs.parser.ast.InOperatorExpression;
-import org.dynjs.parser.ast.OfOperatorExpression;
-import org.dynjs.parser.ast.InstanceofExpression;
-import org.dynjs.parser.ast.IntegerNumberExpression;
-import org.dynjs.parser.ast.LogicalExpression;
-import org.dynjs.parser.ast.LogicalNotOperatorExpression;
-import org.dynjs.parser.ast.MultiplicativeExpression;
-import org.dynjs.parser.ast.NamedValue;
-import org.dynjs.parser.ast.NewOperatorExpression;
-import org.dynjs.parser.ast.NullLiteralExpression;
-import org.dynjs.parser.ast.NumberLiteralExpression;
-import org.dynjs.parser.ast.ObjectLiteralExpression;
-import org.dynjs.parser.ast.PostOpExpression;
-import org.dynjs.parser.ast.PreOpExpression;
-import org.dynjs.parser.ast.PropertyAssignment;
-import org.dynjs.parser.ast.PropertyGet;
-import org.dynjs.parser.ast.PropertySet;
-import org.dynjs.parser.ast.RegexpLiteralExpression;
-import org.dynjs.parser.ast.RelationalExpression;
-import org.dynjs.parser.ast.ReturnStatement;
-import org.dynjs.parser.ast.StrictEqualityOperatorExpression;
-import org.dynjs.parser.ast.StringLiteralExpression;
-import org.dynjs.parser.ast.SwitchStatement;
-import org.dynjs.parser.ast.TernaryExpression;
-import org.dynjs.parser.ast.ThisExpression;
-import org.dynjs.parser.ast.ThrowStatement;
-import org.dynjs.parser.ast.TryStatement;
-import org.dynjs.parser.ast.TypeOfOpExpression;
-import org.dynjs.parser.ast.UnaryMinusExpression;
-import org.dynjs.parser.ast.UnaryPlusExpression;
-import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.parser.ast.VariableStatement;
-import org.dynjs.parser.ast.VoidOperatorExpression;
-import org.dynjs.parser.ast.WhileStatement;
-import org.dynjs.parser.ast.WithStatement;
-import org.dynjs.runtime.BasicBlock;
-import org.dynjs.runtime.BlockManager;
-import org.dynjs.runtime.Completion;
-import org.dynjs.runtime.DynArray;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.EnvironmentRecord;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.NameEnumerator;
-import org.dynjs.runtime.PropertyDescriptor;
-import org.dynjs.runtime.Reference;
-import org.dynjs.runtime.Types;
+import org.dynjs.parser.ast.*;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
 import org.dynjs.runtime.interp.InterpretingVisitorFactory;
-import me.qmx.jitescript.internal.org.objectweb.asm.tree.LabelNode;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static me.qmx.jitescript.util.CodegenUtils.*;
 
 public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
 
@@ -648,6 +567,7 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
     public Object visit(Object context, DeleteOpExpression expr, boolean strict) {
         LabelNode checkAsProperty = new LabelNode();
         LabelNode handleEnvRec = new LabelNode();
+        LabelNode notMap = new LabelNode();
         LabelNode returnTrue = new LabelNode();
         LabelNode end = new LabelNode();
         // ----------------------------------------
@@ -692,6 +612,31 @@ public class BasicBytecodeGeneratingVisitor extends CodeGeneratingVisitor {
         dup();
         // ref ref
         append(jsGetBase());
+        // ref base
+        dup();
+        // ref base base
+        instance_of( p(JSObject.class) );
+        // ref base is-JSObject?
+        iftrue( notMap );
+        // ref base
+        dup();
+        // ref base base
+        instance_of(p(Map.class));
+        // ref base is-Map
+        iffalse( notMap );
+        // ref base
+        checkcast(p(Map.class));
+        // ref map
+        swap();
+        // map ref
+        invokevirtual(p(Reference.class), "getReferencedName", sig(String.class));
+        // map name
+        invokeinterface(p(Map.class), "remove", sig(Object.class, Object.class));
+        // prev-value
+        go_to(returnTrue);
+
+        // ----------------------------------------
+        label(notMap);
         // ref base
         append(jsToObject());
         // ref obj

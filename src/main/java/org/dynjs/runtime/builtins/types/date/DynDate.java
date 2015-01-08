@@ -2,18 +2,18 @@ package org.dynjs.runtime.builtins.types.date;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.PrimitiveDynObject;
 import org.dynjs.runtime.Types;
 
 public class DynDate extends PrimitiveDynObject {
 
-    public DynDate(GlobalObject globalObject) {
-        super(globalObject);
+    public DynDate(GlobalContext globalContext) {
+        super(globalContext);
         setClassName("Date");
-        setPrototype(globalObject.getPrototypeFor("Date"));
-        setPrimitiveValue( globalObject.getRuntime().getConfig().getClock().currentTimeMillis() );
+        setPrototype(globalContext.getPrototypeFor("Date"));
+        setPrimitiveValue( globalContext.getRuntime().getConfig().getClock().currentTimeMillis() );
     }
     
     public long getTimeValue() {

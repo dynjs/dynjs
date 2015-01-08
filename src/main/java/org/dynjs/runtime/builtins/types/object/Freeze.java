@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.types.object;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -11,8 +11,8 @@ import org.dynjs.runtime.Types;
 
 public class Freeze extends AbstractNativeFunction {
 
-    public Freeze(GlobalObject globalObject) {
-        super(globalObject, "o");
+    public Freeze(GlobalContext globalContext) {
+        super(globalContext, "o");
     }
 
     @Override

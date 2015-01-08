@@ -42,6 +42,18 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     @Override
     public Object getBindingValue(ExecutionContext context, String name, boolean strict) {
         // 10.2.1.2.4
+
+        boolean hasProp = this.object.hasProperty( context, name );
+        if ( ! hasProp ) {
+            if ( strict ) {
+                throw new ThrowException(context, context.createReferenceError(name + " is not defined"));
+            } else {
+                return Types.UNDEFINED;
+            }
+        }
+
+        return this.object.get( context, name );
+        /*
         Object d = this.object.getProperty(context, name, false);
         if (d == Types.UNDEFINED) {
             if (strict) {
@@ -51,6 +63,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
         }
         PropertyDescriptor desc = (PropertyDescriptor) d;
         return desc.getValue();
+        */
     }
 
     @Override
@@ -70,7 +83,7 @@ public class ObjectEnvironmentRecord implements EnvironmentRecord {
     }
 
     public boolean isGlobal() {
-        return (this.object instanceof GlobalObject);
+        return (this.object instanceof GlobalContext);
     }
 
 }

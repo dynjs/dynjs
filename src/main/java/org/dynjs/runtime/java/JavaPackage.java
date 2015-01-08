@@ -2,15 +2,15 @@ package org.dynjs.runtime.java;
 
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class JavaPackage extends DynObject {
 
     private String path;
 
-    public JavaPackage(GlobalObject globalObject, String path) {
-        super(globalObject);
+    public JavaPackage(GlobalContext globalContext, String path) {
+        super(globalContext);
         this.path  = path;
     }
 
@@ -24,7 +24,7 @@ public class JavaPackage extends DynObject {
                 Class<?> cls = cl.loadClass(fullPath(name));
                 return cls;
             } catch (ClassNotFoundException e) {
-                result = new JavaPackage(context.getGlobalObject(), fullPath(name));
+                result = new JavaPackage(context.getGlobalContext(), fullPath(name));
             }
         }
         return result;

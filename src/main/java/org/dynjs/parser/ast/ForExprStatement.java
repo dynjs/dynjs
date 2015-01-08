@@ -34,18 +34,18 @@ public class ForExprStatement extends AbstractForStatement {
     public ForExprStatement(Position position, Expression initialize, Expression test, Expression increment, Statement block) {
         super(position, test, increment, block);
         this.initialize = initialize;
-        if ( test != null ) {
-            this.testGet = DynJSBootstrapper.factory().createGet( test.getPosition() );
+        if (test != null) {
+            this.testGet = DynJSBootstrapper.factory().createGet(test.getPosition());
         } else {
             this.testGet = null;
         }
-        if ( increment != null ) {
-            this.incrGet = DynJSBootstrapper.factory().createGet( increment.getPosition() );
+        if (increment != null) {
+            this.incrGet = DynJSBootstrapper.factory().createGet(increment.getPosition());
         } else {
             this.incrGet = null;
         }
     }
-    
+
     public Expression getExpr() {
         return this.initialize;
     }
@@ -64,18 +64,18 @@ public class ForExprStatement extends AbstractForStatement {
     public Object accept(Object context, CodeVisitor visitor, boolean strict) {
         return visitor.visit(context, this, strict);
     }
-    
+
     public int getSizeMetric() {
-        if ( this.initialize != null ) {
+        if (this.initialize != null) {
             return this.initialize.getSizeMetric() + super.getSizeMetric();
         }
         return super.getSizeMetric();
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         if (getExpr() != null) {
-            getExpr().interpret(context);
+            getExpr().interpret(context, debug);
         }
 
         Expression test = getTest();
@@ -87,12 +87,12 @@ public class ForExprStatement extends AbstractForStatement {
         while (true) {
             if (test != null) {
 
-                if (!Types.toBoolean(getValue(this.testGet, context, test.interpret(context)))) {
+                if (!Types.toBoolean(getValue(this.testGet, context, test.interpret(context, debug)))) {
                     break;
                 }
             }
 
-            Completion completion = (Completion) body.interpret(context);
+            Completion completion = (Completion) body.interpret(context, debug);
             //Completion completion = invokeCompiledBlockStatement(context, "ForExpr", body);
 
             if (completion.value != null && completion.value != Types.UNDEFINED) {
@@ -101,29 +101,29 @@ public class ForExprStatement extends AbstractForStatement {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || getLabels().contains(completion.target)) {
-                    return(Completion.createNormal(v));
+                    return (Completion.createNormal(v));
                 } else {
                     completion.value = v;
-                    return(completion);
+                    return (completion);
                 }
 
             }
             if (completion.type == Completion.Type.RETURN) {
-                return(completion);
+                return (completion);
 
             }
             if (completion.type == Completion.Type.CONTINUE) {
                 if (completion.target != null && !getLabels().contains(completion.target)) {
-                    return(completion);
+                    return (completion);
 
                 }
             }
 
             if (incr != null) {
-                getValue(this.incrGet, context, incr.interpret(context));
+                getValue(this.incrGet, context, incr.interpret(context, debug));
             }
         }
 
-        return(Completion.createNormal(v));
+        return (Completion.createNormal(v));
     }
 }

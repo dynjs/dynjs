@@ -19,6 +19,7 @@ import org.dynjs.runtime.linker.js.reference.FunctionDereferencedReferenceLinker
 import org.dynjs.runtime.linker.js.shadow.ShadowObjectLinker;
 import org.dynjs.runtime.linker.js.undefined.JavascriptUndefinedLinker;
 import org.projectodd.rephract.LinkLogger;
+import org.projectodd.rephract.Linker;
 import org.projectodd.rephract.NullLinkLogger;
 import org.projectodd.rephract.RephractLinker;
 import org.projectodd.rephract.java.reflect.CoercionMatrix;
@@ -41,31 +42,35 @@ public class DynJSBootstrapper {
     private static InterpretingInvokeDynamicHandler invokeHandler;
     private static CallSiteFactory factory;
 
+    public static DynJSCoercionMatrix COERCION_MATRIX;
+
+    public static JSJavaImplementationManager JAVA_IMPLEMENTATION_MANAGER;
+
     static {
         try {
             LinkLogger logger = new NullLinkLogger();
 
             ShadowObjectLinker shadowLinker = new ShadowObjectLinker(logger);
-            JSJavaImplementationManager implementationManager = new JSJavaImplementationManager(shadowLinker);
-            CoercionMatrix coercionMatrix = new DynJSCoercionMatrix(implementationManager);
-            ResolverManager manager = new ResolverManager(coercionMatrix);
+            JAVA_IMPLEMENTATION_MANAGER = new JSJavaImplementationManager(shadowLinker);
+            COERCION_MATRIX = new DynJSCoercionMatrix(JAVA_IMPLEMENTATION_MANAGER);
+            ResolverManager manager = new ResolverManager(COERCION_MATRIX);
 
             // LinkLogger logger = new FileLinkLogger("dynjs-linker.log");
 
             LINKER = new RephractLinker(logger);
 
-            LINKER.addLinker(new JavascriptEnvironmentLinker(logger));
+            LINKER.addLinker(cacheable(new JavascriptEnvironmentLinker(logger)));
 
-            LINKER.addLinker(new FunctionDereferencedReferenceLinker(logger));
+            LINKER.addLinker(cacheable(new FunctionDereferencedReferenceLinker(logger)));
 
-            LINKER.addLinker(new JavascriptUndefinedLinker(logger));
-            LINKER.addLinker(new JavascriptObjectLinker(logger));
-            LINKER.addLinker(new JavascriptPrimitiveLinker(logger));
+            LINKER.addLinker(cacheable(new JavascriptUndefinedLinker(logger)));
+            LINKER.addLinker(cacheable(new JavascriptObjectLinker(logger)));
+            LINKER.addLinker(cacheable(new JavascriptPrimitiveLinker(logger)));
 
-            LINKER.addLinker(new GlobalLinker(logger));
+            LINKER.addLinker(cacheable(new GlobalLinker(logger)));
 
             LINKER.addLinker(new JSJavaBoundMethodLinker(logger, manager));
-            LINKER.addLinker(new JSJavaImplementationLinker(implementationManager, logger));
+            LINKER.addLinker(new JSJavaImplementationLinker(JAVA_IMPLEMENTATION_MANAGER, logger));
 
             LINKER.addLinker(new JSJavaClassPropertyLinker(logger, manager));
             LINKER.addLinker(new JSJavaClassMethodLinker(logger, manager));
@@ -88,6 +93,12 @@ public class DynJSBootstrapper {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    private static Linker cacheable(Linker linker) {
+        return new CachingLinker(linker);
+        //return linker;
+
     }
 
     public static CallSite bootstrap(Lookup lookup, String name, MethodType type) throws Throwable {

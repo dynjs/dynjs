@@ -3,7 +3,7 @@ package org.dynjs.runtime.builtins.types.object;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.NameEnumerator;
 import org.dynjs.runtime.PropertyDescriptor;
@@ -11,8 +11,8 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class GetOwnPropertyNames extends AbstractNativeFunction {
 
-    public GetOwnPropertyNames(GlobalObject globalObject) {
-        super(globalObject, "o");
+    public GetOwnPropertyNames(GlobalContext globalContext) {
+        super(globalContext, "o");
     }
 
     @Override

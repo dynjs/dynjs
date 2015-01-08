@@ -78,7 +78,7 @@ public class RegexpLiteralExpression extends BaseExpression implements IllegalFu
         return visitor.visit(context, this, strict);
     }
 
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return(BuiltinRegExp.newRegExp((ExecutionContext) context, getPattern(), getFlags()));
     }
 

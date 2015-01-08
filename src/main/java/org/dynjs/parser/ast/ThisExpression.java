@@ -32,7 +32,7 @@ public class ThisExpression extends BaseExpression implements IllegalFunctionMem
         return visitor.visit( context, this, strict );
     }
 
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return context.getThisBinding();
     }
 }

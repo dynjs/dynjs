@@ -2,7 +2,7 @@ package org.dynjs.runtime.builtins.types.array.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Types;
@@ -10,8 +10,8 @@ import org.dynjs.runtime.builtins.types.BuiltinArray;
 
 public class Splice extends AbstractNonConstructorFunction {
 
-    public Splice(GlobalObject globalObject) {
-        super(globalObject, "start", "deleteCount");
+    public Splice(GlobalContext globalContext) {
+        super(globalContext, "start", "deleteCount");
     }
 
     @Override

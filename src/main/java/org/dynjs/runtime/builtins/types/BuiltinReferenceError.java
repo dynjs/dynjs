@@ -1,11 +1,11 @@
 package org.dynjs.runtime.builtins.types;
 
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class BuiltinReferenceError extends AbstractBuiltinNativeError {
 
-    public BuiltinReferenceError(GlobalObject globalObject) {
-        super(globalObject, "ReferenceError");
+    public BuiltinReferenceError(GlobalContext globalContext) {
+        super(globalContext, "ReferenceError");
     }
     
     @Override

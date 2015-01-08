@@ -15,7 +15,7 @@
  */
 package org.dynjs.ir;
 
-import org.dynjs.Config;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.ir.instructions.Add;
 import org.dynjs.ir.instructions.BEQ;
 import org.dynjs.ir.instructions.Call;
@@ -36,7 +36,6 @@ import org.dynjs.ir.instructions.Sub;
 import org.dynjs.ir.operands.BooleanLiteral;
 import org.dynjs.ir.operands.DynamicVariable;
 import org.dynjs.ir.operands.FloatNumber;
-import org.dynjs.ir.operands.Fn;
 import org.dynjs.ir.operands.IntegerNumber;
 import org.dynjs.ir.operands.Label;
 import org.dynjs.ir.operands.Null;
@@ -120,18 +119,17 @@ import org.dynjs.parser.ast.WithStatement;
 import org.dynjs.runtime.JSProgram;
 
 import java.util.List;
-import org.dynjs.runtime.Types;
 
 public class Builder implements CodeVisitor {
     private static Builder BUILDER = new Builder();
 
-    public static JSProgram compile(ProgramTree program) {
+    public static JSProgram compile(CompilationContext compilationContext, ProgramTree program) {
         Scope scope = new Scope(null, program.getPosition().getFileName(), program.isStrict());
         program.accept(scope, BUILDER, program.isStrict());
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
-        return new IRJSProgram(scope);
+        return new IRJSProgram(program.getSource(), compilationContext.getBlockManager(), scope);
     }
 
     @Override
@@ -776,7 +774,9 @@ public class Builder implements CodeVisitor {
 
     @Override
     public Object visit(Object context, VoidOperatorExpression expr, boolean strict) {
-        return unimplemented(context, expr, strict);
+        // 11.4.2 (GetValue must be called even if we never use the value)
+        expr.getExpr().accept(context, this, strict);
+        return Undefined.UNDEFINED;
     }
 
     @Override

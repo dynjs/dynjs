@@ -33,7 +33,7 @@ public class ForVarDeclOfStatement extends AbstractForInStatement {
     public ForVarDeclOfStatement(Position position, VariableDeclaration decl, Expression rhs, Statement block) {
         super(position, rhs, block);
         this.decl = decl;
-        this.get = DynJSBootstrapper.factory().createGet( rhs.getPosition() );
+        this.get = DynJSBootstrapper.factory().createGet(rhs.getPosition());
     }
 
     public VariableDeclaration getDeclaration() {
@@ -54,7 +54,7 @@ public class ForVarDeclOfStatement extends AbstractForInStatement {
         buf.append(indent).append("}");
         return buf.toString();
     }
-    
+
     public int getSizeMetric() {
         return super.getSizeMetric() + decl.getSizeMetric();
     }
@@ -63,13 +63,13 @@ public class ForVarDeclOfStatement extends AbstractForInStatement {
         return visitor.visit(context, this, strict);
     }
 
-    public Completion interpret(ExecutionContext context) {
-        String varName = (String) getDeclaration().interpret( context );
-        Object exprRef = getRhs().interpret( context );
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        String varName = (String) getDeclaration().interpret(context, debug);
+        Object exprRef = getRhs().interpret(context, debug);
         Object exprValue = getValue(this.get, context, exprRef);
 
         if (exprValue == Types.NULL || exprValue == Types.UNDEFINED) {
-            return(Completion.createNormal());
+            return (Completion.createNormal());
 
         }
 
@@ -85,7 +85,7 @@ public class ForVarDeclOfStatement extends AbstractForInStatement {
 
             varRef.putValue(context, propertyRef.getValue(context));
 
-            Completion completion = (Completion) getBlock().interpret(context);
+            Completion completion = (Completion) getBlock().interpret(context, debug);
             //Completion completion = invokeCompiledBlockStatement(context, "ForVarDeclsOf", statement.getBlock());
 
             if (completion.value != null) {
@@ -94,19 +94,19 @@ public class ForVarDeclOfStatement extends AbstractForInStatement {
 
             if (completion.type == Completion.Type.BREAK) {
                 if (completion.target == null || getLabels().contains(completion.target)) {
-                    return(Completion.createNormal(v));
+                    return (Completion.createNormal(v));
                 } else {
-                    return(completion);
+                    return (completion);
                 }
 
             }
 
             if (completion.type == Completion.Type.RETURN || completion.type == Completion.Type.BREAK) {
-                return(completion);
+                return (completion);
 
             }
         }
 
-        return(Completion.createNormal(v));
+        return (Completion.createNormal(v));
     }
 }

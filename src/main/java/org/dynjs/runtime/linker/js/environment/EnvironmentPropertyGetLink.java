@@ -46,6 +46,7 @@ public class EnvironmentPropertyGetLink extends SmartLink implements Guard {
         return builder
                 //.convert(Object.class, Reference.class, ExecutionContext.class, String.class)
                 .permute(0, 1, 2, 0)
+                .convert(Object.class, Reference.class, ExecutionContext.class, String.class, Reference.class)
                 .filter(0, ReferenceBaseFilter.INSTANCE)
                 .filter(3, ReferenceStrictnessFilter.INSTANCE)
                 .convert(Object.class, EnvironmentRecord.class, ExecutionContext.class, String.class, boolean.class)

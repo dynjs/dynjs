@@ -2,15 +2,15 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.AbstractDateFunction;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class SetMilliseconds extends AbstractDateFunction {
 
-    public SetMilliseconds(GlobalObject globalObject) {
-        super(globalObject, "ms" );
+    public SetMilliseconds(GlobalContext globalContext) {
+        super(globalContext, "ms" );
     }
 
     @Override

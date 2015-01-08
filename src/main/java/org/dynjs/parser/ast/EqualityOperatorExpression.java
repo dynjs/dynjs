@@ -31,9 +31,9 @@ public class EqualityOperatorExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object lhs = getValue(this.lhsGet, context, getLhs().interpret( context ) );
-        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object lhs = getValue(this.lhsGet, context, getLhs().interpret( context, debug) );
+        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context, debug));
 
         if (getOp().equals("==")) {
             return(Types.compareEquality(context, lhs, rhs));

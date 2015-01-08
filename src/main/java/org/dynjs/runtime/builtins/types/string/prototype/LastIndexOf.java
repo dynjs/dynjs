@@ -2,13 +2,13 @@ package org.dynjs.runtime.builtins.types.string.prototype;
 
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 
 public class LastIndexOf extends AbstractNonConstructorFunction {
 
-    public LastIndexOf(GlobalObject globalObject) {
-        super(globalObject, "searchString");
+    public LastIndexOf(GlobalContext globalContext) {
+        super(globalContext, "searchString");
     }
 
     @Override

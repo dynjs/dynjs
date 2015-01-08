@@ -8,8 +8,8 @@ import org.dynjs.runtime.*;
   * Implements Object.prototype.__defineSetter__
   */
 public class DefineSetter extends AbstractNativeFunction {
-    public DefineSetter(GlobalObject globalObject) {
-        super(globalObject, "name", "function");
+    public DefineSetter(GlobalContext globalContext) {
+        super(globalContext, "name", "function");
     }
 
     @Override

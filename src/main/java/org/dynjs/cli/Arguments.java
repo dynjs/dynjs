@@ -69,7 +69,10 @@ public class Arguments {
     private List<String> arguments = new ArrayList<>();
 
     public Config getConfig() {
-        Config config = new Config();
+        return this.initConfig(new Config());
+    }
+
+    protected Config initConfig(Config config) {
         if (this.isDebug()) {
             config.setDebug(true);
         }

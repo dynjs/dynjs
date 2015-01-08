@@ -36,8 +36,8 @@ public class TypeOfOpExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        return Types.typeof(context, getExpr().interpret(context));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        return Types.typeof(context, getExpr().interpret(context, debug));
     }
 
 }

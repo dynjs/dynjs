@@ -1,40 +1,49 @@
 package org.dynjs.runtime;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.dynjs.Config;
-import org.dynjs.compiler.JSCompiler;
+import org.dynjs.debugger.Debugger;
+import org.dynjs.exception.DynJSException;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.ir.Builder;
-import org.dynjs.parser.ast.ProgramTree;
-import org.dynjs.parser.js.JavascriptParser;
 import org.dynjs.parser.js.ParserException;
 import org.dynjs.parser.js.SyntaxError;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.concurrent.Executor;
+
 public class Runner {
 
+    private final DynJS runtime;
+    private Compiler compiler;
     private ExecutionContext context;
-    private String fileName;
-    private Reader source;
-    private boolean shouldClose = false;
-    private boolean forceStrict = false;
-    private boolean directEval = true;
 
-    Runner(ExecutionContext context) {
-        withContext(context);
+    private boolean directEval;
+
+    private JSProgram source;
+
+    private Executor executor;
+    private Object result;
+    private State state = State.COMPLETE;
+    private Debugger debugger;
+
+    private enum State {
+        RUNNING,
+        COMPLETE;
+    }
+
+    public Runner(DynJS runtime) {
+        this.compiler = new Compiler(runtime.getConfig());
+        this.runtime = runtime;
     }
 
     public Runner forceStrict() {
-        return forceStrict(true);
+        this.compiler.forceStrict();
+        return this;
     }
 
     public Runner forceStrict(boolean forceStrict) {
-        this.forceStrict = forceStrict;
+        this.compiler.forceStrict(forceStrict);
         return this;
     }
 
@@ -47,43 +56,142 @@ public class Runner {
         return this;
     }
 
-    public Runner withSource(String source) {
-        this.source = new StringReader(source);
-        this.shouldClose = true;
-        return this;
-    }
-
-    public Runner withSource(Reader source) {
+    public Runner withSource(JSProgram source) {
         this.source = source;
-        this.shouldClose = false;
         return this;
     }
 
-    public Runner withSource(File source) throws FileNotFoundException {
-        this.source = new FileReader(source);
-        this.shouldClose = true;
-        this.fileName = source.getName();
+    public Runner withExecutor(Executor executor) {
+        this.executor = executor;
+        return this;
+    }
+
+    public Runner withSource(String source) {
+        this.compiler.withSource(source);
+        return this;
+    }
+
+    /*
+    public Runner withSource(Reader source) {
+        this.compiler.withSource( source );
+        return this;
+    }
+    */
+
+    public Runner withSource(SourceProvider source) {
+        this.compiler.withSource(source);
+        return this;
+    }
+
+    public Runner withSource(File source) throws IOException {
+        this.compiler.withSource(source);
         return this;
     }
 
     public Runner withContext(ExecutionContext context) {
         this.context = context;
+        this.compiler.withContext(context);
         return this;
     }
 
     public Runner withFileName(String fileName) {
-        this.fileName = fileName;
+        this.compiler.withFileName(fileName);
         return this;
     }
 
-    public Object execute() {
-        try {
-            ProgramTree tree = parseSourceCode();
-            JSProgram program = compile(tree);
+    public Runner debug(boolean debug) {
+        if (debug) {
+            this.debugger = new Debugger();
+        }
+        return this;
+    }
 
-            Completion completion = this.context.execute(program);
+    public Runner withDebugger(Debugger debugger) {
+        this.debugger = debugger;
+        return this;
+    }
+
+    protected ExecutionContext executionContext() {
+        if (this.context == null) {
+            return this.runtime.getDefaultExecutionContext();
+        }
+        return this.context;
+    }
+
+    protected JSProgram program() throws IOException {
+        if (this.source != null) {
+            return this.source;
+        }
+
+        return this.compiler.compile();
+    }
+
+    public Object result() {
+        return this.result;
+    }
+
+    public boolean isRunning() {
+        return this.state == State.RUNNING;
+    }
+
+    public synchronized boolean isComplete() {
+        return this.state == State.COMPLETE;
+    }
+
+    public synchronized void join() throws InterruptedException {
+        while (this.state != State.COMPLETE) {
+            wait();
+        }
+    }
+
+    public Debugger getDebugger() {
+        return this.debugger;
+    }
+
+    protected void setup() {
+        // no-op;
+    }
+
+    public synchronized Object execute() {
+        if (this.state != State.COMPLETE) {
+            throw new DynJSException("Running is currently in-use");
+        }
+
+        setup();
+
+        if (this.executor == null) {
+            this.result = doExecute();
+            return this.result;
+        }
+
+        this.state = State.RUNNING;
+
+        this.executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Runner.this.result = doExecute();
+                } finally {
+                    synchronized (Runner.this) {
+                        Runner.this.state = State.COMPLETE;
+                        Runner.this.notifyAll();
+                    }
+                }
+            }
+        });
+
+        return null;
+    }
+
+    private Object doExecute() {
+        try {
+            if ( this.debugger != null ) {
+                this.debugger.setGlobalContext( executionContext() );
+            }
+
+            Completion completion = executionContext().execute(program(), this.debugger);
             if (completion.type == Completion.Type.BREAK || completion.type == Completion.Type.CONTINUE) {
-                throw new ThrowException(this.context, this.context.createSyntaxError("illegal break or continue"));
+                throw new ThrowException(executionContext(), executionContext().createSyntaxError("illegal break or continue"));
             }
             Object v = completion.value;
             if (v instanceof Reference) {
@@ -91,48 +199,59 @@ public class Runner {
             }
             return v;
         } catch (SyntaxError e) {
-            throw new ThrowException(this.context, this.context.createSyntaxError(e.getMessage()));
+            throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
         } catch (ParserException e) {
-            throw new ThrowException(this.context, e);
+            throw new ThrowException(executionContext(), e);
+        } catch (IOException e) {
+            throw new ThrowException(executionContext(), e);
         }
     }
 
-    public Object evaluate() {
-        try {
-            ProgramTree tree = parseSourceCode();
-            JSProgram program = compile(tree);
-            return this.context.eval(program, this.directEval);
-        } catch (SyntaxError e) {
-            throw new ThrowException(this.context, this.context.createSyntaxError(e.getMessage()));
-        } catch (ParserException e) {
-            throw new ThrowException(this.context, e);
+    public synchronized Object evaluate() {
+        if (this.state != State.COMPLETE) {
+            throw new DynJSException("Running is currently in-use");
         }
-    }
 
-    public ProgramTree parseSourceCode() {
-        JavascriptParser parser = new JavascriptParser( this.context );
-        try {
-            return parser.parse(this.source, this.fileName, this.forceStrict );
-        } finally {
-            if (this.shouldClose) {
+        setup();
+
+        if (this.executor == null) {
+            this.result = doEvaluate();
+            return this.result;
+        }
+
+        this.state = State.RUNNING;
+        this.executor.execute(new Runnable() {
+            @Override
+            public void run() {
                 try {
-                    this.source.close();
-                } catch (IOException e) {
-                    throw new ParserException(e);
+                    Runner.this.result = doEvaluate();
+                } finally {
+                    synchronized (Runner.this) {
+                        Runner.this.state = State.COMPLETE;
+                        Runner.this.notifyAll();
+                    }
                 }
             }
+        });
+
+        return null;
+    }
+
+    private Object doEvaluate() {
+        if ( this.debugger != null ) {
+            this.debugger.setGlobalContext( executionContext() );
+        }
+
+        try {
+            return executionContext().eval(program(), this.directEval);
+        } catch (SyntaxError e) {
+            throw new ThrowException(executionContext(), executionContext().createSyntaxError(e.getMessage()));
+        } catch (ParserException e) {
+            throw new ThrowException(executionContext(), e);
+        } catch (IOException e) {
+            throw new ThrowException(executionContext(), e);
         }
     }
 
-    private JSProgram compile(ProgramTree tree) {
-        // FIXME: getCompiler will go away so just add special IR check for now.
-        final Config.CompileMode compileMode = context.getConfig().getCompileMode();
-        if (compileMode == Config.CompileMode.IR) {
-            return Builder.compile(tree);
-        }
-
-        JSCompiler compiler = this.context.getCompiler();
-        return compiler.compileProgram(this.context, tree, this.forceStrict);
-    }
 
 }

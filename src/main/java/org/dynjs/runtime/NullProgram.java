@@ -8,6 +8,7 @@ import org.dynjs.parser.ast.VariableDeclaration;
 
 
 public class NullProgram implements JSProgram {
+
     private String filename;
 
     public NullProgram(String filename) {
@@ -15,8 +16,18 @@ public class NullProgram implements JSProgram {
     }
 
     @Override
+    public SourceProvider getSource() {
+        return null;
+    }
+
+    @Override
     public Completion execute(ExecutionContext context) {
         return Completion.createNormal();
+    }
+
+    @Override
+    public BlockManager getBlockManager() {
+        return null;
     }
 
     @Override

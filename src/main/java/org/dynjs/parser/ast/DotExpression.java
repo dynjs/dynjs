@@ -65,8 +65,8 @@ public class DotExpression extends AbstractExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object baseRef = getLhs().interpret(context);
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object baseRef = getLhs().interpret(context, debug);
         Object baseValue = getValue(this.get, context, baseRef);
 
         String propertyName = getIdentifier();

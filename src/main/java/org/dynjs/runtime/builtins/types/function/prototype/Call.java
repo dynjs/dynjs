@@ -3,14 +3,14 @@ package org.dynjs.runtime.builtins.types.function.prototype;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNonConstructorFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.util.CallHelpers;
 
 public class Call extends AbstractNonConstructorFunction {
 
-    public Call(GlobalObject globalObject) {
-        super(globalObject, "thisArg");
+    public Call(GlobalContext globalContext) {
+        super(globalContext, "thisArg");
     }
 
     @Override

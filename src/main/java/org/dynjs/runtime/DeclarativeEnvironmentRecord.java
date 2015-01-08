@@ -28,9 +28,12 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         this.mutableBindings.put(name, desc);
     }
 
+    public void createMutableBinding(final String name, final boolean configurable) {
+        DeclarativeEnvironmentRecord.this.createMutableBinding(null, name,configurable);
+    }
+
     @Override
     public void setMutableBinding(ExecutionContext context, String name, Object value, boolean strict) {
-
         // 10.2.1.1.3
         if (!hasBinding(context, name)) {
             throw new AssertionError("10.2.1.1.3: No binding exists for " + name);
@@ -47,7 +50,11 @@ public class DeclarativeEnvironmentRecord implements EnvironmentRecord {
         }
     }
 
-    // FIXME: describe spec deviance
+    public void setMutableBinding(String name, Object value, boolean strict) {
+        DeclarativeEnvironmentRecord.this.setMutableBinding(null, name, value, strict);
+    }
+
+        // FIXME: describe spec deviance
     public void assignMutableBinding(ExecutionContext context, String name, Object value, boolean configurable, boolean strict) {
         final boolean exists = hasBinding(context, name);
         if (!exists) {

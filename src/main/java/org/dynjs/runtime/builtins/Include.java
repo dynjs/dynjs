@@ -20,11 +20,12 @@ import java.io.*;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.*;
+import org.dynjs.runtime.source.ClassLoaderSourceProvider;
 
 public class Include extends AbstractNativeFunction {
 
-    public Include(GlobalObject globalObject) {
-        super(globalObject, "name");
+    public Include(GlobalContext globalContext) {
+        super(globalContext, "name");
     }
 
     @Override
@@ -44,26 +45,15 @@ public class Include extends AbstractNativeFunction {
                         .withSource(includeFile)
                         .execute();
             } else {
-                InputStream is = context.getClassLoader().getResourceAsStream(includePath);
-                if (is == null) {
-                    throw new FileNotFoundException(includePath);
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                Object ret = runner.withContext(context).withSource(reader).execute();
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-                return ret;
+                return runner.withContext(context).withSource(new ClassLoaderSourceProvider(context.getClassLoader(), includePath)).execute();
             }
         } catch (IOException e) {
-            throw new ThrowException(context, e);
+            throw new ThrowException(context, context.createError("Error", e.getMessage()));
         }
 
         return Types.UNDEFINED;
     }
-    
+
     @Override
     public void setFileName() {
         this.filename = "org/dynjs/runtime/builtins/Include.java";

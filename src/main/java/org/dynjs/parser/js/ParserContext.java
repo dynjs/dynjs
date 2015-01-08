@@ -29,14 +29,6 @@ class ParserContext {
         this.strict = false;
     }
 
-    boolean isValidForFunctionDeclaration() {
-        if (!this.strict) {
-            return true;
-        }
-
-        return (type == ContextType.PROGRAM || type == ContextType.FUNCTION);
-    }
-
     void addLabel(String label) {
         this.labels.add(label);
     }

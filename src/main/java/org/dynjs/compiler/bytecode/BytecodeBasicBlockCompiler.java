@@ -15,6 +15,7 @@ import org.dynjs.Config;
 import org.dynjs.codegen.CodeGeneratingVisitor.Arities;
 import org.dynjs.codegen.CodeGeneratingVisitorFactory;
 import org.dynjs.compiler.BasicBlockCompiler;
+import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.bytecode.partial.CompilationPlanner;
 import org.dynjs.compiler.bytecode.partial.PartialCompiler;
 import org.dynjs.parser.Statement;
@@ -35,7 +36,7 @@ public class BytecodeBasicBlockCompiler extends AbstractBytecodeCompiler impleme
     }
 
     @Override
-    public BasicBlock compile(final ExecutionContext context, final String grist, final Statement body, boolean strict) {
+    public BasicBlock compile(final CompilationContext context, final String grist, final Statement body, boolean strict) {
         
         int statementNumber = body.getStatementNumber();
         Entry entry = context.getBlockManager().retrieve(statementNumber);

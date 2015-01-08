@@ -39,7 +39,7 @@ public class NullLiteralExpression extends BaseExpression implements IllegalFunc
         return visitor.visit( context, this, strict );
     }
 
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return Types.NULL;
     }
 }

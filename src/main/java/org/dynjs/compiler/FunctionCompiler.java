@@ -6,5 +6,5 @@ import org.dynjs.runtime.JSFunction;
 
 public interface FunctionCompiler {
 
-    public JSFunction compile(final ExecutionContext context, final String identifier, final String[] formalParameters, final Statement body, final boolean strict);
+    public JSFunction compile(final CompilationContext context, final String identifier, final String[] formalParameters, final Statement body, final boolean strict);
 }

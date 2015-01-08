@@ -2,15 +2,15 @@ package org.dynjs.runtime.builtins.types.date.prototype;
 
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.date.AbstractDateFunction;
 import org.dynjs.runtime.builtins.types.date.DynDate;
 
 public class SetUTCDate extends AbstractDateFunction {
 
-    public SetUTCDate(GlobalObject globalObject) {
-        super(globalObject, "date" );
+    public SetUTCDate(GlobalContext globalContext) {
+        super(globalContext, "date" );
     }
 
     @Override

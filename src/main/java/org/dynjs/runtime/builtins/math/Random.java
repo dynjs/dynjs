@@ -2,12 +2,12 @@ package org.dynjs.runtime.builtins.math;
 
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 
 public class Random extends AbstractNativeFunction {
     
-    public Random(GlobalObject globalObject) {
-        super(globalObject);
+    public Random(GlobalContext globalContext) {
+        super(globalContext);
     }
 
     @Override

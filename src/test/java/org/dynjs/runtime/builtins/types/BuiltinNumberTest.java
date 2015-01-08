@@ -63,7 +63,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testNumberFunction() {
         this.runtime.execute("var x = Number(8)");
-        Reference result = this.runtime.getExecutionContext().resolve("x");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("x");
         Long value = (Long) result.getValue(getContext());
         assertThat(value).isEqualTo(8L);
     }
@@ -71,7 +71,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     @Test
     public void testNumberCtor() {
         this.runtime.execute("var x = new Number(33)");
-        Reference result = this.runtime.getExecutionContext().resolve("x");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("x");
         PrimitiveDynObject value = (PrimitiveDynObject) result.getValue(getContext());
         assertThat(value.getPrimitiveValue()).isEqualTo(33L);
     }
@@ -80,7 +80,7 @@ public class BuiltinNumberTest extends AbstractDynJSTestSupport {
     public void testNumberPrototypeConstructor() {
         // 15.7.1
         this.runtime.execute("var x = Number.prototype.constructor");
-        Reference result = this.runtime.getExecutionContext().resolve("x");
+        Reference result = this.runtime.getDefaultExecutionContext().resolve("x");
         assertThat(result.getValue(getContext())).isInstanceOf(BuiltinNumber.class);
     }
 

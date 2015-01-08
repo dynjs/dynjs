@@ -10,7 +10,7 @@ import java.nio.charset.CodingErrorAction;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
+import org.dynjs.runtime.GlobalContext;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.jcodings.specific.UTF8Encoding;
 import org.joni.Matcher;
@@ -24,14 +24,14 @@ public class DynRegExp extends DynObject {
 
     private Regex pattern;
 
-    public DynRegExp(GlobalObject globalObject) {
-        super(globalObject);
+    public DynRegExp(GlobalContext globalContext) {
+        super(globalContext);
         setClassName("RegExp");
-        setPrototype(globalObject.getPrototypeFor("RegExp"));
+        setPrototype(globalContext.getPrototypeFor("RegExp"));
     }
 
-    public DynRegExp(GlobalObject globalObject, final String pattern, final String flags) {
-        this(globalObject);
+    public DynRegExp(GlobalContext globalContext, final String pattern, final String flags) {
+        this(globalContext);
         setPatternAndFlags(null, pattern, flags);
     }
 
@@ -67,8 +67,12 @@ public class DynRegExp extends DynObject {
 
         int flagsInt = 0;
 
+        // joni calls the "m" flag Option.SINGLELINE, confusingly enough
+        // joni's Option.MULTILINE is actually Perl's "s" regex flag which
+        // has no equivalent in javascript
         if (get(context, "multiline") == Boolean.TRUE) {
-            flagsInt = flagsInt | Option.MULTILINE;
+            // negate Option.SINGLELINE
+            flagsInt = flagsInt & ~Option.SINGLELINE;
         } else {
             flagsInt = flagsInt | Option.SINGLELINE;
         }

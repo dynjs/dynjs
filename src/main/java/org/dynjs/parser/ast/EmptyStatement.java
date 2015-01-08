@@ -38,7 +38,7 @@ public class EmptyStatement extends BaseStatement {
         return visitor.visit( context, this, strict );
     }
 
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         return Completion.createNormal();
     }
 

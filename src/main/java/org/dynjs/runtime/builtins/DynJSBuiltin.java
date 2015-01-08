@@ -18,4 +18,8 @@ public class DynJSBuiltin {
         return this.runtime.getConfig().getClasspath();
     }
 
+    public DynJS getRuntime() {
+        return this.runtime;
+    }
+
 }
