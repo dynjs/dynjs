@@ -71,6 +71,12 @@ describe("regular expressions", function() {
     });
   });
 
+  it("should work fine with multi-byte UTF-8 characters", function() {
+    var x = "foo ohé foobar";
+    var y = x.replace(/foo/g, "bar");
+    print(y);
+    expect(y).toBe("bar ohé barbar");
+  });
 });
 
 describe("String.prototype.match", function() {
