@@ -28,16 +28,6 @@ public class DynRegExpMatch {
             } else {
                 matches[i] = new DynRegExpMatch(-1, -1, "");
             }
-
-            /*
-            String matched;
-            if (region.beg[i] != -1) {
-                matched = new String(str, region.beg[i], region.end[i] - region.beg[i]);
-            } else {
-                matched = "";
-            }
-            matches[i] = new DynRegExpMatch(region.beg[i], region.end[i], matched);
-            */
         }
 
         return matches;
