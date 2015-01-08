@@ -131,10 +131,8 @@ public class Parse extends AbstractNativeFunction {
             return Types.NULL;
         } else if (t == JsonToken.VALUE_STRING) {
             return p.getText();
-        } else if (t == JsonToken.VALUE_NUMBER_FLOAT) {
-            return p.getDoubleValue();
-        } else if (t == JsonToken.VALUE_NUMBER_INT) {
-            return p.getIntValue();
+        } else if (t == JsonToken.VALUE_NUMBER_FLOAT || t == JsonToken.VALUE_NUMBER_INT) {
+            return p.getNumberValue();
         }
 
         return Types.NULL;
