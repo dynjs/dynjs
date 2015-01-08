@@ -7,6 +7,7 @@ import org.dynjs.runtime.JSObject;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinRegExp;
 import org.dynjs.runtime.builtins.types.regexp.DynRegExp;
+import org.dynjs.runtime.builtins.types.regexp.DynRegExpMatch;
 import org.joni.Region;
 
 public class Search extends AbstractNonConstructorFunction {
@@ -28,12 +29,12 @@ public class Search extends AbstractNonConstructorFunction {
             rx = BuiltinRegExp.newRegExp(context, args[0] == Types.UNDEFINED ? Types.UNDEFINED : Types.toString(context, args[0]), null);
         }
 
-        Region result = ((DynRegExp) rx).match(context, s, 0);
+        DynRegExpMatch[] result = ((DynRegExp) rx).match(context, s, 0);
         if (result == null) {
             return -1L;
         }
 
-        return (long) result.beg[0];
+        return (long) result[0].begin;
     }
 
 }
