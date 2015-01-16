@@ -46,7 +46,7 @@ public class DynJS {
 
     private void loadKernel() {
         // FIXME only works for non-IR atm
-        if (!Config.CompileMode.IR.equals(this.config.getCompileMode())) {
+        if (!Config.CompileMode.IR.equals(this.config.getCompileMode()) && !config.isSandboxed()) {
             switch (this.config.getKernelMode()) {
                 case INTERNAL:
                     // Load pure-JS kernel

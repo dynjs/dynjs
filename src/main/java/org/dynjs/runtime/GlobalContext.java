@@ -68,11 +68,11 @@ public class GlobalContext {
         registerBuiltinType("URIError", new BuiltinURIError(this));
         registerBuiltinType("EvalError", new BuiltinEvalError(this));
 
-        if (this.runtime.getConfig().isRhinoCompatible()) {
+        if (this.runtime.getConfig().isRhinoCompatible() && !this.runtime.getConfig().isSandboxed()) {
             registerBuiltinType("JSAdapter", new JSAdapter(this));
         }
 
-        if(this.runtime.getConfig().isV8Compatible()) {
+        if(this.runtime.getConfig().isV8Compatible() && !this.runtime.getConfig().isSandboxed()) {
             defineNonEnumerableProperty(this, "__v8StackGetter", new V8StackGetter(this));
         }
 
@@ -103,7 +103,10 @@ public class GlobalContext {
         defineGlobalProperty("escape", new Escape(this), true);
         defineGlobalProperty("unescape", new Unescape(this), true);
         defineGlobalProperty("print", new Print(this), true);
-        defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime), true);
+
+        if (!runtime.getConfig().isSandboxed()) {
+            defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime), true);
+        }
 
         // ----------------------------------------
         // Built-in global objects
@@ -117,15 +120,16 @@ public class GlobalContext {
         // Java integration
         // ----------------------------------------
 
-        defineGlobalProperty("Packages", new JavaPackage(this, null), true );
-        defineGlobalProperty("java",     new JavaPackage(this, "java"), true);
-        defineGlobalProperty("javax",    new JavaPackage(this, "javax"), true);
-        defineGlobalProperty("org",      new JavaPackage(this, "org"), true);
-        defineGlobalProperty("com",      new JavaPackage(this, "com"), true);
-        defineGlobalProperty("io",       new JavaPackage(this, "io"), true);
+        if (!runtime.getConfig().isSandboxed()) {
+            defineGlobalProperty("Packages", new JavaPackage(this, null), true);
+            defineGlobalProperty("java", new JavaPackage(this, "java"), true);
+            defineGlobalProperty("javax", new JavaPackage(this, "javax"), true);
+            defineGlobalProperty("org", new JavaPackage(this, "org"), true);
+            defineGlobalProperty("com", new JavaPackage(this, "com"), true);
+            defineGlobalProperty("io", new JavaPackage(this, "io"), true);
 
-        defineGlobalProperty("System",   System.class, true);
-
+            defineGlobalProperty("System", System.class, true);
+        }
     }
 
     private void registerBuiltinType(String name, final AbstractBuiltinType type) {

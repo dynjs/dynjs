@@ -41,6 +41,7 @@ public class Config {
     private boolean jitEnabled = Options.JIT.load();
     private boolean jitAsync = Options.JIT_ASYNC.load();
     private boolean v8Compatible = Options.COMPATIBILITY_V8.load();
+    private boolean sandboxed = true;
 
     private final Classpath classpath;
 
@@ -200,4 +201,11 @@ public class Config {
         return this.argv;
     }
 
+    public boolean isSandboxed() {
+        return sandboxed;
+    }
+
+    public void setSandboxed(boolean sandboxed) {
+        this.sandboxed = sandboxed;
+    }
 }
