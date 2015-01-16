@@ -41,7 +41,7 @@ public class Config {
     private boolean jitEnabled = Options.JIT.load();
     private boolean jitAsync = Options.JIT_ASYNC.load();
     private boolean v8Compatible = Options.COMPATIBILITY_V8.load();
-    private boolean sandboxed = true;
+    private boolean sandboxed = false;
 
     private final Classpath classpath;
 

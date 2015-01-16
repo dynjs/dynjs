@@ -10,7 +10,7 @@ public class ResourceQuota {
     private long memoryUsage;
     private final boolean monitorMemoryUsage;
 
-    ResourceQuota(long cpuTime, long memoryUsage) {
+    public ResourceQuota(long cpuTime, long memoryUsage) {
         this.cpuTime = cpuTime;
         this.monitorCpuTime = cpuTime > 0;
         this.memoryUsage = memoryUsage;
