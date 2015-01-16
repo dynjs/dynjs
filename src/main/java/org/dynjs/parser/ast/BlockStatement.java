@@ -136,6 +136,7 @@ public class BlockStatement extends AbstractStatement {
 
     @Override
     public Completion interpret(ExecutionContext context) {
+        context.checkResourceUsage();
         List<Statement> content = getBlockContent();
 
         Object completionValue = Types.UNDEFINED;

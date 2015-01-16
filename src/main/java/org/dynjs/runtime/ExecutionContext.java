@@ -51,7 +51,7 @@ public class ExecutionContext implements CompilationContext {
     private Object thisBinding;
     private boolean strict;
     private boolean inEval;
-
+    private ResourceQuota.WatchDog resourceWatchDog;
 
     private int lineNumber;
     private int columnNumber;
@@ -76,6 +76,10 @@ public class ExecutionContext implements CompilationContext {
         this.variableEnvironment = variableEnvironment;
         this.thisBinding = thisBinding;
         this.strict = strict;
+
+        if (parent != null) {
+            this.resourceWatchDog = parent.resourceWatchDog;
+        }
     }
 
     public void setFunctionParameters(Object[] args) {
@@ -377,6 +381,13 @@ public class ExecutionContext implements CompilationContext {
         return context;
     }
 
+    public ExecutionContext createResourceQuotaExecutionObject(ResourceQuota quota) {
+        ExecutionContext context = new ExecutionContext(this.runtime, this, this.lexicalEnvironment, this.variableEnvironment, this.thisBinding, this.strict);
+        context.resourceWatchDog = quota.createWatchDog();
+
+        return context;
+    }
+
     public Completion executeCatch(BasicBlock block, String identifier, Object thrown) {
         // 12.14
         if (thrown instanceof Throwable && this.throwStack != null && ! this.throwStack.isEmpty()) {
@@ -671,5 +682,11 @@ public class ExecutionContext implements CompilationContext {
 
     public void inEval(boolean b) {
         this.inEval = b;
+    }
+
+    public void checkResourceUsage() {
+        if (this.resourceWatchDog != null) {
+            this.resourceWatchDog.check();
+        }
     }
 }
