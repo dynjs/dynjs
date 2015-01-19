@@ -70,11 +70,18 @@ public class ResourceQuotaTest extends AbstractDynJSTestSupport {
     @Test(expected = ExceededResourcesException.class)
     public void theSameQuotaCanBeUsedSuccessively() {
         DynJS runtime = getRuntime();
-        ResourceQuota quota = new ResourceQuota(0, 1000000000);
+        ResourceQuota quota = new ResourceQuota(1000000000L, 0);
 
-        for (int i = 0; i < 1000000; ++i) {
-            ExecutionContext context = runtime.getDefaultExecutionContext().createResourceQuotaExecutionObject(quota);
-            runtime.newRunner().withContext(context).withSource("var str = 'foo' + 'bar';").evaluate();
+        int count = 0;
+        try {
+            for (int i = 0; i < 1000000; ++i) {
+                ExecutionContext context = runtime.getDefaultExecutionContext().createResourceQuotaExecutionObject(quota);
+                runtime.newRunner().withContext(context).withSource("for (var i = 0; i < 1000; ++i) {}").evaluate();
+                ++count;
+            }
+        } catch (ExceededResourcesException ex) {
+            Assert.assertTrue(count > 0);
+            throw ex;
         }
     }
 
