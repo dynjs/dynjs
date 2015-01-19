@@ -6,24 +6,24 @@ import org.junit.Test;
 
 public class SandboxTest extends AbstractDynJSTestSupport {
     @Test(expected = ThrowException.class)
-    public void jsCodeCannotAccessDynJSGlobalWhenSandboxed() {
+    public void jsCodeCannotAccessDynJSGlobalWhenRunningInSandbox() {
         eval("dynjs");
     }
 
     @Test(expected = ThrowException.class)
-    public void jsCodeCannotAccessJavaPackageWhenSandboxed() {
+    public void jsCodeCannotAccessJavaPackageWhenRunningInSandbox() {
         eval("java");
     }
 
     @Test(expected = ThrowException.class)
-    public void jsCodeCannotAccessOrgPackageWhenSandboxed() {
+    public void jsCodeCannotAccessOrgPackageWhenRunningInSandbox() {
         eval("org");
     }
 
     @Override
     protected org.dynjs.Config createConfig() {
         Config config = super.createConfig();
-        config.setSandboxed(true);
+        config.setSandbox(true);
         return config;
     }
 }

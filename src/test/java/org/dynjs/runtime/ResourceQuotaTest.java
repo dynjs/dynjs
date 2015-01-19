@@ -1,6 +1,7 @@
 package org.dynjs.runtime;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ResourceQuotaTest extends AbstractDynJSTestSupport {
@@ -57,6 +58,46 @@ public class ResourceQuotaTest extends AbstractDynJSTestSupport {
     @Test
     public void buildingLargeStringWithConcatCannotExceedMemoryQuota() {
         shouldExceedMemoryQuota("var str = ''; for (;;) { str = str.concat(str); }");
+    }
+
+    @Test
+    public void giganticAllocationRightBeforeRunningScriptDoesntTriggerQuota() {
+        // This is nowhere near perfect (technically the doc says it could happen) but hey that's a data point
+        byte[] buffer = new byte[1024 * 1024 * 250];
+        shouldNotExceedMemoryQuota("var str = ''; for (var i = 0; i < 10; ++i) { str = str.concat(str); }");
+    }
+
+    @Test(expected = ExceededResourcesException.class)
+    public void theSameQuotaCanBeUsedSuccessively() {
+        DynJS runtime = getRuntime();
+        ResourceQuota quota = new ResourceQuota(0, 1000000000);
+
+        for (int i = 0; i < 1000000; ++i) {
+            ExecutionContext context = runtime.getDefaultExecutionContext().createResourceQuotaExecutionObject(quota);
+            runtime.newRunner().withContext(context).withSource("var str = 'foo' + 'bar';").evaluate();
+        }
+    }
+
+    @Test
+    @Ignore
+    public void performanceComparisonWhenRunningWithOrWithoutQuotaIsntTooBad() {
+        DynJS runtime = getRuntime();
+
+        // Warmup (it seems to have an effect)
+        runtime.newRunner().withSource("var c = 0; for (var i = 0; i < 1000000; ++i) { c++ }").evaluate();
+
+        long beforeNormal = System.currentTimeMillis();
+        runtime.newRunner().withSource("var c = 0; for (var i = 0; i < 5000000; ++i) { c++ }").evaluate();
+        long timeNormal = System.currentTimeMillis() - beforeNormal;
+        System.out.println("Normal: " + timeNormal + "ms");
+
+        ResourceQuota quota = new ResourceQuota(Long.MAX_VALUE, Long.MAX_VALUE);
+        ExecutionContext context = runtime.getDefaultExecutionContext().createResourceQuotaExecutionObject(quota);
+        long beforeQuota = System.currentTimeMillis();
+        runtime.newRunner().withContext(context).withSource("var c = 0; for (var i = 0; i < 5000000; ++i) { c++ }").evaluate();
+        long timeQuota = System.currentTimeMillis() - beforeQuota;
+
+        System.out.println("Quota: " + timeQuota + "ms");
     }
 
     private void shouldExceedCpuQuota(String lines) {

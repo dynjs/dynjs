@@ -68,11 +68,11 @@ public class GlobalContext {
         registerBuiltinType("URIError", new BuiltinURIError(this));
         registerBuiltinType("EvalError", new BuiltinEvalError(this));
 
-        if (this.runtime.getConfig().isRhinoCompatible() && !this.runtime.getConfig().isSandboxed()) {
+        if (this.runtime.getConfig().isRhinoCompatible() && !this.runtime.getConfig().isSandbox()) {
             registerBuiltinType("JSAdapter", new JSAdapter(this));
         }
 
-        if(this.runtime.getConfig().isV8Compatible() && !this.runtime.getConfig().isSandboxed()) {
+        if(this.runtime.getConfig().isV8Compatible() && !this.runtime.getConfig().isSandbox()) {
             defineNonEnumerableProperty(this, "__v8StackGetter", new V8StackGetter(this));
         }
 
@@ -104,7 +104,7 @@ public class GlobalContext {
         defineGlobalProperty("unescape", new Unescape(this), true);
         defineGlobalProperty("print", new Print(this), true);
 
-        if (!runtime.getConfig().isSandboxed()) {
+        if (!runtime.getConfig().isSandbox()) {
             defineGlobalProperty("dynjs", new DynJSBuiltin(this.runtime), true);
         }
 
@@ -120,7 +120,7 @@ public class GlobalContext {
         // Java integration
         // ----------------------------------------
 
-        if (!runtime.getConfig().isSandboxed()) {
+        if (!runtime.getConfig().isSandbox()) {
             defineGlobalProperty("Packages", new JavaPackage(this, null), true);
             defineGlobalProperty("java", new JavaPackage(this, "java"), true);
             defineGlobalProperty("javax", new JavaPackage(this, "javax"), true);
