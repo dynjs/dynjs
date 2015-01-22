@@ -147,15 +147,25 @@ public class DynRegExp extends DynObject {
 
     public DynRegExpMatch[] match(ExecutionContext context, String str, int from) {
         byte[] strBytes;
+        int adjustedFrom;
         try {
-            strBytes = str.getBytes(UTF8Encoding.INSTANCE.getCharset());
+            Charset charset = UTF8Encoding.INSTANCE.getCharset();
+            strBytes = str.getBytes(charset);
+
+            // Be careful to convert index just outside of string to one
+            // just outside of by array (substring complains otherwise).
+            if (from > str.length()) {
+                adjustedFrom = strBytes.length + 1;
+            } else {
+                adjustedFrom = str.substring(0, from).getBytes(charset).length;
+            }
         } catch (Exception e) {
             // Should not happen, really
             throw new ThrowException(context, context.createSyntaxError(e.getMessage()));
         }
 
         Matcher matcher = this.pattern.matcher(strBytes, 0, strBytes.length);
-        if (matcher.search(from, strBytes.length, 0) >= 0) {
+        if (matcher.search(adjustedFrom, strBytes.length, 0) >= 0) {
             return DynRegExpMatch.fromRegion(strBytes, UTF8Encoding.INSTANCE, matcher.getEagerRegion());
         }
         return null;
