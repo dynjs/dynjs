@@ -32,4 +32,13 @@ describe("Javascript Arrays", function() {
    expect(x[2]).toBe(3);
    expect(x[3]).toBe(4);
   });
+
+  describe('Array.prototype.sort', function() {
+    it('should accept a compare function that returns floats', function() {
+      var result = ['25','10'].sort(function(a,b) {
+        return parseFloat(a) - parseFloat(b); });
+      expect(result[0]).toBe('10');
+      expect(result[1]).toBe('25');
+    });
+  });
 });
