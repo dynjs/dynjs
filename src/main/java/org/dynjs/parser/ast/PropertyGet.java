@@ -18,7 +18,7 @@ public class PropertyGet extends PropertyAccessor {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
                 null,
                 new String[]{},

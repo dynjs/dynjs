@@ -15,9 +15,6 @@
  */
 package org.dynjs.parser.ast;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.dynjs.parser.CodeVisitor;
 import org.dynjs.parser.js.Position;
 import org.dynjs.runtime.ExecutionContext;
@@ -44,12 +41,13 @@ public class FunctionExpression extends AbstractExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         JSFunction compiledFn = ((ExecutionContext) context).getCompiler().compileFunction((ExecutionContext) context,
                 getDescriptor().getIdentifier(),
                 getDescriptor().getFormalParameterNames(),
                 getDescriptor().getBlock(),
                 getDescriptor().isStrict() || context.isStrict());
+        compiledFn.setSource( context.getSource() );
         return(compiledFn);
     }
 

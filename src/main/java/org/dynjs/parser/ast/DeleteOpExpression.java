@@ -33,9 +33,9 @@ public class DeleteOpExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
 
-        Object result = getExpr().interpret(context);
+        Object result = getExpr().interpret(context, debug);
         if (!(result instanceof Reference)) {
             return (true);
 

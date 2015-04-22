@@ -26,7 +26,7 @@ public class UnaryPlusExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        return Types.toNumber(context, getValue(this.get, context, getExpr().interpret(context)) );
+    public Object interpret(ExecutionContext context, boolean debug) {
+        return Types.toNumber(context, getValue(this.get, context, getExpr().interpret(context, debug)) );
     }
 }

@@ -16,7 +16,6 @@
 package org.dynjs.parser.ast;
 
 import java.lang.invoke.CallSite;
-import java.util.Collections;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -48,12 +47,12 @@ public class ExpressionStatement extends AbstractStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         Expression expr = getExpr();
         if (expr instanceof FunctionDeclaration) {
             return(Completion.createNormal());
         } else {
-            return(Completion.createNormal(getValue(this.get, context, expr.interpret(context))));
+            return(Completion.createNormal(getValue(this.get, context, expr.interpret(context, debug))));
         }
     }
 

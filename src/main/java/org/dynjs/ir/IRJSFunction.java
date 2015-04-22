@@ -3,23 +3,17 @@ package org.dynjs.ir;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.parser.ast.FunctionDeclaration;
 import org.dynjs.parser.ast.VariableDeclaration;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalContext;
-import org.dynjs.runtime.JSCallable;
-import org.dynjs.runtime.JSFunction;
-import org.dynjs.runtime.JSObject;
-import org.dynjs.runtime.LexicalEnvironment;
-import org.dynjs.runtime.Types;
-import org.dynjs.runtime.VariableValues;
+import org.dynjs.runtime.*;
 
 import java.util.List;
 
 public class IRJSFunction extends DynObject implements JSFunction {
+
     private final FunctionScope scope;
     private Instruction[] instructions;
     private final LexicalEnvironment lexicalEnvironment;
     private String debugContext = "";
+    private SourceProvider source;
     // Lexically-captured values of this function
     private VariableValues capturedValues;
 
@@ -68,6 +62,16 @@ public class IRJSFunction extends DynObject implements JSFunction {
 
     public void setDebugContext(String debugContext) {
         this.debugContext = debugContext;
+    }
+
+    @Override
+    public SourceProvider getSource() {
+        return this.source;
+    }
+
+    @Override
+    public void setSource(SourceProvider source) {
+        this.source = source;
     }
 
     public JSObject createNewObject(ExecutionContext context) {

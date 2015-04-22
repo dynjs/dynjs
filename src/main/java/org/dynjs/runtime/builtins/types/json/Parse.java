@@ -1,15 +1,15 @@
 package org.dynjs.runtime.builtins.types.json;
 
-import java.io.IOException;
-
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.*;
 import org.dynjs.runtime.builtins.types.BuiltinArray;
 import org.dynjs.runtime.builtins.types.BuiltinObject;
+
+import java.io.IOException;
 
 public class Parse extends AbstractNativeFunction {
 
@@ -131,10 +131,8 @@ public class Parse extends AbstractNativeFunction {
             return Types.NULL;
         } else if (t == JsonToken.VALUE_STRING) {
             return p.getText();
-        } else if (t == JsonToken.VALUE_NUMBER_FLOAT) {
-            return p.getDoubleValue();
-        } else if (t == JsonToken.VALUE_NUMBER_INT) {
-            return p.getIntValue();
+        } else if (t == JsonToken.VALUE_NUMBER_FLOAT || t == JsonToken.VALUE_NUMBER_INT) {
+            return p.getNumberValue();
         }
 
         return Types.NULL;

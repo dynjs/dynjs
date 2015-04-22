@@ -60,7 +60,7 @@ public class IdentifierReferenceExpression extends BaseExpression {
         return visitor.visit( context, this, strict );
     }
 
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         return context.resolve(getIdentifier());
     }
 

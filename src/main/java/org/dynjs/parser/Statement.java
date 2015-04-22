@@ -43,5 +43,5 @@ public interface Statement {
     
     int getSizeMetric();
 
-    Completion interpret(ExecutionContext context);
+    Completion interpret(ExecutionContext context, boolean debug);
 }

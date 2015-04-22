@@ -129,7 +129,7 @@ public class Builder implements CodeVisitor {
 
         // FIXME: Add processing stage here/somewhere to do instr process/cfg/passes.
 
-        return new IRJSProgram(compilationContext.getBlockManager(), scope);
+        return new IRJSProgram(program.getSource(), compilationContext.getBlockManager(), scope);
     }
 
     @Override

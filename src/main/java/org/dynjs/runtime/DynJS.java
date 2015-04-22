@@ -6,13 +6,11 @@ import org.dynjs.cli.Options;
 import org.dynjs.compiler.JSCompiler;
 import org.dynjs.exception.DynJSException;
 import org.dynjs.ir.JITCompiler;
+import org.dynjs.runtime.source.ClassLoaderSourceProvider;
+import org.dynjs.runtime.source.FileSourceProvider;
 import org.dynjs.runtime.util.SafePropertyAccessor;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 public class DynJS {
@@ -31,7 +29,7 @@ public class DynJS {
     }
 
     public DynJS(Config config) {
-        this( config, new DynObject() );
+        this(config, new DynObject());
     }
 
     public DynJS(Config config, JSObject globalObject) {
@@ -39,7 +37,7 @@ public class DynJS {
         this.compiler = new JSCompiler(config);
         this.jitCompiler = new JITCompiler();
         this.globalContext = GlobalContext.newGlobalContext(this, globalObject);
-        this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext( this );
+        this.defaultExecutionContext = ExecutionContext.createDefaultGlobalExecutionContext(this);
         loadKernel();
     }
 
@@ -47,19 +45,19 @@ public class DynJS {
     private void loadKernel() {
         // FIXME only works for non-IR atm
         if (!Config.CompileMode.IR.equals(this.config.getCompileMode()) && !config.isSandbox()) {
-            switch (this.config.getKernelMode()) {
-                case INTERNAL:
-                    // Load pure-JS kernel
-                    this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
-                    break;
-                case EXTERNAL:
-                    try {
-                        FileInputStream stream = new FileInputStream("src/main/resources/dynjs/kernel.js");
-                        this.evaluate(stream);
-                    } catch (FileNotFoundException e) {
-                        throw new DynJSException(e);
-                    }
-                    break;
+            try {
+                switch (this.config.getKernelMode()) {
+                    case INTERNAL:
+                        // Load pure-JS kernel
+                        //this.evaluate(getClass().getResourceAsStream("/dynjs/kernel.js"));
+                        this.evaluate(new ClassLoaderSourceProvider(getClass().getClassLoader(), "dynjs/kernel.js"));
+                        break;
+                    case EXTERNAL:
+                        this.evaluate(new FileSourceProvider(new File("src/main/resources/dynjs/kernel.js")));
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -80,6 +78,10 @@ public class DynJS {
         return jitCompiler;
     }
 
+    public Runner newRunner(boolean debug) {
+        return new Runner(this).debug(debug);
+    }
+
     public Runner newRunner() {
         return new Runner(this);
     }
@@ -91,15 +93,15 @@ public class DynJS {
     // ----------------------------------------------------------------------
 
     public Object execute(String source) {
-        return newRunner().withContext( this.defaultExecutionContext ).withSource(source).execute();
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).execute();
     }
 
     public Object evaluate(String source) {
-        return newRunner().withContext( this.defaultExecutionContext ).withSource(source).evaluate();
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).evaluate();
     }
 
-    public Object evaluate(InputStream in) {
-        return newRunner().withContext( this.defaultExecutionContext ).withSource(new InputStreamReader(in)).evaluate();
+    public Object evaluate(SourceProvider source) {
+        return newRunner().withContext(this.defaultExecutionContext).withSource(source).evaluate();
     }
 
     public ExecutionContext getDefaultExecutionContext() {

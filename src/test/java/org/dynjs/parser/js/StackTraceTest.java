@@ -4,6 +4,8 @@ import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 import static org.fest.assertions.Assertions.*;
@@ -14,7 +16,7 @@ import static org.fest.assertions.Assertions.*;
 public class StackTraceTest extends AbstractDynJSTestSupport {
 
     @Test
-    public void testStackCreationAccuracy() {
+    public void testStackCreationAccuracy() throws IOException {
         try {
             Object result = eval(getClass().getResourceAsStream("/stack.js"));
             fail("should have thrown");
@@ -28,7 +30,7 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testStackCreationAccuracyWithJavaException() {
+    public void testStackCreationAccuracyWithJavaException() throws IOException {
         try {
             Object result = eval(getClass().getResourceAsStream("/java-stack.js"));
             fail("should have thrown");
@@ -42,7 +44,7 @@ public class StackTraceTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void testStackCreationAccuracyWithWrappedJavaException() {
+    public void testStackCreationAccuracyWithWrappedJavaException() throws IOException {
         try {
             Object result = eval(getClass().getResourceAsStream("/java-stack-wrap.js"));
             fail("should have thrown");

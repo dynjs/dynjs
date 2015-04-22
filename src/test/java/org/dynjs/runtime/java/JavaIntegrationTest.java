@@ -3,7 +3,6 @@ package org.dynjs.runtime.java;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractDynJSTestSupport;
 import org.dynjs.runtime.Types;
-import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -227,6 +226,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
         assertThat(eval("new org.dynjs.runtime.java.Thing([new java.util.ArrayList()])")).isInstanceOf(Thing.class);
     }
 
+    /*
     @Test
     public void testNettyChannelHandler() {
         Object result = eval("new org.jboss.netty.channel.SimpleChannelHandler({",
@@ -234,6 +234,7 @@ public class JavaIntegrationTest extends AbstractDynJSTestSupport {
 
         assertThat(result).isInstanceOf(SimpleChannelHandler.class);
     }
+    */
 
     @Test
     @SuppressWarnings("unchecked")

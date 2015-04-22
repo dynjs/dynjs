@@ -4,9 +4,6 @@ import org.dynjs.parser.CodeVisitor;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.Types;
 import org.dynjs.runtime.builtins.types.BuiltinNumber;
-import org.dynjs.runtime.linker.DynJSBootstrapper;
-
-import java.lang.invoke.CallSite;
 
 public class MultiplicativeExpression extends AbstractBinaryExpression {
 
@@ -20,9 +17,9 @@ public class MultiplicativeExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Number lval = Types.toNumber(context, getValue(this.lhsGet, context, getLhs().interpret( context ) ) );
-        Number rval = Types.toNumber(context, getValue(this.rhsGet, context, getRhs().interpret(context)) );
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Number lval = Types.toNumber(context, getValue(this.lhsGet, context, getLhs().interpret( context, debug) ) );
+        Number rval = Types.toNumber(context, getValue(this.rhsGet, context, getRhs().interpret(context, debug)) );
 
         if (Double.isNaN(lval.doubleValue()) || Double.isNaN(rval.doubleValue())) {
             return(Double.NaN);

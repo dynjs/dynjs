@@ -11,6 +11,6 @@ public class BytecodeProgramCompiler implements ProgramCompiler {
     public JSProgram compile(final CompilationContext context, final ProgramTree body, boolean forceStrict) {
         BasicBlock code = context.getCompiler().compileBasicBlock(context, "ProgramBody", body, forceStrict || body.isStrict() );
 
-        return new JavascriptProgram( context.getBlockManager(), code );
+        return new JavascriptProgram( body.getSource(), context.getBlockManager(), code );
     }
 }

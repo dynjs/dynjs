@@ -44,8 +44,8 @@ public class PreOpExpression extends AbstractUnaryOperatorExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object lhs = getExpr().interpret( context );
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object lhs = getExpr().interpret( context, debug);
 
         if (lhs instanceof Reference) {
             if (((Reference) lhs).isStrictReference()) {

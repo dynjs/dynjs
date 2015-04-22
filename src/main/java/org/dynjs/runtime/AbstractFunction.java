@@ -9,6 +9,7 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
     private boolean strict;
 
     protected String debugContext;
+    protected SourceProvider source;
 
     public AbstractFunction(final GlobalContext globalContext, final LexicalEnvironment scope, final boolean strict, final String... formalParameters) {
         super(globalContext);
@@ -110,6 +111,14 @@ public abstract class AbstractFunction extends DynObject implements JSFunction {
 
     public String getDebugContext() {
         return this.debugContext;
+    }
+
+    public void setSource(SourceProvider source) {
+        this.source = source;
+    }
+
+    public SourceProvider getSource() {
+        return this.source;
     }
     
 }

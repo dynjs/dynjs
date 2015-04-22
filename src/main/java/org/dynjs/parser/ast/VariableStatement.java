@@ -82,9 +82,9 @@ public class VariableStatement extends BaseStatement {
         return visitor.visit( context, this, strict );
     }
 
-    public Completion interpret(ExecutionContext context) {
+    public Completion interpret(ExecutionContext context, boolean debug) {
         for (VariableDeclaration each : getVariableDeclarations()) {
-            each.interpret(context);
+            each.interpret(context, debug);
         }
 
         return(Completion.createNormal(Types.UNDEFINED));

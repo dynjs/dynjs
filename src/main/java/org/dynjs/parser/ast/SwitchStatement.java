@@ -17,7 +17,6 @@ package org.dynjs.parser.ast;
 
 import java.lang.invoke.CallSite;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.dynjs.parser.CodeVisitor;
@@ -72,8 +71,8 @@ public class SwitchStatement extends BaseStatement {
     }
 
     @Override
-    public Completion interpret(ExecutionContext context) {
-        Object value = getValue(this.valueGet, context, getExpr().interpret(context));
+    public Completion interpret(ExecutionContext context, boolean debug) {
+        Object value = getValue(this.valueGet, context, getExpr().interpret(context, debug));
         Object v = null;
 
         int numClauses = getCaseClauses().size();
@@ -89,7 +88,7 @@ public class SwitchStatement extends BaseStatement {
                 continue;
             }
 
-            Object caseTest = each.getExpression().interpret(context);
+            Object caseTest = each.getExpression().interpret(context, debug);
             if (Types.compareStrictEquality(context, value, getValue(eachGet, context, caseTest))) {
                 startIndex = i;
                 break;
@@ -104,7 +103,7 @@ public class SwitchStatement extends BaseStatement {
             for (int i = startIndex; i < numClauses; ++i) {
                 CaseClause each = getCaseClauses().get(i);
                 if (each.getBlock() != null) {
-                    Completion completion = (Completion) each.getBlock().interpret(context);
+                    Completion completion = (Completion) each.getBlock().interpret(context, debug);
                     v = completion.value;
 
                     if (completion.type == Completion.Type.BREAK) {

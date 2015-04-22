@@ -4,10 +4,13 @@ import org.dynjs.Config;
 import org.dynjs.compiler.CompilationContext;
 import org.dynjs.compiler.DefaultCompilationContext;
 import org.dynjs.compiler.JSCompiler;
+import org.dynjs.debugger.Debugger;
 import org.dynjs.ir.Builder;
 import org.dynjs.parser.ast.ProgramTree;
 import org.dynjs.parser.js.JavascriptParser;
 import org.dynjs.parser.js.ParserException;
+import org.dynjs.runtime.source.FileSourceProvider;
+import org.dynjs.runtime.source.StringSourceProvider;
 
 import java.io.*;
 
@@ -19,8 +22,7 @@ public class Compiler {
     private final Config config;
     private CompilationContext compilationContext;
 
-    private Reader source;
-    private boolean shouldClose;
+    private SourceProvider sourceProvider;
     private String fileName;
 
     private boolean forceStrict;
@@ -48,21 +50,17 @@ public class Compiler {
     }
 
     public Compiler withSource(String source) {
-        this.source = new StringReader(source);
-        this.shouldClose = true;
+        this.sourceProvider = new StringSourceProvider(source);
         return this;
     }
 
-    public Compiler withSource(Reader source) {
-        this.source = source;
-        this.shouldClose = false;
+    public Compiler withSource(SourceProvider source) {
+        this.sourceProvider = source;
         return this;
     }
 
-    public Compiler withSource(File source) throws FileNotFoundException {
-        this.source = new FileReader(source);
-        this.shouldClose = true;
-        this.fileName = source.getName();
+    public Compiler withSource(File source) throws IOException {
+        this.sourceProvider = new FileSourceProvider(source);
         return this;
     }
 
@@ -71,21 +69,28 @@ public class Compiler {
         return this;
     }
 
-    public JSProgram compile() {
-        return compile(parse());
+    public JSProgram compile() throws IOException {
+        JSProgram program = compile(parse());
+        return program;
     }
 
-    public ProgramTree parse() {
+    public ProgramTree parse() throws IOException {
         JavascriptParser parser = new JavascriptParser(compilationContext());
+        Reader source = null;
         try {
-            return parser.parse(this.source, this.fileName, this.forceStrict);
+            if ( this.fileName != null ) {
+                this.sourceProvider.setName( this.fileName );
+            } else {
+                this.fileName = this.sourceProvider.getName();
+            }
+            source = this.sourceProvider.openReader();
+            ProgramTree tree = parser.parse(source, this.fileName, this.forceStrict);
+            tree.setSource( this.sourceProvider );
+            this.fileName = null;
+            return tree;
         } finally {
-            if (this.shouldClose) {
-                try {
-                    this.source.close();
-                } catch (IOException e) {
-                    throw new ParserException(e);
-                }
+            if (source != null) {
+                source.close();
             }
         }
     }
@@ -94,7 +99,7 @@ public class Compiler {
         if (this.compilationContext == null) {
             this.compilationContext = new DefaultCompilationContext(this.config);
         }
-        if ( this.compilationContext.getBlockManager() == null ) {
+        if (this.compilationContext.getBlockManager() == null) {
             this.compilationContext = new DefaultCompilationContext(this.compilationContext);
         }
         return this.compilationContext;

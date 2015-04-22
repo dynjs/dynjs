@@ -1,6 +1,7 @@
 package org.dynjs.runtime.builtins.types.array.prototype;
 
 import java.util.Comparator;
+import org.dynjs.exception.ThrowException;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.JSFunction;
@@ -56,7 +57,11 @@ public class SortComparator implements Comparator<Long> {
         }
 
         if (compareFn != null) {
-            return (int)(long) context.call(compareFn, Types.UNDEFINED, x, y);
+            Object ret = context.call(compareFn, Types.UNDEFINED, x, y);
+            if (ret instanceof Number) {
+                return ((Number)ret).intValue();
+            }
+            throw new ThrowException(context, context.createTypeError("Array.prototype.sort comparator must return a number."));
         }
 
         String xStr = Types.toString(context, x);

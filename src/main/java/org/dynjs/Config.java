@@ -10,6 +10,7 @@ import java.util.TimeZone;
 
 public class Config {
 
+
     public static enum CompileMode {
         OFF,
         FORCE,
@@ -25,6 +26,8 @@ public class Config {
     public static final String DEFAULT_BASE_PACKAGE = "org.dynjs.gen";
 
     private boolean debug = false;
+    private String exposeDebugAs;
+
     private final DynamicClassLoader classLoader;
     private Clock clock = SystemClock.INSTANCE;
     private TimeZone timeZone = TimeZone.getDefault();
@@ -191,6 +194,14 @@ public class Config {
 
     public boolean isDebug() {
         return this.debug;
+    }
+
+    public void setExposeDebugAs(String name) {
+        this.exposeDebugAs = name;
+    }
+
+    public String getExposeDebugAs() {
+        return this.exposeDebugAs;
     }
 
     public void setArgv(Object[] arguments) {

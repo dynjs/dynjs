@@ -36,8 +36,8 @@ public class BitwiseInversionOperatorExpression extends AbstractUnaryOperatorExp
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        return ~Types.toInt32(context, getValue(this.get, context, getExpr().interpret(context)));
+    public Object interpret(ExecutionContext context, boolean debug) {
+        return ~Types.toInt32(context, getValue(this.get, context, getExpr().interpret(context, debug)));
     }
 
     public String toString() {

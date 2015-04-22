@@ -50,14 +50,14 @@ public class AssignmentExpression extends AbstractBinaryExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
-        Object lhs = getLhs().interpret(context);
+    public Object interpret(ExecutionContext context, boolean debug) {
+        Object lhs = getLhs().interpret(context, debug);
         if (!(lhs instanceof Reference)) {
             throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhs + " is not a reference"));
         }
 
         Reference lhsRef = (Reference) lhs;
-        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context));
+        Object rhs = getValue(this.rhsGet, context, getRhs().interpret(context, debug));
 
         if (lhsRef.isUnresolvableReference() && context.isStrict()) {
             throw new ThrowException((ExecutionContext) context, ((ExecutionContext) context).createReferenceError(lhsRef.getReferencedName() + " is not defined"));

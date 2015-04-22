@@ -1,10 +1,16 @@
 language: java
-install: mvn install -s support/settings.xml -DskipTests=true -DskipGitVersion=true
-script: mvn test -s support/settings.xml -DskipGitVersion=true
+
 jdk:
   - oraclejdk7
   - oraclejdk8
   - openjdk7
+
+sudo: false
+
+install: mvn install -s support/settings.xml -DskipTests=true -DskipGitVersion=true
+
+script: mvn test -s support/settings.xml -DskipGitVersion=true
+
 notifications:
   irc: "irc.freenode.org#dynjs"
 branches:

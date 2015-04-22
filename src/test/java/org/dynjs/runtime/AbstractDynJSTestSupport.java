@@ -2,12 +2,14 @@ package org.dynjs.runtime;
 
 import static org.fest.assertions.Assertions.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.dynjs.Config;
 import org.dynjs.ManualClock;
+import org.dynjs.runtime.source.InputStreamSourceProvider;
 import org.junit.Before;
 
 public abstract class AbstractDynJSTestSupport {
@@ -32,8 +34,8 @@ public abstract class AbstractDynJSTestSupport {
         return config;
     }
 
-    protected Object eval(InputStream in) {
-        return getRuntime().evaluate( in );
+    protected Object eval(InputStream in) throws IOException {
+        return getRuntime().evaluate( new InputStreamSourceProvider( in ) );
     }
 
     protected Object eval(String... lines) {

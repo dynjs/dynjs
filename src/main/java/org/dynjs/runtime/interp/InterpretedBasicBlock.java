@@ -24,9 +24,7 @@ public class InterpretedBasicBlock implements BasicBlock {
 
     @Override
     public Completion call(ExecutionContext context) {
-        //CodeVisitor visitor = factory.createVisitor( context.getBlockManager() );
-        //return (Completion) this.body.accept(context, visitor, this.strict);
-        return this.body.interpret(context);
+        return this.body.interpret(context, context.isDebug() );
     }
     
     public Statement getBody() {

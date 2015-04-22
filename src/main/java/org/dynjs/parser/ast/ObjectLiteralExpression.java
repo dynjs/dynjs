@@ -54,7 +54,7 @@ public class ObjectLiteralExpression extends BaseExpression {
     }
 
     @Override
-    public Object interpret(ExecutionContext context) {
+    public Object interpret(ExecutionContext context, boolean debug) {
         DynObject obj = BuiltinObject.newObject(context);
 
         int numAssignments = this.propertyAssignments.size();
@@ -63,7 +63,7 @@ public class ObjectLiteralExpression extends BaseExpression {
         for ( int i = 0 ; i < numAssignments ; ++i ) {
             PropertyAssignment each = this.propertyAssignments.get(i);
             CallSite eachGet = assignmentGets.get(i);
-            Object ref = each.interpret( context );
+            Object ref = each.interpret( context, debug );
             String debugName = each.getName();
 
             if (ref instanceof Reference) {

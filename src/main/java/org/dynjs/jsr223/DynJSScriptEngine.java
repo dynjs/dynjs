@@ -1,13 +1,13 @@
 package org.dynjs.jsr223;
 
-import org.dynjs.Config;
-import org.dynjs.runtime.*;
 import org.dynjs.runtime.Compiler;
-import org.dynjs.runtime.builtins.DynJSBuiltin;
+import org.dynjs.runtime.*;
 import org.dynjs.runtime.linker.DynJSBootstrapper;
 import org.dynjs.runtime.linker.java.jsimpl.JSJavaImplementationManager;
+import org.dynjs.runtime.source.ReaderSourceProvider;
 
 import javax.script.*;
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -28,15 +28,24 @@ public class DynJSScriptEngine extends AbstractScriptEngine implements Compilabl
     @Override
     public DynJSCompiledScript compile(String script) throws ScriptException {
         Compiler compiler = new DynJS().newCompiler();
-        JSProgram program = compiler.withSource(script).compile();
-        return new DynJSCompiledScript(this, program);
+        try {
+            JSProgram program = compiler.withSource(script).compile();
+            return new DynJSCompiledScript(this, program);
+        } catch (IOException e) {
+            throw new ScriptException(e);
+        }
     }
 
     @Override
     public DynJSCompiledScript compile(Reader script) throws ScriptException {
         Compiler compiler = new DynJS().newCompiler();
-        JSProgram program = compiler.withSource(script).compile();
-        return new DynJSCompiledScript(this, program);
+        try {
+            JSProgram program = compiler.withSource( new ReaderSourceProvider(script) ).compile();
+            return new DynJSCompiledScript(this, program);
+        } catch (IOException e) {
+            throw new ScriptException(e);
+
+        }
     }
 
     @Override
