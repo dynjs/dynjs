@@ -7,17 +7,17 @@ import org.junit.Test;
 public class SandboxTest extends AbstractDynJSTestSupport {
     @Test(expected = ThrowException.class)
     public void jsCodeCannotAccessDynJSGlobalWhenRunningInSandbox() {
-        eval("dynjs");
+        eval("var foo = dynjs;");
     }
 
     @Test(expected = ThrowException.class)
     public void jsCodeCannotAccessJavaPackageWhenRunningInSandbox() {
-        eval("java");
+        eval("var foo = java;");
     }
 
     @Test(expected = ThrowException.class)
     public void jsCodeCannotAccessOrgPackageWhenRunningInSandbox() {
-        eval("org");
+        eval("var foo = org;");
     }
 
     @Override

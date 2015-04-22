@@ -16,48 +16,48 @@ public class ResourceQuotaTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    public void settingPropertiesOnObjectsCannotExceedMemoryQuota() {
+    public void settingPropertiesOnObjectsExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var obj = {}; for (var i = 0;; ++i) { obj[i.toString()] = 'foo'; }");
     }
 
     @Test
-    public void settingTheSameNamedPropertyOverAndOverAgainDoesntExceedQuota() {
-        shouldNotExceedMemoryQuota("var obj = {}; for (var i = 0; i < 100000; ++i) { obj['foo'] = i; }");
-    }
-
-    @Test
-    public void settingTheSameIndexedPropertyOverAndOverAgainDoesntExceedQuota() {
-        shouldNotExceedMemoryQuota("var obj = {}; for (var i = 0; i < 100000; ++i) { obj[10] = i; }");
-    }
-
-    @Test
-    public void settingValuesInArrayCannotExceedMemoryQuota() {
+    public void settingValuesInArrayExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var obj = []; for (var i = 0;; ++i) { obj[i] = 'foo'; }");
     }
 
     @Test
-    public void growingArrayWithPushCannotExceedMemoryQuota() {
+    public void growingArrayWithPushExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var obj = []; for (var i = 0;; ++i) { obj.push.apply(obj, obj); }");
     }
 
     @Test
-    public void growingArrayWithConcatCannotExceedMemoryQuota() {
+    public void growingArrayWithConcatExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var obj = []; for (var i = 0;; ++i) { obj.concat(obj); }");
     }
 
     @Test
-    public void buildingLargeStringWithPlusOperatorCannotExceedMemoryQuota() {
+    public void buildingLargeStringWithPlusOperatorExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var str = ''; for (;;) { str = str + 'foo'; }");
     }
 
     @Test
-    public void buildingLargeStringWithPlusEqualOperatorCannotExceedMemoryQuota() {
+    public void buildingLargeStringWithPlusEqualOperatorExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var str = ''; for (;;) { str += 'foo'; }");
     }
 
     @Test
-    public void buildingLargeStringWithConcatCannotExceedMemoryQuota() {
+    public void buildingLargeStringWithConcatExceedsMemoryQuota() {
         shouldExceedMemoryQuota("var str = ''; for (;;) { str = str.concat(str); }");
+    }
+
+    @Test
+    public void settingTheSameNamedPropertyOverAndOverAgainDoesntTriggerQuota() {
+        shouldNotExceedMemoryQuota("var obj = {}; for (var i = 0; i < 100000; ++i) { obj['foo'] = i; }");
+    }
+
+    @Test
+    public void settingTheSameIndexedPropertyOverAndOverAgainDoesntTriggerQuota() {
+        shouldNotExceedMemoryQuota("var obj = {}; for (var i = 0; i < 100000; ++i) { obj[10] = i; }");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ResourceQuotaTest extends AbstractDynJSTestSupport {
     }
 
     @Test
-    @Ignore
+    @Ignore // only useful when run manually
     public void performanceComparisonWhenRunningWithOrWithoutQuotaIsntTooBad() {
         DynJS runtime = getRuntime();
 
