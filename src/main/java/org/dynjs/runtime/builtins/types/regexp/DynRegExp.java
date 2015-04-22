@@ -153,7 +153,7 @@ public class DynRegExp extends DynObject {
             strBytes = str.getBytes(charset);
 
             // Be careful to convert index just outside of string to one
-            // just outside of by array (substring complains otherwise).
+            // just outside of the array (substring complains otherwise).
             if (from > str.length()) {
                 adjustedFrom = strBytes.length + 1;
             } else {
