@@ -24,9 +24,9 @@ describe("regular expressions", function() {
     });
 
     it("should work fine with multi-byte UTF-8 characters", function() {
-        var x = "foo ohé foobar";
-        var y = x.replace(/foo/g, "bar");
-        expect(y).toBe("bar ohé barbar");
+      expect("foo ohé foobar".replace(/foo/g, "baar")).toBe("baar ohé baarbar");
+      expect("éeéeé".replace(/[A-Za-z]+/gi, "foo")).toBe("éfooéfooé");
+      expect("éeéeé".replace(/[A-Za-z]+/gi, "ohé")).toBe("éohééohéé");
     });
   });
 
@@ -70,7 +70,6 @@ describe("regular expressions", function() {
       expect(arr[1]).toBe("FOOBAR=boom");
     });
   });
-
 });
 
 describe("String.prototype.match", function() {
@@ -81,6 +80,10 @@ describe("String.prototype.match", function() {
 
     expect(lines).toBeTruthy();
     expect(lines.length).toBe(3);
+  });
+
+  it("should work with strings containing multi-byte UTF-8 characters", function() {
+    expect("mémoire de frais".match(/[\wé]+/gi)).toEqual(["mémoire", "de", "frais"]);
   });
 });
 
