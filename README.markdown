@@ -1,5 +1,7 @@
 # dynjs - ECMAScript Runtime for the JVM
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 [![Build Status](https://secure.travis-ci.org/dynjs/dynjs.png)](http://travis-ci.org/dynjs/dynjs)
 
 ![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
