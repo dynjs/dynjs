@@ -2,8 +2,6 @@
 
 [![Build Status](https://secure.travis-ci.org/dynjs/dynjs.png)](http://travis-ci.org/dynjs/dynjs)
 
-![cloudbees rocks!](http://static-www.cloudbees.com/images/badges/BuiltOnDEV.png)
-
 ## Bug Reports
 
 We're using [GitHub Issues](https://github.com/dynjs/dynjs/issues/). Please let us know what issues you find!
