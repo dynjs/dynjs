@@ -41,6 +41,7 @@ public class FilesystemModuleProvider extends ModuleProvider {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String generateModuleID(ExecutionContext context, String moduleName) {
         File moduleFile = findFile(nativeRequire.getLoadPaths(), moduleName);
         if (moduleFile != null && moduleFile.exists()) {
