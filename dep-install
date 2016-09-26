@@ -1,0 +1,21 @@
+#!/bin/sh
+
+mkdir temp
+cd temp
+
+# install jitescript
+git clone https://github.com/qmx/jitescript.git
+cd jitescript
+mvn clean install -Dmaven.test.skip=true
+cd ..
+
+# install invokebinder
+git clone https://github.com/headius/invokebinder.git
+cd invokebinder
+mvn clean install -Dmaven.test.skip=true
+cd ../..
+
+# clean up the mess
+rm -rf temp
+
+mvn clean install
