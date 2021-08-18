@@ -16,3 +16,7 @@ notifications:
 branches:
   except:
     - ir
+
+cache:
+  directories:
+  - $HOME/.m2
